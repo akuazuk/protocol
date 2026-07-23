@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детское население с крапивницей и ангионевротическим
+  title: Диагностика и лечение пациентов (детское население) с крапивницей и ангионевротическим
     отеком
   url: null
   local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: krapivnitsa_angioedema
+- condition_id: krapivnica_i_angionevroticheskiy_otek
   name: Крапивница и ангионевротический отек
   synonyms: []
   abbreviations: []
@@ -42,13 +42,13 @@ conditions:
   - L50.6
   - L50.8
   - L50.9
-  - T78.3
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Установление диагноза на основании характера клинических симптомов
+    - text: Диагноз устанавливается на основании характера клинических симптомов и
+        не требует лабораторного подтверждения
       logic_group: null
       operator: unknown
       values: []
@@ -65,8 +65,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Установление диагноза на основании характера клинических симптомов
-    - text: Сбор жалоб и анамнеза (жизни и заболевания)
+        quote: Диагноз устанавливается на основании характера клинических симптомов
+          и не требует лабораторного подтверждения
+    - text: 'Волдыри при крапивнице: центральная выпуклая часть вариабельного размера
+        с эритемой вокруг, сопровождаются зудом/жжением, обратимы (исчезают за 1–24
+        часа)'
       logic_group: null
       operator: unknown
       values: []
@@ -83,8 +86,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Сбор жалоб и анамнеза (жизни и заболевания)
-    - text: Медицинский осмотр с оценкой кожных проявлений (волдыри)
+        quote: 'Волдыри при крапивнице: центральная выпуклая часть вариабельного размера
+          с эритемой вокруг, сопровождаются зудом/жжением, обратимы (исчезают за 1–24
+          часа)'
+    - text: 'Ангионевротический отек: внезапный отек нижних слоев дермы, подкожной
+        клетчатки или слизистых, сопровождающийся болезненностью или покалыванием,
+        разрешается до 72 часов'
       logic_group: null
       operator: unknown
       values: []
@@ -101,29 +108,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Медицинский осмотр с оценкой кожных проявлений (волдыри)
-    - text: Оценка ангионевротического отека (АО)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивнице
-        document_url: null
-        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Оценка ангионевротического отека (АО)
+        quote: 'Ангионевротический отек: внезапный отек нижних слоев дермы, подкожной
+          клетчатки или слизистых, сопровождающийся болезненностью или покалыванием,
+          разрешается до 72 часов'
     optional: []
     exclusion: []
   required_exams:
-  - name: Общий анализ крови
+  - name: Общий анализ крови (эритроциты, гемоглобин, лейкоциты, лейкоцитарная формула,
+      тромбоциты, СОЭ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -144,7 +136,7 @@ conditions:
       table_index: null
       row_index: null
       quote: 'общий анализ крови: эритроциты, гемоглобин, лейкоциты, лейкоцитарная
-        формула, тромбоциты, скорость оседания эритроцитов'
+        формула, тромбоциты, скорость оседания эритроцитов;'
   - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -165,8 +157,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ мочи
-  - name: Биохимический анализ крови
+      quote: общий анализ мочи;
+  - name: Биохимический анализ крови (креатинин, мочевина, глюкоза, общий белок, АЛТ,
+      АСТ, общий билирубин, холестерин, СРБ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -188,8 +181,8 @@ conditions:
       row_index: null
       quote: 'биохимический анализ крови: креатинин, мочевина, глюкоза, общий белок,
         аланинаминотрансфераза, аспартатаминотрансфераза, общий билирубин, холестерин,
-        С-реактивный белок'
-  - name: Обследование на сифилитическую инфекцию
+        С-реактивный белок;'
+  - name: Обследование на сифилитическую инфекцию (однократно у пациентов с 14 лет)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -232,7 +225,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: исследование уровня общего иммуноглобулина E (IgE) в крови
+      quote: исследование уровня общего иммуноглобулина E (IgE) в крови;
   - name: Исследование уровня антител к тиреоидной пероксидазе
     aliases: []
     exam_type: unknown
@@ -253,7 +246,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: исследование уровня антител к тиреоидной пероксидазе
+      quote: исследование уровня антител к тиреоидной пероксидазе;
   - name: Анализ кала на яйца гельминтов, цисты простейших
     aliases: []
     exam_type: unknown
@@ -274,7 +267,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: анализ кала на яйца гельминтов, цисты простейших
+      quote: анализ кала на яйца гельминтов, цисты простейших;
   - name: Исследование на энтеробиоз
     aliases: []
     exam_type: unknown
@@ -295,7 +288,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: исследование на энтеробиоз
+      quote: исследование на энтеробиоз;
   - name: Аллергологическое обследование методом кожных проб
     aliases: []
     exam_type: unknown
@@ -317,8 +310,8 @@ conditions:
       table_index: null
       row_index: null
       quote: аллергологическое обследование методом кожных проб в период ремиссии
-        при клинических данных в пользу аллергической крапивницы
-  - name: Специальные провокационные пробы
+        при клинических данных в пользу аллергической крапивницы;
+  - name: Проведение специальных провокационных проб
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -339,7 +332,7 @@ conditions:
       table_index: null
       row_index: null
       quote: проведение специальных провокационных проб (тепловая, холодовая, вибрационная,
-        штриховая, проба с физической нагрузкой и другие)
+        штриховая, проба с физической нагрузкой и другие);
   - name: Определение аллергенспецифических IgE-антител
     aliases: []
     exam_type: unknown
@@ -361,8 +354,8 @@ conditions:
       table_index: null
       row_index: null
       quote: определение аллергенспецифических IgE-антител при клинических данных
-        в пользу аллергической крапивницы
-  - name: Биопсия кожи и морфологическое исследование
+        в пользу аллергической крапивницы;
+  - name: Биопсия кожи и гистологическое/иммуногистохимическое исследование
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -383,30 +376,33 @@ conditions:
       table_index: null
       row_index: null
       quote: биопсия кожи и морфологическое (гистологическое) исследование препарата,
-        иммуногистохимическое исследование материала
-  treatment: null
+        иммуногистохимическое исследование материала.
+  treatment:
+    non_drug:
+    - text: 'Элиминация возможного этиологического фактора: индивидуальная элиминационная
+        диета при наличии пищевой аллергии, уменьшение воздействия физических провоцирующих
+        факторов, прекращение приема ЛП, провоцирующих крапивницу, лечение инфекций'
+      source_ref:
+        protocol_id: allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивнице
+        document_url: null
+        local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Элиминация возможного этиологического фактора: индивидуальная элиминационная
+          диета при наличии пищевой аллергии, уменьшение воздействия физических провоцирующих
+          факторов, прекращение приема ЛП, провоц'
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
   follow_up: []
   hospitalization: []
-  routing:
-  - text: Показана элиминация возможного этиологического фактора (индивидуальная элиминационная
-      диета при наличии пищевой аллергии, уменьшение воздействия физических провоцирующих
-      факторов – температура окружающей среды, инсоляция, давление, физическая нагрузка
-      и другие, прекращение приема ЛП, провоцирующих крапивницу, лечение инфекций).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапивнице
-      document_url: null
-      local_path: minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Показана элиминация возможного этиологического фактора (индивидуальная
-        элиминационная диета при наличии пищевой аллергии, уменьшение воздействия
-        физических провоцирующих факторов – температура окружаю
+  routing: []
   red_flags: []
   contraindications: []
   complications: []
@@ -416,7 +412,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T23:48:50.728106+00:00'
+  extracted_at: '2026-07-23T07:02:06.433651+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -427,4 +423,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T23:48:50.731368+00:00'
+  validated_at: '2026-07-23T07:02:06.439453+00:00'

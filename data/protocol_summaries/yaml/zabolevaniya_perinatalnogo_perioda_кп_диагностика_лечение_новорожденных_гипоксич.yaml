@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение новорожденных гипоксической ишемической энцефалопатией
+  title: Диагностика и лечение новорожденных с гипоксической ишемической энцефалопатией
   url: null
   local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: hypoxic_ischemic_encephalopathy_newborn
+- condition_id: hypoxic_ischemic_encephalopathy
   name: Гипоксическая ишемическая энцефалопатия новорожденного
   synonyms: []
   abbreviations: []
@@ -38,7 +38,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Оценка по шкале Апгар <5 на 10 минуте жизни
+    - text: 'Критерии группы А: шкала Апгар <5 на 10 мин, потребность в ИВЛ на 10
+        мин, рН <7.0 или BE >16 ммоль/л в первые 60 мин жизни'
       logic_group: null
       operator: unknown
       values: []
@@ -55,9 +56,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Оценка по шкале Апгар <5 на 10 минуте жизни
-    - text: Сохраняющаяся потребность в искусственной вентиляции легких на 10 минуте
-        жизни
+        quote: 'Критерии группы А: шкала Апгар <5 на 10 мин, потребность в ИВЛ на
+          10 мин, рН <7.0 или BE >16 ммоль/л в первые 60 мин жизни'
+    - text: 'Критерии группы В: судороги, мышечная гипотония/гипорефлексия или гипертонус/гиперрефлексия,
+        нарушения зрачкового рефлекса'
       logic_group: null
       operator: unknown
       values: []
@@ -74,9 +76,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Сохраняющаяся потребность в искусственной вентиляции легких на 10 минуте
-          жизни
-    - text: рН <7.0 в первом анализе крови в первые 60 минут жизни
+        quote: 'Критерии группы В: судороги, мышечная гипотония/гипорефлексия или
+          гипертонус/гиперрефлексия, нарушения зрачкового рефлекса'
+    - text: 'Критерии группы С: изменения паттерна на аЭЭГ (вольтаж верхнего/нижнего
+        края, прерывистость, серии пиков, изолиния)'
       logic_group: null
       operator: unknown
       values: []
@@ -93,9 +96,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: рН <7.0 в первом анализе крови в первые 60 минут жизни
-    - text: Дефицит оснований (ВЕ) >16 ммоль/л в первом анализе крови в первые 60
-        минут жизни
+        quote: 'Критерии группы С: изменения паттерна на аЭЭГ (вольтаж верхнего/нижнего
+          края, прерывистость, серии пиков, изолиния)'
+    - text: Оценка степени неврологических нарушений по шкале Sarnat (1, 2 и 3 степени)
       logic_group: null
       operator: unknown
       values: []
@@ -112,9 +115,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Дефицит оснований (ВЕ) >16 ммоль/л в первом анализе крови в первые
-          60 минут жизни
-    - text: Клиническое проявление судорог
+        quote: Оценка степени неврологических нарушений по шкале Sarnat (1, 2 и 3
+          степени)
+    - text: Перенесенная асфиксия (гипоксия) во время рождения
       logic_group: null
       operator: unknown
       values: []
@@ -131,8 +134,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Клиническое проявление судорог
-    - text: Мышечная гипотония и гипорефлексия
+        quote: Перенесенная асфиксия (гипоксия) во время рождения
+    - text: 'Подтвержденный метаболический ацидоз по КОС крови в течение часа после
+        рождения: pH<7.00 и (или) дефицит оснований >12 mmol/L'
       logic_group: null
       operator: unknown
       values: []
@@ -149,8 +153,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Мышечная гипотония и гипорефлексия
-    - text: Выраженный гипертонус и гиперрефлексия
+        quote: 'Подтвержденный метаболический ацидоз по КОС крови в течение часа после
+          рождения: pH<7.00 и (или) дефицит оснований >12 mmol/L'
+    - text: Наличие неврологических нарушений средней или тяжелой степени по шкале
+        Sarnat
       logic_group: null
       operator: unknown
       values: []
@@ -167,8 +173,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Выраженный гипертонус и гиперрефлексия
-    - text: Нарушения зрачкового рефлекса
+        quote: Наличие неврологических нарушений средней или тяжелой степени по шкале
+          Sarnat
+    - text: Исключение иных возможных этиологических факторов
       logic_group: null
       operator: unknown
       values: []
@@ -185,10 +192,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Нарушения зрачкового рефлекса
-    - text: 'Показатели аЭЭГ: верхний край зубцов кривой более 10 мкВ, нижний край
-        зубцов кривой менее 5 мкВ, кривая может прерываться пиками или сериями пиков
-        более 25 мкВ'
+        quote: Исключение иных возможных этиологических факторов
+    - text: Выявление хотя бы одного критерия в каждой из групп «А», «В» и «С» для
+        гипотермии
       logic_group: null
       operator: unknown
       values: []
@@ -205,155 +211,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Показатели аЭЭГ: верхний край зубцов кривой более 10 мкВ, нижний край
-          зубцов кривой менее 5 мкВ, кривая может прерываться пиками или сериями пиков
-          более 25 мкВ'
-    - text: 'Показатели аЭЭГ: верхний край зубцов менее 10 мкВ, кривая прерывается
-        и периодически выглядит изолинией и (или) прерывается сериями пиков менее
-        10 мкВ'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Показатели аЭЭГ: верхний край зубцов менее 10 мкВ, кривая прерывается
-          и периодически выглядит изолинией и (или) прерывается сериями пиков менее
-          10 мкВ'
-    - text: 'Показатели аЭЭГ: сплошные серии пиков с вольтажом более 25 мкВ'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Показатели аЭЭГ: сплошные серии пиков с вольтажом более 25 мкВ'
-    - text: 'Показатели аЭЭГ: изолиния с вольтажом менее 5 мкВ'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Показатели аЭЭГ: изолиния с вольтажом менее 5 мкВ'
-    - text: 'Шкала Sarnat (1 степень): Гипервозбудимость, слабый/отсутствующий сосательный
-        рефлекс, выраженный рефлекс Моро, нормальный мышечный тонус, преобладание
-        симпатических реакций, мидриаз, отсутствие судорог'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Шкала Sarnat (1 степень): Гипервозбудимость, слабый/отсутствующий
-          сосательный рефлекс, выраженный рефлекс Моро, нормальный мышечный тонус,
-          преобладание симпатических реакций, мидриаз, отсутствие судор'
-    - text: 'Шкала Sarnat (2 степень): Летаргическое состояние, слабый/отсутствующий
-        сосательный рефлекс, слабый рефлекс Моро, гипотония, преобладание парасимпатических
-        реакций, миоз, частые судороги'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Шкала Sarnat (2 степень): Летаргическое состояние, слабый/отсутствующий
-          сосательный рефлекс, слабый рефлекс Моро, гипотония, преобладание парасимпатических
-          реакций, миоз, частые судороги'
-    - text: 'Шкала Sarnat (3 степень): Ступор, отсутствующий сосательный рефлекс,
-        отсутствующий рефлекс Моро, атония, отсутствие реакций ВНС, вариабельные зрачки,
-        вариабельные судороги'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Шкала Sarnat (3 степень): Ступор, отсутствующий сосательный рефлекс,
-          отсутствующий рефлекс Моро, атония, отсутствие реакций ВНС, вариабельные
-          зрачки, вариабельные судороги'
-    - text: Асфиксия (гипоксия) во время рождения
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Асфиксия (гипоксия) во время рождения
+        quote: Выявление хотя бы одного критерия в каждой из групп «А», «В» и «С»
+          для гипотермии
     optional: []
     exclusion: []
   required_exams:
-  - name: Определение кислотно-основного состояния крови (pH, дефицит оснований)
+  - name: Анализ крови (рН, дефицит оснований BE)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -367,16 +230,16 @@ conditions:
       protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
       document_url: null
       local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 2
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'наличие у новорожденного метаболического ацидоза, что подтверждается
-        определением кислотно-основного состояния крови в течение часа после рождения:
-        pH<7.00 и (или) дефицит оснований >12 mmol/L'
-  - name: Контроль кислотно-основного состояния и газов крови
+      quote: рН <7.0 в первом анализе крови, взятом из пуповины, венозной, артериальной
+        или капиллярной крови в первые 60 минут жизни; дефицит оснований (ВЕ) >16
+        ммоль/л
+  - name: Кислотно-основное состояние и газы крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -390,14 +253,15 @@ conditions:
       protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
       document_url: null
       local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 4
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: проводится контроль кислотно-основного состояния и газов крови
-  - name: Контроль температуры тела (ректальной/центральной)
+      quote: Оценка начинает проводиться в родильном зале (операционной) сразу при
+        получении первого результата кислотно-основного состояния и газов крови.
+  - name: Контроль температуры тела и (или) ректальной (центральной) температуры
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -419,136 +283,8 @@ conditions:
       row_index: null
       quote: в течение 30 минут после рождения начинается контроль температуры тела
         и (или) ректальной (центральной) температуры с фиксацией каждые 15 минут.
-  - name: Амплитудо-интегрированная электроэнцефалограмма (аЭЭГ)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: амплитудо-интегрированная электроэнцефалограмма (далее – аЭЭГ)
-  - name: Компьютерная томография головного мозга
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: компьютерная томография или магнитно-резонансная томография головного
-        мозга
-  - name: Магнитно-резонансная томография головного мозга
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: компьютерная томография или магнитно-резонансная томография головного
-        мозга
-  - name: Консультация врача-офтальмолога
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: консультация врача-офтальмолога, врача-нейрохирурга
-  - name: Консультация врача-нейрохирурга
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: консультация врача-офтальмолога, врача-нейрохирурга
-  - name: Определение концентрации 25(ОН)D в сыворотке крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: определение концентрации 25(ОН)D в сыворотке крови
   conditional_exams:
-  - name: аЭЭГ (амплитудно-интегрированная электроэнцефалография)
+  - name: Мониторинг аЭЭГ (амплитудно-интегрированная энцефалография)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -569,8 +305,93 @@ conditions:
       table_index: null
       row_index: null
       quote: Критерии группы «С» определяются по результатам тридцатиминутного мониторинга
-        аЭЭГ (при наличии в организации здравоохранения), проведенного в отделении
-        анестезиологии и реанимации с палатами интенсивной терапии для новорожденных...
+        аЭЭГ (при наличии в организации здравоохранения)
+  - name: Амплитудо-интегрированная электроэнцефалограмма (аЭЭГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими исследованиями являются: амплитудо-интегрированная
+        электроэнцефалограмма (далее – аЭЭГ);'
+  - name: Компьютерная томография или магнитно-резонансная томография головного мозга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: компьютерная томография или магнитно-резонансная томография головного
+        мозга;
+  - name: Консультация врача-офтальмолога, врача-нейрохирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-офтальмолога, врача-нейрохирурга;
+  - name: Определение концентрации 25(ОН)D в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение концентрации 25(ОН)D в сыворотке крови.
   - name: Эхокардиография
     aliases: []
     exam_type: unknown
@@ -595,7 +416,8 @@ conditions:
         эхокардиография (при возможности выполнения).
   treatment:
     non_drug:
-    - text: Терапевтическая гипотермия (пассивная и/или аппаратная)
+    - text: Пассивная и (или) аппаратная терапевтическая гипотермия (по показаниям
+        аЭЭГ)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
         document_url: null
@@ -606,8 +428,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Терапевтическая гипотермия (пассивная и/или аппаратная)
-    - text: Проведение пассивной терапевтической гипотермии
+        quote: Пассивная и (или) аппаратная терапевтическая гипотермия (по показаниям
+          аЭЭГ)
+    - text: Искусственная вентиляция легких (по показаниям)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
         document_url: null
@@ -618,8 +441,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Проведение пассивной терапевтической гипотермии
-    - text: Проведение аппаратной терапевтической гипотермии
+        quote: Искусственная вентиляция легких (по показаниям)
+    - text: Проведение пассивной и (или) аппаратной терапевтической гипотермии
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
         document_url: null
@@ -630,8 +453,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Проведение аппаратной терапевтической гипотермии
-    - text: Выключение источника лучистого тепла (при пассивной гипотермии)
+        quote: Проведение пассивной и (или) аппаратной терапевтической гипотермии
+    - text: Выключение источника лучистого тепла в родильном зале (операционной)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
         document_url: null
@@ -642,8 +465,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Выключение источника лучистого тепла (при пассивной гипотермии)
-    - text: Выключение обогрева в транспортном инкубаторе (при пассивной гипотермии)
+        quote: Выключение источника лучистого тепла в родильном зале (операционной)
+    - text: Выключение обогрева в транспортном инкубаторе
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
         document_url: null
@@ -654,8 +477,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Выключение обогрева в транспортном инкубаторе (при пассивной гипотермии)
-    - text: Начало противосудорожной терапии (при возникновении судорог)
+        quote: Выключение обогрева в транспортном инкубаторе
+    - text: Мониторинг ректальной (центральной) температуры с погружением датчика
+        в прямую кишку на 5 см
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
         document_url: null
@@ -666,8 +490,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Начало противосудорожной терапии (при возникновении судорог)
-    - text: Продолжение согревания со скоростью, указанной в части первой пункта 23
+        quote: Мониторинг ректальной (центральной) температуры с погружением датчика
+          в прямую кишку на 5 см
+    - text: Согревание новорожденного после окончания терапевтической гипотермии
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
         document_url: null
@@ -678,11 +503,34 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Продолжение согревания со скоростью, указанной в части первой пункта
-          23
+        quote: Согревание новорожденного после окончания терапевтической гипотермии
+    - text: Пассивная и (или) аппаратная терапевтическая гипотермия
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пассивная и (или) аппаратная терапевтическая гипотермия
+    - text: Респираторная поддержка
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Респираторная поддержка
     drug_groups: []
     drugs:
-    - drug_name: Противосудорожные средства
+    - drug_name: Противосудорожные лекарственные препараты
       active_substance: null
       drug_group: null
       dose_text: Не указана
@@ -704,9 +552,8 @@ conditions:
         table_index: null
         row_index: null
         quote: При выявлении на аЭЭГ электрографических приступов (без клинических
-          проявлений) продолжительностью более 30–60 секунд в час, назначается противосудорожное
-          лечение.
-    - drug_name: Седативные средства
+          проявлений)... назначается противосудорожное лечение.
+    - drug_name: Седативные лекарственные препараты
       active_substance: null
       drug_group: null
       dose_text: Не указана
@@ -728,10 +575,10 @@ conditions:
         table_index: null
         row_index: null
         quote: аЭЭГ проводится до введения противосудорожных и седативных ЛП.
-    - drug_name: Хлорид натрия 0,9 %
+    - drug_name: Натрия хлорид (раствор 0,9 %)
       active_substance: null
       drug_group: null
-      dose_text: 10 мл/кг внутривенно (при системной гипотензии)
+      dose_text: внутривенно 10 мл/кг
       frequency_text: null
       duration_text: null
       route: null
@@ -751,10 +598,33 @@ conditions:
         row_index: null
         quote: При необходимости коррекция может быть проведена внутривенным введением
           10 мл/кг 0,9 % раствора хлорида натрия.
-    - drug_name: Вазоактивные ЛП
+    - drug_name: Противосудорожные лекарственные препараты
       active_substance: null
       drug_group: null
-      dose_text: Увеличение доз (при инотропной поддержке и системной гипотензии)
+      dose_text: режим дозирования не указан
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При возникновении судорог на фоне согревания начинается противосудорожная
+          терапия
+    - drug_name: Вазоактивные / инотропные лекарственные препараты
+      active_substance: null
+      drug_group: null
+      dose_text: увеличение доз при необходимости коррекции гемодинамических нарушений
       frequency_text: null
       duration_text: null
       route: null
@@ -777,10 +647,60 @@ conditions:
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Оценка исхода заболевания (выздоровление, улучшение, ухудшение)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка исхода заболевания (выздоровление, улучшение, ухудшение)
+  - text: Реклассификация диагноза с выделением ведущего неврологического синдрома
+      после первого месяца жизни
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Реклассификация диагноза с выделением ведущего неврологического синдрома
+        после первого месяца жизни
+  - text: Фиксация температуры тела и (или) ректальной температуры каждые 15 минут
+      с начала мониторинга
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Фиксация температуры тела и (или) ректальной температуры каждые 15 минут
+        с начала мониторинга
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Госпитализация в отделение анестезиологии и реанимации с палатами интенсивной
+      терапии для новорожденных (средняя длительность 17–21 койко-день)
     timing: null
     required_if: []
     source_ref:
@@ -793,8 +713,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: госпитализация
+      quote: Госпитализация в отделение анестезиологии и реанимации с палатами интенсивной
+        терапии для новорожденных (средняя длительность 17–21 койко-день)
+  - text: 'Специализированная медицинская помощь: организации здравоохранения с отделением
+      анестезиологии и реанимации с палатами интенсивной терапии для новорожденных,
+      специализированным детским неврологическим отделением или неврологическими койками'
     timing: null
     required_if: []
     source_ref:
@@ -807,9 +730,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: 'Противопоказание к проведению терапевтической гипотермии: масса тела при
-      рождении менее 1800 г.'
+      quote: 'Специализированная медицинская помощь: организации здравоохранения с
+        отделением анестезиологии и реанимации с палатами интенсивной терапии для
+        новорожденных, специализированным детским неврологическим'
+  - text: 'Высокотехнологичная медицинская помощь: организации здравоохранения областного
+      или республиканского уровней с возможностью проведения аппаратной терапевтической
+      гипотермии'
     timing: null
     required_if: []
     source_ref:
@@ -822,10 +748,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Противопоказание к проведению терапевтической гипотермии: масса тела
-        при рождении менее 1800 г.'
-  - text: 'Противопоказание к проведению терапевтической гипотермии: гестационный
-      возраст менее 35 недель.'
+      quote: 'Высокотехнологичная медицинская помощь: организации здравоохранения
+        областного или республиканского уровней с возможностью проведения аппаратной
+        терапевтической гипотермии'
+  - text: 'Противопоказания к терапевтической гипотермии: масса тела < 1800 г, гестационный
+      возраст < 35 недель, возраст > 6 часов, хирургические или тяжелые ВПР, ВЧК,
+      родовая ЧМТ.'
     timing: null
     required_if: []
     source_ref:
@@ -838,10 +766,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Противопоказание к проведению терапевтической гипотермии: гестационный
-        возраст менее 35 недель.'
-  - text: 'Противопоказание к проведению терапевтической гипотермии: возраст новорожденного
-      на момент принятия решения о проведении гипотермии более шести часов.'
+      quote: 'Противопоказания к терапевтической гипотермии: масса тела < 1800 г,
+        гестационный возраст < 35 недель, возраст > 6 часов, хирургические или тяжелые
+        ВПР, ВЧК, родовая ЧМТ.'
+  - text: 'Показания для экстренного прекращения терапевтической гипотермии: гипоксемия
+      SpO2 < 90%, коагулопатия, ПВК III-IV ст., аритмии, рефрактерные гемодинамические
+      нарушения.'
     timing: null
     required_if: []
     source_ref:
@@ -854,26 +784,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Противопоказание к проведению терапевтической гипотермии: возраст новорожденного
-        на момент принятия решения о проведении гипотермии более шести часов.'
-  - text: 'Противопоказание к проведению терапевтической гипотермии: пороки развития,
-      требующие немедленного хирургического вмешательства.'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Противопоказание к проведению терапевтической гипотермии: пороки развития,
-        требующие немедленного хирургического вмешательства.'
+      quote: 'Показания для экстренного прекращения терапевтической гипотермии: гипоксемия
+        SpO2 < 90%, коагулопатия, ПВК III-IV ст., аритмии, рефрактерные гемодинамические
+        нарушения.'
   red_flags:
-  - text: Электро-клинические судороги
+  - text: Электрографические приступы на аЭЭГ длительностью более 30–60 секунд в час
     aliases: []
     red_flag_type: other
     severity: high
@@ -889,30 +804,28 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При появлении электро-клинических судорог новорожденным медицинская помощь
-        оказывается в соответствии с клиническим протоколом «Оказание медицинской
-        помощи в неонатологии» и протоколом «Диагностика и лечение пациентов с заболеваниями
-        нервной системы».
-  - text: Электрографические приступы (без клинических проявлений)
+      quote: При выявлении на аЭЭГ электрографических приступов... продолжительностью
+        более 30–60 секунд в час назначается противосудорожное лечение.
+  - text: Выраженный декомпенсированный ацидоз (рН < 7.0, BE > 16 ммоль/л)
     aliases: []
     red_flag_type: other
-    severity: medium
+    severity: high
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
       document_url: null
       local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
-      page_start: 6
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: При выявлении на аЭЭГ электрографических приступов (без клинических проявлений)
-        продолжительностью более 30–60 секунд в час назначается противосудорожное
-        лечение.
-  - text: Возникновение судорог на фоне согревания
+      quote: рН <7.0 в первом анализе крови... дефицит оснований (ВЕ) >16 ммоль/л
+        в первом анализе крови, взятом из пуповины, венозной, артериальной или капиллярной
+        крови в первые 60 минут жизни.
+  - text: Возникновение судорог на фоне согревания после терапевтической гипотермии
     aliases: []
     red_flag_type: other
     severity: high
@@ -929,11 +842,11 @@ conditions:
       table_index: null
       row_index: null
       quote: При возникновении судорог на фоне согревания начинается противосудорожная
-        терапия
-  - text: Системная гипотензия при согревании
+        терапия, согревание продолжается
+  - text: Системная гипотензия вследствие периферической вазодилатации при согревании
     aliases: []
     red_flag_type: other
-    severity: medium
+    severity: high
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -948,6 +861,96 @@ conditions:
       row_index: null
       quote: При согревании происходит периферическая вазодилатация, что может привести
         к системной гипотензии.
+  - text: Невозможность купирования гипоксемии (SpO2 < 90 %)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: невозможность купирования гипоксемии доступными методами респираторной
+        поддержки (SpO2 < 90 %);
+  - text: Признаки жизнеугрожающей коагулопатии, не купирующиеся стандартной терапией
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие признаков жизнеугрожающей коагулопатии, которые не удается купировать
+        стандартной терапией;
+  - text: Перивентрикулярное кровоизлияние III–IV степени
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление при обследовании внутричерепного кровоизлияния (перивентрикулярного
+        кровоизлияния III–IV степени);
+  - text: Тяжелые нарушения сердечного ритма, не купирующиеся ЛП
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: наличие тяжелых нарушений сердечного ритма, не купирующихся ЛП;
+  - text: Сохранение выраженных гемодинамических нарушений
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_диагностика_лечение_новорожденных_гипоксич
+      document_url: null
+      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Диагностика_лечение_новорожденных_гипоксической_ишемической_энцефалопатией_пост_МЗ_24.10.2024_151.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сохранение выраженных гемодинамических нарушений, которые не удается
+        купировать с помощью восполнения объема циркулирующей крови и применения инотропных
+        и вазопрессорных ЛП.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -956,7 +959,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:20:58.229304+00:00'
+  extracted_at: '2026-07-23T11:17:48.445361+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -964,7 +967,11 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T18:20:58.241608+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[hypoxic_ischemic_encephalopathy].treatment.drugs[3]
+  validated_at: '2026-07-23T11:17:48.456479+00:00'

@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностики и лечения детей общехирургического профиля
+  title: Клинический протокол диагностики и лечения детей общехирургического профиля
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
     профиля 27.09.2005_549.pdf
@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: sacrococcygeal_teratoma
+- condition_id: teratoma_krestcovo_kopchikovaya
   name: Тератома крестцово-копчиковая
   synonyms: []
   abbreviations: []
@@ -60,143 +60,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Физикальное обследование
-  conditional_exams:
   - name: Консультация детского хирурга
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-        профиля 27.09.2005_549.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Консультация детского хирурга
-  treatment: null
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Амбулаторно на районном уровне
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-        профиля 27.09.2005_549.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Амбулаторно на районном уровне
-  - text: Госпитализация в детское хирургическое отделение при нарушении целостности
-      кожных покровов или функции тазовых органов
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-        профиля 27.09.2005_549.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация в детское хирургическое отделение при нарушении целостности
-        кожных покровов или функции тазовых органов
-  red_flags:
-  - text: Нарушение целостности кожных покровов
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-        профиля 27.09.2005_549.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При нарушении целостности кожных покровов и нарушении функции тазовых
-        органов (сдавление прямой кишки и уретры опухолью) направление в детское хирургическое
-        отделение
-  - text: Нарушение функции тазовых органов (сдавление прямой кишки и уретры опухолью)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-        профиля 27.09.2005_549.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При нарушении целостности кожных покровов и нарушении функции тазовых
-        органов (сдавление прямой кишки и уретры опухолью) направление в детское хирургическое
-        отделение
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: spleen_abscess
-  name: Абсцесс селезенки
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - D73.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: spleen_cyst
-  name: Киста селезенки
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - D73.4
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams:
-  - name: Физикальное обследование
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -217,18 +81,37 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Физикальное обследование
-  conditional_exams:
-  - name: Консультация детского хирурга
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
+      quote: Консультация детского хирурга
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing:
+  - text: Направление в детское хирургическое отделение при нарушении целостности
+      кожных покровов и нарушении функции тазовых органов
     timing: null
-    comment: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
+        профиля 27.09.2005_549.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление в детское хирургическое отделение при нарушении целостности
+        кожных покровов и нарушении функции тазовых органов
+  red_flags:
+  - text: Нарушение целостности кожных покровов и нарушение функции тазовых органов
+      (сдавление прямой кишки и уретры опухолью)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
       document_url: null
@@ -240,10 +123,50 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Консультация детского хирурга
+      quote: При нарушении целостности кожных покровов и нарушении функции тазовых
+        органов (сдавление прямой кишки и уретры опухолью) направление в детское хирургическое
+        отделение
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: abscess_selezenki
+  name: Абсцесс селезенки
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D73.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
+  treatment: null
+  follow_up: []
+  hospitalization: []
+  routing: []
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: kista_selezenki
+  name: Киста селезенки
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D73.4
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams: []
+  conditional_exams: []
   treatment:
     non_drug:
-    - text: Лечение оперативное
+    - text: Лечение оперативное. Операция под общим наркозом по Ру-Краснобаеву, у
+        подростков – по Мартынову
       source_ref:
         protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
         document_url: null
@@ -255,39 +178,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лечение оперативное
-    - text: Операция под общим наркозом по Ру-Краснобаеву, у подростков – по Мартынову
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-          профиля 27.09.2005_549.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Операция под общим наркозом по Ру-Краснобаеву, у подростков – по Мартынову
-    - text: Обезболивание в течение 2-3 дней (по показаниям)
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-          профиля 27.09.2005_549.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Обезболивание в течение 2-3 дней (по показаниям)
+        quote: Лечение оперативное. Операция под общим наркозом по Ру-Краснобаеву,
+          у подростков – по Мартынову
     drug_groups: []
     drugs:
-    - drug_name: Атропин
+    - drug_name: Атропин (0,1% р-р) + Дифенгидрамин (1% р-р)
       active_substance: null
       drug_group: null
-      dose_text: 0,1% р-р, в/м в возрастной дозировке (для премедикации)
+      dose_text: в/м в возрастной дозировке (премедикация)
       frequency_text: null
       duration_text: null
       route: null
@@ -306,12 +204,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Премедикация (0,1% р-р атропина + 1% р-р дифенгидрамина) в/м в возрастной
+        quote: Премедикация (0,1% р-р атропи- на + 1% р-р дифенгидрамина) в/м в возрастной
           дозировке
-    - drug_name: Дифенгидрамин
+    - drug_name: Метамизол (50% р-р) + Дифенгидрамин (1% р-р)
       active_substance: null
       drug_group: null
-      dose_text: 1% р-р, в/м в возрастной дозировке (для премедикации)
+      dose_text: в/м в возрастной дозировке детям до 2-х лет (обезболивание в течение
+        2-3 дней по показаниям)
       frequency_text: null
       duration_text: null
       route: null
@@ -330,63 +229,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Премедикация (0,1% р-р атропина + 1% р-р дифенгидрамина) в/м в возрастной
-          дозировке
-    - drug_name: Метамизол
-      active_substance: null
-      drug_group: null
-      dose_text: 50% р-р, в/м в возрастной дозировке (для обезболивания детям до 2-х
-        лет)
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-          профиля 27.09.2005_549.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: детям до 2-х лет 50% р-р метамизола + 1% р-р дифенгидрамина в/м в возрастной
-          дозировке
-    - drug_name: Дифенгидрамин
-      active_substance: null
-      drug_group: null
-      dose_text: 1% р-р, в/м в возрастной дозировке (для обезболивания детям до 2-х
-        лет)
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-          профиля 27.09.2005_549.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: детям до 2-х лет 50% р-р метамизола + 1% р-р дифенгидрамина в/м в возрастной
-          дозировке
+        quote: 'Обезболивание в течение 2-3 дней (по показ.): детям до 2-х лет 50%
+          р-р метамизола + 1% р-р дифенгидрамина в/м в возрастной дозировке'
     - drug_name: Фентанил
       active_substance: null
       drug_group: null
-      dose_text: в разовой дозе 2 мкг/кг в/м или в/в (для обезболивания детям до 2-х
-        лет)
+      dose_text: в разовой дозе 2 мкг/кг в/м или в/в (обезболивание в течение 2-3
+        дней по показаниям)
       frequency_text: null
       duration_text: null
       route: null
@@ -405,11 +254,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: детям до 2-х лет... или фентанил в разовой дозе 2 мкг/кг в/м или в/в
-    - drug_name: Морфин
+        quote: фентанил в разовой дозе 2 мкг/кг в/м или в/в
+    - drug_name: Морфин (1% р-р)
       active_substance: null
       drug_group: null
-      dose_text: 1% р-р, п/к (для обезболивания детям старше 2-х лет)
+      dose_text: п/к детям старше 2-х лет (обезболивание в течение 2-3 дней по показаниям)
       frequency_text: null
       duration_text: null
       route: null
@@ -429,10 +278,11 @@ conditions:
         table_index: null
         row_index: null
         quote: детям старше 2-х лет - 1% р-р морфина п/к
-    - drug_name: Тримеперидин
+    - drug_name: Тримеперидин (2% р-р)
       active_substance: null
       drug_group: null
-      dose_text: 2% р-р, в/м, п/к (для обезболивания детям старше 2-х лет)
+      dose_text: в/м, п/к детям старше 2-х лет (обезболивание в течение 2-3 дней по
+        показаниям)
       frequency_text: null
       duration_text: null
       route: null
@@ -445,44 +295,20 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
           профиля 27.09.2005_549.pdf
-        page_start: 10
+        page_start: 9
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
         quote: 2% р-р тримеперидина в/м, п/к
-    - drug_name: Фентанил
-      active_substance: null
-      drug_group: null
-      dose_text: в разовой дозе 2 мкг/кг в/м или в/в (для обезболивания детям старше
-        2-х лет)
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-          профиля 27.09.2005_549.pdf
-        page_start: 10
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: фентанил в разовой дозе 2 мкг/кг в/м или в/в
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: Направление в детское хирургическое отделение
+  - text: У
     timing: null
     required_if: []
     source_ref:
@@ -496,54 +322,14 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Направление в детское хирургическое отделение
-  red_flags:
-  - text: Нарушение целостности кожных покровов
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-        профиля 27.09.2005_549.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При нарушении целостности кожных покровов и нарушении функции тазовых
-        органов (сдавление прямой кишки и уретры опухолью) направление в детское хирургическое
-        отделение (далее -
-  - text: Нарушение функции тазовых органов (сдавление прямой кишки и уретры опухолью)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_детей_общехирургического_профиля_27_09_2005_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения детей общехирургического
-        профиля 27.09.2005_549.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При нарушении целостности кожных покровов и нарушении функции тазовых
-        органов (сдавление прямой кишки и уретры опухолью) направление в детское хирургическое
-        отделение (далее -
+      quote: У
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: pyothorax_pyopneumothorax
-  name: Пиоторакс / Пиопневмоторакс
+- condition_id: piotoraks_piopnevmotoraks
+  name: Пиоторакс, пиопневмоторакс
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -567,7 +353,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:37:06.288539+00:00'
+  extracted_at: '2026-07-23T08:38:44.673433+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -581,21 +367,5 @@ validation:
   - level: warning
     code: quote_not_in_source
     message: Цитата не найдена в исходном тексте
-    path: conditions[sacrococcygeal_teratoma].required_exams[0]
-  - level: warning
-    code: quote_not_in_source
-    message: Цитата не найдена в исходном тексте
-    path: conditions[spleen_cyst].required_exams[0]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[spleen_cyst].required_exams[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[spleen_cyst].treatment.drugs[3]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[spleen_cyst].treatment.drugs[7]
-  validated_at: '2026-07-20T16:37:06.298570+00:00'
+    path: conditions[teratoma_krestcovo_kopchikovaya].required_exams[0]
+  validated_at: '2026-07-23T08:38:44.681552+00:00'

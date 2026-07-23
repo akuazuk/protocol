@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов взрослое население с ущемленной грыжей",
+    "title": "Диагностика и лечение пациентов (взрослое население) с ущемленной грыжей в стационарных условиях",
     "url": null,
     "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
     "document_sha256": null,
@@ -53,10 +53,36 @@
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Наличие грыжи любой локализации с ущемлением или подозрением на ущемление",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие грыжи любой локализации с ущемлением или подозрением на ущемление"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
       "required_exams": [
         {
-          "name": "Общий анализ крови (определение количества эритроцитов, лейкоцитов, тромбоцитов, гематокрита, содержания гемоглобина, подсчет лейкоцитарной формулы)",
+          "name": "Общий анализ крови",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -104,6 +130,31 @@
             "row_index": null,
             "quote": "общий анализ мочи;"
           }
+        },
+        {
+          "name": "Медицинский осмотр врачом-хирургом",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обязательным диагностическим мероприятием при оказании медицинской помощи пациентам с УГ в хирургическом отделении больничной организации является медицинский осмотр в течение 30 минут после поступления."
+          }
         }
       ],
       "conditional_exams": [
@@ -133,7 +184,7 @@
           }
         },
         {
-          "name": "Биохимический анализ крови (определение содержания билирубина, глюкозы, мочевины, общего белка, АсАТ, АлАТ, альфа-амилазы, С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор))",
+          "name": "Биохимический анализ крови",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -154,11 +205,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "биохимический анализ крови (определение содержания билирубина, глюкозы, мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы, С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор));"
+            "quote": "биохимический анализ крови (определение содержания билирубина, глюкозы, мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы, С-реактивного белка, электролитов...)"
           }
         },
         {
-          "name": "Ультразвуковое исследование органов брюшной полости и забрюшинного пространства",
+          "name": "УЗИ органов брюшной полости и забрюшинного пространства",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -258,7 +309,7 @@
           }
         },
         {
-          "name": "Определение групп крови по системам АВ0 и Rh-фактор",
+          "name": "Определение группы крови по системам АВ0 и Rh-фактор",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -283,7 +334,7 @@
           }
         },
         {
-          "name": "Коагулограмма (определение фибриногена, активированного частичного тромбопластинового времени, протромбированого времени, международного нормализованного отношения)",
+          "name": "Коагулограмма",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -358,7 +409,32 @@
           }
         },
         {
-          "name": "Ультразвуковое исследование органов брюшной полости и забрюшинного пространства или компьютерная томография органов брюшной полости",
+          "name": "Электрокардиограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "электрокардиограмма (пациентам в возрасте 40 лет и старше)."
+          }
+        },
+        {
+          "name": "Диагностическая лапароскопия или лапаротомия",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -379,16 +455,287 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ультразвуковое исследование органов брюшной полости и забрюшинного пространства или компьютерная томография органов брюшной полости;"
+            "quote": "После самостоятельного вправления УГ пациентом и при сомнении в достоверности имевшего место ущемления... показаны диагностическая лапароскопия или лапаротомия."
           }
         }
       ],
-      "treatment": null,
-      "follow_up": [],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Медицинская транспортировка пациента с ущемленной грыжей в положение лежа",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Медицинская транспортировка пациента с ущемленной грыжей в положение лежа"
+            }
+          },
+          {
+            "text": "Запрет на попытки вправления ущемленной грыжи при подозрении на ущемление",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Запрет на попытки вправления ущемленной грыжи при подозрении на ущемление"
+            }
+          },
+          {
+            "text": "Экстренное хирургическое вмешательство в сроки не позднее 3 часов после поступления (ликвидация ущемления, осмотр ущемленного органа, пластика грыжевых ворот)",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Экстренное хирургическое вмешательство в сроки не позднее 3 часов после поступления (ликвидация ущемления, осмотр ущемленного органа, пластика грыжевых ворот)"
+            }
+          },
+          {
+            "text": "Опорожнение мочевого пузыря и гигиеническая подготовка области вмешательства",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Опорожнение мочевого пузыря и гигиеническая подготовка области вмешательства"
+            }
+          },
+          {
+            "text": "Постановка желудочного зонда и эвакуация содержимого желудка по медицинским показаниям",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Постановка желудочного зонда и эвакуация содержимого желудка по медицинским показаниям"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Натрия хлорид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 9 мг/мл, среднесуточная доза 1000 мл, внутривенно капельно",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "солевые (например, натрия хлорид, раствор для инфузий 9 мг/мл, среднесуточная доза 1000 мл, внутривенно капельно)"
+            }
+          },
+          {
+            "drug_name": "Глюкоза",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно капельно, не более 6 г/кг массы тела в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "глюкоза, раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно капельно, не более 6 г/кг массы тела в сутки"
+            }
+          },
+          {
+            "drug_name": "Меглюмина натрия сукцинат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 1,5 % 400 мл, внутривенно капельно, 90 капель в минуту, максимальная суточная доза 800 мл",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "меглюмина натрия сукцинат, раствор для инфузий 1,5 % 400 мл, внутривенно капельно, 90 капель в минуту, максимальная суточная доза 800 мл"
+            }
+          },
+          {
+            "drug_name": "Цефазолин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "2,0 г (при массе тела < 120 кг) или 3,0 г (при массе тела >= 120 кг) внутривенно за 60 минут (допускается за 30–60 минут) до хирургического доступа",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефазолин, порошок для приготовления раствора для внутривенного и внутримышечного введения 500 мг, 100 мг, вводится в дозе 2,0 г (при весе пациента менее 120 кг) и в дозе 3,0 г внутривенно"
+            }
+          },
+          {
+            "drug_name": "Метронидазол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "500 мг внутривенно (при хирургическом вмешательстве на тонком кишечнике)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При хирургическом вмешательстве на тонком кишечнике дополнительно вводится метронидазол в дозе 500 мг внутривенно."
+            }
+          },
+          {
+            "drug_name": "Далтепарин натрия",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инъекций 2500 МЕ/0,2 мл (или 5000 МЕ/0,2 мл) в шприцах 0,2 мл",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "далтепарин натрия, раствор для инъекций 2500 МЕ/0,2 мл в шприцах 0,2 мл (раствор для инъекций 5000 МЕ/0,2 мл в шприцах 0,2 мл)."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "При самостоятельном вправлении УГ пациент госпитализируется в хирургическое отделение для дальнейшего медицинского наблюдения",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При самостоятельном вправлении УГ пациент госпитализируется в хирургическое отделение для дальнейшего медицинского наблюдения"
+          }
+        },
+        {
+          "text": "При ухудшении общего состояния и появлении перитонеальной симптоматики в процессе наблюдения показана диагностическая лапароскопия или лапаротомия",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При ухудшении общего состояния и появлении перитонеальной симптоматики в процессе наблюдения показана диагностическая лапароскопия или лапаротомия"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "госпитализация",
+          "text": "госпитализация в стационар (приемное отделение, хирургическое отделение)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -401,36 +748,72 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация"
+            "quote": "госпитализация в стационар (приемное отделение, хирургическое отделение)"
+          }
+        },
+        {
+          "text": "Наличие УГ или подозрение на УГ является основанием для экстренной госпитализации в хирургическое отделение больничной организации",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наличие УГ или подозрение на УГ является основанием для экстренной госпитализации в хирургическое отделение больничной организации"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Попытка вправления грыжи при подозрении на ущемление недопустима",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на УГ не допустима попытка ее вправления."
+          }
+        },
+        {
+          "text": "Осложнения ущемленной грыжи: острая кишечная непроходимость, перитонит, флегмона грыжевого мешка",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемл",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам с осложненной УГ (острая кишечная непроходимость, перитонит, флегмона грыжевого мешка) или сопутствующей патологией проводится предоперационная инфузионная терапия"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначено/выполнено обследование: Общий анализ крови (определение количества эритроцитов, лейкоцитов, тромбоцитов, гематокр…",
-          "Назначено/выполнено обследование: Общий анализ мочи"
-        ],
-        "should_have": [],
-        "conditional": [
-          "Обследование: Определение параметров кислотно-основного состояния (по показаниям)",
-          "Обследование: Биохимический анализ крови (определение содержания билирубина, глюкозы, мочевины, общего… (по показаниям)",
-          "Обследование: Ультразвуковое исследование органов брюшной полости и забрюшинного пространства (по показаниям)",
-          "Обследование: Обзорная рентгенография органов брюшной и грудной полостей (по показаниям)",
-          "Обследование: Компьютерная томография органов брюшной полости (по показаниям)",
-          "Обследование: Консультации врачей-специалистов (по показаниям)",
-          "Обследование: Определение групп крови по системам АВ0 и Rh-фактор (по показаниям)",
-          "Обследование: Коагулограмма (определение фибриногена, активированного частичного тромбопластинового вре… (по показаниям)",
-          "Обследование: Повторный общий анализ крови и мочи (по показаниям)",
-          "Обследование: Фиброэзофагогастродуоденоскопия (по показаниям)",
-          "Обследование: Ультразвуковое исследование органов брюшной полости и забрюшинного пространства или компь… (по показаниям)",
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -438,20 +821,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-02T00:10:00.298724+00:00",
+    "extracted_at": "2026-07-23T07:12:19.507308+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-02T00:10:00.302741+00:00"
+    "validated_at": "2026-07-23T07:12:19.515132+00:00"
   }
 }

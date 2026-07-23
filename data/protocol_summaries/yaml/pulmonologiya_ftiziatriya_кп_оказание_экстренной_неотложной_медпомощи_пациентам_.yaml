@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Оказание экстренной неотложной медицинской помощи пациентам детского возраста
+  title: Оказание экстренной и неотложной медицинской помощи пациентам детского возраста
   url: null
   local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
   document_sha256: null
@@ -26,25 +26,18 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: anaphylaxis_and_shock
-  name: Анафилаксия и анафилактический шок
+- condition_id: anaphylaxis_anaphylactic_shock
+  name: Анафилаксия, анафилактический шок
   synonyms: []
   abbreviations: []
-  icd10_codes:
-  - T78.0
-  - T78.2
-  - T80.5
-  - T81.1
-  - T88.2
-  - T88.6
-  - T88.7
+  icd10_codes: []
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 'Остановка кровообращения: отсутствие сознания, остановка дыхания, отсутствие
-        пульса на крупных артериях.'
+    - text: 'Остановка кровообращения: отсутствие сознания, апноэ, отсутствие пульса
+        на крупных артериях'
       logic_group: null
       operator: unknown
       values: []
@@ -61,9 +54,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Остановка кровообращения: отсутствие сознания, остановка дыхания,
-          отсутствие пульса на крупных артериях.'
-    - text: 'Клиническая смерть: отсутствие сознания и апноэ.'
+        quote: 'Остановка кровообращения: отсутствие сознания, апноэ, отсутствие пульса
+          на крупных артериях'
+    - text: 'ЧМТ легкой степени: факт травмы + кратковременная потеря сознания, амнезия,
+        рвота (1-2 раза) или головная боль'
       logic_group: null
       operator: unknown
       values: []
@@ -80,29 +74,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Клиническая смерть: отсутствие сознания и апноэ.'
-    - text: 'ЧМТ легкой степени: кратковременная потеря сознания, ретроградная амнезия,
-        рвота (1-2х), головная боль.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'ЧМТ легкой степени: кратковременная потеря сознания, ретроградная
-          амнезия, рвота (1-2х), головная боль.'
+        quote: 'ЧМТ легкой степени: факт травмы + кратковременная потеря сознания,
+          амнезия, рвота (1-2 раза) или головная боль'
     - text: 'ЧМТ средней степени: потеря сознания >30 мин, нарушение сознания при
-        осмотре, очаговая симптоматика, видимые переломы черепа.'
+        осмотре, очаговая симптоматика или видимые переломы черепа'
       logic_group: null
       operator: unknown
       values: []
@@ -120,9 +95,9 @@ conditions:
         table_index: null
         row_index: null
         quote: 'ЧМТ средней степени: потеря сознания >30 мин, нарушение сознания при
-          осмотре, очаговая симптоматика, видимые переломы черепа.'
-    - text: 'ЧМТ тяжелой степени: парезы конечностей, анизокория, брадикардия, «светлый»
-        промежуток.'
+          осмотре, очаговая симптоматика или видимые переломы черепа'
+    - text: 'ЧМТ тяжелой степени: парезы конечностей, анизокория, брадикардия, наличие
+        «светлого» промежутка'
       logic_group: null
       operator: unknown
       values: []
@@ -140,10 +115,9 @@ conditions:
         table_index: null
         row_index: null
         quote: 'ЧМТ тяжелой степени: парезы конечностей, анизокория, брадикардия,
-          «светлый» промежуток.'
-    - text: 'Кризы при миастении: нарушение глотания/слюнотечение, гнусавый голос,
-        слабость мимической/дыхательных мышц, слабость конечностей, психомоторное
-        возбуждение.'
+          наличие «светлого» промежутка'
+    - text: 'Кризы при миастении: нарушение глотания, слюнотечение, гнусавость, слабость
+        мимических, дыхательных и скелетных мышц'
       logic_group: null
       operator: unknown
       values: []
@@ -160,11 +134,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Кризы при миастении: нарушение глотания/слюнотечение, гнусавый голос,
-          слабость мимической/дыхательных мышц, слабость конечностей, психомоторное
-          возбуждение.'
-    - text: 'Анафилаксия (высокая вероятность): острое начало с поражением кожи/слизистых
-        + дыхательные нарушения ИЛИ снижение АД/органа дисфункция.'
+        quote: 'Кризы при миастении: нарушение глотания, слюнотечение, гнусавость,
+          слабость мимических, дыхательных и скелетных мышц'
+    - text: 'Анафилаксия: острое начало с поражением кожи/слизистых в сочетании с
+        дыхательными нарушениями или гипотонией/органай дисфункцией'
       logic_group: null
       operator: unknown
       values: []
@@ -181,10 +154,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Анафилаксия (высокая вероятность): острое начало с поражением кожи/слизистых
-          + дыхательные нарушения ИЛИ снижение АД/органа дисфункция.'
-    - text: 'Ранняя диагностика менингита: острое развитие, общемозговая/менингеальная
-        симптоматика, родничковая триада (<1 года), общеинфекционная симптоматика.'
+        quote: 'Анафилаксия: острое начало с поражением кожи/слизистых в сочетании
+          с дыхательными нарушениями или гипотонией/органай дисфункцией'
+    - text: 'Острая крапивница: анализ жалоб, данных анамнеза и физикального обследования'
       logic_group: null
       operator: unknown
       values: []
@@ -201,11 +173,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Ранняя диагностика менингита: острое развитие, общемозговая/менингеальная
-          симптоматика, родничковая триада (<1 года), общеинфекционная симптоматика.'
-    - text: Острая тяжелая жизнеугрожающая генерализованная или системная реакция
-        гиперчувствительности с быстрым началом, поражением кожи, слизистых, ЖКТ,
-        гемодинамическими и дыхательными нарушениями.
+        quote: 'Острая крапивница: анализ жалоб, данных анамнеза и физикального обследования'
+    - text: 'Менингеальный синдром: общемозговая, менингеальная симптоматика (родничковая
+        триада у детей до 1 года) и общеинфекционные признаки'
       logic_group: null
       operator: unknown
       values: []
@@ -222,11 +192,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Острая тяжелая жизнеугрожающая генерализованная или системная реакция
-          гиперчувствительности с быстрым началом, поражением кожи, слизистых, ЖКТ,
-          гемодинамическими и дыхательными нарушениями.
-    - text: Анафилаксия возможна с поражением кожи, слизистых или ЖКТ без гемодинамических
-        и (или) дыхательных нарушений.
+        quote: 'Менингеальный синдром: общемозговая, менингеальная симптоматика (родничковая
+          триада у детей до 1 года) и общеинфекционные признаки'
+    - text: Анафилаксия — острая тяжелая системная реакция гиперчувствительности с
+        поражением кожи, слизистых, ЖКТ, дыхательных и гемодинамических нарушений
       logic_group: null
       operator: unknown
       values: []
@@ -243,11 +212,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Анафилаксия возможна с поражением кожи, слизистых или ЖКТ без гемодинамических
-          и (или) дыхательных нарушений.
-    - text: Острая недостаточность кровообращения в результате анафилаксии, проявляющаяся
-        гипотензией (систолическое АД ниже 90 мм рт.ст.) и приводящая к гипоксии жизненно
-        важных органов.
+        quote: Анафилаксия — острая тяжелая системная реакция гиперчувствительности
+          с поражением кожи, слизистых, ЖКТ, дыхательных и гемодинамических нарушений
+    - text: Анафилактический шок — острая недостаточность кровообращения в результате
+        анафилаксии, проявляющаяся гипотензией (систолическое АД < 90 мм рт.ст.)
       logic_group: null
       operator: unknown
       values: []
@@ -264,9 +232,945 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Острая недостаточность кровообращения в результате анафилаксии, проявляющаяся
-          гипотензией (систолическое АД ниже 90 мм рт.ст.) и приводящая к гипоксии
-          жизненно важных органов.
+        quote: Анафилактический шок — острая недостаточность кровообращения в результате
+          анафилаксии, проявляющаяся гипотензией (систолическое АД < 90 мм рт.ст.)
+    - text: Пароксизмальная тахикардия — ЧСС >200/мин до 1 года, >180/мин от 1 до
+        6 лет, >160/мин старше 6 лет
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пароксизмальная тахикардия — ЧСС >200/мин до 1 года, >180/мин от 1
+          до 6 лет, >160/мин старше 6 лет
+    - text: Синдром малого сердечного выброса (артериальная гипотензия, признаки централизации
+        кровообращения)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Синдром малого сердечного выброса (артериальная гипотензия, признаки
+          централизации кровообращения)
+    - text: Застойная сердечная недостаточность с венозной перегрузкой малого или
+        большого кругов кровообращения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Застойная сердечная недостаточность с венозной перегрузкой малого или
+          большого кругов кровообращения
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Первичное неврологическое обследование для выявления очаговой симптоматики
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проводится первичное неврологическое обследование для выявления очаговой
+        симптоматики;
+  conditional_exams:
+  - name: Аллергологическое обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при подозрении на развитие крапивницы вследствие пищевой аллергии у сенсибилизированных
+        пациентов или наличие других провоцирующих развитие крапивницы факторов...
+        показано проведение аллергологического
+  - name: Электрокардиограмма (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: имеющий специфические проявления на ЭКГ
+  treatment:
+    non_drug:
+    - text: Туалет раны и перевязка при ранах головы
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Туалет раны и перевязка при ранах головы
+    - text: Восстановление и поддержание проходимости ВДП путем введения орофарингеального
+        воздуховода или интубации трахеи
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Восстановление и поддержание проходимости ВДП путем введения орофарингеального
+          воздуховода или интубации трахеи
+    - text: Тугая тампонада при обнаружении кровоточащих ран или дефектов в полости
+        рта
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тугая тампонада при обнаружении кровоточащих ран или дефектов в полости
+          рта
+    - text: Прием легкоусвояемых углеводов (глюкоза 0,3 г/кг, сладкий чай, сок) при
+        первых признаках гипогликемии, затем сложных углеводов
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Прием легкоусвояемых углеводов (глюкоза 0,3 г/кг, сладкий чай, сок)
+          при первых признаках гипогликемии, затем сложных углеводов
+    - text: Подача раствора глюкозы через назогастральный зонд при невозможности внутривенного
+        доступа
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подача раствора глюкозы через назогастральный зонд при невозможности
+          внутривенного доступа
+    - text: Проведение искусственной вентиляции легких (ИВЛ) и закрытого массажа сердца
+        (ЗМС)
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение искусственной вентиляции легких (ИВЛ) и закрытого массажа
+          сердца (ЗМС)
+    - text: Придание пациенту возвышенного положения тела в постели
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Придание пациенту возвышенного положения тела в постели
+    - text: Проведение оксигенотерапии
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение оксигенотерапии
+    - text: Регулировка преднагрузки
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Регулировка преднагрузки
+    - text: Улучшение инотропной функции миокарда
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Улучшение инотропной функции миокарда
+    - text: Снижение постнагрузки
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение постнагрузки
+    drug_groups: []
+    drugs:
+    - drug_name: Глюкоза (раствор 100 мг/мл)
+      active_substance: null
+      drug_group: null
+      dose_text: 2 мл/кг внутривенно струйно медленно до полного восстановления сознания
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 31
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при тяжелой гипогликемии ввести раствор глюкозы 100 мг/мл в дозе 2
+          мл/кг внутривенно струйно медленно до полного восстановления сознания;
+    - drug_name: Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: 10 мкг/кг (0,1 мл/кг разведения 1:10000) в/в или в/к, макс. разовая
+        доза 1 мг (при массе > 40 кг); повторять каждые 3–5 минут
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендуемая разовая внутривенная или внутрикостная доза эпинефрина
+          для первого и последующих введений – 10 мкг/кг массы тела, максимальная
+          однократная доза – 1 мг
+    - drug_name: Атропин
+      active_substance: null
+      drug_group: null
+      dose_text: 20 мкг/кг в/в, повторить через 5 минут (при брадикардии, вызванной
+        ваготонией или холинергической токсичностью)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обычная внутривенная доза атропина (раствор для инъекций 1 мг/мл в
+          ампулах) 20 мкг/кг массы тела. Данную дозу можно повторить через 5 минут
+    - drug_name: Бикарбонат натрия
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая доза 1 ммоль/кг (2 мл/кг раствора 40 мг/мл), далее 0,5
+        ммоль/кг (при выраженном метаболическом ацидозе)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
+          0,5 ммоль/кг.
+    - drug_name: Кальция хлорид / Кальция глюконат
+      active_substance: null
+      drug_group: null
+      dose_text: Кальция хлорид 100 мг/мл — 20 мг/кг (0,2 мл/кг) в/в или в/к, повтор
+        через 15 мин; или кальция глюконат 100 мг/мл — 0,6–0,8 мл/кг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида... в дозе
+          20 мг/кг (0,2 мл/кг), дозу можно повторить через 15 мин (кальция глюконат...
+          доза – 0,6–0,8 мл/кг).
+    - drug_name: Амиодарон
+      active_substance: null
+      drug_group: null
+      dose_text: 5 мг/кг в/в или в/к, повтор до максимальной дозы 15 мг/кг; старше
+        10 лет — 300 мг (разводить в 5% глюкозе)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
+          дозы 15 мг/кг; старше 10 лет – 300 мг'
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: В/в струйно 1 мг/кг, далее титрование 20–50 мкг/кг/мин
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дозы: внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг на кг/мин.'
+    - drug_name: Фуросемид
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг/кг в/м или в/в струйно медленно, повтор через 20 минут при отсутствии
+        эффекта (макс. суточная доза 20 мг)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: в разовой дозе 1 мг/кг внутримышечно или внутривенно струйно медленно,
+          при отсутствии эффекта через 20 минут можно повторить... (максимальная суточная
+          доза не должна превышать 20 мг)
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: 2 мг/кг в/в струйно при снижении АД менее 10% от нижней границы возрастной
+        нормы
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ввести преднизолон... из расчета 2 мг/кг внутривенно струйно с последующим
+          контролем АД
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: 'Оценка эффективности ИВЛ и ЗМС: наличие пульсовой волны на сонных артериях,
+      уменьшение цианоза, сужение зрачков'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка эффективности ИВЛ и ЗМС: наличие пульсовой волны на сонных артериях,
+        уменьшение цианоза, сужение зрачков'
+  - text: Оценка уровня глюкозы крови через 10–15 минут после приема углеводов
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка уровня глюкозы крови через 10–15 минут после приема углеводов
+  - text: Мониторинг витальных функций (АД, ЧСС, ЧД) при транспортировке бригадой
+      СМП
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Мониторинг витальных функций (АД, ЧСС, ЧД) при транспортировке бригадой
+        СМП
+  - text: Контроль АД и диуреза при применении фуросемида и преднизолона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль АД и диуреза при применении фуросемида и преднизолона
+  - text: ЭКГ-мониторинг интервала Q-T и АВ-проводимости при введении амиодарона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЭКГ-мониторинг интервала Q-T и АВ-проводимости при введении амиодарона
+  hospitalization: []
+  routing:
+  - text: Обязательна последующая госпитализация при ранах головы и ЧМТ
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательна последующая госпитализация при ранах головы и ЧМТ
+  - text: Срочная госпитализация в приемное отделение ближайшей больничной организации
+      при гипогликемии с отсутствием сознания
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в приемное отделение ближайшей больничной организации
+        при гипогликемии с отсутствием сознания
+  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации
+  red_flags:
+  - text: Сочетание отсутствия сознания и апноэ (клиническая смерть)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Сочетания отсутствия сознания и апноэ достаточно для установления диагноза
+        «клиническая смерть» и начала проведения СЛР;
+  - text: Прогрессирующее нарастание внутричерепного давления при ЧМТ (изменение сознания)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 23
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Изменение сознания (от ясного до глубоких расстройств) свидетельствуют
+        о прогрессирующем нарастании внутричерепного давления.
+  - text: Отсутствие сознания при гипогликемии (тяжелая гипогликемическая кома)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 31
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при отсутствии сознания – срочная госпитализация.
+  - text: Гипотензия ниже 90 мм рт.ст. (анафилактический шок)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
+  - text: Увеличение интервала Q–T более чем на 50% или появление признаков АВ-блокады
+      при введении амиодарона
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: высокий риск развития полной АВ-блокады, поэтому при увеличении интервала
+        Q–T более чем на 50 % от исходного показателя или появлении признаков АВ-блокады
+        введение амиодарона прекращают.
+  - text: Синдром малого сердечного выброса в виде артериальной гипотензии и признаков
+      централизации кровообращения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: синдромом малого сердечного выброса в виде артериальной гипотензии и
+        признаков централизации кровообращения
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: urticaria_angioedema
+  name: Крапивница, ангионевротический отек
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - L50
+  - L50.0
+  - L50.1
+  - L50.2
+  - L50.3
+  - L50.4
+  - L50.5
+  - L50.6
+  - L50.8
+  - L50.9
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Диагностика острой крапивницы основывается на анализе жалоб, анамнеза
+        и данных физикального обследования
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диагностика острой крапивницы основывается на анализе жалоб, анамнеза
+          и данных физикального обследования
+    - text: Острое начало с поражением кожи и слизистых в сочетании с дыхательными
+        нарушениями или снижением АД (критерии анафилаксии)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Острое начало с поражением кожи и слизистых в сочетании с дыхательными
+          нарушениями или снижением АД (критерии анафилаксии)
+    - text: 'Остановка кровообращения: сочетание отсутствия сознания, апноэ и отсутствия
+        пульса на крупных артериях'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Остановка кровообращения: сочетание отсутствия сознания, апноэ и отсутствия
+          пульса на крупных артериях'
+    - text: Диагностика ЧМТ различных степеней тяжести на основании факта травмы,
+        потери сознания, очаговой или менингеальной симптоматики
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диагностика ЧМТ различных степеней тяжести на основании факта травмы,
+          потери сознания, очаговой или менингеальной симптоматики
+    - text: 'Анафилактический шок: острая недостаточность кровообращения с гипотензией
+        (снижение САД ниже 90 мм рт.ст.) и гипоксией органов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Анафилактический шок: острая недостаточность кровообращения с гипотензией
+          (снижение САД ниже 90 мм рт.ст.) и гипоксией органов'
+    - text: 'Пароксизмальная тахикардия: учащение ЧСС более 200/мин (<1 года), более
+        180/мин (1-6 лет), более 160/мин (>6 лет)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Пароксизмальная тахикардия: учащение ЧСС более 200/мин (<1 года),
+          более 180/мин (1-6 лет), более 160/мин (>6 лет)'
+    - text: 'Острая перегрузка правого желудочка: снижение АД менее 10% от нижней
+        границы возрастной нормы'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Острая перегрузка правого желудочка: снижение АД менее 10% от нижней
+          границы возрастной нормы'
+    - text: Синдром малого сердечного выброса в виде артериальной гипотензии и признаков
+        централизации кровообращения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Синдром малого сердечного выброса в виде артериальной гипотензии и
+          признаков централизации кровообращения
+    - text: Застойная сердечная недостаточность с венозной перегрузкой малого или
+        большого кругов кровообращения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+        document_url: null
+        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Застойная сердечная недостаточность с венозной перегрузкой малого или
+          большого кругов кровообращения
     optional: []
     exclusion: []
   required_exams:
@@ -291,8 +1195,8 @@ conditions:
       table_index: null
       row_index: null
       quote: проводится первичное неврологическое обследование для выявления очаговой
-        симптоматики;
-  - name: Анализ жалоб, анамнеза и физикальное обследование
+        симптоматики
+  - name: Контроль АД и диуреза
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -306,14 +1210,14 @@ conditions:
       protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
       document_url: null
       local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 28
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: диагностика острой крапивницы основана на анализе жалоб пациента, данных
-        анамнеза и физикального обследования
+      quote: при отсутствии эффекта через 20 минут можно повторить введение под контролем
+        АД и диуреза
   conditional_exams:
   - name: Аллергологическое обследование
     aliases: []
@@ -335,10 +1239,31 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: когда показано проведение аллергологического обследования
+      quote: показано проведение аллергологического обследования
+  - name: Электрокардиограмма (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: имеющий специфические проявления на ЭКГ;
   treatment:
     non_drug:
-    - text: Туалет раны и перевязка (при ранах головы).
+    - text: Туалет раны и перевязка
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -349,9 +1274,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Туалет раны и перевязка (при ранах головы).
-    - text: Восстановление и поддержание проходимости ВДП (орофарингеальный воздуховод
-        или интубация трахеи при бессознательном состоянии).
+        quote: Туалет раны и перевязка
+    - text: Восстановление и поддержание проходимости верхних дыхательных путей путем
+        введения орофарингеального воздуховода или интубации трахеи
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -362,9 +1287,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Восстановление и поддержание проходимости ВДП (орофарингеальный воздуховод
-          или интубация трахеи при бессознательном состоянии).
-    - text: Тугая тампонада (при кровоточащих ранах/трещинах полости рта).
+        quote: Восстановление и поддержание проходимости верхних дыхательных путей
+          путем введения орофарингеального воздуховода или интубации трахеи
+    - text: Тугая тампонада при ранах и кровотечениях в полости рта
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -375,9 +1300,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Тугая тампонада (при кровоточащих ранах/трещинах полости рта).
-    - text: Прием легкоусвояемых углеводов (0,3 г/кг глюкозы или сладкое питье) при
-        гипогликемии.
+        quote: Тугая тампонада при ранах и кровотечениях в полости рта
+    - text: Искусственная вентиляция легких (ИВЛ) и закрытый массаж сердца (ЗМС)
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -388,10 +1312,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Прием легкоусвояемых углеводов (0,3 г/кг глюкозы или сладкое питье)
-          при гипогликемии.
-    - text: Повторный прием легкоусвояемых углеводов при отсутствии положительной
-        динамики уровня глюкозы крови через 10-15 минут.
+        quote: Искусственная вентиляция легких (ИВЛ) и закрытый массаж сердца (ЗМС)
+    - text: Прием легкоусвояемых углеводов (сладкое питье, глюкоза) с последующим
+        приемом сложных углеводов при гипогликемии
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -402,10 +1325,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Повторный прием легкоусвояемых углеводов при отсутствии положительной
-          динамики уровня глюкозы крови через 10-15 минут.
-    - text: Прием сложных углеводов (фрукты, хлеб, молоко, каши) для профилактики
-        рецидива гипогликемии после нормализации состояния.
+        quote: Прием легкоусвояемых углеводов (сладкое питье, глюкоза) с последующим
+          приемом сложных углеводов при гипогликемии
+    - text: Подача раствора глюкозы через назогастральный зонд при невозможности внутривенного
+        доступа
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -416,8 +1339,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Прием сложных углеводов (фрукты, хлеб, молоко, каши) для профилактики
-          рецидива гипогликемии после нормализации состояния.
+        quote: Подача раствора глюкозы через назогастральный зонд при невозможности
+          внутривенного доступа
     - text: Первичная (базовая) реанимация
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
@@ -430,7 +1353,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Первичная (базовая) реанимация
-    - text: Восстановление витальных функций
+    - text: Придать пациенту возвышенное положение тела в постели
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -441,8 +1364,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Восстановление витальных функций
-    - text: Интенсивная терапия постреанимационной болезни
+        quote: Придать пациенту возвышенное положение тела в постели
+    - text: Проведение оксигенотерапии
       source_ref:
         protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
         document_url: null
@@ -453,64 +1376,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Интенсивная терапия постреанимационной болезни
-    - text: Искусственная вентиляция легких (ИВЛ)
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Искусственная вентиляция легких (ИВЛ)
-    - text: Закрытый массаж сердца (ЗМС)
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Закрытый массаж сердца (ЗМС)
-    - text: Придание пациенту возвышенного положения тела в постели (при острой перегрузке
-        правого желудочка)
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Придание пациенту возвышенного положения тела в постели (при острой
-          перегрузке правого желудочка)
-    - text: Оксигенотерапия (при острой перегрузке правого желудочка)
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Оксигенотерапия (при острой перегрузке правого желудочка)
+        quote: Проведение оксигенотерапии
     drug_groups: []
     drugs:
     - drug_name: Глюкоза
       active_substance: null
       drug_group: null
-      dose_text: раствор 100 мг/мл в дозе 2 мл/кг внутривенно струйно медленно до
-        полного восстановления сознания
+      dose_text: до 0,3 г/кг массы тела перорально или раствор 100 мг/мл в дозе 2
+        мл/кг в/в струйно медленно
       frequency_text: null
       duration_text: null
       route: null
@@ -529,649 +1402,12 @@ conditions:
         table_index: null
         row_index: null
         quote: при тяжелой гипогликемии ввести раствор глюкозы 100 мг/мл в дозе 2
-          мл/кг внутривенно струйно медленно до полного восстановления сознания;
+          мл/кг внутривенно струйно медленно до полного восстановления сознания
     - drug_name: Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: Рекомендуемая разовая внутривенная или внутрикостная доза – 10 мкг/кг
-        массы тела, максимальная однократная доза – 1 мг (для пациентов с массой тела
-        более 40 кг). Вводят в разведении 1:10000, что соотв
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: эпинефрин МНН (эпинефрина гидротартрат, раствор 1,8 мг/мл; эпинефрин
-          гидрохлорид, раствор 1 мг/мл), играет центральную роль в алгоритме терапии
-          и должен вводиться как можно быстрее. Рекомендуемая разовая внутривенная
-          или внутрикостная доза эпинефрина для первого и последующих введений – 10
-          мкг/кг массы тела, максимальная однократная доза – 1 мг (пациенты с массой
-          тела более 40 кг).
-    - drug_name: Атропин
-      active_substance: null
-      drug_group: null
-      dose_text: Обычная внутривенная доза 20 мкг/кг массы тела. Данную дозу можно
-        повторить через 5 минут.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: атропин МНН рекомендован только при брадикардии, вызванной ваготонией
-          или при холинергической токсичности ЛП, а также отравлениях фосфорорганическими
-          соединениями. Обычная внутривенная доза атропина (раствор для инъекций 1
-          мг/мл в ампулах) 20 мкг/кг массы тела.
-    - drug_name: Бикарбонат натрия
-      active_substance: null
-      drug_group: null
-      dose_text: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
-        0,5 ммоль/кг. Только при выраженном ацидозе, отсутствии восстановления ритма
-        >15 минут СЛР или подтвержденной гиперкалиемии.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'бикарбонат натрия, раствор для инфузий 84 мг/мл или раствор для инфузий
-          40 мг/мл, не рекомендуется для использования при СЛР, только при наличии
-          выраженного ацидоза. Медицинские показания для введения бикарбоната натрия:
-          наличие исходного декомпенсированного метаболического ацидоза; отсутствие
-          восстановления сердечного ритма в течение 15 и более минут СЛР; лабораторно
-          подтвержденная до начала СЛР '
-    - drug_name: Кальция хлорид / Кальция глюконат
-      active_substance: null
-      drug_group: null
-      dose_text: 'Кальция хлорид: внутривенно или внутрикостно 20 мг/кг (0,2 мл/кг),
-        дозу можно повторить через 15 мин. Кальция глюконат: 0,6–0,8 мл/кг.'
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида, раствор
-          для внутривенного введения 100 мг/мл в ампулах по 10 мл в дозе 20 мг/кг
-          (0,2 мл/кг), дозу можно повторить через 15 мин (кальция глюконат, раствор
-          для внутривенного введения 100 мг/мл, доза – 0,6–0,8 мл/кг).
-    - drug_name: Амиодарон
-      active_substance: null
-      drug_group: null
-      dose_text: Внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной дозы
-        15 мг/кг; пациентам старше 10 лет – 300 мг, разводят только в глюкозе.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Амиодарон МНН, концентрат для приготовления раствора для инфузий 50
-          мг/мл в ампулах 3 мл, – ЛП выбора для купирования желудочковых тахиаритмий
-          во время СЛР. Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
-          дозы 15 мг/кг; старше 10 лет – 300 мг, разводят только в глюкозе, раствор
-          50 мг/кг.'
-    - drug_name: Лидокаин
-      active_substance: null
-      drug_group: null
-      dose_text: Внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг на кг/мин.
-        Возможно применение для купирования фибрилляции желудочков/желудочковой тахиаритмии
-        без пульса.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Лидокаин МНН, раствор для внутривенного введения 100 мг/мл в ампулах
-          2 мл, возможно применение для купирования фибрилляции желудочков/желудочковой
-          тахиаритмии без пульса. Дозы: внутривенно струйно 1 мг/кг, далее титрование
-          20–50 мкг на кг/мин.'
-    - drug_name: Фуросемид
-      active_substance: null
-      drug_group: null
-      dose_text: Разовая доза 1 мг/кг внутримышечно или внутривенно струйно медленно.
-        При отсутствии эффекта через 20 минут можно повторить введение под контролем
-        АД и диуреза (максимальная суточная доза не должна пре
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 10
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: фуросемид, раствор для внутривенного и внутримышечного введения 10
-          мг/мл в ампулах 2 мл в разовой дозе 1 мг/кг внутримышечно или внутривенно
-          струйно медленно, при отсутствии эффекта через 20 минут можно повторить
-          введение под контролем АД и диуреза (максимальная суточная доза не должна
-          превышать 20 мг);
-    - drug_name: Преднизолон
-      active_substance: null
-      drug_group: null
-      dose_text: Ввести 2 мг/кг внутривенно струйно с последующим контролем АД, при
-        снижении АД менее 10% от нижней границы возрастной нормы.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 10
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: при снижении АД менее 10 % от нижней границы возрастной нормы (менее
-          10-го процентиля для данного пола, возраста пациента) – ввести преднизолон,
-          раствор для внутривенного и внутримышечного введения (для инъекций) 30 (25)
-          мг/мл в ампулах 1 мл из расчета 2 мг/кг внутривенно струйно с последующим
-          контролем АД;
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Госпитализация (при ранах головы).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация (при ранах головы).
-  - text: Срочная госпитализация (при отсутствии сознания вследствие гипогликемии).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Срочная госпитализация (при отсутствии сознания вследствие гипогликемии).
-  - text: Транспортировка в приемное отделение больничной организации (при тяжелой
-      гипогликемии).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Транспортировка в приемное отделение больничной организации (при тяжелой
-        гипогликемии).
-  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
-      организации.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
-        организации.
-  red_flags:
-  - text: 'Основные признаки остановки кровообращения: отсутствие сознания, остановка
-      дыхания, отсутствие пульса на крупных артериях.'
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'основные признаки остановки кровообращения: отсутствие сознания, остановка
-        дыхания (апноэ), отсутствие пульса на крупных артериях.'
-  - text: Отсутствие сознания при гипогликемии.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 31
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: при отсутствии сознания – срочная госпитализация.
-  - text: Изменение сознания (от ясного до глубоких расстройств) при ЧМТ.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 23
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Изменение сознания (от ясного до глубоких расстройств) свидетельствуют
-        о прогрессирующем нарастании внутричерепного давления.
-  - text: Острое возникновение комы сразу после травмы.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 23
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Острое возникновение комы сразу после травмы является результатом ушиба
-        мозга.
-  - text: Менингеальные симптомы при ЧМТ.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 23
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Менингеальные симптомы при ЧМТ указывают на субарахноидальное кровоизлияние
-        или проникающее повреждение;
-  - text: 'Анафилаксия: острая тяжелая жизнеугрожающая генерализованная или системная
-      реакция гиперчувствительности с быстрым началом.'
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
-        реакция гиперчувствительности, характеризующаяся быстрым началом с поражением
-        кожи, слизистых оболочек, желудочно-кишечного тракта, возникновением гемодинамических
-        и дыхательных нарушений.
-  - text: 'Анафилактический шок: гипотензия (снижение систолического АД ниже 90 мм
-      рт.ст.) приводит к гипоксии жизненно важных органов.'
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: анафилактический шок – острая недостаточность кровообращения в результате
-        АФ, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных органов.
-        Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
-  - text: При увеличении интервала Q–T более чем на 50 % от исходного показателя или
-      появлении признаков АВ-блокады введение амиодарона прекращают из-за высокого
-      риска полной АВ-блокады.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Нежелательная реакция – высокий риск развития полной АВ-блокады, поэтому
-        при увеличении интервала Q–T более чем на 50 % от исходного показателя или
-        появлении признаков АВ-блокады введение амиодарона прекращают.
-  - text: Бикарбонат натрия противопоказан при отсутствии адекватной вентиляции легких.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Бикарбонат натрия противопоказан при отсутствии адекватной вентиляции
-        легких.
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: urticaria_angioedema
-  name: Крапивница, ангионевротический отек
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - L50
-  - L50.0
-  - L50.1
-  - L50.2
-  - L50.3
-  - L50.4
-  - L50.5
-  - L50.6
-  - L50.8
-  - L50.9
-  - T78.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: Острое начало заболевания с поражением кожи и/или слизистых (генерализованная
-        крапивница, отек губ, языка) в сочетании с дыхательными нарушениями или снижением
-        АД (критерии АФ).
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Острое начало заболевания с поражением кожи и/или слизистых (генерализованная
-          крапивница, отек губ, языка) в сочетании с дыхательными нарушениями или
-          снижением АД (критерии АФ).
-    - text: Диагностика острой крапивницы на основе жалоб, анамнеза и физикального
-        обследования.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Диагностика острой крапивницы на основе жалоб, анамнеза и физикального
-          обследования.
-    optional: []
-    exclusion: []
-  required_exams:
-  - name: Анализ жалоб, данных анамнеза и физикального обследования
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 28
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: диагностика острой крапивницы основана на анализе жалоб пациента, данных
-        анамнеза и физикального обследования
-  conditional_exams:
-  - name: Аллергологическое обследование
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 28
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Дополнительные исследования не рекомендованы (за исключением подозрения
-        на пищевую аллергию или другие провоцирующие факторы, когда показано проведение
-        аллергологического обследования).
-  treatment:
-    non_drug:
-    - text: первичная (базовая) реанимация
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: первичная (базовая) реанимация
-    - text: восстановление витальных функций
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: восстановление витальных функций
-    - text: интенсивная терапия постреанимационной болезни
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: интенсивная терапия постреанимационной болезни
-    - text: придать пациенту возвышенное положение тела в постели (при ОПЖН)
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: придать пациенту возвышенное положение тела в постели (при ОПЖН)
-    - text: начать проведение оксигенотерапию (при ОПЖН)
-      source_ref:
-        protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-        document_url: null
-        local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: начать проведение оксигенотерапию (при ОПЖН)
-    drug_groups: []
-    drugs:
-    - drug_name: Эпинефрин (эпинефрина гидротартрат, эпинефрин гидрохлорид)
-      active_substance: null
-      drug_group: null
-      dose_text: 10 мкг/кг массы тела (ВВ или ВК), максимальная однократная доза –
-        1 мг (для пациентов >40 кг), повторяют каждые 3–5 минут. Вводят в разведении
-        1:10000 (0,1 мл/кг).
+      dose_text: 10 мкг/кг внутривенно/внутрикостно (в разведении 1:10000 - 0.1 мл/кг),
+        максимальная разовая доза 1 мг (>40 кг). Повторять каждые 3–5 минут.
       frequency_text: null
       duration_text: null
       route: null
@@ -1191,13 +1427,12 @@ conditions:
         row_index: null
         quote: Рекомендуемая разовая внутривенная или внутрикостная доза эпинефрина
           для первого и последующих введений – 10 мкг/кг массы тела, максимальная
-          однократная доза – 1 мг (пациенты с массой тела более 40 кг).
+          однократная доза – 1 мг
     - drug_name: Атропин
       active_substance: null
       drug_group: null
-      dose_text: 20 мкг/кг массы тела (ВВ), можно повторить через 5 минут. Показан
-        при брадикардии, вызванной ваготонией или холинергической токсичностью, отравлениях
-        фосфорорганическими соединениями.
+      dose_text: 20 мкг/кг внутривенно (раствор 1 мг/мл), с возможностью повтора через
+        5 минут
       frequency_text: null
       duration_text: null
       route: null
@@ -1220,9 +1455,8 @@ conditions:
     - drug_name: Бикарбонат натрия
       active_substance: null
       drug_group: null
-      dose_text: Стартовая доза 1 ммоль/кг (2 мл раствора 40 мг/мл), далее 0,5 ммоль/кг.
-        Не рекомендован для СЛР, только при выраженном ацидозе, отсутствии восстановления
-        ритма >15 мин СЛР, гиперкалиемии.
+      dose_text: Стартовая доза 1 ммоль/кг (2 мл/кг раствора 40 мг/мл), далее 0,5
+        ммоль/кг
       frequency_text: null
       duration_text: null
       route: null
@@ -1240,15 +1474,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Бикарбонат натрия не рекомендуется для использования при СЛР, только
-          при наличии выраженного ацидоза. Стартовая доза 1 ммоль/кг (2 мл раствора
-          для инфузий 40 мг/мл), далее 0,5 ммоль/кг.
+        quote: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
+          0,5 ммоль/кг.
     - drug_name: Кальция хлорид / Кальция глюконат
       active_substance: null
       drug_group: null
-      dose_text: 'Кальция хлорид: 20 мг/кг (0,2 мл/кг) ВВ или ВК, можно повторить
-        через 15 мин. Кальция глюконат: 0,6–0,8 мл/кг ВВ. Показан при гипокальциемии,
-        гиперкалиемии, гипермагниемии, интоксикации блокаторами ка'
+      dose_text: Кальция хлорид 100 мг/мл — 20 мг/кг (0,2 мл/кг) iv/io, повтор через
+        15 мин; Кальция глюконат — 0,6–0,8 мл/кг
       frequency_text: null
       duration_text: null
       route: null
@@ -1272,9 +1504,8 @@ conditions:
     - drug_name: Амиодарон
       active_substance: null
       drug_group: null
-      dose_text: 5 мг/кг ВВ или ВК, повторяют до максимальной дозы 15 мг/кг. Для пациентов
-        старше 10 лет – 300 мг. Разводят только в глюкозе. Показан для купирования
-        желудочковых тахиаритмий во время СЛР.
+      dose_text: 5 мг/кг iv/io, повторяют до макс. 15 мг/кг; старше 10 лет — 300 мг
+        (разводят в 5% глюкозе)
       frequency_text: null
       duration_text: null
       route: null
@@ -1292,14 +1523,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Амиодарон МНН... – ЛП выбора для купирования желудочковых тахиаритмий
-          во время СЛР. Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
-          дозы 15 мг/кг;'
+        quote: 'Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
+          дозы 15 мг/кг; старше 10 лет – 300 мг'
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 1 мг/кг ВВ струйно, далее титрование 20–50 мкг/кг/мин. Возможно применение
-        для купирования фибрилляции желудочков/желудочковой тахиаритмии без пульса.
+      dose_text: 1 мг/кг внутривенно струйно, далее титрование 20–50 мкг/кг/мин
       frequency_text: null
       duration_text: null
       route: null
@@ -1317,15 +1546,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Лидокаин МНН... возможно применение для купирования фибрилляции желудочков/желудочковой
-          тахиаритмии без пульса. Дозы: внутривенно струйно 1 мг/кг, далее титрование
-          20–50 мкг на кг/мин.'
+        quote: 'Дозы: внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг на кг/мин.'
     - drug_name: Фуросемид
       active_substance: null
       drug_group: null
-      dose_text: 1 мг/кг ВМ или ВВ струйно медленно. При отсутствии эффекта через
-        20 минут можно повторить. Максимальная суточная доза не должна превышать 20
-        мг. Используется для снижения ОЦК при ОПЖН.
+      dose_text: 1 мг/кг im или iv струйно медленно, повтор через 20 минут при отсутствии
+        эффекта (макс. 20 мг/сутки)
       frequency_text: null
       duration_text: null
       route: null
@@ -1343,14 +1569,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'для снижения ОЦК ввести: фуросемид... в разовой дозе 1 мг/кг внутримышечно
-          или внутривенно струйно медленно, при отсутствии эффекта через 20 минут
-          можно повторить введение под контролем АД и диуреза'
+        quote: в разовой дозе 1 мг/кг внутримышечно или внутривенно струйно медленно...
+          максимальная суточная доза не должна превышать 20 мг
     - drug_name: Преднизолон
       active_substance: null
       drug_group: null
-      dose_text: 2 мг/кг ВВ струйно. Используется при снижении АД менее 10% от нижней
-        границы возрастной нормы при ОПЖН.
+      dose_text: 2 мг/кг внутривенно струйно
       frequency_text: null
       duration_text: null
       route: null
@@ -1368,17 +1592,81 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: при снижении АД менее 10 % от нижней границы возрастной нормы (менее
-          10-го процентиля для данного пола, возраста пациента) – ввести преднизолон...
-          из расчета 2 мг/кг внутривенно струйно с последующим контролем АД;
+        quote: преднизолон... из расчета 2 мг/кг внутривенно струйно с последующим
+          контролем АД;
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Повторный прием легкоусвояемых углеводов через 10–15 минут при отсутствии
+      положительной динамики уровня глюкозы крови
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторный прием легкоусвояемых углеводов через 10–15 минут при отсутствии
+        положительной динамики уровня глюкозы крови
+  - text: Прием сложных углеводов после нормализации гликемии для профилактики рецидива
+      гипогликемии
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Прием сложных углеводов после нормализации гликемии для профилактики
+        рецидива гипогликемии
+  - text: Контроль АД и диуреза после введения фуросемида и преднизолона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль АД и диуреза после введения фуросемида и преднизолона
+  - text: Непрерывный контроль ЭКГ (оценка интервала Q-T и АВ-проводимости при введении
+      амиодарона)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Непрерывный контроль ЭКГ (оценка интервала Q-T и АВ-проводимости при
+        введении амиодарона)
   hospitalization: []
   routing:
-  - text: срочная госпитализация в отделение реанимации и интенсивной терапии больничной
-      организации (при ОПЖН)
+  - text: Обязательная последующая госпитализация при ранах головы и ЧМТ
     timing: null
     required_if: []
     source_ref:
@@ -1391,11 +1679,59 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: срочная госпитализация в отделение реанимации и интенсивной терапии больничной
-        организации (при ОПЖН)
+      quote: Обязательная последующая госпитализация при ранах головы и ЧМТ
+  - text: Срочная госпитализация и транспортировка бригадой СМП в приемное отделение
+      ближайшей больницы при гипогликемической коме / отсутствии сознания
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация и транспортировка бригадой СМП в приемное отделение
+        ближайшей больницы при гипогликемической коме / отсутствии сознания
+  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации
   red_flags:
-  - text: Острое начало анафилаксии с кожными/слизистыми проявлениями (крапивница,
-      отек) в сочетании с дыхательными нарушениями или снижением АД.
+  - text: Отсутствие сознания, апноэ, отсутствие пульса на крупных артериях
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отсутствие сознания – главный симптом, отражающий нарастающую гипоксию
+        мозга... остановка дыхания (апноэ)... отсутствие пульса на крупных артериях.
+  - text: Дыхательные нарушения, снижение АД, коллапс, синкопе
     aliases: []
     red_flag_type: other
     severity: high
@@ -1411,11 +1747,45 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'острое начало заболевания ... с поражением кожи и (или) слизистых оболочек
-        (генерализованная крапивница, зуд, гиперемия, отек губ, языка) в сочетании
-        с одним из признаков: дыхательные нарушения или снижение АД.'
-  - text: Анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
-      реакция гиперчувствительности с быстрым началом и поражением органов.
+      quote: дыхательные нарушения (одышка, бронхоспазм, стридор...); снижение АД
+        или ассоциированные с этим симптомы органной дисфункции (коллапс, синкопе
+  - text: Нарушение глотания, слабость дыхательных мышц при миастеническом кризе
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нарушение глотания, слюнотечение... слабость дыхательных мышц и невозможность
+        откашляться
+  - text: Отсутствие сознания при гипогликемии
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 31
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при отсутствии сознания – срочная госпитализация.
+  - text: Гипотензия (снижение систолического АД ниже 90 мм рт.ст.) при анафилактическом
+      шоке
     aliases: []
     red_flag_type: other
     severity: high
@@ -1431,58 +1801,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
-        реакция гиперчувствительности, характеризующаяся быстрым началом с поражением
-        кожи, слизистых оболочек, желудочно-кишечного тракта, возникновением гемодинамических
-        и дыхательных нарушений.
-  - text: Анафилактический шок – острая недостаточность кровообращения в результате
-      анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных
-      органов.
+      quote: Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
+  - text: Увеличение интервала Q–T более чем на 50 % или появление АВ-блокады при
+      введении амиодарона
     aliases: []
     red_flag_type: other
     severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: анафилактический шок – острая недостаточность кровообращения в результате
-        АФ, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных органов.
-  - text: 'Основные причины остановки кровообращения: брадикардия, асистолия, ацидоз,
-      электролитные нарушения, тяжелая асфиксия, обструкция дыхательных путей, несчастные
-      случаи, инфекции, передозировка ЛП, анафилактические реакции.'
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
-      document_url: null
-      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Основные причины остановки кровообращения: брадикардия и (или) асистолия...
-        ацидоз; электролитные нарушения; тяжелая асфиксия новорожденных... обструкция
-        дыхательных путей; несчастные случаи... инфекции... относительная и(или) абсолютная
-        передозировка ЛП и анафилактические реакции.'
-  - text: При введении амиодарона – высокий риск развития полной АВ-блокады; при увеличении
-      интервала Q–T более чем на 50 % или появлении признаков АВ-блокады введение
-      прекращают.
-    aliases: []
-    red_flag_type: other
-    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -1495,9 +1819,26 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Нежелательная реакция – высокий риск развития полной АВ-блокады, поэтому
-        при увеличении интервала Q–T более чем на 50 % от исходного показателя или
-        появлении признаков АВ-блокады введение амиодарона прекращают.
+      quote: при увеличении интервала Q–T более чем на 50 % от исходного показателя
+        или появлении признаков АВ-блокады введение амиодарона прекращают.
+  - text: Снижение АД менее 10 % от нижней границы возрастной нормы при ОПЖН
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: pulmonologiya_ftiziatriya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_
+      document_url: null
+      local_path: minzdrav_protocols/pulmonologiya-ftiziatriya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при снижении АД менее 10 % от нижней границы возрастной нормы (менее
+        10-го процентиля для данного пола, возраста пациента)
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1506,7 +1847,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T17:29:30.580016+00:00'
+  extracted_at: '2026-07-23T09:46:33.673731+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1517,6 +1858,10 @@ validation:
   status: needs_human_review
   errors: []
   warnings:
+  - level: warning
+    code: missing_icd10
+    message: Нет icd10_codes у condition
+    path: conditions[anaphylaxis_anaphylactic_shock]
   - level: warning
     code: duplicate_drug
     message: Дублирующийся препарат
@@ -1545,4 +1890,8 @@ validation:
     code: duplicate_drug
     message: Дублирующийся препарат
     path: conditions[urticaria_angioedema].treatment.drugs[7]
-  validated_at: '2026-07-20T17:29:30.611387+00:00'
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_angioedema].treatment.drugs[8]
+  validated_at: '2026-07-23T09:46:33.704306+00:00'

@@ -22,8 +22,7 @@
   },
   "applicability": {
     "population": [
-      "child",
-      "pregnant"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -33,14 +32,12 @@
   },
   "conditions": [
     {
-      "condition_id": "hiv_infection",
-      "name": "ВИЧ-инфекция",
+      "condition_id": "vich_eksponirovannyj_novorozhdennyj",
+      "name": "ВИЧ-экспонированный новорожденный",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B20",
-        "B24",
-        "Z21"
+        "Z20.6"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -48,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Решение о профилактике ПМР ВИЧ при неопределенном тесте – по заключению консилиума.",
+            "text": "Неопределенный результат тестирования на ВИЧ с использованием всех доступных лабораторных методов",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -65,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Решение о профилактике ПМР ВИЧ при неопределенном тесте – по заключению консилиума."
+              "quote": "Неопределенный результат тестирования на ВИЧ с использованием всех доступных лабораторных методов"
             }
           },
           {
-            "text": "Определение показаний к кесареву сечению для профилактики ПМР ВИЧ по лабораторным обследованиям (до 37 недели).",
+            "text": "Наличие у беременных и кормящих женщин симптомов, схожих с острым ретровирусным синдромом",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -86,7 +83,49 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение показаний к кесареву сечению для профилактики ПМР ВИЧ по лабораторным обследованиям (до 37 недели)."
+              "quote": "Наличие у беременных и кормящих женщин симптомов, схожих с острым ретровирусным синдромом"
+            }
+          },
+          {
+            "text": "Подтвержденный положительный ВИЧ-статус у матери (до беременности, во время беременности, родов или в первые 72 часа после родов)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Подтвержденный положительный ВИЧ-статус у матери (до беременности, во время беременности, родов или в первые 72 часа после родов)"
+            }
+          },
+          {
+            "text": "Первичный положительный результат определения антител/антигена(ов) ВИЧ в крови методом ИФА (ИХА) или экспресс-теста по крови у матери",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Первичный положительный результат определения антител/антигена(ов) ВИЧ в крови методом ИФА (ИХА) или экспресс-теста по крови у матери"
             }
           }
         ],
@@ -95,7 +134,107 @@
       },
       "required_exams": [
         {
-          "name": "Определение стадии ВИЧ-инфекции",
+          "name": "Лабораторная диагностика ВИЧ у беременной",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "направление для проведения лабораторной диагностики ВИЧ у беременной в порядке, установленном Министерством здравоохранения Республики Беларусь;"
+          }
+        },
+        {
+          "name": "Лабораторная диагностика ВИЧ у полового партнера беременной",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "направление для проведения лабораторной диагностики ВИЧ у полового партнера беременной в порядке, установленном Министерством здравоохранения Республики Беларусь;"
+          }
+        },
+        {
+          "name": "Обследование на провирусную ДНК ВИЧ экспонированного ребенка",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обследование на провирусную ДНК ВИЧ экспонированного ребенка в порядке, установленном Министерством здравоохранения Республики Беларусь;"
+          }
+        },
+        {
+          "name": "Определение антигена HBsAg и антител IgG к ВГС",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "информация о результатах определения антигена ВГB (HbsAg) и антител класса G (IgG) к ВГC;"
+          }
+        },
+        {
+          "name": "Исследование CD4+ лимфоцитов и вирусной нагрузки (ВН)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -116,11 +255,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "определение стадии ВИЧ-инфекции у беременной"
+            "quote": "лабораторное обследование в установленном порядке, включающее исследование CD4 + лимфоцитов и ВН"
           }
         },
         {
-          "name": "Лабораторная диагностика ВИЧ у беременной",
+          "name": "Исследование провирусной ДНК ВИЧ в крови",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -135,119 +274,19 @@
             "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
             "document_url": null,
             "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 6,
+            "page_start": 34,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "направление для проведения лабораторной диагностики ВИЧ у беременной в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Лабораторная диагностика ВИЧ у полового партнера беременной",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "направление для проведения лабораторной диагностики ВИЧ у полового партнера беременной в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Обследование на антиген ВГB (HbsAg) и антитела класса G (IgG) к ВГC",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 7,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "информация о результатах определения антигена ВГB (HbsAg) и антител класса G (IgG) к ВГC"
-          }
-        },
-        {
-          "name": "Обследование на провирусную ДНК ВИЧ",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 8,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на провирусную ДНК ВИЧ в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Обследование на провирусную ДНК ВИЧ (ВИЧ-экспонированный ребенок)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 8,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на провирусную ДНК ВИЧ экспонированного ребенка в порядке, установленном Министерством здравоохранения Республики Беларусь"
+            "quote": "исследования провирусной ДНК ВИЧ в крови"
           }
         }
       ],
       "conditional_exams": [
         {
-          "name": "Экспресс-тест на ВИЧ по крови (беременным)",
+          "name": "Экспресс-тест по крови на ВИЧ у беременных",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -268,39 +307,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "обследование на ВИЧ при помощи экспресс-теста по крови беременных в соответствии с показаниями"
-          }
-        },
-        {
-          "name": "Диагностика ВИЧ-инфекции (антитела/антигены ВИЧ, включая ИФА/ИХА)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 9,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "диагностика ВИЧ-инфекции у беременных и кормящих женщин с симптомами схожими с острым ретровирусным синдромом (...) с использованием тестов, определяющих антитела/антигены ВИЧ"
+            "quote": "обследование на ВИЧ при помощи экспресс-теста по крови беременных в соответствии с показаниями, указанными в главе 3 настоящего Клинического протокола;"
           }
         }
       ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Рекомендации по искусственному вскармливанию и контроль его проведения.",
+            "text": "Искусственное вскармливание ребенка и информирование матери о риске ПМР ВИЧ при грудном вскармливании",
             "source_ref": {
               "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
               "document_url": null,
@@ -311,17 +325,62 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Рекомендации по искусственному вскармливанию и контроль его проведения."
+              "quote": "Искусственное вскармливание ребенка и информирование матери о риске ПМР ВИЧ при грудном вскармливании"
+            }
+          },
+          {
+            "text": "Родоразрешение путем кесарева сечения в плановом порядке по показаниям",
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Родоразрешение путем кесарева сечения в плановом порядке по показаниям"
+            }
+          },
+          {
+            "text": "Обучение матери или законного представителя дозированию АРВ-ЛС ребенку",
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Обучение матери или законного представителя дозированию АРВ-ЛС ребенку"
+            }
+          },
+          {
+            "text": "Консультирование о рисках грудного и смешанного вскармливания (наиболее безопасной является тактика полностью грудного вскармливания на протяжении не более 6 месяцев или искусственное вскармливание)",
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Консультирование о рисках грудного и смешанного вскармливания (наиболее безопасной является тактика полностью грудного вскармливания на протяжении не более 6 месяцев или искусственное вскармливание)"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "Зидовудин",
+            "drug_name": "Постконтактная профилактика ВИЧ",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "на протяжении 6 недель или до получения отрицательного результата определения антител/антигена(ов) ВИЧ у матери.",
+            "dose_text": "Назначается врачом-инфекционистом при наличии показаний",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -333,598 +392,20 @@
               "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
               "document_url": null,
               "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": 32,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Новорожденному, у матери которого имелись показания для выполнения экспресс-теста по крови, но тест не был выполнен, для профилактики ПМР ВИЧ назначают зидовудин на протяжении 6 недель или до получения отрицательного результата определения антител/антигена(ов) ВИЧ у матери."
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [
-        {
-          "text": "Наблюдение и обследование беременной, родильницы или кормящей матери, а также ребенка, если половой партнер матери или сама мать инфицированы ВИЧ (в т.ч. при грудном вскармливании).",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Наблюдение и обследование беременной, родильницы или кормящей матери, а также ребенка, если половой партнер матери или сама мать инфицированы ВИЧ (в т.ч. при грудном вскармливании)."
-          }
-        },
-        {
-          "text": "Диспансерное наблюдение ВИЧ-экспонированного ребенка.",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Диспансерное наблюдение ВИЧ-экспонированного ребенка."
-          }
-        }
-      ],
-      "hospitalization": [],
-      "routing": [
-        {
-          "text": "Направление в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний (при необходимости).",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Направление в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний (при необходимости)."
-          }
-        },
-        {
-          "text": "Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при наличии показаний).",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при наличии показаний)."
-          }
-        },
-        {
-          "text": "Направление беременной для назначения постконтактной профилактики к врачу-инфекционисту КДО ВИЧ (при наличии показаний).",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Направление беременной для назначения постконтактной профилактики к врачу-инфекционисту КДО ВИЧ (при наличии показаний)."
-          }
-        }
-      ],
-      "red_flags": [
-        {
-          "text": "Неопределенный результат тестирования на ВИЧ",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "При получении неопределенного результата тестирования на ВИЧ с использованием всех доступных методов лабораторной диагностики решение о проведении профилактики ПМР ВИЧ принимается по заключению врачебного консилиума."
-          }
-        }
-      ],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Решение о профилактике ПМР ВИЧ при неопределенном тесте – по заключению консилиума",
-          "Обоснование диагноза: Определение показаний к кесареву сечению для профилактики ПМР ВИЧ по лабораторным обследо…",
-          "Назначено/выполнено обследование: Определение стадии ВИЧ-инфекции",
-          "Назначено/выполнено обследование: Лабораторная диагностика ВИЧ у беременной",
-          "Назначено/выполнено обследование: Лабораторная диагностика ВИЧ у полового партнера беременной",
-          "Назначено/выполнено обследование: Обследование на антиген ВГB (HbsAg) и антитела класса G (IgG) к ВГC",
-          "Назначено/выполнено обследование: Обследование на провирусную ДНК ВИЧ",
-          "Назначено/выполнено обследование: Обследование на провирусную ДНК ВИЧ (ВИЧ-экспонированный ребенок)",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Зидовудин",
-          "Немедикаментозно: Рекомендации по искусственному вскармливанию и контроль его проведения",
-          "План наблюдения: Наблюдение и обследование беременной, родильницы или кормящей матери, а также ребенка, ес…",
-          "План наблюдения: Диспансерное наблюдение ВИЧ-экспонированного ребенка"
-        ],
-        "conditional": [
-          "Обследование: Экспресс-тест на ВИЧ по крови (беременным) (по показаниям)",
-          "Обследование: Диагностика ВИЧ-инфекции (антитела/антигены ВИЧ, включая ИФА/ИХА) (по показаниям)",
-          "Маршрутизация: Направление в инфекционное отделение больничной организации для диагностики и лечения опп… (по показаниям)",
-          "Маршрутизация: Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при… (по показаниям)",
-          "Маршрутизация: Направление беременной для назначения постконтактной профилактики к врачу-инфекционисту К… (по показаниям)"
-        ],
-        "warnings": [
-          "Важно: при «Неопределенный результат тестирования на ВИЧ»"
-        ]
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "hiv_exposed_newborn",
-      "name": "ВИЧ-экспонированный новорожденный",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "Z20.6"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "Неопределенный результат тестирования на ВИЧ",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Неопределенный результат тестирования на ВИЧ"
+              "quote": "направление ее, при наличии показаний, для назначения постконтактной профилактики к врачу-инфекционисту КДО"
             }
           },
           {
-            "text": "Установленный факт инфицирования ВИЧ у полового партнера беременной, родильницы или кормящей матери",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Установленный факт инфицирования ВИЧ у полового партнера беременной, родильницы или кормящей матери"
-            }
-          },
-          {
-            "text": "Симптомы, схожие с острым ретровирусным синдромом, у беременных и кормящих женщин",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Симптомы, схожие с острым ретровирусным синдромом, у беременных и кормящих женщин"
-            }
-          },
-          {
-            "text": "Ребенок, рожденный женщиной с установленным диагнозом ВИЧ-инфекции или находящейся на этапе уточнения ВИЧ-статуса.",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Ребенок, рожденный женщиной с установленным диагнозом ВИЧ-инфекции или находящейся на этапе уточнения ВИЧ-статуса."
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "required_exams": [
-        {
-          "name": "Лабораторная диагностика ВИЧ у беременной",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "направление для проведения лабораторной диагностики ВИЧ у беременной в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Лабораторная диагностика ВИЧ у полового партнера беременной",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "направление для проведения лабораторной диагностики ВИЧ у полового партнера беременной в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Определение антигена ВГB (HbsAg)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 7,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "информация о результатах определения антигена ВГB (HbsAg)"
-          }
-        },
-        {
-          "name": "Определение антител класса G (IgG) к ВГC",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 7,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "информация о результатах определения антител класса G (IgG) к ВГC"
-          }
-        },
-        {
-          "name": "Экспресс-тест на ВИЧ по крови (беременные)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 7,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на ВИЧ при помощи экспресс-теста по крови беременных в соответствии с показаниями, указанными в главе 3 настоящего Клинического протокола"
-          }
-        },
-        {
-          "name": "Обследование на провирусную ДНК ВИЧ (беременные/родильницы)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 8,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на провирусную ДНК ВИЧ в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Обследование на провирусную ДНК ВИЧ (ВИЧ-экспонированный ребенок)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 8,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на провирусную ДНК ВИЧ экспонированного ребенка в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        }
-      ],
-      "conditional_exams": [
-        {
-          "name": "ИФА/ИХА на антитела/антигены ВИЧ",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 9,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "диагностика ВИЧ-инфекции у беременных и кормящих женщин с симптомами схожими с острым ретровирусным синдромом (...) с использованием тестов, определяющих антитела/антигены ВИЧ (ИФА/ИХА)"
-          }
-        }
-      ],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "Обучение матери или законного представителя дозированию ребенку сульфаметоксазола/триметоприма.",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Обучение матери или законного представителя дозированию ребенку сульфаметоксазола/триметоприма."
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Зидовудин, сироп",
+            "drug_name": "Сульфаметоксазол/триметоприм",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "35 нед и старше (доношенный): 4 мг/кг 2 р/сут (или по массе тела: 2-3 кг – 1 мл 2 р/сут; 3-4 кг – 1,5 мл 2 р/сут; 4-5 кг – 2 мл 2 р/сут) 4-6 нед; 30-34 нед: 2 мг/кг 2 р/сут на 1-2 нед, затем 3 мг/кг 2",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": 33,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Зидовудин, сироп 10 мг/мл... 35 недель и старше (доношенный) 4 мг/кг 2 раза/сут... 4-6 недель после рождения... 30-34 недели 2 мг/кг 2 раза/сут на 1-2 неделе 3 мг/кг 2 раза/сут на 3-6 неделе..."
-            }
-          },
-          {
-            "drug_name": "Зидовудин, концентрат для инфузий",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "35 нед и старше (доношенный): 3 мг/кг 2 р/сут 4-6 нед; 30-34 нед: 1,5 мг/кг 2 р/сут на 1-2 нед, затем 2,3 мг/кг 2 р/сут на 3-6 нед; 29 нед и менее: 1,5 мг/кг 2 р/сут на 0-4 нед, затем 2,3 мг/кг 2 р/су",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": 33,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Зидовудин, концентрат для приготовления раствора для инфузий 10 мг/мл... 35 недель и старше (доношенный) 3 мг/кг 2 раза/сут 4-6 недель после рождения... 30-34 недели 1,5 мг/кг 2 раза/сут..."
-            }
-          },
-          {
-            "drug_name": "Невирапин, сироп",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1,5-2 кг: 8 мг 1 р/сут на 0, 2 и 6 сутки; >2 кг: 12 мг 1 р/сут на 0, 2 и 6 сутки. 37 нед и старше: 6 мг/кг 2 р/сут с рождения; 34-37 нед: 4 мг/кг 2 р/сут на 1 нед, затем 6 мг/кг 2 р/сут со 2 нед.",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": 33,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Невирапин, сироп 10 мг/мл 1,5-2 кг 8 мг 1 раз/ сут 0, 2 и 6 сутки после рождения более 2 кг 12 мг 1 раз/сут... 37 недель и старше (доношенный) 6 мг/кг 2 раза/сут с рождения..."
-            }
-          },
-          {
-            "drug_name": "Ламивудин, раствор для приема внутрь",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1,5-2 кг: 4 мг 2 р/сут на 1-4 нед; >2 кг: 6 мг 2 р/сут на 1-4 нед.",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": 34,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Ламивудин, раствор для приема внутрь 10 мг/мл 1,5-2 кг 4 мг 2 раза/сут на 1-4 неделе более 2 кг 6 мг 2 раза/сут на 1-4 неделе"
-            }
-          },
-          {
-            "drug_name": "Сульфаметоксазол/Триметоприм",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "Дозировка не указана в данном блоке, назначается для профилактики пневмоцистной пневмонии.",
+            "dose_text": "Профилактическое лечение пневмоцистной пневмонии у ВИЧ-экспонированного ребенка",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -943,6 +424,181 @@
               "table_index": null,
               "row_index": null,
               "quote": "назначение профилактического лечения пневмоцистной пневмонии у ВИЧ-экспонированного ребенка, включая обучение матери или законного представителя дозированию ребенку сульфаметоксазола/триметоприма"
+            }
+          },
+          {
+            "drug_name": "Зидовудин (сироп 10 мг/мл)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "35 недель и старше: 4 мг/кг 2 раза/сут (или 2-3 кг — 1 мл 2 р/сут, 3-4 кг — 1,5 мл 2 р/сут, 4-5 кг — 2 мл 2 р/сут) на 4-6 недель; 30-34 недели: 2 мг/кг 2 р/сут (1-2 нед), 3 мг/кг 2 р/сут (3-6 нед); ≤2",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": 33,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Зидовудин, сироп 10 мг/мл 35 недель и старше (доношенный) 4 мг/кг 2 раза/сут или в зависимости от массы тела ребенка: 2-3 кг – 1 мл сиропа 2 раза/сут; 3-4 кг – 1,5 мл сиропа 2 раза/сут"
+            }
+          },
+          {
+            "drug_name": "Зидовудин (концентрат для приготовления раствора для инфузий 10 мг/мл)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "35 недель и старше: 3 мг/кг 2 раза/сут на 4-6 недель; 30-34 недели: 1,5 мг/кг 2 р/сут (1-2 нед), 2,3 мг/кг 2 р/сут (3-6 нед); ≤29 недель: 1,5 мг/кг 2 р/сут (0-4 нед), 2,3 мг/кг 2 р/сут (5-6 нед)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": 33,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Зидовудин, концентрат для приготовления раствора для инфузий 10 мг/мл, 20 мл во флаконе 35 недель и старше (доношенный) 3 мг/кг 2 раза/сут 4-6 недель после рождения"
+            }
+          },
+          {
+            "drug_name": "Невирапин (сироп 10 мг/мл)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,5-2 кг: 8 мг 1 раз/сут на 0, 2 и 6 сутки; >2 кг: 12 мг 1 раз/сут на 0, 2 и 6 сутки; ≥37 недель: 6 мг/кг 2 раза/сут с рождения; 34-37 недель: 4 мг/кг 2 р/сут (1 нед), далее 6 мг/кг 2 р/сут",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": 33,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Невирапин, сироп 10 мг/мл 1,5-2 кг 8 мг 1 раз/ сут 0, 2 и 6 сутки после рождения более 2 кг 12 мг 1 раз/сут 37 недель и старше (доношенный) 6 мг/кг 2 раза/сут с рождения"
+            }
+          },
+          {
+            "drug_name": "Ламивудин (раствор для приема внутрь 10 мг/мл)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,5-2 кг: 4 мг 2 раза/сут на 1-4 неделе; >2 кг: 6 мг 2 раза/сут на 1-4 неделе",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": 33,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ламивудин, раствор для приема внутрь 10 мг/мл 1,5-2 кг 4 мг 2 раза/сут на 1-4 неделе более 2 кг 6 мг 2 раза/сут на 1-4 неделе"
+            }
+          },
+          {
+            "drug_name": "Зидовудин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "На протяжении 6 недель или до получения отрицательного результата определения антител/антигена(ов) ВИЧ у матери",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": 33,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "для профилактики ПМР ВИЧ назначают зидовудин на протяжении 6 недель или до получения отрицательного результата определения антител/антигена(ов) ВИЧ у матери."
+            }
+          },
+          {
+            "drug_name": "Сульфаметоксазол/триметоприм",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "25/5 мг/кг/сут (или 750/150 мг/м2/сут) внутрь в 2 приема, начиная с момента завершения профилактического приема АРВ-ЛС до возраста 6 месяцев или до двух отрицательных результатов ДНК ВИЧ",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": 34,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Сульфаметоксазол/триметоприм 25/5 мг/кг/сут (или 750/150 мг/м2/сут) внутрь в 2 приема, начиная с момента завершения профилактического приема АРВ-ЛС новорожденным"
+            }
+          },
+          {
+            "drug_name": "Невирапин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1 раз в сутки на протяжении 6 недель",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+              "page_start": 35,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "проводится невирапином один раз в сутки на протяжении 6 недель."
             }
           }
         ],
@@ -988,7 +644,7 @@
           }
         },
         {
-          "text": "Наблюдение и обследование ребенка, находившегося на грудном вскармливании на момент установления факта инфицирования ВИЧ у матери",
+          "text": "Контроль проведения искусственного вскармливания путем опроса и наблюдения при патронаже и визитах по вызову",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -1002,11 +658,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Наблюдение и обследование ребенка, находившегося на грудном вскармливании на момент установления факта инфицирования ВИЧ у матери"
+            "quote": "Контроль проведения искусственного вскармливания путем опроса и наблюдения при патронаже и визитах по вызову"
           }
         },
         {
-          "text": "Контроль приверженности и переносимости сульфаметоксазола/триметоприма.",
+          "text": "Первую дозу АРВ-ЛС новорожденному дают как можно раньше, не позднее 6 часов после рождения (если мать не получила АРВ-ЛС в родах — не позднее 2 часов)",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -1020,11 +676,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль приверженности и переносимости сульфаметоксазола/триметоприма."
+            "quote": "Первую дозу АРВ-ЛС новорожденному дают как можно раньше, не позднее 6 часов после рождения (если мать не получила АРВ-ЛС в родах — не позднее 2 часов)"
           }
         },
         {
-          "text": "Контроль приверженности по приему АРВ-ЛС.",
+          "text": "Обучение матери или законного представителя дозированию ребенку сульфаметоксазола/триметоприма, контроль приверженности и переносимости",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -1038,14 +694,50 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль приверженности по приему АРВ-ЛС."
+            "quote": "Обучение матери или законного представителя дозированию ребенку сульфаметоксазола/триметоприма, контроль приверженности и переносимости"
+          }
+        },
+        {
+          "text": "Диспансерное наблюдение в КДО ВИЧ / КИЗ поликлиники",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Диспансерное наблюдение в КДО ВИЧ / КИЗ поликлиники"
+          }
+        },
+        {
+          "text": "Проведение вакцинопрофилактики по национальному календарю прививок с введением дополнительных вакцинаций (против гриппа, гемофилюсной и пневмококковой инфекций)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Проведение вакцинопрофилактики по национальному календарю прививок с введением дополнительных вакцинаций (против гриппа, гемофилюсной и пневмококковой инфекций)"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "Направление беременной в инфекционное отделение больничной организации (при необходимости)",
+          "text": "Направление беременной в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний (при необходимости)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1058,11 +750,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Направление беременной в инфекционное отделение больничной организации (при необходимости)"
+            "quote": "Направление беременной в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний (при необходимости)"
           }
         },
         {
-          "text": "Направление беременной/родильницы для назначения постконтактной профилактики к врачу-инфекционисту КДО ВИЧ (при наличии показаний)",
+          "text": "Направление к врачу-инфекционисту КДО / поликлиники для назначения постконтактной профилактики",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1075,11 +767,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Направление беременной/родильницы для назначения постконтактной профилактики к врачу-инфекционисту КДО ВИЧ (при наличии показаний)"
+            "quote": "Направление к врачу-инфекционисту КДО / поликлиники для назначения постконтактной профилактики"
           }
         },
         {
-          "text": "Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при наличии показаний)",
+          "text": "Оформление выписки с указанием показаний к плановому кесареву сечению не позднее 37 недели беременности",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1092,11 +784,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при наличии показаний)"
+            "quote": "Оформление выписки с указанием показаний к плановому кесареву сечению не позднее 37 недели беременности"
           }
         },
         {
-          "text": "госпитализация (непосредственно после рождения для назначения первой дозы АРВ-ЛС)",
+          "text": "Районные, областные организации здравоохранения",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1109,11 +801,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация (непосредственно после рождения для назначения первой дозы АРВ-ЛС)"
+            "quote": "Районные, областные организации здравоохранения"
           }
         },
         {
-          "text": "амбулаторно (дальнейшее наблюдение и лечение)",
+          "text": "Амбулаторное наблюдение и профилактика в КДО ВИЧ / КИЗ поликлиники, женских консультациях, детских амбулаторных организациях",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1126,11 +818,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "амбулаторно (дальнейшее наблюдение и лечение)"
+            "quote": "Амбулаторное наблюдение и профилактика в КДО ВИЧ / КИЗ поликлиники, женских консультациях, детских амбулаторных организациях"
           }
         },
         {
-          "text": "Новорожденному, у матери которого имелись показания для выполнения экспресс-теста по крови, но тест не был выполнен, для профилактики ПМР ВИЧ назначают зидовудин на протяжении 6 недель или до получения отрицательного результата определения антител/антигена(ов) ВИЧ у матери.",
+          "text": "Направление в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1143,626 +835,95 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Новорожденному, у матери которого имелись показания для выполнения экспресс-теста по крови, но тест не был выполнен, для профилактики ПМР ВИЧ назначают зидовудин на протяжении 6 недель или до получени"
+            "quote": "Направление в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний"
           }
         }
       ],
       "red_flags": [
         {
-          "text": "Избегать инвазивных методов мониторинга беременности (амниоцентеза, кордоцентеза, хирургической коррекции ИЦН) у пациенток с ВИЧ-инфекцией, если ВН ВИЧ не неопределяемая.",
+          "text": "Симптомы, схожие с острым ретровирусным синдромом у беременных и кормящих женщин",
           "aliases": [],
           "red_flag_type": "other",
-          "severity": "medium",
+          "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
             "document_url": null,
             "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 21,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "У пациенток с ВИЧ-инфекцией, по возможности, нужно избегать инвазивных методов мониторинга беременности... при необходимости их выполняют после достижения неопределяемой ВН ВИЧ."
-          }
-        }
-      ],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Неопределенный результат тестирования на ВИЧ",
-          "Обоснование диагноза: Установленный факт инфицирования ВИЧ у полового партнера беременной, родильницы или кормя…",
-          "Обоснование диагноза: Симптомы, схожие с острым ретровирусным синдромом, у беременных и кормящих женщин",
-          "Обоснование диагноза: Ребенок, рожденный женщиной с установленным диагнозом ВИЧ-инфекции или находящейся на эта…",
-          "Назначено/выполнено обследование: Лабораторная диагностика ВИЧ у беременной",
-          "Назначено/выполнено обследование: Лабораторная диагностика ВИЧ у полового партнера беременной",
-          "Назначено/выполнено обследование: Определение антигена ВГB (HbsAg)",
-          "Назначено/выполнено обследование: Определение антител класса G (IgG) к ВГC",
-          "Назначено/выполнено обследование: Экспресс-тест на ВИЧ по крови (беременные)",
-          "Назначено/выполнено обследование: Обследование на провирусную ДНК ВИЧ (беременные/родильницы)",
-          "Назначено/выполнено обследование: Обследование на провирусную ДНК ВИЧ (ВИЧ-экспонированный ребенок)",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Зидовудин, сироп",
-          "Препарат: Зидовудин, концентрат для инфузий",
-          "Препарат: Невирапин, сироп",
-          "Препарат: Ламивудин, раствор для приема внутрь",
-          "Препарат: Сульфаметоксазол/Триметоприм",
-          "Немедикаментозно: Обучение матери или законного представителя дозированию ребенку сульфаметоксазола/тримето…",
-          "План наблюдения: Диспансерное наблюдение ВИЧ-экспонированного ребенка",
-          "План наблюдения: Наблюдение и обследование беременной, родильницы или кормящей матери, у полового партнера…",
-          "План наблюдения: Наблюдение и обследование ребенка, находившегося на грудном вскармливании на момент устан…",
-          "План наблюдения: Контроль приверженности и переносимости сульфаметоксазола/триметоприма",
-          "План наблюдения: Контроль приверженности по приему АРВ-ЛС"
-        ],
-        "conditional": [
-          "Обследование: ИФА/ИХА на антитела/антигены ВИЧ (по показаниям)",
-          "Маршрутизация: Направление беременной в инфекционное отделение больничной организации (при необходимости) (по показаниям)",
-          "Маршрутизация: Направление беременной/родильницы для назначения постконтактной профилактики к врачу-инфе… (по показаниям)",
-          "Маршрутизация: Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при… (по показаниям)",
-          "Маршрутизация: госпитализация (непосредственно после рождения для назначения первой дозы АРВ-ЛС) (по показаниям)",
-          "Маршрутизация: амбулаторно (дальнейшее наблюдение и лечение) (по показаниям)",
-          "Маршрутизация: Новорожденному, у матери которого имелись показания для выполнения экспресс-теста по кров… (по показаниям)"
-        ],
-        "warnings": [
-          "при «Избегать инвазивных методов мониторинга беременности (амниоцентеза, кордоцентез…»"
-        ]
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "prevention_mtct_hiv",
-      "name": "Профилактика передачи ВИЧ от матери ребенку",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "Z20.5",
-        "Z32.1"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "Неопределенный результат тестирования на ВИЧ с использованием всех доступных методов лабораторной диагностики",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Неопределенный результат тестирования на ВИЧ с использованием всех доступных методов лабораторной диагностики"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "required_exams": [
-        {
-          "name": "Определение стадии ВИЧ-инфекции у беременной",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 5,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "определение стадии ВИЧ-инфекции у беременной"
-          }
-        },
-        {
-          "name": "Лабораторное обследование для определения показаний к кесареву сечению",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "определение показаний к родоразрешению путем кесарева сечения в плановом порядке для профилактики ПМР ВИЧ на основании результатов лабораторного обследования"
-          }
-        },
-        {
-          "name": "Лабораторная диагностика ВИЧ у беременной",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "направление для проведения лабораторной диагностики ВИЧ у беременной в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Лабораторная диагностика ВИЧ у полового партнера беременной",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "направление для проведения лабораторной диагностики ВИЧ у полового партнера беременной в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Наблюдение и обследование беременной/родильницы (партнер ВИЧ+)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 7,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "наблюдение и обследование беременной, родильницы у полового партнера которой установлен факт инфицирования ВИЧ"
-          }
-        },
-        {
-          "name": "Определение антигена ВГB (HbsAg) и антител класса G (IgG) к ВГC",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 7,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "информация о результатах определения антигена ВГB (HbsAg) и антител класса G (IgG) к ВГC"
-          }
-        },
-        {
-          "name": "Обследование на провирусную ДНК ВИЧ (беременные)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 8,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на провирусную ДНК ВИЧ в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Обследование на провирусную ДНК ВИЧ экспонированного ребенка",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 8,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на провирусную ДНК ВИЧ экспонированного ребенка в порядке, установленном Министерством здравоохранения Республики Беларусь"
-          }
-        },
-        {
-          "name": "Наблюдение и обследование ребенка (грудное вскармливание, мать ВИЧ+)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
             "page_start": 9,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "наблюдение и обследование ребенка, находившегося на грудном вскармливании на момент установления факта инфицирования ВИЧ у матери"
+            "quote": "диагностика ВИЧ-инфекции у беременных и кормящих женщин с симптомами схожими с острым ретровирусным синдромом"
           }
         },
         {
-          "name": "Наблюдение и обследование беременной/родильницы или кормящей матери (партнер ВИЧ+)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 9,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "наблюдение и обследование беременной, родильницы или кормящей матери, у полового партнера которой установлен факт инфицирования ВИЧ"
-          }
-        }
-      ],
-      "conditional_exams": [
-        {
-          "name": "Экспресс-тест на ВИЧ по крови у беременных",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 7,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обследование на ВИЧ при помощи экспресс-теста по крови беременных в соответствии с показаниями, указанными в главе 3 настоящего Клинического протокола"
-          }
-        },
-        {
-          "name": "Диагностика ВИЧ-инфекции (антитела/антигены) у беременных/кормящих с симптомами ОРС",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 9,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "диагностика ВИЧ-инфекции у беременных и кормящих женщин с симптомами схожими с острым ретровирусным синдромом (...) с использованием тестов, определяющих антитела/антигены ВИЧ"
-          }
-        }
-      ],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "Информирование матери о риске ПМР ВИЧ при грудном вскармливании и рекомендации по искусственному вскармливанию",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Информирование матери о риске ПМР ВИЧ при грудном вскармливании и рекомендации по искусственному вскармливанию"
-            }
-          },
-          {
-            "text": "Организация обеспечения искусственного вскармливания",
-            "source_ref": {
-              "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Организация обеспечения искусственного вскармливания"
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [
-        {
-          "text": "Диспансерное наблюдение ВИЧ-экспонированного ребенка",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Диспансерное наблюдение ВИЧ-экспонированного ребенка"
-          }
-        },
-        {
-          "text": "Контроль проведения искусственного вскармливания путем опроса и наблюдения при визитах по вызову и для патронажа",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль проведения искусственного вскармливания путем опроса и наблюдения при визитах по вызову и для патронажа"
-          }
-        }
-      ],
-      "hospitalization": [],
-      "routing": [
-        {
-          "text": "Направление в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний (при необходимости)",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Направление в инфекционное отделение больничной организации для диагностики и лечения оппортунистических заболеваний (при необходимости)"
-          }
-        },
-        {
-          "text": "Направление к врачу-инфекционисту КДО ВИЧ для назначения постконтактной профилактики (при наличии показаний)",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Направление к врачу-инфекционисту КДО ВИЧ для назначения постконтактной профилактики (при наличии показаний)"
-          }
-        },
-        {
-          "text": "Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при наличии показаний)",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при наличии показаний)"
-          }
-        },
-        {
-          "text": "госпитализация",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "госпитализация"
-          }
-        }
-      ],
-      "red_flags": [
-        {
-          "text": "Неопределенный результат тестирования на ВИЧ, требующий заключения врачебного консилиума для принятия решения о профилактике ПМР ВИЧ.",
+          "text": "Грудное вскармливание ребенка при установлении факта инфицирования ВИЧ у матери",
           "aliases": [],
           "red_flag_type": "other",
-          "severity": "medium",
+          "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
             "document_url": null,
             "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
-            "page_start": 4,
+            "page_start": 9,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "При получении неопределенного результата тестирования на ВИЧ с использованием всех доступных методов лабораторной диагностики решение о проведении профилактики ПМР ВИЧ принимается по заключению врачебного консилиума."
+            "quote": "наблюдение и обследование ребенка, находившегося на грудном вскармливании на момент установления факта инфицирования ВИЧ у матери;"
+          }
+        },
+        {
+          "text": "Отсутствие начала АРВ-профилактики новорожденному на искусственном вскармливании в первые 72 часа жизни (в более поздние сроки не назначается)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": 29,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "если по каким-либо причинам АРВ-профилактика новорожденному (находящемуся на искусственном вскармливании) не была начата в течение первых 72 часов жизни, то в более поздние сроки ее не назначают."
+          }
+        },
+        {
+          "text": "Принадлежность новорожденного на грудном вскармливании к группе высокого риска (матери не достигли вирусной супрессии за 4 недели до родов, инфицировались во время беременности/ГВ, прервали АРТ)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_профилактика_передачи_вич_инфекции_от_матери_ребен",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП Профилактика передачи ВИЧ-инфекции от матери ребенку 28.06.2018_59.pdf",
+            "page_start": 35,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "К группе высокого риска ПМР ВИЧ относятся новорожденные, получающие грудное вскармливание, матери которых: не достигли вирусной супрессии по результатам исследования"
           }
         }
       ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Неопределенный результат тестирования на ВИЧ с использованием всех доступных методов лабо…",
-          "Назначено/выполнено обследование: Определение стадии ВИЧ-инфекции у беременной",
-          "Назначено/выполнено обследование: Лабораторное обследование для определения показаний к кесареву сечению",
-          "Назначено/выполнено обследование: Лабораторная диагностика ВИЧ у беременной",
-          "Назначено/выполнено обследование: Лабораторная диагностика ВИЧ у полового партнера беременной",
-          "Назначено/выполнено обследование: Наблюдение и обследование беременной/родильницы (партнер ВИЧ+)",
-          "Назначено/выполнено обследование: Определение антигена ВГB (HbsAg) и антител класса G (IgG) к ВГC",
-          "Назначено/выполнено обследование: Обследование на провирусную ДНК ВИЧ (беременные)",
-          "Назначено/выполнено обследование: Обследование на провирусную ДНК ВИЧ экспонированного ребенка",
-          "Назначено/выполнено обследование: Наблюдение и обследование ребенка (грудное вскармливание, мать ВИЧ+)",
-          "Назначено/выполнено обследование: Наблюдение и обследование беременной/родильницы или кормящей матери (партнер ВИЧ+)"
-        ],
-        "should_have": [
-          "Немедикаментозно: Информирование матери о риске ПМР ВИЧ при грудном вскармливании и рекомендации по искусст…",
-          "Немедикаментозно: Организация обеспечения искусственного вскармливания",
-          "План наблюдения: Диспансерное наблюдение ВИЧ-экспонированного ребенка",
-          "План наблюдения: Контроль проведения искусственного вскармливания путем опроса и наблюдения при визитах по…"
-        ],
-        "conditional": [
-          "Обследование: Экспресс-тест на ВИЧ по крови у беременных (по показаниям)",
-          "Обследование: Диагностика ВИЧ-инфекции (антитела/антигены) у беременных/кормящих с симптомами ОРС (по показаниям)",
-          "Маршрутизация: Направление в инфекционное отделение больничной организации для диагностики и лечения опп… (по показаниям)",
-          "Маршрутизация: Направление к врачу-инфекционисту КДО ВИЧ для назначения постконтактной профилактики (при… (по показаниям)",
-          "Маршрутизация: Направление ребенка к врачу-инфекционисту для назначения постконтактной профилактики (при… (по показаниям)",
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": [
-          "при «Неопределенный результат тестирования на ВИЧ, требующий заключения врачебного к…»"
-        ]
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -1770,14 +931,13 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:31:14.258231+00:00",
+    "extracted_at": "2026-07-23T08:13:19.905103+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=3",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
@@ -1786,35 +946,11 @@
     "warnings": [
       {
         "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[hiv_exposed_newborn].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[hiv_exposed_newborn].required_exams[1]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[hiv_exposed_newborn].required_exams[6]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[prevention_mtct_hiv].required_exams[2]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[prevention_mtct_hiv].required_exams[3]"
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[vich_eksponirovannyj_novorozhdennyj].treatment.drugs[7]"
       }
     ],
-    "validated_at": "2026-07-20T16:31:14.290900+00:00"
+    "validated_at": "2026-07-23T08:13:19.926229+00:00"
   }
 }

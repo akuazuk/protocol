@@ -26,21 +26,20 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: infertility
-  name: Бесплодие
+- condition_id: female_infertility
+  name: Женское бесплодие
   synonyms: []
   abbreviations: []
   icd10_codes:
   - B24
   - N97.9
-  - O35
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 'Снижение овариального резерва: уровень антимюллерова гормона в сыворотке
-        крови менее 0,5 нг/мл и (или) менее 5 антральных фолликулов в обоих яичниках.'
+    - text: 'Снижение овариального резерва: уровень антимюллерова гормона < 0,5 нг/мл
+        и (или) менее 5 антральных фолликулов в обоих яичниках'
       logic_group: null
       operator: unknown
       values: []
@@ -57,11 +56,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Снижение овариального резерва: уровень антимюллерова гормона в сыворотке
-          крови менее 0,5 нг/мл и (или) менее 5 антральных фолликулов в обоих яичниках.'
-    - text: 'Эмбрионы низкого качества: Grade 3 и 4 на 3-и сутки; не достигли стадии
-        бластоцисты на 5-е – 6-е сутки; бластоцисты ВС, СВ, СС (по международной классификации
-        Гарднера).'
+        quote: 'Снижение овариального резерва: уровень антимюллерова гормона < 0,5
+          нг/мл и (или) менее 5 антральных фолликулов в обоих яичниках'
+    - text: 'Эмбрионы низкого качества: Grade 3 и 4 на 3-и сутки, не достигшие бластоцисты
+        на 5–6 сутки, бластоцисты BC, CB, CC (по классификации Гарднера)'
       logic_group: null
       operator: unknown
       values: []
@@ -78,14 +76,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Эмбрионы низкого качества: Grade 3 и 4 на 3-и сутки; не достигли стадии
-          бластоцисты на 5-е – 6-е сутки; бластоцисты ВС, СВ, СС (по международной
-          классификации Гарднера).'
+        quote: 'Эмбрионы низкого качества: Grade 3 и 4 на 3-и сутки, не достигшие
+          бластоцисты на 5–6 сутки, бластоцисты BC, CB, CC (по классификации Гарднера)'
     optional: []
     exclusion: []
   required_exams:
-  - name: Исследование количественного уровня хорионического гонадотропина в сыворотке
-      крови
+  - name: Исследование количественного уровня хорионического гонадотропина в крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -99,16 +95,16 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
-      page_start: 5
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
       quote: Диагностика беременности проводится путем исследования количественного
-        уровня хорионического гонадотропина в сыворотке крови через 12–14 дней со
-        дня переноса эмбрионов
-  - name: Ультразвуковое исследование матки
+        уровня хорионического гонадотропина в крови через 12–14 дней со дня переноса
+        эмбрионов
+  - name: Мониторинг индивидуального ответа яичников на КОС
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -122,16 +118,16 @@ conditions:
       protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
       document_url: null
       local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
-      page_start: 5
+      page_start: 2
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: ультразвукового исследования матки через 21–23 дня со дня переноса эмбрионов
+      quote: Подбор и коррекция доз лекарственных средств в протоколе КОС осуществляется
+        с учетом результатов мониторинга индивидуального ответа яичников на КОС.
   conditional_exams:
-  - name: Преимплантационное генетическое тестирование (ПГТ) для диагностики хромосомных
-      и генетических аномалий
+  - name: Преимплантационное генетическое тестирование (ПГТ)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -152,10 +148,29 @@ conditions:
       table_index: null
       row_index: null
       quote: При высоком риске рождения детей с врожденными и наследственными заболеваниями
-        рекомендуется проведение преимплантационного генетического тестирования (далее
-        – ПГТ) для диагностики хромосомных и генетических аномалий
-  - name: Биопсия трофэктодермы с последующим генетическим исследованием биопсийного
-      материала
+        рекомендуется проведение преимплантационного генетического тестирования
+  - name: Ультразвуковое исследование матки
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвукового исследования матки через 21–23 дня со дня переноса эмбрионов.
+  - name: Биопсия трофэктодермы с последующим генетическим исследованием
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -177,11 +192,403 @@ conditions:
       row_index: null
       quote: При ПГТ проводится биопсия трофэктодермы с последующим генетическим исследованием
         биопсийного материала.
-  treatment: null
-  follow_up: []
+  treatment:
+    non_drug:
+    - text: Программа ЭКО с ИКСИ с использованием инвертированного микроскопа, оснащенного
+        микроманипуляторами
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Программа ЭКО с ИКСИ с использованием инвертированного микроскопа,
+          оснащенного микроманипуляторами
+    - text: Индивидуальная контролируемая овариальная стимуляция (КОС)
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Индивидуальная контролируемая овариальная стимуляция (КОС)
+    - text: Трансвагинальная пункция фолликулов под ультразвуковым контролем с анестезиологическим
+        пособием
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Трансвагинальная пункция фолликулов под ультразвуковым контролем с
+          анестезиологическим пособием
+    - text: Хирургическая трансплантация (перенос) эмбрионов
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическая трансплантация (перенос) эмбрионов
+    - text: Оплодотворение яйцеклеток в культуральной среде или методом ИКСИ
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оплодотворение яйцеклеток в культуральной среде или методом ИКСИ
+    - text: Хирургическое получение сперматозоидов из яичка или придатка яичка
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое получение сперматозоидов из яичка или придатка яичка
+    - text: Рассечение блестящей оболочки (механический или лазерный хэтчинг) перед
+        переносом эмбрионов по показаниям (возраст старше 35 лет; ≥3 неудачных попыток
+        ЭКО в анамнезе; изменение морфологии блестящей оболочки; использование криоконсервированных
+        эмбрионов)
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рассечение блестящей оболочки (механический или лазерный хэтчинг) перед
+          переносом эмбрионов по показаниям (возраст старше 35 лет; ≥3 неудачных попыток
+          ЭКО в анамнезе; изменение морфологии блестящей об
+    drug_groups: []
+    drugs:
+    - drug_name: Кломифена цитрат
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 50 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кломифена цитрат1 (таблетки 50 мг), ингибиторы ароматазы (таблетки
+          2,5 мг).
+    - drug_name: Ингибиторы ароматазы
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 2,5 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кломифена цитрат1 (таблетки 50 мг), ингибиторы ароматазы (таблетки
+          2,5 мг).
+    - drug_name: Рекомбинантный хориогонадотропин альфа
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для подкожного введения 250 мкг / 0,5 мл, в дозе 250 мкг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: рекомбинантный хориогонадотропин альфа, раствор для подкожного введения
+          250 мкг / 0,5 мл, в дозе 250 мкг;
+    - drug_name: Гонадотропин хорионический
+      active_substance: null
+      drug_group: null
+      dose_text: в дозах от 1 500 ME до 10 000 ME включительно
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: гонадотропин хорионический, лиофилизат для приготовления раствора для
+          внутримышечного (и подкожного) введения (для инъекций) в дозах от 1 500
+          ME до 10 000 ME включительно.
+    - drug_name: Трипторелин
+      active_substance: null
+      drug_group: null
+      dose_text: 0,05–0,1 мг подкожно ежедневно или 3,75 мг пролонгированная форма
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: трипторелин1 в форме порошок/раствор в дозе 0,05–0,1 мг подкожно ежедневно
+          со 2-го дня цикла КОС
+    - drug_name: Цетрореликс / Ганиреликс
+      active_substance: null
+      drug_group: null
+      dose_text: 0,25 мг для подкожного введения ежедневно
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: в протоколе ЭКО с ант-ГнРГ используются цетрореликс1 или ганиреликс1
+          (порошок/раствор) в дозе 0,25 мг для подкожного введения
+    - drug_name: Фоллитропин альфа
+      active_substance: null
+      drug_group: null
+      dose_text: 5,5 мкг (75 ME), 22 мкг (300 ME), 33 мкг (450 ME), 66 мкг (900 ME)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фоллитропин альфа, лиофилизат для приготовления раствора для подкожного
+          введения 5,5 мкг (75 международных единиц (далее – ME))
+    - drug_name: Препараты группы прогестерона
+      active_substance: null
+      drug_group: null
+      dose_text: в соответствии с инструкцией по медицинскому применению
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+        page_start: 3
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЭКО проводится лекарственными средствами, преимущественно группы прогестерона,
+          в соответствии с их инструкцией по медицинскому применению
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Исследование количественного уровня ХГЧ в крови через 12–14 дней после переноса
+      эмбрионов
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование количественного уровня ХГЧ в крови через 12–14 дней после
+        переноса эмбрионов
+  - text: УЗИ матки через 21–23 дня после переноса эмбрионов
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ матки через 21–23 дня после переноса эмбрионов
+  - text: Поддержка лютеиновой фазы после переноса эмбрионов стимулированного цикла
+      ЭКО препаратами группы прогестерона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Поддержка лютеиновой фазы после переноса эмбрионов стимулированного цикла
+        ЭКО препаратами группы прогестерона
+  - text: Циклическая гормонотерапия эстрогенами и гестагенами с продолжением сочетанной
+      гормональной поддержки в посттрансферном периоде при недостаточности яичников,
+      «тонком» эндометрии, в программах донации ооцитов или переноса размороженных
+      эмбрионов
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Циклическая гормонотерапия эстрогенами и гестагенами с продолжением
+        сочетанной гормональной поддержки в посттрансферном периоде при недостаточности
+        яичников, «тонком» эндометрии, в программах донации '
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Отсутствие ответа на стимуляцию овуляции в течение 7 дней (14 дней при гипогонадизме)
+      или отсутствие ооцитов/эмбрионов
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии ответа на стимуляцию овуляции в течение 7 дней... а также
+        в случае отсутствия ооцитов или эмбрионов пациентка снимается с протокола
+        ЭКО.
+  - text: Острые инфекционные заболевания любой локализации как противопоказание к
+      хирургическому получению сперматозоидов
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_лечение_бесплодия_методом_экстракорпорального_оплодо
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП_Лечение_бесплодия_методом_экстракорпорального_оплодотворения_24.12.2021_№115.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Противопоказаниями для хирургического получения сперматозоидов являются
+        острые инфекционные заболевания любой локализации.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -190,7 +597,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T23:29:54.629801+00:00'
+  extracted_at: '2026-07-23T06:53:53.060573+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -201,4 +608,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T23:29:54.630796+00:00'
+  validated_at: '2026-07-23T06:53:53.070901+00:00'

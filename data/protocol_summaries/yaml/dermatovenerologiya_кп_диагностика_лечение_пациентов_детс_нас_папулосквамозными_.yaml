@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детского населения с папулосквамозными нарушениями
+  title: Диагностика и лечение пациентов (детское население) с папулосквамозными нарушениями
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
   document_sha256: null
@@ -32,7 +32,6 @@ conditions:
   abbreviations: []
   icd10_codes:
   - L40
-  - L45
   - L40.0
   - L40.1
   - L40.2
@@ -40,6 +39,7 @@ conditions:
   - L40.4
   - L40.5
   - L40.8
+  - L45
   - L53.8
   - L60.3
   condition_applicability: null
@@ -47,7 +47,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Определение площади поражения кожи методом «ладони» пациента
+    - text: Определение доли пораженной кожи в пределах каждой из зон в количестве
+        ладоней пациента
       logic_group: null
       operator: unknown
       values: []
@@ -64,7 +65,28 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение площади поражения кожи методом «ладони» пациента
+        quote: Определение доли пораженной кожи в пределах каждой из зон в количестве
+          ладоней пациента
+    - text: Определение площади поражения каждой из областей с учетом доли площади
+        ладони пациента по отношению к площади оцениваемой зоны тела
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение площади поражения каждой из областей с учетом доли площади
+          ладони пациента по отношению к площади оцениваемой зоны тела
     optional: []
     exclusion: []
   required_exams:
@@ -90,8 +112,8 @@ conditions:
       row_index: null
       quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
         эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов,
-        СОЭ)
-  - name: Биохимический анализ крови
+        СОЭ);
+  - name: Анализ крови биохимический
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -113,7 +135,7 @@ conditions:
       row_index: null
       quote: анализ крови биохимический (определение уровня креатинина, мочевины,
         глюкозы, общего белка, АЛТ, АСТ, общего билирубина, холестерина, щелочной
-        фосфатазы, С-реактивного белка, АСЛО)
+        фосфатазы, С-реактивного белка, АСЛО);
   - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -134,7 +156,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ мочи
+      quote: общий анализ мочи;
   - name: Бактериологическое исследование слизи с миндалин и задней стенки глотки
     aliases: []
     exam_type: unknown
@@ -156,9 +178,10 @@ conditions:
       table_index: null
       row_index: null
       quote: бактериологическое исследование слизи с миндалин и задней стенки глотки
-        на аэробные и факультативно-анаэробные микроорганизмы
+        на аэробные и факультативно-анаэробные микроорганизмы;
   conditional_exams:
-  - name: Определение антител к Treponema pallidum (ИФА)
+  - name: Определение антител к бледной трепонеме (Treponema pallidum) методом ИФА
+      в сыворотке крови
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -172,7 +195,7 @@ conditions:
       protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
-      page_start: 7
+      page_start: 8
       page_end: null
       section_title: null
       section_type: null
@@ -180,28 +203,270 @@ conditions:
       row_index: null
       quote: определение антител к бледной трепонеме (Treponema pallidum) методом
         ИФА в сыворотке крови при установлении диагноза однократно у пациентов с 14
-        лет
-  treatment: null
-  follow_up:
-  - text: Медицинское наблюдение пациентов с папулосквамозными нарушениями (псориаз,
-      пустулез ладонный и подошвенный, парапсориаз, красный плоский лишай) осуществляют
-      врач-дерматовенеролог, врач-педиатр, врач-педиатр участковый, врач общей практики.
-    timing: null
+        лет.
+  - name: Биопсия кожи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
     required_if: []
-    expected_actions: []
+    timing: null
+    comment: null
     source_ref:
       protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
-      page_start: null
+      page_start: 2
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение пациентов с папулосквамозными нарушениями (псориаз,
-        пустулез ладонный и подошвенный, парапсориаз, красный плоский лишай) осуществляют
-        врач-дерматовенеролог, врач-педиатр, врач-п
+      quote: 'При наличии медицинских показаний в манипуляционной (процедурном кабинете)
+        выполняются: биопсия кожи врачом-дерматовенерологом, врачом – детским хирургом'
+  - name: Биопсия слизистых оболочек
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия слизистых оболочек врачом-стоматологом детским, врачом – детским
+        хирургом, врачом – детским онкологом-гематологом.
+  - name: Биохимический анализ крови (креатинин, мочевина, глюкоза, общий белок, АЛТ,
+      АСТ, общий билирубин, холестерин, ЩФ, СРБ, АСЛО)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ крови биохимический (определение уровня креатинина, мочевины,
+        глюкозы, общего белка, АЛТ, АСТ, общего билирубина, холестерина, щелочной
+        фосфатазы, С-реактивного белка, АСЛО)
+  - name: Исследование на HBsAg и анти-HCV перед назначением метотрексата, циклоспорина
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование на носительство поверхностного антигена вируса гепатита
+        В (далее – HBsAg) перед назначением метотрексата, циклоспорина; исследование
+        на антитела к антигенам вирусного гепатита С
+  treatment:
+    non_drug:
+    - text: Применение косметических средств (эмолентов), содержащих мягкий парафин,
+        жиры, декспантенол
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Применение косметических средств (эмолентов), содержащих мягкий парафин,
+          жиры, декспантенол
+    drug_groups: []
+    drugs:
+    - drug_name: Кальципотриол
+      active_substance: null
+      drug_group: null
+      dose_text: 'Мазь 50 мкг/г или раствор 50 мкг/г: тонким слоем на пораженные участки
+        1–2 раза в сутки 8–12 недель'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кальципотриол*, для лечения псориаза для наружного применения у пациентов
+          с 6 лет, мазь для наружного применения 50 мкг/г, наносится тонким слоем
+          на пораженные участки (исключая кожу лица) 1–2 раза в сутки
+    - drug_name: Кальципотриол / бетаметазон
+      active_substance: null
+      drug_group: null
+      dose_text: 'Мазь (50 мкг + 500 мкг)/г: тонким слоем на пораженные участки 1
+        раз в сутки (максимум 56 г в неделю) 4 недели'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кальципотриол/бетаметазон* (у пациентов с 12 лет), мазь для наружного
+          применения (50 мкг + 500 мкг)/г, наносится тонким слоем на пораженные участки
+          1 раз в сутки (максимум 56 г в неделю) 4 недели
+    - drug_name: Гидрокортизона бутират
+      active_substance: null
+      drug_group: null
+      dose_text: 'Мазь или крем 1 мг/г: тонким слоем на область высыпаний 2 раза в
+        сутки 2–3 недели (при поражении лица/гениталий/складок — 5–7 дней)'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: гидрокортизона бутират (у пациентов с 6 месяцев), мазь для наружного
+          применения 1 мг/г, крем для наружного применения 1 мг/г, наносится тонким
+          слоем на область высыпаний 2 раза в сутки 2–3 недели
+    - drug_name: Мометазона фуроат
+      active_substance: null
+      drug_group: null
+      dose_text: 'Мазь или крем 1 мг/г: тонким слоем на область высыпаний 2 раза в
+        сутки 2–3 недели'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: мометазона фуроат (у пациентов с 2 лет), мазь для наружного применения
+          1 мг/г, крем для наружного применения 1 мг/г, наносится тонким слоем на
+          область высыпаний 2 раза в сутки 2–3 недели
+    - drug_name: Клобетазол
+      active_substance: null
+      drug_group: null
+      dose_text: 'Мазь, крем или раствор 0,5 мг/г: тонким слоем на область высыпаний
+        2 раза в сутки 2 недели'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: клобетазол (у пациентов с 1 года), мазь для наружного применения 0,5
+          мг/г, крем для наружного применения 0,5 мг/г, раствор для наружного применения
+          0,5 мг/г, наносится тонким слоем 2 раза в сутки 2 недели
+    - drug_name: Пимекролимус
+      active_substance: null
+      drug_group: null
+      dose_text: 'Крем 10 мг/г: тонким слоем на пораженные участки 2 раза в сутки
+        4–8 недель'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: пимекролимус* (у пациентов с 2 лет), крем для наружного применения
+          10 мг/г, наносится тонким слоем на пораженные участки 2 раза в сутки 4–8
+          недель
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
   - text: Медицинское наблюдение врачом-дерматовенерологом осуществляется 1 раз в
       месяц в течение 2 месяцев после установления диагноза, далее – 2 раза в год
       до достижения стойкой ремиссии или реконвалесценции.
@@ -237,7 +502,90 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
-  red_flags: []
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Лечение легких и среднетяжелых форм проводится в амбулаторных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Лечение легких и среднетяжелых форм проводится в амбулаторных условиях.
+  - text: Пациентам с тяжелым течением и (или) неэффективностью амбулаторного лечения
+      помощь оказывается стационарно в дерматовенерологических отделениях больничных
+      организаций.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациентам с тяжелым течением и (или) неэффективностью амбулаторного лечения
+        помощь оказывается стационарно в дерматовенерологических отделениях больничных
+        организаций.
+  - text: Медицинское наблюдение пациентов с псориазом, пустулезом ладонным и подошвенным,
+      парапсориазом, красным плоским лишаем осуществляют врач-дерматовенеролог, врач-педиатр,
+      врач-педиатр участковый, врач общей практики.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов с псориазом, пустулезом ладонным и подошвенным,
+        парапсориазом, красным плоским лишаем осуществляют врач-дерматовенеролог,
+        врач-педиатр, врач-педиатр участковый, врач о
+  red_flags:
+  - text: Тяжелое течение папулосквамозных нарушений и/или неэффективность амбулаторного
+      лечения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_папулосквамозными_
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_папулосквамозными_нарушениями»_пост_МЗ_2024_107.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациентам с тяжелым течением папулосквамозных нарушений и (или) при неэффективности
+        лечения в амбулаторных условиях
   contraindications: []
   complications: []
   kz_checklist: null
@@ -246,7 +594,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:36:12.671553+00:00'
+  extracted_at: '2026-07-23T07:28:14.244614+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -257,4 +605,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-02T00:36:12.680380+00:00'
+  validated_at: '2026-07-23T07:28:14.260130+00:00'

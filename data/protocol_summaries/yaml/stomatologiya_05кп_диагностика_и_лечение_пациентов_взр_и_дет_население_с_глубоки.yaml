@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с глубоким прикусом
+  title: Диагностика и лечение пациентов (взрослое и детское население) с глубоким
+    прикусом
   url: null
   local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
   document_sha256: null
@@ -26,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: profound_overbite
+- condition_id: glubokij_prikus
   name: Глубокий прикус
   synonyms: []
   abbreviations: []
@@ -39,7 +40,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Выявление факторов, влияющих на возникновение и развитие ГП
+    - text: Выявление факторов, влияющих на возникновение и развитие ГП на зубоальвеолярном
+        и (или) гнатическом уровне
       logic_group: null
       operator: unknown
       values: []
@@ -56,7 +58,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Выявление факторов, влияющих на возникновение и развитие ГП
+        quote: Выявление факторов, влияющих на возникновение и развитие ГП на зубоальвеолярном
+          и (или) гнатическом уровне
     - text: Определение степени выраженности ГП
       logic_group: null
       operator: unknown
@@ -111,10 +114,66 @@ conditions:
         table_index: null
         row_index: null
         quote: Выявление взаимосвязи стоматологического и общего здоровья с ГП
+    - text: Перекрытие верхними резцами и клыками нижних более чем на две трети величины
+        клинических коронок
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перекрытие верхними резцами и клыками нижних более чем на две трети
+          величины клинических коронок
+    - text: Инфраокклюзия верхних и супраокклюзия нижних передних зубов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инфраокклюзия верхних и супраокклюзия нижних передних зубов
+    - text: Увеличение глубины резцового перекрытия
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Увеличение глубины резцового перекрытия
     optional: []
     exclusion: []
   required_exams:
-  - name: Оценка общесоматического состояния
+  - name: Определение общесоматического состояния пациента
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -134,16 +193,342 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Определяют общесоматическое состояние пациентов, в первую очередь с выявлением
-        патологии, которая может повлиять на выбор метода лечения (бронхиальная астма,
-        эпилепсия, состояние эндокринной системы, аллергические реакции, другие).
-  conditional_exams: []
-  treatment: null
-  follow_up: []
+      quote: При диагностике ГП также определяют общесоматическое состояние пациентов,
+        в первую очередь с выявлением патологии, которая может повлиять на выбор метода
+        лечения
+  conditional_exams:
+  - name: Консультации врачей-специалистов (стоматолога-терапевта, ортопеда, хирурга,
+      ЧЛХ, оториноларинголога, травматолога-ортопеда, психотерапевта, психиатра и
+      др.)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультации врачей-специалистов соответствующего профиля (врача-стоматолога-терапевта,
+        врача-стоматолога-ортопеда, врача-стоматолога-хирурга; врача-челюстно-лицевого
+        хирурга; врача-оториноларинголога
+  - name: конусно-лучевая компьютерная томография челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: конусно-лучевая компьютерная томография челюстно-лицевой области (детям
+        с ГП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной
+        аномалии)
+  - name: телерентгенография головы в боковой проекции
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: телерентгенография головы в боковой проекции (детям с ГП в возрасте 6
+        лет и старше, детям младше 6 лет для исключения врожденной аномалии)
+  - name: прицельная внутриротовая контактная рентгенография или радиовизиография
+      зубов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: прицельная внутриротовая контактная рентгенография или радиовизиография
+        зубов
+  - name: конусно-лучевая компьютерная томография височно-нижнечелюстных суставов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: конусно-лучевая компьютерная томография височно-нижнечелюстных суставов
+        (детям с ГП в возрасте 6 лет и старше, детям младше 6 лет для исключения врожденной
+        аномалии)
+  - name: функциональные методы исследования (функциональные пробы; электромиография,
+      миотонометрия)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функциональные методы исследования (функциональные пробы; электромиография,
+        миотонометрия)
+  - name: фотографирование для оценки эстетики лица, симметрии лица, вида профиля,
+      ширины улыбки
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: фотографирование для оценки эстетики лица, симметрии лица, вида профиля,
+        ширины улыбки
+  treatment:
+    non_drug:
+    - text: Ортодонтическое лечение с использованием съемных и несъемных ортодонтических
+        аппаратов (брекет-системы, элайнеры, каппы, корректоры, функциональные и комбинированные
+        аппараты)
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ортодонтическое лечение с использованием съемных и несъемных ортодонтических
+          аппаратов (брекет-системы, элайнеры, каппы, корректоры, функциональные и
+          комбинированные аппараты)
+    - text: Использование интрузионных ортодонтических дуг и временных ортодонтических
+        имплантатов
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Использование интрузионных ортодонтических дуг и временных ортодонтических
+          имплантатов
+    - text: Хирургический этап при выраженной скелетной форме (сегментарная остеотомия
+        верхней челюсти, двусторонняя межкортикальная скользящая остеотомия нижней
+        челюсти, остеотомия подбородочного отдела)
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургический этап при выраженной скелетной форме (сегментарная остеотомия
+          верхней челюсти, двусторонняя межкортикальная скользящая остеотомия нижней
+          челюсти, остеотомия подбородочного отдела)
+    - text: Применение съемных и несъемных ретенционных аппаратов для сохранения результатов
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Применение съемных и несъемных ретенционных аппаратов для сохранения
+          результатов
+    - text: Избирательное пришлифовывание и (или) удаление отдельных зубов по показаниям
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Избирательное пришлифовывание и (или) удаление отдельных зубов по показаниям
+    - text: Окклюзионная шина при заболеваниях височно-нижнечелюстного сустава
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Окклюзионная шина при заболеваниях височно-нижнечелюстного сустава
+    - text: Местосохраняющее, восстановительное и эстетическое протезирование
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Местосохраняющее, восстановительное и эстетическое протезирование
+    - text: Компактостеотомия перед исправлением выраженных зубочелюстных деформаций
+      source_ref:
+        protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Компактостеотомия перед исправлением выраженных зубочелюстных деформаций
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: 'Медицинские осмотры врачом-стоматологом-хирургом (врачом-челюстно-лицевым
+      хирургом), затем врачом-стоматологом-ортодонтом: первые 3 месяца — не реже 1
+      раза; в последующем до 1 года — не реже 1 раза в 6 месяцев'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинские осмотры врачом-стоматологом-хирургом (врачом-челюстно-лицевым
+        хирургом), затем врачом-стоматологом-ортодонтом: первые 3 месяца — не реже
+        1 раза; в последующем до 1 года — не реже 1 раза в '
+  - text: Ретенционный период после ортодонтического лечения не менее 2 лет (у взрослых
+      — вплоть до пожизненного)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ретенционный период после ортодонтического лечения не менее 2 лет (у
+        взрослых — вплоть до пожизненного)
   hospitalization: []
-  routing: []
+  routing:
+  - text: Амбулаторно (на стоматологическом приеме в амбулаторных условиях)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно (на стоматологическом приеме в амбулаторных условиях)
   red_flags:
-  - text: Неадекватное психоэмоциональное состояние пациента
+  - text: Состояния, при которых противопоказано ортодонтическое лечение (нахождение
+      на учете у врача-психиатра-нарколога, врача-психиатра детского и др.)
     aliases: []
     red_flag_type: other
     severity: high
@@ -159,12 +544,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'целенаправленно выявляют: неадекватное психоэмоциональное состояние
-        пациента'
+      quote: состояния, при которых противопоказано ортодонтическое лечение (нахождение
+        на учете у врача-психиатра-нарколога, врача-психиатра детского, другое).
   - text: Острые поражения слизистой оболочки полости рта и красной каймы губ
     aliases: []
     red_flag_type: other
-    severity: high
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -177,12 +562,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'целенаправленно выявляют: острые поражения слизистой оболочки полости
-        рта и красной каймы губ'
+      quote: острые поражения слизистой оболочки полости рта и красной каймы губ;
   - text: Острые воспалительные заболевания органов и тканей рта
     aliases: []
     red_flag_type: other
-    severity: high
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -195,12 +579,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'целенаправленно выявляют: острые воспалительные заболевания органов
-        и тканей рта'
+      quote: острые воспалительные заболевания органов и тканей рта;
   - text: Болезни периодонта в стадии обострения
     aliases: []
     red_flag_type: other
-    severity: high
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -213,61 +596,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'целенаправленно выявляют: болезни периодонта в стадии обострения'
-  - text: Неудовлетворительное гигиеническое состояние полости рта
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: неудовлетворительное гигиеническое состояние
-        полости рта'
-  - text: Отказ от лечения
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: желание лечиться или отказ от лечения'
-  - text: Состояния, при которых противопоказано ортодонтическое лечение
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_05кп_диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоки
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/05КП_Диагностика_и_лечение_пациентов_взр_и_дет_население_с_глубоким_прикусом_пост_МЗ_10.08.2022_84.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: состояния, при которых противопоказано ортодонтическое
-        лечение (нахождение на учете у врача-психиатра-нарколога, врача-психиатра
-        детского, другое).'
+      quote: болезни периодонта в стадии обострения;
   contraindications: []
   complications: []
   kz_checklist: null
@@ -276,7 +605,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:17:07.760357+00:00'
+  extracted_at: '2026-07-23T09:54:57.770420+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -287,4 +616,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:17:07.761364+00:00'
+  validated_at: '2026-07-23T09:54:57.771483+00:00'

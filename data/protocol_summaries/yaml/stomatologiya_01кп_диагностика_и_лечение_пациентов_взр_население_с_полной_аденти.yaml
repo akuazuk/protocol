@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население с полной адентией
+  title: Диагностика и лечение пациентов (взрослое население) с полной адентией
   url: null
   local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
   document_sha256: null
@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: complete_edentulism
-  name: Полная адентия
+- condition_id: polnaya_adentiya
+  name: Полная адентия (первичная и вторичная)
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -36,8 +36,160 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Полное отсутствие зубов на челюстях (полная адентия), подтвержденное внешним
+        осмотром, оценкой полости рта и лучевыми методами исследования (ортопантомография,
+        КЛКТ).
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Полное отсутствие зубов на челюстях (полная адентия), подтвержденное
+          внешним осмотром, оценкой полости рта и лучевыми методами исследования (ортопантомография,
+          КЛКТ).
+    optional: []
+    exclusion: []
   required_exams:
+  - name: Сбор анамнеза
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор анамнеза;
+  - name: Внешний осмотр и пальпация челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: внешний осмотр и пальпация челюстно-лицевой области;
+  - name: Осмотр полости рта с помощью дополнительных инструментов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр полости рта с помощью дополнительных инструментов;
+  - name: Оценка состояния слизистой оболочки полости рта
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка состояния слизистой оболочки полости рта;
+  - name: Оценка состояния зубных протезов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: оценка состояния зубных протезов;
+  - name: Ортопантомография челюстей
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'инструментальное исследование (лучевой метод исследования): ортопантомография
+        челюстей.'
   - name: Медицинский осмотр и рентгенологический контроль
     aliases: []
     exam_type: unknown
@@ -52,7 +204,7 @@ conditions:
       protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 6
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
@@ -60,12 +212,99 @@ conditions:
       row_index: null
       quote: медицинский осмотр и рентгенологический контроль в течение 1 недели после
         проведения хирургического этапа дентальной имплантации и непосредственно перед
-        протезированием
-  conditional_exams: []
+        протезированием.
+  conditional_exams:
+  - name: Конусно-лучевая компьютерная томография (КЛКТ) челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При применении метода лечения ПА с использованием дентальных имплантатов
+        – конусно-лучевая компьютерная томография (далее – КЛКТ) челюстно-лицевой
+        области.
+  - name: КЛКТ височно-нижнечелюстных суставов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: КЛКТ височно-нижнечелюстных суставов;
+  - name: Пространственное ориентирование модели верхней челюсти в артикуляторе с
+      помощью лицевой дуги/HIP-анализатора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: использование аппаратов (лицевая дуга, HIP-анализатор, другие) для пространственного
+        ориентирования модели верхней челюсти в артикуляторе
+  - name: Функционально-диагностические исследования (функциональные пробы, электромиография)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функционально-диагностические исследования (функциональные пробы, электромиография);
   treatment:
     non_drug:
-    - text: Мотивация к формированию здоровых повседневных привычек и рекомендации
-        по гигиене рта и питанию
+    - text: Протезирование зубных протезов
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
         document_url: null
@@ -76,8 +315,33 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Мотивация к формированию здоровых повседневных привычек и рекомендации
-          по гигиене рта и питанию
+        quote: Протезирование зубных протезов
+    - text: Дентальная имплантация
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дентальная имплантация
+    - text: Мотивация к формированию здоровых привычек, рекомендации по гигиене полости
+        рта и питанию
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Мотивация к формированию здоровых привычек, рекомендации по гигиене
+          полости рта и питанию
     - text: Профессиональное удаление зубных отложений
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
@@ -90,8 +354,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Профессиональное удаление зубных отложений
-    - text: Терапевтическое, ортопедическое или хирургическое лечение при частичной
-        адентии одной из челюстей
+    - text: Ортопедическое лечение с использованием съемных пластинчатых протезов
+        (снятие оттисков, фиксация центрального соотношения челюстей, подбор и припасовка
+        протеза)
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
         document_url: null
@@ -102,11 +367,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Терапевтическое, ортопедическое или хирургическое лечение при частичной
-          адентии одной из челюстей
-    - text: Ортопедическое лечение съемными пластинчатыми протезами (получение оттисков,
-        определение центрального соотношения челюстей, выбор зубов, проверка восковой
-        конструкции, припасовка и наложение, рекомендации по уходу, коррекция)
+        quote: Ортопедическое лечение с использованием съемных пластинчатых протезов
+          (снятие оттисков, фиксация центрального соотношения челюстей, подбор и припасовка
+          протеза)
+    - text: Дентальная имплантация (непосредственная или отсроченная, с изготовлением
+        несъемных или съемных конструкций)
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
         document_url: null
@@ -117,11 +382,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ортопедическое лечение съемными пластинчатыми протезами (получение
-          оттисков, определение центрального соотношения челюстей, выбор зубов, проверка
-          восковой конструкции, припасовка и наложение, рекоменд
-    - text: 'Особенности ортопедического лечения съемными протезами: изоляция торуса
-        и/или создание клапанной зоны по медицинским показаниям'
+        quote: Дентальная имплантация (непосредственная или отсроченная, с изготовлением
+          несъемных или съемных конструкций)
+    - text: Направленная костная регенерация и пластика мягких тканей
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
         document_url: null
@@ -132,9 +395,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Особенности ортопедического лечения съемными протезами: изоляция торуса
-          и/или создание клапанной зоны по медицинским показаниям'
-    - text: Планирование дентальной имплантации совместно ортопедом и хирургом
+        quote: Направленная костная регенерация и пластика мягких тканей
+    - text: Применение окклюзионной шины при заболеваниях височно-нижнечелюстных суставов
+        и функциональных расстройствах жевательных мышц
       source_ref:
         protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
         document_url: null
@@ -145,149 +408,61 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Планирование дентальной имплантации совместно ортопедом и хирургом
-    - text: Непосредственная или отсроченная дентальная имплантация
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Непосредственная или отсроченная дентальная имплантация
-    - text: Применение несъемных или съемных зубных протезов с опорой на дентальные
-        имплантаты (из диоксида циркония, керамики, композитов, металлокерамические,
-        с аттачменной фиксацией)
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Применение несъемных или съемных зубных протезов с опорой на дентальные
-          имплантаты (из диоксида циркония, керамики, композитов, металлокерамические,
-          с аттачменной фиксацией)
-    - text: Изготовление хирургических шаблонов по медицинским показаниям
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Изготовление хирургических шаблонов по медицинским показаниям
-    - text: Позиционирование имплантата с учетом анатомических условий, биотипа десны
-        и планируемой конструкции
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Позиционирование имплантата с учетом анатомических условий, биотипа
-          десны и планируемой конструкции
-    - text: Направленная костная регенерация и пластика мягких тканей (предварительно,
-        одномоментно или на этапах реабилитации) по медицинским показаниям
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Направленная костная регенерация и пластика мягких тканей (предварительно,
-          одномоментно или на этапах реабилитации) по медицинским показаниям
-    - text: Использование альтернативных видов имплантатов и/или увеличение их количества
-        по медицинским показаниям
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Использование альтернативных видов имплантатов и/или увеличение их
-          количества по медицинским показаниям
-    - text: Выбор стандартных или индивидуально изготовленных абатментов
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Выбор стандартных или индивидуально изготовленных абатментов
-    - text: Использование цементного или винтового методов фиксации несъемных ортопедических
-        конструкций
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Использование цементного или винтового методов фиксации несъемных ортопедических
-          конструкций
-    - text: Ортопедическое лечение выполняется немедленно или отсрочено на 3–6 месяцев
-        по медицинским показаниям
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Ортопедическое лечение выполняется немедленно или отсрочено на 3–6
-          месяцев по медицинским показаниям
-    - text: Изготовление временных ортопедических конструкций
-      source_ref:
-        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Изготовление временных ортопедических конструкций
+        quote: Применение окклюзионной шины при заболеваниях височно-нижнечелюстных
+          суставов и функциональных расстройствах жевательных мышц
     drug_groups: []
     drugs:
-    - drug_name: Артикаин/ Эпинефрин
+    - drug_name: Лидокаин (спрей для местного применения 100 мг/мл)
       active_substance: null
       drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл, (40 мг + 0,006 мг)/мл,
-        (40 мг + 0,010 мг)/мл, (40 мг + 0,012 мг)/мл в картриджах или ампулах. Максимальная
-        доза артикаина до 7 мг на 1 кг массы тела, но не '
+      dose_text: 1–3 нажатия на дозирующий клапан или смазывание тампоном
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+          слизистую оболочку полости рта или десну.
+    - drug_name: Лидокаин (раствор для инъекций 10 мг/мл, 20 мг/мл)
+      active_substance: null
+      drug_group: null
+      dose_text: Индивидуальный режим дозирования, переносимость до 500 мг (12,5 мл)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Режим дозирования устанавливают индивидуально, в зависимости от вида
+          анестезии и места введения, размера анестезируемого участка, возраста пациента.
+    - drug_name: Хлоргексидин (раствор для местного и наружного применения 0,5 мг/мл)
+      active_substance: null
+      drug_group: null
+      dose_text: 5–10 мл раствора в виде орошений, полосканий и аппликаций 2–3 раза
+        в сутки, экспозиция 1–3 мин
       frequency_text: null
       duration_text: null
       route: null
@@ -305,15 +480,39 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Максимальная доза не должна превышать 300 мг. При выполнении одной
-          лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг
-          массы тела.
+        quote: Лекарственное средство применяется в виде орошений, полосканий и аппликаций
+          – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки
+          полости рта или на десну с экспозицией 1–3 мин. 2–3 раза в сутки
+    - drug_name: Артикаин / Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: До 7 мг на 1 кг массы тела при одной процедуре; максимальная доза
+        не более 300 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
+          в дозе до 7 мг на 1 кг массы тела. Максимальная доза не должна превышать
+          300 мг
     - drug_name: Перекись водорода
       active_substance: null
       drug_group: null
-      dose_text: Раствор для наружного применения 30 мг/мл. Для полоскания полости
-        рта или обработки слизистой оболочки/десны используется раствор 2,5 мг/мл
-        (разводят водой в соотношении 1:11). Длительность применения
+      dose_text: Раствор 2,5 мг/мл (разведение 30 мг/мл водой 1:11) для полоскания
+        и обработки слизистой/десны
       frequency_text: null
       duration_text: null
       route: null
@@ -337,9 +536,8 @@ conditions:
     - drug_name: Ибупрофен
       active_substance: null
       drug_group: null
-      dose_text: Таблетки/капсулы 200 мг, суспензия 200 мг/5 мл. Внутрь по 200 мг
-        3–4 раза в сутки, для быстрого эффекта до 400 мг 3 раза в сутки. При достижении
-        лечебного эффекта суточную дозу уменьшают до 600–800 мг
+      dose_text: Внутрь по 200 мг 3–4 раза в сутки (при необходимости до 400 мг 3
+        раза в сутки с последующим снижением до 600–800 мг/сут)
       frequency_text: null
       duration_text: null
       route: null
@@ -364,8 +562,23 @@ conditions:
     surgery: []
     source_refs: []
   follow_up:
+  - text: Осуществление медицинского наблюдения за результатами лечения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Осуществление медицинского наблюдения за результатами лечения.
   - text: Медицинские осмотры врачом-стоматологом-ортопедом через 6 месяцев после
-      завершения ортопедического лечения ПА.
+      завершения ортопедического лечения, далее 2 раза в год (каждые 6 месяцев)
     timing: null
     required_if: []
     expected_actions: []
@@ -380,9 +593,9 @@ conditions:
       table_index: null
       row_index: null
       quote: Медицинские осмотры врачом-стоматологом-ортопедом через 6 месяцев после
-        завершения ортопедического лечения ПА.
-  - text: Последующее медицинское наблюдение за состоянием зубных протезов рекомендуется
-      выполнять 2 раза в год (каждые 6 месяцев).
+        завершения ортопедического лечения, далее 2 раза в год (каждые 6 месяцев)
+  - text: Оценка состояния протезов, имплантатов, периимплантных тканей, слизистой
+      и гигиены рта при каждом осмотре
     timing: null
     required_if: []
     expected_actions: []
@@ -396,11 +609,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Последующее медицинское наблюдение за состоянием зубных протезов рекомендуется
-        выполнять 2 раза в год (каждые 6 месяцев).
-  - text: При каждом медицинском осмотре проводится повторная оценка состояния зубных
-      протезов, дентальных имплантатов, периимплантных тканей и слизистой оболочки
-      полости рта, гигиеническая оценка полости рта.
+      quote: Оценка состояния протезов, имплантатов, периимплантных тканей, слизистой
+        и гигиены рта при каждом осмотре
+  - text: Проведение профессиональной гигиены полости рта у врача-стоматолога-терапевта
+      при каждом посещении
     timing: null
     required_if: []
     expected_actions: []
@@ -414,26 +626,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При каждом медицинском осмотре проводится повторная оценка состояния
-        зубных протезов, дентальных имплантатов, периимплантных тканей и слизистой
-        оболочки полости рта, гигиеническая оценка полости рта.
-  - text: При каждом посещении пациента с ПА рекомендуется проводить профессиональную
-      гигиену полости рта (включая несъемные конструкции зубных протезов) у врача-стоматолога-терапевта.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При каждом посещении пациента с ПА рекомендуется проводить профессиональную
-        гигиену полости рта (включая несъемные конструкции зубных протезов) у врача-стоматолога-терапевта.
+      quote: Проведение профессиональной гигиены полости рта у врача-стоматолога-терапевта
+        при каждом посещении
   hospitalization: []
   routing:
   - text: амбулаторно
@@ -450,7 +644,50 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
-  red_flags: []
+  red_flags:
+  - text: 'Абсолютные противопоказания к дентальной имплантации: декомпенсированные
+      заболевания, инфаркт/НМК (<6 мес), имплантация клапанов сердца, иммуносупрессия,
+      злокачественные новообразования, в/в бисфосфонаты, наркомания, тяжелые психические
+      заболевания'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Абсолютными медицинскими противопоказаниями хирургического лечения ПА
+        с применением методов дентальной имплантации на момент обращения пациента
+        являются: общесоматические заболевания в стадии декомпенсации'
+  - text: 'Относительные противопоказания: аллергия на анестетики, неадекватная гигиена
+      рта, обострения воспалительных процессов, курение, алкоголизм, сахарный диабет,
+      беременность'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_01кп_диагностика_и_лечение_пациентов_взр_население_с_полной_аденти
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/01КП_Диагностика_и_лечение_пациентов_взр_население_с_полной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Относительными медицинскими противопоказаниями хирургического лечения
+        ПА с применением методов дентальной имплантации являются: аллергия на местные
+        анестетики;'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -459,7 +696,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T17:42:21.994319+00:00'
+  extracted_at: '2026-07-23T09:50:44.596532+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -470,4 +707,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T17:42:21.998484+00:00'
+  validated_at: '2026-07-23T09:50:44.609970+00:00'

@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: гранулема слизистой полости рта
+  title: Гранулема слизистой полости рта
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
   document_sha256: null
@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: granuloma_oral_mucosa
-  name: гранулема слизистой полости рта
+- condition_id: granulema_slizistoj_polosti_rta
+  name: Гранулема слизистой полости рта
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -37,15 +37,14 @@ conditions:
   - K06.2
   - K07.9
   - K12.2
-  - K13.4
-  - B20.0
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Дифференциальная диагностика с туберкулезом, сифилисом, травматической
-        язвой, гемангиомой и меланомой
+    - text: Дифференциальная диагностика гранулемы и гранулемоподобных поражений слизистой
+        оболочки полости рта с туберкулезом, сифилисом, травматической язвой, гемангиомой
+        и меланомой
       logic_group: null
       operator: unknown
       values: []
@@ -62,16 +61,61 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Дифференциальная диагностика с туберкулезом, сифилисом, травматической
+        quote: Дифференциальная диагностика гранулемы и гранулемоподобных поражений
+          слизистой оболочки полости рта с туберкулезом, сифилисом, травматической
           язвой, гемангиомой и меланомой
+    - text: Сосудистый узелок, обычно алого цвета, с влажной поверхностью или покрытый
+        корками, состоящий из пролиферирующих капилляров, погруженных в отечную строму
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сосудистый узелок, обычно алого цвета, с влажной поверхностью или покрытый
+          корками, состоящий из пролиферирующих капилляров, погруженных в отечную
+          строму
     optional: []
     exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Дополнительные диагностические исследования и консультации врачей-специалистов
+      по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: дополнительные диагностические исследования и врачебные консультации
+        врачей-специалистов по профилю сопутствующей патологии проводятся на догоспитальном
+        этапе.
   treatment:
     non_drug:
-    - text: В период лечения следует придерживаться умеренной интенсивности физических
-        нагрузок
+    - text: Соблюдение умеренной интенсивности физических нагрузок в период лечения
       source_ref:
         protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
         document_url: null
@@ -82,10 +126,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: В период лечения следует придерживаться умеренной интенсивности физических
-          нагрузок
-    - text: Радикальное устранение патологического процесса (хирургическая помощь)
-        с целью предупреждения послеоперационных осложнений и рецидива.
+        quote: Соблюдение умеренной интенсивности физических нагрузок в период лечения
+    - text: Плановое хирургическое лечение (радикальное устранение патологического
+        процесса)
       source_ref:
         protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
         document_url: null
@@ -96,16 +139,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Радикальное устранение патологического процесса (хирургическая помощь)
-          с целью предупреждения послеоперационных осложнений и рецидива.
+        quote: Плановое хирургическое лечение (радикальное устранение патологического
+          процесса)
     drug_groups: []
     drugs:
     - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: Местная анестезия (инфильтрационная, проводниковая). Доза артикаина
-        до 7 мг на 1 кг массы тела за одну процедуру. Вводится только в невоспаленные
-        ткани.
+      dose_text: Местная анестезия (инфильтрационная, проводниковая). Взрослым в дозе
+        до 7 мг на 1 кг массы тела при выполнении одной лечебной процедуры.
       frequency_text: null
       duration_text: null
       route: null
@@ -123,16 +165,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ЛП предназначен для инъекционного применения в ротовой полости и может
-          вводиться только в ткани, где отсутствует воспаление. При выполнении одной
-          лечебной процедуры взрослым можно вводить артикаин в дозе до 7 мг на 1 кг
-          массы тела
+        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
+          в дозе до 7 мг на 1 кг массы тела
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Местная анестезия (инфильтрационная, проводниковая). Режим дозирования
-        устанавливают индивидуально, в наименьшей эффективной дозе. Максимальная доза
-        для взрослых не должна превышать 300 мг.
+      dose_text: Местная анестезия (инфильтрационная, проводниковая). Максимальная
+        доза для взрослых не должна превышать 300 мг.
       frequency_text: null
       duration_text: null
       route: null
@@ -150,42 +189,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Режим дозирования устанавливают индивидуально, в зависимости от вида
-          анестезии и места введения, размера анестезируемого участка, возраста пациента.
-          ЛП следует вводить в наименьшей концентрации и наименьшей дозе, дающей требуемый
-          эффект.
-    - drug_name: Амоксициллин/Клавулановая кислота
-      active_substance: null
-      drug_group: null
-      dose_text: Внутривенно медленно по 1000 мг/200 мг 3 раза в сутки. Внутрь по
-        1 таб. 500 мг + 125 мг 3 раза/сут или по 1 таб. 875 мг + 125 мг 2 раза/сут,
-        в начале приема пищи.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
-        page_start: 6
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Внутривенно медленно (1 г ЛП растворяется в 20,0 мл воды для инъекций)
-          по 1000 мг/200 мг 3 раза в сутки. Взрослые по 1 таб. 500 мг + 125 мг 3 раза/сут
-          или по 1 таб. 875 мг + 125 мг 2 раза/сут.
+        quote: Максимальная доза для взрослых не должна превышать 300 мг
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Раствор 0,5 мг/мл. Местно для инстилляции и ирригации ран/лунок –
-        5–10 мл 2–3 раза в сутки. Для полоскания полости рта – 2–3 раза в сутки (смешивать
-        с равным количеством воды). Длительность применения
+      dose_text: Раствор 0,5 мг/мл местно для инстилляции и ирригации ран полости
+        рта и лунок удаленных зубов — 5–10 мл раствора 2–3 раза в сутки; для полосканий
+        (смешивать с равным количеством воды) 2–3 раза в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -204,15 +214,37 @@ conditions:
         table_index: null
         row_index: null
         quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоскания
-          полости рта назначают 2–3 раза в сутки (для полосканий ЛП следует смешивать
-          с равным количеством воды).
+          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
+    - drug_name: Амоксициллин/Клавулановая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: Внутривенно медленно по 1000 мг/200 мг 3 раза в сутки; либо внутрь
+        по 1 таб. 500 мг + 125 мг 3 раза/сут или по 1 таб. 875 мг + 125 мг 2 раза/сут.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Взрослые по 1 таб. 500 мг + 125 мг 3 раза/сут или по 1 таб. 875 мг
+          + 125 мг 2 раза/сут.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение врачом-стоматологом-хирургом в амбулаторных условиях
-      1 раз в 6 месяцев в течение 1 года. Далее наблюдение не требуется.
+  - text: 'Оценка эффективности лечения: устранение патологически измененных участков
+      слизистой оболочки полости рта'
     timing: null
     required_if: []
     expected_actions: []
@@ -226,12 +258,45 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение врачом-стоматологом-хирургом в амбулаторных условиях
-        1 раз в 6 месяцев в течение 1 года. Далее наблюдение не требуется.
+      quote: 'Оценка эффективности лечения: устранение патологически измененных участков
+        слизистой оболочки полости рта'
+  - text: 'Оценка эффективности лечения: отсутствие послеоперационных осложнений и
+      рецидива патологического процесса'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка эффективности лечения: отсутствие послеоперационных осложнений
+        и рецидива патологического процесса'
+  - text: Медицинское наблюдение в амбулаторных условиях у врача-стоматолога-хирурга
+      1 раз в 6 месяцев в течение 1 года.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в амбулаторных условиях у врача-стоматолога-хирурга
+        1 раз в 6 месяцев в течение 1 года.
   hospitalization: []
   routing:
-  - text: Госпитализация (стационарные условия) для лечения гранулемы и гранулемоподобных
-      поражений слизистой оболочки полости рта.
+  - text: Лечение проводиться в стационарных условиях.
     timing: null
     required_if: []
     source_ref:
@@ -244,10 +309,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация (стационарные условия) для лечения гранулемы и гранулемоподобных
-        поражений слизистой оболочки полости рта.
-  - text: Амбулаторно для лечения поражений поверхностной локализации размером до
-      1 см.
+      quote: Лечение проводиться в стационарных условиях.
+  - text: Лечение пациентов с поражениями поверхностной локализации размером до 1
+      см проводится в амбулаторных условиях.
     timing: null
     required_if: []
     source_ref:
@@ -260,9 +324,27 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторно для лечения поражений поверхностной локализации размером
-        до 1 см.
-  red_flags: []
+      quote: Лечение пациентов с поражениями поверхностной локализации размером до
+        1 см проводится в амбулаторных условиях.
+  red_flags:
+  - text: Введение местного анестетика (артикаин) в ткани с наличием воспаления запрещено
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп15_гранулема_слизистой_полости_рта
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП15_гранулема_слизистой_полости_рта.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЛП предназначен для инъекционного применения в ротовой полости и может
+        вводиться только в ткани, где отсутствует воспаление.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -271,7 +353,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T22:24:09.210420+00:00'
+  extracted_at: '2026-07-23T10:08:41.289729+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -282,4 +364,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T22:24:09.212846+00:00'
+  validated_at: '2026-07-23T10:08:41.293434+00:00'

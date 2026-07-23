@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Пренатальная диагностика и внутриутробное лечение аномалий плода приводящих
+  title: Пренатальная диагностика и внутриутробное лечение аномалий плода, приводящих
     к диспропорции
   url: null
   local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
@@ -27,8 +27,9 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: fetal_anomalies_leading_to_disproportion
-  name: Аномалии плода, приводящие к диспропорции
+- condition_id: anomalii_ploda_disproporciya
+  name: Другие аномалии плода, приводящие к диспропорции, требующей предоставления
+    медицинской помощи матери
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -36,9 +37,70 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Асцит плода: скопление жидкости в брюшной полости'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Асцит плода: скопление жидкости в брюшной полости'
+    - text: 'Водянка плода: скопление жидкости по крайней мере в двух отделах плода
+        (подкожная клетчатка, плевральная полость, полость перикарда, брюшная полость)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Водянка плода: скопление жидкости по крайней мере в двух отделах плода
+          (подкожная клетчатка, плевральная полость, полость перикарда, брюшная полость)'
+    - text: 'Миеломенингоцеле: кистозная расщелина любого отдела позвоночника с грыжевым
+        мешком'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
+        document_url: null
+        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Миеломенингоцеле: кистозная расщелина любого отдела позвоночника с
+          грыжевым мешком'
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Ультразвуковая диагностика
+  - name: Ультразвуковая диагностика (система экспертного или высокого класса)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -60,7 +122,7 @@ conditions:
       row_index: null
       quote: 'Для диагностики аномалий плода, приводящих к диспропорции, применяются:
         система ультразвуковая диагностическая экспертного или высокого класса;'
-  - name: УЗИ плода
+  - name: УЗИ плода (2D, ЦДК, импульсно-волновая допплерометрия)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -81,8 +143,8 @@ conditions:
       table_index: null
       row_index: null
       quote: 'УЗИ плода осуществляется с применением следующих методик: УЗИ в режиме
-        двухмерного изображения (2D), с обязательной оценкой структур плода и экстрафетальных
-        структур: установить точную локализацию объемного образования плода...'
+        двухмерного изображения (2D)... цветовое допплеровское картирование... импульсно-волновая
+        допплерометрия'
   conditional_exams:
   - name: Магнитно-резонансная томография (МРТ) плода
     aliases: []
@@ -132,7 +194,7 @@ conditions:
   treatment:
     non_drug:
     - text: Фетоскопическая или интерстициальная лазерная коагуляция питающих опухоль
-        сосудов (применяется при крестцовой тератоме, опухолях)
+        сосудов (при крестцовой тератоме, опухолях)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
         document_url: null
@@ -144,7 +206,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Фетоскопическая или интерстициальная лазерная коагуляция питающих опухоль
-          сосудов (применяется при крестцовой тератоме, опухолях)
+          сосудов (при крестцовой тератоме, опухолях)
     - text: Открытая или фетоскопическая коррекция миеломенингоцеле
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
@@ -157,8 +219,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Открытая или фетоскопическая коррекция миеломенингоцеле
-    - text: Аспирация кист под ультразвуковым контролем (применяется при крестцовой
-        тератоме, кистах брюшной полости)
+    - text: Аспирация кист под ультразвуковым контролем (при крестцовой тератоме,
+        кистах брюшной полости)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
         document_url: null
@@ -169,10 +231,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Аспирация кист под ультразвуковым контролем (применяется при крестцовой
-          тератоме, кистах брюшной полости)
-    - text: Пункция и аспирация жидкости в брюшной и (или) плевральных полостях (применяется
-        при асците, гидротораксе, водянке)
+        quote: Аспирация кист под ультразвуковым контролем (при крестцовой тератоме,
+          кистах брюшной полости)
+    - text: Пункция и аспирация жидкости в брюшной и (или) плевральных полостях (при
+        асците, гидротораксе, водянке)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
         document_url: null
@@ -184,9 +246,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Пункция и аспирация жидкости в брюшной и (или) плевральных полостях
-          (применяется при асците, гидротораксе, водянке)
-    - text: Торако-амниотическое и (или) абдомино-амниотическое шунтирование (применяется
-        при асците, гидротораксе, водянке)
+          (при асците, гидротораксе, водянке)
+    - text: Торако-амниотическое и (или) абдомино-амниотическое шунтирование (при
+        асците, гидротораксе, водянке)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
         document_url: null
@@ -197,10 +259,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Торако-амниотическое и (или) абдомино-амниотическое шунтирование (применяется
-          при асците, гидротораксе, водянке)
+        quote: Торако-амниотическое и (или) абдомино-амниотическое шунтирование (при
+          асците, гидротораксе, водянке)
     - text: Обеспечение проходимости дыхательных путей у новорожденного при родоразрешении
-        путем операции кесарево сечение (применяется при лимфангиоме шеи, опухолях)
+        путем операции кесарево сечение (при лимфангиоме шеи, опухолях)
       source_ref:
         protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
         document_url: null
@@ -212,392 +274,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Обеспечение проходимости дыхательных путей у новорожденного при родоразрешении
-          путем операции кесарево сечение (применяется при лимфангиоме шеи, опухолях)
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Госпитализация беременных женщин с аномалиями плода, приводящими к диспропорции
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация беременных женщин с аномалиями плода, приводящими к диспропорции
-  red_flags:
-  - text: Острые инфекционно-воспалительные заболевания
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: острые инфекционно-воспалительные заболевания...'
-  - text: Обострение хронических инфекционно-воспалительных заболеваний
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: ...обострение хронических инфекционно-воспалительных
-        заболеваний...'
-  - text: Хронические парентеральные вирусные гепатиты
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: ...хронические парентеральные вирусные гепатиты...'
-  - text: Болезнь, вызванная вирусом иммунодефицита человека (ВИЧ), включая ВИЧ-инфицирование
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: ...болезнь, вызванная вирусом иммунодефицита человека
-        (далее – ВИЧ), включая ВИЧ-инфицирование...'
-  - text: Признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-      плаценты, пролабирование плодного пузыря)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: ...признаки угрозы преждевременных родов (краевая
-        отслойка нормально расположенной плаценты, пролабирование плодного пузыря).'
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: fetal_hydrops
-  name: Водянка плода
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams:
-  - name: Ультразвуковая диагностика плода
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Для диагностики аномалий плода, приводящих к диспропорции, применяются:
-        система ультразвуковая диагностическая экспертного или высокого класса'
-  conditional_exams:
-  - name: Магнитно-резонансная томография плода
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Дополнительным методом диагностики является магнитно-резонансная томография
-        (далее – МРТ) плода.
-  treatment:
-    non_drug:
-    - text: Пункция и аспирация жидкости в брюшной и (или) плевральных полостях
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Пункция и аспирация жидкости в брюшной и (или) плевральных полостях
-    - text: Торако-амниотическое и (или) абдомино-амниотическое шунтирование
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Торако-амниотическое и (или) абдомино-амниотическое шунтирование
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Госпитализация
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация
-  red_flags:
-  - text: Острые инфекционно-воспалительные заболевания
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: острые инфекционно-воспалительные заболевания
-  - text: Обострение хронических инфекционно-воспалительных заболеваний
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: обострение хронических инфекционно-воспалительных заболеваний
-  - text: Хронические парентеральные вирусные гепатиты
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: хронические парентеральные вирусные гепатиты
-  - text: Болезнь, вызванная вирусом иммунодефицита человека (ВИЧ), включая ВИЧ-инфицирование
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: болезнь, вызванная вирусом иммунодефицита человека (далее – ВИЧ), включая
-        ВИЧ-инфицирование
-  - text: Признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-      плаценты, пролабирование плодного пузыря)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-        плаценты, пролабирование плодного пузыря)
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: myelomeningocele
-  name: Миеломенингоцеле
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams:
-  - name: Ультразвуковая диагностика экспертного/высокого класса
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: система ультразвуковая диагностическая экспертного или высокого класса
-  conditional_exams:
-  - name: Магнитно-резонансная томография (МРТ) плода
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Дополнительным методом диагностики является магнитно-резонансная томография
-        (далее – МРТ) плода.
-  treatment:
-    non_drug:
-    - text: открытая или фетоскопическая коррекция миеломенингоцеле
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: открытая или фетоскопическая коррекция миеломенингоцеле
+          путем операции кесарево сечение (при лимфангиоме шеи, опухолях)
     drug_groups: []
     drugs: []
     procedures: []
@@ -610,7 +287,7 @@ conditions:
       в организации здравоохранения осуществляется согласно приказу Министерства здравоохранения
       Республики Беларусь от 9 августа 2019 г. № 966 «Об утверждении Инструкции по
       организации разноуровневой системы акушерско-гинекологической и перинатальной
-      помощи в Республике Беларусь».
+      помощи в Республике Беларусь»
     timing: null
     required_if: []
     source_ref:
@@ -627,7 +304,8 @@ conditions:
         в организации здравоохранения осуществляется согласно приказу Министерства
         здравоохранения Республики Беларусь от 9 авг
   red_flags:
-  - text: острые инфекционно-воспалительные заболевания
+  - text: 'Противопоказания к внутриутробному лечению: инфекционно-воспалительные
+      заболевания, гепатиты, ВИЧ, угроза преждевременных родов'
     aliases: []
     red_flag_type: other
     severity: high
@@ -643,589 +321,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: острые инфекционно-воспалительные заболевания;'
-  - text: обострение хронических инфекционно-воспалительных заболеваний
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: обострение хронических инфекционно-воспалительных
-        заболеваний;'
-  - text: хронические парентеральные вирусные гепатиты
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: хронические парентеральные вирусные гепатиты;'
-  - text: болезнь, вызванная вирусом иммунодефицита человека (ВИЧ), включая ВИЧ-инфицирование
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода...:
-        болезнь, вызванная вирусом иммунодефицита человека (далее – ВИЧ), включая
-        ВИЧ-инфицирование;'
-  - text: признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-      плаценты, пролабирование плодного пузыря)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода...:
-        признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-        плаценты, пролабирование плодного пузыря).'
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: sacrococcygeal_teratoma
-  name: Крестцовая тератома
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams:
-  - name: Ультразвуковая диагностика (экспертного или высокого класса)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Для диагностики аномалий плода, приводящих к диспропорции, применяются:
-        система ультразвуковая диагностическая экспертного или высокого класса'
-  - name: Магнитно-резонансная томография (МРТ) плода
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Для диагностики аномалий плода, приводящих к диспропорции, применяются:
-        ... магнитно-резонансный томограф с напряженностью магнитного поля не менее
-        1,5 Тл.'
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: Фетоскопическая или интерстициальная лазерная коагуляция питающих опухоль
-        сосудов.
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Фетоскопическая или интерстициальная лазерная коагуляция питающих опухоль
-          сосудов.
-    - text: Аспирация кист под ультразвуковым контролем.
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Аспирация кист под ультразвуковым контролем.
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: госпитализация
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: госпитализация
-  - text: Госпитализация беременных женщин с аномалиями плода, приводящими к диспропорции,
-      осуществляется согласно приказу МЗ РБ № 966.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация беременных женщин с аномалиями плода, приводящими к диспропорции,
-        осуществляется согласно приказу МЗ РБ № 966.
-  red_flags:
-  - text: Острые инфекционно-воспалительные заболевания.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: острые инфекционно-воспалительные заболевания
-  - text: Обострение хронических инфекционно-воспалительных заболеваний.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: обострение хронических инфекционно-воспалительных заболеваний
-  - text: Хронические парентеральные вирусные гепатиты.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: хронические парентеральные вирусные гепатиты
-  - text: Болезнь, вызванная вирусом иммунодефицита человека (ВИЧ), включая ВИЧ-инфицирование.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: болезнь, вызванная вирусом иммунодефицита человека (далее – ВИЧ), включая
-        ВИЧ-инфицирование
-  - text: Признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-      плаценты, пролабирование плодного пузыря).
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-        плаценты, пролабирование плодного пузыря)
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: lymphangioma
-  name: Лимфангиома
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams:
-  - name: Ультразвуковая диагностика
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Для диагностики аномалий плода, приводящих к диспропорции, применяются:
-        система ультразвуковая диагностическая экспертного или высокого класса'
-  - name: УЗИ плода (2D)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'УЗИ плода осуществляется с применением следующих методик: УЗИ в режиме
-        двухмерного изображения (2D), с обязательной оценкой структур плода и экстрафетальных
-        структур: установить точную локализацию объемного образования плода...'
-  - name: Цветовое допплеровское картирование (ЦДК)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'цветовое допплеровское картирование (далее – ЦДК) и (или) энергетический
-        допплер: характер кровоснабжения образования (внутри образования и по его
-        периферии)'
-  - name: Импульсно-волновая допплерометрия
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'импульсно-волновая допплерометрия: параметры маточно-плодово-плацентарного
-        кровотока, параметры кровотока в сосудах образования, пиковая систолическая
-        скорость в средней мозговой артерии плода.'
-  conditional_exams:
-  - name: Магнитно-резонансная томография (МРТ) плода
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Дополнительным методом диагностики является магнитно-резонансная томография
-        (далее – МРТ) плода.
-  - name: Эхокардиография плода
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Эхокардиография плода выполняется при обнаружении жидкости в плевральной
-        и (или) брюшной полости, полости перикарда, а также при больших размерах (>5
-        см) объемного образования плода.
-  treatment:
-    non_drug:
-    - text: Обеспечение проходимости дыхательных путей у новорожденного при родоразрешении
-        путем операции кесарево сечение (при лимфангиоме шеи)
-      source_ref:
-        protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-        document_url: null
-        local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Обеспечение проходимости дыхательных путей у новорожденного при родоразрешении
-          путем операции кесарево сечение (при лимфангиоме шеи)
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Госпитализация беременных женщин с аномалиями плода, приводящими к диспропорции,
-      в организации здравоохранения осуществляется согласно приказу Министерства здравоохранения
-      Республики Беларусь от 9 августа 2019 г. № 966 «Об утверждении Инструкции по
-      организации разноуровневой системы акушерско-гинекологической и перинатальной
-      помощи в Республике Беларусь».
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация беременных женщин с аномалиями плода, приводящими к диспропорции,
-        в организации здравоохранения осуществляется согласно приказу Министерства
-        здравоохранения Республики Беларусь от 9 авг
-  red_flags:
-  - text: Острые инфекционно-воспалительные заболевания
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: острые инфекционно-воспалительные заболевания'
-  - text: Обострение хронических инфекционно-воспалительных заболеваний
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: обострение хронических инфекционно-воспалительных
-        заболеваний'
-  - text: Хронические парентеральные вирусные гепатиты
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: хронические парентеральные вирусные гепатиты'
-  - text: Болезнь, вызванная вирусом иммунодефицита человека (ВИЧ), включая ВИЧ-инфицирование
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: болезнь, вызванная вирусом иммунодефицита человека
-        (далее – ВИЧ), включая ВИЧ-инфицирование'
-  - text: Признаки угрозы преждевременных родов (краевая отслойка нормально расположенной
-      плаценты, пролабирование плодного пузыря)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: zabolevaniya_perinatalnogo_perioda_кп_пренатальная_диагностика_и_внутриутробное_
-      document_url: null
-      local_path: minzdrav_protocols/zabolevaniya-perinatalnogo-perioda/КП_Пренатальная_диагностика_и_внутриутробное_лечение_аномалий_плода_приводящих_к_диспропорции_пост_МЗ_2024_126.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские противопоказания для внутриутробного лечения аномалий плода,
-        приводящих к диспропорции: признаки угрозы преждевременных родов (краевая
-        отслойка нормально расположенной плаценты, пролабирование плодного пузыря).'
+      quote: 'Медицинские противопоказания для внутриутробного лечения...: острые
+        инфекционно-воспалительные заболевания... признаки угрозы преждевременных
+        родов (краевая отслойка нормально расположенной плаценты...)'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1234,35 +332,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T22:49:33.142213+00:00'
+  extracted_at: '2026-07-23T11:19:59.882245+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
   - llm_pipeline_v1
-  - conditions=5
+  - conditions=1
 validation:
-  status: needs_human_review
+  status: valid
   errors: []
-  warnings:
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[fetal_hydrops]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[myelomeningocele]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[sacrococcygeal_teratoma]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[lymphangioma]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[lymphangioma].required_exams[0]
-  validated_at: '2026-07-01T22:49:33.148172+00:00'
+  warnings: []
+  validated_at: '2026-07-23T11:19:59.884353+00:00'

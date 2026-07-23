@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Острый аппендицит. Диагностика и лечение
+  title: Диагностика и лечение пациентов (взрослое население) с острым аппендицитом
+    в стационарных условиях
   url: null
   local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
   document_sha256: null
@@ -20,14 +21,13 @@ rubric:
 applicability:
   population:
   - adult
-  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: acute_appendicitis
+- condition_id: ostryj_appendicit
   name: Острый аппендицит
   synonyms: []
   abbreviations: []
@@ -36,9 +36,72 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Проведение дифференциальной диагностики при аппендикулярном инфильтрате
+        с заболеваниями и опухолями илеоцекальной зоны, забрюшинного пространства
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение дифференциальной диагностики при аппендикулярном инфильтрате
+          с заболеваниями и опухолями илеоцекальной зоны, забрюшинного пространства
+    - text: Острые воспалительные, некротические и гнойные изменения в червеобразном
+        отростке слепой кишки
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Острые воспалительные, некротические и гнойные изменения в червеобразном
+          отростке слепой кишки
+    - text: Признаки распространения инфекции в брюшной полости (инфильтрат, абсцесс,
+        перитонит)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Признаки распространения инфекции в брюшной полости (инфильтрат, абсцесс,
+          перитонит)
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Медицинский осмотр
+  - name: Медицинский осмотр в хирургическом отделении
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -58,12 +121,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Обязательными диагностическими мероприятиями при оказании медицинской
-        помощи пациентам с ОА в хирургическом отделении больничной организации являются:
-        медицинский осмотр в течение 30 минут после поступления, затем каждые 3 часа
-        или чаще (по медицинским показаниям) до исключения или подтверждения диагноза
-        ОА;'
-  - name: Общий анализ крови
+      quote: медицинский осмотр в течение 30 минут после поступления, затем каждые
+        3 часа или чаще (по медицинским показаниям) до исключения или подтверждения
+        диагноза ОА
+  - name: Общий анализ крови (в динамике каждые 3 часа)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -83,11 +144,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Обязательными диагностическими мероприятиями при оказании медицинской
-        помощи пациентам с ОА в хирургическом отделении больничной организации являются:
-        общий анализ крови каждые 3 часа до исключения или подтверждения диагноза
+      quote: общий анализ крови каждые 3 часа до исключения или подтверждения диагноза
         ОА (определение количества эритроцитов, лейкоцитов, тромбоцитов, гематокрита,
-        содержания гемоглобина, подсчет лейкоцитарной формулы).'
+        содержания гемоглобина, подсчет лейкоцитарной формулы)
   conditional_exams:
   - name: Повторный биохимический анализ крови
     aliases: []
@@ -109,8 +168,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: повторный биохимический анализ крови (билирубин, глюкоза, мочевина, общий
-        белок, АСТ, АЛТ, альфа-амилаза, С-реактивный белок, электролиты)
+      quote: повторный биохимический анализ крови (определение содержания билирубина,
+        глюкозы, мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы,
+        альфа-амилазы, С-реактивного белка...)
   - name: Определение групп крови по системам АВ0 и Rh-фактор
     aliases: []
     exam_type: unknown
@@ -131,7 +191,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение групп крови по системам АВ0 и Rh-фактор
+      quote: определение групп крови по системам АВ0 и Rh-фактор;
   - name: Коагулограмма
     aliases: []
     exam_type: unknown
@@ -152,8 +212,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: коагулограмма (определение фибриногена, АЧТВ, протромбированого времени,
-        международного нормализованного отношения)
+      quote: коагулограмма (определение фибриногена, активированного частичного тромбопластинового
+        времени, протромбированого времени, международного нормализованного отношения);
   - name: Определение параметров кислотно-основного состояния
     aliases: []
     exam_type: unknown
@@ -174,7 +234,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение параметров кислотно-основного состояния
+      quote: определение параметров кислотно-основного состояния;
   - name: Повторный общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -195,7 +255,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: повторный общий анализ мочи
+      quote: повторный общий анализ мочи;
   - name: Электрокардиограмма
     aliases: []
     exam_type: unknown
@@ -216,7 +276,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: электрокардиограмма
+      quote: электрокардиограмма;
   - name: Эзофагогастродуоденоскопия
     aliases: []
     exam_type: unknown
@@ -237,8 +297,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: эзофагогастродуоденоскопия
-  - name: Бактериологическое исследование выпота (гноя)
+      quote: эзофагогастродуоденоскопия;
+  - name: Бактериологическое исследование выпота (гноя) с определением чувствительности
+      к антибактериальным ЛП
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -258,14 +319,36 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При интраоперационном обнаружении в брюшной полости (забрюшинном пространстве
-        при вскрытии аппендикулярного абсцесса забрюшинным доступом) выпота (гноя)
+      quote: При интраоперационном обнаружении в брюшной полости... выпота (гноя)
         выполняется бактериологическое исследование данного выпота (гноя) с определением
         чувствительности к антибактериальным ЛП.
+  - name: Ультразвуковое исследование органов брюшной полости и забрюшинного пространства
+      (УЗИ ОБП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование органов брюшной полости и забрюшинного пространства
+        (далее – УЗИ ОБП)
   treatment:
     non_drug:
     - text: Консервативное лечение при аппендикулярном инфильтрате без признаков абсцедирования
-        и перитонита
+        и перитонита (хирургическое вмешательство не проводится)
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
         document_url: null
@@ -277,9 +360,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Консервативное лечение при аппендикулярном инфильтрате без признаков
-          абсцедирования и перитонита
-    - text: Хирургическое вмешательство (в течение 6 часов с момента установления
-        диагноза)
+          абсцедирования и перитонита (хирургическое вмешательство не проводится)
+    - text: Отказ от выполнения аппендэктомии при неразделимом аппендикулярном инфильтрате,
+        выявленном во время хирургического вмешательства
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
         document_url: null
@@ -290,9 +373,38 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое вмешательство (в течение 6 часов с момента установления
-          диагноза)
-    - text: Лапароскопическая аппендэктомия (хирургическое вмешательство выбора)
+        quote: Отказ от выполнения аппендэктомии при неразделимом аппендикулярном
+          инфильтрате, выявленном во время хирургического вмешательства
+    - text: Медицинская транспортировка пациента с ОА в больничную организацию осуществляется
+        в положении лежа
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинская транспортировка пациента с ОА в больничную организацию
+          осуществляется в положении лежа
+    - text: Хирургическое вмешательство выполняется в течение 6 часов с момента установления
+        диагноза
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое вмешательство выполняется в течение 6 часов с момента
+          установления диагноза
+    - text: Лапароскопическая аппендэктомия (хирургическое вмешательство выбора) или
+        аппендэктомия лапаротомным доступом
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
         document_url: null
@@ -304,8 +416,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Лапароскопическая аппендэктомия (хирургическое вмешательство выбора)
-    - text: Аппендэктомия лапаротомным доступом (правая подвздошная область, срединная
-        лапаротомия)
+          или аппендэктомия лапаротомным доступом
+    - text: Разделение инфильтрата и аппендэктомия при рыхлом аппендикулярном инфильтрате,
+        выявленном интраоперационно
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
         document_url: null
@@ -316,10 +429,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Аппендэктомия лапаротомным доступом (правая подвздошная область, срединная
-          лапаротомия)
-    - text: Разделение инфильтрата и аппендэктомия (при рыхлом аппендикулярном инфильтрате,
-        выявленном интраоперационно)
+        quote: Разделение инфильтрата и аппендэктомия при рыхлом аппендикулярном инфильтрате,
+          выявленном интраоперационно
+    - text: Чрескожное дренирование или вскрытие и дренирование внебрюшинным доступом
+        при периаппендикулярном абсцессе
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
         document_url: null
@@ -330,10 +443,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Разделение инфильтрата и аппендэктомия (при рыхлом аппендикулярном
-          инфильтрате, выявленном интраоперационно)
-    - text: Чрескожное дренирование полости абсцесса (при периаппендикулярном абсцессе
-        без признаков прорыва)
+        quote: Чрескожное дренирование или вскрытие и дренирование внебрюшинным доступом
+          при периаппендикулярном абсцессе
+    - text: Гигиеническая подготовка, катетеризация и опорожнение мочевого пузыря
+        перед операцией (по показаниям)
       source_ref:
         protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
         document_url: null
@@ -344,84 +457,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Чрескожное дренирование полости абсцесса (при периаппендикулярном абсцессе
-          без признаков прорыва)
-    - text: Вскрытие и дренирование абсцесса (по возможности, внебрюшинным доступом,
-        при периаппендикулярном абсцессе без признаков прорыва)
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Вскрытие и дренирование абсцесса (по возможности, внебрюшинным доступом,
-          при периаппендикулярном абсцессе без признаков прорыва)
-    - text: Родоразрешение и аппендэктомия (при клинической картине ОА в родах, по
-        решению врачебного консилиума)
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Родоразрешение и аппендэктомия (при клинической картине ОА в родах,
-          по решению врачебного консилиума)
-    - text: Гигиеническая подготовка пациента (в ходе предоперационной подготовки)
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Гигиеническая подготовка пациента (в ходе предоперационной подготовки)
-    - text: Катетеризация и опорожнение мочевого пузыря (при наличии медицинских показаний
-        в ходе предоперационной подготовки)
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Катетеризация и опорожнение мочевого пузыря (при наличии медицинских
-          показаний в ходе предоперационной подготовки)
-    - text: Предоперационная подготовка пациента, направленная на компенсацию функций
-        жизненно важных органов и систем (при наличии тяжелых сопутствующих заболеваний)
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Предоперационная подготовка пациента, направленная на компенсацию функций
-          жизненно важных органов и систем (при наличии тяжелых сопутствующих заболеваний)
+        quote: Гигиеническая подготовка, катетеризация и опорожнение мочевого пузыря
+          перед операцией (по показаниям)
     drug_groups: []
     drugs:
     - drug_name: Цефазолин
       active_substance: null
       drug_group: null
-      dose_text: '2,0 г внутривенно (при весе пациента менее 120 кг) и 3,0 г внутривенно
-        (при весе пациента 120 кг и более) за 60 минут до хирургического доступа (допускается
-        за 30–60 минут). Повторное введение только '
+      dose_text: Внутривенно капельно 2,0 г (при весе < 120 кг) или 3,0 г (при весе
+        >= 120 кг) за 60 минут до хирургического доступа
       frequency_text: null
       duration_text: null
       route: null
@@ -439,17 +483,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Перед хирургическим вмешательством внутривенно капельно вводится цефазолин,
-          порошок для приготовления раствора для внутривенного и внутримышечного введения
-          500 мг, 100 мг, вводится в дозе 2,0 г (при весе пациента менее 120 кг) и
-          в дозе 3,0 г внутривенно (при весе пациента 120 кг и более) за 60 минут
-          до хирургического доступа, если время пропущено допускается введение за
-          30–60 минут. У пациентов ни
+        quote: вводится в дозе 2,0 г (при весе пациента менее 120 кг) и в дозе 3,0
+          г внутривенно (при весе пациента 120 кг и более) за 60 минут до хирургического
+          доступа
     - drug_name: Метронидазол
       active_substance: null
       drug_group: null
-      dose_text: 500 мг внутривенно (дополнительно при хирургическом вмешательстве
-        на тонком кишечнике). Повторное введение не требуется.
+      dose_text: 500 мг внутривенно дополнительно при хирургическом вмешательстве
+        на тонком кишечнике
       frequency_text: null
       duration_text: null
       route: null
@@ -468,38 +509,64 @@ conditions:
         table_index: null
         row_index: null
         quote: При хирургическом вмешательстве на тонком кишечнике дополнительно вводится
-          метронидазол в дозе 500 мг внутривенно. Повторное введение метронидазола
-          не требуется.
-    - drug_name: Лекарственные препараты, понижающие тонус матки
-      active_substance: null
-      drug_group: null
-      dose_text: По медицинским показаниям (для беременных)
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: 5
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Особенностями хирургического вмешательства при ОА у беременных являются:
-          ...при наличии медицинских показаний назначают ЛП, понижающие тонус матки;'
+          метронидазол в дозе 500 мг внутривенно.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинский осмотр хирурга каждые 3 часа или чаще до исключения или подтверждения
+      диагноза
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинский осмотр хирурга каждые 3 часа или чаще до исключения или подтверждения
+        диагноза
+  - text: Повторный общий анализ крови каждые 3 часа до исключения или подтверждения
+      диагноза
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторный общий анализ крови каждые 3 часа до исключения или подтверждения
+        диагноза
+  - text: Совместное медицинское наблюдение беременных врачом-хирургом и врачом-акушером-гинекологом
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Совместное медицинское наблюдение беременных врачом-хирургом и врачом-акушером-гинекологом
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Госпитализация в хирургическое отделение больничной организации (стационарные
+      условия)
     timing: null
     required_if: []
     source_ref:
@@ -512,9 +579,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: Госпитализация в хирургическое отделение больничной организации (при наличии
-      ОА или подозрении на ОА)
+      quote: Госпитализация в хирургическое отделение больничной организации (стационарные
+        условия)
+  - text: Госпитализация в экстренном порядке в хирургическое отделение больничной
+      организации
     timing: null
     required_if: []
     source_ref:
@@ -527,9 +595,30 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация в хирургическое отделение больничной организации (при
-        наличии ОА или подозрении на ОА)
-  red_flags: []
+      quote: Госпитализация в экстренном порядке в хирургическое отделение больничной
+        организации
+  red_flags:
+  - text: Признаки распространения инфекции в брюшной полости (развитие аппендикулярного
+      инфильтрата, абсцессов, пилефлебита, распространенного перитонита, забрюшинной
+      флегмоны)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_лечение_пациентов_взр_нас_с_острым_аппендицито
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острым_аппендицитом_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: признаки распространения инфекции в брюшной полости с развитием аппендикулярного
+        инфильтрата, абсцесса или абсцессов, пилефлебита, распространенного перитонита,
+        забрюшинной флегмоны.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -538,7 +627,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T15:52:21.521984+00:00'
+  extracted_at: '2026-07-23T07:46:31.732972+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -549,4 +638,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T15:52:21.526085+00:00'
+  validated_at: '2026-07-23T07:46:31.737107+00:00'

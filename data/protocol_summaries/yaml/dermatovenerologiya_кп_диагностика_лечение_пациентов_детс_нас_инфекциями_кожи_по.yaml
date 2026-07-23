@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение инфекций кожи и подкожной клетчатки у пациентов детского
-    населения
+  title: Диагностика и лечение пациентов (детское население) с инфекциями кожи и подкожной
+    клетчатки
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
   document_sha256: null
@@ -27,20 +27,231 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: skin_subcutaneous_tissue_infections_child
-  name: Инфекции кожи и подкожной клетчатки у детей
+- condition_id: skin_subcutaneous_infections
+  name: Инфекции кожи и подкожной клетчатки
   synonyms: []
   abbreviations: []
   icd10_codes:
   - L00
   - L08
-  - L30.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Повышение уровня С-реактивного белка более 13 мг/л
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышение уровня С-реактивного белка более 13 мг/л
+    - text: Уровень креатинфосфокиназы в 2 и более раз превышающий верхнюю границу
+        референсного интервала
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Уровень креатинфосфокиназы в 2 и более раз превышающий верхнюю границу
+          референсного интервала
+    - text: Уровень прокальцитонина выше 2 нг/мл при подозрении на сепсис или септический
+        шок
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Уровень прокальцитонина выше 2 нг/мл при подозрении на сепсис или септический
+          шок
+    - text: Распространенные (3 и более анатомических областей или 5 и более элементов),
+        глубокие, хронические, рецидивирующие очаги поражения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Распространенные (3 и более анатомических областей или 5 и более элементов),
+          глубокие, хронические, рецидивирующие очаги поражения
+    optional: []
+    exclusion: []
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Исследование уровня бикарбоната, натрия, калия, хлоридов, креатинфосфокиназы
+      в крови, кислотно-основное состояние
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование уровня бикарбоната, натрия, калия, хлоридов, креатинфосфокиназы
+        в крови, кислотно-основное состояние;
+  - name: Бактериологическое исследование содержимого пустул, пузырей с определением
+      чувствительности к антибактериальным ЛП
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: бактериологическое исследование содержимого пустул, пузырей с определением
+        чувствительности к антибактериальным ЛП;
+  - name: Бактериологическое исследование крови на стерильность
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: бактериологическое исследование крови на стерильность;
+  - name: Определение уровня прокальцитонина
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение уровня прокальцитонина при тяжелой бактериальной инфекции,
+        подозрении на сепсис, септический шок
+  - name: Биопсия кожи и морфологическое (гистологическое) исследование препарата
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия кожи и морфологическое (гистологическое) исследование препарата;
+  - name: Электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма;
   treatment:
     non_drug:
     - text: 'Ультрафиолетовое облучение общее: 15–20 процедур через день'
@@ -117,12 +328,40 @@ conditions:
         row_index: null
         quote: 'Светотерапия поляризованным светом: 6–8 процедур ежедневно или через
           день'
+    - text: Хирургическая обработка язвенной поверхности у врача — детского хирурга
+        (по показаниям)
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическая обработка язвенной поверхности у врача — детского хирурга
+          (по показаниям)
+    - text: Применение дополнительных методов по решению врачебного консилиума по
+        жизненным показаниям
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Применение дополнительных методов по решению врачебного консилиума
+          по жизненным показаниям
     drug_groups: []
     drugs:
     - drug_name: дексаметазон
       active_substance: null
       drug_group: null
-      dose_text: таблетки 0,5 мг
+      dose_text: таблетки 0,5 мг; 0,75; 36–54
       frequency_text: null
       duration_text: null
       route: null
@@ -140,12 +379,86 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 3.1 дексаметазон, таблетки 0,5 мг
-    - drug_name: метилурацил, мазь для наружного применения
+        quote: 3.1 дексаметазон, таблетки 0,5 мг 0,75 36–54
+    - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 100 мг/г в тубах, наносится тонким слоем на пораженные участки 2–3
-        раза в сутки, длительность определяется индивидуально
+      dose_text: раствор 0,5 мг/мл, местно 5–10 мл 2–3 раза в сутки 10–14 суток (у
+        пациентов с 12 лет)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: хлоргексидин (хлоргексидина биглюконат) (у пациентов с 12 лет), раствор
+          для наружного (местного) применения 0,5 мг/мл, местно в виде орошений и
+          аппликаций, 5–10 мл ЛП... 2–3 раза в сутки 10–14 суток;
+    - drug_name: Бриллиантовый зеленый
+      active_substance: null
+      drug_group: null
+      dose_text: раствор спиртовой 10 мг/мл, местно на область высыпаний 2 раза в
+        сутки 7–10 суток
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: бриллиантовый зеленый, раствор спиртовой для наружного применения 10
+          мг/мл, местно на область высыпаний 2 раза в сутки 7–10 суток;
+    - drug_name: Повидон-йод
+      active_substance: null
+      drug_group: null
+      dose_text: раствор 10 мг/мл 2 р/сут 7–14 суток (с 2 лет); мазь 100 мг/г 1–2
+        р/сут 7–14 суток (с 3 лет)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: повидон-йод (у пациентов с 2 лет), раствор спиртовой для наружного
+          применения 10 мг/мл... мазь для наружного применения 100 мг/г, местно на
+          область высыпаний тонким слоем
+    - drug_name: Амоксициллин
+      active_substance: null
+      drug_group: null
+      dose_text: 'внутрь: до 3 лет — 30 мг/кг/сут в 2–3 приема; 3–10 лет — 375 мг
+        2 р/сут; старше 10 лет — 500–750 мг 2 р/сут (курс 7–10 суток)'
       frequency_text: null
       duration_text: null
       route: null
@@ -163,14 +476,65 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Для медицинской профилактики патологического рубцевания назначается
-          метилурацил, мазь для наружного применения 100 мг/г, наносится тонким слоем
-          на пораженные участки 2–3 раза в сутки, длительность индивидуально.
+        quote: амоксициллин, таблетки 250 мг, 500 мг, порошок для приготовления суспензии
+          внутрь 125 мг/5 мл, порошок для приготовления суспензии внутрь 250 мг/5
+          мл
+    - drug_name: Оксациллин
+      active_substance: null
+      drug_group: null
+      dose_text: 'внутрь: до 40 кг — 12,5–25 мг/кг 4 р/сут; более 40 кг — 500–1000
+        мг 4–6 р/сут; в/м или в/в: 0–1 мес — 20–40 мг/кг/сут; 1–3 мес — 60–80 мг/кг/сут;
+        3 мес–2 года — 1000 мг/сут; 2–6 лет — 2000 мг/сут в 4 '
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: оксациллин, таблетки 250 мг... оксациллин, порошок для приготовления
+          раствора для внутривенного и внутримышечного введения 1000 мг
+    - drug_name: метилурацил
+      active_substance: null
+      drug_group: null
+      dose_text: мазь для наружного применения 100 мг/г в тубах, наносится тонким
+        слоем на пораженные участки 2–3 раза в сутки, длительность определяется индивидуально
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Для медицинской профилактики патологического рубцевания эрозивно-язвенных
+          дефектов назначается метилурацил, мазь для наружного применения 100 мг/г
+          в тубах
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение в амбулаторных условиях не осуществляется.
+  - text: Медицинское наблюдение пациентов с инфекциями кожи и подкожной клетчатки
+      в амбулаторных условиях не осуществляется
     timing: null
     required_if: []
     expected_actions: []
@@ -184,10 +548,98 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях не осуществляется.
+      quote: Медицинское наблюдение пациентов с инфекциями кожи и подкожной клетчатки
+        в амбулаторных условиях не осуществляется
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: 'Амбулаторно: пациентам с абсцессом кожи, фурункулом, карбункулом, флегмоной,
+      острым лимфаденитом, пилонидальной кистой медицинская помощь оказывается врачом
+      – детским хирургом по месту жительства (пребывания)'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Амбулаторно: пациентам с абсцессом кожи, фурункулом, карбункулом, флегмоной,
+        острым лимфаденитом, пилонидальной кистой медицинская помощь оказывается врачом
+        – детским хирургом по месту жительства (пре'
+  - text: Амбулаторное наблюдение не осуществляется
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторное наблюдение не осуществляется
+  red_flags:
+  - text: Гипотензия и (или) увеличение уровня креатинина крови
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: гипотензия и (или) увеличение уровня креатинина крови;
+  - text: Низкий уровень бикарбоната крови
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: низкий уровень бикарбоната крови;
+  - text: Подозрение на тяжелую глубокую инфекцию мягких тканей (крепитация подкожной
+      клетчатки, цианоз кожи, геморрагии, отторжение некротических масс, анестезия
+      кожи, быстрое прогрессирование)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_по
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_лечение_пациентов_детс_нас_инфекциями_кожи_подкожной_клетчатки_пост_МЗ_2024_107.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: подозрение на тяжелую глубокую инфекцию мягких тканей (при пальпации
+        патологического очага определяется крепитация подкожной клетчатки... цианоз
+        кожи... геморрагии; отторжение некротических масс)
   contraindications: []
   complications: []
   kz_checklist: null
@@ -196,7 +648,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:35:01.039974+00:00'
+  extracted_at: '2026-07-23T07:27:35.553622+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -207,4 +659,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-02T00:35:01.043364+00:00'
+  validated_at: '2026-07-23T07:27:35.559586+00:00'

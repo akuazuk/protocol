@@ -32,75 +32,100 @@
   },
   "conditions": [
     {
-      "condition_id": "acute_pyelonephritis",
-      "name": "Острый пиелонефрит",
+      "condition_id": "ostryj_nefrit_i_pielonefrit",
+      "name": "Острый инфекционный интерстициальный нефрит; острый пиелонефрит",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "N10"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
-        {
-          "text": "госпитализация",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "госпитализация"
-          }
-        }
-      ],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10"
-        ],
-        "should_have": [],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "chronic_pyelonephritis",
-      "name": "Хронический пиелонефрит",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "N11.0",
+        "N10",
         "N11.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
       "diagnostic_criteria": null,
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Общеклиническое исследование крови, мочи, кала",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общеклиническое исследование крови, мочи, кала"
+          }
+        },
+        {
+          "name": "Анализ мочи по Нечипоренко, по Зимницкому",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Анализ мочи по Нечипоренко, по Зимницкому"
+          }
+        },
+        {
+          "name": "Консультации специалистов (педиатра, отоларинголога, стоматолога, гинеколога, уролога)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультации специалистов: - педиатра - отоларинголога - стоматолога - гинеколога - уролога"
+          }
+        }
+      ],
       "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "Лазеротерапия (местная, надвенное магнито-лазерное облучение крови)",
+            "text": "Диетотерапия (Стол Н)",
             "source_ref": {
               "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
               "document_url": null,
@@ -111,82 +136,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Лазеротерапия (местная, надвенное магнито-лазерное облучение крови)"
-            }
-          },
-          {
-            "text": "Лазеро-электропунктура",
-            "source_ref": {
-              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Лазеро-электропунктура"
-            }
-          },
-          {
-            "text": "Фитотерапия",
-            "source_ref": {
-              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Фитотерапия"
-            }
-          },
-          {
-            "text": "Диетотерапия Стол Н",
-            "source_ref": {
-              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Диетотерапия Стол Н"
-            }
-          },
-          {
-            "text": "Оксигенобаротерапия",
-            "source_ref": {
-              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Оксигенобаротерапия"
-            }
-          },
-          {
-            "text": "Кислородный кок-фия",
-            "source_ref": {
-              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Кислородный кок-фия"
+              "quote": "Диетотерапия (Стол Н)"
             }
           },
           {
@@ -205,6 +155,66 @@
             }
           },
           {
+            "text": "Лазеротерапия (местная, надвенное магнитолазерное облучение крови)",
+            "source_ref": {
+              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лазеротерапия (местная, надвенное магнитолазерное облучение крови)"
+            }
+          },
+          {
+            "text": "Лазероэлектропунктура",
+            "source_ref": {
+              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лазероэлектропунктура"
+            }
+          },
+          {
+            "text": "Фитотерапия (курсами 14 дней, предпочтительнее препаратами промышленного производства)",
+            "source_ref": {
+              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фитотерапия (курсами 14 дней, предпочтительнее препаратами промышленного производства)"
+            }
+          },
+          {
+            "text": "Оксигенобаротерапия (кислородный коктейль)",
+            "source_ref": {
+              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оксигенобаротерапия (кислородный коктейль)"
+            }
+          },
+          {
             "text": "СМВ-терапия",
             "source_ref": {
               "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
@@ -220,7 +230,7 @@
             }
           },
           {
-            "text": "Электролечение (Гальванизация)",
+            "text": "Электролечение (гальванизация)",
             "source_ref": {
               "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
               "document_url": null,
@@ -231,11 +241,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Электролечение (Гальванизация)"
+              "quote": "Электролечение (гальванизация)"
             }
           },
           {
-            "text": "Микроиглотерапия",
+            "text": "Микроиглотерапия, магнитопунктура",
             "source_ref": {
               "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
               "document_url": null,
@@ -246,22 +256,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Микроиглотерапия"
-            }
-          },
-          {
-            "text": "Магнитопунктура",
-            "source_ref": {
-              "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Магнитопунктура"
+              "quote": "Микроиглотерапия, магнитопунктура"
             }
           }
         ],
@@ -271,7 +266,7 @@
             "drug_name": "Антибактериальные препараты",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "при необходимости",
+            "dose_text": "Поддерживающая терапия при необходимости",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -322,11 +317,30 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Стабилизация клинико-лабораторных показателей (как критерий оценки эффективности медицинской реабилитации)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "nefrologiya_протоколы_медицинской_реабилитации_детей_с_болезнями_почек_18_02_201",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nefrologiya/Протоколы медицинской реабилитации детей с болезнями почек 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стабилизация клинико-лабораторных показателей (как критерий оценки эффективности медицинской реабилитации)"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "госпитализация",
+          "text": "Стационарное отделение",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -339,38 +353,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация"
+            "quote": "Стационарное отделение"
           }
         }
       ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Антибактериальные препараты",
-          "Препарат: Фуросемид",
-          "Немедикаментозно: Лазеротерапия (местная, надвенное магнито-лазерное облучение крови)",
-          "Немедикаментозно: Лазеро-электропунктура",
-          "Немедикаментозно: Фитотерапия",
-          "Немедикаментозно: Диетотерапия Стол Н",
-          "Немедикаментозно: Оксигенобаротерапия",
-          "Немедикаментозно: Кислородный кок-фия",
-          "Немедикаментозно: Соблюдение режима «регулярных» мочеиспусканий",
-          "Немедикаментозно: СМВ-терапия",
-          "Немедикаментозно: Электролечение (Гальванизация)",
-          "Немедикаментозно: Микроиглотерапия",
-          "Немедикаментозно: Магнитопунктура"
-        ],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -378,20 +368,26 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:43:33.213501+00:00",
+    "extracted_at": "2026-07-23T08:47:59.659610+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=2",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-07-20T16:43:33.214551+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "quote_not_in_source",
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[ostryj_nefrit_i_pielonefrit].required_exams[1]"
+      }
+    ],
+    "validated_at": "2026-07-23T08:47:59.661821+00:00"
   }
 }

@@ -1,10 +1,10 @@
 {
   "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
   "summary_version": "2.0",
-  "extraction_status": "auto_extracted",
+  "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов с первичными иммунодефицитами детское население",
+    "title": "Диагностика и лечение пациентов с первичными иммунодефицитами (детское население)",
     "url": null,
     "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "unknown"
+      "child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,23 +32,23 @@
   },
   "conditions": [
     {
-      "condition_id": "диагностика_лечение_пациентов_с_первичными_иммун",
-      "name": "Диагностика лечение пациентов с первичными иммунодефицитами детское население",
+      "condition_id": "pervichnye_immunodeficity",
+      "name": "Первичные иммунодефициты",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "D82",
         "D70",
         "D72.8",
+        "D76",
+        "D76.1",
+        "D76.3",
         "D80.0",
         "D80.1",
         "D80.5",
-        "D83.0",
-        "D83.2",
-        "D83.8",
-        "D83.9",
+        "D82",
         "D82.0",
-        "D76"
+        "D82.8",
+        "D83.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -56,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "[classification] 20. При первичной постановке диагноза либо для подтверждения диагноза ПИД (стр. 6)",
+            "text": "Изменения в ОАК: нейтропения, лимфоцитопения или лимфоцитоз, эозинофилия, изменения гранул гранулоцитов, тромбоцитопения, малый размер тромбоцитов, моноцитоз",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,11 +73,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 20. При первичной постановке диагноза либо для подтверждения диагноза ПИД (стр. 6)"
+              "quote": "Изменения в ОАК: нейтропения, лимфоцитопения или лимфоцитоз, эозинофилия, изменения гранул гранулоцитов, тромбоцитопения, малый размер тромбоцитов, моноцитоз"
             }
           },
           {
-            "text": "Числовые значения критериев",
+            "text": "Изменения в БИК: гипофибриногенемия, гипертриглицеридемия, низкие уровни острофазовых показателей при инфекции, изменения маркеров TREC и KREC",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -94,11 +94,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Числовые значения критериев"
+              "quote": "Изменения в БИК: гипофибриногенемия, гипертриглицеридемия, низкие уровни острофазовых показателей при инфекции, изменения маркеров TREC и KREC"
             }
           },
           {
-            "text": "| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень тяжести | Шифры по МКБ-10 |",
+            "text": "Отягощенный семейный анамнез: ПИД у близких родственников, смерть родственников в младенчестве от ПИД или невыясненных причин, близкородственные браки",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -115,11 +115,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень тяжести | Шифры по МКБ-10 |"
+              "quote": "Отягощенный семейный анамнез: ПИД у близких родственников, смерть родственников в младенчестве от ПИД или невыясненных причин, близкородственные браки"
             }
           },
           {
-            "text": "[classification] 20. При первичной постановке диагноза либо для подтверждения диагноза ПИД (стр. 6)",
+            "text": "Клинические проявления: недостаточный набор веса, задержка физического развития, осложнения вакцинации живыми вакцинами, аплазия/гипоплазия тимуса, рецидивирующие инфекции и аутоиммунные нарушения",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -136,11 +136,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[classification] 20. При первичной постановке диагноза либо для подтверждения диагноза ПИД (стр. 6)"
+              "quote": "Клинические проявления: недостаточный набор веса, задержка физического развития, осложнения вакцинации живыми вакцинами, аплазия/гипоплазия тимуса, рецидивирующие инфекции и аутоиммунные нарушения"
             }
           },
           {
-            "text": "Числовые значения критериев",
+            "text": "Четыре и более отита за год",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -157,11 +157,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Числовые значения критериев"
+              "quote": "Четыре и более отита за год"
             }
           },
           {
-            "text": "| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень тяжести | Шифры по МКБ-10 |",
+            "text": "Два и более синусита средней и тяжелой степени за год",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -178,19 +178,418 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "| № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень тяжести | Шифры по МКБ-10 |"
+              "quote": "Два и более синусита средней и тяжелой степени за год"
+            }
+          },
+          {
+            "text": "Две и более пневмонии за год",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Две и более пневмонии за год"
+            }
+          },
+          {
+            "text": "Двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью в/в введения антибактериальных ЛП",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью в/в введения антибактериальных ЛП"
+            }
+          },
+          {
+            "text": "Рецидивирующие кожные абсцессы",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рецидивирующие кожные абсцессы"
+            }
+          },
+          {
+            "text": "Две и более тяжелые инфекции, включая септицемию",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Две и более тяжелые инфекции, включая септицемию"
+            }
+          },
+          {
+            "text": "Рецидивирующий кандидоз ротовой полости или иной грибковой инфекции",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рецидивирующий кандидоз ротовой полости или иной грибковой инфекции"
+            }
+          },
+          {
+            "text": "Длительная или рецидивирующая диарея",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Длительная или рецидивирующая диарея"
+            }
+          },
+          {
+            "text": "Инфекции, вызванные оппортунистической флорой",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Инфекции, вызванные оппортунистической флорой"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
-      "conditional_exams": [],
+      "required_exams": [
+        {
+          "name": "Общий анализ крови (ОАК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ крови (далее – ОАК): эритроциты; гемоглобин; гематокрит; тромбоциты (с подсчетом в окрашенном мазке по методу Фонио); лейкоциты и лейкоцитарная формула"
+          }
+        },
+        {
+          "name": "Общий анализ мочи (ОАМ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ мочи (далее – ОАМ);"
+          }
+        },
+        {
+          "name": "Биохимическое исследование крови (БИК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимическое исследование крови (далее – БИК): общий билирубин; креатинин; мочевина; С-реактивный белок (далее – ЦРБ), ферритин, лактатдегидрогеназы"
+          }
+        },
+        {
+          "name": "Сбор анамнеза (семейный, аллергологический, фармакологический, трансфузионный, прививочный, перенесенных заболеваний и операций)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "сбор анамнеза: социальный (семейный); аллергологический; фармакологический; трансфузионный; прививочный; перенесенных заболеваний и хирургических вмешательств;"
+          }
+        },
+        {
+          "name": "Клинический осмотр и физикальные исследования (антропометрия, измерение МТ, температуры, ЧСС, ЧД, АД, оценка ЛУ, печени, селезенки, диуреза, стула)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "антропометрия; медицинский осмотр, измерение МТ, температуры тела, оценка размеров периферических лимфатических узлов (далее – ЛУ), печени, селезенки, диуреза, стула, частоты сердечных сокращений..."
+          }
+        },
+        {
+          "name": "Консультации врачей-специалистов по профилю сопутствующей патологии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "консультации врачей-специалистов по профилю сопутствующей патологии;"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Детальное обследование нутритивного статуса",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам с выявленными нутритивными нарушениями при скрининге с помощью шкал либо в результате антропометрии рекомендуется более детальное обследование нутритивного статуса"
+          }
+        },
+        {
+          "name": "УЗИ органов брюшной полости (ОБП)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "УЗИ ОБП;"
+          }
+        },
+        {
+          "name": "Стандартная иммунограмма (определение методом проточной цитофлуориметрии субпопуляций лимфоцитов CD3+, CD3+CD4+, CD3+CD8+, CD19+)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "выполняется стандартная иммунограмма: определение методом проточной цитофлуориметрии субпопуляций лимфоцитов CD3+, CD3+CD4+, CD3+CD8+, CD19+"
+          }
+        },
+        {
+          "name": "Коагулограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "под контролем коагулограммы 1 раз в 2 недели."
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "[treatment] 7. В условиях отделения дневного пребывания ОЗ медицинская помощь оказывается (стр. 2)",
+            "text": "Санация полости рта",
             "source_ref": {
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
@@ -201,11 +600,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 7. В условиях отделения дневного пребывания ОЗ медицинская помощь оказывается (стр. 2)"
+              "quote": "Санация полости рта"
             }
           },
           {
-            "text": "пациентам с ПИД при проведении сложных диагностических и лечебных мероприятий,",
+            "text": "Детальный физикальный осмотр и анализ фактического питания при нутритивных нарушениях",
             "source_ref": {
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
@@ -216,11 +615,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "пациентам с ПИД при проведении сложных диагностических и лечебных мероприятий,"
+              "quote": "Детальный физикальный осмотр и анализ фактического питания при нутритивных нарушениях"
             }
           },
           {
-            "text": "адекватной заместительной терапии.",
+            "text": "Предварительное обучение пациента или его законных представителей в ОЗ правилам введения ПКИГ",
             "source_ref": {
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
@@ -231,11 +630,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "адекватной заместительной терапии."
+              "quote": "Предварительное обучение пациента или его законных представителей в ОЗ правилам введения ПКИГ"
             }
           },
           {
-            "text": "[treatment] 14. Фармакотерапия (стр. 4)",
+            "text": "Трансплантация гемопоэтических стволовых клеток (ТГСК) по медицинским показаниям",
             "source_ref": {
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
@@ -246,11 +645,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "[treatment] 14. Фармакотерапия (стр. 4)"
+              "quote": "Трансплантация гемопоэтических стволовых клеток (ТГСК) по медицинским показаниям"
             }
           },
           {
-            "text": "протоколом с учетом всех индивидуальных особенностей пациента, его индивидуальных",
+            "text": "Лечебная физкультура",
             "source_ref": {
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
@@ -261,11 +660,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "протоколом с учетом всех индивидуальных особенностей пациента, его индивидуальных"
+              "quote": "Лечебная физкультура"
             }
           },
           {
-            "text": "медицинских противопоказаний, аллергологического и фармакологического анамнеза,",
+            "text": "Эрготерапия",
             "source_ref": {
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
@@ -276,17 +675,107 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "медицинских противопоказаний, аллергологического и фармакологического анамнеза,"
+              "quote": "Эрготерапия"
+            }
+          },
+          {
+            "text": "Массаж",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Массаж"
+            }
+          },
+          {
+            "text": "Физиотерапия",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Физиотерапия"
+            }
+          },
+          {
+            "text": "Рефлексотерапия",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Рефлексотерапия"
+            }
+          },
+          {
+            "text": "Голосо-речевая терапия",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Голосо-речевая терапия"
+            }
+          },
+          {
+            "text": "Диетотерапия",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Диетотерапия"
+            }
+          },
+          {
+            "text": "Социально-психологическая адаптация с участием психологов",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Социально-психологическая адаптация с участием психологов"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "раствор",
+            "drug_name": "Иммуноглобулин человека для внутривенного введения (ВВИГ), раствор 50 мг/мл или 100 мг/мл",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "50 мг",
+            "dose_text": "Стартовая доза: 0,4–0,8 г/кг МТ 1 раз в 3–4 недели. Поддерживающая доза: 0,4–0,6 г/кг МТ 1 раз в 3–4 недели.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -298,20 +787,20 @@
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
               "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "раствор 50 мг/мл \nили 100 мг/мл, или ЛП иммуноглобули"
+              "quote": "ВВИГ в стартовой дозе 0,4–0,8 г/кг МТ пациента 1 раз в 3–4 недели. Поддерживающая доза – 0,4–0,6 г/кг МТ пациента 1 раз в 3–4 недели."
             }
           },
           {
-            "drug_name": "менее",
+            "drug_name": "Иммуноглобулин человека для подкожного введения (ПКИГ), раствор 165 мг/мл или 200 мг/мл",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "7 г",
+            "dose_text": "Начало через 1 неделю после ВВИГ. Доза: 0,1 г/кг МТ в неделю (0,4 г/кг в месяц). При неэффективности возможна коррекция до 0,2 г/кг МТ в неделю.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -323,20 +812,20 @@
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
               "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
+              "page_start": 7,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "менее 7 г/л, при \nналичии бронхоэктазов или диаре"
+              "quote": "ПКИГ, раствор 165 мг/мл или 200 мг/мл. Начало введения выполняется через 1 неделю после последнего введения ВВИГ. Доза 0,1 г/кг МТ в неделю... Возможно повышение дозы до 0,2 г/кг МТ в неделю"
             }
           },
           {
-            "drug_name": "более",
+            "drug_name": "Ингибитор C1-эстеразы",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "10 г",
+            "dose_text": "Пациентам от 2 до 11 лет (>25 кг): 1000 МЕ (2 флакона); от 2 до 11 лет (10–25 кг): 500 МЕ (1 флакон); старше 12 лет: 1000 МЕ (2 флакона) за 3–6 ч перед вмешательствами. Для долгосрочной профилактики (",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -348,20 +837,20 @@
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
               "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "более 10 г/л"
+              "quote": "ингибитор С1-эстеразы, лиофилизированный порошок для приготовления раствора для внутривенного введения 500 МЕ, пациентам от 2 до 11 лет >25 кг: доза 1000 ME (два флакона)"
             }
           },
           {
-            "drug_name": "Доза",
+            "drug_name": "Транексамовая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,1 г",
+            "dose_text": "Раствор в/в 50 мг/мл в дозе 20–50 мг/кг МТ/сут в 2–3 приема (макс. 4–6 г/сут) либо внутрь табл. 250 мг и 500 мг в дозе 25 мг/кг МТ 2–3 раза/сут (макс. 3–6 г/сут).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -373,20 +862,20 @@
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
               "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Доза 0,1 г/кг МТ в неделю (0,4 г/кг в месяц)"
+              "quote": "транексамовая кислота, раствор для внутривенного введения 50 мг/мл в дозе 20–50 мг/кг МТ в сутки, 2–3 раза в сутки (максимальная суточная доза 4–6 г в сутки)"
             }
           },
           {
-            "drug_name": "июня",
+            "drug_name": "Ланаделумаб",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "2024 г",
+            "dose_text": "Раствор для п/к введения 150 мг/мл 2 мл флакон. Начальная доза 300 мг п/к 1 раз в 2 недели. При отсутствии приступов у пациентов с низкой МТ — 300 мг 1 раз в 4 недели.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -398,113 +887,13 @@
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
               "document_url": null,
               "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
+              "page_start": 9,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "июня 2024 г"
-            }
-          },
-          {
-            "drug_name": "августа",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2025 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "августа 2025 г"
-            }
-          },
-          {
-            "drug_name": "октября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "2011 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "октября 2011 г"
-            }
-          },
-          {
-            "drug_name": "ноября",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1993 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ноября 1993 г"
-            }
-          },
-          {
-            "drug_name": "марта",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "1997 г",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "марта \n1997 г"
+              "quote": "ингибиторы калликреина (ланаделумаб), человеческое моноклональное антитело, раствор для подкожного введения 150 мг/мл 2 мл флакон. Начальная доза 300 мг подкожно 1 раз в 2 недели."
             }
           }
         ],
@@ -514,7 +903,7 @@
       },
       "follow_up": [
         {
-          "text": "Контроль",
+          "text": "Консультация врача–аллерголога-иммунолога Центра 1 раз в год (при необходимости 1 раз в 3 месяца, бессрочно)",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -528,11 +917,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Консультация врача–аллерголога-иммунолога Центра 1 раз в год (при необходимости 1 раз в 3 месяца, бессрочно)"
           }
         },
         {
-          "text": "Контроль",
+          "text": "Для пациентов с D83: ОАК и ОАМ 1 раз в 3 месяца; БИК 1 раз в 6 месяцев; УЗИ ОБП и проба Кумбса (при ВВИГ) 1 раз в год",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -546,11 +935,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Для пациентов с D83: ОАК и ОАМ 1 раз в 3 месяца; БИК 1 раз в 6 месяцев; УЗИ ОБП и проба Кумбса (при ВВИГ) 1 раз в год"
           }
         },
         {
-          "text": "через 1 нед",
+          "text": "Консультации врачей-специалистов по профилю сопутствующей патологии (гастроэнтеролог, пульмонолог, оториноларинголог и др.) при наличии показаний",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -564,11 +953,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "через 1 нед"
+            "quote": "Консультации врачей-специалистов по профилю сопутствующей патологии (гастроэнтеролог, пульмонолог, оториноларинголог и др.) при наличии показаний"
           }
         },
         {
-          "text": "Контроль",
+          "text": "Контроль эффективности терапии ПКИГ проводится 1 раз в 3 месяца",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -582,14 +971,68 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Контроль"
+            "quote": "Контроль эффективности терапии ПКИГ проводится 1 раз в 3 месяца"
+          }
+        },
+        {
+          "text": "Оценка целевого уровня IgG: не менее 7 г/л (при наличии бронхоэктазов или диарейного синдрома — более 10 г/л)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка целевого уровня IgG: не менее 7 г/л (при наличии бронхоэктазов или диарейного синдрома — более 10 г/л)"
+          }
+        },
+        {
+          "text": "Оценка эффективности медицинской реабилитации по окончании курса по изменению степени выраженности функциональных нарушений и ограничений жизнедеятельности",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка эффективности медицинской реабилитации по окончании курса по изменению степени выраженности функциональных нарушений и ограничений жизнедеятельности"
+          }
+        },
+        {
+          "text": "Контроль коагулограммы 1 раз в 2 недели при назначении транексамовой кислоты",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль коагулограммы 1 раз в 2 недели при назначении транексамовой кислоты"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "с ПИД является необходимость проведения комплекса медицинских услуг, направленных",
+          "text": "Первичная диагностика осуществляется в амбулаторных условиях врачами-педиатрами или ВОП; при подозрении на ПИД — направление к аллергологу-иммунологу",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -602,11 +1045,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "с ПИД является необходимость проведения комплекса медицинских услуг, направленных"
+            "quote": "Первичная диагностика осуществляется в амбулаторных условиях врачами-педиатрами или ВОП; при подозрении на ПИД — направление к аллергологу-иммунологу"
           }
         },
         {
-          "text": "с ПИД является необходимость проведения комплекса медицинских услуг, направленных",
+          "text": "Госпитализация в стационар организаций здравоохранения по профилю осложнений для подтверждения диагноза и лечения",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -619,11 +1062,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "с ПИД является необходимость проведения комплекса медицинских услуг, направленных"
+            "quote": "Госпитализация в стационар организаций здравоохранения по профилю осложнений для подтверждения диагноза и лечения"
           }
         },
         {
-          "text": "с ПИД является необходимость проведения комплекса медицинских услуг, направленных",
+          "text": "Оказание медицинской помощи в условиях отделения дневного пребывания ОЗ",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -636,15 +1079,66 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "с ПИД является необходимость проведения комплекса медицинских услуг, направленных"
+            "quote": "Оказание медицинской помощи в условиях отделения дневного пребывания ОЗ"
+          }
+        },
+        {
+          "text": "Отделение дневного пребывания ОЗ: проведение сложных диагностических и лечебных мероприятий без необходимости круглосуточного наблюдения, подбор заместительной терапии",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Отделение дневного пребывания ОЗ: проведение сложных диагностических и лечебных мероприятий без необходимости круглосуточного наблюдения, подбор заместительной терапии"
+          }
+        },
+        {
+          "text": "Амбулаторные условия: проведение еженедельной терапии ПКИГ (в том числе в домашних условиях после обучения)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторные условия: проведение еженедельной терапии ПКИГ (в том числе в домашних условиях после обучения)"
+          }
+        },
+        {
+          "text": "Амбулаторные условия: регулярная заместительная терапия и лечение согласно клиническим протоколам",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторные условия: регулярная заместительная терапия и лечение согласно клиническим протоколам"
           }
         }
       ],
       "red_flags": [
         {
-          "text": "цессы; \nдве и более тяжелые инфекции, включая септицемию; \nрецидивирующий кандидоз ротовой полости или иной грибковой инфекции; \nдлительная или рецидивир",
+          "text": "Смерть близких родственников в младенческом возрасте от ПИД или невыясненных причин",
           "aliases": [],
-          "red_flag_type": "severe_infection",
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -652,19 +1146,39 @@
             "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
             "document_url": null,
             "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "цессы; \nдве и более тяжелые инфекции, включая септицемию; \nрецидивирующий кандидоз ротовой полости или иной грибковой инфекции; \nдлительная или рецидивир"
+            "quote": "смерть близких родственников в младенческом возрасте от ПИД или невыясненных причин;"
           }
         },
         {
-          "text": "едрасположенность к тяжелым вирусным инфекциям; энцефалиты, вызванные \nвирусом простого герпеса); \nE31.0 Аутоиммунная полигландулярная недостаточность; \nG11.3 Моз",
+          "text": "Низкие уровни острофазовых показателей (ЦРБ, РФ, АСЛ-О) при инфекционном процессе",
           "aliases": [],
-          "red_flag_type": "severe_infection",
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "низкие уровни острофазовых показателей при инфекционном процессе (ЦРБ, ревматоидный фактор, АСЛ-О);"
+          }
+        },
+        {
+          "text": "Две и более тяжелые инфекции, включая септицемию",
+          "aliases": [],
+          "red_flag_type": "other",
           "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
@@ -672,84 +1186,59 @@
             "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
             "document_url": null,
             "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "едрасположенность к тяжелым вирусным инфекциям; энцефалиты, вызванные \nвирусом простого герпеса); \nE31.0 Аутоиммунная полигландулярная недостаточность; \nG11.3 Моз"
+            "quote": "две и более тяжелые инфекции, включая септицемию;"
+          }
+        },
+        {
+          "text": "Двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью в/в введения антибактериальных ЛП",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "двухмесячная антибиотикотерапия с недостаточным эффектом или необходимостью внутривенного введения антибактериальных ЛП;"
           }
         }
       ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: [classification] 20. При первичной постановке диагноза либо для подтверждения диагноза ПИ…",
-          "Обоснование диагноза: Числовые значения критериев",
-          "Обоснование диагноза: | № п/п | Формы БЭН | Критерии | Числовые значения критериев | Степень тяжести | Шифры по…",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: раствор",
-          "Препарат: менее",
-          "Препарат: более",
-          "Препарат: Доза",
-          "Препарат: июня",
-          "Препарат: августа",
-          "Препарат: октября",
-          "Препарат: ноября",
-          "Препарат: марта",
-          "Немедикаментозно: [treatment] 7. В условиях отделения дневного пребывания ОЗ медицинская помощь оказывается…",
-          "Немедикаментозно: пациентам с ПИД при проведении сложных диагностических и лечебных мероприятий",
-          "Немедикаментозно: адекватной заместительной терапии",
-          "Немедикаментозно: [treatment] 14. Фармакотерапия (стр. 4)",
-          "Немедикаментозно: протоколом с учетом всех индивидуальных особенностей пациента, его индивидуальных"
-        ],
-        "conditional": [
-          "Маршрутизация: с ПИД является необходимость проведения комплекса медицинских услуг, направленных (по показаниям)"
-        ],
-        "warnings": [
-          "Важно: при «цессы; две и более тяжелые инфекции, включая септицемию; рецидивирующий кандидо…»",
-          "Важно: при «едрасположенность к тяжелым вирусным инфекциям; энцефалиты, вызванные вирусом п…»"
-        ]
-      },
-      "source_refs": [
-        {
-          "protocol_id": "allergologiya_immunologiya_кп_диагностика_лечение_пациентов_с_первичными_иммунод",
-          "document_url": null,
-          "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_лечение_пациентов_с_первичными_иммунодефицитами_детс_нас_пост_МЗ_2024_98.pdf",
-          "page_start": null,
-          "page_end": null,
-          "section_title": null,
-          "section_type": null,
-          "table_index": null,
-          "row_index": null,
-          "quote": "Диагностика лечение пациентов с первичными иммунодефицитами детское население"
-        }
-      ]
+      "kz_checklist": null,
+      "source_refs": []
     }
   ],
   "global_red_flags": [],
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-21T05:32:43.538356+00:00",
-    "extractor": "structured_fallback",
+    "extracted_at": "2026-07-23T07:02:51.278484+00:00",
+    "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
-      "source_text_sections",
-      "llm_skeleton_failed_fallback",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "llm_pipeline_v1",
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-21T05:32:43.562916+00:00"
+    "validated_at": "2026-07-23T07:02:51.302767+00:00"
   }
 }

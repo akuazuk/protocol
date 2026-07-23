@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с хирургической инфекцией кожи и мягких тканей
-    в амбулаторных условиях
+  title: Клинический протокол диагностики и лечения пациентов с хирургической инфекцией
+    кожи и мягких тканей в амбулаторных условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пациентов с хирургической
     инфекцией кожи и мягких тканей в амбулаторных условиях 28.06.2013 № 749.pdf
@@ -28,7 +28,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: surgical_skin_soft_tissue_infection
+- condition_id: hirurgicheskaya_infekciya_kozhi_i_mt
   name: Хирургическая инфекция кожи и мягких тканей
   synonyms: []
   abbreviations: []
@@ -44,14 +44,62 @@ conditions:
   - L73
   - L05
   - B24
-  - E12
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Оценка уровня поражения мягких тканей по классификации Achrenholz (1991):
+        1 уровень — кожа, 2 уровень — подкожная клетчатка, 3 уровень — поверхностная
+        фасция, 4 уровень — мышцы и глубокие фасциальные структуры'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_лечения_пациентов_с_хирургической_инфекцией_кожи_и_м
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пациентов
+          с хирургической инфекцией кожи и мягких тканей в амбулаторных условиях 28.06.2013
+          № 749.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Оценка уровня поражения мягких тканей по классификации Achrenholz
+          (1991): 1 уровень — кожа, 2 уровень — подкожная клетчатка, 3 уровень — поверхностная
+          фасция, 4 уровень — мышцы и глубокие фасциальные '
+    optional: []
+    exclusion: []
   required_exams: []
   conditional_exams: []
-  treatment: null
+  treatment:
+    non_drug:
+    - text: Рациональное использование мероприятий хирургического и общеврачебного
+        плана
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_лечения_пациентов_с_хирургической_инфекцией_кожи_и_м
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пациентов
+          с хирургической инфекцией кожи и мягких тканей в амбулаторных условиях 28.06.2013
+          № 749.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рациональное использование мероприятий хирургического и общеврачебного
+          плана
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
   follow_up: []
   hospitalization: []
   routing:
@@ -71,6 +119,24 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
+  - text: Амбулаторно (в амбулаторных условиях районных, областных и республиканских
+      организаций здравоохранения)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_пациентов_с_хирургической_инфекцией_кожи_и_м
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пациентов
+        с хирургической инфекцией кожи и мягких тканей в амбулаторных условиях 28.06.2013
+        № 749.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно (в амбулаторных условиях районных, областных и республиканских
+        организаций здравоохранения)
   red_flags: []
   contraindications: []
   complications: []
@@ -80,7 +146,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:22:38.231390+00:00'
+  extracted_at: '2026-07-23T08:39:13.353753+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -91,4 +157,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:22:38.231608+00:00'
+  validated_at: '2026-07-23T08:39:13.353955+00:00'

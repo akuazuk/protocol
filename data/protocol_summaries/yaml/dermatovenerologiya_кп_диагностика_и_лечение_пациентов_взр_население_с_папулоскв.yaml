@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с папулосквамозными нарушениями
+  title: Диагностика и лечение пациентов (взрослое население) с папулосквамозными
+    нарушениями
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
   document_sha256: null
@@ -31,25 +32,14 @@ conditions:
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - L40
   - L40.0
-  - L40.1
-  - L40.2
-  - L40.3
-  - L40.4
-  - L40.5
-  - L40.8
-  - L41
-  - L41.0
-  - L41.1
-  - L41.2
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Клиническая классификация и критерии клинической диагностики псориаза
-        (согласно приложениям 1 и 2)
+    - text: оценка кожных проявлений с учетом клинической классификации псориаза и
+        критериев клинической диагностики псориаза
       logic_group: null
       operator: unknown
       values: []
@@ -66,8 +56,26 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Клиническая классификация и критерии клинической диагностики псориаза
-          (согласно приложениям 1 и 2)
+        quote: оценка кожных проявлений с учетом клинической классификации псориаза
+          и критериев клинической диагностики псориаза
+    - text: Оценка степени тяжести псориаза проводится согласно приложению 3
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оценка степени тяжести псориаза проводится согласно приложению 3
     optional: []
     exclusion: []
   required_exams:
@@ -91,7 +99,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: сбор жалоб и анамнеза жизни и заболевания
+      quote: сбор жалоб и анамнеза жизни и заболевания;
   - name: Осмотр с оценкой кожных проявлений
     aliases: []
     exam_type: unknown
@@ -114,8 +122,8 @@ conditions:
       row_index: null
       quote: осмотр с оценкой кожных проявлений (в том числе, с учетом клинической
         классификации псориаза и критериев клинической диагностики псориаза согласно
-        приложениям 1 и 2 соответственно)
-  - name: Общий (клинический) анализ крови
+        приложениям 1 и 2 соответственно);
+  - name: Общий (клинический) анализ крови развернутый
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -136,7 +144,8 @@ conditions:
       table_index: null
       row_index: null
       quote: общий (клинический) анализ крови развернутый (определение уровня гемоглобина,
-        эритроцитов, лейкоцитов, лейкоцитарной формулы, тромбоцитов, СОЭ)
+        количества эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня
+        тромбоцитов, скорость оседания эритроцитов
   - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -157,7 +166,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ мочи
+      quote: общий анализ мочи;
   - name: Анализ крови биохимический
     aliases: []
     exam_type: unknown
@@ -179,12 +188,83 @@ conditions:
       table_index: null
       row_index: null
       quote: анализ крови биохимический (определение уровня креатинина, мочевины,
-        глюкозы, общего белка, АЛТ, АСТ, общего билирубина, холестерина, щелочной
-        фосфатазы, С-реактивного белка, АСЛО)
-  - name: Определение антител к бледной трепонеме (Treponema pallidum) методом ИФА
+        глюкозы, общего белка, аланинаминотрансферазы (далее – АЛТ), аспартатаминотрансферазы
+        (далее – АСТ), общего билирубина...
+  - name: Общий (клинический) анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение за пациентами с псориазом, парапсориазом, красным
+        плоским лишаем осуществляется 1 раз в 6–12 месяцев с проведением общего (клинического)
+        анализа крови
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение за пациентами с псориазом, парапсориазом, красным
+        плоским лишаем осуществляется 1 раз в 6–12 месяцев с проведением... общего
+        анализа мочи
+  - name: Анализ крови биохимический
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение за пациентами с псориазом, парапсориазом, красным
+        плоским лишаем осуществляется 1 раз в 6–12 месяцев с проведением... анализа
+        крови биохимического.
+  conditional_exams:
+  - name: Определение антител к бледной трепонеме (Treponema pallidum) методом ИФА
+      в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -202,11 +282,12 @@ conditions:
       table_index: null
       row_index: null
       quote: определение антител к бледной трепонеме (Treponema pallidum) методом
-        ИФА в сыворотке крови при установлении диагноза, однократно
+        ИФА в сыворотке крови при установлении диагноза, однократно.
   - name: Бактериологическое исследование слизи с миндалин и задней стенки глотки
+      на аэробные и факультативно-анаэробные микроорганизмы
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -224,10 +305,367 @@ conditions:
       table_index: null
       row_index: null
       quote: бактериологическое исследование слизи с миндалин и задней стенки глотки
-        на аэробные и факультативно-анаэробные микроорганизмы, однократно
-  conditional_exams: []
-  treatment: null
-  follow_up: []
+        на аэробные и факультативно-анаэробные микроорганизмы, однократно;
+  - name: Биопсия кожи и морфологическое (гистологическое) исследование препарата
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия кожи и морфологическое (гистологическое) исследование препарата;
+  - name: Исследование на носительство поверхностного антигена вируса гепатита B (HBsAg)
+      перед назначением метотрексата, циклоспорина
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование на носительство поверхностного антигена вируса гепатита
+        В (далее – HBsAg) перед назначением метотрексата, циклоспорина;
+  - name: Диаскин-тест / квантифероновый тест / проба Манту при лечении ГИБП
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: диаскин-тест/квантифероновый тест/проба Манту (при лечении генно-инженерными
+        биологическими ЛП (далее – ГИБП));
+  - name: Тест на беременность перед назначением метотрексата, циклоспорина, ГИБП
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тест на беременность (для женщин) (при лечении метотрексатом, циклоспорином,
+        ГИБП);
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: Кальципотриол
+      active_substance: null
+      drug_group: null
+      dose_text: наносить тонким слоем на пораженные участки 1–2 раза/сутки (максимум
+        100 г/неделю) 8–12 недель
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кальципотриол, мазь для наружного применения 50 мкг/г, раствор для
+          наружного применения 50 мкг/г – наносить тонким слоем на пораженные участки
+          1–2 раза/сутки
+    - drug_name: Кальципотриол/бетаметазон
+      active_substance: null
+      drug_group: null
+      dose_text: наносить тонким слоем на пораженные участки 1 раз/сутки (максимум
+        100 г/неделю) 8–12 недель
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кальципотриол/бетаметазон, мазь для наружного применения (50 мкг +
+          500 мкг)/г – наносить тонким слоем на пораженные участки 1 раза/сутки (максимум
+          100 г/неделю) 8–12 недель;
+    - drug_name: Мометазона фуроат
+      active_substance: null
+      drug_group: null
+      dose_text: наносить тонким слоем на область высыпаний 2 раза/сутки 2–3 недели
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: мометазона фуроат, мазь для наружного применения 1 мг/г, крем для наружного
+          применения 1 мг/г – наносить тонким слоем на область высыпаний 2 раза/сутки
+          2–3 недели;
+    - drug_name: Клобетазол
+      active_substance: null
+      drug_group: null
+      dose_text: наносить тонким слоем на область высыпаний 2 раза/сутки 2 недели
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: клобетазол, мазь для наружного применения 0,5 мг/г, крем для наружного
+          применения 0,5 мг/г, раствор для наружного применения 0,5 мг/г – наносить
+          тонким слоем на область высыпаний 2 раза/сутки 2 недели
+    - drug_name: Пимекролимус
+      active_substance: null
+      drug_group: null
+      dose_text: наносить тонким слоем на пораженные участки 2 раза/сутки 4–8 недель
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: пимекролимус1, крем для наружного применения 10 мг/г – наносить тонким
+          слоем на пораженные участки 2 раза/сутки 4–8 недель;
+    - drug_name: Метотрексат
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь или подкожно 10–15–20 мг/неделю (при необходимости до 25–30
+        мг/неделю)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метотрексат, таблетки 2,5 мг; 5 мг – внутрь 10–15–20 мг/неделю (при
+          необходимости доза может быть увеличена до 25–30 мг/неделю)
+    - drug_name: Фолиевая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь 5 мг/неделю через 24 часа после приема метотрексата или 1–5
+        мг/сутки кроме дня приема метотрексата
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фолиевая кислота, таблетки 1 мг – внутрь 5 мг/неделю через 24 часа
+          после приема метотрексата или 1–5 мг/сутки кроме дня приема метотрексата.
+    - drug_name: Циклоспорин
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь в начальной дозе 2,5–3 мг на кг массы тела в сутки в 2 приема
+        с 12-часовым интервалом
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: циклоспорин, капсулы 25 мг, 50 мг, 100 мг – внутрь в начальной дозе
+          2,5–3 мг на кг массы тела в сутки в 2 приема с 12-часовым интервалом.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: При достижении положительной динамики возможно длительное применение топических
+      кортикостероидов или пимекролимуса в режиме проактивной терапии 2 раза в неделю
+      до 12 недель
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При достижении положительной динамики возможно длительное применение
+        топических кортикостероидов или пимекролимуса в режиме проактивной терапии
+        2 раза в неделю до 12 недель
+  - text: После достижения терапевтического эффекта метотрексатом рекомендована поддерживающая
+      терапия в минимальной эффективной дозе (не более 22,5 мг в неделю)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: После достижения терапевтического эффекта метотрексатом рекомендована
+        поддерживающая терапия в минимальной эффективной дозе (не более 22,5 мг в
+        неделю)
+  - text: Диспансерное наблюдение за пациентами с псориазом, парапсориазом, красным
+      плоским лишаем 1 раз в 6–12 месяцев
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение за пациентами с псориазом, парапсориазом, красным
+        плоским лишаем 1 раз в 6–12 месяцев
+  - text: Медицинское наблюдение врачом-дерматовенерологом 1 раз в месяц в течение
+      2 месяцев после установления диагноза, далее – 2 раза в год
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение врачом-дерматовенерологом 1 раз в месяц в течение
+        2 месяцев после установления диагноза, далее – 2 раза в год
   hospitalization: []
   routing:
   - text: амбулаторно
@@ -258,7 +696,58 @@ conditions:
       table_index: null
       row_index: null
       quote: госпитализация
-  red_flags: []
+  - text: Лечение в стационарных условиях дерматовенерологических отделений показано
+      пациентам с тяжелым течением заболевания и (или) при неэффективности амбулаторного
+      лечения
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Лечение в стационарных условиях дерматовенерологических отделений показано
+        пациентам с тяжелым течением заболевания и (или) при неэффективности амбулаторного
+        лечения
+  - text: Амбулаторно (диспансерное наблюдение, наблюдение врачом-дерматовенерологом)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно (диспансерное наблюдение, наблюдение врачом-дерматовенерологом)
+  red_flags:
+  - text: Отсутствие эффекта от лечения метотрексатом в дозе 15 мг/неделю в течение
+      3 месяцев (показание к смене ЛП)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_папулоскв
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_папулосквамозными_нарушениями_постановление_МЗ_2022_59.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отсутствие эффекта от лечения в дозе 15 мг/неделю в течение 3 месяцев
+        является медицинским показанием к смене ЛП.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -267,7 +756,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:24:45.455028+00:00'
+  extracted_at: '2026-07-23T07:22:47.057340+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -275,7 +764,15 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-02T00:24:45.465706+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[papulosquamous_disorders].required_exams[6]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[papulosquamous_disorders].required_exams[7]
+  validated_at: '2026-07-23T07:22:47.071761+00:00'

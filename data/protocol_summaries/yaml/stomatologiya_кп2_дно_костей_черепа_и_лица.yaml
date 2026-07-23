@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: ДНО костей черепа и лица
+  title: Доброкачественные новообразования костей черепа и лица
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: benign_neoplasms_skull_face
+- condition_id: dno_kostey_cherepa_i_litsa
   name: Доброкачественные новообразования костей черепа и лица
   synonyms: []
   abbreviations: []
@@ -44,8 +44,9 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Клинические, рентгенологические и лабораторные признаки доброкачественного
-        новообразования костей черепа и лица.
+    - text: Наличие клинических, рентгенологических и лабораторных признаков доброкачественного
+        одонтогенного или неодонтогенного новообразования костей челюстно-лицевой
+        области
       logic_group: null
       operator: unknown
       values: []
@@ -62,10 +63,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Клинические, рентгенологические и лабораторные признаки доброкачественного
-          новообразования костей черепа и лица.
-    - text: 'Лабораторные признаки: гистологические признаки дериватов эмалевого органа
-        и производных зубного сосочка при одонтогенных новообразованиях.'
+        quote: Наличие клинических, рентгенологических и лабораторных признаков доброкачественного
+          одонтогенного или неодонтогенного новообразования костей челюстно-лицевой
+          области
+    - text: Гистологические признаки дериватов эмалевого органа и производных зубного
+        сосочка (при одонтогенных новообразованиях)
       logic_group: null
       operator: unknown
       values: []
@@ -82,10 +84,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Лабораторные признаки: гистологические признаки дериватов эмалевого
-          органа и производных зубного сосочка при одонтогенных новообразованиях.'
-    - text: 'Лабораторные признаки: клеточные элементы двух типов (остеобласты, остеокласты),
-        единичные фибробласты, ксантомные клетки.'
+        quote: Гистологические признаки дериватов эмалевого органа и производных зубного
+          сосочка (при одонтогенных новообразованиях)
+    - text: 'Клеточные элементы двух типов: клетки типа остеобластов и клетки типа
+        остеокластов (гигантские многоядерные клетки), фибробласты, ксантомные клетки'
       logic_group: null
       operator: unknown
       values: []
@@ -102,10 +104,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Лабораторные признаки: клеточные элементы двух типов (остеобласты,
-          остеокласты), единичные фибробласты, ксантомные клетки.'
+        quote: 'Клеточные элементы двух типов: клетки типа остеобластов и клетки типа
+          остеокластов (гигантские многоядерные клетки), фибробласты, ксантомные клетки'
     - text: Дифференциальная диагностика с фиброзной дисплазией, злокачественной опухолью,
-        остеосклерозом, остеомиелитом челюсти, кистой челюсти.
+        остеосклерозом, остеомиелитом челюсти, кистой челюсти
       logic_group: null
       operator: unknown
       values: []
@@ -123,55 +125,12 @@ conditions:
         table_index: null
         row_index: null
         quote: Дифференциальная диагностика с фиброзной дисплазией, злокачественной
-          опухолью, остеосклерозом, остеомиелитом челюсти, кистой челюсти.
+          опухолью, остеосклерозом, остеомиелитом челюсти, кистой челюсти
     optional: []
     exclusion: []
   required_exams:
-  - name: Клинический осмотр
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Выделяют клинические, рентгенологические и лабораторные признаки доброкачественного
-        одонтогенного и неодонтогенного новообразования костей челюстно-лицевой области
-  - name: Рентгенологическое исследование
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Выделяют клинические, рентгенологические и лабораторные признаки доброкачественного
-        одонтогенного и неодонтогенного новообразования костей челюстно-лицевой области
-  - name: Гистологическое исследование
+  - name: Обязательные и дополнительные диагностические исследования на догоспитальном
+      этапе
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -191,14 +150,35 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Лабораторные признаки: гистологические признаки дериватов эмалевого
-        органа и производных зубного сосочка при одонтогенных новообразованиях; клеточные
-        элементы двух типов: остеобласты, остеокласты, единично фибробласты, ксантомные
-        клетки.'
-  conditional_exams: []
+      quote: обязательные и дополнительные диагностические исследования, врачебные
+        консультации врачей-специалистов по профилю сопутствующей патологии проводятся
+        в амбулаторных условиях на догоспитальном этапе.
+  conditional_exams:
+  - name: Рентгенологический контроль
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: допускается консервативное лечение с динамическим наблюдением и рентгенологическим
+        контролем 1 раз в год.
   treatment:
     non_drug:
-    - text: Воздерживаться от чрезмерных физических нагрузок в период лечения.
+    - text: В период лечения следует воздерживаться от чрезмерных физических нагрузок
       source_ref:
         protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
         document_url: null
@@ -209,14 +189,144 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Воздерживаться от чрезмерных физических нагрузок в период лечения.
+        quote: В период лечения следует воздерживаться от чрезмерных физических нагрузок
+    - text: Хирургическое удаление новообразования в пределах здоровой кости путем
+        блоковидной, частичной резекции челюсти с сохранением ее непрерывности (континуитальная
+        резекция), при амелобластоме – отступя до 1 см от видимой рентгенологической
+        границы опухоли.
+      source_ref:
+        protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое удаление новообразования в пределах здоровой кости путем
+          блоковидной, частичной резекции челюсти с сохранением ее непрерывности (континуитальная
+          резекция), при амелобластоме – отступя до
+    - text: Консервативное лечение с динамическим наблюдением и рентгенологическим
+        контролем 1 раз в год у пациентов с одонтомами, цементомами, остеомами челюстей
+        при отсутствии жалоб, деформации костей и неврологической симптоматики.
+      source_ref:
+        protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Консервативное лечение с динамическим наблюдением и рентгенологическим
+          контролем 1 раз в год у пациентов с одонтомами, цементомами, остеомами челюстей
+          при отсутствии жалоб, деформации костей и невроло
     drug_groups: []
-    drugs: []
+    drugs:
+    - drug_name: Артикаин/Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: Местная анестезия (инфильтрационная, проводниковая). Взрослым доза
+        до 7 мг на 1 кг массы тела при одной процедуре.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
+          в дозе до 7 мг на 1 кг массы тела
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: Местная анестезия (инфильтрационная, проводниковая). Вводить в наименьшей
+        концентрации и наименьшей дозе, дающей требуемый эффект.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП следует вводить в наименьшей концентрации и наименьшей дозе, дающей
+          требуемый эффект.
+    - drug_name: Производные имидазола
+      active_substance: null
+      drug_group: null
+      dose_text: Доза может быть увеличена до 400 мг 3 раза в сутки; при эффекте снижают
+        до 600–800 мг в сутки. Максимальная суточная доза – 1200 мг. Длительность
+        при болевом синдроме 3–5 дней.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Для достижения быстрого терапевтического эффекта доза может быть увеличена
+          до 400 мг 3 раза в сутки.
+    - drug_name: Хлоргексидин
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор 0,5 мг/мл местно для инстилляции и ирригации ран в полости
+        рта и лунок удаленных зубов — 5–10 мл раствора 2–3 раза в сутки.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
+          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение в амбулаторных условиях после проведенного лечения.
+  - text: Медицинское наблюдение в амбулаторных условиях после проведенного лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -230,7 +340,62 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях после проведенного лечения.
+      quote: Медицинское наблюдение в амбулаторных условиях после проведенного лечения
+  - text: 'Оценка критериев эффективности: устранение опухоли, отсутствие рецидива,
+      восстановление анатомических структур и функций зубочелюстной системы (открывание
+      рта, жевание, глотание, речь)'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Оценка критериев эффективности: устранение опухоли, отсутствие рецидива,
+        восстановление анатомических структур и функций зубочелюстной системы (открывание
+        рта, жевание, глотание, речь)'
+  - text: Динамическое наблюдение и рентгенологический контроль 1 раз в год (при консервативном
+      лечении одонтом, цементом, остеом).
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Динамическое наблюдение и рентгенологический контроль 1 раз в год (при
+        консервативном лечении одонтом, цементом, остеом).
+  - text: Медицинское наблюдение в амбулаторных условиях осуществляет врач-стоматолог-хирург
+      с периодичностью 1 раз в 6 месяцев в течение 2 лет после лечения и 1 раз в год
+      в 3-й год после лечения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в амбулаторных условиях осуществляет врач-стоматолог-хирург
+        с периодичностью 1 раз в 6 месяцев в течение 2 лет после лечения и 1 раз в
+        год в 3-й год после лечения.
   hospitalization: []
   routing:
   - text: амбулаторно
@@ -247,7 +412,73 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
-  red_flags: []
+  - text: Лечение пациентов проводится в стационарных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Лечение пациентов проводится в стационарных условиях.
+  - text: Лечение пациентов с одонтомами, цементомами, остеомами альвеолярных отростков
+      челюстей размером до 1 см – в амбулаторных условиях.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Лечение пациентов с одонтомами, цементомами, остеомами альвеолярных отростков
+        челюстей размером до 1 см – в амбулаторных условиях.
+  - text: Диагностические исследования и консультации врачей-специалистов проводятся
+      в амбулаторных условиях на догоспитальном этапе.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностические исследования и консультации врачей-специалистов проводятся
+        в амбулаторных условиях на догоспитальном этапе.
+  red_flags:
+  - text: Появление жалоб, деформации костей или неврологической симптоматики при
+      одонтомах, цементомах, остеомах челюстей (исключает возможность только консервативного
+      наблюдения)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп2_дно_костей_черепа_и_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП2_ДНО_костей_черепа_и_лица.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при отсутствии жалоб, деформации костей, неврологической симптоматики
+        допускается консервативное лечение
   contraindications: []
   complications: []
   kz_checklist: null
@@ -256,7 +487,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T17:59:53.756903+00:00'
+  extracted_at: '2026-07-23T10:15:05.778806+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -267,4 +498,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T17:59:53.761270+00:00'
+  validated_at: '2026-07-23T10:15:05.783629+00:00'

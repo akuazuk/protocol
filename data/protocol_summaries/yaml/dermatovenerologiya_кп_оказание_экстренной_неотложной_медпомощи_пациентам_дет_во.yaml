@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Оказание экстренной неотложной медицинской помощи пациентам детского возраста
+  title: Оказание экстренной и неотложной медицинской помощи пациентам детского возраста
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
   document_sha256: null
@@ -27,7 +27,7 @@ applicability:
   care_setting: []
 conditions:
 - condition_id: anaphylaxis_and_anaphylactic_shock
-  name: Анафилаксия и анафилактический шок
+  name: Анафилактическая реакция, анафилактический шок
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -43,9 +43,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Острое начало заболевания (через несколько минут/часов с момента воздействия
-        этиологического фактора) с поражением кожи и/или слизистых оболочек (генерализованная
-        крапивница, зуд, гиперемия, отек губ, языка и мягкого неба)
+    - text: Острое начало с поражением кожи и/или слизистых в сочетании с дыхательными
+        нарушениями или снижением АД/симптомами органной дисфункции (АФ)
       logic_group: null
       operator: unknown
       values: []
@@ -62,12 +61,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Острое начало заболевания (через несколько минут/часов с момента воздействия
-          этиологического фактора) с поражением кожи и/или слизистых оболочек (генерализованная
-          крапивница, зуд, гиперемия, отек губ,
-    - text: Дыхательные нарушения (одышка, бронхоспазм, стридор, снижение пиковой
-        объемной скорости выдоха, гипоксемия) в сочетании с поражением кожи и/или
-        слизистых оболочек
+        quote: Острое начало с поражением кожи и/или слизистых в сочетании с дыхательными
+          нарушениями или снижением АД/симптомами органной дисфункции (АФ)
+    - text: Отсутствие сознания, апноэ и отсутствие пульса на крупных артериях (остановка
+        кровообращения)
       logic_group: null
       operator: unknown
       values: []
@@ -84,11 +81,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Дыхательные нарушения (одышка, бронхоспазм, стридор, снижение пиковой
-          объемной скорости выдоха, гипоксемия) в сочетании с поражением кожи и/или
-          слизистых оболочек
-    - text: Снижение АД или ассоциированные с этим симптомы органной дисфункции (коллапс,
-        синкопе, недержание мочи) в сочетании с поражением кожи и/или слизистых оболочек
+        quote: Отсутствие сознания, апноэ и отсутствие пульса на крупных артериях
+          (остановка кровообращения)
+    - text: Указание на травму и наличие симптомов потери сознания, амнезии, рвоты,
+        головной боли, очаговой симптоматики (ЧМТ)
       logic_group: null
       operator: unknown
       values: []
@@ -105,13 +101,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Снижение АД или ассоциированные с этим симптомы органной дисфункции
-          (коллапс, синкопе, недержание мочи) в сочетании с поражением кожи и/или
-          слизистых оболочек
-    - text: 'Анафилаксия: острая тяжелая жизнеугрожающая генерализованная или системная
-        реакция гиперчувствительности с быстрым началом, поражением кожи, слизистых
-        оболочек, желудочно-кишечного тракта, возникновением гемодинамических и дыхательных
-        нарушений.'
+        quote: Указание на травму и наличие симптомов потери сознания, амнезии, рвоты,
+          головной боли, очаговой симптоматики (ЧМТ)
+    - text: Нарушение глотания, слюнотечение, слабость дыхательных и мимических мышц
+        (криз при миастении)
       logic_group: null
       operator: unknown
       values: []
@@ -128,11 +121,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Анафилаксия: острая тяжелая жизнеугрожающая генерализованная или системная
-          реакция гиперчувствительности с быстрым началом, поражением кожи, слизистых
-          оболочек, желудочно-кишечного тракта, возникновен'
-    - text: Возможно развитие анафилаксии с поражением кожи, слизистых оболочек или
-        желудочно-кишечного тракта без гемодинамических и (или) дыхательных нарушений.
+        quote: Нарушение глотания, слюнотечение, слабость дыхательных и мимических
+          мышц (криз при миастении)
+    - text: Общемозговая, менингеальная и общеинфекционная симптоматика (инфекционные
+        заболевания ЦНС)
       logic_group: null
       operator: unknown
       values: []
@@ -149,12 +141,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Возможно развитие анафилаксии с поражением кожи, слизистых оболочек
-          или желудочно-кишечного тракта без гемодинамических и (или) дыхательных
-          нарушений.
-    - text: 'Анафилактический шок: острая недостаточность кровообращения в результате
-        анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных
-        органов.'
+        quote: Общемозговая, менингеальная и общеинфекционная симптоматика (инфекционные
+          заболевания ЦНС)
+    - text: 'Анафилаксия: острая тяжелая жизнеугрожающая реакция гиперчувствительности
+        с поражением кожи, слизистых, ЖКТ, гемодинамическими и дыхательными нарушениями'
       logic_group: null
       operator: unknown
       values: []
@@ -171,10 +161,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Анафилактический шок: острая недостаточность кровообращения в результате
-          анафилаксии, проявляющаяся гипотензией и приводящая к гипоксии жизненно
-          важных органов.'
-    - text: Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
+        quote: 'Анафилаксия: острая тяжелая жизнеугрожающая реакция гиперчувствительности
+          с поражением кожи, слизистых, ЖКТ, гемодинамическими и дыхательными нарушениями'
+    - text: 'Анафилактический шок: острая недостаточность кровообращения с гипотензией
+        (систолическое АД < 90 мм рт.ст.) и гипоксией жизненно важных органов'
       logic_group: null
       operator: unknown
       values: []
@@ -191,517 +181,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
-    optional: []
-    exclusion: []
-  required_exams: []
-  conditional_exams:
-  - name: Аллергологическое обследование
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 28
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: дополнительные лабораторные и (или) инструментальные исследования не
-        рекомендованы (за исключением подозрения на развитие крапивницы вследствие
-        пищевой аллергии у сенсибилизированных пациентов или наличие других провоцирующих
-        развитие крапивницы факторов, таких как ЛП, когда показано проведение аллергологического
-        обследования)
-  treatment:
-    non_drug:
-    - text: Лекарственная терапия эффективна только на фоне правильно проведенной
-        ИВЛ и ЗМС.
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Лекарственная терапия эффективна только на фоне правильно проведенной
-          ИВЛ и ЗМС.
-    - text: 'СЛР складывается из ряда последовательных мероприятий: первичная (базовая)
-        реанимация; восстановление витальных функций; интенсивная терапия постреанимационной
-        болезни.'
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'СЛР складывается из ряда последовательных мероприятий: первичная (базовая)
-          реанимация; восстановление витальных функций; интенсивная терапия постреанимационной
-          болезни.'
-    - text: При ОПЖН придать пациенту возвышенное положение тела в постели.
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При ОПЖН придать пациенту возвышенное положение тела в постели.
-    - text: При ОПЖН начать проведение оксигенотерапию.
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При ОПЖН начать проведение оксигенотерапию.
-    drug_groups: []
-    drugs:
-    - drug_name: Эпинефрин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор 1,8 мг/мл или 1 мг/мл. Разовая внутривенная или внутрикостная
-        доза – 10 мкг/кг массы тела, максимальная однократная доза – 1 мг (пациенты
-        с массой тела более 40 кг). Вводят в разведении 1:1000
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Рекомендуемая разовая внутривенная или внутрикостная доза эпинефрина
-          для первого и последующих введений – 10 мкг/кг массы тела, максимальная
-          однократная доза – 1 мг (пациенты с массой тела более 40 кг).
-    - drug_name: Атропин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для инъекций 1 мг/мл. Обычная внутривенная доза 20 мкг/кг
-        массы тела. Дозу можно повторить через 5 минут. Применяется только при брадикардии,
-        вызванной ваготонией или холинергической токсичнос
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Обычная внутривенная доза атропина (раствор для инъекций 1 мг/мл в
-          ампулах) 20 мкг/кг массы тела. Данную дозу можно повторить через 5 минут.
-    - drug_name: Бикарбонат натрия
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для инфузий 84 мг/мл или 40 мг/мл. Стартовая доза 1 ммоль/кг
-        (2 мл раствора для инфузий 40 мг/мл), далее 0,5 ммоль/кг. Не рекомендуется
-        для использования при СЛР, только при выраженном ацидозе
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
-          0,5 ммоль/кг. Бикарбонат натрия противопоказан при отсутствии адекватной
-          вентиляции легких.
-    - drug_name: ЛП кальция (Кальция хлорид/Кальция глюконат)
-      active_substance: null
-      drug_group: null
-      dose_text: 'Кальция хлорид, раствор 100 мг/мл: 20 мг/кг (0,2 мл/кг) внутривенно
-        или внутрикостно, дозу можно повторить через 15 мин. Кальция глюконат, раствор
-        100 мг/мл: 0,6–0,8 мл/кг. Показания: установленная ги'
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида, раствор
-          для внутривенного введения 100 мг/мл в ампулах по 10 мл в дозе 20 мг/кг
-          (0,2 мл/кг), дозу можно повторить через 15 мин.
-    - drug_name: Амиодарон
-      active_substance: null
-      drug_group: null
-      dose_text: Концентрат 50 мг/мл. Внутривенно или внутрикостно 5 мг/кг, повторяют
-        до максимальной дозы 15 мг/кг. Старше 10 лет – 300 мг, разводят только в глюкозе
-        (раствор 50 мг/кг). Применение off-label у пациент
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
-          дозы 15 мг/кг; старше 10 лет – 300 мг, разводят только в глюкозе, раствор
-          50 мг/кг.'
-    - drug_name: Лидокаин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для внутривенного введения 100 мг/мл. Внутривенно струйно
-        1 мг/кг, далее титрование 20–50 мкг на кг/мин. Применяется для купирования
-        фибрилляции желудочков/желудочковой тахиаритмии без пульса.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Дозы: внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг на кг/мин.'
-    - drug_name: Фуросемид
-      active_substance: null
-      drug_group: null
-      dose_text: 'Раствор 10 мг/мл. Разовая доза 1 мг/кг внутримышечно или внутривенно
-        струйно медленно. При отсутствии эффекта через 20 минут можно повторить введение
-        под контролем АД и диуреза (максимальная суточная '
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 10
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'для снижения ОЦК ввести: фуросемид, раствор для внутривенного и внутримышечного
-          введения 10 мг/мл в ампулах 2 мл в разовой дозе 1 мг/кг внутримышечно или
-          внутривенно струйно медленно'
-    - drug_name: Преднизолон
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор 30 (25) мг/мл. Из расчета 2 мг/кг внутривенно струйно с последующим
-        контролем АД. Применяется при ОПЖН при снижении АД менее 10% от нижней границы
-        возрастной нормы.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: 10
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: при снижении АД менее 10 % от нижней границы возрастной нормы... –
-          ввести преднизолон... из расчета 2 мг/кг внутривенно струйно с последующим
-          контролем АД;
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
-      организации (при острой перегрузке правого желудочка, применимо к тяжелым состояниям).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
-        организации (при острой перегрузке правого желудочка, применимо к тяжелым
-        состояниям).
-  red_flags:
-  - text: Дыхательные нарушения (одышка, бронхоспазм, стридор, гипоксемия)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 26
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: дыхательные нарушения (одышка, бронхоспазм, стридор, снижение пиковой
-        объемной скорости выдоха, гипоксемия)
-  - text: Снижение АД или ассоциированные симптомы органной дисфункции (коллапс, синкопе,
-      недержание мочи)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 26
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: снижение АД или ассоциированные с этим симптомы органной дисфункции (коллапс,
-        синкопе, недержание мочи)
-  - text: Отсутствие сознания
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: отсутствие сознания – главный симптом, отражающий нарастающую гипоксию
-        мозга, развивается в первые 10 сек от момента остановки кровообращения
-  - text: Остановка дыхания (апноэ)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: остановка дыхания (апноэ) – у пациентов старше 10 лет развивается позже
-        остальных симптомов на 10–15 сек
-  - text: Отсутствие пульса на крупных артериях
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: отсутствие пульса на крупных артериях. Сочетания отсутствия сознания
-        и апноэ достаточно для установления диагноза «клиническая смерть» и начала
-        проведения СЛР
-  - text: Анафилактический шок, проявляющийся гипотензией, приводящей к гипоксии жизненно
-      важных органов.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: анафилактический шок – острая недостаточность кровообращения в результате
-        АФ, проявляющаяся гипотензией и приводящая к гипоксии жизненно важных органов.
-  - text: 'Гипотензия: снижение систолического АД ниже 90 мм рт.ст.'
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Гипотензия определяется как снижение систолического АД ниже 90 мм рт.ст.
-  - text: Анафилактические реакции являются одной из основных причин остановки кровообращения.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Основные причины остановки кровообращения: ... относительная и(или)
-        абсолютная передозировка ЛП и анафилактические реакции.'
-  - text: При применении амиодарона – высокий риск развития полной АВ-блокады, при
-      увеличении интервала Q–T более чем на 50 % от исходного показателя или появлении
-      признаков АВ-блокады введение прекращают.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Нежелательная реакция – высокий риск развития полной АВ-блокады, поэтому
-        при увеличении интервала Q–T более чем на 50 % от исходного показателя или
-        появлении признаков АВ-блокады введение амиодарона прекращают.
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: urticaria_and_angioedema
-  name: Крапивница и ангионевротический отек
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - L50.0
-  - L50.1
-  - L50.2
-  - L50.3
-  - L50.4
-  - L50.5
-  - L50.6
-  - L50.8
-  - L50.9
-  - T78.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: 'Анафилаксия: Острое начало с поражением кожи/слизистых (крапивница, отек
-        губ, языка, мягкого неба) + дыхательные нарушения или снижение АД/дисфункция
-        органов.'
+        quote: 'Анафилактический шок: острая недостаточность кровообращения с гипотензией
+          (систолическое АД < 90 мм рт.ст.) и гипоксией жизненно важных органов'
+    - text: 'Пароксизмальная тахикардия: приступ учащения ЧСС >200/мин (<1 года),
+        >180/мин (1–6 лет), >160/мин (>6 лет) со специфическими изменениями на ЭКГ'
       logic_group: null
       operator: unknown
       values: []
@@ -718,11 +201,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Анафилаксия: Острое начало с поражением кожи/слизистых (крапивница,
-          отек губ, языка, мягкого неба) + дыхательные нарушения или снижение АД/дисфункция
-          органов.'
-    - text: 'Острая крапивница: Основана на жалобах пациента, данных анамнеза и физикального
-        обследования.'
+        quote: 'Пароксизмальная тахикардия: приступ учащения ЧСС >200/мин (<1 года),
+          >180/мин (1–6 лет), >160/мин (>6 лет) со специфическими изменениями на ЭКГ'
+    - text: Синдром малого сердечного выброса в виде артериальной гипотензии и признаков
+        централизации кровообращения
       logic_group: null
       operator: unknown
       values: []
@@ -739,10 +221,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Острая крапивница: Основана на жалобах пациента, данных анамнеза и
-          физикального обследования.'
-    - text: 'Остановка кровообращения: Отсутствие сознания, апноэ, отсутствие пульса
-        на крупных артериях (дополнительно: расширение зрачков, судороги, цианоз/бледность).'
+        quote: Синдром малого сердечного выброса в виде артериальной гипотензии и
+          признаков централизации кровообращения
+    - text: Застойная сердечная недостаточность с венозной перегрузкой малого или
+        большого кругов кровообращения
       logic_group: null
       operator: unknown
       values: []
@@ -759,137 +241,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Остановка кровообращения: Отсутствие сознания, апноэ, отсутствие пульса
-          на крупных артериях (дополнительно: расширение зрачков, судороги, цианоз/бледность).'
-    - text: 'Эффективность ИВЛ и ЗМС: Наличие пульсовой волны на сонных артериях в
-        такт компрессии, уменьшение степени цианоза кожи и слизистых, сужение зрачков
-        и появление реакции на свет.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Эффективность ИВЛ и ЗМС: Наличие пульсовой волны на сонных артериях
-          в такт компрессии, уменьшение степени цианоза кожи и слизистых, сужение
-          зрачков и появление реакции на свет.'
-    - text: 'ЧМТ легкой степени: Факт травмы и хотя бы один из: кратковременная потеря
-        сознания, ретроградная амнезия, рвота (1-2х), головная боль.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'ЧМТ легкой степени: Факт травмы и хотя бы один из: кратковременная
-          потеря сознания, ретроградная амнезия, рвота (1-2х), головная боль.'
-    - text: 'ЧМТ средней степени тяжести: Факт травмы и хотя бы один из: потеря сознания
-        более 30 минут, нарушение сознания при осмотре, очаговая симптоматика, видимые
-        переломы черепа.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'ЧМТ средней степени тяжести: Факт травмы и хотя бы один из: потеря
-          сознания более 30 минут, нарушение сознания при осмотре, очаговая симптоматика,
-          видимые переломы черепа.'
-    - text: 'ЧМТ тяжелой степени: Факт травмы и хотя бы один из: парезы конечностей,
-        анизокория, брадикардия, наличие «светлого» промежутка.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'ЧМТ тяжелой степени: Факт травмы и хотя бы один из: парезы конечностей,
-          анизокория, брадикардия, наличие «светлого» промежутка.'
-    - text: 'Кризы при миастении: Нарушение глотания, слюнотечение, гнусавый оттенок
-        голоса, слабость мимической мускулатуры, слабость дыхательных мышц и невозможность
-        откашляться, слабость мышц конечностей, психомоторное возбуждение.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Кризы при миастении: Нарушение глотания, слюнотечение, гнусавый оттенок
-          голоса, слабость мимической мускулатуры, слабость дыхательных мышц и невозможность
-          откашляться, слабость мышц конечностей, психо'
-    - text: 'Менингоэнцефалит/менингит: Острое развитие (на фоне предшествующей инфекции
-        или полного здоровья); общемозговая, менингеальная и общеинфекционная симптоматика;
-        у детей до 1 года: родничковая триада, симптом подвешивания, поза «легавой
-        собаки».'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Менингоэнцефалит/менингит: Острое развитие (на фоне предшествующей
-          инфекции или полного здоровья); общемозговая, менингеальная и общеинфекционная
-          симптоматика; у детей до 1 года: родничковая триада, с'
+        quote: Застойная сердечная недостаточность с венозной перегрузкой малого или
+          большого кругов кровообращения
     optional: []
     exclusion: []
   required_exams:
@@ -915,29 +268,6 @@ conditions:
       row_index: null
       quote: проводится первичное неврологическое обследование для выявления очаговой
         симптоматики
-  - name: Измерение уровня глюкозы крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 31
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: при первых (клинических и лабораторных) признаках гипогликемии необходим
-        прием легкоусвояемых углеводов... при отсутствии положительной динамики уровня
-        глюкозы крови через 10–15 минут – повторный прием
   conditional_exams:
   - name: Аллергологическое обследование
     aliases: []
@@ -959,14 +289,32 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: дополнительные лабораторные и (или) инструментальные исследования не
-        рекомендованы (за исключением подозрения на развитие крапивницы вследствие
-        пищевой аллергии... когда показано проведение аллергологического обследования)
+      quote: когда показано проведение аллергологического обследования
+  - name: Электрокардиограмма (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при увеличении интервала Q–T более чем на 50 % от исходного показателя
+        или появлении признаков АВ-блокады введение амиодарона прекращают.
   treatment:
     non_drug:
-    - text: 'При ранах головы: туалет раны и перевязка; при бессознательном состоянии
-        – восстановление и поддержание проходимости ВДП (орофарингеальный воздуховод
-        или интубация трахеи); при кровоточащих ранах в полости рта – тугая тампонада.'
+    - text: Туалет раны и перевязка при ранах головы
       source_ref:
         protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
         document_url: null
@@ -977,13 +325,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'При ранах головы: туалет раны и перевязка; при бессознательном состоянии
-          – восстановление и поддержание проходимости ВДП (орофарингеальный воздуховод
-          или интубация трахеи); при кровоточащих ранах в по'
-    - text: 'При гипогликемии: прием легкоусвояемых углеводов (таблетки/порошки глюкозы
-        до 0,3 г/кг или сладкое питье); при отсутствии динамики через 10-15 мин –
-        повторный прием; при улучшении – прием сложных углеводов; при отсутствии сознания
-        (если в/в невозможно) – подача раствора глюкозы через назогастральный зонд.'
+        quote: Туалет раны и перевязка при ранах головы
+    - text: Восстановление и поддержание проходимости ВДП путем введения орофарингеального
+        воздуховода или интубации трахеи
       source_ref:
         protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
         document_url: null
@@ -994,11 +338,147 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'При гипогликемии: прием легкоусвояемых углеводов (таблетки/порошки
-          глюкозы до 0,3 г/кг или сладкое питье); при отсутствии динамики через 10-15
-          мин – повторный прием; при улучшении – прием сложных угле'
+        quote: Восстановление и поддержание проходимости ВДП путем введения орофарингеального
+          воздуховода или интубации трахеи
+    - text: Тугая тампонада при обнаружении ран, кровоточащих трещин или дефектов
+        ткани в полости рта
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тугая тампонада при обнаружении ран, кровоточащих трещин или дефектов
+          ткани в полости рта
+    - text: Прием легкоусвояемых углеводов или сладкого питья при первых признаках
+        гипогликемии
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Прием легкоусвояемых углеводов или сладкого питья при первых признаках
+          гипогликемии
+    - text: Подача раствора глюкозы 100 мг/мл через назогастральный зонд при невозможности
+        в/в доступа
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подача раствора глюкозы 100 мг/мл через назогастральный зонд при невозможности
+          в/в доступа
+    - text: Первичная (базовая) реанимация, ИВЛ и закрытый массаж сердца (ЗМС)
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Первичная (базовая) реанимация, ИВЛ и закрытый массаж сердца (ЗМС)
+    - text: Придание пациенту возвышенного положения тела в постели при ОПЖН
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Придание пациенту возвышенного положения тела в постели при ОПЖН
+    - text: Проведение оксигенотерапии
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение оксигенотерапии
+    - text: Регулировка преднагрузки
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Регулировка преднагрузки
+    - text: Улучшение инотропной функции миокарда
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Улучшение инотропной функции миокарда
+    - text: Снижение постнагрузки
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение постнагрузки
     drug_groups: []
     drugs:
+    - drug_name: Глюкоза (таблетки, порошки)
+      active_substance: null
+      drug_group: null
+      dose_text: из расчета до 0,3 г/кг массы тела
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 31
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: прием легкоусвояемых углеводов – таблеток (порошков) глюкозы из расчета
+          до 0,3 г/кг массы тела
     - drug_name: Раствор глюкозы 100 мг/мл
       active_substance: null
       drug_group: null
@@ -1022,13 +502,289 @@ conditions:
         row_index: null
         quote: при тяжелой гипогликемии ввести раствор глюкозы 100 мг/мл в дозе 2
           мл/кг внутривенно струйно медленно до полного восстановления сознания
+    - drug_name: Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: Разовая доза 10 мкг/кг в/в или в/костно (в разведении 1:10000, 0,1
+        мл/кг), макс. 1 мг (>40 кг). Повторять каждые 3–5 минут.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: эпинефрин МНН (эпинефрина гидротартрат, раствор 1,8 мг/мл; эпинефрин
+          гидрохлорид, раствор 1 мг/мл), играет центральную роль в алгоритме терапии
+          и должен вводиться как можно быстрее.
+    - drug_name: Атропин
+      active_substance: null
+      drug_group: null
+      dose_text: Внутривенно 20 мкг/кг (раствор 1 мг/мл), повтор через 5 минут. Показан
+        при брадикардии (ваготония, холинергическая токсичность, ФОС).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: атропин МНН рекомендован только при брадикардии, вызванной ваготонией
+          или при холинергической токсичности ЛП, а также отравлениях фосфорорганическими
+          соединениями.
+    - drug_name: Бикарбонат натрия
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая доза 1 ммоль/кг (2 мл/кг раствора 40 мг/мл), далее 0,5
+        ммоль/кг. Только при декомпенсированном метаболическом ацидозе.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: бикарбонат натрия, раствор для инфузий 84 мг/мл или раствор для инфузий
+          40 мг/мл, не рекомендуется для использования при СЛР, только при наличии
+          выраженного ацидоза.
+    - drug_name: Кальция хлорид / Кальция глюконат
+      active_substance: null
+      drug_group: null
+      dose_text: Кальция хлорид 100 мг/мл в/в или в/костно 20 мг/кг (0,2 мл/кг), повтор
+        через 15 мин (или кальция глюконат 100 мг/мл 0,6–0,8 мл/кг).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида, раствор
+          для внутривенного введения 100 мг/мл в ампулах по 10 мл в дозе 20 мг/кг
+          (0,2 мл/кг)
+    - drug_name: Амиодарон
+      active_substance: null
+      drug_group: null
+      dose_text: В/в или в/костно 5 мг/кг, повтор до макс. 15 мг/кг; старше 10 лет
+        – 300 мг (разведение в 5% глюкозе).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Амиодарон МНН, концентрат для приготовления раствора для инфузий 50
+          мг/мл в ампулах 3 мл, – ЛП выбора для купирования желудочковых тахиаритмий
+          во время СЛР.
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: В/в струйно 1 мг/кг, далее титрование 20–50 мкг/кг/мин.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лидокаин МНН, раствор для внутривенного введения 100 мг/мл в ампулах
+          2 мл, возможно применение для купирования фибрилляции желудочков/желудочковой
+          тахиаритмии без пульса.
+    - drug_name: Фуросемид
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг/кг в/м или в/в струйно медленно, макс. суточная доза 20 мг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фуросемид, раствор для внутривенного и внутримышечного введения 10
+          мг/мл в ампулах 2 мл в разовой дозе 1 мг/кг внутримышечно или внутривенно
+          струйно медленно
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: 2 мг/кг в/в струйно при снижении АД менее 10-го процентиля.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: преднизолон, раствор для внутривенного и внутримышечного введения (для
+          инъекций) 30 (25) мг/мл в ампулах 1 мл из расчета 2 мг/кг внутривенно струйно
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Контроль эффективности ИВЛ и ЗМС (наличие пульсовой волны, уменьшение цианоза,
+      сужение зрачков)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль эффективности ИВЛ и ЗМС (наличие пульсовой волны, уменьшение
+        цианоза, сужение зрачков)
+  - text: Повторный прием легкоусвояемых углеводов через 10–15 минут при отсутствии
+      динамики уровня глюкозы
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторный прием легкоусвояемых углеводов через 10–15 минут при отсутствии
+        динамики уровня глюкозы
+  - text: Прием сложных углеводов после нормализации гликемии для профилактики рецидива
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Прием сложных углеводов после нормализации гликемии для профилактики
+        рецидива
+  - text: Контроль АД и диуреза при повторном введении фуросемида
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль АД и диуреза при повторном введении фуросемида
+  - text: Последующий контроль АД при введении преднизолона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Последующий контроль АД при введении преднизолона
   hospitalization: []
   routing:
-  - text: Госпитализация обязательна при ранах головы.
+  - text: Обязательна последующая госпитализация при ранах головы и ЧМТ
     timing: null
     required_if: []
     source_ref:
@@ -1041,8 +797,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация обязательна при ранах головы.
-  - text: Срочная госпитализация при гипогликемии, если пациент без сознания.
+      quote: Обязательна последующая госпитализация при ранах головы и ЧМТ
+  - text: Срочная госпитализация при гипогликемии с отсутствием сознания
     timing: null
     required_if: []
     source_ref:
@@ -1055,10 +811,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Срочная госпитализация при гипогликемии, если пациент без сознания.
-  - text: Бригада СМП должна обеспечить поддержание витальных функций пациента и транспортировку
-      его в приемное отделение ближайшей больничной организации при гипогликемии без
-      сознания.
+      quote: Срочная госпитализация при гипогликемии с отсутствием сознания
+  - text: Транспортировка бригадой СМП в приемное отделение ближайшей больничной организации
+      с поддержанием витальных функций
     timing: null
     required_if: []
     source_ref:
@@ -1071,12 +826,26 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Бригада СМП должна обеспечить поддержание витальных функций пациента
-        и транспортировку его в приемное отделение ближайшей больничной организации
-        при гипогликемии без сознания.
+      quote: Транспортировка бригадой СМП в приемное отделение ближайшей больничной
+        организации с поддержанием витальных функций
+  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации
   red_flags:
-  - text: Сочетания отсутствия сознания и апноэ достаточно для установления диагноза
-      «клиническая смерть» и начала проведения СЛР.
+  - text: Сочетание отсутствия сознания и апноэ (клиническая смерть)
     aliases: []
     red_flag_type: other
     severity: high
@@ -1094,8 +863,7 @@ conditions:
       row_index: null
       quote: Сочетания отсутствия сознания и апноэ достаточно для установления диагноза
         «клиническая смерть» и начала проведения СЛР
-  - text: Изменение сознания (от ясного до глубоких расстройств) свидетельствует о
-      прогрессирующем нарастании внутричерепного давления.
+  - text: Дыхательные нарушения, снижение АД, коллапс, синкопе при анафилаксии
     aliases: []
     red_flag_type: other
     severity: high
@@ -1105,57 +873,20 @@ conditions:
       protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 23
+      page_start: 26
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Изменение сознания (от ясного до глубоких расстройств) свидетельствуют
-        о прогрессирующем нарастании внутричерепного давления.
-  - text: Острое возникновение комы сразу после травмы является результатом ушиба
-      мозга.
+      quote: дыхательные нарушения (одышка, бронхоспазм, стридор...); снижение АД
+        или ассоциированные с этим симптомы органной дисфункции (коллапс, синкопе,
+        недержание мочи)
+  - text: Слабость дыхательных мышц и невозможность откашляться при миастеническом
+      кризе
     aliases: []
     red_flag_type: other
     severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 23
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Острое возникновение комы сразу после травмы является результатом ушиба
-        мозга.
-  - text: Менингеальные симптомы при ЧМТ указывают на субарахноидальное кровоизлияние
-      или проникающее повреждение.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 23
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Менингеальные симптомы при ЧМТ указывают на субарахноидальное кровоизлияние
-        или проникающее повреждение
-  - text: Кризы при миастении могут развиваться как у пациентов с уже установленным
-      диагнозом, так и быть первым проявлением заболевания.
-    aliases: []
-    red_flag_type: other
-    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -1168,10 +899,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Кризы при миастении могут развиваться как у пациентов с уже установленным
-        диагнозом, так и быть первым проявлением заболевания
-  - text: Применение перекиси водорода при бессознательном состоянии пациента противопоказано
-      при ранах в полости рта.
+      quote: слабость дыхательных мышц и невозможность откашляться
+  - text: Анафилаксия и анафилактический шок как острая жизнеугрожающая реакция с
+      поражением жизненно важных органов
     aliases: []
     red_flag_type: other
     severity: high
@@ -1181,13 +911,660 @@ conditions:
       protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
-      page_start: 15
+      page_start: 2
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: применение перекиси водорода при бессознательном состоянии пациента противопоказано
+      quote: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
+        реакция гиперчувствительности
+  - text: Высокий риск развития полной АВ-блокады или удлинения Q-T > 50% при применении
+      амиодарона
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: высокий риск развития полной АВ-блокады, поэтому при увеличении интервала
+        Q–T более чем на 50 % от исходного показателя или появлении признаков АВ-блокады
+        введение амиодарона прекращают.
+  - text: 'Основные причины гибели при политравме: гипоксия, гиповолемия, гипотермия,
+      ацидоз'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'основные причины гибели пациентов с политравмой: гипоксия, гиповолемия,
+        гипотермия, ацидоз;'
+  - text: Артериальная гипотензия и признаки централизации кровообращения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: синдромом малого сердечного выброса в виде артериальной гипотензии и
+        признаков централизации кровообращения
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: urticaria_and_angioedema
+  name: Крапивница, ангионевротический отек
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - L50
+  - L50.0
+  - L50.1
+  - L50.2
+  - L50.3
+  - L50.4
+  - L50.5
+  - L50.6
+  - L50.8
+  - L50.9
+  - T78.3
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Диагностика острой крапивницы основана на анализе жалоб пациента, данных
+        анамнеза и физикального обследования
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диагностика острой крапивницы основана на анализе жалоб пациента, данных
+          анамнеза и физикального обследования
+    - text: 'Анафилактический шок: снижение систолического АД ниже 90 мм рт.ст. и
+        гипоксия жизненно важных органов'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Анафилактический шок: снижение систолического АД ниже 90 мм рт.ст.
+          и гипоксия жизненно важных органов'
+    - text: 'Пароксизмальная тахикардия: ЧСС >200 в мин (до 1 года), >180 в мин (1-6
+        лет), >160 в мин (старше 6 лет)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Пароксизмальная тахикардия: ЧСС >200 в мин (до 1 года), >180 в мин
+          (1-6 лет), >160 в мин (старше 6 лет)'
+    - text: Синдром малого сердечного выброса в виде артериальной гипотензии и признаков
+        централизации кровообращения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Синдром малого сердечного выброса в виде артериальной гипотензии и
+          признаков централизации кровообращения
+    - text: Застойная сердечная недостаточность с венозной перегрузкой малого или
+        большого кругов кровообращения
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Застойная сердечная недостаточность с венозной перегрузкой малого или
+          большого кругов кровообращения
+    optional: []
+    exclusion: []
+  required_exams: []
+  conditional_exams:
+  - name: Аллергологическое обследование
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 28
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при подозрении на развитие крапивницы вследствие пищевой аллергии у сенсибилизированных
+        пациентов или наличие других провоцирующих развитие крапивницы факторов, таких
+        как ЛП
+  - name: Электрокардиография (ЭКГ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: имеющий специфические проявления на ЭКГ
+  treatment:
+    non_drug:
+    - text: Придать пациенту возвышенное положение тела в постели (при острой перегрузке
+        правого желудочка)
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Придать пациенту возвышенное положение тела в постели (при острой перегрузке
+          правого желудочка)
+    - text: Проведение оксигенотерапии
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение оксигенотерапии
+    - text: Проведение ИВЛ и закрытого массажа сердца (ЗМС)
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение ИВЛ и закрытого массажа сердца (ЗМС)
+    - text: Регулировка преднагрузки
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Регулировка преднагрузки
+    - text: Улучшение инотропной функции миокарда
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Улучшение инотропной функции миокарда
+    - text: Снижение постнагрузки
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение постнагрузки
+    drug_groups: []
+    drugs:
+    - drug_name: Эпинефрин
+      active_substance: null
+      drug_group: null
+      dose_text: 10 мкг/кг (0,1 мл/кг разведения 1:10000) в/в или в/костно; макс.
+        1 мг для пациентов > 40 кг. Повторять каждые 3–5 минут
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Рекомендуемая разовая внутривенная или внутрикостная доза эпинефрина
+          для первого и последующих введений – 10 мкг/кг массы тела, максимальная
+          однократная доза – 1 мг (пациенты с массой тела более 40 кг).
+    - drug_name: Атропин
+      active_substance: null
+      drug_group: null
+      dose_text: 20 мкг/кг в/в, повторить через 5 минут при необходимости
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обычная внутривенная доза атропина (раствор для инъекций 1 мг/мл в
+          ампулах) 20 мкг/кг массы тела. Данную дозу можно повторить через 5 минут
+    - drug_name: Бикарбонат натрия
+      active_substance: null
+      drug_group: null
+      dose_text: Стартовая доза 1 ммоль/кг (2 мл/кг 40 мг/мл раствора), далее 0,5
+        ммоль/кг при декомпенсированном метаболическом ацидозе
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Стартовая доза 1 ммоль/кг (2 мл раствора для инфузий 40 мг/мл), далее
+          0,5 ммоль/кг.
+    - drug_name: Кальция хлорид / Кальция глюконат
+      active_substance: null
+      drug_group: null
+      dose_text: Кальция хлорид 100 мг/мл в/в или в/костно 20 мг/кг (0,2 мл/кг); кальция
+        глюконат 100 мг/мл 0,6–0,8 мл/кг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вводят внутривенно или внутрикостно раствор кальция хлорида, раствор
+          для внутривенного введения 100 мг/мл в ампулах по 10 мл в дозе 20 мг/кг
+          (0,2 мл/кг)
+    - drug_name: Амиодарон
+      active_substance: null
+      drug_group: null
+      dose_text: 5 мг/кг в/в или в/костно (макс. 15 мг/кг; старше 10 лет — 300 мг),
+        разводить только в глюкозе
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дозы: внутривенно или внутрикостно 5 мг/кг, повторяют до максимальной
+          дозы 15 мг/кг; старше 10 лет – 300 мг, разводят только в глюкозе'
+    - drug_name: Лидокаин
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг/кг в/в струйно, далее титрование 20–50 мкг/кг/мин
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Дозы: внутривенно струйно 1 мг/кг, далее титрование 20–50 мкг на кг/мин.'
+    - drug_name: Фуросемид
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг/кг в/м или в/в струйно медленно (макс. суточная доза 20 мг)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'ввести: фуросемид, раствор для внутривенного и внутримышечного введения
+          10 мг/мл в ампулах 2 мл в разовой дозе 1 мг/кг внутримышечно или внутривенно
+          струйно медленно'
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: 2 мг/кг в/в струйно при снижении АД менее 10% от нижней границы возрастной
+        нормы
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: при снижении АД менее 10 % от нижней границы возрастной нормы... ввести
+          преднизолон... из расчета 2 мг/кг внутривенно струйно с последующим контролем
+          АД
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Контроль АД и диуреза при применении фуросемида
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль АД и диуреза при применении фуросемида
+  - text: Контроль показателей ЭКГ (интервал Q–T, признаки АВ-блокады) при введении
+      амиодарона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль показателей ЭКГ (интервал Q–T, признаки АВ-блокады) при введении
+        амиодарона
+  - text: Последующий контроль АД при введении преднизолона
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Последующий контроль АД при введении преднизолона
+  hospitalization: []
+  routing:
+  - text: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+      организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Срочная госпитализация в отделение реанимации и интенсивной терапии больничной
+        организации
+  red_flags:
+  - text: Крапивница или отек слизистых в сочетании с дыхательными нарушениями или
+      снижением АД (признаки анафилаксии)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: поражением кожи и (или) слизистых оболочек (генерализованная крапивница,
+        зуд и гиперемия, отек губ, языка и мягкого неба) в сочетании с... дыхательные
+        нарушения... снижение АД
+  - text: Острая тяжелая жизнеугрожающая генерализованная реакция (анафилаксия)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анафилаксия – острая тяжелая жизнеугрожающая генерализованная или системная
+        реакция гиперчувствительности
+  - text: Развитие брадикардии и асистолии на фоне тяжелой гипоксии
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: брадикардия и (или) асистолия развивается в результате ДН и как следствие
+        тяжелой гипоксии и (или) гиперкарбии
+  - text: Увеличение интервала Q–T более 50% или развитие АВ-блокады при введении
+      амиодарона
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_оказание_экстренной_неотложной_медпомощи_пациентам_дет_во
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Оказание_экстренной_неотложной_медпомощи_пациентам_дет_возраста_пост_МЗ_17.08.2023_118.pdf
+      page_start: 9
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: высокий риск развития полной АВ-блокады, поэтому при увеличении интервала
+        Q–T более чем на 50 % от исходного показателя или появлении признаков АВ-блокады
+        введение амиодарона прекращают
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1196,7 +1573,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:45:43.696434+00:00'
+  extracted_at: '2026-07-23T07:31:59.217082+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1204,7 +1581,39 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=2
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-02T00:45:43.723108+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[urticaria_and_angioedema].treatment.drugs[7]
+  validated_at: '2026-07-23T07:31:59.251926+00:00'

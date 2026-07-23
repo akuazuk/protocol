@@ -48,6 +48,13 @@ data/drug_safety/rxnorm_cache.json
 data/ml/secure/
 data/ml/analyses/
 
+# Deep-eval датасет КЗ (ПДн: cases с patient_id/ФИО; регенерируется --deep-only).
+# Агрегатные summary/отчёты без ПДн можно коммитить точечно.
+data/ml/reports/deep_eval/*_cases.jsonl
+data/ml/reports/deep_eval/*_state.jsonl
+# Gold-манифест содержит visit_id (ПДн-смежное) — в git только strata_summary*.md (§9).
+data/ml/kz_gold/*.jsonl
+
 # ML чекпоинты (тяжёлые); отчёты ml/experiments/*/REPORT.md коммитятся
 ml/experiments/**/checkpoint*/
 .ab_kz_embedder/run.log

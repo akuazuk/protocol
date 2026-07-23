@@ -329,6 +329,52 @@
         </div>
       </section>
 
+      <section class="card" id="deep-card" style="margin-top:18px">
+        <h2>Глубокая оценка КЗ · оси A/B/C/D · находки · risk-gate</h2>
+        <p class="sub" id="deep-sub">Точный скор по осям (оформление / согласованность / безопасность / регуляторика) с находками по severity P0-P3. Ищем плохие КЗ и неверные диагнозы / лечение / обследования. Фильтры по всем столбцам, диаграммы, разбор одного КЗ.</p>
+        <div id="deep-unavail" class="sub" hidden style="padding:10px 0"></div>
+        <div id="deep-body" hidden>
+          <div class="kpi-grid" id="deep-kpi" style="margin:6px 0 12px"></div>
+
+          <div id="deep-filters" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px"></div>
+          <div id="deep-presets" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px"></div>
+          <div id="deep-filter-summary" class="sub" style="margin:2px 0 12px"></div>
+
+          <div id="deep-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
+          <div id="deep-chart" class="bars" style="min-height:40px;margin-bottom:14px"></div>
+
+          <div style="overflow:auto;max-height:640px;border-top:1px solid var(--line)">
+            <table>
+              <thead>
+                <tr>
+                  <th>Дата</th><th>Врач / спец.</th><th>Осн. Dx + код</th><th>Тип</th>
+                  <th>Overall</th><th>A/B/C/D</th><th>№55</th><th>P0-3</th><th>needs_hu</th><th></th>
+                </tr>
+              </thead>
+              <tbody id="deep-rows"></tbody>
+            </table>
+          </div>
+          <div id="deep-pager" style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap"></div>
+        </div>
+      </section>
+
+      <div id="deep-detail" class="card" style="margin-top:14px;display:none;background:linear-gradient(180deg,#f7fbf9,#f3f7f5);padding:0;overflow:hidden">
+        <div style="padding:12px 16px;border-bottom:1px solid rgba(15,107,92,.1);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
+          <h3 style="margin:0;font-family:Outfit,DM Sans,sans-serif;color:var(--teal-deep)">Разбор КЗ</h3>
+          <div class="hero-actions" style="gap:8px">
+            <button class="btn" type="button" id="deep-detail-llm" style="background:var(--teal-deep);color:#fff;padding:6px 12px">LLM-разбор по протоколам МЗ</button>
+            <button class="btn btn--ghost" type="button" id="deep-detail-close" style="padding:4px 10px">Закрыть</button>
+          </div>
+        </div>
+        <div id="deep-detail-body" style="padding:14px 16px 18px;font-size:14px;line-height:1.55"></div>
+      </div>
+
+      <section class="card" id="deep-dyn-card" style="margin-top:14px" hidden>
+        <h2>Динамика deep-оценки по месяцам</h2>
+        <p class="sub">Средние оси и критические находки P0 на 100 КЗ (тренд по месяцам)</p>
+        <div id="deep-dyn" style="margin-top:10px"></div>
+      </section>
+
       <p class="footnote" id="notes"></p>
     </div>
   </div>
@@ -954,6 +1000,476 @@
     });
   }
   load();
+})();
+</script>
+
+<script>
+/* ------------------------------------------------------------------ *
+ * §7Б. Дашборд глубокой оценки КЗ: фильтры / диаграммы / динамика /
+ *      расширенный разбор одного КЗ. Отдельный модуль (свои хелперы).
+ * ------------------------------------------------------------------ */
+(function () {
+  var TOKEN_KEY = "protocol_methodist_token";
+  var urlMonth = (new URLSearchParams(location.search).get("month") || "2026-07");
+  var state = {
+    month: urlMonth,
+    page: 1,
+    page_size: 50,
+    sort_by: "overall",
+    sort_dir: "asc",
+    filters: {},
+    chart: "axes",
+    facets: null,
+    filtersBuilt: false
+  };
+
+  function token() {
+    try { return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY) || ""; }
+    catch (e) { return ""; }
+  }
+  function headers() {
+    var h = { "Accept": "application/json" };
+    var t = token();
+    if (t) h["X-Methodist-Token"] = t;
+    return h;
+  }
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+  }
+  function tone(v) {
+    if (v == null || !isFinite(v)) return "mid";
+    if (v >= 75) return "good"; if (v >= 60) return "mid"; return "low";
+  }
+  function pill(v, digits) {
+    if (v == null || v === "") return "<span class='score mid'> - </span>";
+    var n = Number(v);
+    return "<span class='score " + tone(n) + "'>" + n.toFixed(digits == null ? 0 : digits) + "%</span>";
+  }
+  var AXIS_RU = { documentation: "Оформление", clinical_concordance: "Согласованность", safety: "Безопасность", regulatory: "Регуляторика" };
+  var STATUS_RU = { good: "хорошо", acceptable: "приемлемо", review: "на разбор", poor: "плохо", critical: "критично", insufficient_data: "мало данных", needs_review: "на разбор", non_compliant: "не соответ.", unknown: " - " };
+
+  function $(id) { return document.getElementById(id); }
+
+  function chartBar(name, value, max, colorOverride) {
+    var v = Number(value) || 0;
+    var m = Math.max(max || 100, 1);
+    var pct = Math.max(0, Math.min(100, (v / m) * 100));
+    var cls = colorOverride ? "" : (v >= 75 ? "" : (v >= 60 ? " is-mid" : " is-low"));
+    var style = "width:" + pct + "%" + (colorOverride ? (";background:" + colorOverride) : "");
+    return "<div class='bar-row'><div class='name' title='" + esc(name) + "'>" + esc(name) + "</div>" +
+      "<div class='bar-track'><div class='bar-fill" + cls + "' style='" + style + "'></div></div>" +
+      "<div class='pct'>" + (Number.isFinite(v) ? (max > 100 || max === undefined ? v : v.toFixed(0)) : " - ") + "</div></div>";
+  }
+
+  function renderKpi(agg) {
+    var ax = agg.axis_means || {};
+    var sev = agg.severity_totals || {};
+    var p0per100 = agg.n ? (100 * (sev.P0 || 0) / agg.n) : 0;
+    $("deep-kpi").innerHTML =
+      kpiCard("КЗ в выборке", agg.n != null ? agg.n : " - ", "с учётом фильтров") +
+      kpiCard("Средний overall", agg.avg_overall != null ? agg.avg_overall + "%" : " - ", "по осям A-D") +
+      kpiCard("Находок P0", (sev.P0 || 0), p0per100.toFixed(2) + " на 100 КЗ") +
+      kpiCard("Потенц. вред", agg.n_potential_harm != null ? agg.n_potential_harm : 0, "КЗ с риском вреда") +
+      kpiCard("% плохих (<75)", (agg.pct_bad != null ? agg.pct_bad : 0) + "%", (agg.n_bad || 0) + " КЗ");
+  }
+  function kpiCard(label, value, hint) {
+    return "<div class='kpi'><div class='label'>" + esc(label) + "</div><div class='value'>" +
+      esc(value) + "</div><div class='hint'>" + esc(hint || "") + "</div></div>";
+  }
+
+  function selectHtml(id, label, opts, current, withN) {
+    var options = ["<option value=''>" + esc(label) + ": все</option>"];
+    (opts || []).forEach(function (o) {
+      var val = (o.value != null ? o.value : o.key);
+      var lab = (o.label || o.value || o.key || "");
+      if (o.n != null && withN !== false) lab += " (" + o.n + ")";
+      options.push("<option value='" + esc(val) + "'" + (String(current || "") === String(val) ? " selected" : "") + ">" + esc(lab) + "</option>");
+    });
+    return "<select data-filter='" + id + "' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;background:#fff;max-width:200px'>" +
+      options.join("") + "</select>";
+  }
+
+  function buildFilters(facets) {
+    var f = state.filters;
+    var mkbChapters = (facets.mkb_chapters || []).map(function (c) { return { value: c.key, label: c.label, n: c.n }; });
+    var html = [
+      selectHtml("specialization", "Спец.", facets.specialties, f.specialization),
+      selectHtml("filial", "Филиал", facets.filials, f.filial),
+      selectHtml("kz_kind", "Тип", facets.kz_kinds, f.kz_kind),
+      selectHtml("mkb_chapter", "Глава МКБ", mkbChapters, f.mkb_chapter),
+      selectHtml("mkb_agreement", "Код-совпад.", facets.agreements, f.mkb_agreement),
+      selectHtml("age_group", "Возраст", facets.age_groups, f.age_group),
+      selectHtml("status", "Статус", facets.statuses, f.status),
+      selectHtml("score_band", "Скор-банд", facets.score_bands, f.score_band),
+      selectHtml("finding_axis", "Ось находки", (facets.finding_axes || []).map(function (a) { return { value: a.value, label: a.label, n: a.n }; }), f.finding_axis),
+      "<select data-filter='min_severity' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;background:#fff'>" +
+        "<option value=''>Severity: любой</option>" +
+        "<option value='P0'" + (f.min_severity === "P0" ? " selected" : "") + ">есть P0</option>" +
+        "<option value='P1'" + (f.min_severity === "P1" ? " selected" : "") + ">P0-P1</option></select>",
+      "<input data-filter='doctor' placeholder='Врач (ФИО)' value='" + esc(f.doctor || "") + "' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;max-width:150px'/>",
+      "<input data-filter='q' placeholder='Поиск: Dx / код' value='" + esc(f.q || "") + "' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;max-width:150px'/>",
+      "<input data-filter='date_from' type='date' value='" + esc(f.date_from || "") + "' title='с даты' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px'/>",
+      "<input data-filter='date_to' type='date' value='" + esc(f.date_to || "") + "' title='по дату' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px'/>",
+      "<label style='display:inline-flex;align-items:center;gap:5px;font-size:12.5px'><input type='checkbox' data-filter='needs_human'" + (f.needs_human ? " checked" : "") + "/> needs_human</label>",
+      "<label style='display:inline-flex;align-items:center;gap:5px;font-size:12.5px'><input type='checkbox' data-filter='potential_harm'" + (f.potential_harm ? " checked" : "") + "/> потенц.вред</label>",
+      "<button type='button' id='deep-filter-reset' class='btn btn--ghost' style='padding:6px 10px;font-size:12px'>Сбросить</button>"
+    ];
+    $("deep-filters").innerHTML = html.join("");
+
+    var presets = [
+      { id: "p0", label: "⚑ P0 (риск вреда)" },
+      { id: "dx_no_code", label: "⚑ Dx без валид. кода" },
+      { id: "treatment_off_protocol", label: "⚑ Согласованность" },
+      { id: "needs_human", label: "⚑ Нужен человек" }
+    ];
+    $("deep-presets").innerHTML = presets.map(function (p) {
+      var active = state.filters.preset === p.id;
+      return "<button type='button' class='btn" + (active ? "" : " btn--ghost") + "' data-preset='" + p.id +
+        "' style='padding:6px 11px;font-size:12px" + (active ? ";background:var(--teal);color:#fff" : "") + "'>" + esc(p.label) + "</button>";
+    }).join("");
+
+    bindFilterEvents();
+    state.filtersBuilt = true;
+  }
+
+  function bindFilterEvents() {
+    $("deep-filters").querySelectorAll("[data-filter]").forEach(function (el) {
+      var key = el.getAttribute("data-filter");
+      var evt = (el.tagName === "SELECT" || el.type === "checkbox" || el.type === "date") ? "change" : "input";
+      var handler = function () {
+        if (el.type === "checkbox") state.filters[key] = el.checked;
+        else state.filters[key] = el.value;
+        state.page = 1;
+        if (evt === "input") { clearTimeout(el.__t); el.__t = setTimeout(fetchCases, 400); }
+        else fetchCases();
+      };
+      el.addEventListener(evt, handler);
+    });
+    var reset = $("deep-filter-reset");
+    if (reset) reset.addEventListener("click", function () {
+      state.filters = {}; state.page = 1; state.filtersBuilt = false; fetchCases();
+    });
+    $("deep-presets").querySelectorAll("[data-preset]").forEach(function (btn) {
+      btn.addEventListener("click", function () {
+        var p = btn.getAttribute("data-preset");
+        state.filters.preset = (state.filters.preset === p) ? "" : p;
+        state.page = 1; fetchCases();
+      });
+    });
+  }
+
+  var CHART_TABS = [
+    { id: "axes", label: "Оси A/B/C/D" },
+    { id: "bands", label: "Скор-банды" },
+    { id: "severity", label: "Severity P0-P3" },
+    { id: "findings", label: "Типы находок" },
+    { id: "specialty", label: "Спец: avg / % плохих" },
+    { id: "bad_icd", label: "Топ плохих Dx" }
+  ];
+  function renderTabs() {
+    $("deep-tabs").innerHTML = CHART_TABS.map(function (t) {
+      var active = state.chart === t.id;
+      return "<button type='button' class='btn" + (active ? "" : " btn--ghost") + "' data-chart='" + t.id +
+        "' style='padding:6px 11px;font-size:12px" + (active ? ";background:var(--teal-deep);color:#fff" : "") + "'>" + esc(t.label) + "</button>";
+    }).join("");
+    $("deep-tabs").querySelectorAll("[data-chart]").forEach(function (b) {
+      b.addEventListener("click", function () { state.chart = b.getAttribute("data-chart"); renderChart(window.__deepAgg || {}); renderTabs(); });
+    });
+  }
+  var SEV_COLOR = { P0: "#c4898a", P1: "#d8b48a", P2: "#a8c0d8", P3: "#c2ccc8" };
+  function renderChart(agg) {
+    var el = $("deep-chart");
+    if (!el) return;
+    if (state.chart === "axes") {
+      var ax = agg.axis_means || {};
+      el.innerHTML = Object.keys(AXIS_RU).map(function (k) { return chartBar(AXIS_RU[k], ax[k], 100); }).join("") || "<div class='sub'>Нет данных</div>";
+    } else if (state.chart === "bands") {
+      var b = agg.score_band_distribution || {};
+      var order = ["<50", "50-75", "75-90", "≥90", "нет скора"];
+      var max = Math.max.apply(null, order.map(function (k) { return b[k] || 0; }).concat([1]));
+      var col = { "<50": "#c4898a", "50-75": "#d8b48a", "75-90": "#a8c0d8", "≥90": "#8fb8a6", "нет скора": "#cbd3da" };
+      el.innerHTML = order.filter(function (k) { return b[k]; }).map(function (k) { return chartBar(k, b[k], max, col[k]); }).join("") || "<div class='sub'>Нет данных</div>";
+    } else if (state.chart === "severity") {
+      var s = agg.severity_totals || {};
+      var mx = Math.max.apply(null, ["P0", "P1", "P2", "P3"].map(function (k) { return s[k] || 0; }).concat([1]));
+      el.innerHTML = ["P0", "P1", "P2", "P3"].map(function (k) { return chartBar(k + " находок", s[k] || 0, mx, SEV_COLOR[k]); }).join("");
+    } else if (state.chart === "findings") {
+      var fd = agg.finding_axis_distribution || {};
+      var keys = Object.keys(fd).sort(function (a, b2) { return fd[b2] - fd[a]; });
+      var mx2 = Math.max.apply(null, keys.map(function (k) { return fd[k]; }).concat([1]));
+      el.innerHTML = keys.map(function (k) { return chartBar(AXIS_RU[k] || k, fd[k], mx2, "#a8c0d8"); }).join("") || "<div class='sub'>Нет находок</div>";
+    } else if (state.chart === "specialty") {
+      var rows = (agg.by_specialty || []).slice(0, 15);
+      el.innerHTML = rows.map(function (r) {
+        return "<div class='bar-row'><div class='name' title='" + esc(r.specialization) + "'>" + esc(r.specialization) + "</div>" +
+          "<div class='bar-track'><div class='bar-fill " + (r.avg_overall >= 75 ? "" : r.avg_overall >= 60 ? "is-mid" : "is-low") + "' style='width:" + Math.max(0, Math.min(100, r.avg_overall || 0)) + "%'></div></div>" +
+          "<div class='pct'>" + (r.avg_overall != null ? Math.round(r.avg_overall) : " - ") + "</div>" +
+          "<div style='font-size:11px;color:var(--muted);grid-column:1 / -1;margin:-2px 0 4px 82px'>n" + r.n + " · плохих " + r.bad_pct + "% · P0 " + r.p0 + "</div></div>";
+      }).join("") || "<div class='sub'>Нет данных</div>";
+    } else if (state.chart === "bad_icd") {
+      var bad = agg.top_bad_icd || [];
+      el.innerHTML = bad.length ? ("<table><thead><tr><th>Код</th><th>Диагноз</th><th>Плохих КЗ</th></tr></thead><tbody>" +
+        bad.map(function (b3) { return "<tr><td><code>" + esc(b3.mkb_code) + "</code></td><td>" + esc((b3.diagnosis || "").slice(0, 90)) + "</td><td>" + b3.n + "</td></tr>"; }).join("") +
+        "</tbody></table>") : "<div class='sub'>Нет плохих КЗ с кодом в выборке</div>";
+    }
+  }
+
+  function axesCell(r) {
+    function c(v) { return v == null ? " - " : Math.round(v); }
+    return "<span title='оформл/соглас/безоп/регул'>" + c(r.axis_documentation) + "/" + c(r.axis_concordance) + "/" + c(r.axis_safety) + "/" + c(r.axis_regulatory) + "</span>";
+  }
+  function sevCell(r) {
+    var parts = [];
+    [["p0", "#c0392b"], ["p1", "#d8933a"], ["p2", "#5b8def"], ["p3", "#9aa6b2"]].forEach(function (p) {
+      var n = r[p[0]] || 0;
+      parts.push("<span style='color:" + (n ? p[1] : "#c2ccc8") + ";font-weight:" + (n ? 700 : 400) + "'>" + n + "</span>");
+    });
+    return parts.join("/");
+  }
+  function renderTable(v) {
+    var rows = v.rows || [];
+    $("deep-rows").innerHTML = rows.length ? rows.map(function (r) {
+      var reg = r.axis_regulatory;
+      return "<tr data-vid='" + esc(r.visit_id) + "' style='cursor:pointer'>" +
+        "<td>" + esc(r.date || " - ") + "</td>" +
+        "<td>" + esc(r.doctor_fio) + "<div style='color:var(--muted);font-size:11px'>" + esc(r.specialization) + "</div></td>" +
+        "<td>" + (r.mkb_code_main ? "<code>" + esc(r.mkb_code_main) + "</code> " : "") + esc((r.diagnosis_short || "").slice(0, 46)) + "</td>" +
+        "<td>" + esc(r.kz_kind) + "</td>" +
+        "<td>" + pill(r.overall_pct) + (r.has_potential_harm ? " <span title='потенц. вред' style='color:#c0392b'>&#9679;</span>" : "") + "</td>" +
+        "<td style='font-size:12px'>" + axesCell(r) + "</td>" +
+        "<td>" + pill(reg) + "</td>" +
+        "<td style='font-size:12px'>" + sevCell(r) + "</td>" +
+        "<td>" + (r.needs_human ? "да" : " - ") + "</td>" +
+        "<td><button type='button' class='btn btn--ghost' data-detail='" + esc(r.visit_id) + "' style='padding:4px 9px;font-size:11px'>Разбор</button></td>" +
+        "</tr>";
+    }).join("") : "<tr><td colspan='10'>Нет КЗ под фильтр</td></tr>";
+    $("deep-rows").querySelectorAll("[data-detail]").forEach(function (b) {
+      b.addEventListener("click", function (e) { e.stopPropagation(); openDetail(b.getAttribute("data-detail")); });
+    });
+    $("deep-rows").querySelectorAll("tr[data-vid]").forEach(function (tr) {
+      tr.addEventListener("click", function () { openDetail(tr.getAttribute("data-vid")); });
+    });
+  }
+
+  function renderPager(v) {
+    var sortOpts = [["overall", "overall"], ["date", "дата"], ["p0", "P0"], ["n_findings", "находок"],
+      ["documentation", "ось A"], ["concordance", "ось B"], ["safety", "ось C"], ["regulatory", "ось D"]];
+    $("deep-pager").innerHTML =
+      "<div style='display:flex;gap:8px;align-items:center'>" +
+      "<button type='button' class='btn btn--ghost' id='deep-prev' style='padding:6px 12px'" + (v.page <= 1 ? " disabled" : "") + ">← Назад</button>" +
+      "<span class='sub'>стр. " + v.page + " / " + v.n_pages + " · всего " + v.total + "</span>" +
+      "<button type='button' class='btn btn--ghost' id='deep-next' style='padding:6px 12px'" + (v.page >= v.n_pages ? " disabled" : "") + ">Вперёд →</button>" +
+      "</div>" +
+      "<div style='display:flex;gap:8px;align-items:center'>" +
+      "<span class='sub'>сорт.</span><select id='deep-sortby' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px;background:#fff'>" +
+      sortOpts.map(function (o) { return "<option value='" + o[0] + "'" + (state.sort_by === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select>" +
+      "<select id='deep-sortdir' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px;background:#fff'>" +
+      "<option value='asc'" + (state.sort_dir === "asc" ? " selected" : "") + ">↑ хуже сверху</option>" +
+      "<option value='desc'" + (state.sort_dir === "desc" ? " selected" : "") + ">↓ лучше сверху</option></select>" +
+      "<button type='button' class='btn' id='deep-export' style='padding:6px 12px;background:var(--teal);color:#fff'>Экспорт CSV</button>" +
+      "</div>";
+    var prev = $("deep-prev"), next = $("deep-next");
+    if (prev) prev.addEventListener("click", function () { if (state.page > 1) { state.page--; fetchCases(); } });
+    if (next) next.addEventListener("click", function () { if (state.page < v.n_pages) { state.page++; fetchCases(); } });
+    $("deep-sortby").addEventListener("change", function () { state.sort_by = this.value; state.page = 1; fetchCases(); });
+    $("deep-sortdir").addEventListener("change", function () { state.sort_dir = this.value; state.page = 1; fetchCases(); });
+    $("deep-export").addEventListener("click", function () { exportCsv(v.rows || []); });
+  }
+
+  function exportCsv(rows) {
+    var cols = ["visit_id", "patient_id", "date", "doctor_fio", "specialization", "filial", "kz_kind",
+      "mkb_code_main", "diagnosis_short", "overall_pct", "axis_documentation", "axis_concordance",
+      "axis_safety", "axis_regulatory", "p0", "p1", "p2", "p3", "needs_human", "has_potential_harm", "status"];
+    var lines = [cols.join(",")];
+    rows.forEach(function (r) {
+      lines.push(cols.map(function (c) {
+        var v = r[c];
+        v = (v == null ? "" : String(v)).replace(/"/g, '""').replace(/[\r\n]+/g, " ");
+        return /[",]/.test(v) ? '"' + v + '"' : v;
+      }).join(","));
+    });
+    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
+    var a = document.createElement("a");
+    a.href = URL.createObjectURL(blob);
+    a.download = "kz_deep_" + state.month + "_page" + state.page + ".csv";
+    a.click();
+  }
+
+  function filterSummary(v) {
+    var f = v.applied_filters || {};
+    var keys = Object.keys(f).filter(function (k) { return f[k] !== "" && f[k] != null && f[k] !== false; });
+    var txt = keys.length ? ("Фильтры: " + keys.map(function (k) { return k + "=" + f[k]; }).join(" · ")) : "Фильтры не заданы - вся выборка.";
+    $("deep-filter-summary").textContent = txt + " · показано " + (v.rows || []).length + " из " + v.total;
+  }
+
+  async function fetchCases() {
+    var qs = new URLSearchParams();
+    qs.set("month", state.month);
+    qs.set("page", state.page);
+    qs.set("page_size", state.page_size);
+    qs.set("sort_by", state.sort_by);
+    qs.set("sort_dir", state.sort_dir);
+    Object.keys(state.filters).forEach(function (k) {
+      var val = state.filters[k];
+      if (val === true) qs.set(k, "true");
+      else if (val) qs.set(k, val);
+    });
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality/cases?" + qs.toString(), { headers: headers() });
+      if (res.status === 401 || res.status === 403) { showUnavail("Нужна авторизация методиста."); return; }
+      var v = await res.json();
+      if (!v.ok) { showUnavail(v.hint_ru || v.error || "Нет данных deep-оценки за " + state.month + "."); return; }
+      $("deep-unavail").hidden = true;
+      $("deep-body").hidden = false;
+      window.__deepAgg = v.filtered_agg || {};
+      renderKpi(v.filtered_agg || {});
+      if (!state.filtersBuilt) buildFilters(v.facets || {});
+      renderTabs();
+      renderChart(v.filtered_agg || {});
+      renderTable(v);
+      renderPager(v);
+      filterSummary(v);
+    } catch (e) { showUnavail(String(e && e.message || e)); }
+  }
+
+  function showUnavail(msg) {
+    $("deep-body").hidden = true;
+    var el = $("deep-unavail");
+    el.hidden = false;
+    el.textContent = msg;
+  }
+
+  /* --------------------------- Экран B: разбор --------------------------- */
+  async function openDetail(vid) {
+    if (!vid) return;
+    var box = $("deep-detail"), body = $("deep-detail-body");
+    box.style.display = "block";
+    body.innerHTML = "<div class='loading'>Загрузка разбора visit " + esc(vid) + "…</div>";
+    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality/case-detail?month=" + encodeURIComponent(state.month) + "&visit_id=" + encodeURIComponent(vid), { headers: headers() });
+      var d = await res.json();
+      if (!d.ok) { body.innerHTML = "<div class='error'>" + esc(d.error || "Не найдено") + "</div>"; return; }
+      renderDetail(d);
+    } catch (e) { body.innerHTML = "<div class='error'>" + esc(String(e && e.message || e)) + "</div>"; }
+  }
+
+  var SEV_META = { P0: { c: "#c0392b", t: "Критично (риск вреда)" }, P1: { c: "#d8933a", t: "Клинич. дефект" }, P2: { c: "#5b8def", t: "Документирование" }, P3: { c: "#8a94a6", t: "Формальное" } };
+  function renderDetail(d) {
+    var r = d.record || {};
+    var ax = d.axes || {};
+    var findings = (d.findings || []).filter(function (f) { return !f.passed; });
+    var passed = (d.findings || []).filter(function (f) { return f.passed; });
+    window.__deepDetailVid = d.visit_id;
+
+    var head = "<div style='display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px'>" +
+      chip("Overall", d.deep_overall_pct != null ? d.deep_overall_pct + "%" : " - ", tone(d.deep_overall_pct)) +
+      chip("Статус", STATUS_RU[d.deep_status] || d.deep_status || " - ") +
+      chip("№55", r.axis_regulatory != null ? Math.round(r.axis_regulatory) + "%" : " - ") +
+      chip("P0", (d.n_by_severity || {}).P0 || 0, (d.n_by_severity || {}).P0 ? "low" : "good") +
+      "</div>" +
+      "<div style='font-size:14px'><strong>" + esc(r.doctor_fio) + "</strong> · " + esc(r.specialization) + " · " + esc(r.filial) + "</div>" +
+      "<div style='font-size:12px;color:var(--muted);margin-bottom:6px'>visit <code>" + esc(d.visit_id) + "</code> · пациент <code>" + esc(r.patient_id) + "</code> · " + esc(r.date) +
+      " · " + (r.mkb_code_main ? "<code>" + esc(r.mkb_code_main) + "</code> " : "") + esc(r.diagnosis_short || "") + "</div>";
+
+    var axesHtml = "<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0'>" +
+      Object.keys(AXIS_RU).map(function (k) {
+        var m = { documentation: ax.documentation, clinical_concordance: ax.clinical_concordance, safety: ax.safety, regulatory: ax.regulatory }[k];
+        return "<div style='padding:.6rem .7rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)'>" +
+          "<div style='font-size:11px;text-transform:uppercase;color:var(--muted)'>" + esc(AXIS_RU[k]) + "</div>" +
+          "<div style='font-size:1.3rem;font-weight:650;color:" + (m >= 75 ? "var(--teal-deep)" : m >= 60 ? "#b45309" : "#b91c1c") + "'>" + (m != null ? Math.round(m) + "%" : " - ") + "</div></div>";
+      }).join("") + "</div>";
+
+    var findHtml = findings.length ? findings.map(function (f) {
+      var meta = SEV_META[f.severity] || { c: "#8a94a6", t: f.severity };
+      return "<div style='padding:.6rem .8rem;margin:.4rem 0;border-radius:10px;background:#fff;border-left:3px solid " + meta.c + ";border:1px solid rgba(15,107,92,.1)'>" +
+        "<div style='display:flex;gap:8px;align-items:baseline;flex-wrap:wrap'>" +
+        "<span style='font-weight:700;color:" + meta.c + "'>" + esc(f.severity) + "</span>" +
+        "<span style='font-size:11px;color:var(--muted)'>" + esc(f.axis || "") + " · " + esc(meta.t) + (f.needs_human ? " · needs_human" : "") + "</span></div>" +
+        "<div style='font-size:13.5px;margin-top:.2rem'>" + esc(f.title || f.code) + "</div>" +
+        (f.detail ? "<div style='font-size:12.5px;color:var(--muted);margin-top:.2rem'>" + esc(f.detail) + "</div>" : "") +
+        (f.evidence ? "<div style='font-size:12px;margin-top:.3rem;padding:.3rem .5rem;background:#f4f7f5;border-radius:6px'>«" + esc(f.evidence) + "»</div>" : "") +
+        (f.source_ref ? "<div style='font-size:11px;color:var(--teal);margin-top:.25rem'>→ " + esc(f.source_ref) + "</div>" : "") +
+        "</div>";
+    }).join("") : "<div class='sub'>Находок-нарушений нет.</div>";
+
+    var passedHtml = passed.length ? ("<details style='margin-top:.6rem'><summary style='cursor:pointer;font-size:12px;color:var(--muted)'>Пройденные проверки (" + passed.length + ")</summary>" +
+      "<div style='margin-top:.4rem'>" + passed.map(function (f) { return "<div style='font-size:12.5px;color:#4f7a6a;margin:.2rem 0'>✔ " + esc(f.title || f.code) + "</div>"; }).join("") + "</div></details>") : "";
+
+    $("deep-detail-body").innerHTML = head + axesHtml +
+      "<div style='font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin:.8rem 0 .3rem'>Находки по severity</div>" +
+      findHtml + passedHtml +
+      "<div id='deep-detail-llm-out' style='margin-top:.8rem'></div>";
+  }
+  function chip(label, val, toneCls) {
+    var color = toneCls === "low" ? "#b91c1c" : toneCls === "good" ? "var(--teal-deep)" : toneCls === "mid" ? "#b45309" : "var(--teal-deep)";
+    if (toneCls === "good" || toneCls === "mid" || toneCls === "low") color = toneCls === "good" ? "var(--teal-deep)" : toneCls === "mid" ? "#b45309" : "#b91c1c";
+    return "<span style='display:inline-flex;gap:6px;align-items:center;padding:5px 10px;border-radius:999px;background:rgba(15,107,92,.08);font-size:13px'>" +
+      "<span style='opacity:.7'>" + esc(label) + "</span><strong style='color:" + color + "'>" + esc(val) + "</strong></span>";
+  }
+
+  async function runDetailLlm() {
+    var vid = window.__deepDetailVid;
+    var out = $("deep-detail-llm-out");
+    if (!vid || !out) return;
+    if (!token()) { out.innerHTML = "<div class='error'>Нужен токен методиста.</div>"; return; }
+    out.innerHTML = "<div class='loading'>LLM-разбор по протоколам МЗ (L2 + LLM)…</div>";
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality/llm-review-one", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Accept": "application/json", "X-Methodist-Token": token() },
+        body: JSON.stringify({ month: state.month, visit_id: vid })
+      });
+      var d = await res.json();
+      var item = d.item || {};
+      var summary = String(item.executive_summary_ru || item.comment || "").trim();
+      out.innerHTML = "<div style='padding:.7rem .85rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.12)'>" +
+        "<div style='font-size:12px;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin-bottom:.3rem'>LLM-разбор" +
+        (item.overall_pct != null ? " · " + Number(item.overall_pct).toFixed(0) + "%" : "") + "</div>" +
+        "<div style='font-size:13.5px;line-height:1.55'>" + esc(summary || "Ответ без резюме.") + "</div>" +
+        ((item.recommendations_ru || []).length ? "<ul style='margin:.4rem 0 0;padding-left:1.15rem;font-size:13px'>" +
+          item.recommendations_ru.slice(0, 6).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
+        "</div>";
+    } catch (e) { out.innerHTML = "<div class='error'>" + esc(String(e && e.message || e)) + "</div>"; }
+  }
+
+  /* --------------------------- Динамика --------------------------- */
+  async function fetchDynamics() {
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality/dynamics", { headers: headers() });
+      if (!res.ok) return;
+      var d = await res.json();
+      var series = (d.series || []).filter(function (s) { return s.has_deep; });
+      if (series.length < 1) return;
+      var card = $("deep-dyn-card");
+      card.hidden = false;
+      var maxP0 = Math.max.apply(null, series.map(function (s) { return s.p0_per_100 || 0; }).concat([0.1]));
+      $("deep-dyn").innerHTML = "<div style='overflow:auto'><table><thead><tr><th>Месяц</th><th>N</th><th>Overall</th>" +
+        "<th>Оформл.</th><th>Соглас.</th><th>Безоп.</th><th>Регул.</th><th>P0/100</th></tr></thead><tbody>" +
+        series.map(function (s) {
+          var a = s.axis_means || {};
+          return "<tr><td>" + esc(s.month) + "</td><td>" + (s.n || 0) + "</td><td>" + pill(s.avg_overall) + "</td>" +
+            "<td>" + (a.documentation != null ? Math.round(a.documentation) : " - ") + "</td>" +
+            "<td>" + (a.clinical_concordance != null ? Math.round(a.clinical_concordance) : " - ") + "</td>" +
+            "<td>" + (a.safety != null ? Math.round(a.safety) : " - ") + "</td>" +
+            "<td>" + (a.regulatory != null ? Math.round(a.regulatory) : " - ") + "</td>" +
+            "<td><span style='display:inline-block;height:8px;border-radius:4px;background:#c4898a;vertical-align:middle;width:" +
+            Math.max(4, (s.p0_per_100 || 0) / maxP0 * 80) + "px'></span> " + (s.p0_per_100 != null ? s.p0_per_100 : 0) + "</td></tr>";
+        }).join("") + "</tbody></table></div>";
+    } catch (e) {}
+  }
+
+  document.addEventListener("DOMContentLoaded", function () {
+    var closeBtn = $("deep-detail-close");
+    if (closeBtn) closeBtn.addEventListener("click", function () { $("deep-detail").style.display = "none"; });
+    var llmBtn = $("deep-detail-llm");
+    if (llmBtn) llmBtn.addEventListener("click", runDetailLlm);
+    var refresh = $("btn-refresh");
+    if (refresh) refresh.addEventListener("click", function () { setTimeout(function () { state.filtersBuilt = false; fetchCases(); fetchDynamics(); }, 300); });
+  });
+
+  // Первичная загрузка (даём основному модулю время проверить авторизацию)
+  setTimeout(function () { fetchCases(); fetchDynamics(); }, 600);
 })();
 </script>
 </body>

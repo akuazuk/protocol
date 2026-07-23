@@ -32,14 +32,23 @@
   },
   "conditions": [
     {
-      "condition_id": "spasticheskaya_tetraplegiya",
-      "name": "Спастическая тетраплегия",
+      "condition_id": "bolezni_nervnoy_sistemy_u_detey",
+      "name": "Болезни нервной системы у детей",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
+        "G09",
         "G80.0",
         "G80.1",
-        "G80.8"
+        "G80.8",
+        "G81.1",
+        "G82.4",
+        "I60",
+        "I68",
+        "I69",
+        "Q02",
+        "Q04",
+        "F82"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -47,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "МКБ 10",
+            "text": "Степень выраженности функциональных нарушений по функциональным классам (ФК)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -64,28 +73,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "МКБ 10"
-            }
-          },
-          {
-            "text": "ФК",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "ФК"
+              "quote": "Степень выраженности функциональных нарушений по функциональным классам (ФК)"
             }
           }
         ],
@@ -94,461 +82,7 @@
       },
       "required_exams": [
         {
-          "name": "Осмотр врача реаби-",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-            "page_start": 2,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Осмотр врача реаби-"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Ноотропные препараты",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение ноотропных препаратов в рамках средств, улучшающих мозговой метаболизм. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Холиномиметики центрального действия",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение холиномиметиков центрального действия в рамках средств, улучшающих мозговой метаболизм. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Препараты гидролизата крови и органов животных",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение препаратов гидролизата крови и органов животных в рамках средств, улучшающих мозговой метаболизм. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Альфа-адреноблокаторы",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение альфа-адреноблокаторов в рамках средств, улучшающих мозговое кровообращение. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Блокаторы кальциевых каналов",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение блокаторов кальциевых каналов в рамках средств, улучшающих мозговое кровообращение. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Препараты, улучшающие микроциркуляцию",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение препаратов, улучшающих микроциркуляцию, в рамках средств, улучшающих мозговое кровообращение. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Фитопрепараты (для улучшения мозгового кровообращения)",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение фитопрепаратов в рамках средств, улучшающих мозговое кровообращение. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Ангиопротекторы (для улучшения мозгового кровообращения)",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение ангиопротекторов в рамках средств, улучшающих мозговое кровообращение. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Средства, улучшающие метаболизм и энергообеспечение тканей, уменьшающие гипоксию тканей",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение средств, улучшающих метаболизм и энергообеспечение тканей, уменьшающих гипоксию тканей. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Антиоксидантные препараты",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение антиоксидантных препаратов в рамках средств, влияющих на обмен веществ в тканях. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Препараты, активизирующие обмен веществ в тканях",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение препаратов, активизирующих обмен веществ в тканях. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Препараты, улучшающие трофику и стимулирующие процесс регенерации",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение препаратов, улучшающих трофику и стимулирующих процесс регенерации. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Аминокислоты",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение аминокислот в рамках средств, влияющих на обмен веществ в тканях. По показаниям, ежедневно, индивидуально."
-            }
-          },
-          {
-            "drug_name": "Витаминные препараты",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "По показаниям, ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 10,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Применение витаминных препаратов (витамины группы В, комплексные препараты). По показаниям, ежедневно, индивидуально."
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
-        {
-          "text": "госпитализация",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "госпитализация"
-          }
-        }
-      ],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: МКБ 10",
-          "Обоснование диагноза: ФК",
-          "Назначено/выполнено обследование: Осмотр врача реаби-",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Ноотропные препараты",
-          "Препарат: Холиномиметики центрального действия",
-          "Препарат: Препараты гидролизата крови и органов животных",
-          "Препарат: Альфа-адреноблокаторы",
-          "Препарат: Блокаторы кальциевых каналов",
-          "Препарат: Препараты, улучшающие микроциркуляцию",
-          "Препарат: Фитопрепараты (для улучшения мозгового кровообращения)",
-          "Препарат: Ангиопротекторы (для улучшения мозгового кровообращения)",
-          "Препарат: Средства, улучшающие метаболизм и энергообеспечение тканей, уменьшающие гипоксию тканей",
-          "Препарат: Антиоксидантные препараты",
-          "Препарат: Препараты, активизирующие обмен веществ в тканях",
-          "Препарат: Препараты, улучшающие трофику и стимулирующие процесс регенерации",
-          "Препарат: Аминокислоты",
-          "Препарат: Витаминные препараты"
-        ],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "vrozhdennaya_mikrotsefaliya",
-      "name": "Врожденная микроцефалия",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "G82.4"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [
-        {
-          "name": "Осмотр врача реабилитолога",
+          "name": "Осмотр врача-реабилитолога",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -571,62 +105,9 @@
             "row_index": null,
             "quote": "1. Осмотр врача реаби-"
           }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
+        },
         {
-          "text": "госпитализация",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "госпитализация"
-          }
-        }
-      ],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначено/выполнено обследование: Осмотр врача реабилитолога"
-        ],
-        "should_have": [],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "drugie_vrozhdennye_anomalii_mozga",
-      "name": "Другие врожденные аномалии мозга",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "Q02"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [
-        {
-          "name": "Осмотр врача реабилитолога",
+          "name": "Осмотр врача-невролога",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -641,21 +122,72 @@
             "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
             "document_url": null,
             "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-            "page_start": 2,
+            "page_start": 3,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Осмотр врача реаби-"
+            "quote": "2. Осмотр врача невролога"
+          }
+        },
+        {
+          "name": "Оценка степени выраженности функциональных нарушений по функциональным классам (ФК)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. Оценка степени выраженности функциональных нарушений по функциональным классам (далее - ФК)"
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Консультации специалистов (офтальмолог, ортопед, психиатр, отоневролог, сурдолог, эндокринолог)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
+            "page_start": 3,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "- офтальмолога - ортопеда - психиатра -отоневролога - сурдолога -эндокринолога"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Мануальная терапия",
+            "text": "Мануальная терапия (позиционная и ритмическая мобилизация, постизометрическая и постреципрокная релаксация)",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -666,11 +198,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Мануальная терапия"
+              "quote": "Мануальная терапия (позиционная и ритмическая мобилизация, постизометрическая и постреципрокная релаксация)"
             }
           },
           {
-            "text": "Механотерапия",
+            "text": "Механотерапия (движения приборами и аппаратами, экстензионная)",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -681,11 +213,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Механотерапия"
+              "quote": "Механотерапия (движения приборами и аппаратами, экстензионная)"
             }
           },
           {
-            "text": "Эрготерапия",
+            "text": "Эрготерапия (сенсомоторная, формирование навыков перемещения, самообслуживания, личного ухода, обучение пользованию ТСР)",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -696,11 +228,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Эрготерапия"
+              "quote": "Эрготерапия (сенсомоторная, формирование навыков перемещения, самообслуживания, личного ухода, обучение пользованию ТСР)"
             }
           },
           {
-            "text": "Физиотерапия",
+            "text": "Физиотерапия (электротерапия, магнитотерапия, электростатический массаж, ультразвуковая терапия, ультрафонофорез, лазеротерапия, магнито-лазерная терапия, светотерапия)",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -711,11 +243,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Физиотерапия"
+              "quote": "Физиотерапия (электротерапия, магнитотерапия, электростатический массаж, ультразвуковая терапия, ультрафонофорез, лазеротерапия, магнито-лазерная терапия, светотерапия)"
             }
           },
           {
-            "text": "Рефлексотерапия",
+            "text": "Рефлексотерапия (корпоральная акупунктура, микроиглотерапия, электропунктура, лазеропунктура, аппликации)",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -726,11 +258,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Рефлексотерапия"
+              "quote": "Рефлексотерапия (корпоральная акупунктура, микроиглотерапия, электропунктура, лазеропунктура, аппликации)"
             }
           },
           {
-            "text": "Психотерапия",
+            "text": "Психотерапия (групповая, семейная, индивидуальная) и голосо-речевая терапия",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -741,11 +273,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Психотерапия"
+              "quote": "Психотерапия (групповая, семейная, индивидуальная) и голосо-речевая терапия"
             }
           },
           {
-            "text": "Голосо-речевая терапия",
+            "text": "Использование корригирующих лангет и технических средств социальной реабилитации",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -756,11 +288,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Голосо-речевая терапия"
+              "quote": "Использование корригирующих лангет и технических средств социальной реабилитации"
             }
           },
           {
-            "text": "Корригирующие лангеты",
+            "text": "Диетотерапия (Стол ПП)",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -771,11 +303,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Корригирующие лангеты"
+              "quote": "Диетотерапия (Стол ПП)"
             }
           },
           {
-            "text": "Коррекция при помощи технических средств социальной реабилитации",
+            "text": "Пассивная кинезотерапия (массаж классический, сегментарно-рефлекторный, соединительно-тканный, периостальный, механомассаж, вибромассаж)",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -786,11 +318,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Коррекция при помощи технических средств социальной реабилитации"
+              "quote": "Пассивная кинезотерапия (массаж классический, сегментарно-рефлекторный, соединительно-тканный, периостальный, механомассаж, вибромассаж)"
             }
           },
           {
-            "text": "Диетотерапия",
+            "text": "Тренинг-терапия и пешеходные прогулки",
             "source_ref": {
               "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
               "document_url": null,
@@ -801,52 +333,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Диетотерапия"
-            }
-          },
-          {
-            "text": "Тренинг-терапия",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Тренинг-терапия"
-            }
-          },
-          {
-            "text": "Пешеходные прогулки с помощью или при помощи технических средств социальной реабилитации",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Пешеходные прогулки с помощью или при помощи технических средств социальной реабилитации"
-            }
-          },
-          {
-            "text": "Пассивная кинезотерапия (Массаж)",
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Пассивная кинезотерапия (Массаж)"
+              "quote": "Тренинг-терапия и пешеходные прогулки"
             }
           }
         ],
@@ -856,7 +343,7 @@
             "drug_name": "Ноотропные препараты",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
+            "dose_text": "Индивидуально, ежедневно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -874,14 +361,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Средства, улучшающие мозговой метаболизм: ноотропные препараты. Применяются ежедневно, дозировка индивидуально по показаниям."
+              "quote": "1.1. ноотропные препараты"
             }
           },
           {
             "drug_name": "Холиномиметики центрального действия",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
+            "dose_text": "Индивидуально, ежедневно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -899,14 +386,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Средства, улучшающие мозговой метаболизм: холиномиметики центрального действия. Применяются ежедневно, дозировка индивидуально по показаниям."
+              "quote": "1.2. холиномиметики центрального действия"
             }
           },
           {
             "drug_name": "Препараты гидролизата крови и органов животных",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
+            "dose_text": "Индивидуально, ежедневно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -924,14 +411,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Средства, улучшающие мозговой метаболизм: препараты гидролизата крови и органов животных. Применяются ежедневно, дозировка индивидуально по показаниям."
+              "quote": "1.3. препараты гидролизата крови и органов животных"
             }
           },
           {
-            "drug_name": "Альфа-адреноблокаторы",
+            "drug_name": "Средства, улучшающие мозговое кровообращение (альфа-адреноблокаторы, блокаторы кальциевых каналов, препараты для микроци",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
+            "dose_text": "Индивидуально, ежедневно",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -949,114 +436,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Средства, улучшающие мозговое кровообращение: альфа-адреноблокаторы. Применяются ежедневно, дозировка индивидуально по показаниям."
+              "quote": "2. Средства, улучшающие мозговое кровообращение"
             }
           },
           {
-            "drug_name": "Блокаторы кальциевых каналов",
+            "drug_name": "Средства, влияющие на обмен веществ в тканях (антиоксиданты, аминокислоты, средства улучшения метаболизма и трофики)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, улучшающие мозговое кровообращение: блокаторы кальциевых каналов. Применяются ежедневно, дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Препараты, улучшающие микроциркуляцию",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, улучшающие мозговое кровообращение: препараты, улучшающие микроциркуляцию. Применяются ежедневно, дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Фитопрепараты",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, улучшающие мозговое кровообращение: фитопрепараты. Применяются ежедневно, дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Ангиопротекторы",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "ежедневно, индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, улучшающие мозговое кровообращение: ангиопротекторы. Применяются ежедневно, дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Средства, улучшающие метаболизм и энергообеспечение тканей",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "индивидуально по показаниям",
+            "dose_text": "Не указана",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -1074,114 +461,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Средства, влияющие на обмен веществ в тканях: улучшающие метаболизм и энергообеспечение тканей, уменьшающие гипоксию тканей. Дозировка индивидуально по показаниям."
+              "quote": "3. Средства, влияющие на обмен веществ в тканях"
             }
           },
           {
-            "drug_name": "Антиоксидантные препараты",
+            "drug_name": "Витаминные препараты (витамины группы В, комплексные препараты)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "индивидуально по показаниям",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, влияющие на обмен веществ в тканях: антиоксидантные препараты. Дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Препараты, активизирующие обмен веществ в тканях",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "индивидуально по показаниям",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, влияющие на обмен веществ в тканях: препараты, активизирующие обмен веществ в тканях. Дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Препараты, улучшающие трофику и стимулирующие регенерацию",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "индивидуально по показаниям",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, влияющие на обмен веществ в тканях: препараты, улучшающие трофику и стимулирующие процесс регенерации. Дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Аминокислоты",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "индивидуально по показаниям",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, влияющие на обмен веществ в тканях: аминокислоты. Дозировка индивидуально по показаниям."
-            }
-          },
-          {
-            "drug_name": "Витаминные препараты (группы В, комплексные)",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "по показаниям",
+            "dose_text": "Не указана",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -1199,7 +486,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Витаминные препараты, включая витамины группы В и комплексные препараты, применяются по показаниям."
+              "quote": "7. Витаминные препараты (витамины группы В, комплексные препараты)"
             }
           }
         ],
@@ -1207,11 +494,48 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Индивидуальная лечебная физическая культура (30-40 мин., № 10-12, курс 26-28 дней, 1-2 раза в год)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Индивидуальная лечебная физическая культура (30-40 мин., № 10-12, курс 26-28 дней, 1-2 раза в год)"
+          }
+        },
+        {
+          "text": "Оценка достижения стабилизации клинико-инструментальных показателей",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка достижения стабилизации клинико-инструментальных показателей"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "госпитализация",
+          "text": "Стационарное отделение",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1224,232 +548,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация"
+            "quote": "Стационарное отделение"
           }
         }
       ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначено/выполнено обследование: Осмотр врача реабилитолога",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Ноотропные препараты",
-          "Препарат: Холиномиметики центрального действия",
-          "Препарат: Препараты гидролизата крови и органов животных",
-          "Препарат: Альфа-адреноблокаторы",
-          "Препарат: Блокаторы кальциевых каналов",
-          "Препарат: Препараты, улучшающие микроциркуляцию",
-          "Препарат: Фитопрепараты",
-          "Препарат: Ангиопротекторы",
-          "Препарат: Средства, улучшающие метаболизм и энергообеспечение тканей",
-          "Препарат: Антиоксидантные препараты",
-          "Препарат: Препараты, активизирующие обмен веществ в тканях",
-          "Препарат: Препараты, улучшающие трофику и стимулирующие регенерацию",
-          "Препарат: Аминокислоты",
-          "Препарат: Витаминные препараты (группы В, комплексные)"
-        ],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "spetsifich_rasstroystva_motor_funktsii",
-      "name": "Специфические расстройства развития моторной функции",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "Q04"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [
-        {
-          "name": "Осмотр врача реабилитолога",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-            "page_start": 1,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Осмотр врача реаби-"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": {
-        "non_drug": [],
-        "drug_groups": [],
-        "drugs": [
-          {
-            "drug_name": "Средства, улучшающие мозговой метаболизм",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, улучшающие мозговой метаболизм: ноотропные препараты, холиномиметики центрального действия, препараты гидролизата крови и органов животных."
-            }
-          },
-          {
-            "drug_name": "Средства, улучшающие мозговое кровообращение",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "индивидуально",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, улучшающие мозговое кровообращение: альфа-адреноблокаторы, блокаторы кальциевых каналов, препараты, улучшающие микроциркуляцию, фитопрепараты, ангиопротекторы."
-            }
-          },
-          {
-            "drug_name": "Средства, влияющие на обмен веществ в тканях",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "по показаниям",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 9,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Средства, влияющие на обмен веществ в тканях: улучшающие метаболизм и энергообеспечение, уменьшающие гипоксию; антиоксиданты; активизирующие обмен веществ; улучшающие трофику и стимулирующие регенерацию; аминокислоты."
-            }
-          },
-          {
-            "drug_name": "Витаминные препараты",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "по показаниям",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-              "page_start": 10,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Витаминные препараты: витамины группы В, комплексные препараты."
-            }
-          }
-        ],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
-        {
-          "text": "госпитализация",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "nevrologiya_neyrokhirurgiya_протоколы_медицинской_реабилитации_детей_с_болезнями",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/nevrologiya-neyrokhirurgiya/Протоколы медицинской реабилитации детей с болезнями нервной системы 18.02.2011 №172.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "госпитализация"
-          }
-        }
-      ],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначено/выполнено обследование: Осмотр врача реабилитолога",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Средства, улучшающие мозговой метаболизм",
-          "Препарат: Средства, улучшающие мозговое кровообращение",
-          "Препарат: Средства, влияющие на обмен веществ в тканях",
-          "Препарат: Витаминные препараты"
-        ],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -1457,14 +563,13 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:37:33.644429+00:00",
+    "extracted_at": "2026-07-23T08:56:30.577328+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=4",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
@@ -1474,154 +579,10 @@
       {
         "level": "warning",
         "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[0]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[1]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[3]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[4]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[5]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[6]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[7]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[8]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[9]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[10]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[11]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[spasticheskaya_tetraplegiya].treatment.drugs[13]"
-      },
-      {
-        "level": "warning",
-        "code": "quote_not_in_source",
-        "message": "Цитата препарата не найдена в исходном тексте",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[13]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[1]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[2]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[3]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[4]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[5]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[9]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[10]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[drugie_vrozhdennye_anomalii_mozga].treatment.drugs[12]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_exam",
-        "message": "Дублирующееся обследование",
-        "path": "conditions[spetsifich_rasstroystva_motor_funktsii].required_exams[0]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[spetsifich_rasstroystva_motor_funktsii].treatment.drugs[3]"
+        "message": "Цитата не найдена в исходном тексте",
+        "path": "conditions[bolezni_nervnoy_sistemy_u_detey].required_exams[2]"
       }
     ],
-    "validated_at": "2026-07-20T16:37:33.658800+00:00"
+    "validated_at": "2026-07-23T08:56:30.581362+00:00"
   }
 }

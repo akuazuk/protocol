@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика лечение пациентов с нервно-мышечной дисфункцией мочевого пузыря",
+    "title": "Диагностика и лечение пациентов с нервно-мышечной дисфункцией мочевого пузыря",
     "url": null,
     "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
     "document_sha256": null,
@@ -22,8 +22,7 @@
   },
   "applicability": {
     "population": [
-      "adult",
-      "pregnant"
+      "adult"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -33,7 +32,7 @@
   },
   "conditions": [
     {
-      "condition_id": "nervno_myshechnaya_disfunktsiya_mp",
+      "condition_id": "nervno_myshechnaya_disfunkciya_mp",
       "name": "Нервно-мышечная дисфункция мочевого пузыря",
       "synonyms": [],
       "abbreviations": [],
@@ -48,7 +47,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Наличие симптомов и признаков дисфункции нижних мочевых путей, связанных с неврологической патологией, которая может являться патогенетической причиной нарушений, выявляемых при проведении клинических, лабораторных и инструментальных диагностических исследований.",
+            "text": "Наличие симптомов и признаков дисфункции нижних мочевых путей, связанных с неврологической патологией",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -65,17 +64,139 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Наличие симптомов и признаков дисфункции нижних мочевых путей, связанных с неврологической патологией, которая может являться патогенетической причиной нарушений, выявляемых при проведении клинических"
+              "quote": "Наличие симптомов и признаков дисфункции нижних мочевых путей, связанных с неврологической патологией"
+            }
+          },
+          {
+            "text": "Фармакорезистентная НМДМП: отсутствие клинической эффективности при лечении двумя подобранными ЛП в монотерапии и (или) комбинированной терапии не менее 6 месяцев",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Фармакорезистентная НМДМП: отсутствие клинической эффективности при лечении двумя подобранными ЛП в монотерапии и (или) комбинированной терапии не менее 6 месяцев"
             }
           }
         ],
         "optional": [],
         "exclusion": []
       },
-      "required_exams": [],
+      "required_exams": [
+        {
+          "name": "Биохимический анализ крови (альбумин, белок общий, креатинин, мочевина, натрий, калий, кальций, хлор)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимический анализ крови (альбумин, белок общий, креатинин, мочевина, натрий, калий, кальций, хлор) – не менее 1 раза в 6 месяцев;"
+          }
+        },
+        {
+          "name": "Бактериологический посев мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "бактериологический посев мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП – не менее 1 раза в 6 месяцев;"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ крови – не менее 1 раза в 6 месяцев;"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ мочи – не менее 1 раза в 6 месяцев."
+          }
+        }
+      ],
       "conditional_exams": [
         {
-          "name": "Биохимическое исследование на определение скорости клубочковой фильтрации (СКФ) по формуле CKD-EPI",
+          "name": "Биохимическое исследование на определение СКФ по формуле CKD-EPI",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -100,107 +221,7 @@
           }
         },
         {
-          "name": "Бактериологический посев мочи на микрофлору и чувствительность к антибактериальным ЛП",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "бактериологический посев мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП;"
-          }
-        },
-        {
-          "name": "Обзорная урография",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "обзорная урография;"
-          }
-        },
-        {
-          "name": "Экскреторная урография",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "экскреторная урография;"
-          }
-        },
-        {
-          "name": "Восходящая цистография",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "восходящая цистография;"
-          }
-        },
-        {
-          "name": "Комплексное уродинамическое исследование (КУДИ)",
+          "name": "КУДИ",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -250,7 +271,7 @@
           }
         },
         {
-          "name": "Исследование проводящей способности пудендального нерва",
+          "name": "МРТ головного мозга / спинного мозга / органов малого таза",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -271,11 +292,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "исследование проводящей способности пудендального нерва;"
+            "quote": "магнитно-резонансная томография (далее – МРТ) головного мозга; МРТ спинного мозга; МРТ органов брюшной полости; МРТ органов малого таза;"
           }
         },
         {
-          "name": "Определение латентностей бульбокавернозного рефлекса",
+          "name": "Бактериологический посев мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -290,95 +311,20 @@
             "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
             "document_url": null,
             "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
+            "page_start": 6,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "определение латентностей бульбокавернозного рефлекса;"
-          }
-        },
-        {
-          "name": "Определение корковых вызванных потенциалов с дорзального полового нерва",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "определение корковых вызванных потенциалов с дорзального полового нерва;"
-          }
-        },
-        {
-          "name": "Радиоизотопная ренография",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "радиоизотопная ренография;"
-          }
-        },
-        {
-          "name": "Динамическая нефросцинтиграфия",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "динамическая нефросцинтиграфия;"
+            "quote": "В случае положительного результата бактериологического посева мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП перед операцией выбор антибактериального ЛП"
           }
         }
       ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Поведенческая терапия (коррекция объема и ограничений по времени питьевого режима, а также режима опорожнения МП методом периодической катетеризации).",
+            "text": "Поведенческая терапия: коррекция объема и ограничений по времени питьевого режима, а также режима опорожнения МП методом периодической катетеризации",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
               "document_url": null,
@@ -389,11 +335,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Поведенческая терапия (коррекция объема и ограничений по времени питьевого режима, а также режима опорожнения МП методом периодической катетеризации)."
+              "quote": "Поведенческая терапия: коррекция объема и ограничений по времени питьевого режима, а также режима опорожнения МП методом периодической катетеризации"
             }
           },
           {
-            "text": "Кинезиотерапия (коррекция тонуса мышц тазового дна).",
+            "text": "Кинезиотерапия: коррекция тонуса мышц тазового дна",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
               "document_url": null,
@@ -404,11 +350,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Кинезиотерапия (коррекция тонуса мышц тазового дна)."
+              "quote": "Кинезиотерапия: коррекция тонуса мышц тазового дна"
             }
           },
           {
-            "text": "Ассистируемое опорожнение МП (надавливание на МП, приемы Креде, Вальсальвы, мочеиспускание за счет триггерного рефлекса).",
+            "text": "Ассистируемое опорожнение МП (надавливание на МП, приемы Креде, Вальсальвы, мочеиспускание за счет триггерного рефлекса)",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
               "document_url": null,
@@ -419,11 +365,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Ассистируемое опорожнение МП (надавливание на МП, приемы Креде, Вальсальвы, мочеиспускание за счет триггерного рефлекса)."
+              "quote": "Ассистируемое опорожнение МП (надавливание на МП, приемы Креде, Вальсальвы, мочеиспускание за счет триггерного рефлекса)"
             }
           },
           {
-            "text": "Периодическая асептическая катетеризация МП (4–6 раз в сутки) как основной метод лечения пациентов с гипоактивным детрузором.",
+            "text": "Периодическая асептическая катетеризация МП (4–6 раз в сутки)",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
               "document_url": null,
@@ -434,11 +380,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Периодическая асептическая катетеризация МП (4–6 раз в сутки) как основной метод лечения пациентов с гипоактивным детрузором."
+              "quote": "Периодическая асептическая катетеризация МП (4–6 раз в сутки)"
             }
           },
           {
-            "text": "Физиотерапевтическое лечение (магнитная или электрическая стимуляция области детрузора, мышц тазового дна, электростимуляция тибиального нерва).",
+            "text": "Физиотерапевтическое лечение (магнитная или электрическая стимуляция области детрузора, мышц тазового дна, электростимуляция тибиального нерва)",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
               "document_url": null,
@@ -449,11 +395,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Физиотерапевтическое лечение (магнитная или электрическая стимуляция области детрузора, мышц тазового дна, электростимуляция тибиального нерва)."
+              "quote": "Физиотерапевтическое лечение (магнитная или электрическая стимуляция области детрузора, мышц тазового дна, электростимуляция тибиального нерва)"
             }
           },
           {
-            "text": "Внутридетрузорные инъекции ботулотоксина группы А (при рефрактерности к медикаментозному лечению нейрогенного гиперактивного или смешанного МП).",
+            "text": "Хирургическое лечение: внутридетрузорные инъекции ботулотоксина группы А, сакральная нейромодуляция, аугментация МП, отведение мочи, стентирование уретры, реконструкция шейки МП",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
               "document_url": null,
@@ -464,11 +410,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Внутридетрузорные инъекции ботулотоксина группы А (при рефрактерности к медикаментозному лечению нейрогенного гиперактивного или смешанного МП)."
+              "quote": "Хирургическое лечение: внутридетрузорные инъекции ботулотоксина группы А, сакральная нейромодуляция, аугментация МП, отведение мочи, стентирование уретры, реконструкция шейки МП"
             }
           },
           {
-            "text": "Сакральная нейромодуляция (альтернатива внутридетрузорным инъекциям или при нейрогенном гипоактивном МП).",
+            "text": "Немедикаментозная профилактика ВТЭО: ранняя активизация, компрессионный трикотаж, перемежающаяся пневмокомпрессия нижних конечностей, адекватная гидратация",
             "source_ref": {
               "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
               "document_url": null,
@@ -479,142 +425,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Сакральная нейромодуляция (альтернатива внутридетрузорным инъекциям или при нейрогенном гипоактивном МП)."
-            }
-          },
-          {
-            "text": "Аугментация или формирование артифициального МП из сегмента кишечника (при нейрогенном гиперактивном или смешанном МП).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Аугментация или формирование артифициального МП из сегмента кишечника (при нейрогенном гиперактивном или смешанном МП)."
-            }
-          },
-          {
-            "text": "Инконтинентное или континентное отведение мочи (при нейрогенном гипоактивном или смешанном МП).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Инконтинентное или континентное отведение мочи (при нейрогенном гипоактивном или смешанном МП)."
-            }
-          },
-          {
-            "text": "Стентирование уретры (при нейрогенном гипоактивном или смешанном МП).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Стентирование уретры (при нейрогенном гипоактивном или смешанном МП)."
-            }
-          },
-          {
-            "text": "Аутоцистодубликатура (при нейрогенном гипоактивном или смешанном МП).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Аутоцистодубликатура (при нейрогенном гипоактивном или смешанном МП)."
-            }
-          },
-          {
-            "text": "Использование постоянного уретрального или надлобкового катетера (только в строго исключительных случаях при нейрогенном гипоактивном МП).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Использование постоянного уретрального или надлобкового катетера (только в строго исключительных случаях при нейрогенном гипоактивном МП)."
-            }
-          },
-          {
-            "text": "Функциональная аугментация уретрального сфинктера (при НМДМП смешанного типа).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Функциональная аугментация уретрального сфинктера (при НМДМП смешанного типа)."
-            }
-          },
-          {
-            "text": "Лазерное рассечение уретрального сфинктера (при НМДМП смешанного типа).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Лазерное рассечение уретрального сфинктера (при НМДМП смешанного типа)."
-            }
-          },
-          {
-            "text": "Реконструкция шейки МП и уретры (при НМДМП смешанного типа).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Реконструкция шейки МП и уретры (при НМДМП смешанного типа)."
-            }
-          },
-          {
-            "text": "Трансуретральная инцизия шейки МП (при НМДМП смешанного типа).",
-            "source_ref": {
-              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Трансуретральная инцизия шейки МП (при НМДМП смешанного типа)."
+              "quote": "Немедикаментозная профилактика ВТЭО: ранняя активизация, компрессионный трикотаж, перемежающаяся пневмокомпрессия нижних конечностей, адекватная гидратация"
             }
           }
         ],
@@ -624,7 +435,7 @@
             "drug_name": "Троспий",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "таблетки 15 мг, 30 мг; внутрь 15 мг 2–3 раза в сутки",
+            "dose_text": "Таблетки 15 мг, 30 мг; внутрь 15 мг 2–3 раза в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -642,14 +453,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "один из следующих антимускариновых ЛП (М-холиноблокаторы): троспий (таблетки 15 мг, 30 мг) внутрь 15 мг 2–3 раза в сутки;"
+              "quote": "троспий (таблетки 15 мг, 30 мг) внутрь 15 мг 2–3 раза в сутки;"
             }
           },
           {
             "drug_name": "Оксибутинин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "таблетки 5 мг; внутрь 5 мг 2–3 раза в сутки",
+            "dose_text": "Таблетки 5 мг; внутрь 5 мг 2–3 раза в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -674,7 +485,7 @@
             "drug_name": "Тамсулозин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "таблетки 0,4 мг; внутрь 0,4 мг 1 раз в сутки",
+            "dose_text": "Таблетки 0,4 мг; внутрь 0,4 мг 1 раз в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -692,14 +503,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "один из селективных -адреноблокаторов: тамсулозин (таблетки 0,4 мг) внутрь 0,4 мг 1 раз в сутки;"
+              "quote": "тамсулозин (таблетки 0,4 мг) внутрь 0,4 мг 1 раз в сутки;"
             }
           },
           {
             "drug_name": "Силодозин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "капсулы 4 мг, 8 мг; внутрь 4 мг 1 раз в сутки",
+            "dose_text": "Капсулы 4 мг, 8 мг; внутрь 4 мг 1 раз в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -724,7 +535,7 @@
             "drug_name": "Ипидакрин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "таблетки 20 мг; внутрь по 10–20 мг 2–3 раза в сутки",
+            "dose_text": "Таблетки 20 мг; внутрь по 10–20 мг 2–3 раза в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -742,14 +553,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Один из следующих ЛП, улучшающих нервно-мышечную передачу: ипидакрин (таблетки 20 мг) внутрь по 10–20 мг 2–3 раза в сутки;"
+              "quote": "ипидакрин (таблетки 20 мг) внутрь по 10–20 мг 2–3 раза в сутки;"
             }
           },
           {
             "drug_name": "Пиридостигмин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "таблетки 60 мг; внутрь 2–4 раза в сутки",
+            "dose_text": "Таблетки 60 мг; внутрь 2–4 раза в сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -774,7 +585,7 @@
             "drug_name": "Цефазолин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "внутривенно 2,0 г (при массе тела пациента более 120 кг – 3,0 г) однократно за 30–60 минут до начала хирургического вмешательства",
+            "dose_text": "Внутривенно 2,0 г (при массе тела пациента более 120 кг – 3,0 г) однократно за 30–60 минут до начала хирургического вмешательства",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -796,10 +607,10 @@
             }
           },
           {
-            "drug_name": "Клиндамицин + Гентамицин",
+            "drug_name": "Клиндамицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "клиндамицин внутривенно 900 мг + гентамицин 5 мг/кг внутривенно (при непереносимости бета-лактамов)",
+            "dose_text": "Внутривенно 900 мг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -817,14 +628,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "При непереносимости бета-лактамных антибиотиков назначают следующие комбинации антибактериальных ЛП: клиндамицин внутривенно 900 мг + гентамицин 5 мг/кг внутривенно;"
+              "quote": "клиндамицин внутривенно 900 мг"
             }
           },
           {
-            "drug_name": "Клиндамицин + Ципрофлоксацин",
+            "drug_name": "Гентамицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "клиндамицин внутривенно 900 мг + ципрофлоксацин 400 мг внутривенно (при непереносимости бета-лактамных антибиотиков)",
+            "dose_text": "Внутривенно 5 мг/кг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -842,14 +653,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "клиндамицин внутривенно 900 мг + ципрофлоксацин 400 мг внутривенно;"
+              "quote": "гентамицин 5 мг/кг внутривенно"
             }
           },
           {
-            "drug_name": "Метронидазол + Гентамицин",
+            "drug_name": "Ципрофлоксацин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "метронидазол внутривенно 500 мг + гентамицин 5 мг/кг внутривенно (при непереносимости бета-лактамных антибиотиков)",
+            "dose_text": "Внутривенно 400 мг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -867,14 +678,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "метронидазол внутривенно 500 мг +гентамицин 5 мг/кг внутривенно;"
+              "quote": "ципрофлоксацин 400 мг внутривенно"
             }
           },
           {
-            "drug_name": "Метронидазол + Ципрофлоксацин",
+            "drug_name": "Метронидазол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "метронидазол внутривенно 500 мг + ципрофлоксацин 400 мг внутривенно (при непереносимости бета-лактамных антибиотиков)",
+            "dose_text": "Внутривенно 500 мг",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -892,7 +703,157 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "метронидазол внутривенно 500 мг + ципрофлоксацин 400 мг внутривенно."
+              "quote": "метронидазол внутривенно 500 мг"
+            }
+          },
+          {
+            "drug_name": "Апиксабан",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутри по 2,5 мг каждые 12 ч",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "апиксабан (таблетки 2,5 мг, 5 мг) внутрь по 2,5 мг каждые 12 ч;"
+            }
+          },
+          {
+            "drug_name": "Ривароксабан",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутри по 10 мг каждые 24 ч",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ривароксабан (таблетки 2,5 мг, 10 мг, 15 мг, 20 мг) внутрь по 10 мг каждые 24 ч;"
+            }
+          },
+          {
+            "drug_name": "Дабигатрана этексилат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутри по 110 мг каждые 12 ч",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "дабигатрана этексилат (капсулы 110 мг, 150 мг) внутрь по 110 мг каждые 12 ч."
+            }
+          },
+          {
+            "drug_name": "НФГ",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Подкожно 5000 МЕ за 2–4 ч до хирургического вмешательства, затем через 6–8 ч после хирургического вмешательства и далее 5000 МЕ 2–3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "НФГ, раствор для внутривенного и подкожного введения 5000 МЕ/мл во флаконах"
+            }
+          },
+          {
+            "drug_name": "Далтепарин натрия",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Подкожно 2500 МЕ за 2 ч до хирургического вмешательства, в последующие дни 2500 МЕ 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Далтепарин натрия, раствор для инъекций 2500 МЕ/0,2 мл в шприцах 0,2 мл"
+            }
+          },
+          {
+            "drug_name": "Надропарин кальция",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Подкожно 2850 МЕ (0,3 мл) за 2–4 ч до хирургического вмешательства, в последующие дни по 0,3 мл 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Надропарин кальция, раствор для подкожного введения 9500 МЕ анти-Ха/мл"
             }
           }
         ],
@@ -902,7 +863,7 @@
       },
       "follow_up": [
         {
-          "text": "Биохимический анализ крови (альбумин, белок общий, креатинин, мочевина, натрий, калий, кальций, хлор) – не менее 1 раза в 6 месяцев.",
+          "text": "Диагностические лабораторные исследования (ОАК, ОАМ, биохимический анализ крови, бакпосев мочи) в амбулаторных условиях не менее 1 раза в 6 месяцев",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -916,11 +877,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Биохимический анализ крови (альбумин, белок общий, креатинин, мочевина, натрий, калий, кальций, хлор) – не менее 1 раза в 6 месяцев."
+            "quote": "Диагностические лабораторные исследования (ОАК, ОАМ, биохимический анализ крови, бакпосев мочи) в амбулаторных условиях не менее 1 раза в 6 месяцев"
           }
         },
         {
-          "text": "Бактериологический посев мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП – не менее 1 раза в 6 месяцев.",
+          "text": "Оценка эффективности лечения каждые 6 месяцев с помощью опросника Кваливин, динамики объема остаточной мочи, частоты мочеиспусканий и/или катетеризаций",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -934,11 +895,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Бактериологический посев мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП – не менее 1 раза в 6 месяцев."
+            "quote": "Оценка эффективности лечения каждые 6 месяцев с помощью опросника Кваливин, динамики объема остаточной мочи, частоты мочеиспусканий и/или катетеризаций"
           }
         },
         {
-          "text": "Общий анализ крови – не менее 1 раза в 6 месяцев.",
+          "text": "Медицинское наблюдение в амбулаторных условиях врачом-урологом (при хирургическом вмешательстве) или врачом-неврологом до достижения улучшения (ремиссии) в течение 3 лет",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -952,11 +913,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Общий анализ крови – не менее 1 раза в 6 месяцев."
+            "quote": "Медицинское наблюдение в амбулаторных условиях врачом-урологом (при хирургическом вмешательстве) или врачом-неврологом до достижения улучшения (ремиссии) в течение 3 лет"
           }
         },
         {
-          "text": "Общий анализ мочи – не менее 1 раза в 6 месяцев.",
+          "text": "Дальнейшее наблюдение осуществляет врач общей практики (врач-терапевт)",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -970,11 +931,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Общий анализ мочи – не менее 1 раза в 6 месяцев."
+            "quote": "Дальнейшее наблюдение осуществляет врач общей практики (врач-терапевт)"
           }
         },
         {
-          "text": "Оценка эффективности лечения по опроснику Кваливин (Приложение 1).",
+          "text": "Строгий контроль за состоянием верхних мочевых путей у пациентов при методах ассистируемого опорожнения МП",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -988,100 +949,12 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Оценка эффективности лечения по опроснику Кваливин (Приложение 1)."
-          }
-        },
-        {
-          "text": "Оценка количества остаточной мочи, частоты мочеиспусканий и (или) катетеризаций.",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Оценка количества остаточной мочи, частоты мочеиспусканий и (или) катетеризаций."
-          }
-        },
-        {
-          "text": "Контроль параметров лечения для выявления ухудшения или обострения.",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Контроль параметров лечения для выявления ухудшения или обострения."
-          }
-        },
-        {
-          "text": "Медицинское наблюдение в амбулаторных условиях осуществляет врач-уролог (после хирургического вмешательства) или врач-невролог по месту жительства до достижения ремиссии в течение 3 лет.",
-          "timing": null,
-          "required_if": [],
-          "expected_actions": [],
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Медицинское наблюдение в амбулаторных условиях осуществляет врач-уролог (после хирургического вмешательства) или врач-невролог по месту жительства до достижения ремиссии в течение 3 лет."
+            "quote": "Строгий контроль за состоянием верхних мочевых путей у пациентов при методах ассистируемого опорожнения МП"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
-        {
-          "text": "госпитализация/амбулаторно",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "госпитализация/амбулаторно"
-          }
-        },
-        {
-          "text": "госпитализация",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "госпитализация"
-          }
-        },
         {
           "text": "амбулаторно",
           "timing": null,
@@ -1100,7 +973,7 @@
           }
         },
         {
-          "text": "госпитализация",
+          "text": "стационарно",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -1113,93 +986,64 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация"
+            "quote": "стационарно"
+          }
+        },
+        {
+          "text": "Амбулаторное наблюдение по месту жительства (пребывания, работы, службы)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторное наблюдение по месту жительства (пребывания, работы, службы)"
+          }
+        },
+        {
+          "text": "Направление пациентов с НМДМП для оказания им медицинской помощи в стационарных условиях осуществляется в соответствии с Инструкцией о порядке направления пациентов для получения медицинской помощи в организации здравоохранения, утвержденной постановлением Министерства здравоохранения Республики Беларусь от 2 ноября 2005 г. № 44.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Направление пациентов с НМДМП для оказания им медицинской помощи в стационарных условиях осуществляется в соответствии с Инструкцией о порядке направления пациентов для получения медицинской помощи в "
+          }
+        },
+        {
+          "text": "При плановой госпитализации пациентов в организации здравоохранения назначение диагностических исследований проводится в целях исключения их дублирования.",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При плановой госпитализации пациентов в организации здравоохранения назначение диагностических исследований проводится в целях исключения их дублирования."
           }
         }
       ],
       "red_flags": [
         {
-          "text": "Риск ВТЭО (1 балл по Каприни): возраст 41-60 лет, отек нижних конечностей, варикозные вены, ИМТ >25, малое/большое хирургическое вмешательство (до 1 мес), сепсис, заболевания легких, прием комбинированных оральных контрацептивов, гормонзаместительная терапия, беременность и послеродовый период, необъяснимые мертворождения, выкидыши (>3), преждевременные роды с токсикозом или задержка внутриутробно",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 10,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Возраст 41 год–60 лет, Отек нижних конечностей, Варикозные вены, ИМТ >25 кг/кв. м  Малое хирургическое вмешательство  Сепсис  Заболевания легких... Прием комбинированных оральных контрацептивов..."
-          }
-        },
-        {
-          "text": "Риск ВТЭО (2 балла по Каприни): возраст 61-74 года, артроскопическая хирургия, злокачественное новообразование, лапароскопическое вмешательство (>45 мин), постельный режим >72 ч, иммобилизация конечности (до 1 мес), катетеризация центральных вен, большая хирургия (>45 мин).",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 10,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Возраст 61 год–74 года  Артроскопическая хирургия  Злокачественное новообразование  Лапароскопическое вмешательство (длительностью более 45 мин)  Постельный режим более 72 ч..."
-          }
-        },
-        {
-          "text": "Риск ВТЭО (3 балла по Каприни): возраст 75 лет и старше, личный/семейный анамнез ВТЭО, мутация типа Лейден (FVL), мутация протромбина (FII G20210А), гипергомоцистеинемия, гепарин-индуцированная тромбоцитопения, повышенный уровень антител к кардиолипину, волчаночный антикоагулянт, другая врожденная или приобретенная тромбофилия.",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 10,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Возраст 75 лет и старше  Личный анамнез ВТЭО  Семейный анамнез ВТЭО  Мутация типа Лейден (FVL)  Мутация протромбина (FII G20210А)  Гипергомоцистеинемия..."
-          }
-        },
-        {
-          "text": "Риск ВТЭО (5 баллов по Каприни): инсульт, множественная травма, эндопротезирование крупных суставов, перелом костей бедра и голени, травма спинного мозга и (или) паралич (все давностью до 1 месяца).",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 10,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Инсульт (давностью до 1 месяца)  Множественная травма (давностью до 1 месяца)  Эндопротезирование крупных суставов  Перелом костей бедра и голени..."
-          }
-        },
-        {
-          "text": "Пациентам, у которых используются методы ассистируемого опорожнения МП, необходим строгий контроль за состоянием верхних мочевых путей во избежание осложнений (обострение инфекций мочевыводящих путей, развития хронической болезни почек).",
+          "text": "Риск развития осложнений (обострение инфекций мочевыводящих путей, развитие хронической болезни почек) при ассистируемом опорожнении МП",
           "aliases": [],
           "red_flag_type": "other",
           "severity": "high",
@@ -1215,31 +1059,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Пациентам, у которых используются методы ассистируемого опорожнения МП, необходим строгий контроль за состоянием верхних мочевых путей во избежание осложнений (обострение инфекций мочевыводящих путей, развития хронической болезни почек);"
+            "quote": "во избежание осложнений (обострение инфекций мочевыводящих путей, развития хронической болезни почек);"
           }
         },
         {
-          "text": "При внутридетрузорных инъекциях ботулотоксина группы А пациент предупреждается о вероятности развития задержки мочеиспускания и необходимости выполнения периодической самокатетеризации.",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 5,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "внутридетрузорные инъекции ботулотоксина группы А (назначаются в случае рефрактерности к медикаментозному лечению, пациент предупреждается о вероятности развития задержки мочеиспускания и необходимости выполнения периодической самокатетеризации);"
-          }
-        },
-        {
-          "text": "Использование постоянного уретрального катетера или надлобкового катетера допускается только в строго исключительных случаях, когда иные методы пузырного отведения мочи невыполнимы.",
+          "text": "Вероятность развития задержки мочеиспускания при внутридетрузорных инъекциях ботулотоксина группы А",
           "aliases": [],
           "red_flag_type": "other",
           "severity": "medium",
@@ -1255,123 +1079,13 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "использование постоянного уретрального катетера или надлобкового катетера только в строго исключительных случаях, когда иные методы пузырного отведения мочи невыполнимы."
-          }
-        },
-        {
-          "text": "При положительном результате бактериологического посева мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП перед операцией выбор АБП для антибиотикопрофилактики основывается на результатах посева мочи.",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "В случае положительного результата бактериологического посева мочи на наличие микрофлоры и чувствительность к антибактериальным ЛП перед операцией выбор антибактериального ЛП для антибиотикопрофилактики основывается на результатах посева мочи."
-          }
-        },
-        {
-          "text": "Послеоперационное введение антибактериальных ЛП, использовавшихся для периоперационной антибиотикопрофилактики, продолжается не более 24 часов.",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "В послеоперационном периоде продолжается введение антибактериальных ЛП, которые использовались для периоперационной антибиотикопрофилактики не более 24 ч;"
-          }
-        },
-        {
-          "text": "При профилактике ВТЭО необходимо оценить степень риска ВТЭО и риск геморрагических осложнений.",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_диагностика_лечение_пациентов_вз_н_нервно_мышечной_дисфункцией_моч",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_вз_н_нервно-мышечной_дисфункцией_мочевого_пузыря_пост_МЗ_2024_181.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "оценка степени риска ВТЭО и риск геморрагических осложнений;"
+            "quote": "пациент предупреждается о вероятности развития задержки мочеиспускания и необходимости выполнения периодической самокатетеризации"
           }
         }
       ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Наличие симптомов и признаков дисфункции нижних мочевых путей, связанных с неврологическо…",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Троспий",
-          "Препарат: Оксибутинин",
-          "Препарат: Тамсулозин",
-          "Препарат: Силодозин",
-          "Препарат: Ипидакрин",
-          "Препарат: Пиридостигмин",
-          "Препарат: Цефазолин",
-          "Препарат: Клиндамицин + Гентамицин",
-          "Препарат: Клиндамицин + Ципрофлоксацин",
-          "Препарат: Метронидазол + Гентамицин",
-          "Препарат: Метронидазол + Ципрофлоксацин",
-          "Немедикаментозно: Поведенческая терапия (коррекция объема и ограничений по времени питьевого режима, а такж…",
-          "Немедикаментозно: Кинезиотерапия (коррекция тонуса мышц тазового дна)",
-          "Немедикаментозно: Ассистируемое опорожнение МП (надавливание на МП, приемы Креде, Вальсальвы, мочеиспускани…"
-        ],
-        "conditional": [
-          "Обследование: Биохимическое исследование на определение скорости клубочковой фильтрации (СКФ) по формул… (по показаниям)",
-          "Обследование: Бактериологический посев мочи на микрофлору и чувствительность к антибактериальным ЛП (по показаниям)",
-          "Обследование: Обзорная урография (по показаниям)",
-          "Обследование: Экскреторная урография (по показаниям)",
-          "Обследование: Восходящая цистография (по показаниям)",
-          "Обследование: Комплексное уродинамическое исследование (КУДИ) (по показаниям)",
-          "Обследование: Электромиография мышц тазового дна, анального и (или) уретрального сфинктера (по показаниям)",
-          "Обследование: Исследование проводящей способности пудендального нерва (по показаниям)",
-          "Обследование: Определение латентностей бульбокавернозного рефлекса (по показаниям)",
-          "Обследование: Определение корковых вызванных потенциалов с дорзального полового нерва (по показаниям)",
-          "Обследование: Радиоизотопная ренография (по показаниям)",
-          "Обследование: Динамическая нефросцинтиграфия (по показаниям)",
-          "Маршрутизация: госпитализация/амбулаторно (по показаниям)",
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": [
-          "при «Риск ВТЭО (1 балл по Каприни): возраст 41-60 лет, отек нижних конечностей, вари…»",
-          "при «Риск ВТЭО (2 балла по Каприни): возраст 61-74 года, артроскопическая хирургия,…»",
-          "Важно: при «Риск ВТЭО (3 балла по Каприни): возраст 75 лет и старше, личный/семейный анамне…»",
-          "Важно: при «Риск ВТЭО (5 баллов по Каприни): инсульт, множественная травма, эндопротезирова…»",
-          "Важно: при «Пациентам, у которых используются методы ассистируемого опорожнения МП, необход…»",
-          "Важно: при «При внутридетрузорных инъекциях ботулотоксина группы А пациент предупреждается…»",
-          "при «Использование постоянного уретрального катетера или надлобкового катетера допус…»",
-          "при «При положительном результате бактериологического посева мочи на наличие микрофл…»",
-          "при «Послеоперационное введение антибактериальных ЛП, использовавшихся для периопера…»",
-          "при «При профилактике ВТЭО необходимо оценить степень риска ВТЭО и риск геморрагичес…»"
-        ]
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -1379,20 +1093,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:41:34.190322+00:00",
+    "extracted_at": "2026-07-23T08:27:28.938958+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-20T16:41:34.215401+00:00"
+    "validated_at": "2026-07-23T08:27:28.973189+00:00"
   }
 }

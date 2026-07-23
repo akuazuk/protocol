@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с огнестрельными ранениями головы и шеи
+  title: Диагностика и лечение пациентов (взрослое и детское население) с огнестрельными
+    ранениями головы и шеи в стационарных условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
   document_sha256: null
@@ -26,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: gunshot_wounds_head_neck
+- condition_id: ognestrelnye_raneniya_golovy_i_shei
   name: Огнестрельные ранения головы и шеи
   synonyms: []
   abbreviations: []
@@ -48,12 +49,334 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria: null
   required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
+  conditional_exams:
+  - name: Медицинский осмотр врача-офтальмолога, врача-невролога, врача-оториноларинголога,
+      врача – челюстно-лицевого хирурга, врача-нейрохирурга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии медицинских показаний проводится медицинский осмотр врача-офтальмолога,
+        врача-невролога, врача-оториноларинголога, врача – челюстно-лицевого хирурга,
+        врача-нейрохирурга
+  - name: Метод наложения диагностических фрезевых отверстий
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При отсутствии возможности нейровизуализации и при выявлении клиники
+        дислокационного синдрома применяется метод наложения диагностических фрезевых
+        отверстий.
+  treatment:
+    non_drug:
+    - text: Первичная хирургическая обработка огнестрельной раны головы и шеи
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Первичная хирургическая обработка огнестрельной раны головы и шеи
+    - text: Вторичная хирургическая обработка огнестрельной раны головы и шеи
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вторичная хирургическая обработка огнестрельной раны головы и шеи
+    - text: Ревизия раны под местной или общей анестезией
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ревизия раны под местной или общей анестезией
+    - text: 'Туалет ран: обработка кожи вокруг раны, промывание раны, дренирование
+        полихлорвиниловой трубкой или резиновым выпускником, наложение асептической
+        повязки'
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Туалет ран: обработка кожи вокруг раны, промывание раны, дренирование
+          полихлорвиниловой трубкой или резиновым выпускником, наложение асептической
+          повязки'
+    - text: Остановка продолжающегося наружного кровотечения, устранение асфиксии,
+        транспортная иммобилизация переломов челюсти
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Остановка продолжающегося наружного кровотечения, устранение асфиксии,
+          транспортная иммобилизация переломов челюсти
+    - text: Декомпрессивная трепанация при быстро нарастающем дислокационном синдроме
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Декомпрессивная трепанация при быстро нарастающем дислокационном синдроме
+    - text: Наложение трахеостомы при отсутствии самостоятельного дыхания, невозможности
+        интубации трахеи или профузных кровотечениях в просвет трахеи
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение трахеостомы при отсутствии самостоятельного дыхания, невозможности
+          интубации трахеи или профузных кровотечениях в просвет трахеи
+    - text: Трепанация черепа, рассечение ТМО, удаление гематомы, мозгового детрита,
+        костных отломков и инородных тел
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Трепанация черепа, рассечение ТМО, удаление гематомы, мозгового детрита,
+          костных отломков и инородных тел
+    - text: 'Офтальмологические хирургические вмешательства: герметизация фиброзной
+        капсулы, первичная эвисцерация или энуклеация, витреоретинальное хирургическое
+        вмешательство, круговое экстрасклеральное пломбирование'
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Офтальмологические хирургические вмешательства: герметизация фиброзной
+          капсулы, первичная эвисцерация или энуклеация, витреоретинальное хирургическое
+          вмешательство, круговое экстрасклеральное пломбиро'
+    - text: Перевязка наружной сонной артерии при неэффективности тампонады носа или
+        кровотечении из глубоких ран лица/дна рта
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перевязка наружной сонной артерии при неэффективности тампонады носа
+          или кровотечении из глубоких ран лица/дна рта
+    - text: Ревизия наружного слухового прохода и среднего уха, аттикоантротомия
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ревизия наружного слухового прохода и среднего уха, аттикоантротомия
+    drug_groups: []
+    drugs: []
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Реконструктивно-восстановительные хирургические вмешательства при условии
+      стабилизации общего состояния и отсутствии признаков раневой инфекции
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Реконструктивно-восстановительные хирургические вмешательства при условии
+        стабилизации общего состояния и отсутствии признаков раневой инфекции
+  - text: Медицинская реабилитация для восстановления нарушенных функций
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская реабилитация для восстановления нарушенных функций
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: Стационарное лечение (в стационарных условиях)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Стационарное лечение (в стационарных условиях)
+  - text: Пациенты с огнестрельными ранениями головы и шеи госпитализируются в нейрохирургическое,
+      травматологическое или хирургическое отделение (при наличии медицинских показаний
+      – в отделение анестезиологии и реанимации) ближайшей организации здравоохранения.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Пациенты с огнестрельными ранениями головы и шеи госпитализируются в
+        нейрохирургическое, травматологическое или хирургическое отделение (при наличии
+        медицинских показаний – в отделение анестезиологии '
+  red_flags:
+  - text: Дислокационный синдром
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: дислокационный синдром – комплекс клинически значимых патофизиологических
+        и патоморфологических процессов, обусловленных смещением полушарий большого
+        мозга
+  - text: Жизнеугрожающие последствия ранения (асфиксия, продолжающееся кровотечение,
+      дислокационный синдром)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: незамедлительное устранение жизнеугрожающих последствий ранения (асфиксия,
+        продолжающееся кровотечение, дислокационный синдром)
+  - text: Отсутствие самостоятельного дыхания, невозможность интубации, профузное
+      кровотечение в просвет трахеи
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_и_лечение_пациентов_взр_детс_население_с_огнестрельными_ранениями_головы_и_шеи_в_стац_условиях_пост_МЗ_27.09.2023_142.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при отсутствии самостоятельного дыхания и невозможности интубации трахеи,
+        при профузных кровотечениях в просвет трахеи... накладывается трахеостома
   contraindications: []
   complications: []
   kz_checklist: null
@@ -62,7 +385,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:26:07.889741+00:00'
+  extracted_at: '2026-07-23T08:21:20.345897+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -73,4 +396,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:26:07.890082+00:00'
+  validated_at: '2026-07-23T08:21:20.346200+00:00'

@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослых с доброкачественными заболеваниями
-    прямой кишки, параректальной и копчиковой области в амбулаторных условиях
+  title: Диагностика и лечение пациентов с доброкачественными заболеваниями прямой
+    кишки, параректальной и копчиковой области
   url: null
   local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
   document_sha256: null
@@ -21,14 +21,13 @@ rubric:
 applicability:
   population:
   - adult
-  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: benign_diseases_rectum_pararectal_coccygeal
+- condition_id: dobrokach_zabol_pryamoj_kishki
   name: Доброкачественные заболевания прямой кишки, параректальной и копчиковой области
   synonyms: []
   abbreviations: []
@@ -50,13 +49,137 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria: null
   required_exams: []
-  conditional_exams: []
+  conditional_exams:
+  - name: Ультразвуковое исследование органов малого таза и брюшной полости, в том
+      числе трансректальное
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ультразвуковое исследование органов малого таза и брюшной полости, в
+        том числе, трансректальное;
+  - name: Электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма у лиц старше 40 лет или при сопутствующей патологии
+        сердечно-сосудистой системы;
+  - name: Анализ крови на маркеры ВИЧ-инфекции, вирусных гепатитов В и С
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ крови на маркеры ВИЧ-инфекции, вирусных гепатитов В и С.
   treatment:
-    non_drug: []
+    non_drug:
+    - text: 'Малоинвазивные хирургические методы в амбулаторных условиях: лигирование
+        внутренних геморроидальных узлов (I–II ст.), инфракрасная фотокоагуляция (I
+        ст.), склеротерапия (I–II ст.), хирургическое лечение перианальных бахромок
+        и тромбированных узлов, лазерная деструкция'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Малоинвазивные хирургические методы в амбулаторных условиях: лигирование
+          внутренних геморроидальных узлов (I–II ст.), инфракрасная фотокоагуляция
+          (I ст.), склеротерапия (I–II ст.), хирургическое лечен'
+    - text: 'Хирургическое лечение в стационарных условиях: дезартеризация геморроидальных
+        узлов, геморроидэктомия'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Хирургическое лечение в стационарных условиях: дезартеризация геморроидальных
+          узлов, геморроидэктомия'
+    - text: 'Общегигиенические мероприятия: водная гигиена, нормализация стула, здоровый
+        образ жизни, рациональное питание'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Общегигиенические мероприятия: водная гигиена, нормализация стула,
+          здоровый образ жизни, рациональное питание'
+    - text: 'Хирургическое лечение хронической анальной трещины: лазерная вапоризация,
+        иссечение, дозированная сфинктеротомия'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Хирургическое лечение хронической анальной трещины: лазерная вапоризация,
+          иссечение, дозированная сфинктеротомия'
     drug_groups: []
     drugs:
-    - drug_name: Комплекс ботулинический токсин типа А – гемагглютинин (Миорелаксанты
-        периферического действия)
+    - drug_name: Комплекс ботулинический токсин типа А – гемагглютинин
       active_substance: null
       drug_group: null
       dose_text: Введение ЛП производится в толщу внутреннего сфинктера шприцем 10–60
@@ -78,13 +201,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Миорелаксанты периферического действия Комплекс ботулинический токсин
-          типа А – гемагглютинин ... Введение ЛП производится в толщу внутреннего
-          сфинктера шприцем 10–60 ЕД однократно
-    - drug_name: Кеторолак (НПВП)
+        quote: Введение ЛП производится в толщу внутреннего сфинктера шприцем 10–60
+          ЕД однократно
+    - drug_name: Кеторолак
       active_substance: null
       drug_group: null
-      dose_text: Не указана
+      dose_text: не указано
       frequency_text: null
       duration_text: null
       route: null
@@ -102,14 +224,126 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: НПВП Кеторолак
+        quote: Кеторолак
+    - drug_name: Нестероидные противовоспалительные препараты (НПВП)
+      active_substance: null
+      drug_group: null
+      dose_text: Пероральный прием при стойком болевом синдроме
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП из группы нестероидных противовоспалительных препаратов (далее –
+          НПВП) при стойком болевом синдроме. Предпочтительным является пероральный
+          прием НПВП;
+    - drug_name: Гепарины или гепариноиды для местного применения, ЛП, снижающие проницаемость
+        капилляров, биофлавоноиды
+      active_substance: null
+      drug_group: null
+      dose_text: При наличии геморроидального тромбоза
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП, используемые при варикозном расширении вен (гепарины или гепариноиды
+          для местного применения; ЛП, снижающие проницаемость капилляров; биофлавоноиды)
+          при наличии геморроидального тромбоза;
+    - drug_name: Противоанемические ЛП
+      active_substance: null
+      drug_group: null
+      dose_text: При наличии анемии в результате геморроидальных кровотечений
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: противоанемические ЛП при наличии анемии в результате геморроидальных
+          кровотечений.
+    - drug_name: Миорелаксант периферического действия
+      active_substance: null
+      drug_group: null
+      dose_text: Фармакологическая локальная сфинктерорелаксация
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фармакологической локальной сфинктерорелаксацией с применением миорелаксанта
+          периферического действия.
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Консервативное лечение применяется в послеоперационном периоде в качестве
+      реабилитационной терапии
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консервативное лечение применяется в послеоперационном периоде в качестве
+        реабилитационной терапии
   hospitalization: []
   routing:
-  - text: госпитализация/амбулаторно
+  - text: в амбулаторных и стационарных условиях
     timing: null
     required_if: []
     source_ref:
@@ -122,8 +356,88 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация/амбулаторно
-  red_flags: []
+      quote: в амбулаторных и стационарных условиях
+  - text: в хирургических отделениях
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: в хирургических отделениях
+  - text: Амбулаторная помощь в хирургических (проктологических) отделениях (кабинетах)
+      организаций здравоохранения
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторная помощь в хирургических (проктологических) отделениях (кабинетах)
+        организаций здравоохранения
+  - text: Стационарная помощь в хирургических (проктологических) отделениях организаций
+      здравоохранения
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Стационарная помощь в хирургических (проктологических) отделениях организаций
+        здравоохранения
+  red_flags:
+  - text: Кровотечение из операционной раны после хирургического вмешательства
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кровотечение из операционной раны;
+  - text: Нагноение раны после хирургического вмешательства
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_пациентов_взрос_с_доброкач_заб
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_пациентов_взрос_с_доброкач_забол_прямой_кишки_параректальной_и_копчиковой_области_амбул_пост_МЗ_01.04.2022_№22.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нагноение раны;
   contraindications: []
   complications: []
   kz_checklist: null
@@ -132,7 +446,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:06:43.641573+00:00'
+  extracted_at: '2026-07-23T08:10:31.425809+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -143,4 +457,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:06:43.643313+00:00'
+  validated_at: '2026-07-23T08:10:31.429824+00:00'

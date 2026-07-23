@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов сахарным диабетом
+  title: Диагностика и лечение пациентов сахарным диабетом взрослое население
   url: null
   local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: saharnyi_diabet
+- condition_id: sakharnyy_diabet
   name: Сахарный диабет
   synonyms: []
   abbreviations: []
@@ -36,20 +36,20 @@ conditions:
   - E12
   - E13
   - E14
-  - O24.4
-  - H36.0
+  - E87.2
   - G59
   - G63.2
   - G99
-  - N08.3
+  - H28.0
+  - H36.0
   - L97.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 'Гликемия натощак, цельная капиллярная кровь: <5,6 ммоль/л (норма), >5,6–<6,1
-        ммоль/л (предиабет), >6,1 ммоль/л (СД).'
+    - text: 'СД: Гликемия натощак >6,1 ммоль/л (капиллярная) или >7,0 ммоль/л (венозная
+        плазма); через 2 ч после нагрузки 75 г глюкозы >11,1 ммоль/л; HbA1c >6,5%'
       logic_group: null
       operator: unknown
       values: []
@@ -66,10 +66,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Гликемия натощак, цельная капиллярная кровь: <5,6 ммоль/л (норма),
-          >5,6–<6,1 ммоль/л (предиабет), >6,1 ммоль/л (СД).'
-    - text: 'Гликемия натощак, плазма венозной крови: <6,1 ммоль/л (норма), >6,1–<7,0
-        ммоль/л (предиабет), >7,0 ммоль/л (СД).'
+        quote: 'СД: Гликемия натощак >6,1 ммоль/л (капиллярная) или >7,0 ммоль/л (венозная
+          плазма); через 2 ч после нагрузки 75 г глюкозы >11,1 ммоль/л; HbA1c >6,5%'
+    - text: 'Клинические критерии СД: полидипсия, полиурия, слабость, утомляемость,
+        кожные инфекции, кандидоз, симптомы дегидратации и катаболизма'
       logic_group: null
       operator: unknown
       values: []
@@ -86,11 +86,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Гликемия натощак, плазма венозной крови: <6,1 ммоль/л (норма), >6,1–<7,0
-          ммоль/л (предиабет), >7,0 ммоль/л (СД).'
-    - text: 'Гликемия через 2 ч после нагрузки 75 г глюкозы (цельная капиллярная кровь,
-        плазма венозной крови): <7,8 ммоль/л (норма), >7,8–<11,1 ммоль/л (нарушенная
-        толерантность к глюкозе), >11,1 ммоль/л (СД).'
+        quote: 'Клинические критерии СД: полидипсия, полиурия, слабость, утомляемость,
+          кожные инфекции, кандидоз, симптомы дегидратации и катаболизма'
+    - text: 'Подтверждение диагноза СД требует двух лабораторных показателей: глюкоза
+        натощак (в разные дни), либо глюкоза натощак + HbA1c, либо глюкоза натощак
+        + ГТТ'
       logic_group: null
       operator: unknown
       values: []
@@ -107,10 +107,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Гликемия через 2 ч после нагрузки 75 г глюкозы (цельная капиллярная
-          кровь, плазма венозной крови): <7,8 ммоль/л (норма), >7,8–<11,1 ммоль/л
-          (нарушенная толерантность к глюкозе), >11,1 ммоль/л (СД).'
-    - text: 'HbA1c, цельная кровь: <5,7% (норма), >5,7–<6,5% (предиабет), >6,5% (СД).'
+        quote: 'Подтверждение диагноза СД требует двух лабораторных показателей: глюкоза
+          натощак (в разные дни), либо глюкоза натощак + HbA1c, либо глюкоза натощак
+          + ГТТ'
+    - text: 'Критерии СД 1 типа: острое начало, прогрессирование симптомов, кетонурия,
+        молодой возраст, СД 1 типа или аутоиммунная патология у родственников 1-й
+        линии'
       logic_group: null
       operator: unknown
       values: []
@@ -127,11 +129,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'HbA1c, цельная кровь: <5,7% (норма), >5,7–<6,5% (предиабет), >6,5%
-          (СД).'
-    - text: 'Клинические критерии СД: полидипсия, полиурия; слабость, утомляемость,
-        рецидивирующие кожные инфекции, кандидоз, вульвит, баланит; симптомы дегидратации
-        и катаболизма.'
+        quote: 'Критерии СД 1 типа: острое начало, прогрессирование симптомов, кетонурия,
+          молодой возраст, СД 1 типа или аутоиммунная патология у родственников 1-й
+          линии'
+    - text: Уровень HbA1c не используется в качестве диагностического критерия при
+        анемии, гемоглобинопатии, во II и III триместрах беременности, при гемодиализе,
+        недавней кровопотере/переливании крови, лечении эритропоэтином, остром начале
+        СД 1 типа
       logic_group: null
       operator: unknown
       values: []
@@ -148,13 +152,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Клинические критерии СД: полидипсия, полиурия; слабость, утомляемость,
-          рецидивирующие кожные инфекции, кандидоз, вульвит, баланит; симптомы дегидратации
-          и катаболизма.'
-    - text: 'Клинический диагноз СД устанавливается при наличии двух лабораторных
-        показателей, соответствующих диагностическим критериям СД: глюкоза крови натощак
-        (два анализа, выполненные в разные дни); глюкоза крови натощак и HbA1c; глюкоза
-        крови натощак и через 2 ч после нагрузки 75 г глюкозы.'
+        quote: Уровень HbA1c не используется в качестве диагностического критерия
+          при анемии, гемоглобинопатии, во II и III триместрах беременности, при гемодиализе,
+          недавней кровопотере/переливании крови, лечении э
+    - text: Повышение уровня HbA1c более 6,5% при впервые выявленной гипергликемии
+        во время экстренной госпитализации свидетельствует в пользу СД
       logic_group: null
       operator: unknown
       values: []
@@ -171,212 +173,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Клинический диагноз СД устанавливается при наличии двух лабораторных
-          показателей, соответствующих диагностическим критериям СД: глюкоза крови
-          натощак (два анализа, выполненные в разные дни); глюкоза к'
-    - text: 'Диагностические критерии СД 1 типа: острое начало; наличие и прогрессирование
-        клинических симптомов СД; кетонурия; молодой возраст; наличие родственников
-        первой линии с СД 1 типа и (или) аутоиммунной патологией у пациента.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Диагностические критерии СД 1 типа: острое начало; наличие и прогрессирование
-          клинических симптомов СД; кетонурия; молодой возраст; наличие родственников
-          первой линии с СД 1 типа и (или) аутоиммунной '
-    - text: Диабетическая периферическая нейропатия – клинический диагноз исключения,
-        устанавливается при исключении других этиологических причин, на основании
-        оценки симптомов и жалоб, определении клинических признаков поражения периферических
-        нервов.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Диабетическая периферическая нейропатия – клинический диагноз исключения,
-          устанавливается при исключении других этиологических причин, на основании
-          оценки симптомов и жалоб, определении клинических пр
-    - text: Цель лечения – компенсация углеводного и липидного обмена, нормализация
-        уровня АД при хорошей переносимости.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Цель лечения – компенсация углеводного и липидного обмена, нормализация
-          уровня АД при хорошей переносимости.
-    - text: Целевой уровень HbA1c <7,0 % для большинства взрослых пациентов с СД.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Целевой уровень HbA1c <7,0 % для большинства взрослых пациентов с СД.
-    - text: Индивидуальные целевые уровни HbA1c в зависимости от возраста, астении,
-        деменции, ожидаемой продолжительности жизни и риска гипогликемии.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Индивидуальные целевые уровни HbA1c в зависимости от возраста, астении,
-          деменции, ожидаемой продолжительности жизни и риска гипогликемии.
-    - text: Целевые значения глюкозы плазмы/сыворотки натощак/перед едой и через 2
-        ч после еды, соответствующие целевым уровням HbA1c.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Целевые значения глюкозы плазмы/сыворотки натощак/перед едой и через
-          2 ч после еды, соответствующие целевым уровням HbA1c.
-    - text: 'Целевые показатели непрерывного мониторинга гликемии: время в целевом
-        диапазоне >70% (3,9–10,0 ммоль/л).'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Целевые показатели непрерывного мониторинга гликемии: время в целевом
-          диапазоне >70% (3,9–10,0 ммоль/л).'
-    - text: 'Целевой уровень ЛПНП: <1,4 ммоль/л (очень высокий риск), <1,8 ммоль/л
-        (высокий риск), <2,5 ммоль/л (умеренный риск).'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Целевой уровень ЛПНП: <1,4 ммоль/л (очень высокий риск), <1,8 ммоль/л
-          (высокий риск), <2,5 ммоль/л (умеренный риск).'
-    - text: 'Целевой уровень ЛПВП: >1,0 ммоль/л у мужчин, >1,3 ммоль/л у женщин.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Целевой уровень ЛПВП: >1,0 ммоль/л у мужчин, >1,3 ммоль/л у женщин.'
-    - text: 'Целевой уровень ТГ: <1,7 ммоль/л.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Целевой уровень ТГ: <1,7 ммоль/л.'
+        quote: Повышение уровня HbA1c более 6,5% при впервые выявленной гипергликемии
+          во время экстренной госпитализации свидетельствует в пользу СД
     optional: []
     exclusion: []
   required_exams:
-  - name: Определение концентрации глюкозы в крови
+  - name: Определение концентрации глюкозы в крови (натощак, через 2 ч после нагрузки
+      75 г глюкозы, случайно)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -396,10 +199,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Проводится на основании факторов риска, клинических симптомов и лабораторного
-        определения концентрации глюкозы в крови (натощак, через 2 ч после нагрузки
-        75 г глюкозы, случайно в любое время суток вне зависимости от времени приема
-        пищи)
+      quote: на основании факторов риска, клинических симптомов и лабораторного определения
+        концентрации глюкозы в крови (натощак, через 2 ч после нагрузки 75 г глюкозы,
+        случайно в любое время суток...
   - name: Определение гликированного гемоглобина (HbA1c)
     aliases: []
     exam_type: unknown
@@ -420,10 +222,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Проводится на основании факторов риска, клинических симптомов и лабораторного
-        определения концентрации глюкозы в крови (натощак, через 2 ч после нагрузки
-        75 г глюкозы, случайно в любое время суток вне зависимости от времени приема
-        пищи), гликированного гемоглобина (далее – HbA1c).
+      quote: на основании факторов риска, клинических симптомов и лабораторного определения
+        концентрации глюкозы в крови... гликированного гемоглобина (далее – HbA1c).
   - name: Осмотр стоп с определением тактильной чувствительности
     aliases: []
     exam_type: unknown
@@ -444,11 +244,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Скрининг проводится путем осмотра стоп с определением тактильной чувствительности:
-        пациенты с СД 1 типа: первый раз не позднее чем через 5 лет после постановки
-        клинического диагноза, далее – ежегодно; пациентов с СД 2 типа – при установлении
-        клинического диагноза, далее – ежегодно.'
-  - name: Скрининг СД 1 типа
+      quote: Скрининг проводится путем осмотра стоп с определением тактильной чувствительности
+  - name: Скрининг пациентов с СД 1 типа, СД 2 типа и беременных с СД
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -468,9 +265,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: пациенты с СД 1 типа – первый раз не позднее 5 лет после постановки клинического
-        диагноза, далее – ежегодно
-  - name: Скрининг СД 2 типа
+      quote: 'Медицинские показания к скринингу: пациенты с СД 1 типа – первый раз
+        не позднее 5 лет после постановки клинического диагноза, далее – ежегодно;
+        пациенты с СД 2 типа – при первичной постановке...'
+  - name: Лабораторный и инструментальный мониторинг в стационарных условиях
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -484,83 +282,16 @@ conditions:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 25
+      page_start: 20
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: пациенты с СД 2 типа – при первичной постановке клинического диагноза,
-        далее – ежегодно
-  - name: Скрининг СД у беременных
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 25
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: беременные с СД (любой тип) – 1 раз в триместр
+      quote: 'Наблюдение в стационарных условиях включает: определение гликемии ежечасно...
+        анализ мочи на кетоновые тела... ОАК и ОАМ... определение натрия и калия...
+        БАК... рН... ЭКГ'
   conditional_exams:
-  - name: Лабораторная диагностика СД (глюкоза в крови, HbA1с)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Лабораторную диагностику СД (определение концентрации глюкозы в крови,
-        HbA1с) проводят в случае: выявления клинических критериев (симптомов) СД;
-        наличия высокого риска СД 2 типа.'
-  - name: Скрининг гипергликемии
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Скрининг гипергликемии показан всем пациентам, госпитализированным по
-        экстренным медицинским показаниям, в связи с острым критическим состоянием
-        (острый коронарный синдром, острое нарушение мозгового кровообращения, острое
-        состояние, требующее хирургического вмешательства).
   - name: Пероральный глюкозотолерантный тест (ГТТ)
     aliases: []
     exam_type: unknown
@@ -606,7 +337,7 @@ conditions:
       row_index: null
       quote: Для диагностики СД у данной категории пациентов определяют концентрацию
         глюкозы крови.
-  - name: Уровень HbA1c
+  - name: Определение уровня HbA1c
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -628,29 +359,6 @@ conditions:
       row_index: null
       quote: В случае впервые выявленной гипергликемии при экстренной госпитализации
         необходимо определить уровень HbA1c
-  - name: Консультация врача-нефролога
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 25
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Медицинские показания к консультации врача-нефролога: ХБП С4, С5; снижение
-        СКФ <60 мл/мин. на фоне нормоальбуминурии; нефротический синдром; гематурия;
-        быстрая прогрессия почечной недостаточности.'
   treatment:
     non_drug:
     - text: Обучение в «Школе диабета»
@@ -677,7 +385,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Самоконтроль
-    - text: Режим питания
+    - text: Коррекция режима питания и физической активности
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
         document_url: null
@@ -688,8 +396,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Режим питания
-    - text: Физическая активность
+        quote: Коррекция режима питания и физической активности
+    - text: Дозированная аэробная физическая активность (150 мин. активной ходьбы
+        в неделю, плавание, аэробная гимнастика) с исключением повышенной нагрузки
+        на мышцы брюшного пресса
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
         document_url: null
@@ -700,10 +410,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Физическая активность
-    - text: Показана дозированная аэробная физическая активность (150 мин. активной
-        ходьбы в неделю, плавание, аэробная гимнастика) с учетом индивидуальных особенностей
-        женщины. Исключена повышенная физическая нагрузка.
+        quote: Дозированная аэробная физическая активность (150 мин. активной ходьбы
+          в неделю, плавание, аэробная гимнастика) с исключением повышенной нагрузки
+          на мышцы брюшного пресса
+    - text: Нормализация массы тела при ее избыточности или ожирении (снижение массы
+        тела на 5–10 % в течение 3–6 месяцев, при возможности – снижение ИМТ до 25
+        кг/м2)
       source_ref:
         protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
         document_url: null
@@ -714,17 +426,28 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Показана дозированная аэробная физическая активность (150 мин. активной
-          ходьбы в неделю, плавание, аэробная гимнастика) с учетом индивидуальных
-          особенностей женщины. Исключена повышенная физическая на
+        quote: Нормализация массы тела при ее избыточности или ожирении (снижение
+          массы тела на 5–10 % в течение 3–6 месяцев, при возможности – снижение ИМТ
+          до 25 кг/м2)
+    - text: Отказ от курения
+      source_ref:
+        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+        document_url: null
+        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отказ от курения
     drug_groups: []
     drugs:
-    - drug_name: Инсулинотерапия
+    - drug_name: Инсулин
       active_substance: null
       drug_group: null
-      dose_text: интенсифицированная, в режиме многократных инъекций (инсулиновый
-        шприц 100 ЕД/мл, инсулиновая шприц-ручка) или непрерывной подкожной инфузии
-        (инсулиновая помпа)
+      dose_text: Интенсифицированная инсулинотерапия в режиме многократных инъекций
+        или непрерывной подкожной инфузии
       frequency_text: null
       duration_text: null
       route: null
@@ -742,15 +465,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Инсулинотерапия – основной и единственный метод лечения СД 1 типа.
-          Рекомендована интенсифицированная инсулинотерапия в режиме многократных
-          инъекций или непрерывной подкожной инфузии инсулина.
+        quote: Рекомендована интенсифицированная инсулинотерапия в режиме многократных
+          инъекций... или непрерывной подкожной инфузии инсулина.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Ежегодный скрининг стоп для пациентов с СД 1 типа, начинающийся не позднее
-      чем через 5 лет после постановки клинического диагноза.
+  - text: 'Скрининг осложнений (осмотр стоп с оценкой тактильной чувствительности):
+      при СД 1 типа — не позднее чем через 5 лет после диагноза, далее ежегодно; при
+      СД 2 типа — при установлении диагноза, далее ежегодно'
     timing: null
     required_if: []
     expected_actions: []
@@ -764,10 +487,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Ежегодный скрининг стоп для пациентов с СД 1 типа, начинающийся не позднее
-        чем через 5 лет после постановки клинического диагноза.
-  - text: Ежегодный скрининг стоп для пациентов с СД 2 типа, начинающийся при установлении
-      клинического диагноза.
+      quote: 'Скрининг осложнений (осмотр стоп с оценкой тактильной чувствительности):
+        при СД 1 типа — не позднее чем через 5 лет после диагноза, далее ежегодно;
+        при СД 2 типа — при установлении диагноза, далее еже'
+  - text: Контроль основных показателей компенсации углеводного/липидного обмена и
+      АД в плане медицинского наблюдения
     timing: null
     required_if: []
     expected_actions: []
@@ -781,10 +505,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Ежегодный скрининг стоп для пациентов с СД 2 типа, начинающийся при установлении
-        клинического диагноза.
-  - text: Контроль основных показателей, определяющих степень компенсации и прогноз
-      течения заболевания.
+      quote: Контроль основных показателей компенсации углеводного/липидного обмена
+        и АД в плане медицинского наблюдения
+  - text: Оценка достижения снижения исходного HbA1c на 0,5% и более за 3 месяца
     timing: null
     required_if: []
     expected_actions: []
@@ -798,9 +521,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль основных показателей, определяющих степень компенсации и прогноз
-        течения заболевания.
-  - text: Самоконтроль для подбора и коррекции доз инсулина.
+      quote: Оценка достижения снижения исходного HbA1c на 0,5% и более за 3 месяца
+  - text: 'Наблюдение пациентов с СД 1 типа без осложнений: осмотр эндокринологом
+      и проверка мест инъекций 1 раз в 6 месяцев; HbA1c 1 раз в 6 месяцев; ОАМ, альбуминурия,
+      БАК, осмотр стоп, офтальмолог 1 раз в год'
     timing: null
     required_if: []
     expected_actions: []
@@ -814,10 +538,51 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Самоконтроль для подбора и коррекции доз инсулина.
+      quote: 'Наблюдение пациентов с СД 1 типа без осложнений: осмотр эндокринологом
+        и проверка мест инъекций 1 раз в 6 месяцев; HbA1c 1 раз в 6 месяцев; ОАМ,
+        альбуминурия, БАК, осмотр стоп, офтальмолог 1 раз в год'
+  - text: 'Наблюдение пациентов с СД 2 типа без осложнений: осмотр лечащим врачом
+      1 раз в 6 месяцев; HbA1c 1 раз в 6 месяцев; ОАМ, альбуминурия, БАК, осмотр стоп,
+      ЭКГ, офтальмолог 1 раз в год'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Наблюдение пациентов с СД 2 типа без осложнений: осмотр лечащим врачом
+        1 раз в 6 месяцев; HbA1c 1 раз в 6 месяцев; ОАМ, альбуминурия, БАК, осмотр
+        стоп, ЭКГ, офтальмолог 1 раз в год'
+  - text: 'Стационарный мониторинг: гликемия ежечасно до < 13,0 ммоль/л, затем 1 раз
+      в 3 ч; кетоновые тела 2 раза в сутки первые 48 ч; ОАК и ОАМ не реже 1 раз в
+      48 ч; ЦВД, АД, пульс каждые 2 ч'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Стационарный мониторинг: гликемия ежечасно до < 13,0 ммоль/л, затем
+        1 раз в 3 ч; кетоновые тела 2 раза в сутки первые 48 ч; ОАК и ОАМ не реже
+        1 раз в 48 ч; ЦВД, АД, пульс каждые 2 ч'
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: 'Госпитализация по экстренным показаниям (ОКС, ОНМК, острые хирургические
+      состояния): обязательный скрининг гипергликемии'
     timing: null
     required_if: []
     source_ref:
@@ -830,11 +595,85 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: 'Госпитализация по экстренным показаниям (ОКС, ОНМК, острые хирургические
+        состояния): обязательный скрининг гипергликемии'
+  - text: 'Госпитализация: впервые выявленный СД 1 типа'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация: впервые выявленный СД 1 типа'
+  - text: 'Госпитализация: лечение острых осложнений'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация: лечение острых осложнений'
+  - text: 'Госпитализация: недостижение целевых показателей гликемического контроля
+      при СД 1 типа в течение 6 месяцев и более'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация: недостижение целевых показателей гликемического контроля
+        при СД 1 типа в течение 6 месяцев и более'
+  - text: 'Госпитализация: обучение пациентов с СД на интенсифицированной инсулинотерапии
+      в «Школе диабета»'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация: обучение пациентов с СД на интенсифицированной инсулинотерапии
+        в «Школе диабета»'
+  - text: 'Госпитализация: аллергическая реакция на гипогликемические препараты'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
+      document_url: null
+      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация: аллергическая реакция на гипогликемические препараты'
   red_flags:
   - text: Симптомы дегидратации и катаболизма (прогрессирующее снижение массы тела,
-      сухость кожных покровов и слизистых, сниженный тургор кожи, «запавшие глаза»,
-      рвота, дыхание Куссмауля, запах ацетона в выдыхаемом воздухе).
+      рвота, дыхание Куссмауля, запах ацетона в выдыхаемом воздухе)
     aliases: []
     red_flag_type: other
     severity: high
@@ -852,54 +691,9 @@ conditions:
       row_index: null
       quote: симптомы дегидратации и катаболизма (прогрессирующее снижение массы тела,
         сухость кожных покровов и слизистых, сниженный тургор кожи, «запавшие глаза»,
-        рвота, дыхание Куссмауля, запах ацетона в выдыхаемом воздухе).
-  - text: HbA1c не используется в качестве диагностического критерия при анемиях,
-      гемоглобинопатиях, во II и III триместрах беременности, при гемодиализе, недавней
-      кровопотере или переливании крови, лечении эритропоэтином, остром начале СД
-      1 типа.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'HbA1c не используется в качестве диагностического критерия при следующих
-        болезнях и состояниях: анемии, гемоглобинопатии, во II и III триместрах беременности,
-        при гемодиализе, недавней кровопотери или переливании крови, лечении эритропоэтином,
-        остром начале СД 1 типа.'
-  - text: Гипергликемия на фоне критического состояния (инфаркт миокарда, острое нарушение
-      мозгового кровообращения, большое хирургическое вмешательство) требует дифференциальной
-      диагностики со стрессовой гипергликемией, впервые выявленным СД или декомпенсацией
-      ранее диагностированного СД.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При выявлении гипергликемии на фоне критического состояния, обусловленного
-        интеркуррентными заболеваниями, необходимо дифференцировать стрессовую гипергликемию,
-        впервые выявленный СД; декомпенсацию СД, диагностированного ранее.
-  - text: Повышенный риск тяжелой гипогликемии (в анамнезе, бессимптомная, длительность
-      СД >10 лет, ХБП С3-5, деменция).
+        рвота, дыхание Куссмауля, запах ацетона...)
+  - text: Высокий риск тяжелой гипогликемии (тяжелая гипогликемия в анамнезе, бессимптомная
+      гипогликемия, длительность СД > 10 лет, ХБП С3-5, деменция)
     aliases: []
     red_flag_type: other
     severity: high
@@ -915,10 +709,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: риск тяжелой гипогликемии (риск повышен при наличии тяжелой гипогликемии
-        в анамнезе, бессимптомной гипогликемии, длительности СД более 10 лет, ХБП
-        С3-5, деменции).
-  - text: Аллергическая реакция на гипогликемические препараты.
+      quote: риск повышен при наличии тяжелой гипогликемии в анамнезе, бессимптомной
+        гипогликемии, длительности СД более 10 лет, ХБП С3-5, деменции
+  - text: Быстрая прогрессия почечной недостаточности (на 30 % от исходной СКФ за
+      1–3 месяца), ХБП С4-С5, нефротический синдром, гематурия
     aliases: []
     red_flag_type: other
     severity: high
@@ -928,32 +722,15 @@ conditions:
       protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
       document_url: null
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 10
+      page_start: 25
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: аллергическая реакция на гипогликемические препараты;
-  - text: Клинически значимое ухудшение течения СД, его осложнений и сопутствующей
-      патологии.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_1кп_диагностика_и_лечение_пациенто
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/1КП_Диагностика_и_лечение_пациентов_сахарным_диабетом_взр_население_пост_МЗ_21_06_2021_№85.pdf
-      page_start: 10
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: клинически значимое ухудшение течения СД, его осложнений и сопутствующей
-        патологии.
+      quote: 'Медицинские показания к консультации врача-нефролога: ХБП С4, С5; снижение
+        СКФ <60 мл/мин... быстрая прогрессия почечной недостаточности (на 30 % от
+        исходной СКФ за 1–3 месяца)'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -962,7 +739,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T15:44:33.706441+00:00'
+  extracted_at: '2026-07-23T07:32:52.425301+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -973,4 +750,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T15:44:33.719660+00:00'
+  validated_at: '2026-07-23T07:32:52.444248+00:00'

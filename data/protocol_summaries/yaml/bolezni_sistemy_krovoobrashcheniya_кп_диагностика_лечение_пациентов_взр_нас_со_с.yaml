@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов взрослое население со стенозом аортального
+  title: Диагностика и лечение пациентов (взрослое население) со стенозом аортального
     клапана в стационарных условиях
   url: null
   local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
@@ -27,8 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: aortic_valve_stenosis
-  name: стеноз аортального клапана
+- condition_id: aortic_stenosis
+  name: Стеноз аортального клапана
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -59,7 +59,7 @@ conditions:
         row_index: null
         quote: Громкий (IV–VI степени) поздний систолический шум, распространяющийся
           на сонные артерии
-    - text: Раздвоение (в том числе, парадоксальное) II тона
+    - text: Раздвоение (в том числе парадоксальное) II тона
       logic_group: null
       operator: unknown
       values: []
@@ -76,7 +76,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раздвоение (в том числе, парадоксальное) II тона
+        quote: Раздвоение (в том числе парадоксальное) II тона
     - text: Медленный и малый пульс на сонной артерии
       logic_group: null
       operator: unknown
@@ -113,8 +113,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Уменьшение интенсивности II тона сердца
-    - text: Шум изгнания увеличивается при увеличении скорости кровотока, уменьшается
-        при снижении
+    - text: Порок сердца с деформацией створок и (или) сужением отверстия аортального
+        клапана
       logic_group: null
       operator: unknown
       values: []
@@ -131,193 +131,34 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Шум изгнания увеличивается при увеличении скорости кровотока, уменьшается
-          при снижении
-    - text: Шум лучше всего выслушивается справа или (реже) слева от верхнего края
-        грудины
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Шум лучше всего выслушивается справа или (реже) слева от верхнего края
-          грудины
-    - text: Нормальное расщепление II тона сердца (для исключения тяжелого АС)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Нормальное расщепление II тона сердца (для исключения тяжелого АС)
-    - text: 'Умеренный АС: Vmax >3,0 м/с, увеличение Vmax на 0,3 м/с ежегодно; увеличение
-        среднего градиента давления на 7 мм рт. ст. ежегодно; уменьшение площади АОК
-        на 0,1 см2 ежегодно'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Умеренный АС: Vmax >3,0 м/с, увеличение Vmax на 0,3 м/с ежегодно;
-          увеличение среднего градиента давления на 7 мм рт. ст. ежегодно; уменьшение
-          площади АОК на 0,1 см2 ежегодно'
-    - text: 'Тяжелый бессимптомный АС: с систолической дисфункцией ЛЖ (ФВ <50 %) без
-        других причин'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Тяжелый бессимптомный АС: с систолической дисфункцией ЛЖ (ФВ <50 %)
-          без других причин'
-    - text: 'Тяжелый АС: с демонстративными симптомами (пресинкопе/синкопе, приступ
-        стенокардии/ишемические изменения на ЭКГ) при нагрузочном тесте'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Тяжелый АС: с демонстративными симптомами (пресинкопе/синкопе, приступ
-          стенокардии/ишемические изменения на ЭКГ) при нагрузочном тесте'
-    - text: 'Тяжелый АС: с систолической дисфункцией ЛЖ (ФВ <55 %) без других причин'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Тяжелый АС: с систолической дисфункцией ЛЖ (ФВ <55 %) без других причин'
-    - text: 'Тяжелый АС: с устойчивым падением систолического АД >20 мм рт. ст. при
-        стресс-тесте с ФН'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Тяжелый АС: с устойчивым падением систолического АД >20 мм рт. ст.
-          при стресс-тесте с ФН'
-    - text: 'ФВ ЛЖ >55 % и нормальные результаты стресс-теста с ФН, если риск низкий
-        и есть: очень тяжелый АС (средний градиент >60 мм рт. ст. или Vmax >5м/с);
-        тяжелая кальцификация АОК и прогрессирование Vmax >0,3м/с/год; значительно
-        повышенный уровень НУП (>3х с поправкой на пол и возраст)'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'ФВ ЛЖ >55 % и нормальные результаты стресс-теста с ФН, если риск низкий
-          и есть: очень тяжелый АС (средний градиент >60 мм рт. ст. или Vmax >5м/с);
-          тяжелая кальцификация АОК и прогрессирование Vmax >0,'
-    - text: Тяжелый АС, нуждающиеся в аортокоронарном шунтировании или вмешательстве
-        на восходящем отделе аорты или на других клапанах
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Тяжелый АС, нуждающиеся в аортокоронарном шунтировании или вмешательстве
-          на восходящем отделе аорты или на других клапанах
+        quote: Порок сердца с деформацией створок и (или) сужением отверстия аортального
+          клапана
     optional: []
     exclusion: []
   required_exams:
-  - name: Медицинский осмотр и аускультация сердца
+  - name: Медицинский осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рекомендуется начать обследование пациента с медицинского осмотра и аускультации
+        сердца.
+  - name: Аускультация сердца
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -362,8 +203,50 @@ conditions:
       quote: Организации здравоохранения при оказании медицинской помощи пациентам
         с АС обязаны обеспечить выполнение трансторакальной эхокардиографии (далее
         – ТТЭхоКГ).
+  - name: Повторный общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повторное выполнение общего анализа крови
+  - name: Повторный биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повторное выполнение биохимического анализа крови
   conditional_exams:
-  - name: Мультиспиральная компьютерная томография (КТ)
+  - name: Мультиспиральная компьютерная томография (КТ), МРТ
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -383,10 +266,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: В случае оказания медицинской помощи в специализированном (кардиохирургическом)
-        отделении должна быть возможность проведения (при необходимости) мультиспиральной
-        компьютерной томографии (далее – КТ).
-  - name: Магнитно-резонансная томография (МРТ)
+      quote: должна быть возможность проведения (при необходимости) мультиспиральной
+        компьютерной томографии (далее – КТ), магнитно-резонансной томографии (далее
+        – МРТ)
+  - name: Повторное определение маркеров СН
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -400,16 +283,14 @@ conditions:
       protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
       document_url: null
       local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-      page_start: 3
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: В случае оказания медицинской помощи в специализированном (кардиохирургическом)
-        отделении должна быть возможность проведения (при необходимости) магнитно-резонансной
-        томографии (далее – МРТ).
-  - name: Рентгенэндоваскулярное вмешательство
+      quote: повторное определение маркеров СН (по медицинским показаниям)
+  - name: Исследование коагулограммы или МНО
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -423,21 +304,18 @@ conditions:
       protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
       document_url: null
       local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-      page_start: 3
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: В случае оказания медицинской помощи в специализированном (кардиохирургическом)
-        отделении должна быть возможность проведения (при необходимости) рентгенэндоваскулярного
-        вмешательства.
+      quote: повторное исследование коагулограммы или МНО (кратность определяется
+        приемом антикоагулянтов)
   treatment:
     non_drug:
-    - text: Медикаментозное лечение артериальной гипертензии у бессимптомных пациентов
-        с АС или с умеренным АС проводится в соответствии с отдельным протоколом.
-        Дозы лекарственных препаратов, влияющих на пред- и постнагрузку, должны подбираться
-        медленно при тщательном контроле АД.
+    - text: Проведение междисциплинарного врачебного консилиума (кардиолог, кардиохирург,
+        рентгенэндоваскулярный хирург, анестезиолог-реаниматолог)
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
         document_url: null
@@ -448,13 +326,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Медикаментозное лечение артериальной гипертензии у бессимптомных пациентов
-          с АС или с умеренным АС проводится в соответствии с отдельным протоколом.
-          Дозы лекарственных препаратов, влияющих на пред- и '
-    - text: Медикаментозное лечение сердечной недостаточности проводится в соответствии
-        с отдельным протоколом как этап подготовки к хирургическому вмешательству,
-        а также длительно у лиц с противопоказаниями к операции для уменьшения симптомов
-        и облегчения состояния.
+        quote: Проведение междисциплинарного врачебного консилиума (кардиолог, кардиохирург,
+          рентгенэндоваскулярный хирург, анестезиолог-реаниматолог)
+    - text: Хирургическое лечение АС (протезирование АОК механическим или биологическим
+        протезом)
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
         document_url: null
@@ -465,12 +340,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Медикаментозное лечение сердечной недостаточности проводится в соответствии
-          с отдельным протоколом как этап подготовки к хирургическому вмешательству,
-          а также длительно у лиц с противопоказаниями к оп
-    - text: Медицинские вмешательства на АОК должны проводиться в организациях здравоохранения,
-        которые имеют кардиохирургическое, рентгенэндоваскулярное отделение и возможности
-        проведения междисциплинарного врачебного консилиума.
+        quote: Хирургическое лечение АС (протезирование АОК механическим или биологическим
+          протезом)
+    - text: Катетерная баллонная аортальная вальвулопластика (КБАВ)
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
         document_url: null
@@ -481,82 +353,59 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Медицинские вмешательства на АОК должны проводиться в организациях
-          здравоохранения, которые имеют кардиохирургическое, рентгенэндоваскулярное
-          отделение и возможности проведения междисциплинарного врач
-    - text: 'При выборе протеза АОК учитываются: ожидаемая продолжительность жизни,
-        образ жизни, риск кровотечения, риск тромбоза, вероятность повторного вмешательства,
-        информированные предпочтения пациента.'
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'При выборе протеза АОК учитываются: ожидаемая продолжительность жизни,
-          образ жизни, риск кровотечения, риск тромбоза, вероятность повторного вмешательства,
-          информированные предпочтения пациента.'
-    - text: Механические протезы рекомендованы при отсутствии противопоказаний к длительной
-        терапии АВК, при высоком риске износа протеза, при уже получаемой АВК терапии,
-        у пациентов <60 лет, у пациентов с большой ожидаемой продолжительностью жизни.
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Механические протезы рекомендованы при отсутствии противопоказаний
-          к длительной терапии АВК, при высоком риске износа протеза, при уже получаемой
-          АВК терапии, у пациентов <60 лет, у пациентов с большо
-    - text: Биопротезы рекомендованы, если адекватная антикоагуляция недостижима/противопоказана,
-        у пациентов с небольшой ожидаемой продолжительностью жизни, при повторном
-        вмешательстве из-за тромбоза, у пациентов с низкой вероятностью/риском следующего
-        вмешательства, у молодых женщин, планирующих беременность, у пациентов >65
-        лет.
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Биопротезы рекомендованы, если адекватная антикоагуляция недостижима/противопоказана,
-          у пациентов с небольшой ожидаемой продолжительностью жизни, при повторном
-          вмешательстве из-за тромбоза, у пациенто
-    - text: Катетерная баллонная аортальная вальвулопластика (КБАВ) может применяться
-        как «мост» к хирургическому лечению или ТИАК у гемодинамически нестабильных
-        пациентов с тяжелым АС, нуждающихся в ургентной несердечной хирургии.
-      source_ref:
-        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-        document_url: null
-        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Катетерная баллонная аортальная вальвулопластика (КБАВ) может применяться
-          как «мост» к хирургическому лечению или ТИАК у гемодинамически нестабильных
-          пациентов с тяжелым АС, нуждающихся в ургентной не
+        quote: Катетерная баллонная аортальная вальвулопластика (КБАВ)
     drug_groups: []
     drugs:
-    - drug_name: Варфарин (АВК)
+    - drug_name: Лекарственные препараты, влияющие на пред- и постнагрузку
       active_substance: null
       drug_group: null
-      dose_text: пожизненно с поддержанием целевого значения МНО в соответствии с
-        тромбогенностью протеза
+      dose_text: Дозы должны подбираться медленно при тщательном контроле АД
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дозы лекарственных препаратов, влияющих на пред- и постнагрузку, должны
+          подбираться медленно при тщательном контроле АД.
+    - drug_name: Антагонисты витамина К (АВК)
+      active_substance: null
+      drug_group: null
+      dose_text: Длительная терапия (дозировка определяется индивидуально)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: если нет медицинских противопоказаний к длительной терапии антагонистами
+          витамина К (далее – АВК)
+    - drug_name: АВК (варфарин)
+      active_substance: null
+      drug_group: null
+      dose_text: пожизненно с поддержанием целевого значения МНО
       frequency_text: null
       duration_text: null
       route: null
@@ -580,7 +429,7 @@ conditions:
     - drug_name: АСК
       active_substance: null
       drug_group: null
-      dose_text: низких доз (75–100 мг)
+      dose_text: 75–100 мг в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -599,13 +448,11 @@ conditions:
         table_index: null
         row_index: null
         quote: рекомендуется назначение низких доз (75–100 мг) АСК пациентам с механическим
-          клапаном и сопутствующим атеросклерозом артерий
-    - drug_name: АВК (варфарин) + Клопидогрель
+          клапаном и сопутствующим атеросклерозом артерий;
+    - drug_name: Клопидогрель
       active_substance: null
       drug_group: null
-      dose_text: АВК (варфарин – под контролем МНО) и клопидогрель (75 мг в сутки)
-        до 6 месяцев (после ЧКВ) или до 12 месяцев (после ОКС). Ранний (<1 неделя)
-        отказ от приема АСК.
+      dose_text: 75 мг в сутки до 6 месяцев (после ЧКВ) или до 12 месяцев (после ОКС)
       frequency_text: null
       duration_text: null
       route: null
@@ -623,15 +470,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: после неосложненного ЧКВ или ОКС у пациентов, нуждающихся в длительном
-          приеме антикоагулянтов, рекомендован ранний (<1 неделя) отказ от приема
-          АСК и продолжение двойной терапии (АВК и клопидогрель (75 мг в сутки)) до
-          6-12 месяцев.
-    - drug_name: АСК и/или Клопидогрель в добавление к АВК
+        quote: продолжение двойной терапии (АВК (варфарин – под контролем МНО) и клопидогрель
+          (75 мг в сутки)) до 6 месяцев (после ЧКВ) или до 12 месяцев (после ОКС)
+    - drug_name: Антибиотики
       active_substance: null
       drug_group: null
-      dose_text: следует придерживаться нижней границы рекомендованного уровня МНО
-        при условии нахождения в целевом диапазоне >65–70 % времени
+      dose_text: профилактический прием перед лечебными, диагностическими или стоматологическими
+        вмешательствами высокого риска
       frequency_text: null
       duration_text: null
       route: null
@@ -649,13 +494,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: у пациентов, нуждающихся в приеме АСК и (или) клопидогреля в добавление
-          к АВК, следует придерживаться нижней границы рекомендованного уровня МНО
-          при условии нахождения в целевом диапазоне >65–70 % времени
-    - drug_name: АСК к АВК
+        quote: Для медицинской профилактики ИЭ перед проведением лечебных или диагностических,
+          а также стоматологических вмешательств высокого риска рекомендуется профилактическое
+          назначение антибиотиков
+    - drug_name: Антибиотики пенициллинового ряда
       active_substance: null
       drug_group: null
-      dose_text: низких доз АСК (75–100 мг/сутки)
+      dose_text: в течение 10 лет после последнего обострения или до 40 лет; пожизненно
+        при высоком риске
       frequency_text: null
       duration_text: null
       route: null
@@ -673,8 +519,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: добавление низких доз АСК (75–100 мг/сутки) к АВК показано при развитии
-          тромбоэмболии, несмотря на достигнутое целевое МНО.
+        quote: для медицинской профилактики обострения ревматической лихорадки рекомендуется
+          назначение антибиотиков пенициллинового ряда в течение 10 лет после последнего
+          обострения
     procedures: []
     surgery: []
     source_refs: []
@@ -696,7 +543,7 @@ conditions:
       row_index: null
       quote: Динамическое ТТЭхоКГ (кратность определяется характером патологии и течением
         заболевания)
-  - text: Повторное выполнение общего анализа крови
+  - text: Повторное выполнение общего и биохимического анализов крови, маркеров воспаления
     timing: null
     required_if: []
     expected_actions: []
@@ -710,8 +557,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Повторное выполнение общего анализа крови
-  - text: Повторное выполнение биохимического анализа крови
+      quote: Повторное выполнение общего и биохимического анализов крови, маркеров
+        воспаления
+  - text: Повторное исследование коагулограммы или МНО при приеме антикоагулянтов
     timing: null
     required_if: []
     expected_actions: []
@@ -725,8 +573,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Повторное выполнение биохимического анализа крови
-  - text: Повторное определение маркеров воспаления
+      quote: Повторное исследование коагулограммы или МНО при приеме антикоагулянтов
+  - text: Поддержание целевого значения МНО в целевом диапазоне >65–70 % времени
     timing: null
     required_if: []
     expected_actions: []
@@ -740,8 +588,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Повторное определение маркеров воспаления
-  - text: Повторное определение маркеров СН (по медицинским показаниям)
+      quote: Поддержание целевого значения МНО в целевом диапазоне >65–70 % времени
+  - text: Ранний (<1 неделя) отказ от приема АСК после ЧКВ или ОКС у пациентов, нуждающихся
+      в длительном приеме антикоагулянтов
     timing: null
     required_if: []
     expected_actions: []
@@ -755,27 +604,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Повторное определение маркеров СН (по медицинским показаниям)
-  - text: Повторное исследование коагулограммы или МНО (кратность определяется приемом
-      антикоагулянтов)
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Повторное исследование коагулограммы или МНО (кратность определяется
-        приемом антикоагулянтов)
+      quote: Ранний (<1 неделя) отказ от приема АСК после ЧКВ или ОКС у пациентов,
+        нуждающихся в длительном приеме антикоагулянтов
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Оказание медицинской помощи в стационарных условиях
     timing: null
     required_if: []
     source_ref:
@@ -788,10 +621,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: Госпитализация в терапевтическое, кардиологическое или кардиохирургическое
+      quote: Оказание медицинской помощи в стационарных условиях
+  - text: Госпитализация осуществляется в терапевтическое, кардиологическое или кардиохирургическое
       отделение больничной организации по месту жительства (пребывания) по медицинским
-      показаниям.
+      показаниям
     timing: null
     required_if: []
     source_ref:
@@ -804,11 +637,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация в терапевтическое, кардиологическое или кардиохирургическое
-        отделение больничной организации по месту жительства (пребывания) по медицинским
-        показаниям.
-  - text: Несоответствие размеров фиброзного кольца АОК типу применяемого протеза
-      является абсолютным противопоказанием для ТИАК.
+      quote: Госпитализация осуществляется в терапевтическое, кардиологическое или
+        кардиохирургическое отделение больничной организации по месту жительства (пребывания)
+        по медицинским показаниям
+  - text: стационарно
     timing: null
     required_if: []
     source_ref:
@@ -821,79 +653,65 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Несоответствие размеров фиброзного кольца АОК типу применяемого протеза
-        является абсолютным противопоказанием для ТИАК.
-  - text: Тромб в ЛЖ является абсолютным противопоказанием для ТИАК.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Тромб в ЛЖ является абсолютным противопоказанием для ТИАК.
-  - text: Активный инфекционный эндокардит является абсолютным противопоказанием для
-      ТИАК.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Активный инфекционный эндокардит является абсолютным противопоказанием
-        для ТИАК.
-  - text: Повышенный риск обструкции коронарных артерий (короткая дистанция между
-      фиброзным кольцом и устьями коронарных артерий, асимметричный кальциноз) является
-      абсолютным противопоказанием для ТИАК.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
-      document_url: null
-      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Повышенный риск обструкции коронарных артерий (короткая дистанция между
-        фиброзным кольцом и устьями коронарных артерий, асимметричный кальциноз) является
-        абсолютным противопоказанием для ТИАК.
+      quote: стационарно
   red_flags:
-  - text: У пожилых пациентов каротидный пульс может быть нормальным, а систолический
-      шум мягким и распространяться к верхушке.
+  - text: Тяжелый АС с систолической дисфункцией ЛЖ (ФВ < 50 %)
     aliases: []
     red_flag_type: other
-    severity: medium
+    severity: high
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
       document_url: null
       local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
-      page_start: 3
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Однако у пожилых пациентов каротидный пульс может быть нормальным из-за
-        снижения эластичности сосудов, а систолический шум может быть мягким и распространяться
-        к верхушке.
-  - text: Гемодинамически нестабильные пациенты с тяжелым АС, нуждающиеся в ургентной
-      несердечной хирургии.
+      quote: у пациентов с тяжелым высокоградиентным АС и систолической дисфункцией
+        ЛЖ (ФВ <50 %) без других причин
+  - text: Демонстративные симптомы (пресинкопе/синкопе, приступ стенокардии/ишемические
+      изменения на ЭКГ) при нагрузочном тесте
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: демонстративными симптомами (пресинкопе/синкопе, приступ стенокардии/ишемические
+        изменения на ЭКГ) при нагрузочном тесте
+  - text: Устойчивое падение систолического АД >20 мм рт. ст. при стресс-тесте с ФН
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_лечение_пациентов_взр_нас_со_с
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_лечение_пациентов_взр_нас_со_стенозом_аортального_клапана_в_стационарных_условиях_пост_МЗ_2022_123.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: у пациентов с тяжелым АС и устойчивым падением систолического АД >20
+        мм рт. ст. при стресс-тесте с ФН
+  - text: 'Абсолютные противопоказания для ТИАК: несоответствие размеров фиброзного
+      кольца АОК, тромб в ЛЖ, активный ИЭ, риск обструкции коронарных артерий'
     aliases: []
     red_flag_type: other
     severity: high
@@ -909,9 +727,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Катетерная баллонная аортальная вальвулопластика (далее – КБАВ) может
-        применяться в качестве «моста» к хирургическому лечению или ТИАК у гемодинамически
-        нестабильных пациентов с тяжелым АС, нуждающихся в ургентной несердечной хирургии.
+      quote: 'абсолютные: несоответствие размеров фиброзного кольца АОК типу применяемого
+        протеза; тромб в ЛЖ; активный инфекционный эндокардит'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -920,7 +737,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T22:03:34.608024+00:00'
+  extracted_at: '2026-07-23T07:19:30.990579+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -931,4 +748,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T22:03:34.620568+00:00'
+  validated_at: '2026-07-23T07:19:31.003062+00:00'

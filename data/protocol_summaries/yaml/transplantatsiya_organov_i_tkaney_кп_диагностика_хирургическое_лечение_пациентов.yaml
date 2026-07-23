@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и хирургическое лечение деформаций позвоночника и сколиоза
+  title: Диагностика и хирургическое лечение пациентов с деформациями позвоночника
+    и сколиозом
   url: null
   local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
   document_sha256: null
@@ -20,15 +21,14 @@ rubric:
 applicability:
   population:
   - child
-  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: spinal_deformities_scoliosis_osteochondrosis
-  name: Деформации позвоночника, сколиоз и юношеский остеохондроз
+- condition_id: deformatzii_pozvonochnika_i_skolioz
+  name: Деформации позвоночника и сколиоз
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -49,7 +49,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Сколиотические деформации с углом основных дуг свыше 40°.
+    - text: Определение анатомического типа деформации и количества позвонков в патологических
+        дугах
       logic_group: null
       operator: unknown
       values: []
@@ -66,8 +67,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Сколиотические деформации с углом основных дуг свыше 40°.
-    - text: Кифотические деформации с углом свыше 60°.
+        quote: Определение анатомического типа деформации и количества позвонков в
+          патологических дугах
+    - text: Измерение величины углов патологических дуг искривления по Коббу
       logic_group: null
       operator: unknown
       values: []
@@ -84,10 +86,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Кифотические деформации с углом свыше 60°.
-    - text: Деформации, обусловленные врожденным нарушением сегментации и формы позвонков,
-        прогрессирование которых сопровождается ухудшением устойчивости позвоночника,
-        нарастанием риска и/или появлением неврологических спинальных расстройств.
+        quote: Измерение величины углов патологических дуг искривления по Коббу
+    - text: Оценка компенсированности деформации во фронтальной и сагиттальной плоскостях
       logic_group: null
       operator: unknown
       values: []
@@ -104,11 +104,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Деформации, обусловленные врожденным нарушением сегментации и формы
-          позвонков, прогрессирование которых сопровождается ухудшением устойчивости
-          позвоночника, нарастанием риска и/или появлением невролог
-    - text: Деформации любой выраженности, провоцирующие своим развитием возникновение
-        и/или нарастание неврологической спинальной симптоматики.
+        quote: Оценка компенсированности деформации во фронтальной и сагиттальной
+          плоскостях
+    - text: Оценка состояния ростковой зрелости эпифизов крыльев подвздошных костей
+        по тесту Риссера
       logic_group: null
       operator: unknown
       values: []
@@ -125,11 +124,148 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Деформации любой выраженности, провоцирующие своим развитием возникновение
-          и/или нарастание неврологической спинальной симптоматики.
+        quote: Оценка состояния ростковой зрелости эпифизов крыльев подвздошных костей
+          по тесту Риссера
+    - text: Определение величины ротации вершинных позвонков по Раймонди
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение величины ротации вершинных позвонков по Раймонди
+    - text: Оценка состояния ростковой зрелости апофизов тел позвонков по Садофьевой
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оценка состояния ростковой зрелости апофизов тел позвонков по Садофьевой
+    - text: Сколиотические деформации с углом основных дуг свыше 40°
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сколиотические деформации с углом основных дуг свыше 40°
+    - text: Кифотические деформации с углом свыше 60°
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Кифотические деформации с углом свыше 60°
+    - text: Деформации из-за врожденного нарушения сегментации и формы позвонков,
+        прогрессирование которых сопровождается ухудшением устойчивости и риском неврологических
+        расстройств
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Деформации из-за врожденного нарушения сегментации и формы позвонков,
+          прогрессирование которых сопровождается ухудшением устойчивости и риском
+          неврологических расстройств
+    - text: Деформации любой выраженности, провоцирующие возникновение и/или нарастание
+        неврологической спинальной симптоматики
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Деформации любой выраженности, провоцирующие возникновение и/или нарастание
+          неврологической спинальной симптоматики
     optional: []
     exclusion: []
   required_exams:
+  - name: Рентгенография позвоночника в положении стоя в двух проекциях (прямая и
+      боковая)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В течение второй недели пациенту выполняется рентгенография позвоночника
+        в положении стоя в двух проекциях (прямая и боковая).
   - name: МРТ позвоночника
     aliases: []
     exam_type: unknown
@@ -216,6 +352,96 @@ conditions:
       row_index: null
       quote: электрофизиологическое исследование состояния функции спинного мозга
   conditional_exams:
+  - name: Рентгенография позвоночника, иллюстрирующая коррекционную мобильность деформации
+      (в положении лежа, снимки «bendingtest», боковые проекции со сгибанием/разгибанием)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография позвоночника, иллюстрирующая коррекционную мобильность
+        деформации.
+  - name: Лабораторные исследования (общий анализ крови, общий анализ мочи, коагулограмма,
+      биохимический анализ крови)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Лабораторные исследования (в динамике стационарного лечения и/или по
+        показаниям): анализ крови общий; анализ мочи общий; анализ крови на показатели
+        свертываемости (коагулограмма);'
+  - name: Контрольные МРТ и РКТ-исследования позвоночника
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительно проводится: контрольные МРТ, РКТ-исследования позвоночника'
+  - name: Электрофизиологическое обследование функционального состояния спинного мозга
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрофизиологическое обследование функционального состояния спинного
+        мозга.
   - name: ЭКГ
     aliases: []
     exam_type: unknown
@@ -259,7 +485,7 @@ conditions:
       row_index: null
       quote: УЗИ внутренних органов, в том числе сердечно-сосудистой системы (в динамике
         по показаниям)
-  - name: Фиброгастродуоденоскопичекое эндоскопическое исследование (ФГДЭС)
+  - name: ФГДЭС
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -281,34 +507,10 @@ conditions:
       row_index: null
       quote: фиброгастродуоденоскопичекое эндоскопическое исследование (далее – ФГДЭС)
         для исключения заболеваний желудка (по показаниям)
-  - name: Тест пробуждения пациента (интраоперационно)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Технологическая остановка работы хирургов в ране для проведения анестезиологического
-        клинического теста пробуждения пациента с целью проверки функционального состояния
-        проводимости спинного мозга
   treatment:
     non_drug:
-    - text: Оперативная коррекция деформаций позвоночника с использованием имплантируемых
-        металлоконструкций типа CDI (Cotrel-Dubousset Instrumentation) и трансплантацией
-        фрагментов костей с кортикальным слоем.
+    - text: Использование корсета/ортеза (ношение ортеза в период активного бодрствования
+        в течение года после операции)
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
         document_url: null
@@ -319,12 +521,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Оперативная коррекция деформаций позвоночника с использованием имплантируемых
-          металлоконструкций типа CDI (Cotrel-Dubousset Instrumentation) и трансплантацией
-          фрагментов костей с кортикальным слоем.
-    - text: Предоперационная подготовка (2–4 недели) включает утреннюю физическую
-        зарядку, сеансы физиотерапевтического лечения, занятие лечебной физической
-        культурой.
+        quote: Использование корсета/ортеза (ношение ортеза в период активного бодрствования
+          в течение года после операции)
+    - text: 'Расширение программы ЛФК: упражнения для укрепления мышц конечностей
+        и брюшного пресса без динамического движения туловищем'
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
         document_url: null
@@ -335,16 +535,84 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Предоперационная подготовка (2–4 недели) включает утреннюю физическую
-          зарядку, сеансы физиотерапевтического лечения, занятие лечебной физической
-          культурой.
+        quote: 'Расширение программы ЛФК: упражнения для укрепления мышц конечностей
+          и брюшного пресса без динамического движения туловищем'
+    - text: Посещение плавательного бассейна (плавание с поплавком в руках)
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Посещение плавательного бассейна (плавание с поплавком в руках)
+    - text: 'Предоперационная подготовка в течение 2–4 недель: утренняя физическая
+        зарядка, физиотерапевтическое лечение, лечебная физическая культура'
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Предоперационная подготовка в течение 2–4 недель: утренняя физическая
+          зарядка, физиотерапевтическое лечение, лечебная физическая культура'
+    - text: Хирургическая коррекция и стабилизация деформации позвоночника с применением
+        имплантируемых металлоконструкций (типа CDI) и трансплантацией фрагментов
+        костей с кортикальным слоем
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическая коррекция и стабилизация деформации позвоночника с применением
+          имплантируемых металлоконструкций (типа CDI) и трансплантацией фрагментов
+          костей с кортикальным слоем
+    - text: Сбалансированный многокомпонентный комбинированный управляемый эндотрахеальный
+        наркоз
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сбалансированный многокомпонентный комбинированный управляемый эндотрахеальный
+          наркоз
+    - text: Проведение анестезиологического клинического теста пробуждения пациента
+        для проверки проводимости спинного мозга
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение анестезиологического клинического теста пробуждения пациента
+          для проверки проводимости спинного мозга
     drug_groups: []
     drugs:
-    - drug_name: Сбалансированный многокомпонентный комбинированный управляемый эндотрахеальный
-        наркоз
+    - drug_name: Спиртовой антисептик
       active_substance: null
       drug_group: null
-      dose_text: по потребности для хирургического вмешательства
+      dose_text: для обработки кожи перед наложением повязки
       frequency_text: null
       duration_text: null
       route: null
@@ -356,21 +624,133 @@ conditions:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
         document_url: null
         local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-        page_start: 6
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое вмешательство выполняется под сбалансированным многокомпонентным
-          комбинированным управляемым эндотрахеальным наркозом.
+        quote: обработка кожи спиртовым антисептиком и высушивание кожи марлевой салфеткой
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Осмотр врачом-анестезиологом-реаниматологом накануне и в день операции
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Осмотр врачом-анестезиологом-реаниматологом накануне и в день операции
+  - text: Рентгенография позвоночника в 2 проекциях и дополнительные исследования
+      (МРТ, РКТ, электрофизиологическое обследование) на второй неделе после операции
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография позвоночника в 2 проекциях и дополнительные исследования
+        (МРТ, РКТ, электрофизиологическое обследование) на второй неделе после операции
+  - text: Оценка клинического статуса, адаптации и состояния корсета через 6 месяцев
+      после выписки
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка клинического статуса, адаптации и состояния корсета через 6 месяцев
+        после выписки
+  - text: Контрольный осмотр в стационарных условиях через 1 год после операции
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контрольный осмотр в стационарных условиях через 1 год после операции
+  - text: Дальнейший периодический осмотр 1 раз в год (при необходимости рентгенография,
+      МРТ, РКТ)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дальнейший периодический осмотр 1 раз в год (при необходимости рентгенография,
+        МРТ, РКТ)
+  - text: ЭКГ в динамике по показаниям
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЭКГ в динамике по показаниям
+  - text: УЗИ внутренних органов, в том числе сердечно-сосудистой системы, в динамике
+      по показаниям
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_хирургическое_лечение_пациентов
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ внутренних органов, в том числе сердечно-сосудистой системы, в динамике
+        по показаниям
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Амбулаторно (диагностика, динамическое наблюдение)
     timing: null
     required_if: []
     source_ref:
@@ -383,8 +763,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: стационарные условия
+      quote: Амбулаторно (диагностика, динамическое наблюдение)
+  - text: Госпитализация (хирургическое лечение, контрольный осмотр через 1 год после
+      операции)
     timing: null
     required_if: []
     source_ref:
@@ -397,8 +778,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: стационарные условия
-  - text: плановые хирургические вмешательства
+      quote: Госпитализация (хирургическое лечение, контрольный осмотр через 1 год
+        после операции)
+  - text: Специализированная и высокотехнологичная помощь в стационарных условиях
+      (хирургические, ортопедические, травматологические, нейрохирургические отделения)
     timing: null
     required_if: []
     source_ref:
@@ -411,7 +794,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: плановые хирургические вмешательства
+      quote: Специализированная и высокотехнологичная помощь в стационарных условиях
+        (хирургические, ортопедические, травматологические, нейрохирургические отделения)
   red_flags:
   - text: Декомпенсация функций сердечно-сосудистой системы, соматических органов
       грудной клетки и брюшной полости
@@ -432,7 +816,7 @@ conditions:
       row_index: null
       quote: наличие декомпенсации функций сердечно-сосудистой системы, соматических
         органов грудной клетки и брюшной полости
-  - text: Болезни центральной нервной системы с нарушением сознания и поведения пациента
+  - text: Болезни ЦНС с нарушением сознания и поведения пациента
     aliases: []
     red_flag_type: other
     severity: high
@@ -470,7 +854,7 @@ conditions:
   - text: Беременность и послеродовый период менее 1 года
     aliases: []
     red_flag_type: other
-    severity: high
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -492,7 +876,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:02:09.397530+00:00'
+  extracted_at: '2026-07-23T10:55:31.150980+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -503,4 +887,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:02:09.402127+00:00'
+  validated_at: '2026-07-23T10:55:31.157210+00:00'

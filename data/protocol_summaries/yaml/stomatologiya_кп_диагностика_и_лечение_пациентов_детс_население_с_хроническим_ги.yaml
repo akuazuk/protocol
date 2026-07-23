@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детского населения с хроническим гингивитом
+  title: Диагностика и лечение пациентов (детское население) с хроническим гингивитом
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
   document_sha256: null
@@ -36,6 +36,7 @@ conditions:
   - K05.11
   - K05.12
   - K05.13
+  - A69.10
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
@@ -97,7 +98,7 @@ conditions:
         row_index: null
         quote: Отсутствие рентгенологических изменений в периодонте и межальвеолярной
           кости
-    - text: Индексная оценка (GI > 0,8)
+    - text: Индексная оценка GI > 0,8
       logic_group: null
       operator: unknown
       values: []
@@ -114,9 +115,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Индексная оценка (GI > 0,8)
-    - text: Выявление факторов, влияющих на возникновение и развитие хронического
-        гингивита
+        quote: Индексная оценка GI > 0,8
+    - text: Стабилизация процесса — состояние периодонта без признаков активности
+        патологического процесса в течение 2 лет
       logic_group: null
       operator: unknown
       values: []
@@ -133,10 +134,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Выявление факторов, влияющих на возникновение и развитие хронического
-          гингивита
-    - text: Определение медицинских показаний к лечению, выбор метода лечения и тактики
-        врача-специалиста
+        quote: Стабилизация процесса — состояние периодонта без признаков активности
+          патологического процесса в течение 2 лет
+    - text: Ремиссия — кратковременная стабилизация в пределах одного года без признаков
+        активности процесса
       logic_group: null
       operator: unknown
       values: []
@@ -153,9 +154,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение медицинских показаний к лечению, выбор метода лечения и
-          тактики врача-специалиста
-    - text: Дифференциальная диагностика хронического гингивита с хроническим периодонтитом
+        quote: Ремиссия — кратковременная стабилизация в пределах одного года без
+          признаков активности процесса
+    - text: Без изменений — параметры объективных тестов не отличаются от первоначальных
       logic_group: null
       operator: unknown
       values: []
@@ -172,9 +173,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Дифференциальная диагностика хронического гингивита с хроническим периодонтитом
-    - text: Выявление взаимосвязи стоматологического и общего здоровья с состоянием
-        десны
+        quote: Без изменений — параметры объективных тестов не отличаются от первоначальных
+    - text: Улучшение — улучшение показателей состояния тканей периодонта по сравнению
+        с показателями после подготовительных мероприятий
       logic_group: null
       operator: unknown
       values: []
@@ -191,8 +192,28 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Выявление взаимосвязи стоматологического и общего здоровья с состоянием
-          десны
+        quote: Улучшение — улучшение показателей состояния тканей периодонта по сравнению
+          с показателями после подготовительных мероприятий
+    - text: Ухудшение — параметры объективных тестов свидетельствуют об активности
+        патологического процесса
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ухудшение — параметры объективных тестов свидетельствуют об активности
+          патологического процесса
     optional: []
     exclusion: []
   required_exams:
@@ -260,56 +281,9 @@ conditions:
       table_index: null
       row_index: null
       quote: индексная оценка (GI > 0,8).
-  - name: Повторная оценка состояния тканей периодонта
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: повторную оценку состояния тканей периодонта
   conditional_exams: []
   treatment:
     non_drug:
-    - text: Своевременная диагностика и лечение острого гингивита
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Своевременная диагностика и лечение острого гингивита
-    - text: Медицинская профилактика травмы тканей десны при проведении стоматологических
-        манипуляций
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Медицинская профилактика травмы тканей десны при проведении стоматологических
-          манипуляций
     - text: Регулярное механическое удаление зубного налета с помощью гигиенических
         средств
       source_ref:
@@ -422,7 +396,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Устранение местных неблагоприятных факторов развития хронического гингивита
-    - text: Ортодонтическое лечение при зубочелюстных аномалиях
+    - text: Ортодонтическое лечение при зубочелюстных аномалиях у врача-стоматолога-ортодонта
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
         document_url: null
@@ -433,7 +407,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ортодонтическое лечение при зубочелюстных аномалиях
+        quote: Ортодонтическое лечение при зубочелюстных аномалиях у врача-стоматолога-ортодонта
     - text: Хирургическое лечение при гиперпластическом гингивите для коррекции контура
         десны
       source_ref:
@@ -448,18 +422,6 @@ conditions:
         row_index: null
         quote: Хирургическое лечение при гиперпластическом гингивите для коррекции
           контура десны
-    - text: Поддерживающее лечение
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Поддерживающее лечение
     - text: Регулярное механическое удаление зубного налета с помощью гигиенических
         средств
       source_ref:
@@ -491,9 +453,8 @@ conditions:
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Спрей для местного применения 100 мг/мл. Одну порцию (1–3 нажатия)
-        на слизистую оболочку полости рта или десну. Можно наносить смоченным ватным
-        тампоном.
+      dose_text: 1–3 нажатия на дозирующий клапан на слизистую оболочку полости рта
+        или десну либо нанесение путем смазывания ватным тампоном
       frequency_text: null
       duration_text: null
       route: null
@@ -511,15 +472,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
-          (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
-          полости рта или десну.
+        quote: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+          слизистую оболочку полости рта или десну. Лекарственное средство можно наносить
+          путем смазывания смоченным в средстве ватным тампоном
     - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Анестезирующий гель. Для аппликационной анестезии. Противопоказано
-        до 2 лет. Для детей 2-11 лет доза лидокаина не более 2,9 мг/кг. Разовая доза
-        индивидуальна.
+      dose_text: Детям от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида
+        не должна превышать 2,9 мг/кг. Разовая доза назначается индивидуально
       frequency_text: null
       duration_text: null
       route: null
@@ -537,16 +497,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Для аппликационной анестезии слизистой оболочки полости рта... У детей
-          до 2 лет применение противопоказано. Предназначен для детей с 2 лет. Для
-          детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина гидрохлорида
-          не должна превышать 2,9 мг/кг.
+        quote: Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина
+          гидрохлорида не должна превышать 2,9 мг/кг. Разовую дозу врач-специалист
+          назначает индивидуально
     - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для инъекций. Инъекционная анестезия. Разовая доза индивидуальна,
-        не более 7 мг артикаина на 1 кг массы тела. Использование у детей до года
-        не изучалось.
+      dose_text: Инъекционная анестезия, доза не должна превышать 7 мг артикаина на
+        1 кг массы тела
       frequency_text: null
       duration_text: null
       route: null
@@ -564,14 +522,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Инъекционная анестезия тканей полости рта. Разовую дозу врач-специалист
-          назначает индивидуально... доза лекарственного средства не должна превышать
-          7 мг артикаина на 1 кг массы тела. Использование у детей до года не изучалось
+        quote: доза лекарственного средства не должна превышать 7 мг артикаина на
+          1 кг массы тела.
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 'Раствор 0,5 мг/мл. Орошения, полоскания, аппликации: 5–10 мл на
-        пораженную поверхность, 1–3 мин, 2–3 раза/сутки, 3–5 дней.'
+      dose_text: 5–10 мл раствора на пораженную поверхность или десну с экспозицией
+        1–3 мин 2–3 раза в сутки в течение 3–5 дней
       frequency_text: null
       duration_text: null
       route: null
@@ -589,15 +546,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Неразведенный раствор применяется в виде орошений, полосканий и аппликаций
-          – 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки
-          полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки... в течение
-          3–5 дней
+        quote: 5–10 мл раствора наносят на пораженную поверхность слизистой оболочки
+          полости рта или на десну с экспозицией 1–3 мин 2–3 раза в сутки (на тампоне
+          или путем орошения) в течение 3–5 дней
     - drug_name: Бензилдиметил-аммония хлорид
       active_substance: null
       drug_group: null
-      dose_text: Раствор 0,01 % водный. Полоскание полости рта 10–15 мл, 3–4 раза/сутки,
-        3–5 дней. Допускается местное применение тампонов.
+      dose_text: Полоскание полости рта 10–15 мл раствора 3–4 раза в сутки в течение
+        3–5 дней
       frequency_text: null
       duration_text: null
       route: null
@@ -615,15 +571,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раствор для наружного (местного) применения 0,01 % водного раствора.
-          Рекомендуется полоскание полости рта 10–15 мл лекарственного средства, 3–4
-          раза в сутки в течение 3–5 дней.
+        quote: Рекомендуется полоскание полости рта 10–15 мл лекарственного средства,
+          3–4 раза в сутки в течение 3–5 дней.
     - drug_name: Перекись водорода
       active_substance: null
       drug_group: null
-      dose_text: Раствор 30 мг/мл. Для полоскания полости рта и горла (раствор 30
-        мг/мл развести 1:11) применяется у детей с 12 лет. Обработка поврежденных
-        участков ватным тампоном.
+      dose_text: Для полоскания и нанесения на слизистые — раствор 2,5 мг/мл (разведение
+        30 мг/мл водой 1:11). Детям с 12 лет
       frequency_text: null
       duration_text: null
       route: null
@@ -641,14 +595,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раствор для наружного применения 30 мг/мл. Для полоскания полости рта
-          и горла... раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в соотношении
-          1:11). Для полоскания... применяется у детей с 12 лет
+        quote: для полоскания полости рта и горла, нанесения на слизистые оболочки
+          – раствор 2,5 мг/мл (раствор 30 мг/мл разводят водой в соотношении 1:11).
     - drug_name: Биклотимол/Эноксолон/Лизоцима гидрохлорид
       active_substance: null
       drug_group: null
-      dose_text: Таблетки для рассасывания. Для детей старше 6 лет. По 1 таблетке
-        каждые 4 часа (максимум 4 таблетки в сутки) 5 дней.
+      dose_text: 'Детям старше 6 лет: медленно рассасывать по 1 таблетке каждые 4
+        часа (максимум 4 таблетки в сутки) 5 дней'
       frequency_text: null
       duration_text: null
       route: null
@@ -666,14 +619,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Таблетки для рассасывания. Для детей старше 6 лет. Медленно рассасывать
-          до полного растворения по 1 таблетке каждые 4 часа (максимальная суточная
-          доза – 4 таблетки) 5 дней
+        quote: Медленно рассасывать до полного растворения по 1 таблетке каждые 4
+          часа (максимальная суточная доза – 4 таблетки) 5 дней
     - drug_name: Метронидазол/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Гель стоматологический. Для детей старше 6 лет. Наносить тонким слоем
-        на пораженные участки 1–2 раза/сутки длительностью до 30 мин. Курс 7–10 дней.
+      dose_text: 'Детям старше 6 лет: тонким слоем 1–2 раза в сутки длительностью
+        до 30 мин. Курс — 7–10 дней'
       frequency_text: null
       duration_text: null
       route: null
@@ -691,15 +643,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Гель стоматологический. Для детей старше 6 лет. Гель наносится на пораженные
-          участки слизистой оболочки полости рта или десны тонким слоем 1–2 раза в
-          сутки длительностью до 30 мин. Курс процедур – 7–10 дней
+        quote: Гель наносится на пораженные участки слизистой оболочки полости рта
+          или десны тонким слоем 1–2 раза в сутки длительностью до 30 мин. Курс процедур
+          – 7–10 дней
     - drug_name: Лидокаина гидрохлорид моногидрат / Ромашки аптечной цветков экстракт
       active_substance: null
       drug_group: null
-      dose_text: Гель для местного применения. Для детей старше 12 лет. Полоску геля
-        0,5 см на пораженные участки, осторожно втирать, 3 раза/сутки до 20 мин. Количество
-        процедур индивидуально.
+      dose_text: 'Детям старше 12 лет: полоску геля 0,5 см наносят тонким слоем и
+        втирают 3 раза в сутки до 20 мин'
       frequency_text: null
       duration_text: null
       route: null
@@ -717,126 +668,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Гель для местного применения в тубах. Для детей старше 12 лет. Полоску
-          геля длиной 0,5 см наносят на пораженные участки слизистой оболочки полости
-          рта или десны тонким слоем и осторожно втирают, кратность применения – 3
-          раза в сутки длительностью до 20 мин.
-    - drug_name: Трипсин кристаллический
-      active_substance: null
-      drug_group: null
-      dose_text: Лиофилизат для местного применения. В десневые карманы на 1 мин вводят
-        турунды, смоченные водным раствором (1 ч.л. настойки на стакан воды), через
-        2 суток. Курс индивидуально. Не рекомендован до 12 ле
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В десневые карманы на 1 мин вводят тонкие турунды, обильно смоченные
-          водным раствором лекарственного средства... Лекарственное средство не рекомендовано
-          для детей до 12 лет – для местного применения (при воспалительных заболеваниях
-          полости рта и глотки)
-    - drug_name: Комбинированное средство на основе компонентов растительного происхождения
-        (ромашки цветков, календулы цветков, тысячели
-      active_substance: null
-      drug_group: null
-      dose_text: Экстракт жидкий (1:1). Для детей старше 12 лет. Полоскание полости
-        рта (1 ч.л. настойки на стакан воды) 1–2 мин, 2–3 раза/сутки. Курс 2–5 дней.
-        В десневые карманы турунды.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Экстракт жидкий... Детям старше 12 лет. Местно. Полоскание полости
-          рта (1 чайную ложку настойки разводят в стакане теплой кипяченой воды) в
-          течение 1–2 мин 2–3 раза в сутки. Курс лечения – 2–5 дней.
-    - drug_name: Хлорофиллипта экстракт сухой
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор спиртовой 10 мг/мл. Для детей старше 12 лет. Полоскание полости
-        рта (1 ч.л. спиртового раствора на стакан воды), 1–2 мин, 2–3 раза/сутки,
-        2–5 дней. В десневые карманы турунды через 2 суток. Ку
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Раствор спиртовой 10 мг/мл во флаконах. Для детей старше 12 лет. Полоскание
-          полости рта (орошение) (1 чайную ложку спиртового раствора разводят в стакане
-          теплой кипяченой воды), экспозиция 1–2 мин 2–3 раза в сутки 2–5 дней.
+        quote: Полоску геля длиной 0,5 см наносят на пораженные участки слизистой
+          оболочки полости рта или десны тонким слоем и осторожно втирают, кратность
+          применения – 3 раза в сутки длительностью до 20 мин.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Регулярное механическое удаление зубного налета с помощью гигиенических
-      средств
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Регулярное механическое удаление зубного налета с помощью гигиенических
-        средств
-  - text: Профессиональное удаление зубных отложений
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Профессиональное удаление зубных отложений
   - text: Медицинское наблюдение при легкой форме заболевания – 1 раз в 6 месяцев
     timing: null
     required_if: []
@@ -869,10 +707,44 @@ conditions:
       row_index: null
       quote: Медицинское наблюдение при средней и тяжелой форме заболевания – 1 раз
         в 3 месяца
+  - text: Повторная оценка состояния тканей периодонта после этапа подготовительных
+      мероприятий
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторная оценка состояния тканей периодонта после этапа подготовительных
+        мероприятий
   hospitalization: []
-  routing: []
+  routing:
+  - text: Амбулаторно (врач-стоматолог детский, врач-стоматолог-ортодонт, врач-стоматолог-хирург
+      или врач-челюстно-лицевой хирург)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторно (врач-стоматолог детский, врач-стоматолог-ортодонт, врач-стоматолог-хирург
+        или врач-челюстно-лицевой хирург)
   red_flags:
-  - text: Применение Лидокаин/Хлоргексидин у детей до 2 лет противопоказано.
+  - text: Противопоказано применение средства Лидокаин/Хлоргексидин у детей в возрасте
+      до 2 лет
     aliases: []
     red_flag_type: other
     severity: high
@@ -889,10 +761,11 @@ conditions:
       table_index: null
       row_index: null
       quote: У детей до 2 лет применение противопоказано.
-  - text: Использование Артикаин/Эпинефрин у детей до года не изучалось.
+  - text: Ограничение дозы Лидокаин/Хлоргексидин у детей от 2 до 11 лет — не более
+      2,9 мг/кг
     aliases: []
     red_flag_type: other
-    severity: medium
+    severity: high
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -905,27 +778,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Использование у детей до года не изучалось
-  - text: Опыт клинического применения Бензилдиметил-аммония хлорида у детей до 18
-      лет ограничен.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Опыт клинического применения у детей до 18 лет ограничен
-  - text: Трипсин кристаллический не рекомендован для детей до 12 лет для местного
-      применения.
+      quote: Для детей в возрасте от 2 до 11 лет максимально допустимая доза лидокаина
+        гидрохлорида не должна превышать 2,9 мг/кг.
+  - text: Превышение максимально допустимой дозы артикаина (более 7 мг на 1 кг массы
+      тела)
     aliases: []
     red_flag_type: other
     severity: high
@@ -935,14 +791,14 @@ conditions:
       protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_детс_население_с_хроническим_ги
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_детс_население_с_хроническим_гингивитом_пост_МЗ_30.11.2022_112.pdf
-      page_start: 8
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Лекарственное средство не рекомендовано для детей до 12 лет – для местного
-        применения (при воспалительных заболеваниях полости рта и глотки)
+      quote: доза лекарственного средства не должна превышать 7 мг артикаина на 1
+        кг массы тела.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -951,7 +807,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:00:41.016525+00:00'
+  extracted_at: '2026-07-23T10:50:06.381881+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -962,4 +818,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:00:41.030690+00:00'
+  validated_at: '2026-07-23T10:50:06.394851+00:00'

@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: benign_skin_neoplasms_and_melanocytic_nevus
-  name: доброкачественные новообразования кожи, меланоформный невус лица
+- condition_id: dno_kozhi_melanoformny_nevus_litsa
+  name: Доброкачественные новообразования кожи, меланоформный невус лица
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -47,7 +47,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Проведение дифференциальной диагностики со злокачественным новообразованием
+    - text: Проведение дифференциальной диагностики доброкачественных новообразований
+        кожи и меланоформного невуса лица со злокачественным новообразованием
       logic_group: null
       operator: unknown
       values: []
@@ -64,7 +65,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Проведение дифференциальной диагностики со злокачественным новообразованием
+        quote: Проведение дифференциальной диагностики доброкачественных новообразований
+          кожи и меланоформного невуса лица со злокачественным новообразованием
     optional: []
     exclusion: []
   required_exams:
@@ -88,8 +90,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: обязательные и дополнительные инструментальные диагностические исследования...
-        проводятся на догоспитальном этапе.
+      quote: обязательные и дополнительные инструментальные диагностические исследования,
+        гистологическое исследование, врачебная консультации врача-онколога... проводятся
+        на догоспитальном этапе.
   - name: Гистологическое исследование
     aliases: []
     exam_type: unknown
@@ -110,8 +113,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: гистологическое исследование... проводятся на догоспитальном этапе.
-  - name: Консультация врача-онколога
+      quote: обязательные и дополнительные инструментальные диагностические исследования,
+        гистологическое исследование... проводятся на догоспитальном этапе.
+  - name: Консультация врача-онколога и врачей-специалистов по профилю сопутствующей
+      патологии
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -131,34 +136,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: врачебная консультации врача-онколога... проводятся на догоспитальном
-        этапе.
-  conditional_exams:
-  - name: Консультации врачей-специалистов по профилю сопутствующей патологии
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: врачебная консультации... врачей-специалистов по профилю сопутствующей
-        патологии проводятся на догоспитальном этапе.
+      quote: врачебная консультации врача-онколога и врачей-специалистов по профилю
+        сопутствующей патологии проводятся на догоспитальном этапе.
+  conditional_exams: []
   treatment:
     non_drug:
-    - text: Придерживаться умеренной интенсивности физических нагрузок в период лечения
+    - text: Соблюдение умеренной интенсивности физических нагрузок в период лечения
       source_ref:
         protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
         document_url: null
@@ -169,16 +152,26 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Придерживаться умеренной интенсивности физических нагрузок в период
-          лечения
+        quote: Соблюдение умеренной интенсивности физических нагрузок в период лечения
+    - text: Радикальное удаление новообразования
+      source_ref:
+        protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Радикальное удаление новообразования
     drug_groups: []
     drugs:
     - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для инъекций (40 мг + 0,005/0,006/0,010/0,012 мг)/мл. Местная
-        анестезия. Доза до 7 мг на 1 кг массы тела. Применяется инъекционно в полости
-        рта в тканях без воспаления.
+      dose_text: Местная анестезия (инфильтрационная, проводниковая). Взрослым до
+        7 мг на 1 кг массы тела при одной процедуре.
       frequency_text: null
       duration_text: null
       route: null
@@ -196,15 +189,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Артикаин/Эпинефрин... Раствор для инъекций (40 мг + 0,005 мг)/мл...
-          Местная анестезия. Взрослым можно вводить артикаин в дозе до 7 мг на 1 кг
-          массы тела
+        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
+          в дозе до 7 мг на 1 кг массы тела
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для инъекций 10 мг/мл в ампулах 5 мл; 20 мг/мл в ампулах
-        2 мл. Местная анестезия. Режим дозирования индивидуальный, в наименьшей дозе.
-        Максимальная доза для взрослых не более 300 мг.
+      dose_text: Местная анестезия (инфильтрационная, проводниковая). Максимальная
+        доза для взрослых не более 300 мг.
       frequency_text: null
       duration_text: null
       route: null
@@ -222,14 +213,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лидокаин... Раствор для инъекций 10 мг/мл... Местная анестезия (инфильтрационная,
-          проводниковая). Максимальная доза для взрослых не должна превышать 300 мг.
+        quote: Максимальная доза для взрослых не должна превышать 300 мг
     - drug_name: Амоксициллин/Клавулановая кислота
       active_substance: null
       drug_group: null
-      dose_text: Таблетки 875 мг/125 мг; 500 мг/125 мг. Порошок для в/в 1000 мг/200
-        мг; 500 мг/100 мг. В/в по 1000 мг/200 мг 3 р/сут. Внутрь по 1 табл. 500/125
-        мг 3 р/сут или 875/125 мг 2 р/сут. Курс 5-14 дней.
+      dose_text: Внутривенно по 1000 мг/200 мг 3 раза в сутки; внутрь по 1 таблетке
+        500 мг + 125 мг 3 раза в сутки или 875 мг + 125 мг 2 раза в сутки. Курс 5–14
+        дней.
       frequency_text: null
       duration_text: null
       route: null
@@ -247,40 +237,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Амоксициллин/Клавулановая кислота... Внутривенно медленно по 1000 мг/200
-          мг 3 раза в сутки. Взрослые по 1 таб. 500/125 мг 3 раза в сутки или 875/125
-          мг 2 раза в сутки. Мин. курс 5 дней.
-    - drug_name: Нестероидный противовоспалительный ЛП (класс J01XD Производные имидазола)
-      active_substance: null
-      drug_group: null
-      dose_text: Начальная доза до 400 мг 3 р/сут. Поддерживающая доза 600–800 мг/сут.
-        Утренняя доза до еды. Максимальная суточная доза 1200 мг. Повторная доза не
-        чаще, чем через 4 ч. Длительность 3–5 дней при болевом
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Для достижения быстрого эффекта доза может быть увеличена до 400 мг
-          3 раза в сут. Максимальная суточная доза 1200 мг. Длительность применения
-          при болевом синдроме 3–5 дней
+        quote: по 1000 мг/200 мг 3 раза в сутки. Взрослые по 1 таблетке 500 мг + 125
+          мг 3 раза в сутки или по 1 таблетке 875 мг + 125 мг 2 раза в сутки.
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Местно для
-        инстилляции и ирригации ран и лунок зубов – 5–10 мл раствора 2–3 раза в сутки.
+      dose_text: Раствор 0,5 мг/мл. Местно для инстилляции и ирригации ран 5–10 мл
+        раствора 2–3 раза в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -298,16 +261,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хлоргексидин... Раствор для наружного (местного) 0,5 мг/мл. Применяется
-          местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
-          – 5–10 мл раствора 2–3 раза в сутки.
+        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
+          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение в амбулаторных условиях после лечения осуществляет
-      врач-стоматолог-хирург с периодичностью 1 раз в 6 месяцев в течение 1 года,
-      в дальнейшем пациент не нуждается.
+  - text: Оценка отсутствия послеоперационных осложнений
     timing: null
     required_if: []
     expected_actions: []
@@ -321,13 +281,42 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях после лечения осуществляет
-        врач-стоматолог-хирург с периодичностью 1 раз в 6 месяцев в течение 1 года,
-        в дальнейшем пациент не нуждается.
+      quote: Оценка отсутствия послеоперационных осложнений
+  - text: Мониторинг и контроль отсутствия рецидива новообразования
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Мониторинг и контроль отсутствия рецидива новообразования
+  - text: Наблюдение в амбулаторных условиях осуществляет врач-стоматолог-хирург 1
+      раз в 6 месяцев в течение 1 года, далее наблюдение не требуется.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наблюдение в амбулаторных условиях осуществляет врач-стоматолог-хирург
+        1 раз в 6 месяцев в течение 1 года, далее наблюдение не требуется.
   hospitalization: []
   routing:
-  - text: Лечение в стационарных условиях, при размерах доброкачественного новообразования
-      кожи до 0,5 см – в амбулаторных условиях.
+  - text: Стационарные условия (основная форма оказания медицинской помощи)
     timing: null
     required_if: []
     source_ref:
@@ -340,9 +329,59 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Лечение в стационарных условиях, при размерах доброкачественного новообразования
-        кожи до 0,5 см – в амбулаторных условиях.
-  red_flags: []
+      quote: Стационарные условия (основная форма оказания медицинской помощи)
+  - text: Амбулаторные условия (при размерах доброкачественного новообразования кожи
+      до 0,5 см)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторные условия (при размерах доброкачественного новообразования
+        кожи до 0,5 см)
+  - text: Догоспитальный этап (проведение обязательных/дополнительных исследований
+      и консультаций)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Догоспитальный этап (проведение обязательных/дополнительных исследований
+        и консультаций)
+  red_flags:
+  - text: Необходимость исключения злокачественного новообразования (дифференциальная
+      диагностика)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп6_дно_кожи_меланоформный_невус_лица
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП6_ДНО_кожи,_меланоформный_невус_лица.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: проводят дифференциальную диагностику доброкачественных новообразований
+        кожи и меланоформного невуса лица со злокачественным новообразованием.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -351,7 +390,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:00:55.091390+00:00'
+  extracted_at: '2026-07-23T10:17:42.229966+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -362,4 +401,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:00:55.099500+00:00'
+  validated_at: '2026-07-23T10:17:42.236481+00:00'

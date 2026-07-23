@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов с деформациями позвоночника в амбулаторных
+  title: Диагностика и лечение пациентов с деформациями позвоночника в амбулаторных
     условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: spinal_deformities
+- condition_id: deformatsii_pozvonochnika
   name: Деформации позвоночника
   synonyms: []
   abbreviations: []
@@ -48,8 +48,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Определение вида и анатомического типа сколиотической деформации по рентгенанатомическим
-        критериям (Таблица 1).
+    - text: 'Определение угловой величины α дуги деформации по Коббу: 1 ст. (5°–10°),
+        2 ст. (11°–25°), 3 ст. (26°–40°), 4 ст. (>41°)'
       logic_group: null
       operator: unknown
       values: []
@@ -66,10 +66,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение вида и анатомического типа сколиотической деформации по
-          рентгенанатомическим критериям (Таблица 1).
-    - text: Оценка степени тяжести сколиотической деформации по углу Кобба во фронтальной
-        плоскости (Таблица 2).
+        quote: 'Определение угловой величины α дуги деформации по Коббу: 1 ст. (5°–10°),
+          2 ст. (11°–25°), 3 ст. (26°–40°), 4 ст. (>41°)'
+    - text: Определение анатомического типа сколиотической деформации по локализации
+        основных дуг (поясничный, грудной, грудопоясничный, верхнегрудной)
       logic_group: null
       operator: unknown
       values: []
@@ -86,10 +86,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Оценка степени тяжести сколиотической деформации по углу Кобба во фронтальной
-          плоскости (Таблица 2).
-    - text: Определение компенсированности сколиотической деформации по форме грудного
-        кифоза и поясничного лордоза (Таблица 2).
+        quote: Определение анатомического типа сколиотической деформации по локализации
+          основных дуг (поясничный, грудной, грудопоясничный, верхнегрудной)
+    - text: Оценка формы компенсации в сагиттальной плоскости (относительно компенсированная,
+        субкомпенсированная)
       logic_group: null
       operator: unknown
       values: []
@@ -106,26 +106,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение компенсированности сколиотической деформации по форме грудного
-          кифоза и поясничного лордоза (Таблица 2).
-    - text: Определение стадии ростковой костной зрелости костей таза и позвоночника.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Определение стадии ростковой костной зрелости костей таза и позвоночника.
+        quote: Оценка формы компенсации в сагиттальной плоскости (относительно компенсированная,
+          субкомпенсированная)
     - text: Величина дуги сколиотической деформации позвоночника от 20° и более
       logic_group: null
       operator: unknown
@@ -163,8 +145,7 @@ conditions:
         row_index: null
         quote: Величина грудного кифоза от 40° и более
     - text: Наличие деструктивных (дегенеративно-дистрофических) изменений тел позвонков
-        грудного отдела позвоночника при физиологической величине угла грудного кифоза
-        (20°-40°)
+        грудного отдела позвоночника при величине угла грудного кифоза 20°-40°
       logic_group: null
       operator: unknown
       values: []
@@ -182,8 +163,28 @@ conditions:
         table_index: null
         row_index: null
         quote: Наличие деструктивных (дегенеративно-дистрофических) изменений тел
-          позвонков грудного отдела позвоночника при физиологической величине угла
-          грудного кифоза (20°-40°)
+          позвонков грудного отдела позвоночника при величине угла грудного кифоза
+          20°-40°
+    - text: Активная ростковая костная пластичность позвоночника (тест Садофьевой
+        на стадии S0-SIV)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Активная ростковая костная пластичность позвоночника (тест Садофьевой
+          на стадии S0-SIV)
     - text: Наличие суб- или декомпенсации уравновешенности позвоночника
       logic_group: null
       operator: unknown
@@ -202,26 +203,6 @@ conditions:
         table_index: null
         row_index: null
         quote: Наличие суб- или декомпенсации уравновешенности позвоночника
-    - text: Активная ростковая костная пластичность позвоночника (тест Садофьевой
-        на стадии S0-SIV на боковых рентгенограммах)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Активная ростковая костная пластичность позвоночника (тест Садофьевой
-          на стадии S0-SIV на боковых рентгенограммах)
     optional: []
     exclusion: []
   required_exams:
@@ -245,14 +226,61 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Обязательная диагностика предполагает проведение исследований... и включает
-        выполнение рентгенографии позвоночника в 2 проекциях (прямая и боковая) в
-        положении стоя. Пациентам в возрасте до 3 лет рентгенограммы выполняются в
-        положении лежа
-  - name: Рентгенограмма позвоночника
+      quote: выполнение рентгенографии позвоночника в 2 проекциях (прямая и боковая)
+        в положении стоя. Пациентам в возрасте до 3 лет рентгенограммы выполняются
+        в положении лежа;
+  - name: Плановая рентгенография позвоночника в двух проекциях в положении стоя
     aliases: []
     exam_type: unknown
     requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: плановая рентгенография позвоночника в двух проекциях в положении стоя
+        проводится с интервалом в 1 год
+  conditional_exams:
+  - name: Дополнительные исследования для уточнения характера поражения органов и
+      систем
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дополнительная диагностика включает исследования, позволяющие уточнить
+        характер поражения органов и систем при выявлении изменений в обязательных
+        исследованиях
+  - name: Рентгенография позвоночника в условиях корсетного режима (прямая и боковая
+      проекции в положении стоя)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -269,13 +297,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Для изготовления корсета на протезное предприятие пациент обращается
-        с медицинским заключением (направлением) от организации здравоохранения и
-        рентгенограммами позвоночника.
-  - name: Тест Садофьевой на боковых рентгенограммах (S0-SIV)
+      quote: выполнением рентгенографии позвоночника в условиях корсетного режима
+        (прямая и боковая проекция в положении стоя).
+  - name: Контрольная рентгенография позвоночника без корсета в положении стоя в двух
+      проекциях
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -292,78 +320,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Корсетное корригирующее лечение назначается пациентам с прогрессирующими
-        деформациями позвоночника и имеющих активную ростковую костную пластичность
-        позвоночника (тест Садофьевой на стадии S0-SIV на боковых рентгенограммах)
-  - name: Рентгенография позвоночника в условиях корсетного режима (2-6 мес. после
-      начала лечения)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: ортопедом-травматологом проводится контрольный осмотр пациента с выполнением
-        рентгенографии позвоночника в условиях корсетного режима (прямая и боковая
-        проекция в положении стоя).
-  - name: Плановая рентгенография позвоночника в условиях корсетного режима (ежегодно)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Плановая рентгенография позвоночника в условиях корсетного режима проводится
-        с периодичностью раз в год.
-  - name: Контрольная рентгенография позвоночника без корсета (при полной отмене)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При полной отмене корсета выполняется контрольная рентгенография позвоночника
-        без корсета в положении стоя в двух проекциях (прямая и боковая).
-  conditional_exams: []
+      quote: выполняется контрольная рентгенография позвоночника без корсета в положении
+        стоя в двух проекциях (прямая и боковая).
   treatment:
     non_drug:
     - text: Массаж спины (ручной, подводный) – 2-3 курса в год по 10 сеансов
@@ -404,7 +362,7 @@ conditions:
         row_index: null
         quote: Тепловые процедуры (парафиновые аппликации на спину) – 2 курса в год
           по 10 сеансов
-    - text: Корсетное корригирующее лечение (строгий режим 20-21 час в сутки)
+    - text: Корсетное корригирующее лечение (строгий корсетный режим 20-21 час в сутки)
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
         document_url: null
@@ -415,8 +373,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Корсетное корригирующее лечение (строгий режим 20-21 час в сутки)
-    - text: Ежедневная ЛФК
+        quote: Корсетное корригирующее лечение (строгий корсетный режим 20-21 час
+          в сутки)
+    - text: Программа ежедневной ЛФК
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
         document_url: null
@@ -427,7 +386,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ежедневная ЛФК
+        quote: Программа ежедневной ЛФК
     - text: Плавание
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
@@ -445,7 +404,7 @@ conditions:
     - drug_name: Хондроитина сульфат
       active_substance: null
       drug_group: null
-      dose_text: курсами в дозах согласно прилагаемых инструкций
+      dose_text: курсами в дозах согласно прилагаемой инструкции
       frequency_text: null
       duration_text: null
       route: null
@@ -463,11 +422,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: препараты хондропротекторного действия – хондроитина сульфат
+        quote: препараты хондропротекторного действия – хондроитина сульфат, глюкозамина
+          сульфат натрия;
     - drug_name: Глюкозамина сульфат натрия
       active_substance: null
       drug_group: null
-      dose_text: курсами в дозах согласно прилагаемых инструкций
+      dose_text: курсами в дозах согласно прилагаемой инструкции
       frequency_text: null
       duration_text: null
       route: null
@@ -485,11 +445,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: препараты хондропротекторного действия – глюкозамина сульфат натрия
+        quote: препараты хондропротекторного действия – хондроитина сульфат, глюкозамина
+          сульфат натрия;
     - drug_name: Кальций/холекальциферол
       active_substance: null
       drug_group: null
-      dose_text: курсами в дозах согласно прилагаемых инструкций
+      dose_text: курсами в дозах согласно прилагаемой инструкции
       frequency_text: null
       duration_text: null
       route: null
@@ -507,11 +468,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'комбинированные препараты кальция: кальций/холекальциферол'
+        quote: 'препараты остеотропного действия – комбинированные препараты кальция:
+          кальций/холекальциферол, кальцемин, оссеин-гидроксиапатитное соединение
+          (остеогенон).'
     - drug_name: Кальцемин
       active_substance: null
       drug_group: null
-      dose_text: курсами в дозах согласно прилагаемых инструкций
+      dose_text: курсами в дозах согласно прилагаемой инструкции
       frequency_text: null
       duration_text: null
       route: null
@@ -529,11 +492,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'комбинированные препараты кальция: кальцемин'
+        quote: 'препараты остеотропного действия – комбинированные препараты кальция:
+          кальций/холекальциферол, кальцемин, оссеин-гидроксиапатитное соединение
+          (остеогенон).'
     - drug_name: Оссеин-гидроксиапатитное соединение (остеогенон)
       active_substance: null
       drug_group: null
-      dose_text: курсами в дозах согласно прилагаемых инструкций
+      dose_text: курсами в дозах согласно прилагаемой инструкции
       frequency_text: null
       duration_text: null
       route: null
@@ -551,13 +516,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: оссеин-гидроксиапатитное соединение (остеогенон)
+        quote: 'препараты остеотропного действия – комбинированные препараты кальция:
+          кальций/холекальциферол, кальцемин, оссеин-гидроксиапатитное соединение
+          (остеогенон).'
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Диспансерный осмотр врачом-травматологом-ортопедом (или детским хирургом)
-      один раз в год при консервативном лечении без корсета.
+  - text: 'При консервативном лечении без корсета: диспансерный осмотр врачом-травматологом-ортопедом
+      (или детским хирургом) 1 раз в год'
     timing: null
     required_if: []
     expected_actions: []
@@ -571,10 +538,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Диспансерный осмотр врачом-травматологом-ортопедом (или детским хирургом)
-        один раз в год при консервативном лечении без корсета.
-  - text: Диспансерный осмотр врачом-травматологом-ортопедом не реже одного раза в
-      6 месяцев при корсетном лечении.
+      quote: 'При консервативном лечении без корсета: диспансерный осмотр врачом-травматологом-ортопедом
+        (или детским хирургом) 1 раз в год'
+  - text: 'При корсетном лечении: диспансерный осмотр врачом-травматологом-ортопедом
+      не реже 1 раза в 6 месяцев'
     timing: null
     required_if: []
     expected_actions: []
@@ -588,10 +555,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Диспансерный осмотр врачом-травматологом-ортопедом не реже одного раза
-        в 6 месяцев при корсетном лечении.
-  - text: Осмотр пациента в изготовленном корсете в течение первых 2 недель после
-      получения ортеза.
+      quote: 'При корсетном лечении: диспансерный осмотр врачом-травматологом-ортопедом
+        не реже 1 раза в 6 месяцев'
+  - text: Осмотр в изготовленном корсете в течение первых 2 недель после получения
+      ортеза
     timing: null
     required_if: []
     expected_actions: []
@@ -605,10 +572,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Осмотр пациента в изготовленном корсете в течение первых 2 недель после
-        получения ортеза.
-  - text: Контрольный осмотр пациента с рентгенографией через 2-6 месяцев от начала
-      корсетного лечения.
+      quote: Осмотр в изготовленном корсете в течение первых 2 недель после получения
+        ортеза
+  - text: Контрольный осмотр с рентгенографией через 2-6 месяцев от начала корсетного
+      лечения, далее осмотры с интервалом 4-6 месяцев
     timing: null
     required_if: []
     expected_actions: []
@@ -622,10 +589,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контрольный осмотр пациента с рентгенографией через 2-6 месяцев от начала
-        корсетного лечения.
-  - text: Контрольный осмотр с интервалом от 4 до 6 месяцев в дальнейшем при корсетном
-      лечении.
+      quote: Контрольный осмотр с рентгенографией через 2-6 месяцев от начала корсетного
+        лечения, далее осмотры с интервалом 4-6 месяцев
+  - text: Плановая рентгенография в условиях корсета – 1 раз в год
     timing: null
     required_if: []
     expected_actions: []
@@ -639,58 +605,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контрольный осмотр с интервалом от 4 до 6 месяцев в дальнейшем при корсетном
-        лечении.
-  - text: Плановая рентгенография позвоночника в условиях корсетного режима раз в
-      год.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Плановая рентгенография позвоночника в условиях корсетного режима раз
-        в год.
-  - text: Период отмены корсета составляет от 6 до 12 месяцев с постепенным увеличением
-      времени безкорсетного пребывания.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Период отмены корсета составляет от 6 до 12 месяцев с постепенным увеличением
-        времени безкорсетного пребывания.
-  - text: Контрольная рентгенография позвоночника без корсета при полной отмене корсета.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контрольная рентгенография позвоночника без корсета при полной отмене
-        корсета.
+      quote: Плановая рентгенография в условиях корсета – 1 раз в год
   hospitalization: []
   routing:
   - text: амбулаторно
@@ -707,7 +622,7 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
-  - text: Амбулаторно
+  - text: Амбулаторное лечение и диспансерное наблюдение по месту проживания (пребывания)
     timing: null
     required_if: []
     source_ref:
@@ -720,9 +635,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторно
-  - text: Направление в Республиканский научно-практический центр травматологии и
-      ортопедии для решения вопроса о хирургическом лечении.
+      quote: Амбулаторное лечение и диспансерное наблюдение по месту проживания (пребывания)
+  - text: Направление в ГУ «Республиканский научно-практический центр травматологии
+      и ортопедии» при активном прогрессировании и отсутствии эффекта от лечения в
+      течение года
     timing: null
     required_if: []
     source_ref:
@@ -735,31 +651,28 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Направление в Республиканский научно-практический центр травматологии
-        и ортопедии для решения вопроса о хирургическом лечении.
+      quote: Направление в ГУ «Республиканский научно-практический центр травматологии
+        и ортопедии» при активном прогрессировании и отсутствии эффекта от лечения
+        в течение года
+  - text: Планирование оперативного этапа лечения (хирургическая коррекция и стабилизация)
+      при сохранении или выходе искривления на хирургические параметры
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Планирование оперативного этапа лечения (хирургическая коррекция и стабилизация)
+        при сохранении или выходе искривления на хирургические параметры
   red_flags:
-  - text: Искривление дуги деформации сохраняет или выходит на хирургические параметры
-      в условиях корсетного лечения (Тест Садофьевой SIV).
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбула
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_с_деформациями_позвоночника_в_амбулаторных_условиях_пост_МЗ_2017_51.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: В случаях, когда у пациента в условиях корсетного лечения искривление
-        дуги деформации сохраняет или выходит на хирургические параметры... рекомендуется
-        планировать проведение оперативного этапа лечения...
   - text: Активное прогрессирующее развитие деформации и отсутствие положительного
-      эффекта от лечения в течение года.
+      эффекта от лечения в течение года
     aliases: []
     red_flag_type: other
     severity: high
@@ -776,9 +689,8 @@ conditions:
       table_index: null
       row_index: null
       quote: При активном прогрессирующем развитии деформации и отсутствии положительного
-        эффекта от лечения в течение года пациент направляется в ... центр травматологии
-        и ортопедии для ... решения вопроса о целесообразности проведения хирургического
-        лечения.
+        эффекта от лечения в течение года пациент направляется в государственное учреждение
+        «Республиканский научно-практический
   contraindications: []
   complications: []
   kz_checklist: null
@@ -787,7 +699,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:21:05.453148+00:00'
+  extracted_at: '2026-07-23T08:34:24.660664+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -798,4 +710,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:21:05.462467+00:00'
+  validated_at: '2026-07-23T08:34:24.667161+00:00'

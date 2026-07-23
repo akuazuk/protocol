@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Лечение 5 стадии у пациентов находящихся на различных видах хронического
+  title: Лечение 5 стадии у пациентов, находящихся на различных видах хронического
     диализа
   url: null
   local_path: minzdrav_protocols/nefrologiya/КП Лечение 5 стадии у пациентов находящихся
@@ -28,8 +28,9 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: chronic_kidney_disease_stage_5
-  name: Хроническая болезнь почек 5 стадии
+- condition_id: hbp_5_stage_dialysis
+  name: Лечение 5 стадии у пациентов, находящихся на различных видах хронического
+    диализа
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -41,8 +42,7 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Диагностика осложнений осуществляется на основании Международной статистической
-        классификации болезней и проблем, связанных со здоровьем, десятого пересмотра.
+    - text: 'Целевой уровень фосфора крови: 1,13–1,78 ммоль/л'
       logic_group: null
       operator: unknown
       values: []
@@ -60,9 +60,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Диагностика осложнений осуществляется на основании Международной статистической
-          классификации болезней и проблем, связанных со здоровьем, десятого пересмотра.
-    - text: Целевой уровень общего холестерина < 5,17 ммоль/л
+        quote: 'Целевой уровень фосфора крови: 1,13–1,78 ммоль/л'
+    - text: 'Целевой уровень кальция крови: 2,1–2,4 ммоль/л'
       logic_group: null
       operator: unknown
       values: []
@@ -80,8 +79,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Целевой уровень общего холестерина < 5,17 ммоль/л
-    - text: Целевой уровень ЛПНП < 2,6 ммоль/л
+        quote: 'Целевой уровень кальция крови: 2,1–2,4 ммоль/л'
+    - text: 'Целевой уровень ПТГ крови: 130–585 пг/мл'
       logic_group: null
       operator: unknown
       values: []
@@ -99,8 +98,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Целевой уровень ЛПНП < 2,6 ммоль/л
-    - text: Целевой уровень фосфора крови 1,13–1,78 ммоль/л
+        quote: 'Целевой уровень ПТГ крови: 130–585 пг/мл'
+    - text: 'Целевой уровень общего холестерина: < 5,17 ммоль/л'
       logic_group: null
       operator: unknown
       values: []
@@ -118,8 +117,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Целевой уровень фосфора крови 1,13–1,78 ммоль/л
-    - text: Целевой уровень кальция крови 2,1–2,4 ммоль/л
+        quote: 'Целевой уровень общего холестерина: < 5,17 ммоль/л'
+    - text: 'Целевой уровень ЛПНП: < 2,6 ммоль/л'
       logic_group: null
       operator: unknown
       values: []
@@ -137,45 +136,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Целевой уровень кальция крови 2,1–2,4 ммоль/л
-    - text: Целевой уровень ПТГ крови 130–585 пг/мл
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: nefrologiya_кп_лечение_5_стадии_у_пациентов_находящихся_на_различных_видах_хрони
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП Лечение 5 стадии у пациентов
-          находящихся на различных видах хронического диализа_02.08.2021 №93.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Целевой уровень ПТГ крови 130–585 пг/мл
-    - text: Уровень триглициридов выше 5,65 ммоль/л
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: nefrologiya_кп_лечение_5_стадии_у_пациентов_находящихся_на_различных_видах_хрони
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП Лечение 5 стадии у пациентов
-          находящихся на различных видах хронического диализа_02.08.2021 №93.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Уровень триглициридов выше 5,65 ммоль/л
+        quote: 'Целевой уровень ЛПНП: < 2,6 ммоль/л'
     optional: []
     exclusion: []
   required_exams:
@@ -222,7 +183,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Кальций крови 1 раз в месяц
+      quote: Кальций крови | 1 раз в месяц
   - name: Фосфор крови
     aliases: []
     exam_type: unknown
@@ -244,7 +205,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Фосфор крови 1 раз в месяц
+      quote: Фосфор крови | 1 раз в месяц
   - name: ПТГ крови
     aliases: []
     exam_type: unknown
@@ -266,7 +227,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: ПТГ крови 1 раз в 6 месяцев, а у пациентов с повышенным уровнем 1 раза
+      quote: ПТГ крови | 1 раз в 6 месяцев, а у пациентов с повышенным уровнем 1 раза
         в 3 месяца
   - name: Щелочная фосфатаза крови
     aliases: []
@@ -289,10 +250,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Щелочная фосфатаза крови 1 раз в 6 месяцев, а у пациентов с высоким уровнем
-        ПТГ – не реже 1 раза в 3 месяца
+      quote: Щелочная фосфатаза крови | 1 раз в 6 месяцев, а у пациентов с высоким
+        уровнем ПТГ – не реже 1 раза в 3 месяца
   conditional_exams:
-  - name: Рентгенограммы сосудов пораженной области
+  - name: Рентгенограмма сосудов пораженной области
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -314,8 +275,8 @@ conditions:
       table_index: null
       row_index: null
       quote: При наличии противопоказаний используются данные рентгенограмм сосудов
-        пораженной области...
-  - name: Компьютерная томография (КТ) с высокой разрешающей способностью
+        пораженной области
+  - name: Компьютерная томография с высокой разрешающей способностью
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -336,12 +297,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '...компьютерной томографии (далее – КТ) с высокой разрешающей способностью.'
+      quote: компьютерной томографии (далее – КТ) с высокой разрешающей способностью
   treatment:
     non_drug:
-    - text: Пациентам, получающим лечение диализом, не рекомендуется начинать лечение
-        гиполипидемическими средствами с целью коррекции лабораторных показателей
-        дислипидемии.
+    - text: Модификация образа жизни при уровне триглицеридов выше 5,65 ммоль/л
       source_ref:
         protocol_id: nefrologiya_кп_лечение_5_стадии_у_пациентов_находящихся_на_различных_видах_хрони
         document_url: null
@@ -353,51 +312,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Пациентам, получающим лечение диализом, не рекомендуется начинать лечение
-          гиполипидемическими средствами с целью коррекции лабораторных показателей
-          дислипидемии.
-    - text: Пациентам с уровнем триглициридов выше 5,65 ммоль/л рекомендуется модифицировать
-        образ жизни.
-      source_ref:
-        protocol_id: nefrologiya_кп_лечение_5_стадии_у_пациентов_находящихся_на_различных_видах_хрони
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП Лечение 5 стадии у пациентов
-          находящихся на различных видах хронического диализа_02.08.2021 №93.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Пациентам с уровнем триглициридов выше 5,65 ммоль/л рекомендуется модифицировать
-          образ жизни.
+        quote: Модификация образа жизни при уровне триглицеридов выше 5,65 ммоль/л
     drug_groups: []
     drugs:
-    - drug_name: Статины или другое холестеринснижающее средство
-      active_substance: null
-      drug_group: null
-      dose_text: Дозы назначаются согласно приложению 8
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: nefrologiya_кп_лечение_5_стадии_у_пациентов_находящихся_на_различных_видах_хрони
-        document_url: null
-        local_path: minzdrav_protocols/nefrologiya/КП Лечение 5 стадии у пациентов
-          находящихся на различных видах хронического диализа_02.08.2021 №93.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Основным показанием для назначения статинов или другого холестеринснижающего
-          средства является прием препарата пациентом до начала диализа, а также рекомендации
-          кардиолога или специалиста.
     - drug_name: Омега-3 ПНЖК
       active_substance: null
       drug_group: null
@@ -420,12 +337,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: в качестве медикаментозной коррекции назначаются Омега-3 ПНЖК 3–4 г/сутки.
+        quote: в качестве медикаментозной коррекции назначаются Омега-3 ПНЖК 3–4 г/сутки
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль Кальция крови 1 раз в месяц
+  - text: Контроль уровня кальция крови 1 раз в месяц
     timing: null
     required_if: []
     expected_actions: []
@@ -440,8 +357,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль Кальция крови 1 раз в месяц
-  - text: Контроль Фосфора крови 1 раз в месяц
+      quote: Контроль уровня кальция крови 1 раз в месяц
+  - text: Контроль уровня фосфора крови 1 раз в месяц
     timing: null
     required_if: []
     expected_actions: []
@@ -456,9 +373,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль Фосфора крови 1 раз в месяц
-  - text: Контроль ПТГ крови 1 раз в 6 месяцев, а у пациентов с повышенным уровнем
-      1 раза в 3 месяца
+      quote: Контроль уровня фосфора крови 1 раз в месяц
+  - text: Контроль уровня ПТГ крови 1 раз в 6 месяцев (при повышенном уровне — 1 раз
+      в 3 месяца)
     timing: null
     required_if: []
     expected_actions: []
@@ -473,10 +390,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль ПТГ крови 1 раз в 6 месяцев, а у пациентов с повышенным уровнем
-        1 раза в 3 месяца
-  - text: Контроль Щелочной фосфатазы крови 1 раз в 6 месяцев, а у пациентов с высоким
-      уровнем ПТГ – не реже 1 раза в 3 месяца
+      quote: Контроль уровня ПТГ крови 1 раз в 6 месяцев (при повышенном уровне —
+        1 раз в 3 месяца)
+  - text: Контроль щелочной фосфатазы крови 1 раз в 6 месяцев (при высоком уровне
+      ПТГ — не реже 1 раза в 3 месяца)
     timing: null
     required_if: []
     expected_actions: []
@@ -491,8 +408,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль Щелочной фосфатазы крови 1 раз в 6 месяцев, а у пациентов с
-        высоким уровнем ПТГ – не реже 1 раза в 3 месяца
+      quote: Контроль щелочной фосфатазы крови 1 раз в 6 месяцев (при высоком уровне
+        ПТГ — не реже 1 раза в 3 месяца)
   hospitalization: []
   routing: []
   red_flags: []
@@ -504,7 +421,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:49:59.742758+00:00'
+  extracted_at: '2026-07-23T08:47:27.721057+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -515,4 +432,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:49:59.751223+00:00'
+  validated_at: '2026-07-23T08:47:27.726152+00:00'

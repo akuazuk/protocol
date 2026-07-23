@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с хроническими вирусными гепатитами B и С
+  title: Диагностика и лечение пациентов (взрослое население) с хроническими вирусными
+    гепатитами B и С
   url: null
   local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
     пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
@@ -28,22 +29,311 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: chronic_viral_hepatitis_b
-  name: Хронический вирусный гепатит B
+- condition_id: khronicheskie_virusnye_gepatity_b_c
+  name: Хронические вирусные гепатиты B и С
   synonyms: []
   abbreviations: []
   icd10_codes:
   - B18.0
   - B18.1
+  - B18.2
+  - B24
+  - K75.9
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: 'Диагностика ко-инфекции ВГD: обнаружение РНК ВГD методом ПЦР или определение
+        антител классов M, G (IgM, IgG) к ВГD в крови'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диагностика ко-инфекции ВГD: обнаружение РНК ВГD методом ПЦР или определение
+          антител классов M, G (IgM, IgG) к ВГD в крови'
+    - text: 'Критерии эффективности лечения пегинтерфероном альфа-2а: стойкая HBe-сероконверсия,
+        нормализация АЛТ, отсутствие или снижение ДНК ВГВ <2000 МЕ/мл (и отсутствие
+        РНК ВГD при дельта-агенте)'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Критерии эффективности лечения пегинтерфероном альфа-2а: стойкая HBe-сероконверсия,
+          нормализация АЛТ, отсутствие или снижение ДНК ВГВ <2000 МЕ/мл (и отсутствие
+          РНК ВГD при дельта-агенте)'
+    - text: ДНК ВГВ более 2000 МЕ/мл, АЛТ выше нормы, фиброз F2 и выше по METAVIR
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ДНК ВГВ более 2000 МЕ/мл, АЛТ выше нормы, фиброз F2 и выше по METAVIR
+    - text: ДНК ВГВ более 20 000 МЕ/мл, АЛТ превышает норму в 2 и более раза независимо
+        от фиброза
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ДНК ВГВ более 20 000 МЕ/мл, АЛТ превышает норму в 2 и более раза независимо
+          от фиброза
+    - text: Семейный анамнез ГЦК или внепеченочные проявления ХВГВ (независимо от
+        ДНК ВГВ, АЛТ и фиброза)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Семейный анамнез ГЦК или внепеченочные проявления ХВГВ (независимо
+          от ДНК ВГВ, АЛТ и фиброза)
+    - text: Цирроз печени (ВГВ) при любом определяемом уровне ДНК ВГВ вне зависимости
+        от АЛТ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Цирроз печени (ВГВ) при любом определяемом уровне ДНК ВГВ вне зависимости
+          от АЛТ
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Общий анализ крови развернутый с определением уровня тромбоцитов
+  - name: 'Скрининг на ГЦК: определение уровня альфа-фетопротеина в сыворотке крови
+      и УЗИ органов брюшной полости (комплексное) 1 раз в 6 месяцев'
     aliases: []
     exam_type: unknown
     requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 1 раз в 6 месяцев выполняют скрининг на ГЦК (исследование уровня альфа-фетопротеина
+        в сыворотке крови и УЗИ органов брюшной полости (комплексное)).
+  - name: Общий (клинический) анализ крови развернутый с исследованием уровня тромбоцитов
+      1 раз в 3 месяца
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий (клинический) анализ крови развернутый с исследованием уровня тромбоцитов
+        в крови – не реже 1 раза в 3 месяца;
+  - name: Анализ мочи общий 1 раз в 3 месяца
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ мочи общий – не реже 1 раза в 3 месяца;
+  - name: Биохимический анализ крови (общий билирубин, фракции, креатинин, мочевина,
+      глюкоза, АЛТ, АСТ, ЩФ, ГГТП) 1 раз в 3 месяца
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ крови биохимический (исследование уровня общего билирубина в крови
+        (фракций билирубина), креатинина, мочевины, глюкозы, АЛТ, АСТ, ЩФ, ГГТП) –
+        не реже 1 раза в 3 месяца;
+  - name: Молекулярно-биологическое исследование крови на ДНК ВГВ 1 раз в 6 месяцев
+      (после достижения отрицательного результата)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: молекулярно-биологическое исследование крови на ДНК ВГВ, после достижения
+        отрицательного результата исследование крови выполняют не реже 1 раза в 6
+        месяцев;
+  conditional_exams:
+  - name: Молекулярно-биологическое исследование крови на вирусный гепатит D (или
+      определение anti-VGD IgM, IgG)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: для диагностики ко-инфекции ВГD выполняют молекулярно-биологическое исследование
+        крови на вирусный гепатит D.
+  - name: Общий анализ крови развернутый с определением уровня тромбоцитов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -63,12 +353,12 @@ conditions:
       table_index: null
       row_index: null
       quote: общий анализ крови развернутый с определением уровня тромбоцитов – не
-        реже 1 раза в 4 недели
-  - name: Анализ крови биохимический (билирубин, креатинин, мочевина, глюкоза, АЛТ,
+        реже 1 раза в 4 недели;
+  - name: Биохимический анализ крови (билирубин, креатинин, мочевина, глюкоза, АЛТ,
       АСТ, ЩФ, ГГТП)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -89,12 +379,11 @@ conditions:
       row_index: null
       quote: анализ крови биохимический (исследование уровня общего билирубина в крови
         (фракций билирубина), креатинина, мочевины, глюкозы, АЛТ, АСТ, ЩФ, ГГТП) не
-        реже 1 раза в 4 недели в процессе лечения, а также на 12 и 24 неделях после
-        завершения лечения
+        реже 1 раза в 4 недели
   - name: Исследование тиреотропина сыворотки крови
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -114,58 +403,8 @@ conditions:
       table_index: null
       row_index: null
       quote: исследование тиреотропина сыворотки крови каждые 12 недель во время лечения.
-  conditional_exams:
-  - name: Молекулярно-биологическое исследование крови на вирусный гепатит D
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: У пациентов с ХВГВ или ЦП (ВГВ) для диагностики ко-инфекции ВГD выполняют
-        молекулярно-биологическое исследование крови на вирусный гепатит D.
-  - name: Определение антител классов M, G (IgM, IgG) к ВГD в крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При отсутствии возможности выполнения молекулярно-биологического исследования
-        крови на вирусный гепатит D, возможно определение антител классов M, G (IgM,
-        IgG) к ВГD в крови.
-  - name: HBsAg, anti-HBc IgM, IgG, молекулярно-биологическое исследование крови на
-      ДНК ВГВ качественным методом
+  - name: Обследование на ВГВ (HBsAg, anti-HBc IgM, IgG, ДНК ВГВ) у реципиентов почки
+      и пациентов на гемодиализе
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -188,419 +427,11 @@ conditions:
       table_index: null
       row_index: null
       quote: всем реципиентам почки (HBsAg, anti-HBc IgM, IgG, молекулярно-биологическое
-        исследование крови на ДНК ВГВ качественным методом – в процессе первичного
-        клинико-лабораторного обследования, далее – по медицинским и эпидемическим
-        показаниям)
-  - name: Определение уровня АЛТ, АСТ, ВН
+        исследование крови на ДНК ВГВ качественным методом
+  - name: Лабораторное исследование на наличие anti-HCV у беременных
     aliases: []
     exam_type: unknown
     requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: у реципиентов почки, в крови которых выявлены anti-HBc и отсутствует
-        HBsAg, по причине длительной иммуносупрессии необходим тщательный лабораторный
-        мониторинг (определение уровня АЛТ, АСТ, ВН) для исключения реактивации ВГВ
-  - name: HBsAg (для пациентов на гемодиализе)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: пациентам, находящимся на гемодиализе показано обследование на ВГВ (HBsAg
-        – в процессе первичного клинико-лабораторного обследования, далее – по медицинским
-        и эпидемическим показаниям, но не реже двух раз в год)
-  - name: anti-HBc IgM, IgG (для пациентов на гемодиализе)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: anti-HBc IgM, IgG в процессе первичного клинико-лабораторного обследования,
-        далее – по медицинским и эпидемическим показаниям
-  - name: Молекулярно-биологическое исследование крови на ДНК ВГВ качественным методом
-      (для пациентов на гемодиализе)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: молекулярно-биологическое исследование крови на ДНК ВГВ качественным
-        методом – в процессе первичного клинико-лабораторного обследования, далее
-        – по медицинским и эпидемическим показаниям
-  treatment:
-    non_drug: []
-    drug_groups: []
-    drugs:
-    - drug_name: Нуклеозидные/нуклеотидные аналоги (НА)
-      active_substance: null
-      drug_group: null
-      dose_text: на длительный период
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
-          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
-          B и С 19.03.2019 №19.pdf
-        page_start: 4
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ЛС выбора для лечения пациентов с ХВГВ являются НА при любом генотипе.
-          12.5. Пациентам с ХВГВ НА назначают на длительный период.
-    - drug_name: Пегинтерферон альфа-2а
-      active_substance: null
-      drug_group: null
-      dose_text: в течение 48 недель
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
-          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
-          B и С 19.03.2019 №19.pdf
-        page_start: 6
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Пациентам с ХВГВ+D или ЦП (ВГВ+ВГD) (только для класса тяжести А) назначают
-          пегинтерферон альфа-2а в течение 48 недель, независимо от наличия или отсутствия
-          в плазме крови РНК ВГD.
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: После достижения HBe-сероконверсии каждые 12 месяцев определяют HBsAg в
-      крови.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: После достижения HBe-сероконверсии каждые 12 месяцев определяют HBsAg
-        в крови.
-  - text: Биохимический анализ крови (билирубин, креатинин, мочевина, глюкоза, АЛТ,
-      АСТ, ЩФ, ГГТП) на 12 и 24 неделях после завершения лечения.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Биохимический анализ крови (билирубин, креатинин, мочевина, глюкоза,
-        АЛТ, АСТ, ЩФ, ГГТП) на 12 и 24 неделях после завершения лечения.
-  - text: Тщательный лабораторный мониторинг (определение уровня АЛТ, АСТ, ВН) для
-      исключения реактивации ВГВ у реципиентов почки, в крови которых выявлены anti-HBc
-      и отсутствует HBsAg.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Тщательный лабораторный мониторинг (определение уровня АЛТ, АСТ, ВН)
-        для исключения реактивации ВГВ у реципиентов почки, в крови которых выявлены
-        anti-HBc и отсутствует HBsAg.
-  - text: HBsAg для пациентов, находящихся на гемодиализе, не реже двух раз в год.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: HBsAg для пациентов, находящихся на гемодиализе, не реже двух раз в год.
-  - text: anti-HBc IgM, IgG и молекулярно-биологическое исследование крови на ДНК
-      ВГВ качественным методом для реципиентов почки и пациентов, находящихся на гемодиализе,
-      по медицинским и эпидемическим показаниям.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: anti-HBc IgM, IgG и молекулярно-биологическое исследование крови на ДНК
-        ВГВ качественным методом для реципиентов почки и пациентов, находящихся на
-        гемодиализе, по медицинским и эпидемическим показания
-  hospitalization: []
-  routing: []
-  red_flags:
-  - text: Уровень гемоглобина менее 130 г/л у мужчин (120 г/л у женщин) является относительным
-      противопоказанием к назначению пегинтерферон альфа-2а.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Относительные противопоказания к назначению пегинтерферон альфа-2а:
-        уровень гемоглобина менее 130 г/л у мужчин (120 г/л у женщин).'
-  - text: Количество нейтрофилов менее 1,5х10^9/л является относительным противопоказанием
-      к назначению пегинтерферон альфа-2а.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Относительные противопоказания к назначению пегинтерферон альфа-2а:
-        количество нейтрофилов менее 1,5х109/л.'
-  - text: Количество тромбоцитов менее 90х10^9/л является относительным противопоказанием
-      к назначению пегинтерферон альфа-2а.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Относительные противопоказания к назначению пегинтерферон альфа-2а:
-        количество тромбоцитов менее 90х109/л.'
-  - text: Тяжелые заболевания сердечно-сосудистой системы в анамнезе, нестабильные
-      или неконтролируемые сердечно-сосудистые заболевания в предшествующие 6 месяцев
-      являются относительным противопоказанием к назначению пегинтерферон альфа-2а.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Относительные противопоказания к назначению пегинтерферон альфа-2а:
-        тяжелые заболевания сердечно-сосудистой системы в анамнезе, нестабильные или
-        неконтролируемые сердечно-сосудистые заболевания в предшествующие 6 месяцев.'
-  - text: Заболевания щитовидной железы являются относительным противопоказанием к
-      назначению пегинтерферон альфа-2а.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Относительные противопоказания к назначению пегинтерферон альфа-2а:
-        заболевания щитовидной железы.'
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: chronic_viral_hepatitis_c
-  name: Хронический вирусный гепатит C
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - B18.2
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams:
-  - name: Обследование на anti-HCV
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
-        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
-        №19.pdf
-      page_start: 12
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Пациентам, находящимся на гемодиализе показано обследование на anti-HCV
-        в процессе первичного клинико-лабораторного обследования, далее – по медицинским
-        и эпидемическим показаниям, но не реже двух раз в год.
-  - name: Лабораторное исследование на anti-HCV
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
     accepted_statuses:
     - performed
     - recommended
@@ -622,11 +453,249 @@ conditions:
       quote: Всем беременным женщинам в первом триместре беременности, а также в сроке
         гестации 28–30 недель выполняют лабораторное исследование на наличие anti-HCV
         в плазме крови.
-  conditional_exams: []
-  treatment: null
+  - name: Исследование уровня креатинина, мочевины, клиренса креатинина и СКФ 1 раз
+      в 2 месяца
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: у пациентов с хронической патологией почек исследование уровня креатинина,
+        мочевины, а также исследование функции нефронов (клиренс креатинина, СКФ)
+        выполняют не реже 1 раза в 2 месяца;
+  - name: Определение СКФ 1 раз в 3 месяца
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: у пациентов, получающих тенофовир, определение СКФ – не реже 1 раза в
+        3 месяца;
+  treatment:
+    non_drug:
+    - text: Вакцинация против ВГВ реципиентов почки и пациентов на гемодиализе при
+        отсутствии у них иммунитета к ВГВ
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вакцинация против ВГВ реципиентов почки и пациентов на гемодиализе
+          при отсутствии у них иммунитета к ВГВ
+    - text: Курс ревакцинации против ВГВ у пациентов на гемодиализе при концентрации
+        anti-HBs менее 10 мМЕ/мл
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Курс ревакцинации против ВГВ у пациентов на гемодиализе при концентрации
+          anti-HBs менее 10 мМЕ/мл
+    drug_groups: []
+    drugs:
+    - drug_name: Нуклеозидные/нуклеотидные аналоги (НА)
+      active_substance: null
+      drug_group: null
+      dose_text: Назначают на длительный период при любом генотипе
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛС выбора для лечения пациентов с ХВГВ являются НА при любом генотипе
+    - drug_name: Пегинтерферон альфа-2а
+      active_substance: null
+      drug_group: null
+      dose_text: В течение 48 недель (у пациентов с ХВГВ+D или ЦП класса тяжести А)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пациентам с ХВГВ+D или ЦП (ВГВ+ВГD) (только для класса тяжести А) назначают
+          пегинтерферон альфа-2а в течение 48 недель
+    - drug_name: Тенофовир
+      active_substance: null
+      drug_group: null
+      dose_text: Определяется инструкцией по медицинскому применению ЛС
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: 3
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тенофовир и энтекавир обладают выраженным противовирусным действием,
+          характеризуются низкой частотой формирования мутаций резистентности ВГВ,
+          являются ЛС выбора для монотерапии.
+    - drug_name: Энтекавир
+      active_substance: null
+      drug_group: null
+      dose_text: Определяется инструкцией по медицинскому применению ЛС
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: 3
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Тенофовир и энтекавир обладают выраженным противовирусным действием,
+          характеризуются низкой частотой формирования мутаций резистентности ВГВ,
+          являются ЛС выбора для монотерапии.
+    - drug_name: Ламивудин
+      active_substance: null
+      drug_group: null
+      dose_text: Определяется инструкцией по медицинскому применению ЛС
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: 3
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ламивудин в виде монотерапии назначают при наличии противопоказаний
+          к назначению тенофовира или энтекавира.
+    - drug_name: Пегинтерферон альфа-2а
+      active_substance: null
+      drug_group: null
+      dose_text: Определяется инструкцией по медицинскому применению ЛС
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и
+          лечение пациентов (взрослое население) с хроническими вирусными гепатитами
+          B и С 19.03.2019 №19.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пегинтерферон альфа-2а не является ЛС выбора при лечении пациентов
+          с ХВГВ и ЦП (ВГВ), а является альтернативным ЛС.
+    procedures: []
+    surgery: []
+    source_refs: []
   follow_up:
-  - text: Обследование на anti-HCV для пациентов на гемодиализе не реже двух раз в
-      год.
+  - text: Определение HBsAg в крови каждые 12 месяцев после достижения HBe-сероконверсии
+      у HBe-позитивных пациентов с ХВГВ
     timing: null
     required_if: []
     expected_actions: []
@@ -642,10 +711,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Обследование на anti-HCV для пациентов на гемодиализе не реже двух раз
-        в год.
-  - text: Вопрос о назначении противовирусного лечения беременным с ХВГС рассматривают
-      после родоразрешения и завершения грудного вскармливания.
+      quote: Определение HBsAg в крови каждые 12 месяцев после достижения HBe-сероконверсии
+        у HBe-позитивных пациентов с ХВГВ
+  - text: Диспансерное наблюдение пациентов с ХВГВ, получающих НА
     timing: null
     required_if: []
     expected_actions: []
@@ -661,15 +729,123 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Вопрос о назначении противовирусного лечения беременным с ХВГС рассматривают
-        после родоразрешения и завершения грудного вскармливания.
+      quote: Диспансерное наблюдение пациентов с ХВГВ, получающих НА
+  - text: 'Лабораторный мониторинг безопасности при терапии пегинтерфероном альфа-2а:
+      ОАК 1 раз в 4 недели; биохимия крови 1 раз в 4 недели и на 12, 24 неделях после
+      лечения; ТТГ каждые 12 недель'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Лабораторный мониторинг безопасности при терапии пегинтерфероном альфа-2а:
+        ОАК 1 раз в 4 недели; биохимия крови 1 раз в 4 недели и на 12, 24 неделях
+        после лечения; ТТГ каждые 12 недель'
+  - text: Тщательный мониторинг АЛТ, АСТ, ВН для исключения реактивации ВГВ у реципиентов
+      почки с anti-HBc без HBsAg
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Тщательный мониторинг АЛТ, АСТ, ВН для исключения реактивации ВГВ у реципиентов
+        почки с anti-HBc без HBsAg
+  - text: Обследование на anti-HCV у пациентов на гемодиализе не реже 2 раз в год
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обследование на anti-HCV у пациентов на гемодиализе не реже 2 раз в год
+  - text: Физикальные исследования — не реже 1 раза в 3 месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Физикальные исследования — не реже 1 раза в 3 месяца.
+  - text: Контроль ОАК, ОАМ и биохимии крови — не реже 1 раза в 3 месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль ОАК, ОАМ и биохимии крови — не реже 1 раза в 3 месяца.
+  - text: Контроль ДНК ВГВ методом ПЦР — не реже 1 раза в 6 месяцев после достижения
+      отрицательного результата.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль ДНК ВГВ методом ПЦР — не реже 1 раза в 6 месяцев после достижения
+        отрицательного результата.
   hospitalization: []
   routing:
-  - text: 'Относительные противопоказания к назначению пегинтерферон альфа-2а: уровень
-      гемоглобина менее 130 г/л у мужчин (120 г/л у женщин); количество нейтрофилов
-      менее 1,5х109/л; количество тромбоцитов менее 90х109/л; тяжелые заболевания
-      сердечно-сосудистой системы в анамнезе, нестабильные или неконтролируемые сердечно-сосудистые
-      заболевания в предшествующие 6 месяцев; заболевания щитовидной железы.'
+  - text: Консультация врача-трансплантолога для наблюдения и подготовки к трансплантации
+      печени показана пациентам с ЦП (ВГВ) при очаговых образованиях, ГЦК, декомпенсации
+      (класс B, C по Child-Pugh, MELD > 12), асците, ГРС, СБП, кровотечениях из ВРВП
+      или энцефалопатии.
     timing: null
     required_if: []
     source_ref:
@@ -684,12 +860,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Относительные противопоказания к назначению пегинтерферон альфа-2а:
-        уровень гемоглобина менее 130 г/л у мужчин (120 г/л у женщин); количество
-        нейтрофилов менее 1,5х109/л; количество тромбоцитов менее '
+      quote: Консультация врача-трансплантолога для наблюдения и подготовки к трансплантации
+        печени показана пациентам с ЦП (ВГВ) при очаговых образованиях, ГЦК, декомпенсации
+        (класс B, C по Child-Pugh, MELD > 12)
   red_flags:
-  - text: Противовирусное лечение не назначается беременным женщинам с ХВГС или ЦП
-      (ВГС)
+  - text: Запрет противовирусного лечения ХВГС или ЦП (ВГС) у беременных женщин
     aliases: []
     red_flag_type: other
     severity: high
@@ -708,6 +883,172 @@ conditions:
       table_index: null
       row_index: null
       quote: Беременным с ХВГС или ЦП (ВГС) противовирусное лечение не назначают.
+  - text: Запрет комбинации пегинтерферона альфа-2а с НА у пациентов с ХВГВ и циррозом
+      печени
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациентам с ХВГВ и ЦП (ВГВ) пегинтерферон альфа-2а в сочетании с НА не
+        назначают.
+  - text: Ухудшение функции печени до класса B и C по Child-Pugh или MELD более 12
+      баллов, появление асцита, ГРС, СБП, кровотечения из ВРВП, энцефалопатии или
+      признаков ГЦК
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ухудшение функции печени до класса тяжести B и С или MELD более 12 баллов;
+        наличие асцита, гепаторенального синдрома или эпизода спонтанного бактериального
+        перитонита;
+  - text: Повышение уровня АЛТ в 5 раз и более от верхней границы нормы до начала
+      лечения (абсолютное противопоказание к пегинтерферону альфа-2а)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повышение уровня АЛТ в 5 раз и более от верхней границы нормы до начала
+        лечения. В таких случаях пациентам назначают противовирусное лечение НА;
+  - text: 'Относительное противопоказание к пегинтерферону альфа-2а: уровень гемоглобина
+      менее 130 г/л у мужчин (120 г/л у женщин)'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: уровень гемоглобина менее 130 г/л у мужчин (120 г/л у женщин);
+  - text: 'Относительное противопоказание к пегинтерферону альфа-2а: количество нейтрофилов
+      менее 1,5х109/л'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: количество нейтрофилов менее 1,5х109/л;
+  - text: 'Относительное противопоказание к пегинтерферону альфа-2а: количество тромбоцитов
+      менее 90х109/л'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: количество тромбоцитов менее 90х109/л;
+  - text: 'Относительное противопоказание к пегинтерферону альфа-2а: тяжелые, нестабильные
+      или неконтролируемые заболевания ССС'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тяжелые заболевания сердечно-сосудистой системы в анамнезе, нестабильные
+        или неконтролируемые сердечно-сосудистые заболевания в предшествующие 6 месяцев;
+  - text: 'Относительное противопоказание к пегинтерферону альфа-2а: заболевания щитовидной
+      железы'
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_взрослое_население
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП Диагностика и лечение
+        пациентов (взрослое население) с хроническими вирусными гепатитами B и С 19.03.2019
+        №19.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: заболевания щитовидной железы.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -716,15 +1057,19 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:23:14.238436+00:00'
+  extracted_at: '2026-07-23T08:05:50.325985+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
   - llm_pipeline_v1
-  - conditions=2
+  - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T16:23:14.244780+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[khronicheskie_virusnye_gepatity_b_c].treatment.drugs[5]
+  validated_at: '2026-07-23T08:05:50.338983+00:00'

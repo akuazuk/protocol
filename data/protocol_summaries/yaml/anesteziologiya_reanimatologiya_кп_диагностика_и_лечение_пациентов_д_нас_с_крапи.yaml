@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детское население с крапивницей и ангионевротическим
+  title: Диагностика и лечение пациентов (детское население) с крапивницей и ангионевротическим
     отеком
   url: null
   local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
@@ -27,8 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: urticaria
-  name: Крапивница
+- condition_id: krapivnica_i_angionevroticheskiy_otek
+  name: Крапивница и ангионевротический отек
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -47,7 +47,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Диагноз устанавливается на основании характера клинических симптомов.
+    - text: Диагноз устанавливается на основании характера клинических симптомов и
+        не требует лабораторного подтверждения
       logic_group: null
       operator: unknown
       values: []
@@ -64,9 +65,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Диагноз устанавливается на основании характера клинических симптомов.
-    - text: Не требует лабораторного подтверждения для установления диагноза крапивницы
-        и АО.
+        quote: Диагноз устанавливается на основании характера клинических симптомов
+          и не требует лабораторного подтверждения
+    - text: 'Волдыри при крапивнице: центральная выпуклая часть вариабельного размера,
+        вокруг зона эритемы, сопровождаются зудом и/или жжением, обратимость обычно
+        через 1–24 часа'
       logic_group: null
       operator: unknown
       values: []
@@ -83,10 +86,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Не требует лабораторного подтверждения для установления диагноза крапивницы
-          и АО.
-    - text: 'Волдыри: центральная выпуклая часть, эритема, зуд/жжение, обратимость
-        (1-24 часа).'
+        quote: 'Волдыри при крапивнице: центральная выпуклая часть вариабельного размера,
+          вокруг зона эритемы, сопровождаются зудом и/или жжением, обратимость обычно
+          через 1–24 часа'
+    - text: 'Ангионевротический отек: внезапное появление выраженного эритематозного
+        или цвета нормальной кожи отека нижних слоев дермы и подкожной клетчатки или
+        слизистых оболочек, сопровождающегося болезненностью, покалыванием (зудом)
+        и разрешающегося до 72 часов'
       logic_group: null
       operator: unknown
       values: []
@@ -103,10 +109,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Волдыри: центральная выпуклая часть, эритема, зуд/жжение, обратимость
-          (1-24 часа).'
-    - text: 'Ангионевротический отек: внезапный отек дермы/клетчатки/слизистых, болезненность/покалывание
-        (зуд), разрешение до 72 часов.'
+        quote: 'Ангионевротический отек: внезапное появление выраженного эритематозного
+          или цвета нормальной кожи отека нижних слоев дермы и подкожной клетчатки
+          или слизистых оболочек, сопровождающегося болезненность'
+    - text: Применение индекса активности крапивницы (Urticaria Activity Score, UAS)
+        для оценки тяжести заболевания и результатов лечения
       logic_group: null
       operator: unknown
       values: []
@@ -123,445 +130,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Ангионевротический отек: внезапный отек дермы/клетчатки/слизистых,
-          болезненность/покалывание (зуд), разрешение до 72 часов.'
+        quote: Применение индекса активности крапивницы (Urticaria Activity Score,
+          UAS) для оценки тяжести заболевания и результатов лечения
     optional: []
     exclusion: []
   required_exams:
-  - name: Сбор жалоб и анамнеза жизни и заболевания
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: сбор жалоб и анамнеза жизни и заболевания
-  - name: Медицинский осмотр с оценкой кожных проявлений
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: медицинский осмотр с оценкой кожных проявлений
-  - name: Общий анализ крови (эритроциты, гемоглобин, лейкоциты, лейкоцитарная формула,
-      тромбоциты, СОЭ)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'общий анализ крови: эритроциты, гемоглобин, лейкоциты, лейкоцитарная
-        формула, тромбоциты, скорость оседания эритроцитов'
-  - name: Общий анализ мочи
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: общий анализ мочи
-  - name: Биохимический анализ крови (креатинин, мочевина, глюкоза, общий белок, АЛТ,
-      АСТ, общий билирубин, холестерин, С-реактивный белок)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'биохимический анализ крови: креатинин, мочевина, глюкоза, общий белок,
-        аланинаминотрансфераза, аспартатаминотрансфераза, общий билибилин, холестерин,
-        С-реактивный белок'
-  - name: Обследование на сифилитическую инфекцию (с 14 лет)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: обследование на сифилитическую инфекцию при установлении диагноза, однократно
-        у пациентов с 14 лет
-  conditional_exams:
-  - name: Исследование уровня общего иммуноглобулина E (IgE) в крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: исследование уровня общего иммуноглобулина E (IgE) в крови
-  - name: Исследование уровня антител к тиреоидной пероксидазе
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: исследование уровня антител к тиреоидной пероксидазе
-  - name: Анализ кала на яйца гельминтов, цисты простейших
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: анализ кала на яйца гельминтов, цисты простейших
-  - name: Исследование на энтеробиоз
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: исследование на энтеробиоз
-  - name: Аллергологическое обследование методом кожных проб
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: аллергологическое обследование методом кожных проб в период ремиссии
-        при клинических данных в пользу аллергической крапивницы
-  - name: Проведение специальных провокационных проб (тепловая, холодовая, вибрационная,
-      штриховая, с физической нагрузкой)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: проведение специальных провокационных проб (тепловая, холодовая, вибрационная,
-        штриховая, проба с физической нагрузкой и другие)
-  - name: Определение аллергенспецифических IgE-антител
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: определение аллергенспецифических IgE-антител при клинических данных
-        в пользу аллергической крапивницы
-  - name: Биопсия кожи и морфологическое (гистологическое) исследование препарата,
-      иммуногистохимическое исследование материала
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: биопсия кожи и морфологическое (гистологическое) исследование препарата,
-        иммуногистохимическое исследование материала
-  treatment: null
-  follow_up: []
-  hospitalization: []
-  routing: []
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: angioedema
-  name: Ангионевротический отек
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - T78.3
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: Диагноз крапивницы и АО устанавливается на основании характера клинических
-        симптомов.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Диагноз крапивницы и АО устанавливается на основании характера клинических
-          симптомов.
-    - text: 'Волдыри: центральная выпуклая часть, эритема, зуд/жжение, обратимость
-        1-24 часа.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Волдыри: центральная выпуклая часть, эритема, зуд/жжение, обратимость
-          1-24 часа.'
-    - text: 'Ангионевротический отек: внезапный выраженный отек дермы/слизистых, болезненность/покалывание/зуд,
-        разрешение до 72 часов.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Ангионевротический отек: внезапный выраженный отек дермы/слизистых,
-          болезненность/покалывание/зуд, разрешение до 72 часов.'
-    optional: []
-    exclusion: []
-  required_exams:
-  - name: Сбор жалоб и анамнеза жизни и заболевания
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: сбор жалоб и анамнеза жизни и заболевания
-  - name: Медицинский осмотр с оценкой кожных проявлений
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'медицинский осмотр с оценкой кожных проявлений: волдыри при крапивнице
-        имеют типичные признаки... АО характеризуется внезапным появлением выраженного
-        отека.'
   - name: Общий анализ крови
     aliases: []
     exam_type: unknown
@@ -583,7 +156,7 @@ conditions:
       table_index: null
       row_index: null
       quote: 'общий анализ крови: эритроциты, гемоглобин, лейкоциты, лейкоцитарная
-        формула, тромбоциты, скорость оседания эритроцитов'
+        формула, тромбоциты, скорость оседания эритроцитов;'
   - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -604,7 +177,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ мочи
+      quote: общий анализ мочи;
   - name: Биохимический анализ крови
     aliases: []
     exam_type: unknown
@@ -627,7 +200,7 @@ conditions:
       row_index: null
       quote: 'биохимический анализ крови: креатинин, мочевина, глюкоза, общий белок,
         аланинаминотрансфераза, аспартатаминотрансфераза, общий билирубин, холестерин,
-        С-реактивный белок'
+        С-реактивный белок;'
   - name: Обследование на сифилитическую инфекцию
     aliases: []
     exam_type: unknown
@@ -671,7 +244,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: исследование уровня общего иммуноглобулина E (IgE) в крови
+      quote: исследование уровня общего иммуноглобулина E (IgE) в крови;
   - name: Исследование уровня антител к тиреоидной пероксидазе
     aliases: []
     exam_type: unknown
@@ -692,7 +265,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: исследование уровня антител к тиреоидной пероксидазе
+      quote: исследование уровня антител к тиреоидной пероксидазе;
   - name: Анализ кала на яйца гельминтов, цисты простейших
     aliases: []
     exam_type: unknown
@@ -713,7 +286,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: анализ кала на яйца гельминтов, цисты простейших
+      quote: анализ кала на яйца гельминтов, цисты простейших;
   - name: Исследование на энтеробиоз
     aliases: []
     exam_type: unknown
@@ -734,7 +307,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: исследование на энтеробиоз
+      quote: исследование на энтеробиоз;
   - name: Аллергологическое обследование методом кожных проб
     aliases: []
     exam_type: unknown
@@ -756,7 +329,7 @@ conditions:
       table_index: null
       row_index: null
       quote: аллергологическое обследование методом кожных проб в период ремиссии
-        при клинических данных в пользу аллергической крапивницы
+        при клинических данных в пользу аллергической крапивницы;
   - name: Проведение специальных провокационных проб
     aliases: []
     exam_type: unknown
@@ -778,7 +351,7 @@ conditions:
       table_index: null
       row_index: null
       quote: проведение специальных провокационных проб (тепловая, холодовая, вибрационная,
-        штриховая, проба с физической нагрузкой и другие)
+        штриховая, проба с физической нагрузкой и другие);
   - name: Определение аллергенспецифических IgE-антител
     aliases: []
     exam_type: unknown
@@ -800,9 +373,8 @@ conditions:
       table_index: null
       row_index: null
       quote: определение аллергенспецифических IgE-антител при клинических данных
-        в пользу аллергической крапивницы
-  - name: Биопсия кожи и морфологическое (гистологическое) исследование препарата,
-      иммуногистохимическое исследование материала
+        в пользу аллергической крапивницы;
+  - name: Биопсия кожи и морфологическое (гистологическое) исследование
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -823,9 +395,353 @@ conditions:
       table_index: null
       row_index: null
       quote: биопсия кожи и морфологическое (гистологическое) исследование препарата,
-        иммуногистохимическое исследование материала
-  treatment: null
-  follow_up: []
+        иммуногистохимическое исследование материала.
+  - name: Биопсия кожи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Биопсия кожи выполняется врачом-дерматовенерологом, врачом-детским хирургом,
+        врачом-детским онкологом-гематологом в условиях манипуляционной
+  - name: Исследование на антигены вируса гепатита В и антитела к вируса гепатита
+      С
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование на антигены вируса гепатита В; исследование на антитела
+        к антигенам вируса гепатита С;
+  - name: Анализ на гормоны щитовидной железы (свободный Т4, ТТГ) и УЗИ щитовидной
+      железы
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ на гормоны щитовидной железы – тироксин свободный, тиреотропный
+        гормон; ультразвуковое исследование щитовидной железы;
+  - name: Исследование уровня и активности C1-эстеразного ингибитора
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование уровня ингибитора C1-эстеразы в крови у пациентов с АО;
+        определение функциональной активности С1-эстеразного ингибитора у пациентов
+        с АО;
+  treatment:
+    non_drug:
+    - text: 'Элиминация возможного этиологического фактора: индивидуальная элиминационная
+        диета при пищевой аллергии, уменьшение воздействия физических факторов, прекращение
+        приема ЛП, лечение инфекций'
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Элиминация возможного этиологического фактора: индивидуальная элиминационная
+          диета при пищевой аллергии, уменьшение воздействия физических факторов,
+          прекращение приема ЛП, лечение инфекций'
+    drug_groups: []
+    drugs:
+    - drug_name: Цетиризина гидрохлорид
+      active_substance: null
+      drug_group: null
+      dose_text: Внутри от 6 мес до 1 года — 5 капель 1 р/сут; от 1 до 2 лет — 5 капель
+        1–2 р/сут; от 2 до 6 лет — 5 капель 2 р/сут; от 6 до 12 лет — 10 мг 1 р/сут
+        или 10 капель 2 р/сут; от 12 лет — 10 мг или 20 капел
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: цетиризина гидрохлорид (капли для приема внутрь 10 мг/мл, таблетки
+          10 мг, капсулы 5 мг, 10 мг) – внутрь у пациентов возрасте от 6 месяцев до
+          1 года по 5 капель 1 раз/сутки 14–28 суток
+    - drug_name: Лоратадин
+      active_substance: null
+      drug_group: null
+      dose_text: Внутри от 2 до 6 лет (≤30 кг) — 5 мл (5 мг) 1 р/сут; от 6 лет (>30
+        кг) — 10 мг или 10 мл сиропа 1 р/сут. Курс 14–28 суток.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: лоратадин (сироп 5 мг/5 мл, таблетки 10 мг) – внутрь у пациентов в
+          возрасте от 2 до 6 лет (при массе тела 30 кг и менее) по 5 мл 1 раз/сутки
+          14–28 суток
+    - drug_name: Дезлоратадин
+      active_substance: null
+      drug_group: null
+      dose_text: Внутри от 6 до 11 мес — 2 мл сиропа 1 р/сут; от 11 мес до 5 лет —
+        2,5 мл 1 р/сут; от 5 до 12 лет — 5 мл 1 р/сут; от 12 лет — 5 мг или 10 мл
+        1 р/сут. Курс 14–28 суток.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: дезлоратадин (сироп 0,5 мг/мл, таблетки 5 мг) – внутрь у пациентов
+          в возрасте от 6 до 11 месяцев по 2 мл сиропа 1 раз/сутки 14–28 суток
+    - drug_name: Монтелукаст
+      active_substance: null
+      drug_group: null
+      dose_text: 'Внутри 1 р/сут: 2–5 лет — 4 мг; 6–15 лет — 5 мг; старше 15 лет —
+        10 мг.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'антагонист лейкотриеновых рецепторов – монтелукаст (таблетки 4 мг,
+          5 мг, 10 мг) 1 раз в сутки в дозах: пациенты 2–5 лет – 4 мг, пациенты 6–15
+          лет – 5 мг, пациенты старше 15 лет – 10 мг)'
+    - drug_name: Фамотидин
+      active_substance: null
+      drug_group: null
+      dose_text: Внутри 0,6 мг/кг/сутки в 2 приема, длительность 4–6 недель (off-label).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: H2-гистаминоблокатор фамотидин* (таблетки 20 мг) в дозе 0,6 мг/кг/сутки
+          в 2 приема 4–6 недель.
+    - drug_name: Циклоспорин
+      active_substance: null
+      drug_group: null
+      dose_text: Внутри в начальной дозе 2,5–3 мг/кг/сутки в 2 приема с 12-часовым
+        интервалом. Максимальная доза — 5 мг/кг/сутки. Длительность от 3 месяцев до
+        1 года (off-label).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: назначается циклоспорин* (капсулы 25 мг, 50 мг, 100 мг) – внутрь в
+          начальной дозе 2,5–3 мг/кг массы тела в сутки в 2 приема с 12-часовым интервалом.
+    - drug_name: Омализумаб
+      active_substance: null
+      drug_group: null
+      dose_text: Пациентам в возрасте 12 лет и старше согласно инструкции по медицинскому
+        применению.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: у пациентов в возрасте 12 лет и старше назначается омализумаб – гумазированные
+          рекомбинантные антитела к IgE согласно инструкции по медицинскому применению
+    - drug_name: Кетотифен
+      active_substance: null
+      drug_group: null
+      dose_text: Пациентам с 3 лет — по 1 мг 2 раза в сутки, длительность 3–6 месяцев.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кетотифен (таблетки 1 мг, сироп 0,2 мг/мл) пациентам с 3 лет по 1 мг
+          2 раза в сутки, эффективность оценивается через 4 недели терапии, при эффективности
+          длительность терапии 3–6 месяцев.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Оценка эффективности плановой терапии через 2–4 недели с возможной сменой
+      антигистаминного ЛП, удвоением дозы или добавлением монтелукаста/фамотидина
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка эффективности плановой терапии через 2–4 недели с возможной сменой
+        антигистаминного ЛП, удвоением дозы или добавлением монтелукаста/фамотидина
+  - text: Оценка эффективности кетотифена при индуцированной крапивнице через 4 недели
+      терапии
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_крапи
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_крапивницей_и_ангионевротическим_отеком_пост_МЗ_2025_38.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка эффективности кетотифена при индуцированной крапивнице через 4
+        недели терапии
   hospitalization: []
   routing: []
   red_flags: []
@@ -837,27 +753,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:04:37.687459+00:00'
+  extracted_at: '2026-07-23T07:08:38.329903+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
   - llm_pipeline_v1
-  - conditions=2
+  - conditions=1
 validation:
-  status: needs_human_review
+  status: valid
   errors: []
-  warnings:
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[angioedema].required_exams[0]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[angioedema].required_exams[1]
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[angioedema].required_exams[3]
-  validated_at: '2026-07-02T00:04:37.709889+00:00'
+  warnings: []
+  validated_at: '2026-07-23T07:08:38.351573+00:00'

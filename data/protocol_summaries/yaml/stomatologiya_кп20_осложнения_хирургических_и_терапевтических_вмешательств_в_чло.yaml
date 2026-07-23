@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: осложнения хирургических и терапевтических вмешательств в ЧЛО
+  title: Осложнения хирургических и терапевтических вмешательств в челюстно-лицевой
+    области
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
   document_sha256: null
@@ -26,18 +27,25 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: maxillary_tuberosity_fracture
-  name: Отлом бугра верхней челюсти
+- condition_id: oslozhneniya_vmeshatelstv_chlo
+  name: Осложнения хирургических и терапевтических вмешательств в челюстно-лицевой
+    области
   synonyms: []
   abbreviations: []
-  icd10_codes: []
+  icd10_codes:
+  - K01.1
+  - K04.5
+  - K04.7
+  - K06.2
+  - K07.9
+  - K12.2
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Проведение дифференциальной диагностики послеинъекционной гематомы с периоститом,
-        абсцессом, флегмоной.
+    - text: Дифференциальная диагностика послеинъекционной гематомы с периоститом,
+        абсцессом, флегмоной
       logic_group: null
       operator: unknown
       values: []
@@ -54,15 +62,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Проведение дифференциальной диагностики послеинъекционной гематомы
-          с периоститом, абсцессом, флегмоной.
+        quote: Дифференциальная диагностика послеинъекционной гематомы с периоститом,
+          абсцессом, флегмоной
     optional: []
     exclusion: []
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: Придерживаться умеренной интенсивности физических нагрузок в период лечения.
+    - text: Соблюдение умеренной интенсивности физических нагрузок в период лечения
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -73,11 +81,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Придерживаться умеренной интенсивности физических нагрузок в период
-          лечения.
-    - text: Ревизия лунки удаленного зуба, удаление свободно лежащих мелких костных
-        фрагментов, сглаживание острых краев костной ткани, хирургическая обработка
-        раны мягких тканей.
+        quote: Соблюдение умеренной интенсивности физических нагрузок в период лечения
+    - text: Прижатие места инъекции рукой на 10 минут с последующим наложением давящей
+        бинтовой повязки
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -88,11 +94,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ревизия лунки удаленного зуба, удаление свободно лежащих мелких костных
-          фрагментов, сглаживание острых краев костной ткани, хирургическая обработка
-          раны мягких тканей.
-    - text: Удаление подвижного фрагмента бугра верхней челюсти, не связанного с надкостницей,
-        сглаживание острых краев костной ткани, зашивание раны.
+        quote: Прижатие места инъекции рукой на 10 минут с последующим наложением
+          давящей бинтовой повязки
+    - text: Локальная гипотермия в первые сутки
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -103,10 +107,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Удаление подвижного фрагмента бугра верхней челюсти, не связанного
-          с надкостницей, сглаживание острых краев костной ткани, зашивание раны.
-    - text: При наличии перфорации дна верхнечелюстной пазухи дополнительно проводят
-        ревизию пазухи и пластическое закрытие сообщения местными тканями.
+        quote: Локальная гипотермия в первые сутки
+    - text: Опорожнение и дренирование пульсирующей гематомы с гемостазом, лигирование
+        поврежденного сосуда
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -117,10 +120,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: При наличии перфорации дна верхнечелюстной пазухи дополнительно проводят
-          ревизию пазухи и пластическое закрытие сообщения местными тканями.
-    - text: При наличии крупного отломка бугра верхней челюсти и сохраняющейся связи
-        с надкостницей допускается сохранение данного костного фрагмента.
+        quote: Опорожнение и дренирование пульсирующей гематомы с гемостазом, лигирование
+          поврежденного сосуда
+    - text: Наложение трахеостомы при гематомах дна полости рта и шеи с признаками
+        асфиксии
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -131,709 +134,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: При наличии крупного отломка бугра верхней челюсти и сохраняющейся
-          связи с надкостницей допускается сохранение данного костного фрагмента.
-    drug_groups: []
-    drugs:
-    - drug_name: Артикаин/Эпинефрин
-      active_substance: null
-      drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 1
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Местная анестезия (инфильтрационная, проводниковая). ЛП предназначен
-          для инъекционного применения в полости рта и может вводиться только в ткани,
-          где отсутствует воспаление.
-    - drug_name: Производные имидазола
-      active_substance: null
-      drug_group: null
-      dose_text: Длительность применения при болевом синдроме 3–5 дней
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Длительность применения при болевом синдроме 3–5 дней
-    - drug_name: Хлоргексидин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
-        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
-        – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоска
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоскания
-          полости рта назначают 2–3 раза в сутки (для полосканий ЛП следует смешивать
-          с равным количеством воды).
-    - drug_name: Перекись водорода
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного применения 30 мг/мл. Применяется местно для
-        инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов.
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: Уменьшение или исчезновение болевого симптома (в том числе, при пальпации)
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Уменьшение или исчезновение болевого симптома (в том числе, при пальпации)
-  - text: Уменьшение размеров или полная ликвидация гематомы, остановка кровотечения
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Уменьшение размеров или полная ликвидация гематомы, остановка кровотечения
-  - text: Уменьшение размеров и ликвидация инфильтрата пораженных мягких тканей
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Уменьшение размеров и ликвидация инфильтрата пораженных мягких тканей
-  - text: Купирование острых воспалительных явлений, уменьшение выделений экссудата
-      из раны и ее заживление вторичным натяжением
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Купирование острых воспалительных явлений, уменьшение выделений экссудата
-        из раны и ее заживление вторичным натяжением
-  - text: Удаление инородных тел
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Удаление инородных тел
-  - text: Отсутствие осложнений
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Отсутствие осложнений
-  hospitalization: []
-  routing:
-  - text: амбулаторно
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: амбулаторно
-  - text: Госпитализация при отломе бугра с перфорацией дна верхнечелюстной пазухи
-      и кровотечением.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация при отломе бугра с перфорацией дна верхнечелюстной пазухи
-        и кровотечением.
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: post_injection_hematoma
-  name: Послеинъекционная гематома
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: В период лечения следует придерживаться умеренной интенсивности физических
-        нагрузок.
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В период лечения следует придерживаться умеренной интенсивности физических
-          нагрузок.
-    - text: При появлении гематомы, с целью предупреждения ее нарастания, прижать
-        на 10 минут место инъекции рукой, затем по возможности наложить давящую бинтовую
-        повязку.
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При появлении гематомы, с целью предупреждения ее нарастания, прижать
-          на 10 минут место инъекции рукой, затем по возможности наложить давящую
-          бинтовую повязку.
-    - text: В первые сутки проводится локальная гипотермия.
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В первые сутки проводится локальная гипотермия.
-    - text: При пульсирующих гематомах проводится опорожнение и дренирование гематомы
-        с гемостазом (по медицинским показаниям).
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При пульсирующих гематомах проводится опорожнение и дренирование гематомы
-          с гемостазом (по медицинским показаниям).
-    - text: Проводится лигирование поврежденного сосуда (по медицинским показаниям).
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Проводится лигирование поврежденного сосуда (по медицинским показаниям).
-    - text: При локализации гематомы в области дна полости рта и шеи и появлении признаков
-        асфиксии проводится наложение трахеостомы (по медицинским показаниям).
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При локализации гематомы в области дна полости рта и шеи и появлении
-          признаков асфиксии проводится наложение трахеостомы (по медицинским показаниям).
-    drug_groups: []
-    drugs:
-    - drug_name: Артикаин/Эпинефрин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для инъекций (40 мг + 0,005 мг)/мл до (40 мг + 0,012 мг)/мл
-        в картриджах/ампулах. Местная анестезия (инфильтрационная, проводниковая).
-        Применяется инъекционно в полости рта, только в тканях бе
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 1
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Артикаин/Эпинефрин Раствор для инъекций (40 мг + 0,005 мг)/мл до (40
-          мг + 0,012 мг)/мл. Местная анестезия (инфильтрационная, проводниковая).
-          Применяется инъекционно в полости рта, только в тканях без воспаления.
-    - drug_name: Хлоргексидин
-      active_substance: null
-      drug_group: null
-      dose_text: 'Раствор для наружного (местного) применения 0,5 мг/мл. Местно для
-        инстилляции и ирригации ран в полости рта и лунок удаленных зубов – 5–10 мл
-        раствора 2–3 раза в сутки. Для полоскания полости рта 2–3 '
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хлоргексидин Раствор для наружного (местного) применения 0,5 мг/мл.
-          Местно для инстилляции и ирригации ран/лунок – 5–10 мл 2–3 раза в сутки.
-          Для полоскания полости рта 2–3 раза в сутки (смешивать с водой).
-    - drug_name: Перекись водорода
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного применения 30 мг/мл. Применяется местно для
-        инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Перекись водорода Раствор для наружного применения 30 мг/мл. Применяется
-          местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
-    - drug_name: Лекарственные препараты для местной анестезии
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ЛП для местной анестезии согласно приложению 1
-    - drug_name: Антибактериальные лекарственные препараты для системного применения
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антибактериальные ЛП для системного применения для подавления патогенной
-          микрофлоры и профилактики гнойно-воспалительных осложнений
-    - drug_name: Нестероидные противовоспалительные лекарственные препараты
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: нестероидные противовоспалительные ЛП для уменьшения воспалительной
-          реакции и снижения болевого симптома
-    - drug_name: Антисептики и дезинфицирующие лекарственные препараты для местного
-        применения
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антисептики и дезинфицирующие ЛП для местного применения при перевязках
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Медицинское наблюдение в амбулаторных условиях пациентов с введением ЛП
-      для местной анестезии, применяемые при лечении пациентов с осложнениями хирургических
-      и терапевтических вмешательств в ЧЛО.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях пациентов с введением
-        ЛП для местной анестезии, применяемые при лечении пациентов с осложнениями
-        хирургических и терапевтических вмешательств в ЧЛО.
-  - text: 'Амбулаторно: лечение послеинъекционных гематом поверхностных анатомических
-      областей.'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Амбулаторно: лечение послеинъекционных гематом поверхностных анатомических
-        областей.'
-  - text: 'Госпитализация: обширные гематомы более двух анатомических областей, гематомы
-      дна полости рта и шеи, пульсирующие гематомы.'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Госпитализация: обширные гематомы более двух анатомических областей,
-        гематомы дна полости рта и шеи, пульсирующие гематомы.'
-  red_flags:
-  - text: Обширные гематомы более двух анатомических областей
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: обширные гематомы более двух анатомических областей
-  - text: Гематомы дна полости рта и шеи
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: гематомы дна полости рта и шеи
-  - text: Пульсирующие гематомы
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: пульсирующие гематомы
-  - text: Появление признаков асфиксии при локализации гематомы в области дна полости
-      рта и шеи
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: при локализации гематомы в области дна полости рта и шеи и появлении
-        признаков асфиксии
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: alveolar_hemorrhage
-  name: Луночковое кровотечение
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: Кровотечение
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Кровотечение
-    - text: патологический процесс истечения крови из лунки после проведения операции
-        удаления зуба, сопровождающийся нарушением целостности стенок кровеносных
-        сосудов и нарушениями образования тромба кровеносного сосуда
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: патологический процесс истечения крови из лунки после проведения операции
-          удаления зуба, сопровождающийся нарушением целостности стенок кровеносных
-          сосудов и нарушениями образования тромба кровеносног
-    optional: []
-    exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: В период лечения следует придерживаться умеренной интенсивности физических
-        нагрузок.
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В период лечения следует придерживаться умеренной интенсивности физических
-          нагрузок.
+        quote: Наложение трахеостомы при гематомах дна полости рта и шеи с признаками
+          асфиксии
     - text: Первичная хирургическая обработка раны с прошиванием или диатермокоагуляцией
-        кровоточащего сосуда (при повреждении мягких тканей в области лунки).
+        кровоточащего сосуда
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -845,9 +149,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Первичная хирургическая обработка раны с прошиванием или диатермокоагуляцией
-          кровоточащего сосуда (при повреждении мягких тканей в области лунки).
-    - text: Сдавливание щипцами кровоточащей кости из стенок лунки или межкорневой
-        перегородки.
+          кровоточащего сосуда
+    - text: Сдавливание щипцами участка кровоточащей кости при костном кровотечении
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -858,9 +161,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Сдавливание щипцами кровоточащей кости из стенок лунки или межкорневой
-          перегородки.
-    - text: Наложение направляющих швов (при невозможности определить место кровотечения).
+        quote: Сдавливание щипцами участка кровоточащей кости при костном кровотечении
+    - text: Очищение лунки от распавшегося тромба, промывание раствором антисептика
+        и заполнение стерильным марлевым тампоном при поздних вторичных кровотечениях
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -871,9 +174,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Наложение направляющих швов (при невозможности определить место кровотечения).
-    - text: Очистка лунки удаленного зуба от распавшегося тромба и заполнение стерильным
-        марлевым тампоном (при поздних вторичных кровотечениях).
+        quote: Очищение лунки от распавшегося тромба, промывание раствором антисептика
+          и заполнение стерильным марлевым тампоном при поздних вторичных кровотечениях
+    - text: Ревизия лунки, удаление мелких костных фрагментов, сглаживание острых
+        краев костной ткани и зашивание раны при отломе бугра верхней челюсти
       source_ref:
         protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
         document_url: null
@@ -884,573 +188,44 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Очистка лунки удаленного зуба от распавшегося тромба и заполнение стерильным
-          марлевым тампоном (при поздних вторичных кровотечениях).
+        quote: Ревизия лунки, удаление мелких костных фрагментов, сглаживание острых
+          краев костной ткани и зашивание раны при отломе бугра верхней челюсти
+    - text: Ревизия верхнечелюстной пазухи и пластическое закрытие сообщения местными
+        тканями при перфорации дна пазухи
+      source_ref:
+        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ревизия верхнечелюстной пазухи и пластическое закрытие сообщения местными
+          тканями при перфорации дна пазухи
+    - text: Пластика местными тканями при обширных повреждениях и наличии дефекта
+        мягких тканей
+      source_ref:
+        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пластика местными тканями при обширных повреждениях и наличии дефекта
+          мягких тканей
     drug_groups: []
     drugs:
     - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 1
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ЛП для местной анестезии, применяемые при лечении пациентов с осложнениями
-          хирургических и терапевтических вмешательств в челюстно-лицевой области
-    - drug_name: Хлоргексидин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
-        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
-        – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоска
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
-    - drug_name: Перекись водорода
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного применения 30 мг/мл. Применяется местно для
-        инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов.
-    - drug_name: Гемостатический ЛП (коллагеновая губка или аналог)
-      active_substance: null
-      drug_group: null
-      dose_text: вводится в лунку
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 6
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: при невозможности определить место кровотечения, в лунку вводится гемостатический
-          ЛП (коллагеновая губка или аналог) с наложением направляющих швов.
-    - drug_name: Раствор антисептика
-      active_substance: null
-      drug_group: null
-      dose_text: промывание лунки
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 6
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: лунку удаленного зуба очищают от распавшегося тромба, промывают раствором
-          антисептика и заполняют стерильным марлевым тампоном.
-    - drug_name: ЛП для местной анестезии
-      active_substance: null
-      drug_group: null
-      dose_text: согласно приложению 1
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'В ходе лечения пациентов с осложнениями хирургических и терапевтических
-          вмешательств в челюстно-лицевой области применяются следующие ЛП: ЛП для
-          местной анестезии согласно приложению 1;'
-    - drug_name: Антибактериальные ЛП для системного применения
-      active_substance: null
-      drug_group: null
-      dose_text: для подавления патогенной микрофлоры и профилактики гнойно-воспалительных
-        осложнений согласно приложению 2
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антибактериальные ЛП для системного применения для подавления патогенной
-          микрофлоры и профилактики гнойно-воспалительных осложнений согласно приложению
-          2;
-    - drug_name: Нестероидные противовоспалительные ЛП
-      active_substance: null
-      drug_group: null
-      dose_text: для уменьшения воспалительной реакции и снижения болевого симптома
-        согласно приложению 3
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: нестероидные противовоспалительные ЛП для уменьшения воспалительной
-          реакции и снижения болевого симптома согласно приложению 3;
-    - drug_name: Антисептики и дезинфицирующие ЛП для местного применения
-      active_substance: null
-      drug_group: null
-      dose_text: при перевязках согласно приложению 4
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антисептики и дезинфицирующие ЛП для местного применения при перевязках
-          согласно приложению 4.
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: амбулаторно
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: амбулаторно
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: tooth_displacement_soft_tissue
-  name: Проталкивание зуба в околочелюстные мягкие ткани
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - K01.1
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: В период лечения следует придерживаться умеренной интенсивности физических
-        нагрузок.
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В период лечения следует придерживаться умеренной интенсивности физических
-          нагрузок.
-    drug_groups: []
-    drugs:
-    - drug_name: Артикаин/Эпинефрин
-      active_substance: null
-      drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 1
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Местная анестезия (инфильтрационная, проводниковая). ЛП предназначен
-          для инъекционного применения в полости рта и может вводиться только в ткани,
-          где отсутствует воспаление.
-    - drug_name: Хлоргексидин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
-    - drug_name: Перекись водорода
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного применения 30 мг/мл
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов.
-    - drug_name: ЛП для местной анестезии
-      active_substance: null
-      drug_group: null
-      dose_text: согласно приложению 1
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'В ходе лечения пациентов с осложнениями хирургических и терапевтических
-          вмешательств в челюстно-лицевой области применяются следующие ЛП: ЛП для
-          местной анестезии согласно приложению 1'
-    - drug_name: Антибактериальные ЛП для системного применения
-      active_substance: null
-      drug_group: null
-      dose_text: для подавления патогенной микрофлоры и профилактики гнойно-воспалительных
-        осложнений согласно приложению 2
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антибактериальные ЛП для системного применения для подавления патогенной
-          микрофлоры и профилактики гнойно-воспалительных осложнений согласно приложению
-          2;
-    - drug_name: Нестероидные противовоспалительные ЛП
-      active_substance: null
-      drug_group: null
-      dose_text: для уменьшения воспалительной реакции и снижения болевого симптома
-        согласно приложению 3
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: нестероидные противовоспалительные ЛП для уменьшения воспалительной
-          реакции и снижения болевого симптома согласно приложению 3;
-    - drug_name: Антисептики и дезинфицирующие ЛП для местного применения
-      active_substance: null
-      drug_group: null
-      dose_text: при перевязках согласно приложению 4
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антисептики и дезинфицирующие ЛП для местного применения при перевязках
-          согласно приложению 4.
-    - drug_name: Артикаин
-      active_substance: null
-      drug_group: null
-      dose_text: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
-        в дозе до 7 мг на 1 кг массы тела
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
-          в дозе до 7 мг на 1 кг массы тела
-    - drug_name: Лидокаин
-      active_substance: null
-      drug_group: null
-      dose_text: Режим дозирования устанавливают индивидуально в зависимости от вида
-        анестезии и места введения, размера анестезируемого участка, возраста пациента.
-        ЛП следует вводить в наименьшей концентрации и наиме
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Режим дозирования устанавливают индивидуально в зависимости от вида
-          анестезии и места введения, размера анестезируемого участка, возраста пациента.
-          ЛП следует вводить в наименьшей концентрации и наименьшей дозе, дающей требуемый
-          эффект.
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: Медицинское наблюдение в амбулаторных условиях пациентов с введением
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях пациентов с введением
-  hospitalization: []
-  routing:
-  - text: 'госпитализация: стационарных условиях'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'госпитализация: стационарных условиях'
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: needle_fracture_anesthesia
-  name: Перелом инъекционной иглы при проведении мандибулярной или торусальной анестезии
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: придерживаться умеренной интенсивности физических нагрузок
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: придерживаться умеренной интенсивности физических нагрузок
-    drug_groups: []
-    drugs:
-    - drug_name: Артикаин/Эпинефрин
-      active_substance: null
-      drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
+      dose_text: Раствор для инъекций (40 мг + 0,005 мг)/мл, (40 мг + 0,006 мг)/мл,
+        (40 мг + 0,010 мг)/мл, (40 мг + 0,012 мг)/мл. Инфильтрационная, проводниковая
+        местная анестезия в полости рта (только в ткани без вос
       frequency_text: null
       duration_text: null
       route: null
@@ -1468,256 +243,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Артикаин/Эпинефрин. Раствор для инъекций в картриджах/ампулах. Применяется
-          для местной анестезии (инфильтрационной, проводниковой) в полости рта в
-          тканях, где отсутствует воспаление.
-    - drug_name: Хлоргексидин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
-        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
-        – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоска
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хлоргексидин. Раствор для наружного/местного применения 0,5 мг/мл.
-          Местно для инстилляции и ирригации ран/лунок 5-10 мл 2-3 раза/сутки. Для
-          полосканий 2-3 раза/сутки, смешивать с водой.
-    - drug_name: Перекись водорода
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного применения 30 мг/мл. Применяется местно для
-        инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Перекись водорода Раствор для наружного применения 30 мг/мл Применяется
-          местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
-    - drug_name: Артикаин
-      active_substance: null
-      drug_group: null
-      dose_text: до 7 мг на 1 кг массы тела
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
-          в дозе до 7 мг на 1 кг массы тела
-    - drug_name: Лидокаин
-      active_substance: null
-      drug_group: null
-      dose_text: Режим дозирования индивидуальный, максимальная доза для взрослых
-        не должна превышать 300 мг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Режим дозирования устанавливают индивидуально в зависимости от вида
-          анестезии и места введения... Максимальная доза для взрослых не должна превышать
-          300 мг
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: Медицинское наблюдение в амбулаторных условиях
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях
-  - text: амбулаторно
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: амбулаторно
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: aggressive_fluid_injection
-  name: Введение агрессивной жидкости в мягкие ткани при проведении местной анестезии
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: Проведение дифференциальной диагностики послеинъекционной гематомы с периоститом,
-        абсцессом, флегмоной.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Проведение дифференциальной диагностики послеинъекционной гематомы
-          с периоститом, абсцессом, флегмоной.
-    optional: []
-    exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: Придерживаться умеренной интенсивности физических нагрузок в период лечения.
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Придерживаться умеренной интенсивности физических нагрузок в период
-          лечения.
-    - text: первичная хирургическая обработка раны (остановка кровотечения; медикаментозная
-        обработка раны; зашивание раны)
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: первичная хирургическая обработка раны (остановка кровотечения; медикаментозная
-          обработка раны; зашивание раны)
-    - text: пластика местными тканями
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: пластика местными тканями
-    drug_groups: []
-    drugs:
-    - drug_name: Артикаин/Эпинефрин
-      active_substance: null
-      drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 1
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Артикаин/Эпинефрин. Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах
-          1,7 мл (1,8 мл), в ампулах 2 мл. Местная анестезия (инфильтрационная, проводниковая).
+        quote: Артикаин/Эпинефрин. Местная анестезия (инфильтрационная, проводниковая).
           ЛП предназначен для инъекционного применения в полости рта и может вводиться
           только в ткани, где отсутствует воспаление.
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
-        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
-        – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоска
+      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Местно для
+        инстилляции и ирригации ран в полости рта и лунок удаленных зубов по 5–10
+        мл 2–3 раза в сутки, либо полоскания 2–3 раза в сутки (смеши
       frequency_text: null
       duration_text: null
       route: null
@@ -1735,7 +269,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хлоргексидин. Раствор для наружного (местного) применения 0,5 мг/мл.
+        quote: Хлоргексидин Раствор для наружного (местного) применения 0,5 мг/мл
           Применяется местно для инстилляции и ирригации ран в полости рта и лунок
           удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
     - drug_name: Перекись водорода
@@ -1760,12 +294,35 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Перекись водорода. Раствор для наружного применения 30 мг/мл. Применяется
+        quote: Перекись водорода Раствор для наружного применения 30 мг/мл Применяется
           местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
+    - drug_name: Гемостатический ЛП (коллагеновая губка или аналог)
+      active_substance: null
+      drug_group: null
+      dose_text: Введение в лунку с наложением направляющих швов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: в лунку вводится гемостатический ЛП (коллагеновая губка или аналог)
+          с наложением направляющих швов.
     - drug_name: ЛП для местной анестезии
       active_substance: null
       drug_group: null
-      dose_text: согласно приложению 1
+      dose_text: Согласно приложению 1
       frequency_text: null
       duration_text: null
       route: null
@@ -1783,427 +340,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ЛП для местной анестезии согласно приложению 1
-    - drug_name: антибактериальные ЛП для системного применения
-      active_substance: null
-      drug_group: null
-      dose_text: для подавления патогенной микрофлоры и профилактики гнойно-воспалительных
-        осложнений согласно приложению 2
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антибактериальные ЛП для системного применения для подавления патогенной
-          микрофлоры и профилактики гнойно-воспалительных осложнений согласно приложению
-          2
-    - drug_name: нестероидные противовоспалительные ЛП
-      active_substance: null
-      drug_group: null
-      dose_text: для уменьшения воспалительной реакции и снижения болевого симптома
-        согласно приложению 3
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: нестероидные противовоспалительные ЛП для уменьшения воспалительной
-          реакции и снижения болевого симптома согласно приложению 3
-    - drug_name: антисептики и дезинфицирующие ЛП
-      active_substance: null
-      drug_group: null
-      dose_text: для местного применения при перевязках согласно приложению 4
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антисептики и дезинфицирующие ЛП для местного применения при перевязках
-          согласно приложению 4
-    - drug_name: Артикаин
-      active_substance: null
-      drug_group: null
-      dose_text: до 7 мг на 1 кг массы тела при выполнении одной лечебной процедуры
-        взрослым
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
-          в дозе до 7 мг на 1 кг массы тела
-    - drug_name: Лидокаин
-      active_substance: null
-      drug_group: null
-      dose_text: Режим дозирования индивидуальный, в наименьшей концентрации и дозе
-        для требуемого эффекта. Максимальная доза для взрослых не более 300 мг.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Режим дозирования устанавливают индивидуально. ЛП следует вводить в
-          наименьшей концентрации и наименьшей дозе, дающей требуемый эффект. Максимальная
-          доза для взрослых не должна превышать 300 мг.
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up:
-  - text: Оценка уменьшения или исчезновения болевого симптома (в том числе, при пальпации).
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Оценка уменьшения или исчезновения болевого симптома (в том числе, при
-        пальпации).
-  - text: Оценка уменьшения размеров или полной ликвидации гематомы, остановки кровотечения.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Оценка уменьшения размеров или полной ликвидации гематомы, остановки
-        кровотечения.
-  - text: Оценка уменьшения размеров и ликвидации инфильтрата пораженных мягких тканей.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Оценка уменьшения размеров и ликвидации инфильтрата пораженных мягких
-        тканей.
-  - text: Оценка купирования острых воспалительных явлений, уменьшения выделений экссудата
-      из раны и ее заживления вторичным натяжением.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Оценка купирования острых воспалительных явлений, уменьшения выделений
-        экссудата из раны и ее заживления вторичным натяжением.
-  - text: Контроль удаления инородных тел и отсутствия осложнений.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Контроль удаления инородных тел и отсутствия осложнений.
-  - text: Медицинское наблюдение в амбулаторных условиях
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях
-  hospitalization: []
-  routing:
-  - text: амбулаторно
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: амбулаторно
-  - text: госпитализация
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: госпитализация
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: soft_tissue_damage_tooth_extraction
-  name: Повреждения окружающих мягких тканей при удалении зуба
-  synonyms: []
-  abbreviations: []
-  icd10_codes: []
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: В период лечения следует придерживаться умеренной интенсивности физических
-        нагрузок.
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В период лечения следует придерживаться умеренной интенсивности физических
-          нагрузок.
-    - text: Первичная хирургическая обработка раны (остановка кровотечения, медикаментозная
-        обработка раны, зашивание раны)
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Первичная хирургическая обработка раны (остановка кровотечения, медикаментозная
-          обработка раны, зашивание раны)
-    - text: Пластика местными тканями (при обширных повреждениях и наличии дефекта
-        мягких тканей в стационарных условиях)
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Пластика местными тканями (при обширных повреждениях и наличии дефекта
-          мягких тканей в стационарных условиях)
-    drug_groups: []
-    drugs:
-    - drug_name: Артикаин/Эпинефрин
-      active_substance: null
-      drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 1
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-          мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-          1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + 0,010 мг)/мл в картриджах
-          1,7 мл (1,8 мл); раствор для инъекций (40 мг + 0,012 мг)/мл в картриджах
-          1,7 мл (в ампулах 2 мл). Местная анестезия (инфильтрационная, проводниковая).
-          ЛП предназначен для инъ
-    - drug_name: Хлоргексидин
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
-        местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
-        – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоска
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Раствор для наружного (местного) применения 0,5 мг/мл. Применяется
-          местно для инстилляции и ирригации ран в полости рта и лунок удаленных зубов
-          – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоскания полости рта
-          назначают 2–3 раза в сутки (для полосканий ЛП следует смешивать с равным
-          количеством воды).
-    - drug_name: Перекись водорода
-      active_substance: null
-      drug_group: null
-      dose_text: Раствор для наружного применения 30 мг/мл. Применяется местно для
-        инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Раствор для наружного применения 30 мг/мл. Применяется местно для инстилляции
-          и ирригации ран в полости рта и лунок удаленных зубов.
-    - drug_name: ЛП для местной анестезии
-      active_substance: null
-      drug_group: null
-      dose_text: null
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ЛП для местной анестезии согласно приложению 1
+        quote: ЛП для местной анестезии согласно приложению 1;
     - drug_name: Антибактериальные ЛП для системного применения
       active_substance: null
       drug_group: null
-      dose_text: для подавления патогенной микрофлоры и профилактики гнойно-воспалительных
-        осложнений
+      dose_text: Согласно приложению 2
       frequency_text: null
       duration_text: null
       route: null
@@ -2223,11 +364,11 @@ conditions:
         row_index: null
         quote: антибактериальные ЛП для системного применения для подавления патогенной
           микрофлоры и профилактики гнойно-воспалительных осложнений согласно приложению
-          2
+          2;
     - drug_name: Нестероидные противовоспалительные ЛП
       active_substance: null
       drug_group: null
-      dose_text: для уменьшения воспалительной реакции и снижения болевого симптома
+      dose_text: Согласно приложению 3
       frequency_text: null
       duration_text: null
       route: null
@@ -2246,11 +387,11 @@ conditions:
         table_index: null
         row_index: null
         quote: нестероидные противовоспалительные ЛП для уменьшения воспалительной
-          реакции и снижения болевого симптома согласно приложению 3
-    - drug_name: Антисептики и дезинфицирующие ЛП
+          реакции и снижения болевого симптома согласно приложению 3;
+    - drug_name: Антисептики и дезинфицирующие ЛП для местного применения
       active_substance: null
       drug_group: null
-      dose_text: для местного применения при перевязках
+      dose_text: Согласно приложению 4
       frequency_text: null
       duration_text: null
       route: null
@@ -2269,7 +410,7 @@ conditions:
         table_index: null
         row_index: null
         quote: антисептики и дезинфицирующие ЛП для местного применения при перевязках
-          согласно приложению 4
+          согласно приложению 4.
     - drug_name: Артикаин
       active_substance: null
       drug_group: null
@@ -2296,8 +437,8 @@ conditions:
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для инъекций
-        20 мг/мл в ампулах 2 мл. Максимальная доза для взрослых не должна превышать
+      dose_text: Режим дозирования устанавливают индивидуально. ЛП следует вводить
+        в наименьшей концентрации и наименьшей дозе. Максимальная доза не должна превышать
         300 мг
       frequency_text: null
       duration_text: null
@@ -2316,16 +457,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для инъекций
-          20 мг/мл в ампулах 2 мл ... Максимальная доза для взрослых не должна превышать
-          300 мг
+        quote: Режим дозирования устанавливают индивидуально... ЛП следует вводить
+          в наименьшей концентрации и наименьшей дозе... Максимальная доза для взрослых
+          не должна превышать 300 мг
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение в амбулаторных условиях пациентов с введением ЛП
-      для местной анестезии, применяемые при лечении пациентов с осложнениями хирургических
-      и терапевтических вмешательств в челюстно-лицевой области.
+  - text: Уменьшение или исчезновение болевого симптома (в том числе при пальпации)
     timing: null
     required_if: []
     expected_actions: []
@@ -2339,11 +478,137 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях пациентов с введением
-        ЛП для местной анестезии, применяемые при лечении пациентов с осложнениями
-        хирургических и терапевтических вмешательств в челюстно-
+      quote: Уменьшение или исчезновение болевого симптома (в том числе при пальпации)
+  - text: Уменьшение размеров или ликвидация гематомы, остановка кровотечения
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Уменьшение размеров или ликвидация гематомы, остановка кровотечения
+  - text: Уменьшение размеров и ликвидация инфильтрата пораженных мягких тканей
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Уменьшение размеров и ликвидация инфильтрата пораженных мягких тканей
+  - text: Купирование острых воспалительных явлений, уменьшение экссудации из раны
+      и заживление вторичным натяжением
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Купирование острых воспалительных явлений, уменьшение экссудации из раны
+        и заживление вторичным натяжением
+  - text: Удаление инородных тел и отсутствие осложнений
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Удаление инородных тел и отсутствие осложнений
+  - text: Медицинское наблюдение в амбулаторных условиях пациентов
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в амбулаторных условиях пациентов
   hospitalization: []
   routing:
+  - text: Медицинское наблюдение в амбулаторных условиях
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в амбулаторных условиях
+  - text: 'Амбулаторно: лечение осложнений хирургических и терапевтических вмешательств
+      в ЧЛО, лечение послеинъекционных гематом поверхностных анатомических областей'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Амбулаторно: лечение осложнений хирургических и терапевтических вмешательств
+        в ЧЛО, лечение послеинъекционных гематом поверхностных анатомических областей'
+  - text: 'Госпитализация (стационарные условия): при локализации гематомы и повреждении
+      мягких тканей, проталкивании зуба в околочелюстные мягкие ткани глубоких клетчаточных
+      пространств, введении агрессивной жидкости при местной анестезии, отломе бугра
+      с перфорацией дна верхнечелюстной пазухи и кровотечением, а также при обширных
+      (более двух областей), пульсирующих гематомах или гематомах дна полости рта
+      и '
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Госпитализация (стационарные условия): при локализации гематомы и повреждении
+        мягких тканей, проталкивании зуба в околочелюстные мягкие ткани глубоких клетчаточных
+        пространств, введении агрессивной жи'
   - text: амбулаторно
     timing: null
     required_if: []
@@ -2358,35 +623,76 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
-  - text: 'Амбулаторно: для первичной обработки раны'
-    timing: null
-    required_if: []
+  red_flags:
+  - text: Обширные гематомы более двух анатомических областей
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Амбулаторно: для первичной обработки раны'
-  - text: 'Госпитализация: при обширных повреждениях и наличии дефекта мягких тканей'
-    timing: null
-    required_if: []
+      quote: обширные гематомы более двух анатомических областей;
+  - text: Гематомы дна полости рта и шеи
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
-      page_start: null
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Госпитализация: при обширных повреждениях и наличии дефекта мягких тканей'
-  red_flags: []
+      quote: гематомы дна полости рта и шеи;
+  - text: Пульсирующие гематомы
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пульсирующие гематомы.
+  - text: Появление признаков асфиксии при гематомах дна полости рта и шеи
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп20_осложнения_хирургических_и_терапевтических_вмешательств_в_чло
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП20_осложнения_хирургических_и_терапевтических_вмешательств_в_ЧЛО.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при локализации гематомы в области дна полости рта и шеи и появлении
+        признаков асфиксии проводится наложение трахеостомы.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -2395,179 +701,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-21T06:13:53.320404+00:00'
+  extracted_at: '2026-07-23T10:12:20.740884+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
   - llm_pipeline_v1
-  - conditions=7
+  - conditions=1
 validation:
-  status: needs_human_review
+  status: valid
   errors: []
-  warnings:
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[maxillary_tuberosity_fracture]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[post_injection_hematoma]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[post_injection_hematoma].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[post_injection_hematoma].treatment.drugs[1]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[post_injection_hematoma].treatment.drugs[2]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[alveolar_hemorrhage]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[alveolar_hemorrhage].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[alveolar_hemorrhage].treatment.drugs[1]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[alveolar_hemorrhage].treatment.drugs[2]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[tooth_displacement_soft_tissue].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[tooth_displacement_soft_tissue].treatment.drugs[1]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[tooth_displacement_soft_tissue].treatment.drugs[2]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[tooth_displacement_soft_tissue].treatment.drugs[3]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[tooth_displacement_soft_tissue].treatment.drugs[4]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[tooth_displacement_soft_tissue].treatment.drugs[5]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[tooth_displacement_soft_tissue].treatment.drugs[6]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[needle_fracture_anesthesia]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[needle_fracture_anesthesia].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[needle_fracture_anesthesia].treatment.drugs[1]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[needle_fracture_anesthesia].treatment.drugs[2]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[needle_fracture_anesthesia].treatment.drugs[3]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[needle_fracture_anesthesia].treatment.drugs[4]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[aggressive_fluid_injection]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[1]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[2]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[3]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[4]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[5]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[7]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[aggressive_fluid_injection].treatment.drugs[8]
-  - level: warning
-    code: missing_icd10
-    message: Нет icd10_codes у condition
-    path: conditions[soft_tissue_damage_tooth_extraction]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[0]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[1]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[2]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[3]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[4]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[5]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[6]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[7]
-  - level: warning
-    code: duplicate_drug
-    message: Дублирующийся препарат
-    path: conditions[soft_tissue_damage_tooth_extraction].treatment.drugs[8]
-  validated_at: '2026-07-21T06:13:53.377410+00:00'
+  warnings: []
+  validated_at: '2026-07-23T10:12:20.750432+00:00'

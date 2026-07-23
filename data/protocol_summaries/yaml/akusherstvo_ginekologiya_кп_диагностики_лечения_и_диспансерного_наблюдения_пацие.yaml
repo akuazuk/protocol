@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: диагностики лечения и диспансерного наблюдения пациентов с заболеванием фенилкетонурия
+  title: Клинический протокол диагностики, лечения и диспансерного наблюдения пациентов
+    с заболеванием фенилкетонурия
   url: null
   local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения и
     диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
@@ -27,7 +28,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: phenylketonuria
+- condition_id: fenilketonuriya
   name: Фенилкетонурия
   synonyms: []
   abbreviations: []
@@ -39,7 +40,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Концентрация ФА 180 мкмоль/л (граница нормальных значений)
+    - text: Концентрация ФА более 180 мкмоль/л при первичном и повторном биохимическом
+        неонатальном скрининге
       logic_group: null
       operator: unknown
       values: []
@@ -57,8 +59,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Концентрация ФА 180 мкмоль/л (граница нормальных значений)
-    - text: Превышение концентрации ФА > 180 мкмоль/л (для повторного тестирования)
+        quote: Концентрация ФА более 180 мкмоль/л при первичном и повторном биохимическом
+          неонатальном скрининге
+    - text: Дефицит фермента фенилаланингидроксилазы
       logic_group: null
       operator: unknown
       values: []
@@ -76,8 +79,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Превышение концентрации ФА > 180 мкмоль/л (для повторного тестирования)
-    - text: Рекомендуемый уровень ФА в крови не более 360 мкмоль/л (до зачатия)
+        quote: Дефицит фермента фенилаланингидроксилазы
+    - text: Повышенное содержание фенилаланина (ФА) в крови и других тканях
       logic_group: null
       operator: unknown
       values: []
@@ -95,98 +98,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Рекомендуемый уровень ФА в крови не более 360 мкмоль/л (до зачатия)
-    - text: Рекомендуемый уровень ФА в течение беременности - 120-360 мкмоль/л
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-          и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Рекомендуемый уровень ФА в течение беременности - 120-360 мкмоль/л
+        quote: Повышенное содержание фенилаланина (ФА) в крови и других тканях
     optional: []
     exclusion: []
   required_exams:
-  - name: Биохимический неонатальный скрининг
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Обследованию на ФКУ подлежат все новорожденные (материалом для исследования
-        является капиллярная кровь, взятая из пальца традиционным способом)
-  - name: Взятие крови для скрининга (доношенные)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'взятие крови у новорожденных осуществляется в организации здравоохранения:
-        у доношенных на 3 день жизни'
-  - name: Взятие крови для скрининга (недоношенные)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: у недоношенных на 7-14 день жизни
-  - name: Определение ФА флюорометрическим методом
+  - name: Определение ФА флюорометрическим методом (биохимический неонатальный скрининг)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -208,8 +124,8 @@ conditions:
       table_index: null
       row_index: null
       quote: скринирующим тестом на фенилкетонурию является определение ФА флюорометрическим
-        методом. Тестирование проводится в клинико-диагностической генетической лаборатории
-  - name: Определение уровня ФА (для контроля лечения)
+        методом. Границей нормальных значений ФА является концентрация 180 мкмоль/л.
+  - name: Определение уровня ФА в сыворотке или сухом пятне крови (контроль лечения)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -232,7 +148,7 @@ conditions:
       row_index: null
       quote: Контроль лечения ФКУ проводится определением уровня ФА в сыворотке или
         сухом пятне крови.
-  - name: Наблюдение врачом-генетиком
+  - name: Ультразвуковое исследование головного мозга
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -253,8 +169,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: наблюдаются врачом-генетиком
-  - name: Наблюдение врачом-педиатром
+      quote: 8.2. Ультразвуковое исследование (далее-УЗИ) головного мозга;
+  - name: УЗИ органов брюшной полости
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -275,8 +191,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: наблюдаются врачом-педиатром
-  - name: Контроль уровня ФА
+      quote: 8.3. УЗИ органов брюшной полости.
+  - name: Контроль уровня фенилаланина (ФА)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -297,54 +213,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: под контролем уровня ФА
-  - name: Уровень ФА в сыворотке крови (до зачатия)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: рекомендуется соблюдать диету в течение не менее трех месяцев до зачатия
-        – до нормализации уровня ФА в сыворотке крови.
-  - name: Контрольное исследование ФА у беременных
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: частота контрольного исследования ФА у беременных – 2 раза в неделю.
+      quote: 'введение диетотерапии смесью аминокислот осуществляется в течение 6-7
+        дней: ежедневно одно кормление заменяется смесью аминокислот, под контролем
+        уровня ФА.'
   conditional_exams:
-  - name: Повторное тестирование ФА
+  - name: Биохимическое исследование крови (общий билирубин, общий белок, электролиты,
+      АсАТ, АлАТ)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -365,34 +239,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При превышении пограничного значения концентрации ФА (более 180 мкмоль/л)
-        осуществляется повторное тестирование (должно быть проведено до двухнедельного
-        возраста ребёнка)
-  - name: Биохимическое исследование крови (дополнительная диагностика)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Дополнительная диагностика (по показаниям): биохимическое исследование
+      quote: 'Дополнительная диагностика (по показаниям): 8.1. биохимическое исследование
         крови: концентрация общего билирубина, общего белка, электролиты, определение
-        активности АсАТ, АлАТ'
-  - name: Медико-генетическое консультирование
+        активности аспарагиновой аминотрансферазы'
+  - name: Молекулярно-генетические исследования (анализ ДНК женщины и ее супруга,
+      пренатальная диагностика)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -413,100 +264,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Генетической службой проводится медико-генетическое консультирование
-  - name: Молекулярно-генетические исследования семей с ФКУ
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: молекулярно-генетические исследования семей с ФКУ
-  - name: Анализ ДНК женщины и ее супруга
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: анализ ДНК женщины и ее супруга
-  - name: Пренатальная диагностика
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: осуществляется пренатальная диагностика при дальнейших беременностях
-        (по желанию семьи); при гетерозиготном носительстве мутации обоими супругами
-        проведение пренатальной диагностики
-  - name: Наблюдение врачом-неврологом
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: (по показаниям) врачом-неврологом
+      quote: 17.1 анализ ДНК женщины и ее супруга; 17.2 при гетерозиготном носительстве
+        мутации обоими супругами проведение пренатальной диагностики (по желанию семьи).
   treatment:
     non_drug:
-    - text: Диетотерапия с ограничением естественного белка
+    - text: Диетотерапия с ограничением естественного белка и заменой его аминокислотной
+        смесью, не содержащей фенилаланин
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
         document_url: null
@@ -518,8 +281,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Диетотерапия с ограничением естественного белка
-    - text: Введение диеты оптимально в течение первых двух недель жизни
+        quote: Диетотерапия с ограничением естественного белка и заменой его аминокислотной
+          смесью, не содержащей фенилаланин
+    - text: Введение диетотерапии смесью аминокислот в течение 6-7 дней с ежедневной
+        заменой одного кормления под контролем уровня ФА
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
         document_url: null
@@ -531,9 +296,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Введение диеты оптимально в течение первых двух недель жизни
-    - text: 'Введение диетотерапии смесью аминокислот осуществляется в течение 6-7
-        дней: ежедневно одно кормление заменяется смесью аминокислот'
+        quote: Введение диетотерапии смесью аминокислот в течение 6-7 дней с ежедневной
+          заменой одного кормления под контролем уровня ФА
+    - text: Соблюдение диеты не менее трех месяцев до зачатия до нормализации уровня
+        ФА в сыворотке крови (не более 360 мкмоль/л)
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
         document_url: null
@@ -545,55 +311,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Введение диетотерапии смесью аминокислот осуществляется в течение
-          6-7 дней: ежедневно одно кормление заменяется смесью аминокислот'
-    - text: Симптоматическая терапия (по показаниям)
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-          и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Симптоматическая терапия (по показаниям)
-    - text: Диетотерапия с ограничением естественного белка и заменой его смесью аминокислот
-        должна проводиться до 18 лет (в дальнейшем - с учетом индивидуальных особенностей
-        пациента)
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-          и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Диетотерапия с ограничением естественного белка и заменой его смесью
-          аминокислот должна проводиться до 18 лет (в дальнейшем - с учетом индивидуальных
-          особенностей пациента)
-    - text: Соблюдение диеты в течение не менее трех месяцев до зачатия – до нормализации
-        уровня ФА в сыворотке крови (для беременных)
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-          и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Соблюдение диеты в течение не менее трех месяцев до зачатия – до нормализации
-          уровня ФА в сыворотке крови (для беременных)
+        quote: Соблюдение диеты не менее трех месяцев до зачатия до нормализации уровня
+          ФА в сыворотке крови (не более 360 мкмоль/л)
     - text: Строгое соблюдение диеты во время всей беременности с ограничением естественного
-        белка
+        белка и заменой его смесью аминокислот
       source_ref:
         protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
         document_url: null
@@ -606,41 +327,16 @@ conditions:
         table_index: null
         row_index: null
         quote: Строгое соблюдение диеты во время всей беременности с ограничением
-          естественного белка
+          естественного белка и заменой его смесью аминокислот
     drug_groups: []
-    drugs:
-    - drug_name: Аминокислотная смесь, не содержащая ФА
-      active_substance: null
-      drug_group: null
-      dose_text: Замена естественного белка; ежедневно одно кормление заменяется смесью
-        аминокислот при введении диетотерапии; проводится до 18 лет, далее по индивидуальным
-        особенностям.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-          и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-        page_start: 4
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Основным методом лечения ФКУ является диетотерапия с ограничением естественного
-          белка и заменой его аминокислотной смесью, не содержащей ФА.
+    drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль лечения ФКУ проводится определением уровня ФА в сыворотке или сухом
-      пятне крови.
+  - text: 'Частота контрольного определения уровня ФА: в течение первого года жизни
+      – 2 раза в месяц; с 1 года до 12 лет – 1 раз в месяц; в дальнейшем – 1 раз в
+      квартал.'
     timing: null
     required_if: []
     expected_actions: []
@@ -655,10 +351,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль лечения ФКУ проводится определением уровня ФА в сыворотке или
-        сухом пятне крови.
-  - text: 'Частота контрольного обследования: в течение первого года жизни – 2 раза
-      в месяц.'
+      quote: 'Частота контрольного определения уровня ФА: в течение первого года жизни
+        – 2 раза в месяц; с 1 года до 12 лет – 1 раз в месяц; в дальнейшем – 1 раз
+        в квартал.'
+  - text: Целевой уровень ФА не должен превышать 600 мкмоль/л.
     timing: null
     required_if: []
     expected_actions: []
@@ -673,57 +369,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Частота контрольного обследования: в течение первого года жизни – 2
-        раза в месяц.'
-  - text: 'Частота контрольного обследования: с 1 года до 12 лет – 1 раз в месяц.'
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Частота контрольного обследования: с 1 года до 12 лет – 1 раз в месяц.'
-  - text: 'Частота контрольного обследования: в дальнейшем - 1 раз в квартал.'
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Частота контрольного обследования: в дальнейшем - 1 раз в квартал.'
-  - text: Уровень ФА не должен превышать 600 мкмоль/л (целевой показатель).
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Уровень ФА не должен превышать 600 мкмоль/л (целевой показатель).
-  - text: Диспансерное наблюдение пациентов с ФКУ, выявленных системой скрининга новорожденных
+      quote: Целевой уровень ФА не должен превышать 600 мкмоль/л.
+  - text: Диспансерное наблюдение пациентов с ФКУ, выявленных системой скрининга новорожденных,
+      и контроль лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -739,8 +387,9 @@ conditions:
       table_index: null
       row_index: null
       quote: Диспансерное наблюдение пациентов с ФКУ, выявленных системой скрининга
-        новорожденных
-  - text: Контроль лечения
+        новорожденных, и контроль лечения
+  - text: Проведение диетотерапии до 18 лет (в дальнейшем — с учетом индивидуальных
+      особенностей)
     timing: null
     required_if: []
     expected_actions: []
@@ -755,9 +404,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль лечения
-  - text: 'Частота контрольного осмотра врачом-генетиком (по месту жительства): до
-      1 года – 1 раз в 6 месяцев; в дальнейшем – ежегодно'
+      quote: Проведение диетотерапии до 18 лет (в дальнейшем — с учетом индивидуальных
+        особенностей)
+  - text: 'Контрольный осмотр врачом-генетиком по месту жительства: до 1 года — 1
+      раз в 6 месяцев, в дальнейшем — ежегодно'
     timing: null
     required_if: []
     expected_actions: []
@@ -772,12 +422,49 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Частота контрольного осмотра врачом-генетиком (по месту жительства):
-        до 1 года – 1 раз в 6 месяцев; в дальнейшем – ежегодно'
+      quote: 'Контрольный осмотр врачом-генетиком по месту жительства: до 1 года —
+        1 раз в 6 месяцев, в дальнейшем — ежегодно'
+  - text: Частота контрольного исследования ФА у беременных — 2 раза в неделю (рекомендуемый
+      уровень 120-360 мкмоль/л)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
+        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Частота контрольного исследования ФА у беременных — 2 раза в неделю (рекомендуемый
+        уровень 120-360 мкмоль/л)
+  - text: Диспансерное наблюдение пациентов с ФКУ осуществляется медико-генетическим
+      центром (отделением, консультацией) в областных организациях здравоохранения.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
+        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диспансерное наблюдение пациентов с ФКУ осуществляется медико-генетическим
+        центром (отделением, консультацией) в областных организациях здравоохранения.
   hospitalization: []
   routing:
   - text: Оказание медицинской помощи новорожденным в амбулаторных и стационарных
-      условиях районных, областных организаций здравоохранения.
+      условиях районных, областных организаций здравоохранения, детям и беременным
+      в областных и республиканских организациях здравоохранения.
     timing: null
     required_if: []
     source_ref:
@@ -792,10 +479,11 @@ conditions:
       table_index: null
       row_index: null
       quote: Оказание медицинской помощи новорожденным в амбулаторных и стационарных
-        условиях районных, областных организаций здравоохранения.
-  - text: Оказание медицинской помощи детям и беременным в областных и республиканских
-      организациях здравоохранения Республики Беларусь, имеющих в своем составе медико-генетические
-      центры (отделения, консультации).
+        условиях районных, областных организаций здравоохранения, детям и беременным
+        в областных и республиканских организациях здравоох
+  - text: При сохранении повышенного уровня ФА при повторном тестировании — госпитализация
+      ребенка в трёхдневный срок в РНПЦ «Мать и дитя» для верификации диагноза, введения
+      терапии и консультации врача-генетика.
     timing: null
     required_if: []
     source_ref:
@@ -809,11 +497,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Оказание медицинской помощи детям и беременным в областных и республиканских
-        организациях здравоохранения Республики Беларусь, имеющих в своем составе
-        медико-генетические центры (отделения, консультац
-  - text: Госпитализация ребенка в РНПЦ «Мать и дитя» в трёхдневный срок при сохранении
-      повышенного уровня ФА при повторном тестировании.
+      quote: При сохранении повышенного уровня ФА при повторном тестировании — госпитализация
+        ребенка в трёхдневный срок в РНПЦ «Мать и дитя» для верификации диагноза,
+        введения терапии и консультации врача-генетик
+  - text: Госпитализация детей с фенилкетонурией для введения диетотерапии в инфекционное
+      отделение новорожденных РНПЦ «Мать и дитя»
     timing: null
     required_if: []
     source_ref:
@@ -827,10 +515,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация ребенка в РНПЦ «Мать и дитя» в трёхдневный срок при сохранении
-        повышенного уровня ФА при повторном тестировании.
-  - text: Госпитализация в инфекционное отделение новорожденных РНПЦ «Мать и дитя»
-      для введения диетотерапии
+      quote: Госпитализация детей с фенилкетонурией для введения диетотерапии в инфекционное
+        отделение новорожденных РНПЦ «Мать и дитя»
+  - text: Амбулаторное наблюдение и контрольные осмотры врачом-генетиком по месту
+      жительства
     timing: null
     required_if: []
     source_ref:
@@ -844,28 +532,27 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация в инфекционное отделение новорожденных РНПЦ «Мать и дитя»
-        для введения диетотерапии
+      quote: Амбулаторное наблюдение и контрольные осмотры врачом-генетиком по месту
+        жительства
+  - text: 'Амбулаторно: медико-генетический центр (отделение, консультация) в областных
+      организациях здравоохранения'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
+        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Амбулаторно: медико-генетический центр (отделение, консультация) в областных
+        организациях здравоохранения'
   red_flags:
-  - text: Превышение пограничного значения концентрации ФА (> 180 мкмоль/л)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_диагностики_лечения_и_диспансерного_наблюдения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП диагностики лечения
-        и диспансерного наблюдения пациентов с заболеванием фенилкетонурия 07.08.2009_№781.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При превышении этих значений проводят повторное тестирование
-  - text: Сохранение повышенного уровня ФА при повторном тестировании
+  - text: Сохранение повышенного уровня ФА (более 180 мкмоль/л) при повторном тестировании
     aliases: []
     red_flag_type: other
     severity: high
@@ -883,10 +570,9 @@ conditions:
       table_index: null
       row_index: null
       quote: При сохранении повышенного уровня ФА при повторном тестировании рекомендуется
-        в трёхдневный срок госпитализировать ребенка в РНПЦ «Мать и дитя» для верификации
-        диагноза
-  - text: 'При отсутствии лечения: задержка моторного и психоречевого развития, микроцефалия,
-      судороги, нарушения поведения'
+        в трёхдневный срок госпитализировать ребенка в РНПЦ «Мать и дитя»
+  - text: Задержка моторного и психоречевого развития, микроцефалия, судороги, нарушения
+      поведения при отсутствии лечения
     aliases: []
     red_flag_type: other
     severity: high
@@ -906,8 +592,8 @@ conditions:
       quote: При отсутствии лечения заболевание проявляется задержкой моторного и
         психоречевого развития, микроцефалией, судорогами, нарушениями поведения и
         другими проявлениями.
-  - text: 'У пациентов, не соблюдающих диету: упорные экземоподобные высыпания, не
-      поддающиеся обычным методам лечения'
+  - text: Упорные экземоподобные высыпания, не поддающиеся обычным методам лечения,
+      при несоблюдении диеты
     aliases: []
     red_flag_type: other
     severity: medium
@@ -925,7 +611,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Одним из осложнений у пациентов с ФКУ, не соблюдающих диету, являются
-        упорные экземоподобные высыпания, не поддающиеся обычным методам лечения.
+        упорные экземоподобные высыпания, не поддающиеся обычным методам лечения
   contraindications: []
   complications: []
   kz_checklist: null
@@ -934,7 +620,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T23:28:36.433322+00:00'
+  extracted_at: '2026-07-23T06:53:07.954376+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -945,4 +631,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T23:28:36.439375+00:00'
+  validated_at: '2026-07-23T06:53:07.961527+00:00'

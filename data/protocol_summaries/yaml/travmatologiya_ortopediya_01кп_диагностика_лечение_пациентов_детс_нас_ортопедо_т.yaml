@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов детского населения с ортопедо-травматологической
+  title: Диагностика и лечение пациентов (детское население) с ортопедо-травматологической
     патологией в стационарных условиях
   url: null
   local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
@@ -27,8 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: ortop_trauma_patology_child
-  name: Ортопедо-травматологическая патология у детей
+- condition_id: orthopedic_trauma_pathology
+  name: Ортопедо-травматологическая патология
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -49,7 +49,9 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Подтверждение диагноза ворсинчато-узелкового синовита по результатам МРТ
+    - text: Подтверждение диагноза ворсинчато-узелкового (виллонодулярного) синовита
+        (пигментного) по результатам МРТ, пункции сустава или биопсии синовиальной
+        оболочки
       logic_group: null
       operator: unknown
       values: []
@@ -66,10 +68,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Подтверждение диагноза ворсинчато-узелкового синовита по результатам
-          МРТ
-    - text: Подтверждение диагноза ворсинчато-узелкового синовита по результатам пункции
-        сустава
+        quote: Подтверждение диагноза ворсинчато-узелкового (виллонодулярного) синовита
+          (пигментного) по результатам МРТ, пункции сустава или биопсии синовиальной
+          оболочки
+    - text: Стойкие и прогрессирующие контрактуры суставов верхних и нижних конечностей
+        при церебральном параличе и паралитических синдромах
       logic_group: null
       operator: unknown
       values: []
@@ -86,10 +89,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Подтверждение диагноза ворсинчато-узелкового синовита по результатам
-          пункции сустава
-    - text: Подтверждение диагноза ворсинчато-узелкового синовита по результатам биопсии
-        синовиальной оболочки
+        quote: Стойкие и прогрессирующие контрактуры суставов верхних и нижних конечностей
+          при церебральном параличе и паралитических синдромах
+    - text: Прогрессирующая нестабильность тазобедренного сустава и децентрация головки
+        при паралитических патологиях
       logic_group: null
       operator: unknown
       values: []
@@ -106,9 +109,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Подтверждение диагноза ворсинчато-узелкового синовита по результатам
-          биопсии синовиальной оболочки
-    - text: нестабильность гемодинамики
+        quote: Прогрессирующая нестабильность тазобедренного сустава и децентрация
+          головки при паралитических патологиях
+    - text: Прогрессирующее нарушение моторной функции у ребенка
       logic_group: null
       operator: unknown
       values: []
@@ -125,10 +128,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: нестабильность гемодинамики
-    - text: механическая нестабильность костей таза (смещение отломков заднего тазового
+        quote: Прогрессирующее нарушение моторной функции у ребенка
+    - text: 'Механическая нестабильность костей таза: смещение отломков заднего тазового
         полукольца более 1 см кверху или кзади, диастаз лобкового сочленения более
-        2,5 см)
+        2,5 см.'
       logic_group: null
       operator: unknown
       values: []
@@ -145,9 +148,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: механическая нестабильность костей таза (смещение отломков заднего
+        quote: 'Механическая нестабильность костей таза: смещение отломков заднего
           тазового полукольца более 1 см кверху или кзади, диастаз лобкового сочленения
-          более 2,5 см)
+          более 2,5 см.'
     optional: []
     exclusion: []
   required_exams:
@@ -171,7 +174,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ крови
+      quote: 'выполняются следующие диагностические исследования: лабораторные исследования:
+        общий анализ крови;'
   - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -192,8 +196,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ мочи
-  - name: Биохимический анализ крови
+      quote: общий анализ мочи;
+  - name: Биохимический анализ крови (общий белок, общий билирубин, мочевина, креатинин,
+      глюкоза, АлАТ, АсАТ, С-реактивный белок, калий, общий кальций, натрий, хлор)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -215,8 +220,8 @@ conditions:
       row_index: null
       quote: биохимический анализ крови (общий белок, общий билирубин, мочевина, креатинин,
         глюкоза, аланинаминотрансфераза (далее – АлАТ), аспартатаминотрансфераза (далее
-        – АсАТ), С-реактивный белок, калий, общий кальций, натрий, хлор)
-  - name: Определение показателей свертывания крови
+        – АсАТ), С-реактивный белок, калий
+  - name: Определение показателей свертывания крови (АЧТВ, D-димеры, МНО, фибриноген)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -237,7 +242,7 @@ conditions:
       table_index: null
       row_index: null
       quote: определение показателей свертывания крови (активированное частичное тромбопластиновое
-        время, D-димеры, международное нормализованное отношение (далее – МНО), фибриноген)
+        время, D-димеры, международное нормализованное отношение (далее – МНО), фибриноген);
   - name: Определение группы крови и резус-фактора
     aliases: []
     exam_type: unknown
@@ -258,8 +263,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение группы крови и резус-фактора
-  - name: Заключение врача-педиатра
+      quote: определение группы крови и резус-фактора;
+  - name: Заключение врача-педиатра о состоянии здоровья и отсутствии медицинских
+      противопоказаний
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -281,7 +287,7 @@ conditions:
       row_index: null
       quote: заключение врача-педиатра о состоянии здоровья пациента и отсутствии
         медицинских противопоказаний к хирургическому вмешательству с отметкой о профилактических
-        прививках
+        прививках;
   - name: Осмотр врачом-анестезиологом-реаниматологом детским
     aliases: []
     exam_type: unknown
@@ -304,7 +310,8 @@ conditions:
       row_index: null
       quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом
         детским
-  - name: Осмотр врачом-анестезиологом-реаниматологом детским
+  - name: Обязательные диагностические исследования при поступлении в приемном отделении
+      (клинические, лабораторные, группа крови и резус-фактор)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -318,16 +325,18 @@ conditions:
       protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 5
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом
-        детским...
+      quote: 'Обязательными диагностическими исследованиями при поступлении пациента
+        с ортопедо-травматологической патологией в приемном отделении являются: 7.1.
+        клинические... 7.2. лабораторные исследования'
   conditional_exams:
-  - name: Серологическое исследование на маркеры сифилиса
+  - name: Серологическое исследование на маркеры сифилиса методом ИФА или RPR (для
+      пациентов старше 13 лет)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -349,8 +358,8 @@ conditions:
       row_index: null
       quote: серологическое исследование на маркеры сифилиса методом иммуноферментного
         анализа или реакция быстрых плазменных реагинов (RPR) при отсутствии достоверного
-        результата обследования за последний месяц (для пациентов старше 13 лет)
-  - name: Флюорография легких
+        результата обследования за последний месяц
+  - name: Флюорография легких (для пациентов старше 17 лет)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -370,8 +379,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: флюорография легких (для пациентов старше 17 лет)
-  - name: Заключение врача – специалиста по профилю сопутствующей патологии
+      quote: флюорография легких (для пациентов старше 17 лет);
+  - name: Заключение врача-специалиста по профилю сопутствующей патологии
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -385,7 +394,7 @@ conditions:
       protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 3
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
@@ -393,7 +402,7 @@ conditions:
       row_index: null
       quote: при наличии у пациента хронического заболевания заключение врача – специалиста
         по профилю сопутствующей патологии об отсутствии медицинских противопоказаний
-        к плановому хирургическому вмешательству
+        к плановому хирургическому вмешательству.
   - name: Повторные лабораторные и функциональные исследования
     aliases: []
     exam_type: unknown
@@ -415,8 +424,9 @@ conditions:
       table_index: null
       row_index: null
       quote: по медицинским показаниям повторно могут выполняться лабораторные и функциональные
-        исследования
-  - name: Лабораторные и функциональные исследования (повторно)
+        исследования.
+  - name: Дополнительные диагностические исследования при поступлении (ЭКГ, флюорография,
+      онкоосмотр, консультации врачей-специалистов)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -430,16 +440,39 @@ conditions:
       protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 5
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '...по медицинским показаниям повторно могут выполняться лабораторные
-        и функциональные исследования.'
-  - name: исследование состояния сосудов нижних конечностей (ультразвуковое исследование,
-      флебо-, ангиография)
+      quote: 'Дополнительными диагностическими исследованиями при поступлении пациента
+        с ортопедо-травматологической патологией в приемное отделение являются: электрокардиограмма;
+        флюорография легких'
+  - name: МРТ, пункция сустава либо биопсия синовиальной оболочки при ворсинчато-узелковом
+      синовите
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: подтверждение диагноза по результатам МРТ, пункции сустава либо биопсии
+        синовиальной оболочки.
+  - name: Компьютерная томография (в том числе 3D)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -461,9 +494,8 @@ conditions:
       row_index: null
       quote: 'По медицинским показаниям в специализированном отделении больничной
         организации выполняются следующие дополнительные диагностические исследования:
-        исследование состояния сосудов нижних конечностей (ультразвуковое исследование,
-        флебо-, ангиография)'
-  - name: исследование функции почек
+        ... компьютерная томография (далее – КТ)'
+  - name: Магнитно-резонансная томография
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -485,8 +517,8 @@ conditions:
       row_index: null
       quote: 'По медицинским показаниям в специализированном отделении больничной
         организации выполняются следующие дополнительные диагностические исследования:
-        исследование функции почек'
-  - name: компьютерная томография (КТ) (в том числе 3D)
+        ... магнитно-резонансная томография (далее – МРТ)'
+  - name: Рентгенография оперированного сегмента
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -500,171 +532,16 @@ conditions:
       protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 4
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'По медицинским показаниям в специализированном отделении больничной
-        организации выполняются следующие дополнительные диагностические исследования:
-        компьютерная томография (далее – КТ) (в том числе 3D)'
-  - name: магнитно-резонансная томография (МРТ)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'По медицинским показаниям в специализированном отделении больничной
-        организации выполняются следующие дополнительные диагностические исследования:
-        магнитно-резонансная томография (далее – МРТ)'
-  - name: миография
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'По медицинским показаниям в специализированном отделении больничной
-        организации выполняются следующие дополнительные диагностические исследования:
-        миография'
-  - name: рентгенограмма органов грудной клетки
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'По медицинским показаниям в специализированном отделении больничной
-        организации выполняются следующие дополнительные диагностические исследования:
-        рентгенограмма органов грудной клетки'
-  - name: реовазография нижних конечностей
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'По медицинским показаниям в специализированном отделении больничной
-        организации выполняются следующие дополнительные диагностические исследования:
-        реовазография нижних конечностей'
+      quote: Рентгенография оперированного сегмента пациентам после остеотомии выполняется
+        1 раз в 1–2 месяца до сращения остеотомии.
   treatment:
     non_drug:
-    - text: Хирургическое вмешательство при церебральном параличе и паралитических
-        синдромах показано при стойких и прогрессирующих контрактурах суставов верхних
-        и нижних конечностей
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое вмешательство при церебральном параличе и паралитических
-          синдромах показано при стойких и прогрессирующих контрактурах суставов верхних
-          и нижних конечностей
-    - text: Хирургическое вмешательство при церебральном параличе и паралитических
-        синдромах показано при прогрессирующей нестабильности тазобедренного сустава
-        и децентрации головки
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое вмешательство при церебральном параличе и паралитических
-          синдромах показано при прогрессирующей нестабильности тазобедренного сустава
-          и децентрации головки
-    - text: Хирургическое вмешательство при церебральном параличе и паралитических
-        синдромах показано при выраженном болевом синдроме, сочетающемся с вывихом
-        бедра
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое вмешательство при церебральном параличе и паралитических
-          синдромах показано при выраженном болевом синдроме, сочетающемся с вывихом
-          бедра
-    - text: Хирургическое вмешательство при церебральном параличе и паралитических
-        синдромах показано при прогрессирующем нарушении моторной функции у ребенка
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое вмешательство при церебральном параличе и паралитических
-          синдромах показано при прогрессирующем нарушении моторной функции у ребенка
     - text: Рецессии (интрамускулярное удлинение) напряженных мышечных групп
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
@@ -689,8 +566,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Сухожильно-мышечные пластики на сегментах конечностей
-    - text: Корригирующие остеотомии сегментов конечностей при контрактурах соответствующих
-        суставов
+    - text: Корригирующие остеотомии сегментов конечностей при контрактурах суставов
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
         document_url: null
@@ -701,10 +577,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Корригирующие остеотомии сегментов конечностей при контрактурах соответствующих
-          суставов
+        quote: Корригирующие остеотомии сегментов конечностей при контрактурах суставов
     - text: Артродезы суставов при выраженных деформациях лучезапястных суставов,
-        стоп, иных
+        стоп и иных
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
         document_url: null
@@ -716,8 +591,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Артродезы суставов при выраженных деформациях лучезапястных суставов,
-          стоп, иных
-    - text: Временные эпифизиодезы зон роста при контрактурах соответствующих суставов
+          стоп и иных
+    - text: Временные эпифизиодезы зон роста при контрактурах суставов
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
         document_url: null
@@ -728,7 +603,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Временные эпифизиодезы зон роста при контрактурах соответствующих суставов
+        quote: Временные эпифизиодезы зон роста при контрактурах суставов
     - text: Остеотомия костей таза и (или) бедра при дисплазии тазобедренных суставов
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
@@ -770,7 +645,8 @@ conditions:
         quote: Паллиативные вмешательства (миотомии, удаление головок бедер, support-остеотомии
           при выраженном болевом синдроме при GMFCS-V)
     - text: Иммобилизация гипсовой повязкой или ортезом из скотч-каста, турбокаста
-        сроком 4–6 недель (при сухожильно-мышечных пластиках)
+        сроком 4–6 недель (при сухожильно-мышечных пластиках) или на срок сращения
+        остеотомии
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
         document_url: null
@@ -782,21 +658,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Иммобилизация гипсовой повязкой или ортезом из скотч-каста, турбокаста
-          сроком 4–6 недель (при сухожильно-мышечных пластиках)
-    - text: Иммобилизация гипсовой повязкой или ортезом из скотч-каста, турбокаста
-        на срок сращения остеотомии (при хирургических вмешательствах на костях)
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Иммобилизация гипсовой повязкой или ортезом из скотч-каста, турбокаста
-          на срок сращения остеотомии (при хирургических вмешательствах на костях)
+          сроком 4–6 недель (при сухожильно-мышечных пластиках) или на срок сращения
+          остеотомии
     - text: Лечебная физическая культура (ЛФК)
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
@@ -810,8 +673,8 @@ conditions:
         row_index: null
         quote: Лечебная физическая культура (ЛФК)
     - text: Физиотерапевтическое лечение (магнитотерапия, фонофорез, лазеротерапия,
-        ультравысокие частоты (УВЧ), электрофорез, электростимуляция ослабленных мышечных
-        групп при отсутствии судорожного синдрома)
+        УВЧ, электрофорез, электростимуляция ослабленных мышечных групп при отсутствии
+        судорожного синдрома)
       source_ref:
         protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
         document_url: null
@@ -823,17 +686,119 @@ conditions:
         table_index: null
         row_index: null
         quote: Физиотерапевтическое лечение (магнитотерапия, фонофорез, лазеротерапия,
-          ультравысокие частоты (УВЧ), электрофорез, электростимуляция ослабленных
-          мышечных групп при отсутствии судорожного синдрома)
+          УВЧ, электрофорез, электростимуляция ослабленных мышечных групп при отсутствии
+          судорожного синдрома)
+    - text: Массаж
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Массаж
+    - text: Наружный остеосинтез с применением С-рамы или переднего стержневого тазового
+        фиксатора
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наружный остеосинтез с применением С-рамы или переднего стержневого
+          тазового фиксатора
+    - text: Внутренний остеосинтез
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Внутренний остеосинтез
+    - text: Плановое удаление металлоконструкций (не ранее чем через 4 года после
+        хирургического вмешательства)
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Плановое удаление металлоконструкций (не ранее чем через 4 года после
+          хирургического вмешательства)
     drug_groups: []
-    drugs: []
+    drugs:
+    - drug_name: Лекарственные препараты для периоперационной антибиотикопрофилактики
+        (приложение 2)
+      active_substance: null
+      drug_group: null
+      dose_text: Определяется инструкцией по применению. Не показана при хирургических
+        вмешательствах без имплантации чужеродного материала.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: С целью периоперационной антибиотикопрофилактики применяется один из
+          ЛП, указанных в приложении 2.
+    - drug_name: Анальгезирующие лекарственные препараты для послеоперационного обезболивания
+        (приложение 3)
+      active_substance: null
+      drug_group: null
+      dose_text: Назначение одного из ЛП на выбор в зависимости от интенсивности болевого
+        синдрома
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При болевом синдроме в послеоперационном периоде с обезболивающей целью
+          (на выбор в зависимости от интенсивности болевого синдрома) назначается
+          один из ЛП, указанных в приложении 3.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение пациентов при церебральном параличе, гемиплегии и
-      др. в амбулаторных условиях осуществляет врач-травматолог-ортопед (хирург) совместно
-      с неврологом 1 раз в 3 месяца до 2 лет, далее 1–2 раза в год до 18 лет.
+  - text: Осмотр врачом-анестезиологом-реаниматологом детским в ходе предоперационной
+      подготовки
     timing: null
     required_if: []
     expected_actions: []
@@ -847,13 +812,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение пациентов при церебральном параличе, гемиплегии
-        и др. в амбулаторных условиях осуществляет врач-травматолог-ортопед (хирург)
-        совместно с неврологом 1 раз в 3 месяца до 2 лет, да
-  - text: Медицинское наблюдение пациентов при впалой груди, килевидной груди, других
-      врожденных деформациях грудной клетки в амбулаторных условиях осуществляет врач-травматолог-ортопед
-      (врач – детский хирург) 1 раз в 3 месяца до 2 лет, далее 1–2 раза в год до 18
-      лет.
+      quote: Осмотр врачом-анестезиологом-реаниматологом детским в ходе предоперационной
+        подготовки
+  - text: Повторные лабораторные и функциональные исследования перед операцией по
+      медицинским показаниям
     timing: null
     required_if: []
     expected_actions: []
@@ -867,9 +829,94 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинское наблюдение пациентов при впалой груди, килевидной груди,
-        других врожденных деформациях грудной клетки в амбулаторных условиях осуществляет
-        врач-травматолог-ортопед (врач – детский хирург) '
+      quote: Повторные лабораторные и функциональные исследования перед операцией
+        по медицинским показаниям
+  - text: Иммобилизация гипсовой повязкой или ортезом из скотч-каста/турбокаста на
+      4–6 недель или на срок сращения остеотомии
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Иммобилизация гипсовой повязкой или ортезом из скотч-каста/турбокаста
+        на 4–6 недель или на срок сращения остеотомии
+  - text: Проведение ЛФК, физиотерапевтического лечения и массажа в стационарных условиях
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Проведение ЛФК, физиотерапевтического лечения и массажа в стационарных
+        условиях
+  - text: 'Медицинское наблюдение в амбулаторно-поликлинической организации по месту
+      жительства врачом-травматологом-ортопедом совместно с детским неврологом: 1
+      раз в 3 месяца до 2 лет, далее 1–2 раза в год до 18 лет.'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинское наблюдение в амбулаторно-поликлинической организации по
+        месту жительства врачом-травматологом-ортопедом совместно с детским неврологом:
+        1 раз в 3 месяца до 2 лет, далее 1–2 раза в год до 1'
+  - text: Рентгенография оперированного сегмента после остеотомии 1 раз в 1–2 месяца
+      до сращения остеотомии.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография оперированного сегмента после остеотомии 1 раз в 1–2 месяца
+        до сращения остеотомии.
+  - text: Плановое удаление металлоконструкций при деформациях грудной клетки осуществляется
+      не ранее чем через 4 года.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Плановое удаление металлоконструкций при деформациях грудной клетки осуществляется
+        не ранее чем через 4 года.
   hospitalization: []
   routing:
   - text: госпитализация
@@ -886,7 +933,8 @@ conditions:
       table_index: null
       row_index: null
       quote: госпитализация
-  - text: госпитализация
+  - text: Лечение в специализированном отделении больничной организации (стационарные
+      условия)
     timing: null
     required_if: []
     source_ref:
@@ -899,8 +947,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: госпитализация
+      quote: Лечение в специализированном отделении больничной организации (стационарные
+        условия)
+  - text: 'госпитализация: выполнение дополнительных диагностических исследований
+      и оперативных вмешательств в специализированном отделении больничной организации'
     timing: null
     required_if: []
     source_ref:
@@ -913,8 +963,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: амбулаторно
+      quote: 'госпитализация: выполнение дополнительных диагностических исследований
+        и оперативных вмешательств в специализированном отделении больничной организации'
+  - text: 'амбулаторно: медицинское наблюдение пациентов в амбулаторно-поликлинической
+      организации по месту жительства (месту пребывания)'
     timing: null
     required_if: []
     source_ref:
@@ -927,29 +979,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: амбулаторно
+      quote: 'амбулаторно: медицинское наблюдение пациентов в амбулаторно-поликлинической
+        организации по месту жительства (месту пребывания)'
   red_flags:
-  - text: Периоперационная антибиотикопрофилактика не показана при хирургических вмешательствах
-      без имплантации чужеродного материала.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_01кп_диагностика_лечение_пациентов_детс_нас_ортопедо_т
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/01КП_Диагностика_лечение_пациентов_детс_нас_ортопедо-травматологической_патологией_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Периоперационная антибиотикопрофилактика не показана при хирургических
-        вмешательствах без имплантации чужеродного материала.
-  - text: Электростимуляция ослабленных мышечных групп противопоказана при судорожном
-      синдроме.
+  - text: Выраженный болевой синдром, сочетающийся с вывихом бедра
     aliases: []
     red_flag_type: other
     severity: high
@@ -965,9 +998,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '...электростимуляция ослабленных мышечных групп (при отсутствии судорожного
-        синдрома))'
-  - text: нестабильность гемодинамики
+      quote: выраженный болевой синдром, сочетающийся вывихом бедра;
+  - text: Нестабильность гемодинамики при травме таза
     aliases: []
     red_flag_type: other
     severity: high
@@ -983,10 +1015,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями для наружного остеосинтеза... при возникновении
-        у пациента состояний, требующих экстренного медицинского вмешательства являются:
-        нестабильность гемодинамики'
-  - text: механическая нестабильность костей таза
+      quote: 'при возникновении у пациента состояний, требующих экстренного медицинского
+        вмешательства являются: нестабильность гемодинамики;'
+  - text: Механическая нестабильность костей таза
     aliases: []
     red_flag_type: other
     severity: high
@@ -1002,11 +1033,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями для наружного остеосинтеза... при возникновении
-        у пациента состояний, требующих экстренного медицинского вмешательства являются:
-        механическая нестабильность костей таза (смещение отломков заднего тазового
+      quote: механическая нестабильность костей таза (смещение отломков заднего тазового
         полукольца более 1 см кверху или кзади, диастаз лобкового сочленения более
-        2,5 см).'
+        2,5 см).
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1015,7 +1044,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:05:15.937690+00:00'
+  extracted_at: '2026-07-23T11:04:19.584461+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1023,11 +1052,7 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: needs_human_review
+  status: valid
   errors: []
-  warnings:
-  - level: warning
-    code: duplicate_exam
-    message: Дублирующееся обследование
-    path: conditions[ortop_trauma_patology_child].required_exams[7]
-  validated_at: '2026-07-20T18:05:15.946388+00:00'
+  warnings: []
+  validated_at: '2026-07-23T11:04:19.596355+00:00'

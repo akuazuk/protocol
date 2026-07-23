@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Трансплантация донорских тканей при заболеваниях и повреждениях органа зрения",
+    "title": "Трансплантация донорских тканей при заболеваниях и повреждениях органа зрения (взрослое и детское население)",
     "url": null,
     "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
     "document_sha256": null,
@@ -32,23 +32,1165 @@
   },
   "conditions": [
     {
-      "condition_id": "donor_tissue_transplant_eye_diseases",
-      "name": "Трансплантация донорских тканей при заболеваниях и повреждениях органа зрения",
+      "condition_id": "transplant_tkaney_organa_zreniya",
+      "name": "Заболевания и повреждения органа зрения, требующие трансплантации донорских тканей",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "B24"
+        "B24",
+        "C90.0",
+        "K04.7",
+        "B10.14",
+        "B18"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Количество клеток эндотелия роговичного аллографта не менее 2000/см2",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Количество клеток эндотелия роговичного аллографта не менее 2000/см2"
+            }
+          },
+          {
+            "text": "Отсутствие выраженного полимегатизма и полиморфизма эндотелия роговицы",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Отсутствие выраженного полимегатизма и полиморфизма эндотелия роговицы"
+            }
+          },
+          {
+            "text": "Отсутствие центральных стромальных рубцов, помутнений, инородных тел, инфильтратов и опухолей роговицы",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Отсутствие центральных стромальных рубцов, помутнений, инородных тел, инфильтратов и опухолей роговицы"
+            }
+          },
+          {
+            "text": "Отрицательные серологические тесты донора АМ на маркеры ВИЧ, гепатита B, гепатита C, сифилиса в течение беременности",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Отрицательные серологические тесты донора АМ на маркеры ВИЧ, гепатита B, гепатита C, сифилиса в течение беременности"
+            }
+          },
+          {
+            "text": "Неэффективность консервативной терапии воспалительного очага в роговице",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Неэффективность консервативной терапии воспалительного очага в роговице"
+            }
+          },
+          {
+            "text": "Дефект конъюнктивы более 2/3 или до 1/2 объема конъюнктивального свода",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дефект конъюнктивы более 2/3 или до 1/2 объема конъюнктивального свода"
+            }
+          },
+          {
+            "text": "Дефект, эктазированный рубец или стафилома склеры",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Дефект, эктазированный рубец или стафилома склеры"
+            }
+          },
+          {
+            "text": "Наличие васкуляризованного бельма роговицы или болезни трансплантата",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие васкуляризованного бельма роговицы или болезни трансплантата"
+            }
+          },
+          {
+            "text": "Гнойные язвы роговицы",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гнойные язвы роговицы"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
+        {
+          "name": "Визометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обязательные исследования: визометрия; тонометрия; периметрия; биомикроскопия; офтальмоскопия; эхоскопия и эхобиометрия"
+          }
+        },
+        {
+          "name": "Тонометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обязательные исследования: визометрия; тонометрия; периметрия; биомикроскопия; офтальмоскопия; эхоскопия и эхобиометрия"
+          }
+        },
+        {
+          "name": "Периметрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обязательные исследования: визометрия; тонометрия; периметрия; биомикроскопия; офтальмоскопия; эхоскопия и эхобиометрия"
+          }
+        },
+        {
+          "name": "Биомикроскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обязательные исследования: визометрия; тонометрия; периметрия; биомикроскопия; офтальмоскопия; эхоскопия и эхобиометрия"
+          }
+        },
+        {
+          "name": "Офтальмоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обязательные исследования: визометрия; тонометрия; периметрия; биомикроскопия; офтальмоскопия; эхоскопия и эхобиометрия"
+          }
+        },
+        {
+          "name": "Эхоскопия и эхобиометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "обязательные исследования: визометрия; тонометрия; периметрия; биомикроскопия; офтальмоскопия; эхоскопия и эхобиометрия"
+          }
+        },
+        {
+          "name": "Оптическая когерентная томография переднего отрезка глаза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "оптическая и когерентная томография переднего отрезка глаза; кератометрия; кератотопография; пахиметрия"
+          }
+        },
+        {
+          "name": "Кератометрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "оптическая и когерентная томография переднего отрезка глаза; кератометрия; кератотопография; пахиметрия"
+          }
+        },
+        {
+          "name": "Кератотопография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "оптическая и когерентная томография переднего отрезка глаза; кератометрия; кератотопография; пахиметрия"
+          }
+        },
+        {
+          "name": "Пахиметрия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "оптическая и когерентная томография переднего отрезка глаза; кератометрия; кератотопография; пахиметрия"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "24.2. клинико-лабораторные исследования: общий анализ крови; общий анализ мочи;"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "24.2. клинико-лабораторные исследования: общий анализ крови; общий анализ мочи;"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимический анализ крови: общий белок, общий билирубин, С-реактивный белок, натрий, калий, хлор, кальций, глюкоза, холестерин, мочевина, креатинин;"
+          }
+        },
+        {
+          "name": "Исследование показателей гемостаза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследование показателей гемостаза (определение протромбинового времени с расчетом международного нормализованного отношения, определение активированного частичного тромбопластинового времени...)"
+          }
+        },
+        {
+          "name": "Исследования для диагностики сифилитической инфекции",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследования для диагностики сифилитической инфекции;"
+          }
+        },
+        {
+          "name": "Электрокардиограмма",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "электрокардиограмма;"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Ультразвуковая биомикроскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "дополнительные исследования (по медицинским показаниям): ультразвуковая биомикроскопия"
+          }
+        },
+        {
+          "name": "Электроретинография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "дополнительные исследования (по медицинским показаниям): ультразвуковая биомикроскопия; электроретинография"
+          }
+        },
+        {
+          "name": "Исследование проходимости слезных канальцев",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "исследование проходимости слезных канальцев"
+          }
+        },
+        {
+          "name": "Вирусологическое исследование отделяемого конъюнктивальной полости и соскоба роговицы",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "вирусологическое исследование отделяемого конъюнктивальной полости и соскоба роговицы из области язвы на наличие возбудителей или антигенов возбудителей аденовирусной и герпесвирусной инфекции"
+          }
+        },
+        {
+          "name": "Забор материала для бактериологического исследования (при перфорациях роговицы)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "дополнительно (по медицинским показаниям): забор материала для бактериологического исследования;"
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Трансплантация донорских тканей при заболеваниях и повреждениях органа зрения",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Трансплантация донорских тканей при заболеваниях и повреждениях органа зрения"
+            }
+          },
+          {
+            "text": "Экстренная лечебная кератопластика (амниотической мембраной, донорской роговицей) при перфорации роговицы",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Экстренная лечебная кератопластика (амниотической мембраной, донорской роговицей) при перфорации роговицы"
+            }
+          },
+          {
+            "text": "Сохранение трансплантатов в сбалансированных офтальмологических растворах и криоконсервация (-80 °C)",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Сохранение трансплантатов в сбалансированных офтальмологических растворах и криоконсервация (-80 °C)"
+            }
+          },
+          {
+            "text": "Кератопластика и реконструктивные хирургические вмешательства с использованием аутологичных и донорских тканей",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Кератопластика и реконструктивные хирургические вмешательства с использованием аутологичных и донорских тканей"
+            }
+          },
+          {
+            "text": "Склеропластика при дефекте, эктазированном рубце или стафиломе склеры",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Склеропластика при дефекте, эктазированном рубце или стафиломе склеры"
+            }
+          },
+          {
+            "text": "Трансплантация амниотической мембраны при антиглаукомных хирургических вмешательствах",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Трансплантация амниотической мембраны при антиглаукомных хирургических вмешательствах"
+            }
+          },
+          {
+            "text": "Окклюзия крупных сосудов, врастающих в роговицу",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Окклюзия крупных сосудов, врастающих в роговицу"
+            }
+          },
+          {
+            "text": "Хирургическое лечение сопутствующей офтальмологической патологии не менее чем за три месяца до оптической кератопластики",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое лечение сопутствующей офтальмологической патологии не менее чем за три месяца до оптической кератопластики"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Лоратадин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки 10 мг 1 раз в сутки внутрь 5-7 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лоратадин, таблетки 10 мг 1 раз в сутки внутрь 5-7 дней"
+            }
+          },
+          {
+            "drug_name": "Дексаметазон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор 1 мг/мл (капли глазные) по 2 капли 3-5 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "дексаметазон, раствор 1 мг/мл (капли глазные) по 2 капли 3-5 раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Преднизолон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки 5 мг, внутрь (режим дозирования по медицинским показаниям)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "преднизолон, таблетки 5 мг, внутрь (режим дозирования по медицинским показаниям, в зависимости от основной и сопутствующей патологии)."
+            }
+          },
+          {
+            "drug_name": "Тобрамицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор (капли глазные) 3 мг/мл 1-2 капли 5 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "тобрамицин, раствор (капли глазные) 3 мг/мл 1-2 капли 5 раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Ципрофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор 3 мг/мл 1-2 капли 5 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ципрофлоксацин, раствор 3 мг/мл 1-2 капли 5 раз в сутки"
+            }
+          },
+          {
+            "drug_name": "Офлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор (капли глазные) 3 мг/мл 1-2 капли 4 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "офлоксацин, раствор (капли глазные) 3 мг/мл 1-2 капли 4 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Моксифлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор (глазные капли) 5 мг/мл 1 капля 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "моксифлоксацин, раствор (глазные капли) 5 мг/мл 1 капля 3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Тимолол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор 5 мг/мл (капли глазные) по 2 капли 2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "тимолол, раствор 5 мг/мл (капли глазные) по 2 капли 2 раза в сутки"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Обследование и лечение в раннем и позднем послеоперационном периоде и в амбулаторных условиях по вопросам патологии трансплантата и связанных с ним осложнений",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обследование и лечение в раннем и позднем послеоперационном периоде и в амбулаторных условиях по вопросам патологии трансплантата и связанных с ним осложнений"
+          }
+        },
+        {
+          "text": "Предоперационное лечение в амбулаторных условиях не более чем за три месяца до оптической кератопластики при наличии васкуляризованного бельма роговицы или болезни трансплантата",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Предоперационное лечение в амбулаторных условиях не более чем за три месяца до оптической кератопластики при наличии васкуляризованного бельма роговицы или болезни трансплантата"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [
+        {
+          "text": "Подготовка к трансплантации, хирургическое вмешательство, последующее обследование и лечение осуществляются в организациях здравоохранения областного и республиканского уровней врачами-офтальмологами",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Подготовка к трансплантации, хирургическое вмешательство, последующее обследование и лечение осуществляются в организациях здравоохранения областного и республиканского уровней врачами-офтальмологами"
+          }
+        },
+        {
+          "text": "Амбулаторное наблюдение по вопросам патологии трансплантата и связанных с ним осложнений",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторное наблюдение по вопросам патологии трансплантата и связанных с ним осложнений"
+          }
+        },
+        {
+          "text": "амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "амбулаторно"
+          }
+        },
         {
           "text": "госпитализация",
           "timing": null,
@@ -65,21 +1207,187 @@
             "row_index": null,
             "quote": "госпитализация"
           }
+        },
+        {
+          "text": "При перфорации роговицы лечебная кератопластика АМ может выполняться по экстренным медицинским показаниям с органосохранной целью",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При перфорации роговицы лечебная кератопластика АМ может выполняться по экстренным медицинским показаниям с органосохранной целью"
+          }
+        },
+        {
+          "text": "Показания к лечебной передней послойной кератопластике: тяжелые и особо тяжелые ожоги, угроза расплавления/десцеметоцеле/перфорации роговицы, перфорации до 2 мм, травмы с дефектом ткани, истончение, удаление новообразований",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Показания к лечебной передней послойной кератопластике: тяжелые и особо тяжелые ожоги, угроза расплавления/десцеметоцеле/перфорации роговицы, перфорации до 2 мм, травмы с дефектом ткани, истончение, у"
+          }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Признаки микробиологического роста (аэробные или анаэробные бактерии, дрожжи или грибы) в трансплантате",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "признаки микробиологического роста (аэробные или анаэробные бактерии, дрожжи или грибы);"
+          }
+        },
+        {
+          "text": "Доказанные активные системные инфекции у донора (бактериальные, вирусные, грибковые, паразитарные)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "доказанные активные системные инфекции, включая бактериальные, вирусные, грибковые или паразитарные инфекции (менингит, энцефалит, гепатит, эндокардит и иные);"
+          }
+        },
+        {
+          "text": "Посмертное время донора более 48 часов или признаки гнилостных процессов разложения",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "посмертное время более 48 часов с момента констатации биологической смерти; наличие признаков гнилостных процессов разложения на теле умершего донора;"
+          }
+        },
+        {
+          "text": "Наличие в анамнезе донора подтвержденных нейродегенеративных заболеваний, злокачественных опухолей, туберкулеза, малярии",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "злокачественные опухоли, метастазы; наличие в анамнезе подтвержденных нейродегенеративных заболеваний... активные формы туберкулеза, малярии;"
+          }
+        },
+        {
+          "text": "Острые и хронические системные заболевания в стадии декомпенсации",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "острые и хронические системные заболевания в стадии декомпенсации;"
+          }
+        },
+        {
+          "text": "Развитие эндофтальмита и панофтальмита",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "развитие эндофтальмита и панофтальмита."
+          }
+        },
+        {
+          "text": "Угроза симпатической офтальмии на парном глазу",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_т_тканей",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-тканей.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "угроза симпатической офтальмии на парном глазу;"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10"
-        ],
-        "should_have": [],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -87,20 +1395,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-01T22:46:25.404148+00:00",
+    "extracted_at": "2026-07-23T11:03:22.217193+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-01T22:46:25.405062+00:00"
+    "validated_at": "2026-07-23T11:03:22.239567+00:00"
   }
 }

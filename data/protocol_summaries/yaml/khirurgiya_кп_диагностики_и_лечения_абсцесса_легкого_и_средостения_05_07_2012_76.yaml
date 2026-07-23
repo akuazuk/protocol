@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение абсцесса легкого и средостения
+  title: Клинический протокол диагностики и лечения абсцесса легкого и средостения
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения абсцесса легкого
     и средостения 05.07.2012 № 768.pdf
@@ -20,7 +20,7 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - adult
+  - adult_and_child
   age_min_years: null
   age_max_years: null
   sex: unknown
@@ -43,7 +43,7 @@ conditions:
   diagnostic_criteria:
     required:
     - text: Ограниченное гнойное воспаление легочной ткани с деструкцией ее паренхимы
-        и бронхов, их расплавлением и образованием полости.
+        и бронхов, их расплавлением и образованием полости
       logic_group: null
       operator: unknown
       values: []
@@ -62,7 +62,28 @@ conditions:
         table_index: null
         row_index: null
         quote: Ограниченное гнойное воспаление легочной ткани с деструкцией ее паренхимы
-          и бронхов, их расплавлением и образованием полости.
+          и бронхов, их расплавлением и образованием полости
+    - text: На обзорной рентгенограмме — полость без горизонтального уровня (при остром
+        гнойном абсцессе с хорошим бронхиальным дренажем)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостения_05_07_2012_76
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения абсцесса
+          легкого и средостения 05.07.2012 № 768.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: На обзорной рентгенограмме — полость без горизонтального уровня (при
+          остром гнойном абсцессе с хорошим бронхиальным дренажем)
     optional: []
     exclusion: []
   required_exams:
@@ -110,7 +131,9 @@ conditions:
       table_index: null
       row_index: null
       quote: Общий анализ мочи
-  - name: Биохимическое исследование крови (белок и его фракции; мочевина; АсАТ; АлАТ)
+  - name: 'Биохимическое исследование крови: определение концентрации белка и его
+      фракций; мочевины; определение активности аспартатаминотрансферазы (АсАТ); аланинаминотрансферазы
+      (АлАТ)'
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -131,9 +154,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Биохимическое исследование крови: определение концентрации белка и его
-        фракций; мочевины; определение активности аспартатаминотрансферазы (АсАТ);
-        аланинаминотрансферазы (АлАТ)'
+      quote: 'Биохимическое исследо- вание крови: определение концентрации белка и
+        его фракций; мо- чевины; определение ак- тивности аспартатамино- трансферазы
+        (АсАТ); аланинаминотрансферазы (АлАТ)'
   - name: Микроскопическое и бактериологическое исследование мокроты
     aliases: []
     exam_type: unknown
@@ -155,7 +178,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Микроскопическое и бактериологическое исследование мокроты
+      quote: Микроскопическое и бактериологическое ис- следование мокроты
   - name: Рентгенография органов грудной полости
     aliases: []
     exam_type: unknown
@@ -222,6 +245,28 @@ conditions:
       table_index: null
       row_index: null
       quote: Бронхоскопия
+  - name: Микробиологическое исследование на аэробные и факультативно анаэробные микроорганизмы
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостения_05_07_2012_76
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения абсцесса
+        легкого и средостения 05.07.2012 № 768.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: на аэробные и факультативно анаэробные микроорганизмы
   conditional_exams:
   - name: Исследование гемокультуры
     aliases: []
@@ -244,8 +289,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Исследование гемокультуры (оптимально проводить забор двух проб венозной
-        крови из разных вен с интервалом 30-60 мин)
+      quote: Исследование ге- мокультуры (опти- мально проводить забор двух проб венозной
+        крови из разных вен с интервалом 30-60 мин
   - name: Спирография
     aliases: []
     exam_type: unknown
@@ -270,8 +315,8 @@ conditions:
       quote: Спирография
   treatment:
     non_drug:
-    - text: Хирургическое лечение проводится в зависимости от варианта течения гнойно-некротического
-        легочного процесса.
+    - text: Хирургическое лечение в зависимости от варианта течения гнойно-некротического
+        легочного процесса
       source_ref:
         protocol_id: khirurgiya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостения_05_07_2012_76
         document_url: null
@@ -283,11 +328,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое лечение проводится в зависимости от варианта течения
-          гнойно-некротического легочного процесса.
+        quote: Хирургическое лечение в зависимости от варианта течения гнойно-некротического
+          легочного процесса
     - text: Паллиативные хирургические вмешательства, направленные на создание оттока
-        (улучшение бронхиального дренажа) из внутрилегочных полостей, необходимы в
-        остром периоде течения болезни.
+        (улучшение бронхиального дренажа) из внутрилегочных полостей
       source_ref:
         protocol_id: khirurgiya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостения_05_07_2012_76
         document_url: null
@@ -300,11 +344,10 @@ conditions:
         table_index: null
         row_index: null
         quote: Паллиативные хирургические вмешательства, направленные на создание
-          оттока (улучшение бронхиального дренажа) из внутрилегочных полостей, необходимы
-          в остром периоде течения болезни.
+          оттока (улучшение бронхиального дренажа) из внутрилегочных полостей
     drug_groups: []
     drugs:
-    - drug_name: Амоксициллин/клавулановая кислота
+    - drug_name: амоксициллин/клавулановая кислота
       active_substance: null
       drug_group: null
       dose_text: 1,2 г в/в 3 раза в сутки
@@ -326,12 +369,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Препараты выбора: амоксициллин/клавулановая кислота 1,2 г в/в 3 раза
-          в сутки'
-    - drug_name: Цефотаксим
+        quote: амоксицил- лин/клавулановая кислота 1,2 г в/в 3 раза в сутки
+    - drug_name: цефотаксим
       active_substance: null
       drug_group: null
-      dose_text: 1– 2 г в/в 2-3 раза в сутки
+      dose_text: 1–2 г в/в 2-3 раза в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -350,8 +392,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: цефотаксим 1– 2 г в/в 2-3 раза в сутки
-    - drug_name: Левофлоксацин
+        quote: цефотак- сим 1– 2 г в/в 2-3 раза в сутки в/в
+    - drug_name: левофлоксацин
       active_substance: null
       drug_group: null
       dose_text: 0,5 г в/в 1 раз в сутки
@@ -374,7 +416,7 @@ conditions:
         table_index: null
         row_index: null
         quote: левофлоксацин 0,5 г в/в 1 раз в сутки
-    - drug_name: Метронидазол
+    - drug_name: метронидазол
       active_substance: null
       drug_group: null
       dose_text: 0,5 г в/в 3 раза в сутки
@@ -397,7 +439,7 @@ conditions:
         table_index: null
         row_index: null
         quote: метронидазол 0,5 г в/в 3 раза в сутки
-    - drug_name: Амикацин
+    - drug_name: амикацин
       active_substance: null
       drug_group: null
       dose_text: 15-20 мг/кг 1 раз в сутки
@@ -420,7 +462,7 @@ conditions:
         table_index: null
         row_index: null
         quote: амикацин 15-20 мг/кг 1 раз в сутки
-    - drug_name: Цефепим
+    - drug_name: цефепим
       active_substance: null
       drug_group: null
       dose_text: 1-2 г в/в 2 раза в сутки
@@ -446,7 +488,7 @@ conditions:
     - drug_name: Меропенем
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -465,11 +507,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Лекарственные средства резерва: меропенем'
+        quote: 'Лекарственные средства резерва: меропенем, дорипенем, эртапенем'
     - drug_name: Дорипенем
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -488,11 +530,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Лекарственные средства резерва: меропенем, дорипенем'
+        quote: 'Лекарственные средства резерва: меропенем, дорипенем, эртапенем'
     - drug_name: Эртапенем
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -511,11 +553,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Лекарственные средства резерва: эртапенем'
+        quote: 'Лекарственные средства резерва: меропенем, дорипенем, эртапенем'
     - drug_name: Имипенем / циластатин
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -534,11 +576,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: имипенем /циластатин
+        quote: имипенем /циластатин, тейко- планин, ванкомицин, линезолид
     - drug_name: Тейкопланин
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -557,11 +599,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: тейко-планин
+        quote: имипенем /циластатин, тейко- планин, ванкомицин, линезолид
     - drug_name: Ванкомицин
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -580,11 +622,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ванкомицин
+        quote: имипенем /циластатин, тейко- планин, ванкомицин, линезолид
     - drug_name: Линезолид
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -603,11 +645,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: линезолид
-    - drug_name: Цефоперазон/сульбактам
+        quote: имипенем /циластатин, тейко- планин, ванкомицин, линезолид
+    - drug_name: Цефоперазон / сульбактам
       active_substance: null
       drug_group: null
-      dose_text: Лекарственное средство резерва
+      dose_text: Не указана (лекарственное средство резерва)
       frequency_text: null
       duration_text: null
       route: null
@@ -630,10 +672,45 @@ conditions:
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Обязательные лабораторные исследования проводятся 2 раза в процессе лечения,
+      а также контрольное исследование
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостения_05_07_2012_76
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения абсцесса
+        легкого и средостения 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательные лабораторные исследования проводятся 2 раза в процессе лечения,
+        а также контрольное исследование
+  - text: Средняя длительность лечения составляет 21 день
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_абсцесса_легкого_и_средостения_05_07_2012_76
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения абсцесса
+        легкого и средостения 05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Средняя длительность лечения составляет 21 день
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Оказание медицинской помощи в стационарных условиях районных, областных
+      и республиканских организаций здравоохранения
     timing: null
     required_if: []
     source_ref:
@@ -647,7 +724,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: Оказание медицинской помощи в стационарных условиях районных, областных
+        и республиканских организаций здравоохранения
   - text: Лечение в терапевтическом (пульмонологическом) отделении показано только
       пациентам с острым гнойным абсцессом с хорошим бронхиальным дренажем (на обзорной
       рентгенограмме – полость без горизонтального уровня).
@@ -668,8 +746,7 @@ conditions:
         пациентам с острым гнойным абсцессом с хорошим бронхиальным дренажем (на обзорной
         рентгенограмме – полость без горизонтального '
   - text: Пациенты с другими клиническими формами и вариантами течения должны направляться
-      для лечения в торакальные хирургические отделения, так как в остром периоде
-      течения болезни необходимы паллиативные хирургические вмешательства.
+      для лечения в торакальные хирургические отделения.
     timing: null
     required_if: []
     source_ref:
@@ -684,8 +761,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Пациенты с другими клиническими формами и вариантами течения должны направляться
-        для лечения в торакальные хирургические отделения, так как в остром периоде
-        течения болезни необходимы паллиативные хир
+        для лечения в торакальные хирургические отделения.
   red_flags: []
   contraindications: []
   complications: []
@@ -695,7 +771,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:45:27.304243+00:00'
+  extracted_at: '2026-07-23T08:37:25.784682+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -703,7 +779,11 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T16:45:27.320324+00:00'
+  warnings:
+  - level: warning
+    code: quote_not_in_source
+    message: Цитата не найдена в исходном тексте
+    path: conditions[abscess_lung_and_mediastinum].required_exams[7]
+  validated_at: '2026-07-23T08:37:25.797855+00:00'

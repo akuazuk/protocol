@@ -29,19 +29,20 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: neuroischemic_diabetic_foot_syndrome
+- condition_id: neiroishemicheskaya_sds
   name: Нейроишемическая форма синдрома диабетической стопы
   synonyms: []
   abbreviations: []
   icd10_codes:
+  - I43
+  - B24
   - E10.7
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Критическая ишемия конечности на фоне диабетической полинейропатии (НИО
-        СДС).
+    - text: Критическая ишемия конечности, развившаяся на фоне диабетической полинейропатии
       logic_group: null
       operator: unknown
       values: []
@@ -60,10 +61,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Критическая ишемия конечности на фоне диабетической полинейропатии
-          (НИО СДС).
-    - text: Нарушение чувствительности, боли в покое или акрально расположенные язвенно-некротические
-        дефекты стопы.
+        quote: Критическая ишемия конечности, развившаяся на фоне диабетической полинейропатии
+    - text: Нарушение чувствительности, боли в покое и/или акрально расположенные
+        язвенно-некротические дефекты стопы
       logic_group: null
       operator: unknown
       values: []
@@ -82,10 +82,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Нарушение чувствительности, боли в покое или акрально расположенные
-          язвенно-некротические дефекты стопы.
-    - text: Гангрена пальца (пальцев), язвенно-некротические дефекты межпальцевых
-        промежутков.
+        quote: Нарушение чувствительности, боли в покое и/или акрально расположенные
+          язвенно-некротические дефекты стопы
+    - text: Гангрена пальца (пальцев) и язвенно-некротические дефекты межпальцевых
+        промежутков
       logic_group: null
       operator: unknown
       values: []
@@ -104,97 +104,17 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Гангрена пальца (пальцев), язвенно-некротические дефекты межпальцевых
-          промежутков.
-    - text: Классификация по Вагнеру (0-5 степень), поражение артерий и диабетическая
-        полинейропатия.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_и_хирургического_ле
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-          диагностики и хирургического лечения пациентов с нейроишемической формой
-          синдрома диабетической стопы 20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Классификация по Вагнеру (0-5 степень), поражение артерий и диабетическая
-          полинейропатия.
+        quote: Гангрена пальца (пальцев) и язвенно-некротические дефекты межпальцевых
+          промежутков
     optional: []
     exclusion: []
   required_exams: []
-  conditional_exams:
-  - name: Ангиография
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_и_хирургического_ле
-      document_url: null
-      local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-        диагностики и хирургического лечения пациентов с нейроишемической формой синдрома
-        диабетической стопы 20.03.2013 № 348.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: ангиографические кабинеты (отделения интервенционной эндоваскулярной
-        хирургии).
-  treatment:
-    non_drug:
-    - text: Хирургическое лечение (гнойная хирургия)
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_и_хирургического_ле
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-          диагностики и хирургического лечения пациентов с нейроишемической формой
-          синдрома диабетической стопы 20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое лечение (гнойная хирургия)
-    - text: Интервенционная эндоваскулярная хирургия
-      source_ref:
-        protocol_id: endokrinologiya_narusheniya_obmena_veshchestv_кп_диагностики_и_хирургического_ле
-        document_url: null
-        local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
-          диагностики и хирургического лечения пациентов с нейроишемической формой
-          синдрома диабетической стопы 20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Интервенционная эндоваскулярная хирургия
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
+  conditional_exams: []
+  treatment: null
   follow_up: []
   hospitalization: []
   routing:
-  - text: Госпитализация (в стационарных условиях)
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -209,10 +129,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация (в стационарных условиях)
+      quote: госпитализация
   red_flags:
-  - text: Глубокое поражение тканей с вовлечением костей, остеомиелит, гнойные артриты,
-      абсцессы, флегмоны
+  - text: Критическая ишемия конечности на фоне диабетической полинейропатии
     aliases: []
     red_flag_type: other
     severity: high
@@ -230,9 +149,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: глубокое поражение тканей с вовлечением костей и развитием остеомиелитического
-        процесса, гнойных артритов, глубоких абсцессов и флегмон
-  - text: Гангрена пальца или отдела стопы, обширная гангрена
+      quote: HefipourueMnqecKar Soprtaa cHHApoMa ruaierraqecrcofi crorlbl (HI,IO CAC)
+        - oro KpHTHT{ecKar HrreMr4r KoHeqHocrr4, pa3BnBruascr Ha $oHe Aua6eruqecKofi
+        noluHefipon arr4vt.
+  - text: Развитие гангрены пальца или отделов стопы
     aliases: []
     red_flag_type: other
     severity: high
@@ -250,9 +170,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: развитие гангрены пальца или отдела стопы; обширная гангрена, захватывающая
-        два или все три отдела стопы.
-  - text: Флегмона стопы
+      quote: 4 cre[eHb -pil3BHTHe raHrpeHbr naJr3ra vilu orAena cTorIbI; 5 crerleHb
+        o6urrapHafl, raHrpeHa, 3axBarbrBaloular ABa wrwr Bce rpn oTAena cTorIbI.
+  - text: Глубокое поражение тканей с остеомиелитом, гнойными артритами, глубокими
+      абсцессами и флегмоной
     aliases: []
     red_flag_type: other
     severity: high
@@ -264,13 +185,14 @@ conditions:
       local_path: minzdrav_protocols/endokrinologiya-narusheniya-obmena-veshchestv/КП
         диагностики и хирургического лечения пациентов с нейроишемической формой синдрома
         диабетической стопы 20.03.2013 № 348.pdf
-      page_start: 6
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Указанные процессы могут осложниться флегмоной стопы.
+      quote: 3 crerleHb uy6oxoe nopaxeHne rxaHefi c BoBJreqeHHeM xocrefi v pa3BI{TLIeM
+        ocreoMuerrrTvrrrecKoro rrpouecca, rHofiHtrx aprpr4ToB, uy6oxux Oupe4eJIeHHe
   contraindications: []
   complications: []
   kz_checklist: null
@@ -279,7 +201,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T15:40:00.267376+00:00'
+  extracted_at: '2026-07-23T07:40:27.518626+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -290,4 +212,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T15:40:00.267684+00:00'
+  validated_at: '2026-07-23T07:40:27.518831+00:00'

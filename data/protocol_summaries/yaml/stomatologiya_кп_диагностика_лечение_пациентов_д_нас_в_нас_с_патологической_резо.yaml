@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение патологической резорбции зуба
+  title: Диагностика и лечение пациентов (детское и взрослое население) с патологической
+    резорбцией зуба
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
   document_sha256: null
@@ -26,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: pathological_tooth_resorption
+- condition_id: patologicheskaya_rezorbtsiya_zuba
   name: Патологическая резорбция зуба
   synonyms: []
   abbreviations: []
@@ -40,8 +41,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: 'Сбор анамнеза: выявление факторов инициации резорбции (воспаление, травма,
-        сдавление, реплантация, общие заболевания)'
+    - text: Данные анамнеза и выявление факторов инициации патологической резорбции
+        зуба
       logic_group: null
       operator: unknown
       values: []
@@ -58,9 +59,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Сбор анамнеза: выявление факторов инициации резорбции (воспаление,
-          травма, сдавление, реплантация, общие заболевания)'
-    - text: Изменение цвета зуба (розовый, серый)
+        quote: Данные анамнеза и выявление факторов инициации патологической резорбции
+          зуба
+    - text: Изменение цвета зуба (розовое окрашивание, серый цвет)
       logic_group: null
       operator: unknown
       values: []
@@ -77,8 +78,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Изменение цвета зуба (розовый, серый)
-    - text: Зондирование придесневой области (кровоточивость, дефект корня)
+        quote: Изменение цвета зуба (розовое окрашивание, серый цвет)
+    - text: Кровоточивость десны и дефект твердых тканей корня при зондировании придесневой
+        области
       logic_group: null
       operator: unknown
       values: []
@@ -95,8 +97,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Зондирование придесневой области (кровоточивость, дефект корня)
-    - text: Осмотр слизистой (воспаление периодонта, свищевой ход)
+        quote: Кровоточивость десны и дефект твердых тканей корня при зондировании
+          придесневой области
+    - text: Воспаление тканей периодонта или наличие наружного отверстия свищевого
+        хода при осмотре слизистой
       logic_group: null
       operator: unknown
       values: []
@@ -113,8 +117,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Осмотр слизистой (воспаление периодонта, свищевой ход)
-    - text: Пальпация (болезненность альвеолярного отростка)
+        quote: Воспаление тканей периодонта или наличие наружного отверстия свищевого
+          хода при осмотре слизистой
+    - text: Болезненность слизистой альвеолярного отростка при пальпации в области
+        причинного зуба
       logic_group: null
       operator: unknown
       values: []
@@ -131,8 +137,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Пальпация (болезненность альвеолярного отростка)
-    - text: Термометрия (повышенная чувствительность, боль)
+        quote: Болезненность слизистой альвеолярного отростка при пальпации в области
+          причинного зуба
+    - text: Повышенная чувствительность или боль при термометрии
       logic_group: null
       operator: unknown
       values: []
@@ -149,8 +156,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Термометрия (повышенная чувствительность, боль)
-    - text: Электроодонтометрия (обычные/повышенные показатели)
+        quote: Повышенная чувствительность или боль при термометрии
+    - text: Обычные или повышенные показатели электроодонтометрии
       logic_group: null
       operator: unknown
       values: []
@@ -167,9 +174,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Электроодонтометрия (обычные/повышенные показатели)
-    - text: Лучевые методы исследования (деструкция корня, периодонтальной связки,
-        верхушки корня и кости)
+        quote: Обычные или повышенные показатели электроодонтометрии
+    - text: Деструкция наружной поверхности корня, внутрикорневого дентина, периодонтальной
+        связки, верхушки корня и прилегающей кости по данным лучевых методов исследования
       logic_group: null
       operator: unknown
       values: []
@@ -186,8 +193,66 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лучевые методы исследования (деструкция корня, периодонтальной связки,
-          верхушки корня и кости)
+        quote: Деструкция наружной поверхности корня, внутрикорневого дентина, периодонтальной
+          связки, верхушки корня и прилегающей кости по данным лучевых методов исследования
+    - text: Убыль твердых тканей (дентина и цемента) корня зуба, обусловленная влиянием
+        неблагоприятных факторов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Убыль твердых тканей (дентина и цемента) корня зуба, обусловленная
+          влиянием неблагоприятных факторов
+    - text: Прогрессирующая или преходящая убыль твердых тканей зуба
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Прогрессирующая или преходящая убыль твердых тканей зуба
+    - text: Наличие деструкции цемента/дентина наружной поверхности корня или внутрикорневого
+        предентина и дентина
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие деструкции цемента/дентина наружной поверхности корня или внутрикорневого
+          предентина и дентина
     optional: []
     exclusion: []
   required_exams:
@@ -211,8 +276,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Для постановки диагноза осуществляются: клиническое обследование пациента'
-  - name: Инструментальные и физические методы исследования
+      quote: клиническое обследование пациента;
+  - name: Обязательные, дополнительные инструментальные и физические методы исследования
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -232,11 +297,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: обязательные, дополнительные инструментальные и физические методы исследования
-  - name: Консультация врача общей практики
+      quote: обязательные, дополнительные инструментальные и физические методы исследования;
+  conditional_exams:
+  - name: Консультации врачей-специалистов
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -253,95 +319,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: консультации врачей-специалистов (врача общей практики)
-  - name: Консультация врача-терапевта
+      quote: консультации врачей-специалистов (врача общей практики, врача-терапевта,
+        врача-педиатра, врача-стоматолога-ортодонта, врача-стоматолога-хирурга).
+  - name: Прицельная внутриротовая контактная рентгенография зубов или конусно-лучевая
+      компьютерная томография зубов
     aliases: []
     exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: консультации врачей-специалистов (... врача-терапевта)
-  - name: Консультация врача-педиатра
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: консультации врачей-специалистов (... врача-педиатра)
-  - name: Консультация врача-стоматолога-ортодонта
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: консультации врачей-специалистов (... врача-стоматолога-ортодонта)
-  - name: Консультация врача-стоматолога-хирурга
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: консультации врачей-специалистов (... врача-стоматолога-хирурга)
-  - name: Прицельная внутриротовая контактная рентгенография зубов
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -360,33 +344,9 @@ conditions:
       row_index: null
       quote: 'лучевые методы исследования: прицельная внутриротовая контактная рентгенография
         зубов или конусно-лучевая компьютерная томография зубов.'
-  - name: Конусно-лучевая компьютерная томография зубов
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'лучевые методы исследования: прицельная внутриротовая контактная рентгенография
-        зубов или конусно-лучевая компьютерная томография зубов.'
-  conditional_exams: []
   treatment:
     non_drug:
-    - text: Определение и устранение предрасполагающих факторов патологической резорбции
-        зуба.
+    - text: Определение и устранение предрасполагающих факторов
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
         document_url: null
@@ -397,10 +357,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение и устранение предрасполагающих факторов патологической
-          резорбции зуба.
+        quote: Определение и устранение предрасполагающих факторов
     - text: Мотивация к формированию здоровых повседневных привычек, имеющих отношение
-        к стоматологическому здоровью.
+        к стоматологическому здоровью
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
         document_url: null
@@ -412,9 +371,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Мотивация к формированию здоровых повседневных привычек, имеющих отношение
-          к стоматологическому здоровью.
+          к стоматологическому здоровью
     - text: Гигиенические мероприятия, предупреждающие дальнейшее развитие резорбтивного
-        процесса и его осложнений.
+        процесса
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
         document_url: null
@@ -426,10 +385,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Гигиенические мероприятия, предупреждающие дальнейшее развитие резорбтивного
-          процесса и его осложнений.
-    - text: Эндодонтическое лечение зуба с временной пломбировкой корневого канала
-        лекарственными средствами на основе гидроксида кальция и последующей постоянной
-        обтурацией (при прогрессировании процесса резорбции).
+          процесса
+    - text: Эндодонтическое лечение зуба с постоянной обтурацией корневого канала
+        и постановкой постоянной пломбы
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
         document_url: null
@@ -440,33 +398,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Эндодонтическое лечение зуба с временной пломбировкой корневого канала
-          лекарственными средствами на основе гидроксида кальция и последующей постоянной
-          обтурацией (при прогрессировании процесса резорбц
-    - text: Эндодонтическое лечение зубов с предварительной временной пломбировкой
-        корневого канала лекарственными средствами на основе гидроксида кальция и
-        последующей постоянной обтурацией (при генерализованной резорбции).
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Эндодонтическое лечение зубов с предварительной временной пломбировкой
-          корневого канала лекарственными средствами на основе гидроксида кальция
-          и последующей постоянной обтурацией (при генерализованной
+        quote: Эндодонтическое лечение зуба с постоянной обтурацией корневого канала
+          и постановкой постоянной пломбы
     drug_groups: []
     drugs:
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
       dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
-        (1–3 нажатия) аэрозоля наносят на слизистую оболочку ротовой полости или десну,
-        или смазывают ватным тампоном.
+        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
+        ротовой полости или десну.
       frequency_text: null
       duration_text: null
       route: null
@@ -484,9 +425,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл.
-          Одну порцию (1–3 нажатия на клапан) аэрозоля наносят на слизистую ротовой
-          полости или десну. Можно также наносить путем смазывания ватным тампоном.
+        quote: Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл
+          Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку ротовой полости или десну.
     - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
@@ -509,13 +450,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лидокаин/Хлоргексидин Анестезирующий гель в шприцах 12,5 г Для аппликационной
+        quote: Лидокаин/ Хлоргексидин Анестезирующий гель в шприцах 12,5 г Для аппликационной
           анестезии слизистой оболочки ротовой полости, в том числе перед инъекционной
           анестезией.
-    - drug_name: Гидроксид кальция
+    - drug_name: Лекарственные средства на основе гидроксида кальция
       active_substance: null
       drug_group: null
-      dose_text: Временная пломбировка корневого канала.
+      dose_text: Временная пломбировка корневого канала
       frequency_text: null
       duration_text: null
       route: null
@@ -533,13 +474,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: эндодонтическое лечение зуба с временной пломбировкой корневого канала
-          лекарственными средствами на основе гидроксида кальция
-    - drug_name: Артикаин/Эпинефрин
+        quote: с временной пломбировкой корневого канала лекарственными средствами
+          на основе гидроксида кальция
+    - drug_name: Артикаин / Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: Разовая доза индивидуальна. До 7 мг/кг массы тела взрослым, до 500
-        мг (12,5 мл) за процедуру.
+      dose_text: Раствор для инъекций; взрослым до 7 мг на 1 кг массы тела (максимально
+        до 500 мг / 12,5 мл)
       frequency_text: null
       duration_text: null
       route: null
@@ -557,15 +498,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Разовую дозу врач-специалист назначает индивидуально, учитывая состояние
-          области нанесения лекарственного средства и общее состояние пациента. При
-          выполнении одной лечебной процедуры взрослым можно вводить артикаин в дозе
-          до 7 мг на 1 кг массы тела.
+        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
+          в дозе до 7 мг на 1 кг массы тела.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: 'Контрольные медицинские осмотры: через 6 месяцев после завершения лечения.'
+  - text: Контрольный медицинский осмотр через 6 месяцев после завершения лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -579,9 +518,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Контрольные медицинские осмотры: через 6 месяцев после завершения лечения.'
-  - text: 'Динамический контроль состояния зубов: 2 раза в год (каждые 6 месяцев)
-      в течение первого года после лечения.'
+      quote: Контрольный медицинский осмотр через 6 месяцев после завершения лечения
+  - text: Динамический контроль 2 раза в год в течение первого года после лечения
+      и 1 раз в год в следующие 2 года
     timing: null
     required_if: []
     expected_actions: []
@@ -595,9 +534,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Динамический контроль состояния зубов: 2 раза в год (каждые 6 месяцев)
-        в течение первого года после лечения.'
-  - text: 'Динамический контроль состояния зубов: 1 раз в год в следующие 2 года.'
+      quote: Динамический контроль 2 раза в год в течение первого года после лечения
+        и 1 раз в год в следующие 2 года
+  - text: Повторная оценка состояния твердых тканей, пломб, периодонта, гигиены и
+      лучевая диагностика на каждом контрольном осмотре
     timing: null
     required_if: []
     expected_actions: []
@@ -611,30 +551,29 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Динамический контроль состояния зубов: 1 раз в год в следующие 2 года.'
-  - text: 'При каждом контрольном осмотре: повторная оценка состояния твердых тканей
-      зубов, зубных рядов, пломб, зубных протезов, периодонта и слизистой оболочки
-      ротовой полости; оценка гигиенического состояния ротовой полости, идентификация
-      оттенков цвета зуба с резорбцией.'
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'При каждом контрольном осмотре: повторная оценка состояния твердых тканей
-        зубов, зубных рядов, пломб, зубных протезов, периодонта и слизистой оболочки
-        ротовой полости; оценка гигиенического состояния '
+      quote: Повторная оценка состояния твердых тканей, пломб, периодонта, гигиены
+        и лучевая диагностика на каждом контрольном осмотре
   hospitalization: []
   routing: []
-  red_flags: []
+  red_flags:
+  - text: Перфорирующая резорбция (сквозной дефект стенки корня или корневого канала)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_лечение_пациентов_д_нас_в_нас_с_патологической_резо
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_лечение_пациентов_д-нас_в-нас_с_патологической_резорбцией_зуба_пост_МЗ_2025_53.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: перфорирующая – сквозной дефект стенки корня или корневого канала, образовавшийся
+        вследствие прогрессирования резорбтивного процесса;
   contraindications: []
   complications: []
   kz_checklist: null
@@ -643,7 +582,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:11:24.633166+00:00'
+  extracted_at: '2026-07-23T10:52:57.149690+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -654,4 +593,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:11:24.639151+00:00'
+  validated_at: '2026-07-23T10:52:57.153958+00:00'

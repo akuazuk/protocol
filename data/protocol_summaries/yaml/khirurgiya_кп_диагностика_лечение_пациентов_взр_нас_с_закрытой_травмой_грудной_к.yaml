@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослого населения с закрытой травмой грудной
-    клетки в стационарных условиях
+  title: Диагностика и лечение пациентов с закрытой травмой грудной клетки в стационарных
+    условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
   document_sha256: null
@@ -27,26 +27,119 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: closed_chest_trauma
+- condition_id: zakrytaya_travma_grudnoj_kletki
   name: Закрытая травма грудной клетки
   synonyms: []
   abbreviations: []
   icd10_codes:
   - S20
-  - S21
-  - S22
-  - S23
-  - S24
-  - S25
-  - S26
-  - S27
-  - S28
   - S29
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
+  diagnostic_criteria:
+    required:
+    - text: '1 клиническая группа: крайне тяжелое состояние, нестабильная гемодинамика,
+        нарушения витальных функций'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '1 клиническая группа: крайне тяжелое состояние, нестабильная гемодинамика,
+          нарушения витальных функций'
+    - text: '2 клиническая группа: тяжелое состояние без критического нарушения жизненно-важных
+        функций'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '2 клиническая группа: тяжелое состояние без критического нарушения
+          жизненно-важных функций'
+    - text: '3 клиническая группа: состояние средней степени тяжести'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '3 клиническая группа: состояние средней степени тяжести'
+    - text: '4 клиническая группа: удовлетворительное состояние'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: '4 клиническая группа: удовлетворительное состояние'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Лабораторно-инструментальные диагностические исследования
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осуществляются лабораторно-инструментальные диагностические исследования
+        и определяются медицинские показания для хирургического лечения
   conditional_exams:
   - name: Определение параметров кислотно-основного состояния
     aliases: []
@@ -69,8 +162,7 @@ conditions:
       table_index: null
       row_index: null
       quote: определение параметров кислотно-основного состояния;
-  - name: Биохимический анализ крови (билирубин, глюкоза, мочевина, общий белок, АСТ,
-      АЛТ, альфа-амилаза, С-реактивный белок, электролиты)
+  - name: Биохимический анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -92,7 +184,7 @@ conditions:
       row_index: null
       quote: биохимический анализ крови (определение содержания билирубина, глюкозы,
         мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы,
-        С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор));
+        С-реактивного белка, электролитов
   - name: Определение групп крови по системам АВ0 и Rh-фактор
     aliases: []
     exam_type: unknown
@@ -114,7 +206,7 @@ conditions:
       table_index: null
       row_index: null
       quote: определение групп крови по системам АВ0 и Rh-фактор;
-  - name: Коагулограмма (АЧТВ, протромбиновое время, МНО, фибриноген)
+  - name: Коагулограмма
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -137,7 +229,7 @@ conditions:
       quote: коагулограмма (определение активированного частичного тромбопластинового
         времени, протромбинового времени, международного нормализованного отношения,
         фибриногена;
-  - name: Ультразвуковое исследование плевральных и/или органов брюшной полостей
+  - name: Ультразвуковое исследование плевральных и (или) органов брюшной полостей
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -200,7 +292,7 @@ conditions:
       table_index: null
       row_index: null
       quote: фиброгастродуоденоскопия;
-  - name: Фибробронхоскопия (ФБС)
+  - name: Фибробронхоскопия
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -263,7 +355,7 @@ conditions:
       table_index: null
       row_index: null
       quote: ангиография;
-  - name: Пункция плевральной полости (ППП)
+  - name: Пункция плевральной полости
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -305,11 +397,433 @@ conditions:
       table_index: null
       row_index: null
       quote: консультации врачей-специалистов;
-  treatment: null
+  treatment:
+    non_drug:
+    - text: Реанимационные мероприятия и устранение жизнеугрожающих осложнений
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Реанимационные мероприятия и устранение жизнеугрожающих осложнений
+    - text: Пункция и дренирование одной или обеих плевральных полостей
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пункция и дренирование одной или обеих плевральных полостей
+    - text: Экстренная переднебоковая торакотомия в 4–5 межреберье
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экстренная переднебоковая торакотомия в 4–5 межреберье
+    - text: Интенсивная посиндромная терапия
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Интенсивная посиндромная терапия
+    - text: Восстановление проходимости дыхательных путей и респираторная поддержка
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Восстановление проходимости дыхательных путей и респираторная поддержка
+    - text: Ранняя активизация, оксигенотерапия, дыхательная гимнастика, физиотерапевтические
+        процедуры
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ранняя активизация, оксигенотерапия, дыхательная гимнастика, физиотерапевтические
+          процедуры
+    - text: Постельный режим с умеренной экстензией шеи (валик под лопатки) при неосложненном
+        переломе грудины
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Постельный режим с умеренной экстензией шеи (валик под лопатки) при
+          неосложненном переломе грудины
+    - text: Торакоцентез и дренирование плевральной полости (активная вакуум-аспирация
+        или пассивное ДПП по Бюлау)
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Торакоцентез и дренирование плевральной полости (активная вакуум-аспирация
+          или пассивное ДПП по Бюлау)
+    drug_groups: []
+    drugs:
+    - drug_name: Кетопрофен
+      active_substance: null
+      drug_group: null
+      dose_text: в/м или в/в капельно по 100 мг каждые 12 ч; табл. 100 мг внутрь по
+        1 табл. 2 раза/сут; суппозитории 100 мг ректально 1 или 2 раза/сут
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кетопрофен, раствор для внутривенного и внутримышечного введения...
+          по 100 мг каждые 12 часов; таблетки... по 1 таблетке 2 раза в сутки; суппозитории...
+          1 или 2 раза в сутки
+    - drug_name: Декскетопрофен
+      active_substance: null
+      drug_group: null
+      dose_text: глубоко в/м 50 мг каждые 8–12 ч. Суточная доза не более 150 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: декскетопрофен, раствор... вводится глубоко в мышцу. Рекомендованная
+          доза составляет 50 мг с интервалом введения 8–12 часов. Суммарная суточная
+          доза не должна превышать 150 мг
+    - drug_name: Диклофенак
+      active_substance: null
+      drug_group: null
+      dose_text: в/м по 75 мг через 12 ч; внутрь табл. 50 мг / капс. 75 мг; ректально
+        50–100 мг. Макс. суточная доза 150 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: диклофенак, раствор... внутримышечно по 75 мг через 12 часов... суммарная
+          суточная доза... не должна превышать 150 мг
+    - drug_name: Метамизол натрия
+      active_substance: null
+      drug_group: null
+      dose_text: в/в или в/м по 500–1000 мг через 8–12 ч, не более 2000 мг в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: метамизол натрия, раствор... внутривенно или внутримышечно, по 500–1000
+          мг, через 8–12 часов, не более 2000 мг в сутки
+    - drug_name: Кеторолак
+      active_substance: null
+      drug_group: null
+      dose_text: в/м по 10–30 мг каждые 4–6 ч (макс. 90 мг/сут); внутрь 10 мг 3–4
+        раза/сут (не более 5 дней)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кеторолак, раствор... внутримышечно по 10–30 мг, каждые 4–6 часов,
+          не более 90 мг в сутки; таблетки... внутрь 10 мг 3–4 раза в сутки, не более
+          5 дней
+    - drug_name: Лорноксикам
+      active_substance: null
+      drug_group: null
+      dose_text: в/в или в/м 8 мг; внутрь 8–16 мг в 2–3 приема. Макс. суточная доза
+        16 мг
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: лорноксикам... Парентерально 8 мг внутривенно или внутримышечно...
+          Внутрь суточная доза составляет 8–16 мг... Максимальная суточная доза не
+          должна превышать 16 мг
+    - drug_name: Муколитики
+      active_substance: null
+      drug_group: null
+      dose_text: в рамках консервативного лечения
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: мероприятия по медицинской профилактике развития пневмонии (ранняя
+          активизация, оксигенотерапия, дыхательная гимнастика, муколитики, физиотерапевтические
+          процедуры)
+    - drug_name: Далтепарин натрия
+      active_substance: null
+      drug_group: null
+      dose_text: 'умеренный риск: 2500 МЕ за 1–2 ч до операции; доп. риск: 5000 МЕ
+        подкожно вечером накануне или 2500 МЕ за 1–2 ч до и через 12 ч'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: далтепарин натрия... У пациентов с умеренным риском тромбоза 2500 МЕ
+          за 1–2 часа до хирургического вмешательства, у пациентов с дополнительным
+          риском...
+    - drug_name: Эноксапарин кальция
+      active_substance: null
+      drug_group: null
+      dose_text: 'умеренный риск: 2000 МЕ п/к за 2 ч до операции; высокий риск: 4000
+        МЕ за 12 ч до и возобновление через 12 ч после'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: эноксапарин кальция... При умеренном риске тромбоза... 2000 МЕ (0,2
+          мл) подкожно за 2 часа до хирургического вмешательства, при высоком риске
+          тромбоза – 4000 МЕ...
+    - drug_name: Надропарин кальция
+      active_substance: null
+      drug_group: null
+      dose_text: 'умеренный риск: 2850 МЕ п/к 1 раз/сут; высокий риск: 2850 МЕ (при
+        массе 51–70 кг) или 3800 МЕ (при массе > 70 кг) за 12 ч до операции'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: надропарин кальция... При умеренном риске... 2850 МЕ (0,3 мл) подкожно
+          1 раз в сутки. При высоком риске... за 12 часов до хирургического вмешательства
+          2850 МЕ... или 3800 МЕ
+    - drug_name: Бемипарин натрия
+      active_substance: null
+      drug_group: null
+      dose_text: профилактическая доза перед хирургическим вмешательством
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: бемипарин натрия, раствор для инъекций
+    - drug_name: сальбутамол
+      active_substance: null
+      drug_group: null
+      dose_text: 100 мкг/доз, по 1 ингаляции каждые 4–6 часов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: сальбутамол, аэрозоль для ингаляций дозированный (аэрозоль для ингаляций),
+          100 мкг/доз, по 1 ингаляции каждые 4–6 часов;
+    - drug_name: фенотерол/ипратропия бромид
+      active_substance: null
+      drug_group: null
+      dose_text: (50 мкг + 20 мкг)/доза, по 2 вдоха каждые 6–8 часов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фенотерол/ипратропия бромид, аэрозоль дозированный для ингаляций (50
+          мкг + 20 мкг)/доза, по 2 вдоха каждые 6–8 часов;
+    procedures: []
+    surgery: []
+    source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: '1 клиническая группа (крайне тяжелое состояние): доставка в операционную,
+      проведение реанимационных мероприятий'
     timing: null
     required_if: []
     source_ref:
@@ -322,8 +836,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: госпитализация
+      quote: '1 клиническая группа (крайне тяжелое состояние): доставка в операционную,
+        проведение реанимационных мероприятий'
+  - text: '2 клиническая группа (тяжелое состояние): госпитализация в отделение анестезиологии
+      и реанимации'
     timing: null
     required_if: []
     source_ref:
@@ -336,8 +852,96 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  red_flags: []
+      quote: '2 клиническая группа (тяжелое состояние): госпитализация в отделение
+        анестезиологии и реанимации'
+  - text: '3 клиническая группа (средняя степень тяжести): госпитализация в хирургическое
+      или хирургическое торакальное отделение'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '3 клиническая группа (средняя степень тяжести): госпитализация в хирургическое
+        или хирургическое торакальное отделение'
+  - text: '4 клиническая группа (удовлетворительное состояние): лечение в амбулаторных
+      условиях'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: '4 клиническая группа (удовлетворительное состояние): лечение в амбулаторных
+        условиях'
+  red_flags:
+  - text: Крайне тяжелое состояние с нестабильной гемодинамикой и нарушениями витальных
+      функций
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: пациенты в крайне тяжелом состоянии с нестабильной гемодинамикой с нарушениями
+        витальных функций организма доставляются в операционную
+  - text: Массивное внутриплевральное кровотечение и (или) ТС
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: экстренная переднебоковая торакотомия в 4–5 межреберье при массивном
+        внутриплевральном кровотечении и (или) ТС
+  - text: Напряженный пневмоторакс или нарастающий пневмомедиастинум
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_к
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_закрытой_травмой_грудной_клетки_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Торакоцентез и ДПП показаны при: напряженном пневмотораксе... нарастающем
+        пневмомедиастинуме'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -346,7 +950,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:30:33.066645+00:00'
+  extracted_at: '2026-07-23T08:28:14.292466+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -357,4 +961,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:30:33.066958+00:00'
+  validated_at: '2026-07-23T08:28:14.305231+00:00'

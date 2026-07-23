@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение вновь диагностированного острого миелоидного лейкоза
+  title: Диагностика и лечение пациентов старше 18 лет с вновь диагностированным острым
+    миелоидным лейкозом
   url: null
   local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
   document_sha256: null
@@ -20,14 +21,13 @@ rubric:
 applicability:
   population:
   - adult
-  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: acute_myeloid_leukemia
+- condition_id: ostryj_mieloidnyj_lejkoz
   name: Острый миелоидный лейкоз
   synonyms: []
   abbreviations: []
@@ -39,8 +39,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Выявление цитопенических синдромов и клинических проявлений острого миелоидного
-        лейкоза
+    - text: Выявление пациентов с цитопеническими синдромами и клиническими проявлениями
+        ОМЛ
       logic_group: null
       operator: unknown
       values: []
@@ -57,12 +57,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Выявление цитопенических синдромов и клинических проявлений острого
-          миелоидного лейкоза
-    - text: 'Клинические проявления: рецидивирующие инфекции, лихорадка, общая слабость,
-        геморрагический синдром (петехии, кровоточивость десен, носовые кровотечения,
-        мено- и метроррагии), оссалгии, снижение массы тела, потливость, гиперплазия
-        десен'
+        quote: Выявление пациентов с цитопеническими синдромами и клиническими проявлениями
+          ОМЛ
+    - text: Верификация диагноза по результатам исследований костного мозга (миелограмма,
+        ИФТ, цитогенетические и молекулярно-генетические исследования)
       logic_group: null
       operator: unknown
       values: []
@@ -79,10 +77,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Клинические проявления: рецидивирующие инфекции, лихорадка, общая
-          слабость, геморрагический синдром (петехии, кровоточивость десен, носовые
-          кровотечения, мено- и метроррагии), оссалгии, снижение массы'
-    - text: Наличие в анамнезе химиотерапии или лучевой терапии
+        quote: Верификация диагноза по результатам исследований костного мозга (миелограмма,
+          ИФТ, цитогенетические и молекулярно-генетические исследования)
+    - text: 'Полная ремиссия: отсутствие клинических симптомов лейкемии, < 5 % бластов
+        в нормоклеточном КМ; > 1,0 х 109/л гранулоцитов и > 100 х 109/л тромбоцитов
+        в гемограмме; отсутствие экстрамедуллярного поражения'
       logic_group: null
       operator: unknown
       values: []
@@ -99,9 +98,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Наличие в анамнезе химиотерапии или лучевой терапии
-    - text: Случаи миелодиспластического синдрома (МДС)/острого миелоидного лейкоза
-        (ОМЛ) в семье
+        quote: 'Полная ремиссия: отсутствие клинических симптомов лейкемии, < 5 %
+          бластов в нормоклеточном КМ; > 1,0 х 109/л гранулоцитов и > 100 х 109/л
+          тромбоцитов в гемограмме; отсутствие экстрамедуллярного пораже'
+    - text: 'Парциальная ремиссия: бласты > 5 %, но < 15 % в КМ; > 1,0 х 109/л гранулоцитов
+        и > 100 х 109/л тромбоцитов в гемограмме; отсутствие экстрамедуллярного поражения'
       logic_group: null
       operator: unknown
       values: []
@@ -118,50 +119,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Случаи миелодиспластического синдрома (МДС)/острого миелоидного лейкоза
-          (ОМЛ) в семье
-    - text: 'Парциальная ремиссия: бласты > 5 %, но < 15 % в КМ; > 1,0 х 10^9/л гранулоцитов
-        и > 100 х 10^9/л тромбоцитов в гемограмме; отсутствие экстрамедуллярного поражения.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Парциальная ремиссия: бласты > 5 %, но < 15 % в КМ; > 1,0 х 10^9/л
-          гранулоцитов и > 100 х 10^9/л тромбоцитов в гемограмме; отсутствие экстрамедуллярного
-          поражения.'
-    - text: 'Рефрактерность: отсутствие полной ремиссии после проведения двойной индукции.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Рефрактерность: отсутствие полной ремиссии после проведения двойной
-          индукции.'
+        quote: 'Парциальная ремиссия: бласты > 5 %, но < 15 % в КМ; > 1,0 х 109/л
+          гранулоцитов и > 100 х 109/л тромбоцитов в гемограмме; отсутствие экстрамедуллярного
+          поражения'
     - text: 'Рецидив: > 5 % бластов в КМ или любое экстрамедуллярное поражение не
-        менее чем через 1 месяц после первой полной клинико-гематологической ремиссии.'
+        менее чем через 1 месяц после установления первой полной клинико-гематологической
+        ремиссии'
       logic_group: null
       operator: unknown
       values: []
@@ -179,61 +142,48 @@ conditions:
         table_index: null
         row_index: null
         quote: 'Рецидив: > 5 % бластов в КМ или любое экстрамедуллярное поражение
-          не менее чем через 1 месяц после первой полной клинико-гематологической
-          ремиссии.'
+          не менее чем через 1 месяц после установления первой полной клинико-гематологической
+          ремиссии'
+    - text: 'Рефрактерность: отсутствие полной ремиссии после проведения двойной индукции'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Рефрактерность: отсутствие полной ремиссии после проведения двойной
+          индукции'
+    - text: Выявление ОМЛ-ассоциированных критериев
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выявление ОМЛ-ассоциированных критериев
     optional: []
     exclusion: []
   required_exams:
-  - name: Сбор жалоб и анамнеза
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 17
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Сбор жалоб и анамнеза Рецидивирующие инфекционные заболевания, лихорадка,
-        общая слабость, геморрагический синдром в виде петехий, кровоточивости десен,
-        рецидивирующих носовых кровотечений, мено- и метроррагии, оссалгии, снижение
-        массы тела, выраженная потливость, гиперплазия десен, химиотерапия или лучевая
-        терапия в прошлом, случаи МДС/ОМЛ в семье
-  - name: Физикальное обследование
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 17
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Физикальное обследование Измерение роста и массы тела, термометрия, оценка
-        состояния кожных покровов и наличия лейкемид, оценка состояния костно-суставной
-        системы; выявление признаков геморрагического синдрома; лимфаденопатии; наличие
-        признаков дисфункции сердца, легких, печени, органов эндокринной, нервной
-        системы
   - name: Общий анализ крови (ОАК) с подсчетом количества тромбоцитов, ретикулоцитов,
       лейкоцитарной формулы
     aliases: []
@@ -257,7 +207,7 @@ conditions:
       row_index: null
       quote: Общий анализ крови (далее – ОАК) с подсчетом количества тромбоцитов,
         ретикулоцитов, лейкоцитарной формулы.
-  - name: 'Аспирационная биопсия костного мозга (КМ): миелограмма'
+  - name: 'Аспирационная биопсия КМ: миелограмма'
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -278,7 +228,7 @@ conditions:
       table_index: null
       row_index: null
       quote: 'Аспирационная биопсия КМ: миелограмма.'
-  - name: Иммунофенотипическое исследование (ИФТ)
+  - name: ИФТ-исследование
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -320,7 +270,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Цитогенетическое исследование.
-  - name: Молекулярно-генетическое исследование (NPM 1, FLT3, CEBR, TP53)
+  - name: Молекулярно-генетическое исследование (NPM 1, FLT3, CEBR, TP53 и др.)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -341,8 +291,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Молекулярно-генетическое исследование (NPM 1, FLT3, CEBR, TP53, дополнительно
-        в рамках клинических исследований – ASXL1, RUNX1, BCOR, EZH2, SF3B1, SRSF2,
-        STAG2, U2AF1,...)
+        в рамках клинических исследований – ASXL1, RUNX1,
   - name: Биохимический анализ крови (БАК)
     aliases: []
     exam_type: unknown
@@ -454,8 +403,7 @@ conditions:
       quote: определение цитогенетических и молекулярно-генетических факторов прогноза
         риска рецидива ОМЛ (генетический профиль пациента или категорию риска) согласно
         приложению 3.
-  - name: Определение параметров лейкозассоциированного фенотипа (ЛАФ) и содержания
-      CD25+ клеток методом шестицветной проточной цитометрии
+  - name: Шестицветная проточная цитометрия миелоидных бластных клеток КМ
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -477,7 +425,95 @@ conditions:
       row_index: null
       quote: До начала терапии ОМЛ методом шестицветной проточной цитометрии определяют
         параметры лейкозассоциированного фенотипа (далее – ЛАФ) миелоидных бластных
-        клеток КМ пациента и относительное содержание CD25+ клеток
+        клеток КМ пациента
+  - name: Общий анализ крови (ОАК) с подсчетом количества тромбоцитов, ретикулоцитов,
+      лейкоцитарной формулы, морфологической оценкой
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОАК с подсчетом количества тромбоцитов, ретикулоцитов, лейкоцитарной
+        формулы, морфологической оценкой
+  - name: Биохимический анализ крови (БАК)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохтитческий анализ крови (далее – БАК): общий белок, мочевина, креатинин,
+        билирубин, щелочная фосфатаза, аспартатаминотрансфераза (далее – АСТ), аланинаминотрансфераза
+        (далее – АЛТ)...'
+  - name: Общий анализ мочи (ОАМ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ мочи (далее – ОАМ)
+  - name: 'Аспирационная биопсия КМ: миелограмма'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 17
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Аспирационная биопсия КМ: миелограмма.'
   conditional_exams:
   - name: Рентгенография органов грудной клетки
     aliases: []
@@ -500,7 +536,8 @@ conditions:
       table_index: null
       row_index: null
       quote: Рентгенография органов грудной клетки По медицинским показаниям
-  - name: Исследование с применением метода флуоресцентной гибридизации in situ (FISH)
+  - name: Исследование с применением метода флуоресцентной гибридизации in situ или
+      FISH
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -523,28 +560,6 @@ conditions:
       quote: Исследование с применением метода флуоресцентной гибридизации in situ
         или FISH (если при выполнении цитогенетического исследования не было получено
         митозов или получено менее 20 митозов)
-  - name: Дополнительное молекулярно-генетическое исследование
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 19
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Дополнительно в рамках клинических исследований – ASXL1, RUNX1, BCOR,
-        EZH2, SF3B1, SRSF2, STAG2, U2AF1.
   - name: ИФТ-исследование ликвора
     aliases: []
     exam_type: unknown
@@ -565,10 +580,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Дополнительно, при наличии медицинских показаний, – ИФТ-исследование
-        ликвора По медицинским показаниям в целях диагностики и лечения нейролейкемии
-        и нейропрофилактики
-  - name: Дополнительный биохимический анализ крови
+      quote: По медицинским показаниям в целях диагностики и лечения нейролейкемии
+        и нейропрофилактики Дополнительно, при наличии медицинских показаний, – ИФТ-исследование
+        ликвора
+  - name: ИФТ-исследование
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -582,29 +597,37 @@ conditions:
       protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
       document_url: null
       local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 19
+      page_start: 18
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Дополнительно, при наличии медицинских показаний, – щелочная фосфатаза,
-        панкреатическая амилаза, уровень иммуноглобулинов, тропонины I, T, прокальцитонин
-        в крови
+      quote: Дополнительно по медицинским показаниям – ИФТ-исследование
+  - name: Гистологическое исследование отпечатков трепанобиоптата КМ
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Гистологическое исследование (цитологическое и цитохимическое исследование
+        отпечатков трепанобиоптата КМ) При невозможности получения аспирата КМ
   treatment:
     non_drug:
-    - text: Инфузионная терапия под контролем диуреза и клинико-лабораторных данных
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Инфузионная терапия под контролем диуреза и клинико-лабораторных данных
     - text: Аллогенная ТГСК выполняется в соответствии с клиническим протоколом
       source_ref:
         protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
@@ -617,74 +640,12 @@ conditions:
         table_index: null
         row_index: null
         quote: Аллогенная ТГСК выполняется в соответствии с клиническим протоколом
-    - text: Программная цитостатическая терапия является основным методом лечения
-        ОМЛ, интенсивность которой соответствует прогнозу заболевания и ответу на
-        терапию.
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Программная цитостатическая терапия является основным методом лечения
-          ОМЛ, интенсивность которой соответствует прогнозу заболевания и ответу на
-          терапию.
-    - text: Интенсификация лечения (увеличение доз цитостатических ЛП) достигается
-        в соответствии с индивидуальным прогностическим профилем (категорией риска)
-        пациента.
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Интенсификация лечения (увеличение доз цитостатических ЛП) достигается
-          в соответствии с индивидуальным прогностическим профилем (категорией риска)
-          пациента.
-    - text: При содержании CD25+ клеток до начала лечения менее 10% и отсутствии (0%)
-        клеток с ЛАФ после первого курса индукции, ограничиваются одним курсом индукции
-        ремиссии.
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При содержании CD25+ клеток до начала лечения менее 10% и отсутствии
-          (0%) клеток с ЛАФ после первого курса индукции, ограничиваются одним курсом
-          индукции ремиссии.
-    - text: При содержании CD25+ клеток до начала лечения менее 10% и клеток с ЛАФ
-        после курса индукции 0,01% и более, проводят два курса индукции ремиссии.
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: При содержании CD25+ клеток до начала лечения менее 10% и клеток с
-          ЛАФ после курса индукции 0,01% и более, проводят два курса индукции ремиссии.
     drug_groups: []
     drugs:
-    - drug_name: Глюкоза раствор для инфузий
+    - drug_name: Глюкоза
       active_substance: null
       drug_group: null
-      dose_text: 50 мг/мл
+      dose_text: Раствор для инфузий 50 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -703,10 +664,10 @@ conditions:
         table_index: null
         row_index: null
         quote: глюкоза раствор для инфузий 50 мг/мл
-    - drug_name: Натрия хлорид раствор для инфузий
+    - drug_name: Натрия хлорид
       active_substance: null
       drug_group: null
-      dose_text: 9 мг/мл
+      dose_text: Раствор для инфузий 9 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -725,10 +686,10 @@ conditions:
         table_index: null
         row_index: null
         quote: натрия хлорид раствор для инфузий 9 мг/мл
-    - drug_name: Натрия гидрокарбонат раствор для инфузий
+    - drug_name: Натрия гидрокарбонат
       active_substance: null
       drug_group: null
-      dose_text: 40 мг/мл или 84 мг/мл
+      dose_text: Раствор для инфузий 40 мг/мл или 84 мг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -747,10 +708,11 @@ conditions:
         table_index: null
         row_index: null
         quote: натрия гидрокарбонат раствор для инфузий 40 мг/мл или 84 мг/мл
-    - drug_name: Фуросемид раствор для инъекций
+    - drug_name: Фуросемид
       active_substance: null
       drug_group: null
-      dose_text: 10 мг/мл, 1 мг/кг внутривенно (разовая доза)
+      dose_text: Раствор для инъекций 10 мг/мл, разовая доза 1 мг/кг внутривенно при
+        задержке мочи более 200 мл/м2 поверхности тела в течение 6 часов
       frequency_text: null
       duration_text: null
       route: null
@@ -768,11 +730,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: фуросемида раствора для инъекций 10 мг/мл, в разовой дозе 1 мг/кг внутривенно
-    - drug_name: Мидостаурин
+        quote: При задержке мочи более 200 мл/м2 поверхности тела в течение 6 часов
+          показано введение фуросемида раствора для инъекций 10 мг/мл, в разовой дозе
+          1 мг/кг внутривенно
+    - drug_name: мидостаурин
       active_substance: null
       drug_group: null
-      dose_text: Включение в схему терапии
+      dose_text: включение в схему терапии при выявлении FLT3-мутации
       frequency_text: null
       duration_text: null
       route: null
@@ -792,35 +756,10 @@ conditions:
         row_index: null
         quote: При выявлении у пациента FLT3-мутации показано включение в схему терапии
           ЛП-ингибитора FLT3 и КIТ киназы (мидостаурин).
-    - drug_name: Антрациклины
+    - drug_name: цитарабин
       active_substance: null
       drug_group: null
-      dose_text: Эскалированные или стандартные дозы в курсах индукции ремиссии по
-        протоколу «7 + 3»
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-        page_start: 2
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: проводится после первого курса «7 + 3» с эскалированными дозами антрациклинов;
-          [...] проводятся два курса индукции ремиссии по протоколу «7 + 3», причем
-          первый курс с эскалированными а второй со стандартными дозами антрациклинов
-    - drug_name: Цитарабин
-      active_substance: null
-      drug_group: null
-      dose_text: Высокие дозы по протоколу HiDAC
+      dose_text: высокие дозы в режиме консолидации ремиссии по протоколу HiDAC
       frequency_text: null
       duration_text: null
       route: null
@@ -838,13 +777,84 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: пациента переводят на терапию консолидации ремиссии с высокими дозами
-          цитарабина по протоколу HiDAC;
+        quote: переводят на терапию консолидации ремиссии с высокими дозами цитарабина
+          по протоколу HiDAC;
+    - drug_name: антрациклины
+      active_substance: null
+      drug_group: null
+      dose_text: эскалированные или стандартные дозы в составе схемы «7 + 3»
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: первый курс с эскалированными а второй со стандартными дозами антрациклинов;
+    - drug_name: Филграстим
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для инъекций 300 мкг/мл в дозе 5 мкг/кг/сутки подкожно или
+        внутривенно
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: филграстим раствор для инъекций 300 мкг/мл в дозе 5 мкг/кг/сутки подкожно
+          или внутривенно.
+    - drug_name: Ацикловир
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 200 мг по 1 таблетке 3 раза в день внутрь в течение всего
+        периода риска инфицирования
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ацикловир, таблетки 200 мг по 1 таблетке 3 раза в день внутрь в течение
+          всего периода риска инфицирования
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Контроль диуреза и клинико-лабораторных данных во время инфузионной терапии.
+  - text: В индукцию ремиссии проведение БАК не реже 3 раз в неделю в период аплазии,
+      при наличии медицинских показаний и осложнений терапии – ежедневно или чаще
     timing: null
     required_if: []
     expected_actions: []
@@ -858,9 +868,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль диуреза и клинико-лабораторных данных во время инфузионной терапии.
-  - text: Контроль биохимического анализа крови не реже 3 раз в неделю в период аплазии,
-      при наличии медицинских показаний и осложнений терапии – ежедневно или чаще.
+      quote: В индукцию ремиссии проведение БАК не реже 3 раз в неделю в период аплазии,
+        при наличии медицинских показаний и осложнений терапии – ежедневно или чаще
+  - text: Коагулограмма от 1–2 раз в неделю до 1 раза в месяц; при ДВС-синдроме, вторичной
+      коагулопатии – ежедневно
     timing: null
     required_if: []
     expected_actions: []
@@ -874,11 +885,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль биохимического анализа крови не реже 3 раз в неделю в период
-        аплазии, при наличии медицинских показаний и осложнений терапии – ежедневно
-        или чаще.
-  - text: Контроль коагулограммы от 1–2 раз в неделю до 1 раза в месяц; при ДВС-синдроме,
-      вторичной коагулопатии – ежедневно.
+      quote: Коагулограмма от 1–2 раз в неделю до 1 раза в месяц; при ДВС-синдроме,
+        вторичной коагулопатии – ежедневно
+  - text: Лабораторный и клинический мониторинг программной цитостатической терапии
     timing: null
     required_if: []
     expected_actions: []
@@ -892,10 +901,26 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Контроль коагулограммы от 1–2 раз в неделю до 1 раза в месяц; при ДВС-синдроме,
-        вторичной коагулопатии – ежедневно.
+      quote: Лабораторный и клинический мониторинг программной цитостатической терапии
+  - text: Оценка достижения ремиссии проводится после первого курса «7 + 3» с эскалированными
+      дозами антрациклинов
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка достижения ремиссии проводится после первого курса «7 + 3» с эскалированными
+        дозами антрациклинов
   - text: Внеплановое исследование костного мозга (КМ) показано при выявлении любых
-      изменений.
+      изменений
     timing: null
     required_if: []
     expected_actions: []
@@ -910,10 +935,11 @@ conditions:
       table_index: null
       row_index: null
       quote: Внеплановое исследование костного мозга (КМ) показано при выявлении любых
-        изменений.
+        изменений
   hospitalization: []
   routing:
-  - text: амбулаторно
+  - text: 'Первичный скрининг: амбулаторно-поликлинические и больничные организации
+      здравоохранения районного и городского уровней (врачи любой специальности)'
     timing: null
     required_if: []
     source_ref:
@@ -926,8 +952,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: амбулаторно
-  - text: госпитализация
+      quote: 'Первичный скрининг: амбулаторно-поликлинические и больничные организации
+        здравоохранения районного и городского уровней (врачи любой специальности)'
+  - text: 'Дифференциальная диагностика и подбор терапии: гематологические отделения
+      областных и республиканских организаций здравоохранения'
     timing: null
     required_if: []
     source_ref:
@@ -940,21 +968,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: направление пациентов на следующий этап
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: направление пациентов на следующий этап
+      quote: 'Дифференциальная диагностика и подбор терапии: гематологические отделения
+        областных и республиканских организаций здравоохранения'
   - text: Областные, городские (гематологические отделения, кабинеты)
     timing: null
     required_if: []
@@ -987,10 +1002,9 @@ conditions:
       table_index: null
       row_index: null
       quote: При задержке мочи более 200 мл/м2 поверхности тела в течение 6 часов
-        показано введение фуросемида раствора для инъекций 10 мг/мл, в разовой дозе
-        1 мг/кг внутривенно;
-  - text: Выявление любых изменений, требующих внепланового исследования костного
-      мозга
+        показано введение фуросемида
+  - text: Выявление любых изменений при наблюдении (показание к внеплановому исследованию
+      костного мозга)
     aliases: []
     red_flag_type: other
     severity: medium
@@ -1007,7 +1021,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Внеплановое исследование КМ показано при выявлении любых изменений
-  - text: Соматический статус пациента по шкале ECOG более 2 баллов
+  - text: Гиперлейкоцитоз (лейкоциты свыше 30 х 109/л)
     aliases: []
     red_flag_type: other
     severity: high
@@ -1017,87 +1031,14 @@ conditions:
       protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
       document_url: null
       local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 5
+      page_start: 13
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинским показанием для применения программной цитостатической терапии
-        у пациентов с ОМЛ является соматический статус пациента по шкале ECOG не более
-        1–2 балла
-  - text: Ранее получавшие химиотерапию по поводу острого миелоидного лейкоза
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'кроме пациентов: получавших ранее химиотерапию по поводу указанного
-        заболевания;'
-  - text: Ранее получавшие лучевую или цитостатическую терапию по поводу других онкологических
-      заболеваний
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'кроме пациентов: получавших ранее лучевую или цитостатическую терапию
-        по поводу других онкологических заболеваний (лимфомы, рак молочной железы
-        и иные);'
-  - text: Наличие предшествующего миелодиспластического синдрома
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'кроме пациентов: имеющих предшествующий миелодиспластический синдром;'
-  - text: Страдающие бластным кризом хронического миелолейкоза
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностика_лечение_пациентов_старше_18_лет_вновь_диагностирован
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Диагностика_лечение_пациентов_старше_18_лет_вновь_диагностированным_острым_миелоидным_лейкозом_пост_МЗ_2025_123.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'кроме пациентов: страдающих бластным кризом хронического миелолейкоза.'
+      quote: если на момент установления диагноза в периферической крови определялся
+        гиперлейкоцитоз (лейкоциты свыше 30 х 109/л).
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1106,7 +1047,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:19:12.108380+00:00'
+  extracted_at: '2026-07-23T07:55:53.476935+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1114,7 +1055,19 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T16:19:12.127843+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[ostryj_mieloidnyj_lejkoz].required_exams[12]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[ostryj_mieloidnyj_lejkoz].required_exams[13]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[ostryj_mieloidnyj_lejkoz].required_exams[14]
+  validated_at: '2026-07-23T07:55:53.513079+00:00'

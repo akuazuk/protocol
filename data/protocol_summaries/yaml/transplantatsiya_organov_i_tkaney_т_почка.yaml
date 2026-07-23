@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Трансплантация почки
+  title: Трансплантация почки (взрослое население)
   url: null
   local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
   document_sha256: null
@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: kidney_transplantation
-  name: Трансплантация почки
+- condition_id: khronicheskaya_bolez_pochek
+  name: Хроническая болезнь почек
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -35,9 +35,175 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Уровень анти-HLA антител > 60% (высокосенсибилизированные пациенты)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Уровень анти-HLA антител > 60% (высокосенсибилизированные пациенты)
+    - text: Уровень сывороточного калия более 5,5 ммоль/л и (или) наличие ЭКГ признаков
+        гиперкалиемии
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Уровень сывороточного калия более 5,5 ммоль/л и (или) наличие ЭКГ признаков
+          гиперкалиемии
+    - text: ХБП С5, требующая замещения функции почек с помощью диализных технологий
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ХБП С5, требующая замещения функции почек с помощью диализных технологий
+    - text: Снижение СКФ менее 20 мл/мин./1,73 м2 (менее 30 мл/мин./1,73 м2 в случае
+        симультанной мультиорганной трансплантации)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение СКФ менее 20 мл/мин./1,73 м2 (менее 30 мл/мин./1,73 м2 в случае
+          симультанной мультиорганной трансплантации)
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Общий анализ крови (ОАК)
+  - name: Определение группы крови по системам АВ0 и резус-фактора, антиэритроцитарных
+      антител
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системам АВ0 и резус-фактора, антиэритроцитарных
+        антител;
+  - name: HLA-типирование I класса (HLA-A, B) и II класса (HLA-DRB1)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: HLA-типирование I класса (HLA-A, B) и II класса (HLA-DRB1);
+  - name: Общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови (далее - ОАК);
+  - name: Контроль концентрации такролимуса (циклоспорина) в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 18
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: контроль концентрации такролимуса (циклоспорина) в крови через 12 (24)
+        часа после последнего приема (далее - С0) - выполняется на 3 сутки после Тх;
+  - name: ОАК
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -57,8 +223,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'В послеоперационном периоде выполняется: ОАК...'
-  - name: Общий анализ мочи (ОАМ) с микроскопией осадка
+      quote: 'В послеоперационном периоде выполняется: ОАК'
+  - name: ОАМ с микроскопией осадка
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -78,9 +244,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'В послеоперационном периоде выполняется: ...ОАМ с микроскопией осадка...'
-  - name: Биохимическое исследование крови (общий белок, мочевина, креатинин, глюкоза,
-      калий, натрий, хлор, СРБ)
+      quote: ОАМ с микроскопией осадка
+  - name: Биохимическое исследование крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -100,9 +265,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'В послеоперационном периоде выполняется: ...биохимическое исследование
-        крови (уровень общего белка, мочевины, креатинина, глюкозы, калия, натрия,
-        хлора, СРБ)...'
+      quote: биохимическое исследование крови (уровень общего белка, мочевины, креатинина,
+        глюкозы, калия, натрия, хлора, СРБ)
   - name: УЗИ ложа удаленной почки
     aliases: []
     exam_type: unknown
@@ -123,12 +287,122 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'В послеоперационном периоде выполняется: ...УЗИ ложа удаленной почки.'
-  conditional_exams: []
+      quote: УЗИ ложа удаленной почки.
+  - name: Двукратное определение СКФ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при двукратном определении с временным промежутком не менее 3 месяцев
+        при планировании додиализной Тх.
+  - name: Кросс-матч тест
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: положительный кросс-матч тест;
+  conditional_exams:
+  - name: Определение простатспецифического антигена (ПСА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение простатспецифического антигена (далее - ПСА) мужчинам старше
+        50 лет;
+  - name: КТ ОБП и малого таза
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: компьютерная томография (далее - КТ) ОБП и малого таза для пациентов
+        с поликистозом почек;
+  - name: Коронароангиография
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коронароангиография при наличии симптомной ишемической болезни сердца,
+        умеренного или высокого риска коронарных событий по данным перфузионной сцинтиграфии
+        миокарда
   treatment:
     non_drug:
-    - text: Открытый доступ к правой бедренной артерии умершего донора с введением
-        двухбаллонного катетера и перфузия охлажденным консервирующим раствором.
+    - text: Санация мочевых путей при выявлении роста уропатогенной флоры до получения
+        трех подряд отрицательных посевов
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -139,9 +413,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Открытый доступ к правой бедренной артерии умершего донора с введением
-          двухбаллонного катетера и перфузия охлажденным консервирующим раствором.
-    - text: Эксплантация почек бригадой врачей-трансплантологов в операционной.
+        quote: Санация мочевых путей при выявлении роста уропатогенной флоры до получения
+          трех подряд отрицательных посевов
+    - text: Мониторинг массы тела, АД, ЧСС, ЧД, суточного диуреза и отделяемого по
+        дренажам в послеоперационном периоде
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -152,9 +427,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Эксплантация почек бригадой врачей-трансплантологов в операционной.
-    - text: Холодовая перфузия почек «на месте» при отсутствии технической возможности
-        начать ее в палате интенсивной терапии.
+        quote: Мониторинг массы тела, АД, ЧСС, ЧД, суточного диуреза и отделяемого
+          по дренажам в послеоперационном периоде
+    - text: Предтрансплантационная нефрэктомия
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -165,11 +440,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Холодовая перфузия почек «на месте» при отсутствии технической возможности
-          начать ее в палате интенсивной терапии.
-    - text: Предтрансплантационная нефрэктомия (при отсутствии достаточного пространства
-        для трансплантата, осложнениях поликистоза, хронических инфекциях почек, подозрении
-        на рак).
+        quote: Предтрансплантационная нефрэктомия
+    - text: Аугментация мочевого пузыря (энтероцистоаугментация или уретероцистоаугментация)
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -180,11 +452,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Предтрансплантационная нефрэктомия (при отсутствии достаточного пространства
-          для трансплантата, осложнениях поликистоза, хронических инфекциях почек,
-          подозрении на рак).
-    - text: 'Хирургическое лечение при дисфункции нижних мочевых путей: аугментация
-        мочевого пузыря (энтероцистоаугментация, уретероцистоаугментация).'
+        quote: Аугментация мочевого пузыря (энтероцистоаугментация или уретероцистоаугментация)
+    - text: Континентная цистокутанеостомия (операция Митрофанова или операция Монти)
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -195,10 +464,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Хирургическое лечение при дисфункции нижних мочевых путей: аугментация
-          мочевого пузыря (энтероцистоаугментация, уретероцистоаугментация).'
-    - text: 'Хирургическое лечение при дисфункции нижних мочевых путей: континентная
-        цистокутанеостомия (операция Митрофанова, операция Монти).'
+        quote: Континентная цистокутанеостомия (операция Митрофанова или операция
+          Монти)
+    - text: Трансуретральная резекция с последующим удалением цистостомы
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -209,10 +477,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Хирургическое лечение при дисфункции нижних мочевых путей: континентная
-          цистокутанеостомия (операция Митрофанова, операция Монти).'
-    - text: 'Хирургическое лечение при дисфункции нижних мочевых путей: трансуретральная
-        резекция с последующим удалением цистостомы.'
+        quote: Трансуретральная резекция с последующим удалением цистостомы
+    - text: Десенсибилизирующее лечение реципиентов
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -223,10 +489,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Хирургическое лечение при дисфункции нижних мочевых путей: трансуретральная
-          резекция с последующим удалением цистостомы.'
-    - text: Десенсибилизирующее лечение реципиентов с высоким уровнем анти-HLA антител
-        (>60%) или АВ0-несовместимостью с живым донором.
+        quote: Десенсибилизирующее лечение реципиентов
+    - text: Внеплановый сеанс гемодиализа
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -237,10 +501,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Десенсибилизирующее лечение реципиентов с высоким уровнем анти-HLA
-          антител (>60%) или АВ0-несовместимостью с живым донором.
-    - text: Внеплановый сеанс гемодиализа при избыточной гидратации и/или гиперкалиемии
-        (>5,5 ммоль/л или ЭКГ-признаки).
+        quote: Внеплановый сеанс гемодиализа
+    - text: Удаление диализирующего перитонеального раствора перед операцией
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -251,10 +513,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Внеплановый сеанс гемодиализа при избыточной гидратации и/или гиперкалиемии
-          (>5,5 ммоль/л или ЭКГ-признаки).
-    - text: Слив диализирующего перитонеального раствора из брюшной полости реципиента
-        перед операцией.
+        quote: Удаление диализирующего перитонеального раствора перед операцией
+    - text: Трансплантация почки (Тх)
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_т_почка
         document_url: null
@@ -265,15 +525,62 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Слив диализирующего перитонеального раствора из брюшной полости реципиента
-          перед операцией.
+        quote: Трансплантация почки (Тх)
+    - text: Диализные технологии
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Диализные технологии
+    - text: Трансплантэктомия
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Трансплантэктомия
     drug_groups: []
     drugs:
+    - drug_name: Такролимус (циклоспорин)
+      active_substance: null
+      drug_group: null
+      dose_text: Контроль концентрации С0 через 12 (24) часа после последнего приема
+        на 3 сутки после Тх
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: 18
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: контроль концентрации такролимуса (циклоспорина) в крови через 12 (24)
+          часа после последнего приема (далее - С0) - выполняется на 3 сутки после
+          Тх;
     - drug_name: Метилпреднизолон
       active_substance: null
       drug_group: null
-      dose_text: 500-1000 мг в/в кап. медленно на 0,9 % растворе натрия хлорида непосредственно
-        перед эксплантацией (умершему донору).
+      dose_text: 500-1000 мг в/в кап. медленно
       frequency_text: null
       duration_text: null
       route: null
@@ -291,14 +598,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: непосредственно перед эксплантацией используются высокие дозы метилпреднизолона
-          (лиофилизат для приготовления раствора для инъекций, 1000 мг) 500-1000 мг
-          внутривенно капельно (далее - в/в кап.) медленно на 0,9 % растворе натрия
-          хлорида...
+        quote: высокие дозы метилпреднизолона (лиофилизат для приготовления раствора
+          для инъекций, 1000 мг) 500-1000 мг внутривенно капельно (далее - в/в кап.)
+          медленно на 0,9 % растворе натрия хлорида
     - drug_name: Маннитол
       active_substance: null
       drug_group: null
-      dose_text: 1 г/кг в/в кап. непосредственно перед эксплантацией (умершему донору).
+      dose_text: 1 г/кг в/в кап.
       frequency_text: null
       duration_text: null
       route: null
@@ -316,13 +622,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '...маннитол (раствор для инфузий 150 мг/мл) в дозе 1 г/кг в/в кап....'
+        quote: маннитол (раствор для инфузий 150 мг/мл) в дозе 1 г/кг в/в кап.
     - drug_name: Гепарин
       active_substance: null
       drug_group: null
-      dose_text: 10000-30000 ЕД в/в для системной антикоагуляции (умершему донору)
-        или 25000 ЕД в первый пакет с перфузионным раствором (донору с небьющимся
-        сердцем).
+      dose_text: 10000-30000 ЕД в/в
       frequency_text: null
       duration_text: null
       route: null
@@ -340,14 +644,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '...гепарин (раствор для внутривенного (далее - в/в) и подкожного (далее
-          - п/к) введения 5000 МЕ/мл) в дозе 10000-30000 ЕД в/в... В первый пакет
-          с перфузионным раствором добавляется... 25000 ЕД гепарина...'
+        quote: гепарин (раствор для внутривенного (далее - в/в) и подкожного (далее
+          - п/к) введения 5000 МЕ/мл) в дозе 10000-30000 ЕД в/в
     - drug_name: Стрептокиназа
       active_substance: null
       drug_group: null
-      dose_text: 1500000 МЕ в/в за 10 мин. до начала перфузии (умершему донору) или
-        1500000 МЕ в первый пакет с перфузионным раствором (донору с небьющимся сердцем).
+      dose_text: 1500000 МЕ в/в
       frequency_text: null
       duration_text: null
       route: null
@@ -365,13 +667,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '...за 10 мин. до начала перфузии рекомендуется ввести 1500000 МЕ стрептокиназы...
-          В первый пакет с перфузионным раствором добавляется 1500000 МЕ стрептокиназы...'
+        quote: за 10 мин. до начала перфузии рекомендуется ввести 1500000 МЕ стрептокиназы
+          (порошок лиофилизированный для приготовления раствора для инъекций 750000
+          МЕ или 1500000 МЕ) в/в
     - drug_name: Меропенем
       active_substance: null
       drug_group: null
-      dose_text: 500 мг-1000 мг в/в для профилактики инфекционных осложнений (умершему
-        донору).
+      dose_text: 500 мг-1000 мг в/в
       frequency_text: null
       duration_text: null
       route: null
@@ -389,15 +691,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '...с целью медицинской профилактики инфекционных осложнений антибактериальные
-          ЛП: меропенем (порошок для приготовления раствора для в/в введения, 0,5
-          г, 1 г) 500 мг-1000 мг в/в.'
+        quote: меропенем (порошок для приготовления раствора для в/в введения, 0,5
+          г, 1 г) 500 мг-1000 мг в/в.
     - drug_name: Цефазолин
       active_substance: null
       drug_group: null
-      dose_text: В/в 1-2 г за 0,5-1 час до хирургического вмешательства однократно,
-        затем 0,5-1 г через 6-8 часов в течение первых суток после хирургического
-        вмешательства (для профилактики бактериальной инфекции).
+      dose_text: 1-2 г в/в за 0,5-1 ч до операции, затем 0,5-1 г через 6-8 ч в 1-е
+        сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -417,13 +717,11 @@ conditions:
         row_index: null
         quote: цефазолин (порошок для приготовления раствора для в/в или в/м введения,
           1 г) в/в 1-2 г за 0,5-1 час до хирургического вмешательства однократно,
-          затем 0,5-1 г - через 6-8 часов в течение первых суток после хирургического
-          вмешательства.
+          затем 0,5-1 г - через 6-8 часов
     - drug_name: Такролимус
       active_substance: null
       drug_group: null
-      dose_text: Внутрь 0,1 мг/кг/сутки за два дня до хирургического вмешательства
-        (только для реципиента при Тх от живого донора).
+      dose_text: 0,1 мг/кг/сутки внутрь за 2 дня до операции
       frequency_text: null
       duration_text: null
       route: null
@@ -441,13 +739,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: такролимус (капсулы 0,5 мг, 1 мг, 5 мг) внутрь 0,1 мг/кг/сутки... (только
-          для реципиента при Тх от живого донора);
+        quote: такролимус (капсулы 0,5 мг, 1 мг, 5 мг) внутрь 0,1 мг/кг/сутки
     - drug_name: Циклоспорин
       active_substance: null
       drug_group: null
-      dose_text: Внутрь 2,5 мг/кг 2 раза в сутки за два дня до хирургического вмешательства
-        (только для реципиента при Тх от живого донора).
+      dose_text: 2,5 мг/кг 2 раза в сутки внутрь за 2 дня до операции
       frequency_text: null
       duration_text: null
       route: null
@@ -465,16 +761,130 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '...циклоспорин (капсулы 25 мг, 50 мг, 100 мг) внутрь 2,5 мг/кг 2 раза
-          в сутки за два дня до хирургического вмешательства (только для реципиента
-          при Тх от живого донора);'
+        quote: циклоспорин (капсулы 25 мг, 50 мг, 100 мг) внутрь 2,5 мг/кг 2 раза
+          в сутки за два дня до хирургического вмешательства
+    - drug_name: Сульфаметоксазол/триметоприм
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки (400 мг / 80 мг), 480 мг в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: 19
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: сульфаметоксазол/триметоприм (таблетки, 400 мг сульфаметоксазола /
+          80 мг триметоприма) 480 мг в сутки;
+    - drug_name: Нистатин
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки (250 тыс. ЕД, 500 тыс. ЕД), по 500 000 ЕД 3-4 раза в день
+        внутрь (разжевывать)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: 19
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: нистатин (таблетки, 250 тыс. ЕД, 500 тыс. ЕД) по 500000 ЕД 3-4 раза
+          в день внутрь - разжевывать;
+    - drug_name: Валганцикловир
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 450 мг, 1-2 таблетки в сутки внутрь с учетом СКФ
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: 19
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: валганцикловир (таблетки, 450 мг) 1-2 таблетки в сутки внутрь в соответствии
+          с рекомендуемыми дозами
+    - drug_name: Пантопразол
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 40 мг, 40 мг 1 раз в сутки внутрь не менее 3 месяцев
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: 27
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: пантопразол (таблетки, 40 мг) 40 мг 1 раз в сутки
+    - drug_name: Фамотидин
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки (20 мг, 40 мг), 20-40 мг 1 раз в сутки внутрь не менее 3
+        месяцев
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+        page_start: 27
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фамотидин (таблетки, 20 мг, 40 мг) 20-40 мг 1 раз сутки внутрь не менее
+          3 месяцев.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Мониторинг послеоперационного периода включает ОАК, ОАМ с микроскопией осадка,
-      биохимическое исследование крови (общий белок, мочевина, креатинин, глюкоза,
-      калий, натрий, хлор, СРБ), УЗИ ложа удаленной почки.
+  - text: Определение предсуществующих анти-HLA антител с периодичностью 1 раз в 3
+      месяца до трансплантации
     timing: null
     required_if: []
     expected_actions: []
@@ -488,11 +898,184 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Мониторинг послеоперационного периода включает ОАК, ОАМ с микроскопией
-        осадка, биохимическое исследование крови (общий белок, мочевина, креатинин,
-        глюкоза, калий, натрий, хлор, СРБ), УЗИ ложа удаленно
+      quote: Определение предсуществующих анти-HLA антител с периодичностью 1 раз
+        в 3 месяца до трансплантации
+  - text: Медицинское наблюдение на амбулаторном этапе по вопросам патологии трансплантата
+      и связанных с ним осложнений
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение на амбулаторном этапе по вопросам патологии трансплантата
+        и связанных с ним осложнений
+  - text: Ежедневный контроль ОАК, КОС, ОАМ и биохимического анализа крови в 1-3 сутки
+      после трансплантации
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ежедневный контроль ОАК, КОС, ОАМ и биохимического анализа крови в 1-3
+        сутки после трансплантации
+  - text: Лабораторный и ультразвуковой контроль в послеоперационном периоде (ОАК,
+      ОАМ, биохимия крови, УЗИ ложа почки)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Лабораторный и ультразвуковой контроль в послеоперационном периоде (ОАК,
+        ОАМ, биохимия крови, УЗИ ложа почки)
+  - text: Соблюдение сроков ожидания от развития ремиссии онкологического заболевания
+      до Тх (от не требует ожидания до 5 лет в зависимости от локализации и стадии)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Соблюдение сроков ожидания от развития ремиссии онкологического заболевания
+        до Тх (от не требует ожидания до 5 лет в зависимости от локализации и стадии)
+  - text: Медицинская профилактика инфекционных осложнений после Тх в течение 1, 3
+      или 6 месяцев в зависимости от возбудителя и серологического статуса
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская профилактика инфекционных осложнений после Тх в течение 1,
+        3 или 6 месяцев в зависимости от возбудителя и серологического статуса
+  - text: Профилактика язвенного повреждения ЖКТ не менее 3 месяцев
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Профилактика язвенного повреждения ЖКТ не менее 3 месяцев
   hospitalization: []
   routing:
+  - text: Обследование и лечение в раннем и позднем послеоперационном периоде в специализированных
+      отделениях трансплантации, нефрологии и гемодиализа
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обследование и лечение в раннем и позднем послеоперационном периоде в
+        специализированных отделениях трансплантации, нефрологии и гемодиализа
+  - text: Амбулаторное наблюдение в организациях здравоохранения
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторное наблюдение в организациях здравоохранения
+  - text: Направление потенциального реципиента на врачебный консилиум в больничную
+      организацию областного или республиканского уровня
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Направление потенциального реципиента на врачебный консилиум в больничную
+        организацию областного или республиканского уровня
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   - text: госпитализация
     timing: null
     required_if: []
@@ -508,8 +1091,63 @@ conditions:
       row_index: null
       quote: госпитализация
   red_flags:
-  - text: Злокачественные новообразования после лечения с развитием стойкой ремиссии
-      (до истечения сроков ожидания).
+  - text: Рост уропатогенной флоры в посеве мочи
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: в случае выявления роста уропатогенной флоры проводится санация мочевых
+        путей до получения трех подряд отрицательных посевов
+  - text: Симптомная ишемическая болезнь сердца или высокий риск коронарных событий
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коронароангиография при наличии симптомной ишемической болезни сердца,
+        умеренного или высокого риска коронарных событий по данным перфузионной сцинтиграфии
+        миокарда
+  - text: Гиперкалиемия (уровень сывороточного калия более 5,5 ммоль/л и/или признаки
+      на ЭКГ)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
+      page_start: 14
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: гиперкалиемией (уровень сывороточного калия более 5,5 ммоль/л и (или)
+        наличие ЭКГ признаков гиперкалемии)
+  - text: Острые инфекционные заболевания
     aliases: []
     red_flag_type: other
     severity: high
@@ -525,10 +1163,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: злокачественные новообразования после проведенного лечения с развитием
-        стойкой ремиссии по истечении сроков ожидания от развития ремиссии онкологического
-        заболевания до Тх...
-  - text: Острые инфекционные заболевания.
+      quote: острые инфекционные заболевания;
+  - text: Аутоиммунные заболевания при сохранении высокой степени активности
     aliases: []
     red_flag_type: other
     severity: high
@@ -544,8 +1180,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '...острые инфекционные заболевания...'
-  - text: Несовместимость по группе крови с донором.
+      quote: аутоиммунные заболевания при сохранении высокой степени активности;
+  - text: Абсолютные противопоказания к трансплантации почки (злокачественные новообразования,
+      сепсис, положительный кросс-матч и др.)
     aliases: []
     red_flag_type: other
     severity: high
@@ -561,8 +1198,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '...несовместимость по группе крови с донором...'
-  - text: Высокосенсибилизированные реципиенты.
+      quote: необратимые или некурабельные злокачественные новообразования; септическое
+        состояние; положительный кросс-матч тест;
+  - text: Показания к трансплантэктомии (первично не функционирующий трансплантат,
+      сверхострое отторжение, тромбоз сосудов и др.)
     aliases: []
     red_flag_type: other
     severity: high
@@ -572,121 +1211,14 @@ conditions:
       protocol_id: transplantatsiya_organov_i_tkaney_т_почка
       document_url: null
       local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
-      page_start: 4
+      page_start: 35
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '...высокосенсибилизированные реципиенты...'
-  - text: Отсутствие приверженности к лечению.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '...отсутствие приверженности к лечению...'
-  - text: Аутоиммунные заболевания при сохранении высокой степени активности.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '...аутоиммунные заболевания при сохранении высокой степени активности...'
-  - text: Хронические инфекционные заболевания (ВИЧ, вирусные гепатиты, туберкулез
-      в стадии ремиссии).
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '...хронические инфекционные заболевания (заболевание, вызванное вирусом
-        иммунодефицита человека (далее - ВИЧ), вирусные гепатиты, туберкулез в стадии
-        ремиссии)...'
-  - text: Нескорректированные аномалии органов мочеполовой системы, послужившие причиной
-      ХБП С5.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '...нескорректированные аномалии органов мочеполовой системы, послужившие
-        причиной развития ХБП С5...'
-  - text: Избыточная масса тела с ИМТ выше 34.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '...нарушения питания: избыточная масса тела с индексом массы тела (далее
-        - ИМТ) выше 34...'
-  - text: Недостаточная масса тела с ИМТ ниже 18.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_т_почка
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/Т-почка.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '...недостаточная масса тела с ИМТ ниже 18...'
+      quote: первично не функционирующий трансплантат; сверхострое отторжение; утрата
+        функции трансплантата в течение первого года; артериальный и венозный тромбоз;
   contraindications: []
   complications: []
   kz_checklist: null
@@ -695,7 +1227,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:13:29.914438+00:00'
+  extracted_at: '2026-07-23T11:01:20.009937+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -706,4 +1238,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:13:29.932008+00:00'
+  validated_at: '2026-07-23T11:01:20.039562+00:00'

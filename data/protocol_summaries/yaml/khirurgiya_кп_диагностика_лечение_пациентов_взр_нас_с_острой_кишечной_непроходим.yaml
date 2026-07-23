@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение острой кишечной непроходимости у взрослых в стационарных
-    условиях
+  title: Диагностика и лечение пациентов (взрослое население) с острой кишечной непроходимостью
+    в стационарных условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
   document_sha256: null
@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: acute_intestinal_obstruction
+- condition_id: ostraya_kishechnaya_neprohodimost
   name: Острая кишечная непроходимость
   synonyms: []
   abbreviations: []
@@ -38,8 +38,9 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Визуальные признаки жизнеспособности кишки (цвет, отечность стенки, субсерозные
-        кровоизлияния, перистальтика, пульсация и кровенаполнение пристеночных сосудов)
+    - text: Оценка жизнеспособности кишки в зоне механического препятствия по визуальным
+        признакам (цвет, отечность стенки, субсерозные кровоизлияния, перистальтика,
+        пульсация и кровенаполнение пристеночных сосудов)
       logic_group: null
       operator: unknown
       values: []
@@ -56,11 +57,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Визуальные признаки жизнеспособности кишки (цвет, отечность стенки,
-          субсерозные кровоизлияния, перистальтика, пульсация и кровенаполнение пристеночных
-          сосудов)
-    - text: Динамика визуальных признаков жизнеспособности кишки после введения местного
-        анестетика в брыжейку
+        quote: Оценка жизнеспособности кишки в зоне механического препятствия по визуальным
+          признакам (цвет, отечность стенки, субсерозные кровоизлияния, перистальтика,
+          пульсация и кровенаполнение пристеночных сосуд
+    - text: Установленный диагноз странгуляционной острой кишечной непроходимости
+        (ОКН)
       logic_group: null
       operator: unknown
       values: []
@@ -77,9 +78,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Динамика визуальных признаков жизнеспособности кишки после введения
-          местного анестетика в брыжейку
-    - text: Объективные методы оценки кровоснабжения кишки (допплерометрия, оксиметрия)
+        quote: Установленный диагноз странгуляционной острой кишечной непроходимости
+          (ОКН)
+    - text: Признаки неразрешающейся непроходимости (сохранение или рецидив болей
+        в животе, рвоты)
       logic_group: null
       operator: unknown
       values: []
@@ -96,11 +98,73 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Объективные методы оценки кровоснабжения кишки (допплерометрия, оксиметрия)
+        quote: Признаки неразрешающейся непроходимости (сохранение или рецидив болей
+          в животе, рвоты)
+    - text: Появление мышечного напряжения передней брюшной стенки, свободной жидкости
+        в брюшной полости по КТ/УЗИ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Появление мышечного напряжения передней брюшной стенки, свободной жидкости
+          в брюшной полости по КТ/УЗИ
+    - text: Зондовое отделяемое более 500 мл в сутки или появление кишечного содержимого
+        по зонду
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Зондовое отделяемое более 500 мл в сутки или появление кишечного содержимого
+          по зонду
+    - text: Отсутствие динамики продвижения контрастного вещества по тонкой кишке
+        и поступления его в толстую кишку
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отсутствие динамики продвижения контрастного вещества по тонкой кишке
+          и поступления его в толстую кишку
     optional: []
     exclusion: []
   required_exams:
-  - name: Определение параметров кислотно-основного состояния
+  - name: Медицинский осмотр, термометрия, ЧСС, ЧД, АД, аускультация, пальпация, перкуссия
+      живота, пальцевое ректальное исследование
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -120,11 +184,144 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение параметров кислотно-основного состояния
-  - name: Биохимический анализ крови
+      quote: 'клинические методы исследования: медицинский осмотр; общая термометрия;
+        подсчет частоты сердечных сокращений; подсчет частоты дыхания; измерение артериального
+        давления; аускультация легких, сердца...'
+  - name: Общий анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови (определение количества эритроцитов, лейкоцитов, тромбоцитов,
+        гематокрита, содержания гемоглобина, подсчет лейкоцитарной формулы)
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи
+  - name: Обзорная рентгенография органов брюшной и грудной полостей
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обзорная рентгенография органов брюшной и грудной полостей
+  - name: Повторный общий анализ крови каждые 6–9 часов
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повторный общий анализ крови (определение количества эритроцитов, лейкоцитов,
+        тромбоцитов, гематокрита, содержания гемоглобина, подсчет лейкоцитарной формулы)
+        (каждые 6–9 часов)
+  - name: Зондирование желудка
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: зондирование желудка (кратность и длительность зондирования определяется
+        лечащим врачом индивидуально) с целью оценки количества и характера отделяемого.
+  conditional_exams:
+  - name: Определение параметров кислотно-основного состояния
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение параметров кислотно-основного состояния;
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -143,12 +340,11 @@ conditions:
       row_index: null
       quote: биохимический анализ крови (определение содержания билирубина, глюкозы,
         мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы,
-        С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор))
+        С-реактивного белка, электролитов
   - name: Ультразвуковое исследование органов брюшной полости и забрюшинного пространства
-      (УЗИ)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -166,11 +362,11 @@ conditions:
       table_index: null
       row_index: null
       quote: ультразвуковое исследование органов брюшной полости и забрюшинного пространства
-        (далее – УЗИ)
+        (далее – УЗИ);
   - name: Компьютерная томография органов брюшной полости
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -187,56 +383,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: компьютерная томография органов брюшной полости
-  - name: Консультации врачей-специалистов
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: консультации врачей-специалистов
-  - name: Повторный биохимический анализ крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: повторный биохимический анализ крови (определение содержания билирубина,
-        глюкозы, мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы,
-        альфа-амилазы, С-реактивного белка, электролитов (натрий, калий, кальций общий,
-        хлор))
+      quote: компьютерная томография органов брюшной полости;
   - name: Определение групп крови по системам АВ0 и Rh-фактор
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -253,11 +404,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение групп крови по системам АВ0 и Rh-фактор
+      quote: определение групп крови по системам АВ0 и Rh-фактор;
   - name: Коагулограмма
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -275,11 +426,11 @@ conditions:
       table_index: null
       row_index: null
       quote: коагулограмма (определение фибриногена, активированного частичного тромбопластинового
-        времени, протромбированого времени, международного нормализованного отношения)
+        времени, протромбированого времени, международного нормализованного отношения;
   - name: Повторный общий анализ мочи
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -296,155 +447,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: повторный общий анализ мочи
-  - name: Медицинский осмотр
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'клинические методы исследования: медицинский осмотр;'
-  - name: Общая термометрия
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'клинические методы исследования: общая термометрия;'
-  - name: Подсчет частоты сердечных сокращений
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'клинические методы исследования: подсчет частоты сердечных сокращений;'
-  - name: Подсчет частоты дыхания
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'клинические методы исследования: подсчет частоты дыхания;'
-  - name: Измерение артериального давления
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'клинические методы исследования: измерение артериального давления;'
-  - name: Аускультация легких, сердца
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'клинические методы исследования: аускультация легких, сердца;'
-  - name: Пальпация и перкуссия живота
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'клинические методы исследования: пальпация и перкуссия живота;'
-  conditional_exams:
+      quote: повторный общий анализ мочи;
   - name: Электрокардиограмма
     aliases: []
     exam_type: unknown
@@ -465,9 +468,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'инструментальные методы исследования: электрокардиограмма (пациентам
-        в возрасте 40 лет и старше).'
-  - name: Исследования с пероральным приемом контрастного вещества
+      quote: электрокардиограмма (пациентам в возрасте 40 лет и старше).
+  - name: Рентгенологическое исследование с пероральным приемом контрастного вещества
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -489,56 +491,10 @@ conditions:
       row_index: null
       quote: Спаечная ОКН у пациентов, неоднократно подвергшихся хирургическим вмешательствам,
         без явлений перитонита является медицинским показанием к проведению исследований
-        с пероральным приемом контрастного вещества (водорастворимого или взвеси сульфата
-        бария).
-  - name: Контрольная рентгенография после контрастирования
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При спаечной ОКН первая контрольная рентгенография выполняется через
-        6–8 часов, далее – по медицинским показаниям.
-  - name: Обзорная рентгенография органов брюшной полости после контрастирования
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При подозрении на высокую ОКН рекомендовано выполнение обзорной рентгенографии
-        органов брюшной полости через 2–3 часа после контрастирования.
+        с пероральным приемом контрастного
   treatment:
     non_drug:
-    - text: Медицинская транспортировка пациента с ОКН в больничную организацию осуществляется
-        в положении лежа.
+    - text: Медицинская транспортировка пациента в положении лежа
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
         document_url: null
@@ -549,11 +505,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Медицинская транспортировка пациента с ОКН в больничную организацию
-          осуществляется в положении лежа.
-    - text: Постоянная декомпрессия верхних отделов пищеварительного тракта через
-        назогастральный зонд или интестинальный зонд, заведенный за связку Трейца
-        при помощи эндоскопа.
+        quote: Медицинская транспортировка пациента в положении лежа
+    - text: Постоянная декомпрессия верхних отделов ЖКТ через назогастральный или
+        интестинальный зонд
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
         document_url: null
@@ -564,10 +518,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Постоянная декомпрессия верхних отделов пищеварительного тракта через
-          назогастральный зонд или интестинальный зонд, заведенный за связку Трейца
-          при помощи эндоскопа.
-    - text: Постановка катетера в мочевой пузырь.
+        quote: Постоянная декомпрессия верхних отделов ЖКТ через назогастральный или
+          интестинальный зонд
+    - text: Постановка катетера в мочевой пузырь
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
         document_url: null
@@ -578,8 +531,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Постановка катетера в мочевой пузырь.
-    - text: Проведение сифонных клизм по медицинским показаниям.
+        quote: Постановка катетера в мочевой пузырь
+    - text: Проведение сифонных клизм по медицинским показаниям
       source_ref:
         protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
         document_url: null
@@ -590,15 +543,44 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Проведение сифонных клизм по медицинским показаниям.
+        quote: Проведение сифонных клизм по медицинским показаниям
+    - text: Ликвидация механической преграды и восстановление пассажа по кишечнику
+        путем экстренного хирургического вмешательства по показаниям
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ликвидация механической преграды и восстановление пассажа по кишечнику
+          путем экстренного хирургического вмешательства по показаниям
+    - text: Декомпрессия тонкой и толстой кишок по назоинтенстинальному или трансанальному
+        зонду, или через энтеростому наружу, или в удаляемый отрезок кишки при переполнении
+        кишечных петель содержимым
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Декомпрессия тонкой и толстой кишок по назоинтенстинальному или трансанальному
+          зонду, или через энтеростому наружу, или в удаляемый отрезок кишки при переполнении
+          кишечных петель содержимым
     drug_groups: []
     drugs:
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: 'раствор для внутривенного и внутримышечного введения (для инъекций)
-        10 мг/мл 2 мл, 5 мл, 10 мл; 20 мг/мл 2 мл, 10 мл, однократное или постоянное
-        введение анестетика через эпидуральный катетер 150–500 '
+      dose_text: 10 мг/мл 2 мл, 5 мл, 10 мл; 20 мг/мл 2 мл, 10 мл; однократное или
+        постоянное введение через эпидуральный катетер 150–500 мг
       frequency_text: null
       duration_text: null
       route: null
@@ -618,14 +600,12 @@ conditions:
         row_index: null
         quote: лидокаин, раствор для внутривенного и внутримышечного введения (для
           инъекций) 10 мг/мл 2 мл, 5 мл, 10 мл; 20 мг/мл 2 мл, 10 мл, однократное
-          или постоянное введение анестетика через эпидуральный катетер 150–500 мг
-          анестетика
+          или постоянное введение анестетика через эпидуральный катетер
     - drug_name: Бупивакаин
       active_substance: null
       drug_group: null
-      dose_text: раствор для интратекального введения 5 мг/мл 4 мл (гипербарический),
-        однократное или постоянное введение анестетика через эпидуральный катетер
-        37,5–225 мг анестетика +/ – эпинефрин 5 мкг/мл (1:200000)
+      dose_text: раствор 5 мг/мл 4 мл; однократное или постоянное введение через эпидуральный
+        катетер 37,5–225 мг +/- эпинефрин 5 мкг/мл
       frequency_text: null
       duration_text: null
       route: null
@@ -645,12 +625,12 @@ conditions:
         row_index: null
         quote: бупивакаин раствор для интратекального введения 5 мг/мл 4 мл (гипербарический),
           однократное или постоянное введение анестетика через эпидуральный катетер
-          37,5–225 мг анестетика +/ – эпинефрин 5 мкг/мл (1:200000)
+          37,5–225 мг анестетика +/ – эпинефрин
     - drug_name: Прокаин
       active_substance: null
       drug_group: null
-      dose_text: раствор для инъекций 2,5 мг/мл, 5 мг/мл, 10 мг/мл, в паранефральную
-        клетчатку 250–400 мг прокаина однократно
+      dose_text: раствор 2,5 мг/мл, 5 мг/мл, 10 мг/мл; в паранефральную клетчатку
+        250–400 мг однократно
       frequency_text: null
       duration_text: null
       route: null
@@ -669,12 +649,12 @@ conditions:
         table_index: null
         row_index: null
         quote: прокаин, раствор для инъекций 2,5 мг/мл, 5 мг/мл, 10 мг/мл, в паранефральную
-          клетчатку 250–400 мг прокаина однократно
+          клетчатку 250–400 мг прокаина однократно;
     - drug_name: Метоклопрамид
       active_substance: null
       drug_group: null
-      dose_text: раствор для инъекций 5 мг/мл 2 мл, внутримышечно или внутривенно
-        в дозе 10–20 мг 1–3 раза в сутки (максимальная суточная доза – 60 мг)
+      dose_text: раствор 5 мг/мл 2 мл; в/м или в/в 10–20 мг 1–3 раза в сутки (макс.
+        суточная доза — 60 мг)
       frequency_text: null
       duration_text: null
       route: null
@@ -694,13 +674,12 @@ conditions:
         row_index: null
         quote: метоклопрамид, раствор для инъекций 5 мг/мл 2 мл, внутримышечно или
           внутривенно в дозе 10–20 мг 1–3 раза в сутки (максимальная суточная доза
-          – 60 мг)
+          – 60 мг);
     - drug_name: Неостигмин
       active_substance: null
       drug_group: null
-      dose_text: раствор для инъекций 0,5 мг/мл 1 мл, подкожно взрослым 0,5–2 мг 1–2
-        раза в сутки. Максимальная разовая доза 2 мг, суточная – 6 мг. 0,25 мл подкожно,
-        каждые 4–6 часов при послеоперационной атонии
+      dose_text: раствор 0,5 мг/мл 1 мл; п/к 0,5–2 мг 1–2 раза в сутки (макс. разовая
+        2 мг, суточная 6 мг); 0,25 мл п/к каждые 4–6 часов при послеоперационной атонии
       frequency_text: null
       duration_text: null
       route: null
@@ -724,9 +703,8 @@ conditions:
     - drug_name: Цефтриаксон
       active_substance: null
       drug_group: null
-      dose_text: порошок для приготовления раствора для внутривенного и внутримышечного
-        введения 500 мг, 1000 мг, внутримышечно или внутривенно медленно по 2000 мг
-        1–2 раза в сутки 7–10 дней в комбинации с метронидазо
+      dose_text: порошок 500 мг, 1000 мг; в/м или в/в медленно по 2000 мг 1–2 раза
+        в сутки 7–10 дней в комбинации с метронидазолом
       frequency_text: null
       duration_text: null
       route: null
@@ -746,12 +724,11 @@ conditions:
         row_index: null
         quote: цефтриаксон, порошок для приготовления раствора для внутривенного и
           внутримышечного введения 500 мг, 1000 мг, внутримышечно или внутривенно
-          медленно по 2000 мг 1–2 раза в сутки 7–10 дней в комбинации с метронидазолом
+          медленно по 2000 мг 1–2 раза в сутки 7–10 дней в комбинации
     - drug_name: Метронидазол
       active_substance: null
       drug_group: null
-      dose_text: раствор для инфузий (для внутривенного введения) 5 мг/мл 100 мл,
-        внутривенно капельно по 500 мг каждые 8 часов
+      dose_text: раствор 5 мг/мл 100 мл; в/в капельно по 500 мг каждые 8 часов
       frequency_text: null
       duration_text: null
       route: null
@@ -770,13 +747,12 @@ conditions:
         table_index: null
         row_index: null
         quote: метронидазолом, раствор для инфузий (для внутривенного введения) 5
-          мг/мл 100 мл, внутривенно капельно по 500 мг каждые 8 часов
-    - drug_name: Пиперациллина/тазобактам
+          мг/мл 100 мл, внутривенно капельно по 500 мг каждые 8 часов;
+    - drug_name: Пиперациллин/тазобактам
       active_substance: null
       drug_group: null
-      dose_text: порошок (лиофилизат) для приготовления раствора для инфузий (для
-        внутривенного введения) 4000 мг/500 мг, внутривенно капельно по 4000 мг/500
-        мг каждые 6–8 часов в монотерапии
+      dose_text: порошок 4000 мг/500 мг; в/в капельно по 4000 мг/500 мг каждые 6–8
+        часов в монотерапии
       frequency_text: null
       duration_text: null
       route: null
@@ -796,13 +772,11 @@ conditions:
         row_index: null
         quote: пиперациллина/тазобактам, порошок (лиофилизат) для приготовления раствора
           для инфузий (для внутривенного введения) 4000 мг/500 мг, внутривенно капельно
-          по 4000 мг/500 мг каждые 6–8 часов в монотерапии
+          по 4000 мг/500 мг каждые 6–8 часов
     - drug_name: Эртапенем
       active_substance: null
       drug_group: null
-      dose_text: лиофилизированный порошок для приготовления раствора для внутривенного
-        и внутримышечного введения (для инфузий) 1000 мг, внутривенно капельно по
-        1,0 г каждые 24 часа
+      dose_text: порошок 1000 мг; в/в капельно по 1,0 г каждые 24 часа
       frequency_text: null
       duration_text: null
       route: null
@@ -822,12 +796,12 @@ conditions:
         row_index: null
         quote: эртапенем, лиофилизированный порошок для приготовления раствора для
           внутривенного и внутримышечного введения (для инфузий) 1000 мг, внутривенно
-          капельно по 1,0 г каждые 24 часа
+          капельно по 1,0 г каждые 24 часа;
     - drug_name: Ципрофлоксацин
       active_substance: null
       drug_group: null
-      dose_text: раствор для инфузий 2 мг/мл 100 мл, внутривенно капельно по 400 мг
-        каждые 12 часов в комбинации с метронидазолом
+      dose_text: раствор 2 мг/мл 100 мл; в/в капельно по 400 мг каждые 12 часов в
+        комбинации с метронидазолом (при аллергии на бета-лактамы)
       frequency_text: null
       duration_text: null
       route: null
@@ -851,10 +825,59 @@ conditions:
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинский осмотр хирурга каждые 3 часа или чаще в течение периода дифференциальной
+      диагностики или разрешения ОКН
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинский осмотр хирурга каждые 3 часа или чаще в течение периода дифференциальной
+        диагностики или разрешения ОКН
+  - text: Повторный общий анализ крови каждые 6–9 часов
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторный общий анализ крови каждые 6–9 часов
+  - text: 'Контрольная рентгенография при пассаже контраста: через 6–8 часов (при
+      спаечной ОКН) или через 2–3 часа (при подозрении на высокую ОКН)'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Контрольная рентгенография при пассаже контраста: через 6–8 часов (при
+        спаечной ОКН) или через 2–3 часа (при подозрении на высокую ОКН)'
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: госпитализация (в стационарных условиях)
     timing: null
     required_if: []
     source_ref:
@@ -867,8 +890,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: Госпитализация в хирургическое отделение
+      quote: госпитализация (в стационарных условиях)
+  - text: Пациенты с подозрением на ОКН госпитализируются в экстренном порядке в хирургическое
+      отделение больничной организации
     timing: null
     required_if: []
     source_ref:
@@ -881,25 +905,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация в хирургическое отделение
-  - text: Декомпрессия тонкой и толстой кишок по назоинтенстинальному или трансанальному
-      зонду, или через энтеростому наружу, или в удаляемый отрезок кишки показана
-      при переполнении кишечных петель содержимым.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходим
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острой_кишечной_непроходимостью_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Декомпрессия тонкой и толстой кишок по назоинтенстинальному или трансанальному
-        зонду, или через энтеростому наружу, или в удаляемый отрезок кишки показана
-        при переполнении кишечных петель содержимым.
+      quote: Пациенты с подозрением на ОКН госпитализируются в экстренном порядке
+        в хирургическое отделение больничной организации
   red_flags:
   - text: Установленный диагноз странгуляционная ОКН
     aliases: []
@@ -917,8 +924,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями к экстренному хирургическому вмешательству...
-        являются: установленный диагноз странгуляционная ОКН;'
+      quote: установленный диагноз странгуляционная ОКН;
   - text: Признаки неразрешающейся непроходимости (сохранение или рецидив болей в
       животе, рвоты)
     aliases: []
@@ -936,11 +942,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями к экстренному хирургическому вмешательству...
-        являются: признаки неразрешающейся непроходимости (сохранение или рецидив
-        болей в животе, рвоты);'
+      quote: признаки неразрешающейся непроходимости (сохранение или рецидив болей
+        в животе, рвоты);
   - text: Появление мышечного напряжения передней брюшной стенки, свободной жидкости
-      в брюшной полости при компьютерной томографии или УЗИ
+      в брюшной полости
     aliases: []
     red_flag_type: other
     severity: high
@@ -956,9 +961,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями к экстренному хирургическому вмешательству...
-        являются: появление мышечного напряжения передней брюшной стенки, свободной
-        жидкости в брюшной полости при компьютерной томографии или УЗИ;'
+      quote: появление мышечного напряжения передней брюшной стенки, свободной жидкости
+        в брюшной полости при компьютерной томографии или УЗИ;
   - text: Зондовое отделяемое более 500 мл в сутки или появление кишечного содержимого
       по зонду
     aliases: []
@@ -976,9 +980,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями к экстренному хирургическому вмешательству...
-        являются: зондовое отделяемое более 500 мл в сутки или появление кишечного
-        содержимого по зонду;'
+      quote: зондовое отделяемое более 500 мл в сутки или появление кишечного содержимого
+        по зонду;
   - text: Отсутствие динамики продвижения контрастного вещества по тонкой кишке и
       поступления его в толстую кишку
     aliases: []
@@ -996,9 +999,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями к экстренному хирургическому вмешательству...
-        являются: отсутствие динамики продвижения контрастного вещества по тонкой
-        кишке и поступления его в толстую кишку.'
+      quote: отсутствие динамики продвижения контрастного вещества по тонкой кишке
+        и поступления его в толстую кишку.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1007,7 +1009,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T22:13:27.974738+00:00'
+  extracted_at: '2026-07-23T08:28:53.787309+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1018,4 +1020,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T22:13:28.005576+00:00'
+  validated_at: '2026-07-23T08:28:53.805880+00:00'

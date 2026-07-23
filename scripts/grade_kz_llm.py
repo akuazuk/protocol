@@ -104,7 +104,7 @@ def build_grader_prompt(case: dict, checklist: list[tuple[str, str]], *, protoco
     kz_lines = []
     for label, keys in _KZ_FIELDS:
         val = _txt(case, keys)
-        kz_lines.append(f"{label}: {val or '—'}")
+        kz_lines.append(f"{label}: {val or ' - '}")
     checklist_lines = "\n".join(f"- [{cid}] {txt}" for cid, txt in checklist)
     proto = f"Протокол МЗ РБ: {protocol_name}\n" if protocol_name else ""
     return (

@@ -5,6 +5,7 @@ from __future__ import annotations
 import argparse
 import json
 import os
+import ssl
 import sys
 import urllib.error
 import urllib.parse
@@ -43,8 +44,18 @@ def send_telegram(text: str, *, parse_mode: str = "") -> bool:
     url = f"https://api.telegram.org/bot{token}/sendMessage"
     data = urllib.parse.urlencode(body).encode("utf-8")
     req = urllib.request.Request(url, data=data, method="POST")
+    # За VPN/прокси в цепочке может быть self-signed CA - используем certifi.
     try:
-        with urllib.request.urlopen(req, timeout=25) as resp:
+        import certifi
+
+        ctx = ssl.create_default_context(cafile=certifi.where())
+    except Exception:  # noqa: BLE001
+        ctx = ssl.create_default_context()
+    if os.environ.get("TELEGRAM_INSECURE_SSL", "").strip() in ("1", "true", "yes"):
+        ctx.check_hostname = False
+        ctx.verify_mode = ssl.CERT_NONE
+    try:
+        with urllib.request.urlopen(req, timeout=25, context=ctx) as resp:
             payload = json.loads(resp.read().decode("utf-8"))
         return bool(payload.get("ok"))
     except (urllib.error.URLError, TimeoutError, json.JSONDecodeError, KeyError) as e:

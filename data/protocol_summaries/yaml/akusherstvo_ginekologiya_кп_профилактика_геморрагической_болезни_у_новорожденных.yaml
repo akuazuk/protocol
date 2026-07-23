@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: gemorragicheskaya_bolezn_novorozhdennyh
+- condition_id: hemorrhagic_disease_of_newborn
   name: Геморрагическая болезнь новорожденных
   synonyms: []
   abbreviations: []
@@ -36,7 +36,33 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Повышенная кровоточивость у новорожденных и детей первых месяцев жизни
+        вследствие недостаточности К-зависимых факторов свертывания крови (II, VII,
+        IX, X)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: akusherstvo_ginekologiya_кп_профилактика_геморрагической_болезни_у_новорожденных
+        document_url: null
+        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП Профилактика геморрагической
+          болезни у новорожденных детей 02.04.2020 № 28.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышенная кровоточивость у новорожденных и детей первых месяцев жизни
+          вследствие недостаточности К-зависимых факторов свертывания крови (II, VII,
+          IX, X)
+    optional: []
+    exclusion: []
   required_exams: []
   conditional_exams: []
   treatment:
@@ -46,9 +72,9 @@ conditions:
     - drug_name: Фитоменадион (витамин К1)
       active_substance: null
       drug_group: null
-      dose_text: 'Внутримышечно, однократно в первый час жизни в переднелатеральную
-        поверхность верхней трети бедра. Доношенным: 1 мг; недоношенным: 0,5 мг; недоношенным
-        < 1000 г: 0,3 мг.'
+      dose_text: 'Внутримышечно однократно в первый час жизни: 1 мг доношенным, 0,5
+        мг недоношенным, 0,3 мг недоношенным с массой при рождении <1000 г. Вторая
+        доза в 4–6 недель жизни: перорально (при грудном вскармлива'
       frequency_text: null
       duration_text: null
       route: null
@@ -67,45 +93,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: '9.1. внутримышечный – предпочтительный путь введения лекарственного
-          средства новорожденным детям: осуществляется однократно в первый час жизни
-          в стационарных условиях, вводится [...] в дозе 1 мг доношенным и 0,5 мг
-          недоношенным детям, для недоношенных детей с массой тела при рождении менее
-          1000 г доза составляет 0,3 мг;'
+        quote: осуществляется однократно в первый час жизни в стационарных условиях,
+          вводится в переднелатеральную поверхность верхней трети бедра внутримышечно
+          в дозе 1 мг доношенным и 0,5 мг недоношенным детям
     - drug_name: Фитоменадион (витамин К1)
       active_substance: null
       drug_group: null
-      dose_text: Внутривенно, в ситуациях, требующих инфузий, при обеспечении венозного
-        доступа. Дозы те же. Разводится раствором глюкозы 5–10 %. Вводится очень медленно,
-        не более 1 мг в минуту.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: akusherstvo_ginekologiya_кп_профилактика_геморрагической_болезни_у_новорожденных
-        document_url: null
-        local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП Профилактика геморрагической
-          болезни у новорожденных детей 02.04.2020 № 28.pdf
-        page_start: 3
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 9.2. внутривенный – в ситуациях, требующих проведения внутривенных
-          инфузий, при обеспечении венозного доступа, лекарственное средство вводится
-          внутривенно в тех же дозах при разведении раствором глюкозы 5–10 %; внутривенное
-          введение осуществляется очень медленно...
-    - drug_name: Фитоменадион
-      active_substance: null
-      drug_group: null
-      dose_text: Однократная парентеральная доза в первые сутки жизни. Применяется
-        в виде водного раствора для внутривенного, внутримышечного и перорального
-        введения (не более 2 мг действующего вещества в ампуле).
+      dose_text: Однократная парентеральная доза в первые сутки жизни; водный раствор
+        для внутривенного, внутримышечного и перорального введения (не более 2 мг
+        действующего вещества в ампуле)
       frequency_text: null
       duration_text: null
       route: null
@@ -124,16 +120,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Для профилактики ГрБН используется лекарственное средство фитоменадион
-          (витамин К1), назначение которого в десятки раз уменьшает вероятность кровотечения
-          в ранние сроки после рождения.
+        quote: Однократная парентеральная доза фитоменадиона (витамина К1) в первые
+          сутки жизни также снижает риск развития классической и (или) поздней ГрБН
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Введение второй дозы фитоменадиона в 4–6 недель жизни показано детям группы
-      риска по развитию поздней формы геморрагической болезни (исключительно грудное
-      вскармливание, нарушение всасывания в ЖКТ, гепатит).
+  - text: Повторное введение фитоменадиона в 4–6 недель жизни детям из группы риска
+      по развитию поздней формы геморрагической болезни
     timing: null
     required_if: []
     expected_actions: []
@@ -148,33 +142,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Введение второй дозы фитоменадиона в 4–6 недель жизни показано детям
-        группы риска по развитию поздней формы геморрагической болезни (исключительно
-        грудное вскармливание, нарушение всасывания в ЖКТ, ге
-  - text: 'Quote: Введение второй дозы в 4–6 недель жизни показано детям группы риска
-      по развитию поздней формы геморрагической болезни: при исключительно грудном
-      вскармливании – перорально, при нарушении всасывания в ЖКТ, гепатите – внутривенно.'
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: akusherstvo_ginekologiya_кп_профилактика_геморрагической_болезни_у_новорожденных
-      document_url: null
-      local_path: minzdrav_protocols/akusherstvo-ginekologiya/КП Профилактика геморрагической
-        болезни у новорожденных детей 02.04.2020 № 28.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Quote: Введение второй дозы в 4–6 недель жизни показано детям группы
-        риска по развитию поздней формы геморрагической болезни: при исключительно
-        грудном вскармливании – перорально, при нарушении всасыв'
+      quote: Повторное введение фитоменадиона в 4–6 недель жизни детям из группы риска
+        по развитию поздней формы геморрагической болезни
   hospitalization: []
   routing:
-  - text: Госпитализация для первичного внутримышечного или внутривенного введения
-      фитоменадиона.
+  - text: Первичная профилактика (в первый час жизни) — в стационарных условиях
     timing: null
     required_if: []
     source_ref:
@@ -188,10 +160,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация для первичного внутримышечного или внутривенного введения
-        фитоменадиона.
-  - text: Амбулаторно для перорального приема второй дозы фитоменадиона детям на исключительно
-      грудном вскармливании.
+      quote: Первичная профилактика (в первый час жизни) — в стационарных условиях
+  - text: Вторая доза в 4–6 недель жизни перорально — в амбулаторных условиях по месту
+      жительства
     timing: null
     required_if: []
     source_ref:
@@ -205,10 +176,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторно для перорального приема второй дозы фитоменадиона детям на
-        исключительно грудном вскармливании.
-  - text: Госпитализация для внутривенного введения второй дозы фитоменадиона при
-      нарушении всасывания в ЖКТ или гепатите.
+      quote: Вторая доза в 4–6 недель жизни перорально — в амбулаторных условиях по
+        месту жительства
+  - text: Вторая доза в 4–6 недель жизни внутривенно (при патологии ЖКТ, гепатите)
+      — в стационарных условиях
     timing: null
     required_if: []
     source_ref:
@@ -222,11 +193,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация для внутривенного введения второй дозы фитоменадиона при
-        нарушении всасывания в ЖКТ или гепатите.
+      quote: Вторая доза в 4–6 недель жизни внутривенно (при патологии ЖКТ, гепатите)
+        — в стационарных условиях
   red_flags:
-  - text: Риск спазма сосудов при слишком быстром внутривенном введении фитоменадиона
-      (более 1 мг в минуту).
+  - text: Риск спазма сосудов при превышении скорости внутривенного введения фитоменадиона
     aliases: []
     red_flag_type: other
     severity: high
@@ -244,7 +214,7 @@ conditions:
       table_index: null
       row_index: null
       quote: внутривенное введение осуществляется очень медленно, не более 1 мг в
-        минуту, из-за риска спазма сосудов;
+        минуту, из-за риска спазма сосудов
   contraindications: []
   complications: []
   kz_checklist: null
@@ -253,7 +223,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T23:38:38.710749+00:00'
+  extracted_at: '2026-07-23T06:56:55.814315+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -267,5 +237,5 @@ validation:
   - level: warning
     code: duplicate_drug
     message: Дублирующийся препарат
-    path: conditions[gemorragicheskaya_bolezn_novorozhdennyh].treatment.drugs[1]
-  validated_at: '2026-07-01T23:38:38.712269+00:00'
+    path: conditions[hemorrhagic_disease_of_newborn].treatment.drugs[1]
+  validated_at: '2026-07-23T06:56:55.815887+00:00'

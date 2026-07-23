@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение острых риносинуситов
+  title: Диагностика и лечение острых риносинуситов
   url: null
   local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
   document_sha256: null
@@ -38,7 +38,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Продолжительность заболевания более 7–10 дней
+    - text: Продолжительность заболевания более 7–10 дней или двухволновое течение
+        (усиление симптомов после улучшения)
       logic_group: null
       operator: unknown
       values: []
@@ -55,26 +56,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Продолжительность заболевания более 7–10 дней
-    - text: Усиление симптомов после видимого улучшения (двухволновое течение)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Усиление симптомов после видимого улучшения (двухволновое течение)
-    - text: Интенсивность симптомов (болей в проекции ОНП и в зубах верхней челюсти)
+        quote: Продолжительность заболевания более 7–10 дней или двухволновое течение
+          (усиление симптомов после улучшения)
+    - text: Интенсивность симптомов (боль в проекции ОНП и зубах верхней челюсти)
         >7 баллов по ВАШ
       logic_group: null
       operator: unknown
@@ -92,9 +76,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Интенсивность симптомов (болей в проекции ОНП и в зубах верхней челюсти)
+        quote: Интенсивность симптомов (боль в проекции ОНП и зубах верхней челюсти)
           >7 баллов по ВАШ
-    - text: Гнойные выделения в полости носа при передней риноскопии
+    - text: Гнойные выделения в полости носа при передней риноскопии (полоски гноя
+        в носовых ходах)
       logic_group: null
       operator: unknown
       values: []
@@ -111,9 +96,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Гнойные выделения в полости носа при передней риноскопии
-    - text: Определение гнойного отделяемого (полоски гноя) в области выводных отверстий
-        пораженных ОНП
+        quote: Гнойные выделения в полости носа при передней риноскопии (полоски гноя
+          в носовых ходах)
+    - text: Повышение уровней СОЭ и СРБ
       logic_group: null
       operator: unknown
       values: []
@@ -130,44 +115,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение гнойного отделяемого (полоски гноя) в области выводных
-          отверстий пораженных ОНП
-    - text: Повышение уровней СОЭ (согласно референтным значениям)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Повышение уровней СОЭ (согласно референтным значениям)
-    - text: Повышение уровней СРБ (согласно референтным значениям)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Повышение уровней СРБ (согласно референтным значениям)
+        quote: Повышение уровней СОЭ и СРБ
     - text: Температура тела >38 °C
       logic_group: null
       operator: unknown
@@ -186,7 +134,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Температура тела >38 °C
-    - text: Лейкоцитоз в общем анализе крови
+    - text: Воспаление слизистой оболочки полости носа и околоносовых пазух продолжительностью
+        не более 12 недель с полным исчезновением симптомов после выздоровления
       logic_group: null
       operator: unknown
       values: []
@@ -203,11 +152,52 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лейкоцитоз в общем анализе крови
+        quote: Воспаление слизистой оболочки полости носа и околоносовых пазух продолжительностью
+          не более 12 недель с полным исчезновением симптомов после выздоровления
+    - text: 'Типичные симптомы: заложенность носа, выделения из носа, головная/лицевая
+        боль, реже – снижение/потеря обоняния'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Типичные симптомы: заложенность носа, выделения из носа, головная/лицевая
+          боль, реже – снижение/потеря обоняния'
+    - text: 'Поствирусный ОРС: сохранение симптомов более 10 дней без признаков тяжелой
+        бактериальной инфекции'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Поствирусный ОРС: сохранение симптомов более 10 дней без признаков
+          тяжелой бактериальной инфекции'
     optional: []
     exclusion: []
   required_exams:
-  - name: Передняя риноскопия
+  - name: Сбор анамнеза и жалоб
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -221,15 +211,78 @@ conditions:
       protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
       document_url: null
       local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
-      page_start: 9
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Критериями диагностики бактериального ОРС... являются: гнойные выделения
-        в полости носа при передней риноскопии, определение гнойного отделяемого (полоски
-        гноя) в области выводных отверстий пораженных ОНП'
+      quote: 9.1. сбор анамнеза и жалоб;
+  - name: Оценка тяжести течения заболевания по ВАШ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 9.2. оценка тяжести течения заболевания по ВАШ;
+  - name: Передняя риноскопия (задняя риноскопия – при подозрении на сфеноидит)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 9.3. передняя риноскопия (задняя риноскопия – при подозрении на сфеноидит)
+        – выявляется диффузная застойная гиперемия и отек слизистой оболочки полости
+        носа.
+  - name: Термометрия тела
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 9.4. термометрия тела.
   conditional_exams:
   - name: Общий анализ крови
     aliases: []
@@ -251,9 +304,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При диагностике бактериального ОРС (с подозрением на него) с тяжелым
-        и осложненным течением, в случаях потенциального риска развития гнойных осложнений,
-        пациентам с сахарным диабетом, ХОБЛ... выполняются общий анализ крови.
+      quote: При диагностике бактериального ОРС (с подозрением на него... выполняются
+        общий анализ крови и определение уровня СРБ.
   - name: Определение уровня СРБ
     aliases: []
     exam_type: unknown
@@ -274,9 +326,50 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При диагностике бактериального ОРС (с подозрением на него) с тяжелым
-        и осложненным течением, в случаях потенциального риска развития гнойных осложнений,
-        пациентам с сахарным диабетом, ХОБЛ... выполняется определение уровня СРБ.
+      quote: При диагностике бактериального ОРС (с подозрением на него... выполняются
+        общий анализ крови и определение уровня СРБ.
+  - name: Рентгенография ОНП
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: горизонтальный уровень жидкости на рентгенографии ОНП;
+  - name: Бактериологическое исследование материала из верхнечелюстной пазухи
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+      page_start: 13
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: взятие материала из верхнечелюстной пазухи для бактериологического исследования.
   - name: Обзорная рентгенография ОНП
     aliases: []
     exam_type: unknown
@@ -298,18 +391,174 @@ conditions:
       table_index: null
       row_index: null
       quote: 'Медицинскими показаниями к обзорной рентгенографии ОНП являются: среднетяжелое,
-        тяжелое и осложненное течение ОРС; угроза осложнений; необходимость исключения
-        латентно протекающего одонтогенного синусита...'
+        тяжелое и осложненное течение ОРС; угроза осложнений'
   treatment:
-    non_drug: []
+    non_drug:
+    - text: 'Ирригационная терапия: промывания полости носа официнальными солевыми
+        растворами 4–5 раз в день при наличии отделяемого'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Ирригационная терапия: промывания полости носа официнальными солевыми
+          растворами 4–5 раз в день при наличии отделяемого'
+    - text: Вакуумное дренирование ОНП при затяжном течении ОРС (при отсутствии обструкции
+        соустий ОНП)
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вакуумное дренирование ОНП при затяжном течении ОРС (при отсутствии
+          обструкции соустий ОНП)
+    - text: Пункция верхнечелюстной пазухи при наличии медицинских показаний
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Пункция верхнечелюстной пазухи при наличии медицинских показаний
     drug_groups: []
     drugs:
-    - drug_name: Амоксициллин/клавулановая кислота
+    - drug_name: Ксилометазолин
       active_substance: null
       drug_group: null
-      dose_text: таблетки, покрытые оболочкой, 500 мг/125 мг; таблетки, покрытые оболочкой
-        875 мг/125 мг, по 625 мг 3 раза сутки или по 1 г 2 раза в сутки внутрь 5–7
-        дней.
+      dose_text: 1 мг/мл раствор, распыление или на турунде для анемизации слизистой
+        оболочки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: анемизация слизистой оболочки путем распыления (или введения на турунде)
+          1 мг/мл раствора ксилометазолина
+    - drug_name: Оксиметазолин
+      active_substance: null
+      drug_group: null
+      dose_text: 0,5 мг/мл раствор для анемизации слизистой оболочки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 0,5 мг/мл раствора оксиметазолина
+    - drug_name: Нафазолин
+      active_substance: null
+      drug_group: null
+      dose_text: 1 мг/мл раствор для анемизации слизистой оболочки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 1 мг/мл раствора нафазолина
+    - drug_name: Мометазон
+      active_substance: null
+      drug_group: null
+      dose_text: спрей назальный 50 мкг/доза – по 100 мкг 2 раза в сутки в каждую
+        половину носа (суточная доза 400 мкг) 10–15 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 11
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: мометазон, спрей назальный дозированный 50 мкг/доза 140 доз – по 100
+          мкг (два впрыскивания) 2 раза в сутки в каждую половину носа (общая суточная
+          доза – 400 мкг) 10–15 дней
+    - drug_name: Флутиказона пропионат
+      active_substance: null
+      drug_group: null
+      dose_text: спрей назальный 50 мкг/доза – по 200 мкг 1 раз в сутки в каждую половину
+        носа 10–15 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 11
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: флутиказона пропионат, спрей назальный дозированный 50 мкг/доза 120
+          доз – по 200 мкг (по два впрыскивания 1 раз в сутки) в каждую половину носа
+          10–15 дней
+    - drug_name: Цефдинир
+      active_substance: null
+      drug_group: null
+      dose_text: капсулы 300 мг, по 600 мг разовой или разделенной на 2 раза дозой
+        внутрь 5–7 дней
       frequency_text: null
       duration_text: null
       route: null
@@ -327,14 +576,84 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Для лечения ОРС назначается один из следующих антибактериальных ЛП
-          второго ряда: амоксициллин/клавулановая кислота, таблетки, покрытые оболочкой...
-          по 625 мг 3 раза сутки или по 1 г 2 раза в сутки внутрь 5–7 дней.'
+        quote: цефдинир, капсулы, 300 мг, по 600 мг разовой или разделенной на 2 раза
+          дозой внутрь 5–7 дней.
+    - drug_name: Цефподоксим
+      active_substance: null
+      drug_group: null
+      dose_text: таблетки 200 мг, по 200 мг каждые 12 часов внутрь 5–7 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: цефподоксим, таблетки, покрытые пленочной оболочкой, 200 мг, по 200
+          мг каждые 12 часов внутрь 5–7 дней.
+    - drug_name: Амоксициллин/клавулановая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: пор. д/ин. 1000 мг/200 мг по 1000 мг/200 мг 3–4 р/сут в/в медленно
+        или таб. 875 мг/125 мг по 1 таб. 2 р/сут внутрь 7–10 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: амоксициллин/клавулановая кислота, порошок для приготовления раствора
+          для инъекций 1000 мг/200 мг... или таблетки, покрытые оболочкой, 875 мг/125
+          мг, по 1 таблетке 2 раза в сутки внутрь 7–10 дней.
+    - drug_name: Амоксициллин/клавулановая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: по 625 мг 3 раза в сутки или по 1 г 2 раза в сутки внутрь 5–7 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: амоксициллин/клавулановая кислота, таблетки, покрытые оболочкой, 500
+          мг/125 мг; таблетки, покрытые оболочкой 875 мг/125 мг, по 625 мг 3 раза
+          сутки или по 1 г 2 раза в сутки внутрь 5–7 дней.
     - drug_name: Цефуроксим
       active_substance: null
       drug_group: null
-      dose_text: таблетки, покрытые оболочкой, 250 мг, по 500 мг 2 раза в сутки внутрь
-        5–7 дней.
+      dose_text: по 500 мг 2 раза в сутки внутрь 5–7 дней
       frequency_text: null
       duration_text: null
       route: null
@@ -358,8 +677,8 @@ conditions:
     surgery: []
     source_refs: []
   follow_up:
-  - text: Терапия амоксициллин/клавулановой кислотой продолжается 2 дня после исчезновения
-      симптомов.
+  - text: Антибактериальная терапия продолжается 2 дня после исчезновения симптомов
+      заболевания
     timing: null
     required_if: []
     expected_actions: []
@@ -373,11 +692,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Терапия амоксициллин/клавулановой кислотой продолжается 2 дня после исчезновения
-        симптомов.
+      quote: Антибактериальная терапия продолжается 2 дня после исчезновения симптомов
+        заболевания
   hospitalization: []
   routing:
-  - text: амбулаторно
+  - text: Амбулаторные условия (лечение пациентов с ОРС в амбулаторных условиях)
     timing: null
     required_if: []
     source_ref:
@@ -390,8 +709,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: амбулаторно
-  - text: госпитализация
+      quote: Амбулаторные условия (лечение пациентов с ОРС в амбулаторных условиях)
+  - text: Стационарные условия (лечение пациентов с ОРС в стационарных условиях)
     timing: null
     required_if: []
     source_ref:
@@ -404,9 +723,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: Стационарные условия (лечение пациентов с ОРС в стационарных условиях)
   red_flags:
-  - text: Среднетяжелое, тяжелое и осложненное течение ОРС
+  - text: Потенциальный риск развития гнойных орбитальных и внутричерепных осложнений
     aliases: []
     red_flag_type: other
     severity: high
@@ -422,9 +741,47 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями к обзорной рентгенографии ОНП являются: среднетяжелое,
-        тяжелое и осложненное течение ОРС;'
-  - text: Угроза осложнений ОРС
+      quote: в случаях потенциального риска развития гнойных осложнений (орбитальных,
+        внутричерепных)
+  - text: Изначально тяжелое течение ОРС (лихорадка >39 °C, головные и лицевые боли,
+      гнойные выделения 3–4 дня, ВАШ >7 баллов)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'изначально тяжелое течение: лихорадка >39 °C; головные и лицевые боли;
+        гнойные выделения из носа, сохраняющиеся в течение 3–4 дней; выраженность
+        симптомов по ВАШ >7 баллов;'
+  - text: Угроза развития орбитальных или внутричерепных осложнений
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_острых_риносинуситов_вз_н_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_острых_риносинуситов_вз_н_пост_МЗ_2024_175.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осложненное течение, угроза развития орбитальных либо внутричерепных
+        осложнений (нарастающие реактивные явления в мягких тканях орбиты и лица);
+  - text: Тяжелое и осложненное течение ОРС, угроза осложнений
     aliases: []
     red_flag_type: other
     severity: high
@@ -440,8 +797,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинскими показаниями к обзорной рентгенографии ОНП являются: ...угроза
-        осложнений;'
+      quote: среднетяжелое, тяжелое и осложненное течение ОРС; угроза осложнений
   contraindications: []
   complications: []
   kz_checklist: null
@@ -450,7 +806,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:09:11.408243+00:00'
+  extracted_at: '2026-07-23T08:09:58.562982+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -458,7 +814,11 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T16:09:11.411625+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[ostrye_rinosinusity].treatment.drugs[8]
+  validated_at: '2026-07-23T08:09:58.578254+00:00'

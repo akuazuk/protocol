@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика хирургическое лечение пациентов с деформациями позвоночника сколиозом
+  title: Диагностика и хирургическое лечение пациентов с деформациями позвоночника
+    и сколиозом
   url: null
   local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
   document_sha256: null
@@ -27,13 +28,11 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: spinal_deformities_scoliosis
-  name: Деформации позвоночника, сколиоз
+- condition_id: deformatsii_pozvonochnika_skolioz
+  name: Деформации позвоночника и сколиоз
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - Q67.5
-  - Q76.3
   - M41
   - M41.0
   - M41.1
@@ -44,12 +43,14 @@ conditions:
   - M41.8
   - M41.9
   - M42.0
+  - Q67.5
+  - Q76.3
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Анатомический тип деформации и количество позвонков в патологических дугах
+    - text: Измерение величины углов патологических дуг искривления по Коббу
       logic_group: null
       operator: unknown
       values: []
@@ -66,9 +67,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Анатомический тип деформации и количество позвонков в патологических
-          дугах
-    - text: Величина углов патологических дуг искривления путем измерения по Коббу
+        quote: Измерение величины углов патологических дуг искривления по Коббу
+    - text: Оценка состояния ростковой зрелости эпифизов крыльев подвздошных костей
+        (тест Риссера)
       logic_group: null
       operator: unknown
       values: []
@@ -85,9 +86,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Величина углов патологических дуг искривления путем измерения по Коббу
-    - text: Компенсированность деформации во фронтальной плоскости (по перпендикуляру
-        от С7 или S1)
+        quote: Оценка состояния ростковой зрелости эпифизов крыльев подвздошных костей
+          (тест Риссера)
+    - text: Измерение величины ротации вершинных позвонков дуг деформации по Раймонди
       logic_group: null
       operator: unknown
       values: []
@@ -104,10 +105,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Компенсированность деформации во фронтальной плоскости (по перпендикуляру
-          от С7 или S1)
-    - text: Характер структурных изменений тел позвонков, межпозвонковых дисковых
-        пространств и сочленений
+        quote: Измерение величины ротации вершинных позвонков дуг деформации по Раймонди
+    - text: Оценка состояния ростковой зрелости апофизов тел позвонков по Садофьевой
       logic_group: null
       operator: unknown
       values: []
@@ -124,10 +123,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Характер структурных изменений тел позвонков, межпозвонковых дисковых
-          пространств и сочленений
-    - text: Характер состояния ребер, межреберных промежутков выпуклой и вогнутой
-        сторон дуг деформации
+        quote: Оценка состояния ростковой зрелости апофизов тел позвонков по Садофьевой
+    - text: Сколиотические деформации позвоночника с углом основных дуг свыше 40°
       logic_group: null
       operator: unknown
       values: []
@@ -144,10 +141,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Характер состояния ребер, межреберных промежутков выпуклой и вогнутой
-          сторон дуг деформации
-    - text: Состояние ростковой зрелости эпифизов крыльев подвздошных костей (тест
-        Риссера)
+        quote: Сколиотические деформации позвоночника с углом основных дуг свыше 40°
+    - text: Кифотические деформации позвоночника с углом свыше 60°
       logic_group: null
       operator: unknown
       values: []
@@ -164,10 +159,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Состояние ростковой зрелости эпифизов крыльев подвздошных костей (тест
-          Риссера)
-    - text: Величина ротации вершинных позвонков дуг деформации путем измерения по
-        Раймонди
+        quote: Кифотические деформации позвоночника с углом свыше 60°
+    - text: Деформации вследствие врожденных нарушений сегментации и формы позвонков
+        с риском или появлением неврологических спинальных расстройств
       logic_group: null
       operator: unknown
       values: []
@@ -184,10 +178,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Величина ротации вершинных позвонков дуг деформации путем измерения
-          по Раймонди
-    - text: Форма сагиттального профиля позвоночника и его уравновешенность по критерию
-        компенсированности
+        quote: Деформации вследствие врожденных нарушений сегментации и формы позвонков
+          с риском или появлением неврологических спинальных расстройств
+    - text: Деформации любой выраженности, провоцирующие развитие или нарастание неврологической
+        спинальной симптоматики
       logic_group: null
       operator: unknown
       values: []
@@ -204,131 +198,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Форма сагиттального профиля позвоночника и его уравновешенность по
-          критерию компенсированности
-    - text: Состояние ростковой зрелости апофизов тел позвонков по Садофьевой
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Состояние ростковой зрелости апофизов тел позвонков по Садофьевой
-    - text: сколиотические деформации с углом основных дуг свыше 40°
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: сколиотические деформации с углом основных дуг свыше 40°
-    - text: кифотические деформации с углом свыше 60°
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: кифотические деформации с углом свыше 60°
-    - text: деформации, обусловленные врожденным нарушением сегментации и формы позвонков,
-        прогрессирование которых сопровождается ухудшением устойчивости позвоночника,
-        нарастанием риска и/или появлением неврологических спинальных расстройств
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: деформации, обусловленные врожденным нарушением сегментации и формы
-          позвонков, прогрессирование которых сопровождается ухудшением устойчивости
-          позвоночника, нарастанием риска и/или появлением невролог
-    - text: деформации любой выраженности, провоцирующие своим развитием возникновение
-        и/или нарастание неврологической спинальной симптоматики
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: деформации любой выраженности, провоцирующие своим развитием возникновение
-          и/или нарастание неврологической спинальной симптоматики
+        quote: Деформации любой выраженности, провоцирующие развитие или нарастание
+          неврологической спинальной симптоматики
     optional: []
     exclusion: []
   required_exams:
-  - name: Рентгенография позвоночника, иллюстрирующая коррекционную мобильность деформации
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 9.1.3. Рентгенография позвоночника, иллюстрирующая коррекционную мобильность
-        деформации.
-  - name: 'Рентгенография позвоночника: переднезадняя продольная проекция в положении
-      лежа'
+  - name: Рентгенография позвоночника (переднезадняя продольная проекция в положении
+      лежа)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -349,78 +225,8 @@ conditions:
       table_index: null
       row_index: null
       quote: переднезадняя продольная проекция в положении лежа для определения ортостатической
-        зависимости указанных в подпункте 7.3 пункта 7 клинического протокола...
-  - name: МРТ
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Методика оперативной коррекции деформации позвоночника осуществляется
-        на основании клинического ортопедического диагноза с учетом данных рентгенологических,
-        МРТ...
-  - name: РКТ
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Методика оперативной коррекции деформации позвоночника осуществляется
-        на основании клинического ортопедического диагноза с учетом данных рентгенологических,
-        МРТ, РКТ...
-  - name: Электрофизиологические исследования
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Методика оперативной коррекции деформации позвоночника осуществляется
-        на основании клинического ортопедического диагноза с учетом данных рентгенологических,
-        МРТ, РКТ, электрофизиологических и лабораторных исследований.
-  - name: Контрольная рентгенография позвоночника в положении стоя в двух проекциях
-      (прямая и боковая) на 2-й неделе после операции
+        зависимости
+  - name: Рентгенография позвоночника в положении стоя в двух проекциях
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -440,76 +246,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 31. В течение второй недели пациенту выполняется рентгенография позвоночника
-        в положении стоя в двух проекциях (прямая и боковая).
-  - name: Контрольные МРТ-исследования позвоночника на 2-й неделе после операции
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Дополнительно проводится: контрольные МРТ, РКТ-исследования позвоночника,
-        электрофизиологическое обследование функционального состояния спинного мозга.'
-  - name: Контрольные РКТ-исследования позвоночника на 2-й неделе после операции
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Дополнительно проводится: контрольные МРТ, РКТ-исследования позвоночника,
-        электрофизиологическое обследование функционального состояния спинного мозга.'
-  - name: Электрофизиологическое обследование функционального состояния спинного мозга
-      на 2-й неделе после операции
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Дополнительно проводится: контрольные МРТ, РКТ-исследования позвоночника,
-        электрофизиологическое обследование функционального состояния спинного мозга.'
-  - name: МРТ позвоночника
+      quote: В течение второй недели пациенту выполняется рентгенография позвоночника
+        в положении стоя в двух проекциях (прямая и боковая)
+  - name: Магнитно-резонансная томография (МРТ) позвоночника
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -529,10 +268,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Магнитно-резонансное компьютерное томографическое исследование (далее
-        – МРТ) позвоночника, при котором определяют: анатомическое состояние позвоночника
-        и тел позвонков, тип деформации'
-  - name: РКТ позвоночника
+      quote: Магнитно-резонансное компьютерное томографическое исследование (далее
+        – МРТ) позвоночника
+  - name: Рентгеновская компьютерная томография (РКТ) позвоночника
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -552,10 +290,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Рентгеновское компьютерное исследование (далее – РКТ) позвоночника, при
-        котором определяют морфологические особенности анатомических структуральных
-        патологических изменений в позвонках.
-  - name: Спирография
+      quote: Рентгеновское компьютерное исследование (далее – РКТ) позвоночника
+  - name: Исследование функции внешнего дыхания (спирография)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -598,8 +334,7 @@ conditions:
       row_index: null
       quote: электрофизиологическое исследование состояния функции спинного мозга
   conditional_exams:
-  - name: 'Рентгенография позвоночника: переднезадние проекции стоя с максимальным
-      отклонением туловища (bendingtest)'
+  - name: Рентгенография позвоночника («bending-test»)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -619,11 +354,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: переднезадние проекции в положении стоя с максимальным отклонением туловища
-        вправо и влево при стабильном горизонтальном положении таза – снимки типа
-        «bendingtest» (осуществляются пациентам со сколиотической деформацией);
-  - name: 'Рентгенография позвоночника: боковые проекции лежа с максимальным сгибанием
-      и разгибанием'
+      quote: снимки типа «bendingtest» (осуществляются пациентам со сколиотической
+        деформацией)
+  - name: Рентгенография позвоночника в боковой проекции в положении лежа (с максимальным
+      сгибанием и разгибанием)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -644,32 +378,8 @@ conditions:
       table_index: null
       row_index: null
       quote: боковые проекции в положении лежа с максимальным сгибанием и разгибанием
-        (выполняются пациентам с нестабильностью в поясничном отделе);
-  - name: 'Рентгенография позвоночника: боковые проекции лежа с максимальным переразгибанием
-      дуги патологического грудного кифоза'
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: боковые проекции в положении лежа с максимальным переразгибанием дуги
-        патологического грудного кифоза (осуществляется путем применения клиновидной
-        подушки, подкладываемой под вершину кифоза);
-  - name: Анализ крови общий
+        (выполняются пациентам с нестабильностью в поясничном отделе)
+  - name: Общий анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -689,9 +399,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '9.4. Лабораторные исследования (в динамике стационарного лечения и/или
-        по показаниям): анализ крови общий;'
-  - name: Анализ мочи общий
+      quote: 'Лабораторные исследования (в динамике стационарного лечения и/или по
+        показаниям): анализ крови общий'
+  - name: Коагулограмма (анализ крови на показатели свертываемости)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -711,9 +421,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '9.4. Лабораторные исследования (в динамике стационарного лечения и/или
-        по показаниям): анализ мочи общий;'
-  - name: Анализ крови на показатели свертываемости (коагулограмма)
+      quote: анализ крови на показатели свертываемости (коагулограмма)
+  - name: Биохимический анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -733,101 +442,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '9.4. Лабораторные исследования (в динамике стационарного лечения и/или
-        по показаниям): анализ крови на показатели свертываемости (коагулограмма);'
-  - name: Анализ крови биохимический (общий белок, протеинограмма, билирубин, мочевина,
-      глюкоза, электролиты, активность протеолитических ферментов)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '9.4. Лабораторные исследования (в динамике стационарного лечения и/или
-        по показаниям): анализ крови биохимический (общий белок, протеинограмма, билирубин,
-        мочевина, глюкоза, электролиты, активность протеолитических ферментов);'
-  - name: Лучевая диагностика после выписки
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 36.1. ...Лучевая диагностика назначается при наличии изменений, выявленных
-        при клиническом осмотре.
-  - name: Рентгенография позвоночника в положении стоя в двух проекциях при дальнейшем
-      наблюдении
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '36.3. Дополнительно при необходимости выполняется: рентгенография позвоночника
-        в положении стоя в двух проекциях...'
-  - name: МРТ и РКТ-обследование позвоночника с имплантированной титановой конструкцией
-      при дальнейшем наблюдении
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: '36.3. Дополнительно при необходимости выполняется: ...МРТ и РКТ-обследование
-        позвоночника с имплантированной титановой конструкцией...'
-  - name: ЭКГ
+      quote: анализ крови биохимический (общий белок, протеинограмма, билирубин, мочевина,
+        глюкоза, электролиты, активность протеолитических ферментов)
+  - name: Электрокардиография (ЭКГ)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -870,9 +487,31 @@ conditions:
       row_index: null
       quote: УЗИ внутренних органов, в том числе сердечно-сосудистой системы (в динамике
         по показаниям)
+  - name: Фиброгастродуоденоскопия (ФГДЭС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: фиброгастродуоденоскопичекое эндоскопическое исследование (далее – ФГДЭС)
+        для исключения заболеваний желудка (по показаниям)
   treatment:
     non_drug:
-    - text: Использование ортеза (корсета) в период активного бодрствования в течение
+    - text: Использование ортеза/корсета на период активного бодрствования в течение
         года с момента операции
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
@@ -884,10 +523,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Использование ортеза (корсета) в период активного бодрствования в течение
+        quote: Использование ортеза/корсета на период активного бодрствования в течение
           года с момента операции
-    - text: 'Расширение программы ЛФК: упражнения для укрепления мышц конечностей,
-        укрепления брюшного пресса без динамического движения туловищем'
+    - text: 'ЛФК: упражнения для укрепления мышц конечностей и брюшного пресса без
+        динамического движения туловищем'
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
         document_url: null
@@ -898,8 +537,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Расширение программы ЛФК: упражнения для укрепления мышц конечностей,
-          укрепления брюшного пресса без динамического движения туловищем'
+        quote: 'ЛФК: упражнения для укрепления мышц конечностей и брюшного пресса
+          без динамического движения туловищем'
     - text: Посещение плавательного бассейна (плавание с поплавком в руках)
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
@@ -912,9 +551,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Посещение плавательного бассейна (плавание с поплавком в руках)
-    - text: Хирургическое лечение с применением имплантируемых металлоконструкций
-        типа CDI (Cotrel-Dubousset Instrumentation) и трансплантацией фрагментов костей
-        с кортикальным слоем
+    - text: 'Предоперационная подготовка в течение 2–4 недель: утренняя гигиеническая
+        гимнастика, физиотерапевтическое лечение, лечебная физическая культура (ЛФК)'
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
         document_url: null
@@ -925,11 +563,26 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое лечение с применением имплантируемых металлоконструкций
-          типа CDI (Cotrel-Dubousset Instrumentation) и трансплантацией фрагментов
+        quote: 'Предоперационная подготовка в течение 2–4 недель: утренняя гигиеническая
+          гимнастика, физиотерапевтическое лечение, лечебная физическая культура (ЛФК)'
+    - text: Хирургическая коррекция и стабилизация деформации позвоночника с применением
+        имплантируемых металлоконструкций (типа CDI) и трансплантацией фрагментов
+        костей с кортикальным слоем
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическая коррекция и стабилизация деформации позвоночника с применением
+          имплантируемых металлоконструкций (типа CDI) и трансплантацией фрагментов
           костей с кортикальным слоем
-    - text: 'Предоперационная подготовка (2–4 недели): утренняя физическая зарядка,
-        сеансы физиотерапевтического лечения, занятие лечебной физической культурой'
+    - text: Проведение анестезиологического клинического теста пробуждения пациента
+        во время операции для проверки проводимости спинного мозга
       source_ref:
         protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
         document_url: null
@@ -940,14 +593,28 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Предоперационная подготовка (2–4 недели): утренняя физическая зарядка,
-          сеансы физиотерапевтического лечения, занятие лечебной физической культурой'
+        quote: Проведение анестезиологического клинического теста пробуждения пациента
+          во время операции для проверки проводимости спинного мозга
+    - text: Дренирование операционной раны путем создания активного вакуумирования
+        и наложение асептической повязки
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дренирование операционной раны путем создания активного вакуумирования
+          и наложение асептической повязки
     drug_groups: []
     drugs:
-    - drug_name: Эндотрахеальный наркоз
+    - drug_name: Спиртовой антисептик
       active_substance: null
       drug_group: null
-      dose_text: сбалансированный многокомпонентный комбинированный управляемый
+      dose_text: для обработки кожи операционного поля/раны
       frequency_text: null
       duration_text: null
       route: null
@@ -959,20 +626,19 @@ conditions:
         protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-        page_start: 6
+        page_start: 7
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое вмешательство выполняется под сбалансированным многокомпонентным
-          комбинированным управляемым эндотрахеальным наркозом.
+        quote: обработка кожи спиртовым антисептиком и высушивание кожи марлевой салфеткой
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: 'Через 6 месяцев после выписки: оценка клинического статуса, адаптации к
-      новым двигательным условиям, состояния корсета'
+  - text: Оценка клинического статуса, адаптации к новым двигательным условиям и состояния
+      корсета через 6 месяцев после выписки
     timing: null
     required_if: []
     expected_actions: []
@@ -986,9 +652,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Через 6 месяцев после выписки: оценка клинического статуса, адаптации
-        к новым двигательным условиям, состояния корсета'
-  - text: 'Контрольный осмотр в стационарных условиях: 1 год после операции'
+      quote: Оценка клинического статуса, адаптации к новым двигательным условиям
+        и состояния корсета через 6 месяцев после выписки
+  - text: Контрольный осмотр в стационарных условиях через 1 год после операции
     timing: null
     required_if: []
     expected_actions: []
@@ -1002,8 +668,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Контрольный осмотр в стационарных условиях: 1 год после операции'
-  - text: 'Дальнейшая периодичность осмотров: 1 раз в год'
+      quote: Контрольный осмотр в стационарных условиях через 1 год после операции
+  - text: Дальнейший динамический осмотр с периодичностью 1 раз в год
     timing: null
     required_if: []
     expected_actions: []
@@ -1017,10 +683,40 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Дальнейшая периодичность осмотров: 1 раз в год'
+      quote: Дальнейший динамический осмотр с периодичностью 1 раз в год
+  - text: Динамический контроль ЭКГ по показаниям
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Динамический контроль ЭКГ по показаниям
+  - text: Динамический контроль УЗИ внутренних органов по показаниям
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Динамический контроль УЗИ внутренних органов по показаниям
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Амбулаторные условия
     timing: null
     required_if: []
     source_ref:
@@ -1033,8 +729,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: амбулаторно
+      quote: Амбулаторные условия
+  - text: Стационарные условия
     timing: null
     required_if: []
     source_ref:
@@ -1047,9 +743,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: амбулаторно
-  - text: Госпитализация в хирургические (ортопедические, травматологические, нейрохирургические)
-      отделения
+      quote: Стационарные условия
+  - text: Предварительная амбулаторная/консультативная оценка врачом-специалистом
+      учреждения хирургического лечения
     timing: null
     required_if: []
     source_ref:
@@ -1062,10 +758,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация в хирургические (ортопедические, травматологические, нейрохирургические)
-        отделения
-  - text: Оказание специализированной и высокотехнологичной помощи в стационарных
-      условиях
+      quote: Предварительная амбулаторная/консультативная оценка врачом-специалистом
+        учреждения хирургического лечения
+  - text: Госпитализация в специализированные хирургические (ортопедические, травматологические,
+      нейрохирургические) отделения стационара для планового высокотехнологичного
+      лечения
     timing: null
     required_if: []
     source_ref:
@@ -1078,25 +775,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Оказание специализированной и высокотехнологичной помощи в стационарных
-        условиях
-  - text: Плановое хирургическое вмешательство
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_кп_диагностика_хирургическое_лечение_пациентов_с_дефор
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/КП_Диагностика_хирургическое_лечение_пациентов_с_деформациями_позвоночника_сколиозом_пост_МЗ_2017_51.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Плановое хирургическое вмешательство
+      quote: Госпитализация в специализированные хирургические (ортопедические, травматологические,
+        нейрохирургические) отделения стационара для планового высокотехнологичного
+        лечения
   red_flags:
-  - text: наличие декомпенсации функций сердечно-сосудистой системы, соматических
-      органов грудной клетки и брюшной полости
+  - text: Декомпенсация функций сердечно-сосудистой системы, соматических органов
+      грудной клетки и брюшной полости
     aliases: []
     red_flag_type: other
     severity: high
@@ -1114,7 +798,7 @@ conditions:
       row_index: null
       quote: наличие декомпенсации функций сердечно-сосудистой системы, соматических
         органов грудной клетки и брюшной полости
-  - text: болезни центральной нервной системы с нарушением сознания и поведения пациента
+  - text: Болезни ЦНС с нарушением сознания и поведения пациента
     aliases: []
     red_flag_type: other
     severity: high
@@ -1132,7 +816,7 @@ conditions:
       row_index: null
       quote: болезни центральной нервной системы с нарушением сознания и поведения
         пациента
-  - text: острые и/или хронические болезни в стадии обострения
+  - text: Острые и/или хронические болезни в стадии обострения
     aliases: []
     red_flag_type: other
     severity: high
@@ -1149,10 +833,10 @@ conditions:
       table_index: null
       row_index: null
       quote: острые и/или хронические болезни в стадии обострения
-  - text: беременность и послеродовый период менее 1 года
+  - text: Беременность и послеродовый период менее 1 года
     aliases: []
     red_flag_type: other
-    severity: high
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
@@ -1174,7 +858,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:17:40.611607+00:00'
+  extracted_at: '2026-07-23T11:11:49.298916+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1185,4 +869,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:17:40.629038+00:00'
+  validated_at: '2026-07-23T11:11:49.308495+00:00'

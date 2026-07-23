@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение системной токсичности при применении местных анестетиков
+  title: Диагностика и лечение системной токсичности при применении местных анестетиков
   url: null
   local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: systemic_toxicity_local_anesthetics
+- condition_id: local_anesthetic_systemic_toxicity
   name: Системная токсичность при применении местных анестетиков
   synonyms: []
   abbreviations: []
@@ -58,8 +58,8 @@ conditions:
         row_index: null
         quote: Наличие временной связи между введением местного анестетика и развитием
           симптомов
-    - text: Онемение губ, онемение кожи вокруг рта, парестезии языка, шум в ушах,
-        головокружение, неясность зрения, металлический привкус во рту
+    - text: Неврологические симптомы (онемение губ и кожи вокруг рта, парестезии языка,
+        шум в ушах, головокружение, неясность зрения, металлический привкус во рту)
       logic_group: null
       operator: unknown
       values: []
@@ -76,10 +76,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Онемение губ, онемение кожи вокруг рта, парестезии языка, шум в ушах,
-          головокружение, неясность зрения, металлический привкус во рту
-    - text: Беспокойство, спутанная речь, мышечные подергивания, судороги, нарушение
-        сознания, остановка дыхания
+        quote: Неврологические симптомы (онемение губ и кожи вокруг рта, парестезии
+          языка, шум в ушах, головокружение, неясность зрения, металлический привкус
+          во рту)
+    - text: Данные физикального обследования (беспокойство, спутанная речь, мышечные
+        подергивания, судороги, нарушение сознания, остановка дыхания)
       logic_group: null
       operator: unknown
       values: []
@@ -96,10 +97,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Беспокойство, спутанная речь, мышечные подергивания, судороги, нарушение
-          сознания, остановка дыхания
-    - text: Прогрессирующая гипотензия (систолическое АД менее 80 мм рт. ст., среднее
-        АД менее 50 мм рт. ст.)
+        quote: Данные физикального обследования (беспокойство, спутанная речь, мышечные
+          подергивания, судороги, нарушение сознания, остановка дыхания)
+    - text: 'Нарушения со стороны ССС: прогрессирующая гипотензия (САД < 80 мм рт.
+        ст., АДсред < 50 мм рт. ст.), нарушения проводимости (АВ-блокада, брадикардия,
+        асистолия), желудочковые аритмии'
       logic_group: null
       operator: unknown
       values: []
@@ -116,48 +118,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Прогрессирующая гипотензия (систолическое АД менее 80 мм рт. ст., среднее
-          АД менее 50 мм рт. ст.)
-    - text: Нарушения проводимости (атриовентрикулярная блокада, брадикардия, асистолия)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Нарушения проводимости (атриовентрикулярная блокада, брадикардия, асистолия)
-    - text: Желудочковые аритмии (частая желудочковая экстрасистолия, желудочковая
-        тахикардия, фибрилляция желудочков)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Желудочковые аритмии (частая желудочковая экстрасистолия, желудочковая
-          тахикардия, фибрилляция желудочков)
-    - text: Возникновение реакций системной токсичности местных анестетиков при регионарных
-        методах обезболивания.
+        quote: 'Нарушения со стороны ССС: прогрессирующая гипотензия (САД < 80 мм
+          рт. ст., АДсред < 50 мм рт. ст.), нарушения проводимости (АВ-блокада, брадикардия,
+          асистолия), желудочковые аритмии'
+    - text: Возникновение реакций системной токсичности местных анестетиков при их
+        использовании при проведении регионарных методов обезболивания
       logic_group: null
       operator: unknown
       values: []
@@ -175,7 +140,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Возникновение реакций системной токсичности местных анестетиков при
-          регионарных методах обезболивания.
+          их использовании при проведении регионарных методов обезболивания
     optional: []
     exclusion: []
   required_exams:
@@ -245,10 +210,11 @@ conditions:
       row_index: null
       quote: данных физикального обследования (беспокойство, спутанная речь, мышечные
         подергивания, судороги, нарушение сознания, остановка дыхания)
-  - name: Измерение артериального давления
+  conditional_exams:
+  - name: Дифференциальная диагностика с анафилаксией
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -265,34 +231,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: прогрессирующая гипотензия (систолическое артериальное давление менее
-        80 мм рт. ст., среднее артериальное давление менее 50 мм рт. ст.)
-  - name: Электрокардиография
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: нарушения проводимости (АВ-блокада, брадикардия, асистолия), желудочковые
-        аритмии (экстрасистолия, тахикардия, фибрилляция желудочков)
+      quote: Необходимо провести дифференциальную диагностику с анафилаксией.
   - name: Непрерывный мониторинг ЭКГ
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -311,10 +254,9 @@ conditions:
       row_index: null
       quote: обязательным проведением непрерывного мониторинга ЭКГ в течение не менее
         12 часов.
-  conditional_exams: []
   treatment:
     non_drug:
-    - text: Прекратить введение местного анестетика.
+    - text: Прекратить введение местного анестетика
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
         document_url: null
@@ -325,9 +267,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Прекратить введение местного анестетика.
-    - text: Наладить ингаляцию увлажненного кислорода при сохранении самостоятельного
-        дыхания.
+        quote: Прекратить введение местного анестетика
+    - text: При сохранении самостоятельного дыхания — наладить ингаляцию увлажненного
+        кислорода
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
         document_url: null
@@ -338,10 +280,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Наладить ингаляцию увлажненного кислорода при сохранении самостоятельного
-          дыхания.
-    - text: Обеспечение проходимости дыхательных путей и вентиляция 100 % кислородом
-        при остановке дыхания или при ИВЛ.
+        quote: При сохранении самостоятельного дыхания — наладить ингаляцию увлажненного
+          кислорода
+    - text: При остановке дыхания — обеспечение проходимости дыхательных путей, вентиляция
+        100 % кислородом
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
         document_url: null
@@ -352,10 +294,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Обеспечение проходимости дыхательных путей и вентиляция 100 % кислородом
-          при остановке дыхания или при ИВЛ.
-    - text: Проведение сердечно-легочной реанимации при неэффективном кровообращении,
-        возможно более 30 минут.
+        quote: При остановке дыхания — обеспечение проходимости дыхательных путей,
+          вентиляция 100 % кислородом
+    - text: При проведении ИВЛ — перейти на вентиляцию 100 % кислородом
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
         document_url: null
@@ -366,8 +307,20 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Проведение сердечно-легочной реанимации при неэффективном кровообращении,
-          возможно более 30 минут.
+        quote: При проведении ИВЛ — перейти на вентиляцию 100 % кислородом
+    - text: Проведение сердечно-легочной реанимации (может проводиться более 30 минут)
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Проведение сердечно-легочной реанимации (может проводиться более 30
+          минут)
     drug_groups: []
     drugs:
     - drug_name: Диазепам
@@ -417,7 +370,7 @@ conditions:
     - drug_name: Тиопентал натрия
       active_substance: null
       drug_group: null
-      dose_text: 1–2 мг/кг до достижения эффекта
+      dose_text: 1–2 мг/кг в/в до достижения эффекта
       frequency_text: null
       duration_text: null
       route: null
@@ -439,9 +392,9 @@ conditions:
     - drug_name: Жировая эмульсия 20 %
       active_substance: null
       drug_group: null
-      dose_text: Болюс 1,5 мл/кг в/в за 1 мин, затем инфузия 0,25 мл/кг/мин. Повторный
-        болюс 1,5 мл/кг через 5 мин, при необходимости увеличить инфузию до 0,5 мл/кг/мин.
-        Макс. 10 мл/кг за первые 30 мин.
+      dose_text: 'В/в болюс 1,5 мл/кг за 1 мин + инфузия 0,25 мл/кг/мин. При отсутствии
+        эффекта через 5 мин — повторный болюс 1,5 мл/кг. После 3 болюсов — увеличение
+        скорости до 0,5 мл/кг/мин. Макс. 10 мл/кг за первые '
       frequency_text: null
       duration_text: null
       route: null
@@ -466,8 +419,8 @@ conditions:
     surgery: []
     source_refs: []
   follow_up:
-  - text: Проведение непрерывного мониторинга ЭКГ в течение не менее 12 часов для
-      пациентов с нарушениями ритма и/или остановкой кровообращения после стабилизации.
+  - text: При восстановлении самостоятельного кровообращения инфузию жировой эмульсии
+      продолжить еще минимум 10 минут
     timing: null
     required_if: []
     expected_actions: []
@@ -481,11 +434,27 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Проведение непрерывного мониторинга ЭКГ в течение не менее 12 часов для
-        пациентов с нарушениями ритма и/или остановкой кровообращения после стабилизации.
+      quote: При восстановлении самостоятельного кровообращения инфузию жировой эмульсии
+        продолжить еще минимум 10 минут
+  - text: Непрерывный мониторинг ЭКГ в течение не менее 12 часов в ОРИТ
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Непрерывный мониторинг ЭКГ в течение не менее 12 часов в ОРИТ
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Госпитализация в отделение интенсивной терапии и реанимации (при нарушениях
+      ритма и/или остановке кровообращения)
     timing: null
     required_if: []
     source_ref:
@@ -498,25 +467,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: госпитализация в отделение интенсивной терапии и реанимации при нарушениях
-      ритма и/или остановке кровообращения.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
-      document_url: null
-      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: госпитализация в отделение интенсивной терапии и реанимации при нарушениях
-        ритма и/или остановке кровообращения.
+      quote: Госпитализация в отделение интенсивной терапии и реанимации (при нарушениях
+        ритма и/или остановке кровообращения)
   red_flags:
-  - text: Необходимо провести дифференциальную диагностику с анафилаксией
+  - text: Судороги, нарушение сознания, остановка дыхания
     aliases: []
     red_flag_type: other
     severity: high
@@ -532,8 +486,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Необходимо провести дифференциальную диагностику с анафилаксией
-  - text: Не использовать пропофол для купирования судорог.
+      quote: данных физикального обследования (беспокойство, спутанная речь, мышечные
+        подергивания, судороги, нарушение сознания, остановка дыхания)
+  - text: Прогрессирующая гипотензия (САД < 80 мм рт.ст., среднее АД < 50 мм рт.ст.),
+      нарушения проводимости (АВ-блокада, брадикардия, асистолия) и желудочковые аритмии
     aliases: []
     red_flag_type: other
     severity: high
@@ -549,10 +505,29 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Нельзя использовать пропофол для купирования судорог.
-  - text: Противопоказано использование бета-блокаторов, блокаторов кальциевых каналов,
-      местных анестетиков (лидокаин, прокаинамид), вазопрессина для лечения нарушений
-      ритма.
+      quote: нарушений со стороны сердечно-сосудистой системы – прогрессирующая гипотензия
+        (систолическое артериальное давление менее 80 мм рт. ст., среднее артериальное
+        давление менее 50 мм рт. ст.)
+  - text: Развитие судорог (пропофол противопоказан)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'при наличии судорог2: введение лекарственных средств: диазепам по 2,5–10
+        мг в/в или мидазолам по 2,5–5 мг в/в или тиопентал натрия 1–2 мг/кг до достижения
+        эффекта.'
+  - text: Неэффективное кровообращение / остановка кровообращения
     aliases: []
     red_flag_type: other
     severity: high
@@ -568,9 +543,26 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Для лечения нарушений ритма противопоказано использование бета-блокаторов,
-        блокаторов кальциевых каналов, местных анестетиков (лидокаин, прокаинамид),
-        вазопрессина.
+      quote: '8.1. При неэффективном кровообращении: проведение сердечно-легочной
+        реанимации; проведение терапии жировой эмульсией'
+  - text: Нарушения ритма сердца при системной токсичности
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_системной_токсичности_при
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_системной_токсичности_при_применении_местных_анестетиков_пост_МЗ_2017_50.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациенты, у которых системное токсическое действие местных анестетиков
+        проявилось в виде нарушений ритма и/или остановки кровообращения
   contraindications: []
   complications: []
   kz_checklist: null
@@ -579,7 +571,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:12:31.732772+00:00'
+  extracted_at: '2026-07-23T07:13:56.236779+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -590,4 +582,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-02T00:12:31.742489+00:00'
+  validated_at: '2026-07-23T07:13:56.240889+00:00'

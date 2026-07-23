@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение ретенированных и импактных зубов
+  title: Диагностика и лечение пациентов (взрослое население) с ретенированными и
+    импактными зубами
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
   document_sha256: null
@@ -26,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: retained_impacted_teeth
+- condition_id: retenirovannye_i_impaktnye_zuby
   name: Ретенированные и импактные зубы
   synonyms: []
   abbreviations: []
@@ -34,13 +35,21 @@ conditions:
   - K01
   - K01.0
   - K01.1
-  - K07.9
+  - K01.10
+  - K01.11
+  - K01.12
+  - K01.13
+  - K01.14
+  - K01.15
+  - K01.16
+  - K01.17
+  - K01.18
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: данные анамнеза
+    - text: Данные анамнеза, жалобы пациента
       logic_group: null
       operator: unknown
       values: []
@@ -57,8 +66,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: данные анамнеза
-    - text: жалобы пациента
+        quote: Данные анамнеза, жалобы пациента
+    - text: Ретенированный зуб – зуб, изменивший свое положение при прорезывании без
+        препятствия со стороны соседнего зуба
       logic_group: null
       operator: unknown
       values: []
@@ -75,11 +85,32 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: жалобы пациента
+        quote: Ретенированный зуб – зуб, изменивший свое положение при прорезывании
+          без препятствия со стороны соседнего зуба
+    - text: Импактный зуб – зуб, изменивший свое положение при прорезывании из-за
+        препятствия со стороны соседнего зуба
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Импактный зуб – зуб, изменивший свое положение при прорезывании из-за
+          препятствия со стороны соседнего зуба
     optional: []
     exclusion: []
   required_exams:
-  - name: Медицинские осмотры врачом-стоматологом
+  - name: Ортопантомография челюстей
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -99,11 +130,58 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: регулярные (раз в полгода) медицинские осмотры врачом-стоматологом
-  conditional_exams: []
+      quote: 'инструментальное диагностическое исследование (лучевой метод исследования):
+        ортопантомография челюстей.'
+  conditional_exams:
+  - name: Конусно-лучевая компьютерная томография челюстно-лицевой области
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ортопантомография челюстей или конусно-лучевая компьютерная томография
+        челюстно-лицевой области
+  - name: Консультация врача-специалиста
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: консультация врача-специалиста (врача-стоматолога-ортопеда, врача-стоматолога-хирурга,
+        врача-челюстно-лицевого хирурга, врача-оториноларинголога, врача общей практики,
+        врача-эндокринолога).
   treatment:
     non_drug:
-    - text: Своевременное лечение и предупреждение кариеса зубов
+    - text: Мотивация к формированию здоровых повседневных привычек, имеющих отношение
+        к стоматологическому здоровью
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -114,9 +192,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Своевременное лечение и предупреждение кариеса зубов
-    - text: Медицинская профилактика дефицита места в зубном ряду путем регуляции
-        роста челюстей
+        quote: Мотивация к формированию здоровых повседневных привычек, имеющих отношение
+          к стоматологическому здоровью
+    - text: Рекомендация по выбору методов, предметов и средств индивидуальной гигиены
+        полости рта
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -127,10 +206,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Медицинская профилактика дефицита места в зубном ряду путем регуляции
-          роста челюстей
-    - text: Коррекция других факторов риска, имеющих отношение к стоматологическому
-        здоровью
+        quote: Рекомендация по выбору методов, предметов и средств индивидуальной
+          гигиены полости рта
+    - text: Обучение гигиене полости рта с использованием лечебно-профилактических
+        зубных паст
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -141,24 +220,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Коррекция других факторов риска, имеющих отношение к стоматологическому
-          здоровью
-    - text: Мотивация и обучение гигиене полости рта, рекомендации по выбору методов,
-        предметов и средств индивидуальной гигиены полости рта (с использованием лечебно-профилактических
-        зубных паст)
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Мотивация и обучение гигиене полости рта, рекомендации по выбору методов,
-          предметов и средств индивидуальной гигиены полости рта (с использованием
-          лечебно-профилактических зубных паст)
+        quote: Обучение гигиене полости рта с использованием лечебно-профилактических
+          зубных паст
     - text: Профессиональное удаление зубных отложений (до показателей гигиенического
         индекса OHI-S < 0,3–0,6 балла)
       source_ref:
@@ -173,7 +236,8 @@ conditions:
         row_index: null
         quote: Профессиональное удаление зубных отложений (до показателей гигиенического
           индекса OHI-S < 0,3–0,6 балла)
-    - text: Применение фторсодержащих реминерализирующих препаратов
+    - text: Иссечение десневого «капюшона», создание условий для ретракции ретенированного
+        и импактного зуба
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
         document_url: null
@@ -184,31 +248,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Применение фторсодержащих реминерализирующих препаратов
-    - text: Иссечение десневого «капюшона»
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Иссечение десневого «капюшона»
-    - text: Создание условий для ретракции ретенированного и импактного зуба
-      source_ref:
-        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Создание условий для ретракции ретенированного и импактного зуба
+        quote: Иссечение десневого «капюшона», создание условий для ретракции ретенированного
+          и импактного зуба
     - text: Удаление ретенированного и импактного зуба (при невозможности ретракции)
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
@@ -223,12 +264,35 @@ conditions:
         quote: Удаление ретенированного и импактного зуба (при невозможности ретракции)
     drug_groups: []
     drugs:
+    - drug_name: Фторсодержащие реминерализирующие препараты
+      active_substance: null
+      drug_group: null
+      dose_text: По медицинским показаниям
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_имп
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_ретенированными_и_импактными_зубами_пост_МЗ_11.01.2023_4.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: применение фторсодержащих реминерализирующих препаратов (проводятся
+          врачом-стоматологом-терапевтом)
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
-        (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
-        полости рта или десну. Лекарственное средство можно так
+      dose_text: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+        слизистую оболочку полости рта или десну (или путем смазывания смоченным ватным
+        тампоном)
       frequency_text: null
       duration_text: null
       route: null
@@ -246,15 +310,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лидокаин. Спрей для местного применения 100 мг/мл во флаконах 50 мл.
-          Одну порцию (1–3 нажатия) аэрозоля наносят на слизистую оболочку полости
-          рта или десну. Наносится также путем смазывания смоченным ватным тампоном.
+        quote: Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на
+          слизистую оболочку полости рта или десну.
     - drug_name: Лидокаин/Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Анестезирующий гель в шприцах 12,5 г. Для аппликационной анестезии
-        слизистой оболочки полости рта, в том числе, перед инъекционной анестезией.
-        Разовую дозу врач-специалист назначает индивидуально, учи
+      dose_text: Для аппликационной анестезии. Разовую дозу врач назначает индивидуально
       frequency_text: null
       duration_text: null
       route: null
@@ -272,15 +333,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лидокаин/Хлоргексидин. Анестезирующий гель в шприцах 12,5 г. Для аппликационной
-          анестезии слизистой полости рта. Разовая доза индивидуальна, учитывая состояние
-          области нанесения и общее состояние пациента.
+        quote: Для аппликационной анестезии слизистой оболочки полости рта, в том
+          числе, перед инъекционной анестезией.
     - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: 'Раствор для инъекций (40 мг + 0,005 мг)/мл в картриджах 1,7 мл (1,8
-        мл), в ампулах 2 мл; раствор для инъекций (40 мг + 0,006 мг)/мл в картриджах
-        1,7 мл (в ампулах 2 мл); раствор для инъекций (40 мг + '
+      dose_text: Инъекционно в полости рта в ткани без воспаления. Взрослым в дозе
+        до 7 мг на 1 кг массы тела (переносимые дозы до 500 мг)
       frequency_text: null
       duration_text: null
       route: null
@@ -298,16 +357,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Артикаин/Эпинефрин. Раствор для инъекций. Для инъекционного применения
-          в полости рта (без воспаления). Взрослым до 7 мг/кг массы тела. Отмечено,
-          что пациенты хорошо переносили дозы до 500 мг (12,5 мл).
+        quote: При выполнении одной лечебной процедуры взрослым можно вводить артикаин
+          в дозе до 7 мг на 1 кг массы тела.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение за результатами лечения путем проведения медицинских
-      осмотров врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического
-      лечения.
+  - text: Медицинский осмотр врачом-стоматологом-терапевтом через 6 месяцев после
+      завершения терапевтического лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -321,11 +378,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение за результатами лечения путем проведения медицинских
-        осмотров врачом-стоматологом-терапевтом через 6 месяцев после завершения терапевтического
-        лечения.
+      quote: Медицинский осмотр врачом-стоматологом-терапевтом через 6 месяцев после
+        завершения терапевтического лечения
   - text: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
-      (при их наличии) 2 раза в год (каждые 6 месяцев).
+      2 раза в год (каждые 6 месяцев)
     timing: null
     required_if: []
     expected_actions: []
@@ -340,7 +396,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
-        (при их наличии) 2 раза в год (каждые 6 месяцев).
+        2 раза в год (каждые 6 месяцев)
   hospitalization: []
   routing:
   - text: амбулаторно
@@ -366,7 +422,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:04:53.854529+00:00'
+  extracted_at: '2026-07-23T10:33:21.154934+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -377,4 +433,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:04:53.857057+00:00'
+  validated_at: '2026-07-23T10:33:21.158243+00:00'

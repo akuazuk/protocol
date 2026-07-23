@@ -29,8 +29,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: chronic_kidney_disease_stage_5
-  name: хроническая болезнь почек 5 стадии
+- condition_id: khronicheskaya_bolezn_pochek_5_stadii
+  name: Хроническая болезнь почек 5 стадии
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -40,8 +40,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: BKV вирусная нагрузка >10^4 копий/мл в сыворотке/плазме крови и >10^7
-        копий/мл в моче
+    - text: Вирусная нагрузка BKV >10^4 копий/мл в сыворотке/плазме крови и >10^7
+        копий/мл в моче — ассоциирована с развитием BKV нефропатии
       logic_group: null
       operator: unknown
       values: []
@@ -60,52 +60,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: BKV вирусная нагрузка >10^4 копий/мл в сыворотке/плазме крови и >10^7
-          копий/мл в моче
-    - text: Признаки интерстициального воспаления и BKV нефропатии (ВКН) по данным
-        нефробиопсии трансплантата
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Признаки интерстициального воспаления и BKV нефропатии (ВКН) по данным
-          нефробиопсии трансплантата
-    - text: Наличие только BKV нефропатии (ВКН) по данным нефробиопсии трансплантата
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Наличие только BKV нефропатии (ВКН) по данным нефробиопсии трансплантата
+        quote: Вирусная нагрузка BKV >10^4 копий/мл в сыворотке/плазме крови и >10^7
+          копий/мл в моче — ассоциирована с развитием BKV нефропатии
     - text: Обнаружение полиомавирусных агрегатов («Haufen») при электронной микроскопии
-        осадка мочи
+        осадка мочи — диагностический признак BKV нефропатии
       logic_group: null
       operator: unknown
       values: []
@@ -125,10 +83,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Обнаружение полиомавирусных агрегатов («Haufen») при электронной микроскопии
-          осадка мочи
-    - text: развитие ХБП С5, требующей замещения функции почек с помощью диализных
-        технологий, или снижение скорости клубочковой фильтрации (СКФ) менее 20 мл/мин/1,73м2
-        при планировании додиализной пересадки почки.
+          осадка мочи — диагностический признак BKV нефропатии
+    - text: Признаки дисфункции трансплантата — повышение уровня креатинина в крови
       logic_group: null
       operator: unknown
       values: []
@@ -147,13 +103,75 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: развитие ХБП С5, требующей замещения функции почек с помощью диализных
-          технологий, или снижение скорости клубочковой фильтрации (СКФ) менее 20
-          мл/мин/1,73м2 при планировании додиализной пересадки почк
+        quote: Признаки дисфункции трансплантата — повышение уровня креатинина в крови
+    - text: ХБП С5, требующая замещения функции почек с помощью диализа
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ХБП С5, требующая замещения функции почек с помощью диализа
+    - text: Снижение скорости клубочковой фильтрации (СКФ) менее 20 мл/мин/1,73м2
+        при планировании додиализной пересадки почки
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Снижение скорости клубочковой фильтрации (СКФ) менее 20 мл/мин/1,73м2
+          при планировании додиализной пересадки почки
+    - text: Отторжение или токсичность ингибиторов кальциневрина подтверждаются по
+        результатам нефробиопсии трансплантата
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Отторжение или токсичность ингибиторов кальциневрина подтверждаются
+          по результатам нефробиопсии трансплантата
     optional: []
     exclusion: []
   required_exams:
-  - name: Лабораторно-инструментальные исследования состояния реципиента
+  - name: Анализ состояния реципиента и результатов лабораторно-инструментальных исследований
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -177,8 +195,8 @@ conditions:
       row_index: null
       quote: Не позднее 6 месяцев после постановки в лист ожидания почечного трансплантата
         и затем каждые 6 месяцев проводится анализ состояния реципиента и результатов
-        его лабораторно-инструментальных исследований...
-  - name: Вирусологическое обследование доноров и реципиентов
+        его лабораторно-инструментальных исследований
+  - name: Вирусологическое обследование доноров и реципиентов до пересадки почки
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -200,10 +218,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Схематично порядок осуществления вирусологического обследования доноров
-        и реципиентов до пересадки почки, выявляемые маркеры и вид анализируемого
-        клинического материала представлен на рисунке 1 приложения 1.
-  - name: Мониторинг вирурии (исследование мочи)
+      quote: порядок осуществления вирусологического обследования доноров и реципиентов
+        до пересадки почки, выявляемые маркеры и вид анализируемого клинического материала
+  - name: Мониторинг вирурии BKV
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -226,102 +243,7 @@ conditions:
       table_index: null
       row_index: null
       quote: первоначально осуществляется мониторинг вирурии. Получение положительного
-        результата при исследовании мочи является основанием для выявления виремии...
-  - name: Процент предсуществующих антител
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 55
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Процент предсуществующих антител: (дата последнего определения:)'
-  - name: Коагулограмма (Протеин С, Протеин S, Антитромбин III, Фактор Лейдена, Полиморфизм
-      протромбина)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 55
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Протеин С | Протеин S | Антитромбин III | Фактор Лейдена | Полиморфизм
-        протромбина
-  - name: Фракция выброса левого желудочка
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 55
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Фракция выброса левого желудочка, %
-  - name: HLA-типирование
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 1
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: HLA-типирование – определение HLA-антигенов (HLA – человеческий лейкоцитарный
-        антиген) с целью выявления наиболее совместимой пары реципиент – донор
+        результата при исследовании мочи является основанием для выявления виремии
   - name: Прямая перекрестная проба на совместимость (кросс-матч тест)
     aliases: []
     exam_type: unknown
@@ -344,11 +266,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: прямая перекрестная проба на совместимость (далее – кросс-матч тест)
-        – проводится in vitro между лимфоцитами донора и сывороткой крови реципиента
-        посредством реакции комплемент-зависимой цитотоксичности.
+      quote: положительный кросс-матч тест;
   conditional_exams:
-  - name: Выявление виремии (ДНК вирусов в сыворотке крови)
+  - name: Выявление ДНК вирусов BKV в сыворотке крови (виремия)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -372,7 +292,7 @@ conditions:
       row_index: null
       quote: Получение положительного результата при исследовании мочи является основанием
         для выявления виремии (выявление ДНК вирусов в сыворотке крови).
-  - name: Мониторинг BKV виремии (вирусная нагрузка <200 копий/мл)
+  - name: Биопсия графта (нефробиопсия трансплантата)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -394,59 +314,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: при показателе вирусной нагрузки <200 копий/мл мониторинг BKV виремии
-        продолжают с периодичностью 1 раз в месяц;
-  - name: Мониторинг BKV виремии и уровня креатинина в крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: при показателе вирусной нагрузки в пределах >200 – <104 копий/мл и при
-        появлении признаков дисфункции трансплантата (повышение уровня креатинина
-        в крови)...
-  - name: Биопсия графта
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При повторном превышении этих значений [BKV >104 копий/мл в сыворотке/плазме
-        крови и >107 копий/мл в моче] и выявлении дисфункции трансплантата рекомендовано
-        проведение биопсии графта.
-  - name: Электронная микроскопия осадка мочи (обнаружение полиомавирусных агрегатов)
+      quote: При повторном превышении этих значений и выявлении дисфункции трансплантата
+        рекомендовано проведение биопсии графта
+  - name: Электронная микроскопия осадка мочи (выявление «Haufen»)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -470,55 +340,8 @@ conditions:
       row_index: null
       quote: Электронная микроскопия осадка мочи с обнаружением полиомавирусных агрегатов
         («Haufen») является дополнительным высокочувствительным и высокоспецифическим
-        диагностическим признаком ВКН...
-  - name: Нефробиопсия трансплантата
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'если по данным нефробиопсии трансплантата: выявлены признаки интерстициального
-        воспаления и ВКН...'
-  - name: Мониторинг ПЦР BKV
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: мониторинг ПЦР BKV каждые 2 недели до получения отрицательного результата;
-  - name: Количественный ПЦР контроль ЦМВ нагрузки
+        диагностическим признаком ВКН
+  - name: Количественный ПЦР контроль ЦМВ нагрузки в плазме/сыворотке крови
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -541,10 +364,131 @@ conditions:
       table_index: null
       row_index: null
       quote: количественный ПЦР контроль ЦМВ нагрузки в плазме/сыворотке крови через
-        1 неделю
+        1 неделю;
+  - name: Нефробиопсия трансплантата
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия трансплантата должна быть проведена в случае необъяснимого повышения
+        уровня креатинина более чем на 25 % от минимального уровня креатинина крови
+        после Тх
+  - name: УЗИ почек и мочевого пузыря
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обструкция мочевыводящих путей (ультразвуковое исследование (далее –
+        УЗИ) почек и мочевого пузыря);
+  - name: УЗИ допплер почечных сосудов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: патология сосудов трансплантата (УЗИ допплер почечных сосудов);
+  - name: Общий анализ мочи, посев мочи, С-реактивный белок крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: инфекция мочевыводящих путей (общий анализ мочи, посев мочи, С-реактивный
+        белок крови);
+  - name: ПЦР на ЦМВ, ВЭБ, полиомавирусы, аденовирус
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повреждения трансплантата на фоне вирусных инфекций (полимеразная цепная
+        реакция (далее – ПЦР) на ЦМВ, вирус Эпштейна-Барр (далее – ВЭБ), полиомавирусы,
+        аденовирус).
   treatment:
     non_drug:
-    - text: Снижение иммуносупрессии
+    - text: Трансплантация почки (родственная или от умершего донора)
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
         document_url: null
@@ -557,8 +501,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Снижение иммуносупрессии
-    - text: Трансплантация почки
+        quote: Трансплантация почки (родственная или от умершего донора)
+    - text: Коррекция неаннулированных аномалий органов мочеполовой системы
       source_ref:
         protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
         document_url: null
@@ -571,31 +515,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Трансплантация почки
-    - text: Уменьшение дозы антиметаболитов (микофеноловой кислоты, азатиоприна) на
-        50 % или их отмена
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Уменьшение дозы антиметаболитов (микофеноловой кислоты, азатиоприна)
-          на 50 % или их отмена
+        quote: Коррекция неаннулированных аномалий органов мочеполовой системы
     drug_groups: []
     drugs:
-    - drug_name: Иммуноглобулин человека нормальный (Igчел)
+    - drug_name: Иммуноглобулин человека нормальный
       active_substance: null
       drug_group: null
-      dose_text: Начальные дозы 0,4–0,6 г/кг. Общая доза 0,5–2,0 г/кг в зависимости
-        от прогресса ВКН, гипогаммаглобулинемии, уровня донор-специфических анти-HLA
-        антител. При иммунных дефицитах 0,4–0,8 г/кг/месяц. Инфу
+      dose_text: Инфузии каждые 3–4 недели. Начальные дозы 0,4–0,6 г/кг, общая доза
+        0,5–2,0 г/кг; при иммунодефицитах 0,4–0,8 г/кг/месяц
       frequency_text: null
       duration_text: null
       route: null
@@ -616,13 +543,13 @@ conditions:
         table_index: null
         row_index: null
         quote: Инфузии Igчел проводят каждые 3–4 недели. Начальные дозы составляют
-          от 0,4 до 0,6 г/кг. Общая полученная доза колеблется от 0,5 до 2,0 г/кг...
+          от 0,4 до 0,6 г/кг. Общая полученная доза колеблется от 0,5 до 2,0 г/кг
     - drug_name: Лефлуномид
       active_substance: null
       drug_group: null
-      dose_text: Целевые уровни в крови 50–100 мкг/мл. Назначается с отменой микофеноловой
-        кислоты, снижением такролимуса до целевых значений 4–6 мкг/л на фоне метилпреднизолона
-        4–8 мг/сут. Противопоказан у лиц младше
+      dose_text: Целевые уровни в крови 50–100 мкг/мл; назначается с отменой микофеноловой
+        кислоты и снижением такролимуса до 4–6 мкг/л на фоне метилпреднизолона 4–8
+        мг/сут
       frequency_text: null
       duration_text: null
       route: null
@@ -642,172 +569,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: лефлуномид3 (пролекарство, метаболиты которого в организме обладают
-          иммуносупрессивным и противовирусным эффектами; целевые уровни в крови 50–100
-          мкг/мл) может назначаться при ВКН...
-    - drug_name: Такролимус (ингибитор кальциневрина)
+        quote: целевые уровни в крови 50–100 мкг/мл) может назначаться при ВКН с отменой
+          микофеноловой кислоты, снижением такролимуса до целевых значений в крови
+          4–6 мкг/л на фоне метилпреднизолона 4–8 мг/сут.
+    - drug_name: Метилпреднизолон
       active_substance: null
       drug_group: null
-      dose_text: 'В составе 3-компонентной иммуносупрессивной терапии. Доза уменьшается
-        в первую очередь при BKV виремии. Целевой уровень в крови при снижении иммуносупрессии:
-        3–5 мкг/л, при назначении лефлуномида: 4–6'
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: у детей на 3-компонентной поддерживающей иммуносупрессивной терапии,
-          включающей ингибиторы кальциневрина (такролимус или циклоспорин)...
-    - drug_name: Циклоспорин (ингибитор кальциневрина)
-      active_substance: null
-      drug_group: null
-      dose_text: 'В составе 3-компонентной иммуносупрессивной терапии. Доза уменьшается
-        в первую очередь при BKV виремии. Целевой уровень в крови при снижении иммуносупрессии:
-        60–100 пг/мл. Переход с такролимуса на низ'
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: у детей на 3-компонентной поддерживающей иммуносупрессивной терапии,
-          включающей ингибиторы кальциневрина (такролимус или циклоспорин)...
-    - drug_name: Микофеноловая кислота (антиметаболит)
-      active_substance: null
-      drug_group: null
-      dose_text: 'В составе 3-компонентной иммуносупрессивной терапии. Отменяется
-        в первую очередь при снижении иммуносупрессии. Альтернативно: уменьшение дозы
-        на 50%, при сохранении виремии – полная отмена.'
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антиметаболиты (микофеноловая кислота или азатиоприн)... в первую очередь
-          отменяются антиметаболиты...
-    - drug_name: Азатиоприн (антиметаболит)
-      active_substance: null
-      drug_group: null
-      dose_text: В составе 3-компонентной иммуносупрессивной терапии. Отменяется в
-        первую очередь при снижении иммуносупрессии.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: антиметаболиты (микофеноловая кислота или азатиоприн)... в первую очередь
-          отменяются антиметаболиты...
-    - drug_name: Преднизолон (глюкокортикостероид)
-      active_substance: null
-      drug_group: null
-      dose_text: В составе 3-компонентной иммуносупрессивной терапии.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: глюкокортикостероиды (преднизолон или метилпреднизолон)
-    - drug_name: Метилпреднизолон (глюкокортикостероид)
-      active_substance: null
-      drug_group: null
-      dose_text: В составе 3-компонентной иммуносупрессивной терапии. Ребенок может
-        оставаться на небольшой дозе при отмене микофеноловой кислоты. Доза 4–8 мг/сут.
-        при приеме лефлуномида.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: глюкокортикостероиды (преднизолон или метилпреднизолон)... ребенок
-          остается на небольшой дозе такролимуса и метилпреднизолона...
-    - drug_name: Эверолимус
-      active_substance: null
-      drug_group: null
-      dose_text: Применяется как замена ингибитора кальциневрина (с или без отмены
-        антиметаболита) для избежания отдаленных нефротоксических эффектов.
+      dose_text: 4–8 мг/сут
       frequency_text: null
       duration_text: null
       route: null
@@ -827,8 +595,129 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: замена ингибитора кальциневрина на эверолимус (с или без отмены антиметаболита)
-          позволяет избежать развития отдаленных нефротоксических эффектов...
+        quote: на фоне метилпреднизолона 4–8 мг/сут.
+    - drug_name: Такролимус
+      active_substance: null
+      drug_group: null
+      dose_text: Целевой уровень в крови 3–5 мкг/л (или 4–6 мкг/л при назначении лефлуномида)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: целевой уровень в крови такролимуса 3–5 мкг/л
+    - drug_name: Циклоспорин
+      active_substance: null
+      drug_group: null
+      dose_text: Целевой уровень в крови 60–100 пг/мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: циклоспорина – 60–100 пг/мл
+    - drug_name: Валганцикловир
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь (предпочтительный препарат)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: назначается антивирусная терапия (предпочтительнее валганцикловир внутрь,
+          если невозможно или есть противопоказания, то ганцикловир в/в);
+    - drug_name: Ганцикловир
+      active_substance: null
+      drug_group: null
+      dose_text: в/в (при невозможности приема валганцикловира)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: если невозможно или есть противопоказания, то ганцикловир в/в
+    - drug_name: Микофеноловая кислота / Азатиоприн
+      active_substance: null
+      drug_group: null
+      dose_text: уменьшение дозы на 50 % или отмена
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: уменьшение дозы антиметаболитов (микофеноловой кислоты, азатиоприна)
+          на 50 % или отмена;
     - drug_name: Метилпреднизолон
       active_substance: null
       drug_group: null
@@ -852,11 +741,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: пульс-терапия метилпреднизолоном
-    - drug_name: Антилимфоцитарные моноклональные антитела (Тимоглобулин)
+        quote: вторичная профилактика ЦМВ инфекции проводится в случаях усиления иммуносупрессивной
+          терапии (пульс-терапия метилпреднизолоном
+    - drug_name: Такролимус
       active_substance: null
       drug_group: null
-      dose_text: использование
+      dose_text: 0,3 мг/кг/сутки внутрь в 2 приема (или 1 прием для пролонгированной
+        формы). У детей >40 кг — 0,2 мг/кг/сутки. Доза подбирается по уровню в крови.
       frequency_text: null
       duration_text: null
       route: null
@@ -870,67 +761,19 @@ conditions:
         local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
           лечение и тактика ведения пациентов детского возраста до, во время и после
           трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 7
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: использование антилимфоцитарных моноклональных антител (тимоглобулин,
-          другие)
-    - drug_name: Валганцикловир
-      active_substance: null
-      drug_group: null
-      dose_text: внутрь
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: предпочтительнее валганцикловир внутрь, если невозможно или есть противопоказания,
-          то ганцикловир в/в
-    - drug_name: Ганцикловир
-      active_substance: null
-      drug_group: null
-      dose_text: в/в
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-        document_url: null
-        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-          лечение и тактика ведения пациентов детского возраста до, во время и после
-          трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 7
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: то ганцикловир в/в
+        quote: такролимус (капсулы, 0,5 мг, 1 мг, 5 мг) 0,3 мг/кг/сутки внутрь в 2
+          приема или 1 прием для такролимуса пролонгированного действия
     - drug_name: Микофеноловая кислота
       active_substance: null
       drug_group: null
-      dose_text: уменьшение дозы на 50% или отмена
+      dose_text: День 1–14 — по 600 мг/м2 внутрь 2 раза в день, с 15 дня — по 300
+        мг/м2 (или 450 мг/м2) внутрь 2 раза в день.
       frequency_text: null
       duration_text: null
       route: null
@@ -944,18 +787,20 @@ conditions:
         local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
           лечение и тактика ведения пациентов детского возраста до, во время и после
           трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 7
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: уменьшение дозы антиметаболитов (микофеноловой кислоты, азатиоприна)
-          на 50 % или отмена
-    - drug_name: Азатиоприн
+        quote: микофеноловая кислота (капсулы, 250 мг, 500 мг) день 1–14 – по 600
+          мг/м2 внутрь 2 раза в день, день 15 и далее – по 300 мг/м2 внутрь 2 раза
+          в день;
+    - drug_name: Базиликсимаб
       active_substance: null
       drug_group: null
-      dose_text: уменьшение дозы на 50% или отмена
+      dose_text: 'День 0 и день 4 после трансплантации: дети <35 кг — 10 мг в/в, дети
+        >35 кг — 20 мг в/в.'
       frequency_text: null
       duration_text: null
       route: null
@@ -969,20 +814,73 @@ conditions:
         local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
           лечение и тактика ведения пациентов детского возраста до, во время и после
           трансплантации почки 31.07.2020 № 67.pdf
-        page_start: 7
+        page_start: 4
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: уменьшение дозы антиметаболитов (микофеноловой кислоты, азатиоприна)
-          на 50 % или отмена
+        quote: 'базиликсимаб (флаконы, 10 мг, 20 мг): день 0 и день 4 после Тх: дети
+          <35 кг: 10 мг внутривенно (далее – в/в), дети >35 кг: 20 мг в/в;'
+    - drug_name: Метилпреднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: 'Схема с ранней отменой: 1-й день — 48 мг/м2/сут внутрь (макс. 48
+        мг/сут), 2-й день — 32 мг/м2/сут, 3-й день — 24 мг/м2/сут, 4-й день — 16 мг/м2/сут,
+        5-й день — отмена.'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'метилпреднизолон (таблетки, 4 мг, 16 мг, 32 мг): 1-й день – 48 мг/м2/сутки
+          (максимум – 48 мг/сут) внутрь, 2-й день – 32 мг/м2/сутки внутрь'
+    - drug_name: Валганцикловир
+      active_substance: null
+      drug_group: null
+      dose_text: Таблетки 450 мг, доза рассчитывается в зависимости от клиренса по
+        эндогенному креатинину.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+        document_url: null
+        local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+          лечение и тактика ведения пациентов детского возраста до, во время и после
+          трансплантации почки 31.07.2020 № 67.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: валганцикловир (таблетки 450 мг) назначается во всех случаях, кроме
+          случаев, когда и донор, и реципиент серонегативны по ЦМВ.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Анализ состояния реципиента и результатов лабораторно-инструментальных исследований
-      каждые 6 месяцев (после постановки в лист ожидания).
+  - text: Анализ состояния реципиента комиссией врачей-специалистов каждые 6 месяцев
+      после постановки в лист ожидания.
     timing: null
     required_if: []
     expected_actions: []
@@ -998,10 +896,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Анализ состояния реципиента и результатов лабораторно-инструментальных
-        исследований каждые 6 месяцев (после постановки в лист ожидания).
-  - text: Четкое соблюдение кратности и периодичности диагностических исследований
-      для своевременного выявления вирусных осложнений после трансплантации почки.
+      quote: Анализ состояния реципиента комиссией врачей-специалистов каждые 6 месяцев
+        после постановки в лист ожидания.
+  - text: Мониторинг BKV виремии при вирусной нагрузке <200 копий/мл — 1 раз в месяц.
     timing: null
     required_if: []
     expected_actions: []
@@ -1017,10 +914,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Четкое соблюдение кратности и периодичности диагностических исследований
-        для своевременного выявления вирусных осложнений после трансплантации почки.
-  - text: Мониторинг BKV виремии с периодичностью 1 раз в месяц (при вирусной нагрузке
-      <200 копий/мл).
+      quote: Мониторинг BKV виремии при вирусной нагрузке <200 копий/мл — 1 раз в
+        месяц.
+  - text: Мониторинг BKV виремии при вирусной нагрузке >200 – <10^4 копий/мл и признаках
+      дисфункции трансплантата — 1 раз в 2 недели.
     timing: null
     required_if: []
     expected_actions: []
@@ -1036,10 +933,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Мониторинг BKV виремии с периодичностью 1 раз в месяц (при вирусной нагрузке
-        <200 копий/мл).
-  - text: Мониторинг BKV виремии с периодичностью 1 раз в 2 недели (при вирусной нагрузке
-      >200 – <10^4 копий/мл и признаках дисфункции трансплантата).
+      quote: Мониторинг BKV виремии при вирусной нагрузке >200 – <10^4 копий/мл и
+        признаках дисфункции трансплантата — 1 раз в 2 недели.
+  - text: Мониторинг ПЦР BKV каждые 2 недели до получения отрицательного результата,
+      если по данным биопсии не найдено признаков ВКН.
     timing: null
     required_if: []
     expected_actions: []
@@ -1055,48 +952,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Мониторинг BKV виремии с периодичностью 1 раз в 2 недели (при вирусной
-        нагрузке >200 – <10^4 копий/мл и признаках дисфункции трансплантата).
-  - text: Мониторинг ПЦР BKV каждые 2 недели до получения отрицательного результата
-      (при отсутствии морфологических признаков ВКН после снижения иммуносупрессии).
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Мониторинг ПЦР BKV каждые 2 недели до получения отрицательного результата
-        (при отсутствии морфологических признаков ВКН после снижения иммуносупрессии).
-  - text: Вторичная профилактика ЦМВ инфекции при усилении иммуносупрессивной терапии
-      или при двух подряд положительных ПЦР пробах без клинических проявлений.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Вторичная профилактика ЦМВ инфекции при усилении иммуносупрессивной терапии
-        или при двух подряд положительных ПЦР пробах без клинических проявлений.
+      quote: Мониторинг ПЦР BKV каждые 2 недели до получения отрицательного результата,
+        если по данным биопсии не найдено признаков ВКН.
   - text: Количественный ПЦР контроль ЦМВ нагрузки в плазме/сыворотке крови через
-      1 неделю при сохранении виремии.
+      1 неделю при снижении/отмене антиметаболитов
     timing: null
     required_if: []
     expected_actions: []
@@ -1113,12 +972,47 @@ conditions:
       table_index: null
       row_index: null
       quote: Количественный ПЦР контроль ЦМВ нагрузки в плазме/сыворотке крови через
-        1 неделю при сохранении виремии.
+        1 неделю при снижении/отмене антиметаболитов
+  - text: Протокольная нефробиопсия через 3–4 месяца и (или) 1 год после трансплантации
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Протокольная нефробиопсия через 3–4 месяца и (или) 1 год после трансплантации
+  - text: Регулярный контроль уровня такролимуса в крови
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Регулярный контроль уровня такролимуса в крови
   hospitalization: []
   routing:
-  - text: Госпитализация в Республиканский центр детской нефрологии и заместительной
-      почечной терапии и Республиканский центр детской урологии на базе УЗ «2-я городская
-      детская клиническая больница» (УЗ «2-я ГДКБ»).
+  - text: Подготовка к трансплантации почки, выполнение операции, последующее обследование
+      и лечение осуществляются на базе УЗ «2-я ГДКБ» (Республиканский центр детской
+      нефрологии и заместительной почечной терапии и Республиканский центр детской
+      урологии).
     timing: null
     required_if: []
     source_ref:
@@ -1133,11 +1027,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация в Республиканский центр детской нефрологии и заместительной
-        почечной терапии и Республиканский центр детской урологии на базе УЗ «2-я
-        городская детская клиническая больница» (УЗ «2-я ГД
-  - text: Госпитализация для проведения операции и в послеоперационном периоде, затем
-      амбулаторное ведение.
+      quote: Подготовка к трансплантации почки, выполнение операции, последующее обследование
+        и лечение осуществляются на базе УЗ «2-я ГДКБ» (Республиканский центр детской
+        нефрологии и заместительной почечной тера
+  - text: Амбулаторный этап по вопросам патологии трансплантата и связанных с ним
+      осложнений проводится на базе УЗ «2-я ГДКБ».
     timing: null
     required_if: []
     source_ref:
@@ -1152,11 +1046,78 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация для проведения операции и в послеоперационном периоде,
-        затем амбулаторное ведение.
+      quote: Амбулаторный этап по вопросам патологии трансплантата и связанных с ним
+        осложнений проводится на базе УЗ «2-я ГДКБ».
+  - text: Внесение в лист ожидания почечного трансплантата
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Внесение в лист ожидания почечного трансплантата
+  - text: Госпитализация для хирургического лечения (трансплантация почки)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация для хирургического лечения (трансплантация почки)
+  - text: Амбулаторное наблюдение в послеоперационном периоде
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторное наблюдение в послеоперационном периоде
+  - text: Варианты протоколов иммуносупрессии назначаются по рекомендации врача-специалиста
+      Республиканского центра детской нефрологии и ЗПТ или по решению консилиума врачей
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Варианты протоколов иммуносупрессии назначаются по рекомендации врача-специалиста
+        Республиканского центра детской нефрологии и ЗПТ или по решению консилиума
+        врачей
   red_flags:
-  - text: Повторное превышение вирусной нагрузки BKV (>10^4 копий/мл в сыворотке/плазме
-      и >10^7 копий/мл в моче) и выявление дисфункции трансплантата
+  - text: Вирусная нагрузка BKV >10^4 копий/мл в сыворотке/плазме и >10^7 копий/мл
+      в моче, дисфункция трансплантата (риск развития BKV нефропатии)
     aliases: []
     red_flag_type: other
     severity: high
@@ -1174,9 +1135,47 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При повторном превышении этих значений [BKV >104 копий/мл в сыворотке/плазме
-        крови и >107 копий/мл в моче] и выявлении дисфункции трансплантата рекомендовано
-        проведение биопсии графта.
+      quote: вирусная нагрузка BKV >104 копий/мл в сыворотке/плазме крови и >107 копий/мл
+        в моче ассоциирована с развитием BKV нефропатии
+  - text: Признаки дисфункции трансплантата (повышение уровня креатинина в крови)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при появлении признаков дисфункции трансплантата (повышение уровня креатинина
+        в крови) продолжают мониторинг BKV виремии с периодичностью 1 раз в 2 недели
+  - text: Положительный кросс-матч тест
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
+      document_url: null
+      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
+        лечение и тактика ведения пациентов детского возраста до, во время и после
+        трансплантации почки 31.07.2020 № 67.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: положительный кросс-матч тест;
   - text: Злокачественные новообразования без лечения или в процессе лечения
     aliases: []
     red_flag_type: other
@@ -1195,7 +1194,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: злокачественные новообразования без лечения или в процессе лечения
+      quote: злокачественные новообразования без лечения или в процессе лечения;
   - text: Активные формы хронического вирусного гепатита
     aliases: []
     red_flag_type: other
@@ -1214,9 +1213,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: активные формы хронического вирусного гепатита
+      quote: активные формы хронического вирусного гепатита;
   - text: Острые инфекционные заболевания (ОРИ, ОКИ, пневмонии, перитониты, туберкулез,
-      сифилис и др.)
+      сифилис)
     aliases: []
     red_flag_type: other
     severity: high
@@ -1236,8 +1235,9 @@ conditions:
       row_index: null
       quote: острые инфекционные заболевания (острая респираторная (далее – ОРИ) или
         кишечная инфекция (далее – ОКИ), пневмонии, перитониты, туберкулез, сифилис
-        и другие)
-  - text: Положительный кросс-матч тест
+        и другие);
+  - text: Первично нефункционирующий трансплантат (отсутствие кровотока вследствие
+      тромбоза или сверхострого отторжения)
     aliases: []
     red_flag_type: other
     severity: high
@@ -1249,16 +1249,16 @@ conditions:
       local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
         лечение и тактика ведения пациентов детского возраста до, во время и после
         трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 2
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: положительный кросс-матч тест; Положительный кросс-матч тест является
-        противопоказанием к проведению пересадки почки
-  - text: Тяжелые психические заболевания, глубокая задержка психического развития,
-      необратимое повреждение головного мозга с потерей интеллекта
+      quote: первично нефункционирующий трансплантат (отсутствие кровотока по данным
+        УЗИ допплера почечных сосудов вследствие тромбоза вены или артерии графта,
+        сверхострого отторжения с тромбозом сосудов);
+  - text: Кровотечение после нефробиопсии графта, не поддающееся консервативной терапии
     aliases: []
     red_flag_type: other
     severity: high
@@ -1270,16 +1270,15 @@ conditions:
       local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
         лечение и тактика ведения пациентов детского возраста до, во время и после
         трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 2
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: тяжелые психические заболевания, глубокая задержка психического развития,
-        необратимое повреждение головного мозга с потерей интеллекта
-  - text: Тяжелые хронические заболевания, снижающие ожидаемую продолжительность или
-      качество жизни после трансплантации
+      quote: кровотечение после выполнения биопсии графта, не поддающееся консервативной
+        терапии;
+  - text: Острое отторжение трансплантата, резистентное к проводимой терапии
     aliases: []
     red_flag_type: other
     severity: high
@@ -1291,18 +1290,15 @@ conditions:
       local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
         лечение и тактика ведения пациентов детского возраста до, во время и после
         трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 2
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: тяжелые хронические заболевания или их сочетание (хроническая сердечная
-        недостаточность, тяжелые повреждения легких, цирроз печени и другие), при
-        которых проведение трансплантации почки не приведет к увеличению продолжительности
-        и качества жизни ребенка или наоборот может ускорить развитие неблагоприятного
-        исхода
-  - text: Злокачественные новообразования после лечения с развитием стойкой ремиссии
+      quote: острое отторжение трансплантата, резистентное к проводимой терапии;
+  - text: Необъяснимое повышение уровня креатинина более чем на 25 % от минимального
+      значения
     aliases: []
     red_flag_type: other
     severity: medium
@@ -1314,55 +1310,15 @@ conditions:
       local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
         лечение и тактика ведения пациентов детского возраста до, во время и после
         трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 3
+      page_start: 5
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: злокачественные новообразования после проведенного лечения с развитием
-        стойкой ремиссии
-  - text: Несовместимость по группе крови с донором или положительный кросс-матч тест
-      (при десенсибилизирующих протоколах)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: несовместимость по группе крови с донором или положительный кросс-матч
-        тест в случае использования десенсибилизирующих протоколов
-  - text: Аутоиммунные заболевания при сохранении высокой степени активности
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_и_тактика_ведения_пацие
-      document_url: null
-      local_path: minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП Диагностика,
-        лечение и тактика ведения пациентов детского возраста до, во время и после
-        трансплантации почки 31.07.2020 № 67.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'аутоиммунные заболевания: системная красная волчанка, васкулиты и другие
-        при сохранении их высокой степени активности'
+      quote: биопсия трансплантата должна быть проведена в случае необъяснимого повышения
+        уровня креатинина более чем на 25 % от минимального уровня креатинина крови
+        после Тх
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1371,7 +1327,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T22:26:32.195540+00:00'
+  extracted_at: '2026-07-23T10:53:53.689980+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1379,7 +1335,23 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-01T22:26:32.219502+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[khronicheskaya_bolezn_pochek_5_stadii].treatment.drugs[8]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[khronicheskaya_bolezn_pochek_5_stadii].treatment.drugs[9]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[khronicheskaya_bolezn_pochek_5_stadii].treatment.drugs[12]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[khronicheskaya_bolezn_pochek_5_stadii].treatment.drugs[13]
+  validated_at: '2026-07-23T10:53:53.714273+00:00'

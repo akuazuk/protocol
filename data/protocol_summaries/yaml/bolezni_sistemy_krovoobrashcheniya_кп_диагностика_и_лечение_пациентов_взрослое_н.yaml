@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с тромбозом глубоких вен
+  title: Диагностика и лечение пациентов (взрослое население) с тромбозом глубоких
+    вен
   url: null
   local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
   document_sha256: null
@@ -26,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: tromboz_glubokih_ven
+- condition_id: deep_vein_thrombosis
   name: Тромбоз глубоких вен
   synonyms: []
   abbreviations: []
@@ -36,9 +37,94 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Определение локализации, распространенности ТГВ, характера перекрытия
+        просвета вены и структуры тромба
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение локализации, распространенности ТГВ, характера перекрытия
+          просвета вены и структуры тромба
+    - text: 'Критерии эмболоопасности: визуализация обтекания головки тромба кровью
+        в поперечной плоскости в режиме ЦДК с четырех сторон, длина флотирующей части
+        тромба более 5 см'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Критерии эмболоопасности: визуализация обтекания головки тромба кровью
+          в поперечной плоскости в режиме ЦДК с четырех сторон, длина флотирующей
+          части тромба более 5 см'
+    - text: Инструментально подтвержденный ТГВ (включая неэмбологенный ТГВ дистальной
+        локализации без признаков флотации)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Инструментально подтвержденный ТГВ (включая неэмбологенный ТГВ дистальной
+          локализации без признаков флотации)
+    - text: Органическое поражение глубоких вен вследствие ранее перенесенного ТГВ
+        (посттромботическая болезнь)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Органическое поражение глубоких вен вследствие ранее перенесенного
+          ТГВ (посттромботическая болезнь)
+    optional: []
+    exclusion: []
   required_exams:
-  - name: УЗДС
+  - name: Ультразвуковое дуплексное сканирование (УЗДС)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -59,13 +145,207 @@ conditions:
       table_index: null
       row_index: null
       quote: УЗДС является основным методом визуализации при подозрении на ТГВ, выполняется
-        врачом ультразвуковой диагностики. В обязательный объем УЗДС входит осмотр
-        глубоких, подкожных вен обеих нижних конечностей, общей, наружной и внутренней
-        подвздошных вен, нижней полой вены
-  conditional_exams: []
+        врачом ультразвуковой диагностики.
+  - name: Динамическое УЗДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: динамическое УЗДС для контроля за эффективностью проводимого лечения
+        (кратность определяется характером патологии и течением заболевания);
+  - name: Повторное исследование коагулограммы или МНО
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: повторное исследование коагулограммы или МНО (кратность определяется
+        приемом антикоагулянтов).
+  - name: Общий (клинический) анализ крови развернутый
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий (клинический) анализ крови развернутый – 1 раз в год;
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи – 1 раз в год;
+  - name: ЭКГ
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЭКГ – 1 раз в год;
+  - name: УЗДС вен в системе НПВ или верхней полой вены
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗДС вен в системе НПВ или верхней полой вены – 1 раз в год;
+  - name: Рентгенография ОГК
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография ОГК – 1 раз в год.
+  conditional_exams:
+  - name: КТА, МРА, илеокаваграфия, Эхо-КГ, УЗИ ОБП и забрюшинного пространства, ФГДС,
+      колоноскопия, ирригоскопия, сцинтиграфия легких, онкомаркеры, генетическая диагностика
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями, проводимыми при наличии
+        медицинских показаний, являются: консультации врачей-специалистов;'
+  - name: КТА, МРА, илеокаваграфия / рентгеноконтрастная ретроградная илеокаваграфия
+      при ТЭЛА
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при невозможности определения характера тромба и распространенности проксимальной
+        части с помощью УЗДС показано выполнение КТА, МРА, илеокаваграфии
   treatment:
     non_drug:
-    - text: Активный двигательный режим
+    - text: Назначение активного двигательного режима пациентам с инструментально
+        подтвержденным окклюзивным и пристеночным тромбозом
       source_ref:
         protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
         document_url: null
@@ -76,15 +356,242 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Активный двигательный режим
+        quote: Назначение активного двигательного режима пациентам с инструментально
+          подтвержденным окклюзивным и пристеночным тромбозом
+    - text: Хирургическое вмешательство (предотвращение ТЭЛА и восстановление проходимости
+        венозного русла)
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое вмешательство (предотвращение ТЭЛА и восстановление проходимости
+          венозного русла)
+    - text: Чрескожная фармакомеханическая тромбэктомия, реолитическая тромбэктомия,
+        ультразвуковая тромбэктомия
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Чрескожная фармакомеханическая тромбэктомия, реолитическая тромбэктомия,
+          ультразвуковая тромбэктомия
+    - text: Баллонная ангиопластика и стентирование после выполнения тромбэктомии
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Баллонная ангиопластика и стентирование после выполнения тромбэктомии
+    - text: Эндоваскулярная катетерная тромбэктомия из НПВ и подвздошных вен
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Эндоваскулярная катетерная тромбэктомия из НПВ и подвздошных вен
+    - text: Имплантация временного кава-фильтра
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Имплантация временного кава-фильтра
     drug_groups: []
-    drugs: []
+    drugs:
+    - drug_name: Антикоагулянты
+      active_substance: null
+      drug_group: null
+      dose_text: 'Обратимый фактор риска: 3 месяца (дистальный ТГВ), 6 месяцев (проксимальный
+        ТГВ); идиопатический: от 6 месяцев; рецидивирующий, тромбофилия, кава-фильтр,
+        ЗНО: неопределенно долго (пожизненно).'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Длительность лечения антикоагулянтами после эпизода ТГВ в зависимости
+          от наличия и характера факторов риска
+    - drug_name: Ривароксабан
+      active_substance: null
+      drug_group: null
+      dose_text: с 1 суток 15 мг 2 раза в сутки длительностью 21 сутки с последующим
+        приемом по 20 мг 1 раз в сутки не менее 3 месяцев
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'ривароксабана по схеме: с 1 суток 15 мг 2 раза в сутки длительностью
+          21 сутки с последующим приемом по 20 мг 1 раз в сутки не менее 3 месяцев'
+    - drug_name: Апиксабан
+      active_substance: null
+      drug_group: null
+      dose_text: с 1 по 7 сутки 10 мг 2 раза в сутки, с 8 суток – в дозе 5 мг 2 раза
+        в сутки не менее 3 месяцев
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: апиксабана по схеме с 1 по 7 сутки 10 мг 2 раза в сутки, с 8 суток
+          – в дозе 5 мг 2 раза в сутки не менее 3 месяцев.
+    - drug_name: АВК
+      active_substance: null
+      drug_group: null
+      dose_text: доза подбирается индивидуально в зависимости от целевого МНО
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: АВК (доза подбирается индивидуально в зависимости от целевого МНО)
+    - drug_name: ривароксабан
+      active_substance: null
+      drug_group: null
+      dose_text: 10–20 мг 1 раз в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ривароксабан (доза составляет 10–20 мг 1 раз в сутки)
+    - drug_name: апиксабан
+      active_substance: null
+      drug_group: null
+      dose_text: 2,5 мг 2 раза в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: апиксабан (2,5 мг 2 раза в сутки)
+    - drug_name: дабигатрана этексилат
+      active_substance: null
+      drug_group: null
+      dose_text: 110 мг 2 раза в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+        document_url: null
+        local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+        page_start: 8
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: дабигатрана этексилат (110 мг 2 раза в сутки)
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Периодическая (не реже 1 раза в год) оценка польза – риск при лечении антикоагулянтами
-      впервые возникшего идиопатического ТГВ
+  - text: Периодическая (не реже 1 раза в год) оценка соотношения «польза – риск»
+      при длительном приеме антикоагулянтов у пациентов с впервые возникшим (идиопатическим)
+      ТГВ
     timing: null
     required_if: []
     expected_actions: []
@@ -98,11 +605,110 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Периодическая (не реже 1 раза в год) оценка польза – риск при лечении
-        антикоагулянтами впервые возникшего идиопатического ТГВ
+      quote: Периодическая (не реже 1 раза в год) оценка соотношения «польза – риск»
+        при длительном приеме антикоагулянтов у пациентов с впервые возникшим (идиопатическим)
+        ТГВ
+  - text: Динамическое УЗДС для контроля за эффективностью лечения
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Динамическое УЗДС для контроля за эффективностью лечения
+  - text: Повторное исследование коагулограммы или МНО (в зависимости от приема антикоагулянтов)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторное исследование коагулограммы или МНО (в зависимости от приема
+        антикоагулянтов)
+  - text: Выполнение УЗДС в динамике в течение 7–14 суток при амбулаторном лечении
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Выполнение УЗДС в динамике в течение 7–14 суток при амбулаторном лечении
+  - text: Консультация гематолога при невозможности достичь терапевтического значения
+      МНО в течение 14 суток при назначении АВК
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультация гематолога при невозможности достичь терапевтического значения
+        МНО в течение 14 суток при назначении АВК
+  - text: Осмотр врача-терапевта (врача общей практики) и (или) врача-специалиста
+      по профилю заболевания – 1 раз в год (после первого года наблюдения)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Осмотр врача-терапевта (врача общей практики) и (или) врача-специалиста
+        по профилю заболевания – 1 раз в год (после первого года наблюдения)
+  - text: Общий развернутый анализ крови, общий анализ мочи, ЭКГ, УЗДС вен в системе
+      НПВ или ВПВ, рентгенография ОГК – 1 раз в год (после первого года наблюдения)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий развернутый анализ крови, общий анализ мочи, ЭКГ, УЗДС вен в системе
+        НПВ или ВПВ, рентгенография ОГК – 1 раз в год (после первого года наблюдения)
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Госпитализация в хирургическое отделение больничной организации по месту
+      жительства (месту пребывания) по медицинским показаниям
     timing: null
     required_if: []
     source_ref:
@@ -115,10 +721,95 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: Госпитализация в хирургическое отделение больничной организации по месту
+        жительства (месту пребывания) по медицинским показаниям
+  - text: Амбулаторное лечение разрешено при окклюзионных дистальных формах ТГВ или
+      инструментально подтвержденном неэмбологенном ТГВ дистальной локализации без
+      флотации, без осложнений и беременности
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторное лечение разрешено при окклюзионных дистальных формах ТГВ
+        или инструментально подтвержденном неэмбологенном ТГВ дистальной локализации
+        без флотации, без осложнений и беременности
+  - text: Экстренная госпитализация при необходимости из амбулаторного звена
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Экстренная госпитализация при необходимости из амбулаторного звена
+  - text: Медицинская транспортировка (эвакуация) осуществляется бригадой СМП в положении
+      лежа
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская транспортировка (эвакуация) осуществляется бригадой СМП в
+        положении лежа
+  - text: Показания для оперативного вмешательства определяются результатами обследований
+      и клинической картиной (длина свободной проксимальной части тромба не является
+      определяющей)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Показания для оперативного вмешательства определяются результатами обследований
+        и клинической картиной (длина свободной проксимальной части тромба не является
+        определяющей)
+  - text: Эндоваскулярная катетерная тромбэктомия из НПВ и подвздошных вен показана
+      при эмболоопасном ТГВ и флотирующем тромбе интра- и супраренального отделов
+      НПВ
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Эндоваскулярная катетерная тромбэктомия из НПВ и подвздошных вен показана
+        при эмболоопасном ТГВ и флотирующем тромбе интра- и супраренального отделов
+        НПВ
   red_flags:
-  - text: Визуализация обтекания головки тромба кровью в поперечной плоскости сканирования
-      в режиме цветового допплеровского картирования с четырех сторон
+  - text: 'Эмболоопасность: визуализация обтекания головки тромба кровью с четырех
+      сторон в ЦДК, длина флотирующей части тромба более 5 см'
     aliases: []
     red_flag_type: other
     severity: high
@@ -135,9 +826,9 @@ conditions:
       table_index: null
       row_index: null
       quote: 'Критериями эмболоопасности являются: визуализация обтекания головки
-        тромба кровью в поперечной плоскости сканирования в режиме цветового допплеровского
-        картирования с четырех сторон'
-  - text: Длина флотирующей (омываемой с четырех сторон) части тромба более 5 см
+        тромба кровью... длина флотирующей (омываемой с четырех сторон) части тромба
+        более 5 см.'
+  - text: Развитие ТЭЛА на фоне лечения ТГВ
     aliases: []
     red_flag_type: other
     severity: high
@@ -153,8 +844,97 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Критериями эмболоопасности являются: длина флотирующей (омываемой с
-        четырех сторон) части тромба более 5 см.'
+      quote: Пациентам с ТГВ, у которых на фоне лечения развилась ТЭЛА
+  - text: 'Противопоказания к АКТ: продолжающееся кровотечение, тяжелый геморрагический
+      диатез, тромбоцитопения (< 50 000/мкл), острый период НМК, ГИТ в анамнезе'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими противопоказаниями к АКТ являются: продолжающееся кровотечение;
+        тяжелый геморрагический диатез; тромбоцитопения (менее 50 000/мкл);'
+  - text: 'Противопоказания к ТЛТ: тромбоцитопения, геморрагический диатез, риск кровотечения,
+      тяжелая почечная/печеночная недостаточность, метастазы в головной мозг'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Медицинскими противопоказаниями к ТЛТ являются: тромбоцитопения; геморрагический
+        диатез; риск кровотечения'
+  - text: Эмболоопасный ТГВ и флотирующий тромб интра- и супраренального отделов НПВ
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при эмболоопасном ТГВ и флотирующем тромбе интра- и супраренального отделов
+        НПВ
+  - text: Рецидивирующая ТЭЛА на фоне АКТ
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рецидивирующая ТЭЛА на фоне АКТ
+  - text: Осложненный ТГВ флотацией тромба или флегмазией
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: bolezni_sistemy_krovoobrashcheniya_кп_диагностика_и_лечение_пациентов_взрослое_н
+      document_url: null
+      local_path: minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/КП_Диагностика_и_лечение_пациентов_(взрослое_население)_с_тромбозом_глубоких_вен_пост_МЗ_от_22_03_2022_№17.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осложненный ТГВ флотацией тромба или флегмазией
   contraindications: []
   complications: []
   kz_checklist: null
@@ -163,7 +943,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T22:56:20.361423+00:00'
+  extracted_at: '2026-07-23T07:18:47.092701+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -171,7 +951,15 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-01T22:56:20.362307+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[deep_vein_thrombosis].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[deep_vein_thrombosis].treatment.drugs[5]
+  validated_at: '2026-07-23T07:18:47.105954+00:00'

@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Кисты области рта НКДР
+  title: Кисты области рта, не классифицированные в других рубриках
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: oral_cysts_not_elsewhere_classified
+- condition_id: kisty_oblasti_rta_nkdr
   name: Кисты области рта, не классифицированные в других рубриках
   synonyms: []
   abbreviations: []
@@ -36,7 +36,6 @@ conditions:
   - K04.7
   - K06.2
   - K07.9
-  - K09
   - K09.0
   - K09.1
   - K09.2
@@ -47,9 +46,7 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Дифференциальная диагностика с доброкачественными и злокачественными новообразованиями,
-        воспалительными процессами и кистами других локализаций в челюстно-лицевой
-        области.
+    - text: Кисты челюстей размером более 2 см или в пределах 4 и более зубов
       logic_group: null
       operator: unknown
       values: []
@@ -66,35 +63,29 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Дифференциальная диагностика с доброкачественными и злокачественными
-          новообразованиями, воспалительными процессами и кистами других локализаций
-          в челюстно-лицевой области.
+        quote: Кисты челюстей размером более 2 см или в пределах 4 и более зубов
+    - text: Дермоидные и эпидермоидные кисты
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Дермоидные и эпидермоидные кисты
     optional: []
     exclusion: []
   required_exams:
-  - name: Инструментальные диагностические исследования
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: обязательные и дополнительные инструментальные диагностические исследования...
-        проводятся на догоспитальном этапе.
-  - name: Консультация врача-онколога
+  - name: Инструментальные диагностические исследования (обязательные и дополнительные)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -117,10 +108,11 @@ conditions:
       quote: обязательные и дополнительные инструментальные диагностические исследования,
         врача-онколога и консультации врачей-специалистов проводятся на догоспитальном
         этапе.
-  - name: Консультации врачей-специалистов
+  conditional_exams:
+  - name: Консультация врача-онколога и врачей-специалистов
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -140,10 +132,9 @@ conditions:
       quote: обязательные и дополнительные инструментальные диагностические исследования,
         врача-онколога и консультации врачей-специалистов проводятся на догоспитальном
         этапе.
-  conditional_exams: []
   treatment:
     non_drug:
-    - text: Придерживаться умеренной интенсивности физических нагрузок в период лечения.
+    - text: Умеренная интенсивность физических нагрузок в период лечения
       source_ref:
         protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
         document_url: null
@@ -154,9 +145,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Придерживаться умеренной интенсивности физических нагрузок в период
-          лечения.
-    - text: Радикальное устранение патологического процесса
+        quote: Умеренная интенсивность физических нагрузок в период лечения
+    - text: Челюстно-лицевая и стоматологическая хирургическая помощь (радикальное
+        устранение патологического процесса)
       source_ref:
         protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
         document_url: null
@@ -167,8 +158,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Радикальное устранение патологического процесса
-    - text: Сохранение или восстановление функции зубочелюстной системы пациента
+        quote: Челюстно-лицевая и стоматологическая хирургическая помощь (радикальное
+          устранение патологического процесса)
+    - text: Инстилляция и ирригация ран в полости рта и лунок удаленных зубов
       source_ref:
         protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
         document_url: null
@@ -179,28 +171,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Сохранение или восстановление функции зубочелюстной системы пациента
-    - text: Предупреждение развития воспалительных осложнений в послеоперационном
-        периоде
-      source_ref:
-        protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Предупреждение развития воспалительных осложнений в послеоперационном
-          периоде
+        quote: Инстилляция и ирригация ран в полости рта и лунок удаленных зубов
     drug_groups: []
     drugs:
     - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: Местная анестезия (инфильтрационная, проводниковая). Доза до 7 мг
-        на 1 кг массы тела.
+      dose_text: Раствор для инъекций (40 мг + 0,005 мг)/мл, (40 мг + 0,006 мг)/мл,
+        (40 мг + 0,010 мг)/мл, (40 мг + 0,012 мг)/мл. Местная инфильтрационная или
+        проводниковая анестезия в дозе до 7 мг на 1 кг массы тела.
       frequency_text: null
       duration_text: null
       route: null
@@ -223,8 +202,8 @@ conditions:
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Местная анестезия (инфильтрационная, проводниковая). Максимальная
-        доза для взрослых не должна превышать 300 мг.
+      dose_text: Раствор для инъекций 10 мг/мл (5 мл) или 20 мг/мл (2 мл). Местная
+        анестезия. Максимальная доза не должна превышать 300 мг.
       frequency_text: null
       duration_text: null
       route: null
@@ -243,11 +222,33 @@ conditions:
         table_index: null
         row_index: null
         quote: Максимальная доза для взрослых не должна превышать 300 мг
+    - drug_name: Производные имидазола (J01XD)
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор 5 мг/мл 100 мл. Периоперационная антибактериальная профилактика.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Периоперационная антибактериальная профилактика 5 мг/мл 100 мл
     - drug_name: Нимесулид
       active_substance: null
       drug_group: null
-      dose_text: Внутрь после еды по 100 мг 2 раза в сутки. Максимальная длительность
-        приема – 15 суток.
+      dose_text: Таблетки 100 мг или порошок (гранулы) 100 мг. Внутрь после еды по
+        100 мг 2 раза в сутки. Длительность — до 15 суток.
       frequency_text: null
       duration_text: null
       route: null
@@ -270,9 +271,9 @@ conditions:
     - drug_name: Кеторолак
       active_substance: null
       drug_group: null
-      dose_text: 'В/м или в/в: разовая доза 30-60 мг. Макс. суточная доза до 65 лет
-        – 90 мг, старше 65 лет или с нарушением почек – 60 мг. Внутрь: макс. суточная
-        доза 40 мг. Курс не более 5 дней.'
+      dose_text: Раствор для в/в и в/м введения 30 мг/мл, таблетки 10 мг. Разовая
+        доза в/м или в/в — от 30 мг до 60 мг; макс. суточная — 90 мг (60 мг для лиц
+        старше 65 лет или с нарушением функции почек). Внутрь макс.
       frequency_text: null
       duration_text: null
       route: null
@@ -290,15 +291,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: При в/м или в/в введении разовая доза 30-60 мг. Макс. суточная доза
-          до 65 лет – 90 мг, старше 65 лет или с нарушением почек – 60 мг. Для приема
-          внутрь макс. суточная доза 40 мг. Курс не более 5 дней.
+        quote: При внутримышечном или внутривенном введении разовая доза может варьировать
+          от 30 мг до 60 мг.
     - drug_name: Ибупрофен
       active_substance: null
       drug_group: null
-      dose_text: Внутрь по 200 мг 3–4 раза в сутки. Для быстрого эффекта до 400 мг
-        3 раза в сутки. При достижении эффекта до 600–800 мг/сутки. Макс. суточная
-        доза – 1200 мг. Повторная доза не чаще, чем через 4 ч. Длит
+      dose_text: 'Таблетки/капсулы 200 мг, 400 мг; суспензия 20 мг/мл. Внутрь по 200
+        мг 3–4 раза в сутки (при необходимости до 400 мг 3 раза в сутки), затем дозу
+        уменьшают до 600–800 мг/сут. Макс. суточная доза — 1200 '
       frequency_text: null
       duration_text: null
       route: null
@@ -316,16 +316,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ибупрофен назначают внутрь по 200 мг 3–4 раза в сутки. Для быстрого
-          эффекта до 400 мг 3 раза в сутки. При достижении эффекта до 600–800 мг/сутки.
-          Макс. суточная доза – 1200 мг. Повторную дозу не чаще, чем через 4 ч. Длительность
-          3–5 дней.
+        quote: Ибупрофен назначают взрослым внутрь по 200 мг 3–4 раза в сутки. Максимальная
+          суточная доза – 1200 мг.
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Местно для инстилляции и ирригации ран в полости рта и лунок удаленных
-        зубов – 5–10 мл раствора 2–3 раза в сутки. Для полоскания полости рта 2–3
-        раза в сутки (смешивать с равным количеством воды).
+      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл. Инстилляция
+        и ирригация ран и лунок — 5–10 мл раствора 2–3 раза в сутки; полоскание полости
+        рта (смешивая с равным количеством воды) 2–3 раза в с
       frequency_text: null
       duration_text: null
       route: null
@@ -337,21 +335,19 @@ conditions:
         protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
-        page_start: 11
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
         quote: Применяется местно для инстилляции и ирригации ран в полости рта и
-          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки. Раствор для полоскания
-          полости рта назначают 2–3 раза в сутки (для полосканий ЛП следует смешивать
-          с равным количеством воды).
+          лунок удаленных зубов – 5–10 мл раствора 2–3 раза в сутки.
     - drug_name: Перекись водорода
       active_substance: null
       drug_group: null
-      dose_text: Местно для инстилляции и ирригации ран в полости рта и лунок удаленных
-        зубов.
+      dose_text: Раствор для наружного применения 30 мг/мл во флаконах. Местно для
+        инстилляции и ирригации ран в полости рта и лунок удаленных зубов.
       frequency_text: null
       duration_text: null
       route: null
@@ -363,7 +359,7 @@ conditions:
         protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
         document_url: null
         local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
-        page_start: 11
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
@@ -375,7 +371,8 @@ conditions:
     surgery: []
     source_refs: []
   follow_up:
-  - text: Устранение патологического процесса.
+  - text: Медицинское наблюдение в амбулаторных условиях осуществляет врач-стоматолог-хирург
+      1 раз в 6 месяцев в течение 2 лет
     timing: null
     required_if: []
     expected_actions: []
@@ -389,58 +386,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Устранение патологического процесса.
-  - text: Сохранение или восстановление функциональной способности зубочелюстной системы.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Сохранение или восстановление функциональной способности зубочелюстной
-        системы.
-  - text: Отсутствие воспалительных осложнений и рецидива в послеоперационном периоде.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Отсутствие воспалительных осложнений и рецидива в послеоперационном периоде.
-  - text: Медицинское наблюдение в амбулаторных условиях врачом-стоматологом-хирургом
-      1 раз в 6 месяцев в течение 2 лет.
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях врачом-стоматологом-хирургом
-        1 раз в 6 месяцев в течение 2 лет.
+      quote: Медицинское наблюдение в амбулаторных условиях осуществляет врач-стоматолог-хирург
+        1 раз в 6 месяцев в течение 2 лет
   hospitalization: []
   routing:
-  - text: Амбулаторно
+  - text: 'Амбулаторно: лечение пациентов с кистами области рта, не классифицированными
+      в других рубриках'
     timing: null
     required_if: []
     source_ref:
@@ -453,8 +404,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторно
-  - text: Госпитализация
+      quote: 'Амбулаторно: лечение пациентов с кистами области рта, не классифицированными
+        в других рубриках'
+  - text: 'Госпитализация (стационарно): пациенты с кистами челюстей размером более
+      2 см или в пределах 4 и более зубов, а также с дермоидными и эпидермоидными
+      кистами'
     timing: null
     required_if: []
     source_ref:
@@ -467,7 +421,25 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация
+      quote: 'Госпитализация (стационарно): пациенты с кистами челюстей размером более
+        2 см или в пределах 4 и более зубов, а также с дермоидными и эпидермоидными
+        кистами'
+  - text: Применение ЛП осуществляется по медицинским показаниям в соответствии с
+      инструкцией по медицинскому применению (листком-вкладышем)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_кп8_кисты_области_рта_нкдр
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП8_кисты_области_рта_НКДР.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Применение ЛП осуществляется по медицинским показаниям в соответствии
+        с инструкцией по медицинскому применению (листком-вкладышем)
   red_flags: []
   contraindications: []
   complications: []
@@ -477,7 +449,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T22:25:56.327911+00:00'
+  extracted_at: '2026-07-23T10:18:59.336830+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -488,4 +460,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T22:25:56.334872+00:00'
+  validated_at: '2026-07-23T10:18:59.345591+00:00'

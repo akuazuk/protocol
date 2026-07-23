@@ -314,6 +314,7 @@ def build_mis_kz_quality_view(
             "storage_path": gem.get("path"),
         },
         "month_compare": compare,
+        "deep_eval": summary.get("deep_eval"),
         "notes": [
             str(n).replace("Gemini", "LLM").replace("gemini", "LLM")
             for n in (summary.get("notes") or [])
@@ -324,6 +325,572 @@ def build_mis_kz_quality_view(
             + (f" Исключено визитов: {excluded_n}." if excluded_n else ""),
         ],
         "doctors_n": len(doctors),
+    }
+
+
+# --------------------------------------------------------------------------- #
+# Дашборд §7Б: кейсы с deep-скором, фильтры, диаграммы, динамика
+# --------------------------------------------------------------------------- #
+
+def _candidate_cases_paths(month: str | None = None) -> list[Path]:
+    month = (month or "").strip() or "2026-07"
+    name = f"kz_l1_{month}_cases.jsonl"
+    env = (os.environ.get("MIS_KZ_CASES_PATH") or "").strip()
+    out: list[Path] = []
+    if env:
+        out.append(Path(env))
+    # deep-only (локальная разработка дашборда) - самые богатые (с deep-блоком)
+    out.append(ROOT / "data" / "ml" / "reports" / "deep_eval" / name)
+    out.append(Path("/var/data/mis_protocol") / name)
+    out.append(ROOT / "data" / "mis_protocol" / name)
+    return out
+
+
+_CASES_CACHE: dict[str, tuple[float, list[dict[str, Any]]]] = {}
+_CSV_BY_VISIT_CACHE: dict[str, tuple[float, dict[str, dict]]] = {}
+
+
+def load_kz_cases(*, month: str | None = None) -> tuple[list[dict[str, Any]], str | None]:
+    """Загрузить cases.jsonl (с deep-блоком) с кэшем по mtime."""
+    for path in _candidate_cases_paths(month):
+        if not path.is_file():
+            continue
+        key = str(path)
+        try:
+            mtime = path.stat().st_mtime
+        except OSError:
+            continue
+        cached = _CASES_CACHE.get(key)
+        if cached and cached[0] == mtime:
+            return cached[1], key
+        cases: list[dict[str, Any]] = []
+        try:
+            with path.open(encoding="utf-8") as f:
+                for line in f:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    try:
+                        obj = json.loads(line)
+                    except json.JSONDecodeError:
+                        continue
+                    if isinstance(obj, dict) and not obj.get("error"):
+                        cases.append(obj)
+        except OSError:
+            continue
+        _CASES_CACHE[key] = (mtime, cases)
+        return cases, key
+    return [], None
+
+
+def _load_csv_by_visit_cached(month: str) -> dict[str, dict]:
+    path = _csv_path_for_month(month)
+    if path is None:
+        return {}
+    key = str(path)
+    try:
+        mtime = path.stat().st_mtime
+    except OSError:
+        return {}
+    cached = _CSV_BY_VISIT_CACHE.get(key)
+    if cached and cached[0] == mtime:
+        return cached[1]
+    try:
+        _, load_csv_by_visit = _load_batch_helpers()
+        by_visit = load_csv_by_visit(path)
+    except Exception:  # noqa: BLE001
+        by_visit = {}
+    _CSV_BY_VISIT_CACHE[key] = (mtime, by_visit)
+    return by_visit
+
+
+def icd10_chapter(code: str) -> tuple[str, str]:
+    """Глава МКБ-10 по коду (напр. 'H66.1' -> ('VIII', 'H60-H95 Ухо'))."""
+    c = (code or "").strip().upper()
+    m = re.match(r"([A-Z])\s*(\d{1,2})", c)
+    if not m:
+        return ("", "без кода")
+    letter, num = m.group(1), int(m.group(2))
+    table = {
+        "A": ("I", "A00-B99 Инфекционные"),
+        "B": ("I", "A00-B99 Инфекционные"),
+        "C": ("II", "C00-D48 Новообразования"),
+        "E": ("IV", "E00-E90 Эндокринные"),
+        "F": ("V", "F00-F99 Психические"),
+        "G": ("VI", "G00-G99 Нервные"),
+        "I": ("IX", "I00-I99 Кровообращение"),
+        "J": ("X", "J00-J99 Дыхание"),
+        "K": ("XI", "K00-K93 Пищеварение"),
+        "L": ("XII", "L00-L99 Кожа"),
+        "M": ("XIII", "M00-M99 Костно-мышечная"),
+        "N": ("XIV", "N00-N99 Мочеполовая"),
+        "O": ("XV", "O00-O99 Беременность"),
+        "P": ("XVI", "P00-P96 Перинатальные"),
+        "Q": ("XVII", "Q00-Q99 Врождённые"),
+        "R": ("XVIII", "R00-R99 Симптомы/признаки"),
+        "S": ("XIX", "S00-T98 Травмы/отравления"),
+        "T": ("XIX", "S00-T98 Травмы/отравления"),
+        "V": ("XX", "V01-Y98 Внешние причины"),
+        "W": ("XX", "V01-Y98 Внешние причины"),
+        "X": ("XX", "V01-Y98 Внешние причины"),
+        "Y": ("XX", "V01-Y98 Внешние причины"),
+        "Z": ("XXI", "Z00-Z99 Факторы здоровья"),
+        "U": ("XXII", "U00-U99 Особые"),
+    }
+    if letter == "D":
+        return ("II", "C00-D48 Новообразования") if num <= 48 else ("III", "D50-D89 Кровь")
+    if letter == "H":
+        return ("VII", "H00-H59 Глаз") if num <= 59 else ("VIII", "H60-H95 Ухо")
+    return table.get(letter, ("?", "прочее"))
+
+
+def _age_group(age: Any) -> str:
+    try:
+        a = int(float(age))
+    except (TypeError, ValueError):
+        return "неизв."
+    if a < 18:
+        return "дети (<18)"
+    if a >= 65:
+        return "пожилые (65+)"
+    return "взрослые (18-64)"
+
+
+def _score_band(pct: Any) -> str:
+    if not isinstance(pct, (int, float)):
+        return "нет скора"
+    if pct < 50:
+        return "<50"
+    if pct < 75:
+        return "50-75"
+    if pct < 90:
+        return "75-90"
+    return "≥90"
+
+
+_AXIS_RU = {
+    "documentation": "оформление",
+    "clinical_concordance": "согласованность",
+    "safety": "безопасность",
+    "regulatory": "регуляторика",
+}
+
+
+def _flat_case(case: dict[str, Any], csvrow: dict | None) -> dict[str, Any]:
+    deep = case.get("deep") or {}
+    axes = deep.get("axes") or {}
+    sev = deep.get("n_by_severity") or {}
+    findings = [f for f in (deep.get("findings") or []) if isinstance(f, dict) and not f.get("passed")]
+    row = csvrow or {}
+    code_main = (row.get("mkb_code_main") or "").strip()
+    chap_key, chap_label = icd10_chapter(code_main)
+    overall = deep.get("overall_pct")
+    if overall is None:
+        overall = case.get("overall_pct")
+    finding_axes = sorted({str(f.get("axis") or "") for f in findings if f.get("axis")})
+    diag = (case.get("diagnosis_short") or (row.get("clinical_diagnosis") or "").strip())
+    diag = re.sub(r"\s+", " ", diag).strip()[:160]
+    return {
+        "visit_id": str(case.get("visit_id") or ""),
+        "patient_id": str(case.get("patient_id") or row.get("patient_id") or ""),
+        "date": (case.get("date") or row.get("visit_date") or "")[:10],
+        "doctor_fio": case.get("doctor_fio") or (row.get("doctor_fio") or "").strip() or " - ",
+        "specialization": case.get("doctor_specialization") or (row.get("doctor_specialization") or "").strip() or " - ",
+        "filial": case.get("filial") or (row.get("filial") or "").strip() or " - ",
+        "kz_kind": (row.get("kz_kind") or "").strip() or "kz",
+        "mkb_code_main": code_main,
+        "icd_chapter": chap_key,
+        "icd_chapter_label": chap_label,
+        "diagnosis_short": diag,
+        "overall_pct": overall,
+        "l1_overall_pct": case.get("overall_pct"),
+        "deep_status": deep.get("status"),
+        "status": case.get("status") or deep.get("status") or "unknown",
+        "axis_documentation": axes.get("documentation"),
+        "axis_concordance": axes.get("clinical_concordance"),
+        "axis_safety": axes.get("safety"),
+        "axis_regulatory": axes.get("regulatory"),
+        "p0": int(sev.get("P0", 0) or 0),
+        "p1": int(sev.get("P1", 0) or 0),
+        "p2": int(sev.get("P2", 0) or 0),
+        "p3": int(sev.get("P3", 0) or 0),
+        "n_findings": deep.get("n_findings"),
+        "has_potential_harm": bool(deep.get("has_potential_harm")),
+        "needs_human": any(f.get("needs_human") for f in findings),
+        "finding_axes": finding_axes,
+        "mkb_code_agreement": (row.get("mkb_code_agreement") or "").strip() or "unknown",
+        "age_group": _age_group(row.get("patient_age_years")),
+        "patient_age_years": row.get("patient_age_years"),
+        "pay_type": (row.get("pay_type") or "").strip(),
+        "date_mismatch": str(row.get("date_mismatch") or "0").strip(),
+        "parse_ok": str(row.get("parse_ok") or "1").strip(),
+        "protocol_used": bool(deep.get("protocol_used")),
+        "score_band": _score_band(overall),
+    }
+
+
+def _match_filters(rec: dict[str, Any], flt: dict[str, Any]) -> bool:
+    def eq(field: str, key: str) -> bool:
+        v = flt.get(key)
+        return not v or str(rec.get(field) or "") == str(v)
+
+    if not eq("specialization", "specialization"):
+        return False
+    if not eq("filial", "filial"):
+        return False
+    if not eq("kz_kind", "kz_kind"):
+        return False
+    if not eq("icd_chapter", "mkb_chapter"):
+        return False
+    if not eq("mkb_code_agreement", "mkb_agreement"):
+        return False
+    if not eq("age_group", "age_group"):
+        return False
+    if not eq("status", "status"):
+        return False
+    if not eq("score_band", "score_band"):
+        return False
+    doctor = (flt.get("doctor") or "").strip().lower()
+    if doctor and doctor not in str(rec.get("doctor_fio") or "").lower():
+        return False
+    q = (flt.get("q") or "").strip().lower()
+    if q:
+        hay = f"{rec.get('diagnosis_short','')} {rec.get('doctor_fio','')} {rec.get('mkb_code_main','')}".lower()
+        if q not in hay:
+            return False
+    fa = (flt.get("finding_axis") or "").strip()
+    if fa and fa not in (rec.get("finding_axes") or []):
+        return False
+    if flt.get("needs_human") and not rec.get("needs_human"):
+        return False
+    if flt.get("potential_harm") and not rec.get("has_potential_harm"):
+        return False
+    sev = (flt.get("min_severity") or "").strip().upper()
+    if sev == "P0" and rec.get("p0", 0) < 1:
+        return False
+    if sev == "P1" and (rec.get("p0", 0) + rec.get("p1", 0)) < 1:
+        return False
+    if flt.get("date_mismatch") and rec.get("date_mismatch") not in ("1", "true", "True"):
+        return False
+    df, dt = (flt.get("date_from") or "").strip(), (flt.get("date_to") or "").strip()
+    d = rec.get("date") or ""
+    if df and d and d < df:
+        return False
+    if dt and d and d > dt:
+        return False
+    return True
+
+
+def _apply_preset(flt: dict[str, Any]) -> dict[str, Any]:
+    preset = (flt.get("preset") or "").strip()
+    if preset == "p0":
+        flt["min_severity"] = "P0"
+    elif preset == "dx_no_code":
+        flt["mkb_agreement"] = "mismatch"
+    elif preset == "treatment_off_protocol":
+        flt["finding_axis"] = "clinical_concordance"
+    elif preset == "exams_gap":
+        flt["finding_axis"] = "clinical_concordance"
+    elif preset == "needs_human":
+        flt["needs_human"] = True
+    return flt
+
+
+def _mean(vals: list[float]) -> float | None:
+    vals = [v for v in vals if isinstance(v, (int, float))]
+    return round(sum(vals) / len(vals), 1) if vals else None
+
+
+def _facets(records: list[dict[str, Any]]) -> dict[str, Any]:
+    from collections import Counter
+
+    def top(field: str, limit: int = 60) -> list[dict[str, Any]]:
+        c = Counter(str(r.get(field) or "") for r in records if r.get(field))
+        return [{"value": k, "n": n} for k, n in c.most_common(limit)]
+
+    chapters: dict[str, dict[str, Any]] = {}
+    for r in records:
+        key = r.get("icd_chapter") or ""
+        if not key:
+            continue
+        entry = chapters.setdefault(key, {"key": key, "label": r.get("icd_chapter_label"), "n": 0})
+        entry["n"] += 1
+    return {
+        "specialties": top("specialization"),
+        "filials": top("filial"),
+        "kz_kinds": top("kz_kind"),
+        "statuses": top("status"),
+        "score_bands": top("score_band"),
+        "age_groups": top("age_group"),
+        "agreements": top("mkb_code_agreement"),
+        "mkb_chapters": sorted(chapters.values(), key=lambda x: -x["n"]),
+        "finding_axes": [
+            {"value": k, "label": _AXIS_RU.get(k, k), "n": n}
+            for k, n in __import__("collections").Counter(
+                a for r in records for a in (r.get("finding_axes") or [])
+            ).most_common()
+        ],
+    }
+
+
+def _filtered_agg(records: list[dict[str, Any]]) -> dict[str, Any]:
+    from collections import Counter
+
+    n = len(records)
+    sev_tot = {s: sum(int(r.get(s.lower(), 0) or 0) for r in records) for s in ("P0", "P1", "P2", "P3")}
+    status_dist = dict(Counter(str(r.get("status") or "unknown") for r in records))
+    band_dist = dict(Counter(str(r.get("score_band") or "нет скора") for r in records))
+    axis_dist = dict(Counter(a for r in records for a in (r.get("finding_axes") or [])))
+    n_harm = sum(1 for r in records if r.get("has_potential_harm"))
+    n_bad = sum(1 for r in records if isinstance(r.get("overall_pct"), (int, float)) and r["overall_pct"] < 75)
+
+    by_spec: dict[str, dict[str, Any]] = {}
+    for r in records:
+        sp = r.get("specialization") or " - "
+        e = by_spec.setdefault(sp, {"specialization": sp, "n": 0, "_ov": [], "n_bad": 0, "p0": 0})
+        e["n"] += 1
+        e["_ov"].append(r.get("overall_pct"))
+        if isinstance(r.get("overall_pct"), (int, float)) and r["overall_pct"] < 75:
+            e["n_bad"] += 1
+        e["p0"] += int(r.get("p0", 0) or 0)
+    spec_rows = []
+    for e in by_spec.values():
+        spec_rows.append({
+            "specialization": e["specialization"],
+            "n": e["n"],
+            "avg_overall": _mean(e["_ov"]),
+            "bad_pct": round(100 * e["n_bad"] / e["n"], 1) if e["n"] else 0.0,
+            "p0": e["p0"],
+        })
+    spec_rows.sort(key=lambda x: (x["avg_overall"] if x["avg_overall"] is not None else 999, -x["n"]))
+
+    icd_bad = Counter()
+    for r in records:
+        if isinstance(r.get("overall_pct"), (int, float)) and r["overall_pct"] < 75 and r.get("mkb_code_main"):
+            icd_bad[(r["mkb_code_main"], r.get("diagnosis_short", ""))] += 1
+    top_bad_icd = [
+        {"mkb_code": k[0], "diagnosis": k[1], "n": v}
+        for k, v in icd_bad.most_common(15)
+    ]
+
+    return {
+        "n": n,
+        "avg_overall": _mean([r.get("overall_pct") for r in records]),
+        "axis_means": {
+            "documentation": _mean([r.get("axis_documentation") for r in records]),
+            "clinical_concordance": _mean([r.get("axis_concordance") for r in records]),
+            "safety": _mean([r.get("axis_safety") for r in records]),
+            "regulatory": _mean([r.get("axis_regulatory") for r in records]),
+        },
+        "severity_totals": sev_tot,
+        "status_distribution": status_dist,
+        "score_band_distribution": band_dist,
+        "finding_axis_distribution": axis_dist,
+        "n_potential_harm": n_harm,
+        "n_bad": n_bad,
+        "pct_bad": round(100 * n_bad / n, 1) if n else 0.0,
+        "by_specialty": spec_rows,
+        "top_bad_icd": top_bad_icd,
+    }
+
+
+_SORT_FIELDS = {
+    "overall": "overall_pct",
+    "date": "date",
+    "p0": "p0",
+    "n_findings": "n_findings",
+    "documentation": "axis_documentation",
+    "concordance": "axis_concordance",
+    "safety": "axis_safety",
+    "regulatory": "axis_regulatory",
+}
+
+
+def build_kz_cases_view(
+    *,
+    month: str | None = None,
+    page: int = 1,
+    page_size: int = 50,
+    sort_by: str = "overall",
+    sort_dir: str = "asc",
+    **filters: Any,
+) -> dict[str, Any]:
+    """Таблица КЗ с deep-скором: фильтры по всем столбцам + facets + агрегат под фильтр."""
+    month_s = (month or "").strip() or "2026-07"
+    cases, path = load_kz_cases(month=month_s)
+    if not cases:
+        return {
+            "ok": False,
+            "available": False,
+            "error": "cases_not_found",
+            "hint_ru": (
+                "Нет kz_l1_*_cases.jsonl с deep-блоком. Запустите батч с --deep-eval "
+                "(или --deep-only) и положите cases.jsonl рядом с summary."
+            ),
+            "month": month_s,
+        }
+    csv_by_visit = _load_csv_by_visit_cached(month_s)
+    records = [_flat_case(c, csv_by_visit.get(str(c.get("visit_id") or ""))) for c in cases]
+
+    facets = _facets(records)
+
+    flt = _apply_preset({k: v for k, v in filters.items() if v not in (None, "")})
+    filtered = [r for r in records if _match_filters(r, flt)]
+
+    field = _SORT_FIELDS.get(sort_by, "overall_pct")
+    reverse = str(sort_dir or "asc").lower() == "desc"
+
+    def _key(r: dict[str, Any]):
+        v = r.get(field)
+        if isinstance(v, (int, float)):
+            return (0, v)
+        if field == "date":
+            return (0, str(v or ""))
+        return (1, 0)
+
+    filtered.sort(key=_key, reverse=reverse)
+
+    agg = _filtered_agg(filtered)
+
+    page = max(1, int(page or 1))
+    page_size = max(1, min(200, int(page_size or 50)))
+    total = len(filtered)
+    n_pages = max(1, (total + page_size - 1) // page_size)
+    start = (page - 1) * page_size
+    rows = filtered[start:start + page_size]
+
+    return {
+        "ok": True,
+        "available": True,
+        "month": month_s,
+        "source_path": path,
+        "n_total_cases": len(records),
+        "total": total,
+        "page": page,
+        "page_size": page_size,
+        "n_pages": n_pages,
+        "rows": rows,
+        "facets": facets,
+        "filtered_agg": agg,
+        "applied_filters": flt,
+        "sort_by": sort_by,
+        "sort_dir": "desc" if reverse else "asc",
+    }
+
+
+def _available_months() -> list[str]:
+    months: set[str] = set()
+    dirs = [
+        ROOT / "data" / "ml" / "reports" / "deep_eval",
+        Path("/var/data/mis_protocol"),
+        ROOT / "data" / "mis_protocol",
+    ]
+    for d in dirs:
+        if not d.is_dir():
+            continue
+        for p in d.glob("kz_l1_*_summary.json"):
+            mm = re.search(r"kz_l1_(\d{4}-\d{2})_summary\.json", p.name)
+            if mm:
+                months.add(mm.group(1))
+        for p in d.glob("kz_l1_*_cases.jsonl"):
+            mm = re.search(r"kz_l1_(\d{4}-\d{2})_cases\.jsonl", p.name)
+            if mm:
+                months.add(mm.group(1))
+    return sorted(months)
+
+
+def build_kz_case_detail(*, month: str | None = None, visit_id: str) -> dict[str, Any]:
+    """Полный deep-разбор одного КЗ (экран B §7Б.4): оси, находки, block_scores."""
+    month_s = (month or "").strip() or "2026-07"
+    vid = str(visit_id or "").strip()
+    if not vid:
+        return {"ok": False, "error": "empty_visit_id"}
+    cases, path = load_kz_cases(month=month_s)
+    case = next((c for c in cases if str(c.get("visit_id") or "") == vid), None)
+    if case is None:
+        return {"ok": False, "error": "visit_not_found", "month": month_s, "visit_id": vid}
+    csv_by_visit = _load_csv_by_visit_cached(month_s)
+    rec = _flat_case(case, csv_by_visit.get(vid))
+    deep = case.get("deep") or {}
+    findings = [f for f in (deep.get("findings") or []) if isinstance(f, dict)]
+    sev_order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+    findings.sort(key=lambda f: (sev_order.get(f.get("severity"), 9), bool(f.get("passed"))))
+    return {
+        "ok": True,
+        "month": month_s,
+        "visit_id": vid,
+        "source_path": path,
+        "record": rec,
+        "axes": deep.get("axes") or {},
+        "deep_overall_pct": deep.get("overall_pct"),
+        "deep_status": deep.get("status"),
+        "n_by_severity": deep.get("n_by_severity") or {},
+        "has_potential_harm": bool(deep.get("has_potential_harm")),
+        "protocol_used": bool(deep.get("protocol_used")),
+        "findings": findings,
+        "block_scores": case.get("block_scores") or {},
+        "reg55": deep.get("reg55") or {},
+    }
+
+
+def _load_summary_prefer_deep(month: str) -> dict[str, Any] | None:
+    """Summary, предпочитая тот, где есть deep_eval (deep_eval-dir важнее для §7Б)."""
+    name = f"kz_l1_{month}_summary.json"
+    paths = [
+        ROOT / "data" / "ml" / "reports" / "deep_eval" / name,
+        Path("/var/data/mis_protocol") / name,
+        ROOT / "data" / "mis_protocol" / name,
+    ]
+    fallback: dict[str, Any] | None = None
+    for p in paths:
+        if not p.is_file():
+            continue
+        try:
+            data = json.loads(p.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        data = dict(data)
+        data["_source_path"] = str(p)
+        if data.get("deep_eval"):
+            return data
+        if fallback is None:
+            fallback = data
+    return fallback
+
+
+def build_kz_dynamics(*, months: list[str] | None = None) -> dict[str, Any]:
+    """Динамика deep-оценки по месяцам (для линий/спарклайнов дашборда)."""
+    ms = months or _available_months()
+    series: list[dict[str, Any]] = []
+    for m in ms:
+        summary = _load_summary_prefer_deep(m)
+        if not summary:
+            continue
+        deep = summary.get("deep_eval") or {}
+        n = deep.get("n") or summary.get("n_cases") or 0
+        sev = deep.get("severity_totals") or {}
+        p0 = int(sev.get("P0", 0) or 0)
+        axis_means = deep.get("axis_means") or {}
+        status_dist = deep.get("status_distribution") or {}
+        overall_vals = [v for v in axis_means.values() if isinstance(v, (int, float))]
+        series.append({
+            "month": m,
+            "n": n,
+            "avg_overall": round(sum(overall_vals) / len(overall_vals), 1) if overall_vals else summary.get("avg_overall_pct"),
+            "axis_means": axis_means,
+            "p0": p0,
+            "p0_per_100": round(100 * p0 / n, 2) if n else 0.0,
+            "n_potential_harm": deep.get("n_potential_harm"),
+            "status_distribution": status_dist,
+            "has_deep": bool(deep),
+        })
+    return {
+        "ok": True,
+        "available": bool(series),
+        "months": [s["month"] for s in series],
+        "series": series,
     }
 
 

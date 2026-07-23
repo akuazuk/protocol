@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов с туберкулезом и латентной туберкулезной инфекцией",
+    "title": "Диагностика и лечение пациентов с туберкулезом (взрослое и детское население)",
     "url": null,
     "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "tuberculosis_and_latent_tb_infection",
-      "name": "Туберкулез и латентная туберкулезная инфекция",
+      "condition_id": "tuberculosis",
+      "name": "Туберкулез",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -43,42 +43,952 @@
         "A18",
         "A19",
         "B90",
-        "I32.0",
-        "I39.8",
         "J65",
-        "N29.1",
-        "N51",
-        "N74.0"
+        "P37.0",
+        "R76.1",
+        "Z03.0",
+        "Z11.1",
+        "Z20.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Наличие продуктивного или сухого кашля более 3 недель, кровохарканья, болей в грудной клетке",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие продуктивного или сухого кашля более 3 недель, кровохарканья, болей в грудной клетке"
+            }
+          },
+          {
+            "text": "Симптомы интоксикации длительностью более 3 недель (повышение температуры, слабость, ночная потливость, потеря массы тела)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Симптомы интоксикации длительностью более 3 недель (повышение температуры, слабость, ночная потливость, потеря массы тела)"
+            }
+          },
+          {
+            "text": "Микробиологическое подтверждение туберкулеза (выявление КУБ, ДНК МБТ или роста микобактерий)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Микробиологическое подтверждение туберкулеза (выявление КУБ, ДНК МБТ или роста микобактерий)"
+            }
+          },
+          {
+            "text": "Абациллирование при ЛЧ-ТБ: получение отрицательных результатов бактериоскопии и/или посева (2 последовательных образца)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Абациллирование при ЛЧ-ТБ: получение отрицательных результатов бактериоскопии и/или посева (2 последовательных образца)"
+            }
+          },
+          {
+            "text": "ЛЧ-ТБ: подтвержденное наличие МБТ с сохраненной чувствительностью к изониазиду, рифампицину, этамбутолу, пиразинамиду",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ЛЧ-ТБ: подтвержденное наличие МБТ с сохраненной чувствительностью к изониазиду, рифампицину, этамбутолу, пиразинамиду"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [
         {
-          "text": "Направление ребенка на консультацию к врачу-фтизиатру требует подготовки ряда документов и сведений.",
-          "timing": null,
+          "name": "Экспресс-диагностика молекулярным тестом (Xpert MTB/RIF, LPA, Xpert XDR)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
           "required_if": [],
+          "timing": null,
+          "comment": null,
           "source_ref": {
             "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
             "document_url": null,
             "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
-            "page_start": null,
+            "page_start": 6,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Направление ребенка на консультацию к врачу-фтизиатру требует подготовки ряда документов и сведений."
+            "quote": "экспресс-диагностика с использованием молекулярного теста для одновременного обнаружения ДНК микобактерий туберкулезного комплекса и определения ЛЧ к R"
           }
         },
         {
-          "text": "Госпитализация пациентов с ТБ осуществляется при необходимости интенсивной медицинской помощи, круглосуточного наблюдения или эпидемической опасности.",
+          "name": "Микроскопическое исследование мазка мокроты на КУБ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "микроскопическое исследование мазка мокроты (другого биологического материала) для обнаружения КУБ проводится с целью выявления наиболее эпидемически опасных пациентов"
+          }
+        },
+        {
+          "name": "Посев мокроты (биологического материала) на МБТ (жидкие и плотные среды)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "посев мокроты (другого биологического материала) на МБТ: используется метод посева на жидкие питательные среды в автоматизированной системе, а также плотные питательные среды."
+          }
+        },
+        {
+          "name": "Определение концентрации креатинина в сыворотке крови, расчет СКФ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 41,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение концентрации креатинина в сыворотке крови, определение (расчет) СКФ"
+          }
+        },
+        {
+          "name": "Определение уровня АлАТ, АсАТ, билирубина, ЩФ, ГГТП",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 41,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Определение уровня АлАТ, АсАТ, билирубина, ЩФ, гамма-глутамилтранспептидазы (далее – ГГТП)"
+          }
+        },
+        {
+          "name": "Рентгенография ОГК",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "рентгенография ОГК;"
+          }
+        },
+        {
+          "name": "Молекулярно-генетические исследования (Xpert MTB/RIF, LPA)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "молекулярно-генетические исследования биологического материала: мокроты, плевральной жидкости... методами Xpert MTB/RIF, LPA к H и R"
+          }
+        },
+        {
+          "name": "Бактериоскопия биологического материала на КУБ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "бактериоскопия биологического материала на КУБ: мокроты, плевральной жидкости, биопсийного и (или) операционного, другого материала"
+          }
+        },
+        {
+          "name": "Микробиологическое исследование посевом на жидкие и плотные среды",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "микробиологическое исследование биологического материала... посевом на жидкие питательные среды... посевом на плотные питательные среды;"
+          }
+        },
+        {
+          "name": "ТЛЧ МБТ к ПТЛП первой и второй линии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "проведение ТЛЧ МБТ к ПТЛП первой и (или) второй линии;"
+          }
+        },
+        {
+          "name": "Иммунологическая диагностика (ТКП или кожная проба)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "иммунологическая диагностика: ТКП с 2ТЕ аллергена туберкулезного очищенного в стандартном разведении или кожная проба с аллергеном туберкулезным рекомбинантным;"
+          }
+        },
+        {
+          "name": "Иммунологические диагностические тесты (кожные тесты)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При направлении ребенка на консультацию к врачу-фтизиатру необходимо иметь: ... результаты иммунологических диагностических тестов (кожных тестов)"
+          }
+        },
+        {
+          "name": "Клинико-лабораторные исследования",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "данные клинико-лабораторных исследований и иных"
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Определение уровня лактата",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 41,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "По медицинским показаниям в период приема Lzd и (или) АРТ"
+          }
+        },
+        {
+          "name": "Определение Mg2+, Ca2+ в сыворотке крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 46,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Каждые 3 месяца при назначении одновременно Pto (Eto) и PAS, каждые 6 месяцев при назначении Pto (Eto) или PAS"
+          }
+        },
+        {
+          "name": "Мультиспиральная компьютерная томография ОГК",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 46,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Назначается врачебным консилиумом при: наличии (подозрении) прогрессирования ТБ; отсутствии положительной динамики на рентгенограмме; показаниях к хирургическому лечению ТБ органов дыхания"
+          }
+        },
+        {
+          "name": "МСКТ ОГК (у детей)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "мультиспиральная компьютерная томография (далее – МСКТ) ОГК (у детей);"
+          }
+        },
+        {
+          "name": "Спинно-мозговая пункция (при ТБ нервной системы)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "спинно-мозговая пункция (далее – СМП) (при ТБ нервной системы (А17));"
+          }
+        },
+        {
+          "name": "Рентгеновский архив ребенка",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "рентгеновский архив ребенка на пленочном и (или) электронном носителях (при наличии)"
+          }
+        },
+        {
+          "name": "Гистологические препараты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 9,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "гистологические препараты (при наличии)"
+          }
+        }
+      ],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Хирургическое (оперативное) лечение туберкулеза органов дыхания по показаниям",
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое (оперативное) лечение туберкулеза органов дыхания по показаниям"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Lzd (Линезолид)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Доза не указана в фрагменте текста (упоминается в связи с контролем лактата)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 41,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "По медицинским показаниям в период приема Lzd и (или) АРТ"
+            }
+          },
+          {
+            "drug_name": "Pto (Протионамид) / Eto (Этионамид)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Доза не указана в фрагменте текста (упоминается в связи с контролем электролитов)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 46,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Каждые 3 месяца при назначении одновременно Pto (Eto) и PAS, каждые 6 месяцев при назначении Pto (Eto) или PAS"
+            }
+          },
+          {
+            "drug_name": "PAS (Аминосалициловая кислота / ПАСК)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Доза не указана в фрагменте текста (упоминается в связи с контролем электролитов)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 46,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Каждые 3 месяца при назначении одновременно Pto (Eto) и PAS, каждые 6 месяцев при назначении Pto (Eto) или PAS"
+            }
+          },
+          {
+            "drug_name": "Изониазид (H)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "не указана",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 3,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "противотуберкулезным лекарственным препаратам (далее – ПТЛП) изониазиду (далее – H)"
+            }
+          },
+          {
+            "drug_name": "Рифампицин (R)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "не указана",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 3,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "рифампицину (далее – R)"
+            }
+          },
+          {
+            "drug_name": "Этамбутол (E)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "не указана",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 3,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "этамбутолу (далее – E)"
+            }
+          },
+          {
+            "drug_name": "Пиразинамид (Z)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "не указана",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 3,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "пиразинамиду (далее – Z)"
+            }
+          },
+          {
+            "drug_name": "Пиридоксин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Профилактическая доза при H — 10–25 мг в день; при Cs и Lzd — 50–100 мг ежедневно; детям — 1–2 мг/кг в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+              "page_start": 24,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Для медицинской профилактики неврологических НЯ, вызванных Cs, H, Lzd, пациентам назначается пиридоксин в таблетках."
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Ежемесячный биохимический контроль (креатинин, СКФ, АлАТ, АсАТ, билирубин, ЩФ, ГГТП) с интервалом 30 дней на протяжении химиотерапии",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ежемесячный биохимический контроль (креатинин, СКФ, АлАТ, АсАТ, билирубин, ЩФ, ГГТП) с интервалом 30 дней на протяжении химиотерапии"
+          }
+        },
+        {
+          "text": "Мониторинг бактериовыделения для определения негативации мокроты и даты абациллирования",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Мониторинг бактериовыделения для определения негативации мокроты и даты абациллирования"
+          }
+        },
+        {
+          "text": "Контроль Mg2+ и Ca2+ каждые 3–6 месяцев при приеме Pto (Eto) и PAS",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль Mg2+ и Ca2+ каждые 3–6 месяцев при приеме Pto (Eto) и PAS"
+          }
+        },
+        {
+          "text": "Контрольное обследование через 30 дней от начала лечения ТБ всех локализаций",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контрольное обследование через 30 дней от начала лечения ТБ всех локализаций"
+          }
+        },
+        {
+          "text": "Ежемесячная визометрия при ТБ глаза (А18.5)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ежемесячная визометрия при ТБ глаза (А18.5)"
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Направление пациента в противотуберкулезную организацию здравоохранения при обнаружении КУБ в мокроте",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -91,24 +1001,200 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Госпитализация пациентов с ТБ осуществляется при необходимости интенсивной медицинской помощи, круглосуточного наблюдения или эпидемической опасности."
+            "quote": "Направление пациента в противотуберкулезную организацию здравоохранения при обнаружении КУБ в мокроте"
+          }
+        },
+        {
+          "text": "Установление диагноза врачом-фтизиатром (доказанные случаи ЛЧ-ТБ, ЛТБИ) или врачебным консилиумом (случаи РУ-ТБ и ТБ без бактериовыделения)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Установление диагноза врачом-фтизиатром (доказанные случаи ЛЧ-ТБ, ЛТБИ) или врачебным консилиумом (случаи РУ-ТБ и ТБ без бактериовыделения)"
+          }
+        },
+        {
+          "text": "Врач общей практики / врач-специалист при подозрении на ТБ направляет пациента на консультацию к врачу-фтизиатру",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Врач общей практики / врач-специалист при подозрении на ТБ направляет пациента на консультацию к врачу-фтизиатру"
+          }
+        },
+        {
+          "text": "Подтверждение или исключение диагноза ТБ проводится в противотуберкулезных организациях здравоохранения",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Подтверждение или исключение диагноза ТБ проводится в противотуберкулезных организациях здравоохранения"
+          }
+        },
+        {
+          "text": "Детей с трудно поддающимися лечению заболеваниями костно-суставной системы или неясными лимфаденопатиями консультирует врач-фтизиатр",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Детей с трудно поддающимися лечению заболеваниями костно-суставной системы или неясными лимфаденопатиями консультирует врач-фтизиатр"
+          }
+        },
+        {
+          "text": "Направление ребенка на консультацию к врачу-фтизиатру с предоставлением анамнеза, прививочных данных, кожных тестов, архива рентген-снимков и выписок (амбулаторно)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Направление ребенка на консультацию к врачу-фтизиатру с предоставлением анамнеза, прививочных данных, кожных тестов, архива рентген-снимков и выписок (амбулаторно)"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Обнаружение КУБ в мокроте (высокий риск эпидемической опасности)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При обнаружении КУБ в мокроте пациент направляется на консультацию и (или) лечение в противотуберкулезную организацию здравоохранения"
+          }
+        },
+        {
+          "text": "Кровохарканье",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "респираторных симптомов (продуктивный либо сухой кашель более 3 недель, кровохарканье, боли в грудой клетке, связанные с дыханием)"
+          }
+        },
+        {
+          "text": "Рассогласование результатов ТЛЧ к рифампицину между молекулярно-генетическими и фенотипическими методами",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Если результаты ТЛЧ к R, определенные молекулярно-генетическими методами, не совпадают с фенотипическими методами, проводится анализ причин и при необходимости исследования повторяются."
+          }
+        },
+        {
+          "text": "Продолжение или возобновление бактериовыделения, подозрение на расширение лекарственной устойчивости",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 12,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "в случае продолжения, возобновления бактериовыделения, подозрения на развитие (расширение) устойчивости по запросу врача-специалиста на протяжении всего курса лечения"
+          }
+        },
+        {
+          "text": "Возникшие заболевания, состояния и (или) обострения хронических заболеваний, представляющие угрозу для жизни и (или) здоровья",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "infektsionnye_zabolevaniya_кп_диагностика_и_лечение_пациентов_с_туберкулезом_взр",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_и_лечение_пациентов_с_туберкулезом_взр_и_детс_население_пост_МЗ_16.12.2022_118.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "возникшие у пациента с ТБ заболевания, состояния и (или) обострения хронических заболеваний, представляющие угрозу для жизни и (или) здоровья пациента"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10"
-        ],
-        "should_have": [],
-        "conditional": [
-          "Маршрутизация: Направление ребенка на консультацию к врачу-фтизиатру требует подготовки ряда документов… (по показаниям)",
-          "Маршрутизация: Госпитализация пациентов с ТБ осуществляется при необходимости интенсивной медицинской по… (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -116,20 +1202,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:07:41.528718+00:00",
+    "extracted_at": "2026-07-23T08:06:41.103663+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-20T16:07:41.529115+00:00"
+    "validated_at": "2026-07-23T08:06:41.133483+00:00"
   }
 }

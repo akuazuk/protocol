@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Доброкачественные новообразования слюнных желез
+  title: ДНО слюнных желез
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
   document_sha256: null
@@ -48,7 +48,7 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: медленный рост образования
+    - text: Медленный рост образования
       logic_group: null
       operator: unknown
       values: []
@@ -65,8 +65,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: медленный рост образования
-    - text: наличие одиночного смещаемого образования по отношению к подлежащим тканям
+        quote: Медленный рост образования
+    - text: Наличие одиночного смещаемого образования по отношению к подлежащим тканям
         в толще слизистой оболочки полости рта, спаянного со слизистой оболочкой
       logic_group: null
       operator: unknown
@@ -84,9 +84,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: наличие одиночного смещаемого образования по отношению к подлежащим
+        quote: Наличие одиночного смещаемого образования по отношению к подлежащим
           тканям в толще слизистой оболочки полости рта, спаянного со слизистой оболочкой
-    - text: регионарные лимфатические узлы не увеличены
+    - text: Регионарные лимфатические узлы не увеличены
       logic_group: null
       operator: unknown
       values: []
@@ -103,8 +103,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: регионарные лимфатические узлы не увеличены
-    - text: затруднение при приеме пищи, разговоре (при локализации новообразования
+        quote: Регионарные лимфатические узлы не увеличены
+    - text: Затруднение при приеме пищи, разговоре (при локализации новообразования
         в области твердого неба)
       logic_group: null
       operator: unknown
@@ -122,9 +122,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: затруднение при приеме пищи, разговоре (при локализации новообразования
+        quote: Затруднение при приеме пищи, разговоре (при локализации новообразования
           в области твердого неба)
-    - text: окружающие новообразование ткани не изменены
+    - text: Окружающие новообразование ткани не изменены
       logic_group: null
       operator: unknown
       values: []
@@ -141,7 +141,45 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: окружающие новообразование ткани не изменены
+        quote: Окружающие новообразование ткани не изменены
+    - text: Наличие объемного патологического процесса (узлового образования) в слюнной
+        железе
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп1_дно_слюнных_желез
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие объемного патологического процесса (узлового образования) в
+          слюнной железе
+    - text: Гистологическая верификация новообразования
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп1_дно_слюнных_желез
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гистологическая верификация новообразования
     optional: []
     exclusion: []
   required_exams:
@@ -165,8 +203,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: обязательные и дополнительные инструментальные диагностические исследования
-        ... проводятся на догоспитальном этапе.
+      quote: обязательные и дополнительные инструментальные диагностические исследования,
+        цитологическое исследование пунктата, врачебные консультации врача-онколога
   - name: Цитологическое исследование пунктата
     aliases: []
     exam_type: unknown
@@ -187,8 +225,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: цитологическое исследование пунктата ... проводятся на догоспитальном
-        этапе.
+      quote: обязательные и дополнительные инструментальные диагностические исследования,
+        цитологическое исследование пунктата, врачебные консультации врача-онколога
   - name: Консультация врача-онколога
     aliases: []
     exam_type: unknown
@@ -209,12 +247,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: врачебные консультации врача-онколога ... проводятся на догоспитальном
-        этапе.
-  - name: Консультация врачей-специалистов по сопутствующей патологии
+      quote: врачебные консультации врача-онколога и врачей-специалистов по профилю
+        сопутствующей патологи проводятся на догоспитальном этапе.
+  conditional_exams:
+  - name: Консультации врачей-специалистов по профилю сопутствующей патологии
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -231,12 +270,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: врачебные консультации ... врачей-специалистов по профилю сопутствующей
-        патологи проводятся на догоспитальном этапе.
-  conditional_exams: []
+      quote: врачебные консультации врача-онколога и врачей-специалистов по профилю
+        сопутствующей патологи проводятся на догоспитальном этапе.
   treatment:
     non_drug:
-    - text: Воздержание от чрезмерных физических нагрузок в период лечения.
+    - text: Воздерживаться от чрезмерных физических нагрузок в период лечения
       source_ref:
         protocol_id: stomatologiya_кп1_дно_слюнных_желез
         document_url: null
@@ -247,8 +285,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Воздержание от чрезмерных физических нагрузок в период лечения.
-    - text: Хирургическое удаление новообразования в пределах здоровых тканей.
+        quote: Воздерживаться от чрезмерных физических нагрузок в период лечения
+    - text: Хирургическое удаление новообразования малой слюнной железы в пределах
+        здоровых тканей
       source_ref:
         protocol_id: stomatologiya_кп1_дно_слюнных_желез
         document_url: null
@@ -259,13 +298,86 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое удаление новообразования в пределах здоровых тканей.
+        quote: Хирургическое удаление новообразования малой слюнной железы в пределах
+          здоровых тканей
+    - text: Экстирпация околоушной железы без сохранения лицевого нерва (при тотальном
+        поражении железы)
+      source_ref:
+        protocol_id: stomatologiya_кп1_дно_слюнных_желез
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экстирпация околоушной железы без сохранения лицевого нерва (при тотальном
+          поражении железы)
+    - text: Удаление новообразования с одномоментным восстановлением анатомической
+        целостности ветвей лицевого нерва (нейрорафия)
+      source_ref:
+        protocol_id: stomatologiya_кп1_дно_слюнных_желез
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление новообразования с одномоментным восстановлением анатомической
+          целостности ветвей лицевого нерва (нейрорафия)
+    - text: Удаление новообразования с одномоментной микрохирургической нейропластикой
+        лицевого нерва
+      source_ref:
+        protocol_id: stomatologiya_кп1_дно_слюнных_желез
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление новообразования с одномоментной микрохирургической нейропластикой
+          лицевого нерва
+    - text: Удаление новообразования с одномоментной контурной пластикой мягкотканного
+        послеоперационного дефекта
+      source_ref:
+        protocol_id: stomatologiya_кп1_дно_слюнных_желез
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление новообразования с одномоментной контурной пластикой мягкотканного
+          послеоперационного дефекта
+    - text: Удаление новообразования малой слюнной железы при больших его размерах
+        в области губ и щеки с реконструктивно-пластическим компонентом
+      source_ref:
+        protocol_id: stomatologiya_кп1_дно_слюнных_желез
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Удаление новообразования малой слюнной железы при больших его размерах
+          в области губ и щеки с реконструктивно-пластическим компонентом
     drug_groups: []
     drugs:
     - drug_name: Артикаин/Эпинефрин
       active_substance: null
       drug_group: null
-      dose_text: до 7 мг на 1 кг массы тела при одной лечебной процедуре
+      dose_text: Раствор для инъекций (40 мг + 0,005 мг)/мл, (40 мг + 0,006 мг)/мл,
+        (40 мг + 0,010 мг)/мл, (40 мг + 0,012 мг)/мл. Взрослым при одной процедуре
+        до 7 мг артикаина на 1 кг массы тела
       frequency_text: null
       duration_text: null
       route: null
@@ -288,8 +400,8 @@ conditions:
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: индивидуально, в наименьшей концентрации и дозе; максимальная доза
-        для взрослых не должна превышать 300 мг
+      dose_text: Раствор для инъекций 10 мг/мл или 20 мг/мл. Максимальная доза для
+        взрослых не должна превышать 300 мг
       frequency_text: null
       duration_text: null
       route: null
@@ -307,15 +419,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Режим дозирования устанавливают индивидуально, в зависимости от вида
-          анестезии и места введения. Максимальная доза для взрослых не должна превышать
-          300 мг.
-    - drug_name: Производные имидазола
+        quote: Максимальная доза для взрослых не должна превышать 300 мг
+    - drug_name: Производные имидазола (J01XD)
       active_substance: null
       drug_group: null
-      dose_text: начальная доза может быть увеличена до 400 мг 3 раза в сутки; при
-        достижении эффекта суточную дозу ЛП уменьшают до 600–800 мг; максимальная
-        суточная доза 1200 мг
+      dose_text: Доза может быть увеличена до 400 мг 3 раза в сутки, при достижении
+        эффекта снижают до 600–800 мг/сутки. Максимальная суточная доза 1200 мг. Длительность
+        3–5 дней
       frequency_text: null
       duration_text: null
       route: null
@@ -333,14 +443,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Для быстрого терапевтического эффекта доза может быть увеличена до
-          400 мг 3 раза в сутки. При достижении эффекта суточную дозу ЛП уменьшают
-          до 600–800 мг. Максимальная суточная доза 1200 мг.
+        quote: Для достижения быстрого терапевтического эффекта доза может быть увеличена
+          до 400 мг 3 раза в сутки.
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 5–10 мл раствора 2–3 раза в сутки местно для инстилляции и ирригации
-        ран
+      dose_text: Раствор 0,5 мг/мл. Местно для инстилляции и ирригации по 5–10 мл
+        раствора 2–3 раза в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -364,8 +473,8 @@ conditions:
     surgery: []
     source_refs: []
   follow_up:
-  - text: 'Медицинское наблюдение врачом-стоматологом-хирургом: 1 раз в 6 месяцев
-      в течение 1 года, затем 1 раз в год в течение 3 лет.'
+  - text: Медицинское наблюдение осуществляет врач-стоматолог-хирург в амбулаторных
+      условиях 1 раз в 6 месяцев в течение первого года после лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -379,10 +488,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Медицинское наблюдение врачом-стоматологом-хирургом: 1 раз в 6 месяцев
-        в течение 1 года, затем 1 раз в год в течение 3 лет.'
-  - text: При выздоровлении и отсутствии осложнений дальнейшее медицинское наблюдение
-      не требуется.
+      quote: Медицинское наблюдение осуществляет врач-стоматолог-хирург в амбулаторных
+        условиях 1 раз в 6 месяцев в течение первого года после лечения
+  - text: Медицинское наблюдение осуществляет врач-стоматолог-хирург 1 раз в год в
+      последующем в течение 3 лет
     timing: null
     required_if: []
     expected_actions: []
@@ -396,12 +505,29 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При выздоровлении и отсутствии осложнений дальнейшее медицинское наблюдение
-        не требуется.
+      quote: Медицинское наблюдение осуществляет врач-стоматолог-хирург 1 раз в год
+        в последующем в течение 3 лет
+  - text: При выздоровлении и отсутствии осложнений пациент в дальнейшем медицинском
+      наблюдении не нуждается
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_кп1_дно_слюнных_желез
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При выздоровлении и отсутствии осложнений пациент в дальнейшем медицинском
+        наблюдении не нуждается
   hospitalization: []
   routing:
-  - text: Госпитализация (стационар) для лечения доброкачественных новообразований
-      слюнных желез.
+  - text: Лечение пациентов с доброкачественным новообразованием слюнных желез проводится
+      в стационарных условиях
     timing: null
     required_if: []
     source_ref:
@@ -414,10 +540,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация (стационар) для лечения доброкачественных новообразований
-        слюнных желез.
-  - text: Амбулаторное лечение для новообразований малых слюнных желез размером до
-      1 см.
+      quote: Лечение пациентов с доброкачественным новообразованием слюнных желез
+        проводится в стационарных условиях
+  - text: Лечение пациентов с новообразованиями малых слюнных желез размерами до 1
+      см проводится в амбулаторных условиях
     timing: null
     required_if: []
     source_ref:
@@ -430,9 +556,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторное лечение для новообразований малых слюнных желез размером
-        до 1 см.
-  - text: госпитализация
+      quote: Лечение пациентов с новообразованиями малых слюнных желез размерами до
+        1 см проводится в амбулаторных условиях
+  - text: Обязательные и дополнительные диагностические исследования и консультации
+      специалистов проводятся на догоспитальном этапе
     timing: null
     required_if: []
     source_ref:
@@ -445,29 +572,27 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  red_flags:
-  - text: Необходимость дифференциальной диагностики со злокачественным новообразованием
-      слюнных желез.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
+      quote: Обязательные и дополнительные диагностические исследования и консультации
+        специалистов проводятся на догоспитальном этапе
+  - text: 'Госпитализация в стационарные условия: для пациентов с доброкачественным
+      новообразованием малой слюнной железы при больших его размерах в области губ
+      и щеки (с реконструктивно-пластическим компонентом)'
+    timing: null
+    required_if: []
     source_ref:
       protocol_id: stomatologiya_кп1_дно_слюнных_желез
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/КП1_ДНО_слюнных_желез.pdf
-      page_start: 5
+      page_start: null
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: На основании проведенных диагностических мероприятий проводят дифференциальную
-        диагностику доброкачественного новообразования больших слюнных желез со злокачественным
-        новообразованием, фибромой, кистой слюнной железы, сиалоденитом, сиалозом,
-        слюннокаменной болезнью.
+      quote: 'Госпитализация в стационарные условия: для пациентов с доброкачественным
+        новообразованием малой слюнной железы при больших его размерах в области губ
+        и щеки (с реконструктивно-пластическим компонентом'
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
@@ -476,7 +601,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:23:05.950652+00:00'
+  extracted_at: '2026-07-23T10:11:33.980528+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -487,4 +612,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:23:05.957609+00:00'
+  validated_at: '2026-07-23T10:11:33.987048+00:00'

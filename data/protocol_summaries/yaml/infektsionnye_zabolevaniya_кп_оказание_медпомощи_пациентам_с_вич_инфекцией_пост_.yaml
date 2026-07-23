@@ -20,7 +20,6 @@ rubric:
 applicability:
   population:
   - adult_and_child
-  - pregnant
   age_min_years: null
   age_max_years: null
   sex: unknown
@@ -28,14 +27,12 @@ applicability:
   care_setting: []
 conditions:
 - condition_id: hiv_infection
-  name: Инфекция, вызванная вирусом иммунодефицита человека
+  name: ВИЧ-инфекция
   synonyms: []
   abbreviations: []
   icd10_codes:
   - B20
-  - B21
-  - B22
-  - B23
+  - B20.8
   - B24
   condition_applicability: null
   diagnosis_structure: null
@@ -43,7 +40,7 @@ conditions:
   diagnostic_criteria:
     required:
     - text: Установление диагноза врачом-инфекционистом на основании эпидемиологических,
-        клинических и лабораторных данных.
+        клинических и лабораторных данных
       logic_group: null
       operator: unknown
       values: []
@@ -61,68 +58,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Установление диагноза врачом-инфекционистом на основании эпидемиологических,
-          клинических и лабораторных данных.
-    - text: Указание стадии заболевания, а также заболевания и (или) состояния, характеризующего
-        стадию, в соответствии с классификациями.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Указание стадии заболевания, а также заболевания и (или) состояния,
-          характеризующего стадию, в соответствии с классификациями.
-    - text: Указание количества CD4+ лимфоцитов и ВН ВИЧ с датой их последнего определения.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Указание количества CD4+ лимфоцитов и ВН ВИЧ с датой их последнего
-          определения.
-    - text: Указание терапевтической ремиссии или вирусологической неудачи лечения,
-        а также указание на отрыв от лечения (при наличии).
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Указание терапевтической ремиссии или вирусологической неудачи лечения,
-          а также указание на отрыв от лечения (при наличии).
+          клинических и лабораторных данных
     - text: Подтверждение ВИЧ-положительного статуса по результатам диагностического
-        тестирования на ВИЧ-инфекцию.
+        тестирования
       logic_group: null
       operator: unknown
       values: []
@@ -140,10 +78,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Подтверждение ВИЧ-положительного статуса по результатам диагностического
-          тестирования на ВИЧ-инфекцию.
-    - text: 'Подозрение на первичную ВИЧ-инфекцию: эпидемиологические данные (контакт
-        с высоким риском заражения <6 недель) или клинические проявления острого ретровирусного
-        синдрома.'
+          тестирования
+    - text: Указание в диагнозе стадии заболевания, CD4+ лимфоцитов, ВН ВИЧ и наличия
+        ремиссии или вирусологической неудачи
       logic_group: null
       operator: unknown
       values: []
@@ -160,105 +97,70 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Подозрение на первичную ВИЧ-инфекцию: эпидемиологические данные (контакт
-          с высоким риском заражения <6 недель) или клинические проявления острого
-          ретровирусного синдрома.'
+        quote: Указание в диагнозе стадии заболевания, CD4+ лимфоцитов, ВН ВИЧ и наличия
+          ремиссии или вирусологической неудачи
+    - text: Подозрение на первичную ВИЧ-инфекцию при наличии эпидемиологического контакта
+        (<6 недель) или симптомов острого ретровирусного синдрома
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Подозрение на первичную ВИЧ-инфекцию при наличии эпидемиологического
+          контакта (<6 недель) или симптомов острого ретровирусного синдрома
+    - text: Вирусологическая неудача лечения на фоне проводимой АРТ
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Вирусологическая неудача лечения на фоне проводимой АРТ
+    - text: Определение медицинских показаний к ПрЭП путем интервьюирования о наличии
+        факторов высокого риска инфицирования ВИЧ за последние 6 месяцев
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение медицинских показаний к ПрЭП путем интервьюирования о наличии
+          факторов высокого риска инфицирования ВИЧ за последние 6 месяцев
     optional: []
     exclusion: []
   required_exams:
-  - name: Скрининговое тестирование на ВИЧ-инфекцию
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Обязательному направлению на скрининговое тестирование на ВИЧ-инфекцию
-        по эпидемическим и клиническим показаниям подлежат контингенты населения при
-        наличии клинических показаний...
-  - name: Заполнение направления на исследование крови на вирусные инфекции и сифилис
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Перед проведением скринингового и диагностического тестирования на ВИЧ-инфекцию
-        заполняется направление на исследование крови на вирусные инфекции и сифилис
-        по форме, установленной Министерством здравоохранения.
-  - name: Диагностическое тестирование на ВИЧ-инфекцию (лабораторные методы)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Диагностическое тестирование на ВИЧ-инфекцию проводится медицинскими
-        работниками в лабораториях государственных организаций здравоохранения с применением
-        лабораторных методов исследования образцов крови.
-  - name: Повторное тестирование на ВИЧ (после скрининга или при клинических показаниях)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Забранная проба крови направляется в лабораторию на повторное тестирование.
-        Диагностическое тестирование назначается врачом-инфекционистом, иным врачом-специалистом
-        по результатам скрининга или при наличии клинических показаний.
-  - name: Качественные генетические молекулярные тесты ПЦР-ДНК-ВИЧ
+  - name: Скрининговое тестирование на ВИЧ-инфекцию (ИФА/ИХА)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -278,59 +180,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Диагностика ВИЧ-инфекции у ВИЧ-экспонированных детей в возрасте до 18
-        месяцев проводится с помощью качественных генетических молекулярных тестов
-        полимеразная цепная реакция – дезоксирибонуклеиновая кислота–ВИЧ (далее –
-        ПЦР-ДНК-ВИЧ.
-  - name: Лабораторное скрининговое тестирование на ВИЧ-инфекцию (ИФА/ИХА) для беременных
-      до 20 недель
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 8
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При постановке на учет по беременности до 20 недель беременные женщины
+      quote: при постановке на учет по беременности до 20 недель беременные женщины
         в обязательном порядке направляются на лабораторное скрининговое тестирование
-        на ВИЧ-инфекцию на выявление антител, антигена и (или) антигенов ВИЧ 1, 2
-        методом ИФА или ИХА.
-  - name: Дополнительное скрининговое тестирование на ВИЧ с применением экспресс-тестов
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: В случаях постановки на учет по беременности в сроке свыше 20 недель,
-        а также беременной с неизвестным ВИЧ-статусом при родовспоможении проводится
-        дополнительное скрининговое тестирование на ВИЧ-инфекцию с применением экспресс-тестов
-  - name: Определение ВН ВИЧ (лабораторный мониторинг АРТ)
+        на ВИЧ-инфекцию
+  - name: Определение вирусологической нагрузки (ВН ВИЧ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -366,17 +219,108 @@ conditions:
       protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
       document_url: null
       local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 13
+      page_start: 12
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
       quote: Результаты определения количества CD4+ лимфоцитов необходимы для установления
-        степени ВИЧ-ассоциированного иммунодефицита, назначения или прекращения профилактического
-        лечения ОИ.
+        степени ВИЧ-ассоциированного иммунодефицита
+  - name: Исследование вирусной нагрузки (ВН ВИЧ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: модификация схемы лечения производится только при неопределяемой ВН ВИЧ,
+        по результатам исследования, проведенного в течение последних 3 месяцев.
+  - name: Расчет клиренса креатинина по формуле Кокрофта-Голта перед назначением ПрЭП
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: подтверждаемое расчетным клиренсом креатинина (далее – КК) <60 мл/мин.
+        (по формуле Кокрофта-Голта) при планируемом использовании TDF и <30 мл/мин.
+        при планируемом использовании TAF.
   conditional_exams:
-  - name: Повторное скрининговое тестирование на ВИЧ для беременных
+  - name: ПЦР-ДНК-ВИЧ (качественные молекулярные тесты)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: выявление и подтверждение ВИЧ-инфекции у экспонированных детей в возрасте
+        до 18 месяцев проводится с помощью качественных генетических молекулярных
+        тестов
+  - name: Диагностическое тестирование на ВИЧ-инфекцию
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Диагностическое тестирование на ВИЧ-инфекцию назначается врачом-инфекционистом,
+        иным врачом-специалистом по результатам скринингового тестирования на ВИЧ-инфекцию
+        или при наличии клинических показаний
+  - name: Тест на выявление РНК ВИЧ или антител, антигена и (или) антигенов ВИЧ 1,
+      2 методом ИФА или ИХА
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -396,33 +340,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Повторное лабораторное скрининговое тестирование на ВИЧ-инфекцию беременных
-        женщин с отрицательным результатом при первом тестировании проводится в случаях,
-        определяемых Министерством здравоохранения
-  - name: Выявление РНК ВИЧ или антител, антигена и (или) антигенов ВИЧ 1, 2 методом
-      ИФА или ИХА
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При отрицательном или сомнительном результате скрининга на ВИЧ, выполняется
-        тест на выявление РНК ВИЧ или антител, антигена и (или) антигенов ВИЧ 1, 2
-        методом ИФА или ИХА.
+      quote: при отрицательном или сомнительном результате... выполняется также тест
+        на выявление РНК ВИЧ или антител, антигена и (или) антигенов ВИЧ 1, 2 методом
+        ИФА или ИХА.
   - name: Тест на резистентность ВИЧ
     aliases: []
     exam_type: unknown
@@ -443,13 +363,35 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Тест на резистентность ВИЧ выполняется по медицинским показаниям: вирусологическая
-        неудача лечения схемой АРТ первого, второго или третьего ряда; начало АРТ
-        при инфицировании от ЛЖВ с неэффективной АРТ.'
+      quote: 'Тест на резистентность ВИЧ выполняется по следующим медицинским показаниям:
+        вирусологическая неудача лечения схемой АРТ первого ряда...'
+  - name: Скрининговое тестирование на ВИЧ-инфекцию лица, с которым произошел контакт
+      (перед ПЭП)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 22
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: отрицательный результат скринингового тестирования на ВИЧ-инфекцию лица,
+        с которым произошел контакт, при отсутствии у него признаков острой ВИЧ-инфекции
   treatment:
     non_drug:
-    - text: Каждое обследование на выявление ВИЧ-инфекции сопровождается дотестовым
-        и послетестовым консультированием с оказанием психологической помощи.
+    - text: Дотестовое и послетестовое консультирование с оказанием психологической
+        помощи
       source_ref:
         protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
         document_url: null
@@ -460,11 +402,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Каждое обследование на выявление ВИЧ-инфекции сопровождается дотестовым
-          и послетестовым консультированием с оказанием психологической помощи.
-    - text: В случае подтверждения ВИЧ-положительного статуса проводится послетестовое
-        консультирование пациента и эпидемиологическое расследование случая ВИЧ-инфекции
-        врачом-эпидемиологом.
+        quote: Дотестовое и послетестовое консультирование с оказанием психологической
+          помощи
+    - text: Эпидемиологическое расследование случая ВИЧ-инфекции врачом-эпидемиологом
       source_ref:
         protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
         document_url: null
@@ -475,11 +415,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: В случае подтверждения ВИЧ-положительного статуса проводится послетестовое
-          консультирование пациента и эпидемиологическое расследование случая ВИЧ-инфекции
-          врачом-эпидемиологом.
-    - text: Отсутствие ответа на терапию по динамике ВН ВИЧ на АРТ требует анализа
-        приверженности и принятия мер по ее восстановлению.
+        quote: Эпидемиологическое расследование случая ВИЧ-инфекции врачом-эпидемиологом
+    - text: Проведение информирующей беседы перед началом АРТ с пациентом или его
+        законными представителями и оценка готовности начать лечение
       source_ref:
         protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
         document_url: null
@@ -490,39 +428,28 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Отсутствие ответа на терапию по динамике ВН ВИЧ на АРТ требует анализа
-          приверженности и принятия мер по ее восстановлению.
+        quote: Проведение информирующей беседы перед началом АРТ с пациентом или его
+          законными представителями и оценка готовности начать лечение
+    - text: Определение и устранение причин прекращения лечения при возобновлении
+        АРТ после отрыва
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение и устранение причин прекращения лечения при возобновлении
+          АРТ после отрыва
     drug_groups: []
     drugs:
-    - drug_name: Антиретровирусные лекарственные средства (АРВ-ЛС)
+    - drug_name: Дарунавир/Ритонавир (DRV/RTV)
       active_substance: null
       drug_group: null
-      dose_text: Не менее чем двух различных классов
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: 2
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: АРТ – лечение с использованием антиретровирусных лекарственных средств
-          (АРВ-ЛС) не менее чем двух различных классов, позволяющее подавить репликацию
-          ВИЧ.
-    - drug_name: Ингибиторы интегразы (ИИ) или Ингибиторы протеазы (ИП)
-      active_substance: null
-      drug_group: null
-      dose_text: Одно из двух полностью активных АРВ-ЛС (для схем 2-го и последующих
-        рядов)
+      dose_text: 600 мг/100 мг 2 раза в день
       frequency_text: null
       duration_text: null
       route: null
@@ -540,12 +467,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: В новой схеме АРТ назначается не менее двух полностью активных АРВ-ЛС,
-          одно из которых ИИ или ИП.
-    - drug_name: Ламивудин (3TC) или Эмтрицитабин (FTC)
+        quote: У всех пациентов, принимавших ранее другие ИП, назначение DRV/RTV проводится
+          в дозе 600 мг/100 мг 2 раза в день.
+    - drug_name: Атазанавир (ATV)
       active_substance: null
       drug_group: null
-      dose_text: Не требуют замены в схеме при изолированной мутации M184V
+      dose_text: не указана
       frequency_text: null
       duration_text: null
       route: null
@@ -558,114 +485,136 @@ conditions:
         document_url: null
         local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
         page_start: 11
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Резистентность к 3TC или эмтрицитабину (FTC), обусловленная изолированной
-          мутацией M184V, не требует замены этих ЛС в схеме.
-    - drug_name: Ритонавир (RTV или /r)
-      active_substance: null
-      drug_group: null
-      dose_text: Бустер для ИП
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: 12
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Бустерами для ИП выступают ритонавир (RTV или/r) либо кобицистат (COB
-          или/с).
-    - drug_name: Кобицистат (COB или /с)
-      active_substance: null
-      drug_group: null
-      dose_text: Бустер для ИП
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: 12
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Бустерами для ИП выступают ритонавир (RTV или/r) либо кобицистат (COB
-          или/с).
-    - drug_name: Бустированный дарунавир (DRV)
-      active_substance: null
-      drug_group: null
-      dose_text: DRV/RTV в дозе 600 мг/100 мг 2 раза в день для пациентов, принимавших
-        ранее другие ИП
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: 12
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: В схеме третьего ряда из ИП/б предпочтение отдается бустированному
-          дарунавиру (DRV). У всех пациентов, принимавших ранее другие ИП, DRV/RTV
-          – 600 мг/100 мг 2 р/день.
-    - drug_name: Бустированный атазанавир (ATV) или лопинавир/ритонавир (LPV/r)
-      active_substance: null
-      drug_group: null
-      dose_text: Для пациентов, никогда ранее не принимавших ИП (в 3-м ряду)
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-        document_url: null
-        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-        page_start: 12
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
         quote: Только у пациентов, никогда ранее не принимавших ИП, допустимо назначение
-          в третьем ряду бустированного атазанавира (ATV) или лопинавира/ритонавира
-          (LPV/r).
+          в третьем ряду бустированного атазанавира (далее – ATV)
+    - drug_name: Лопинавир/Ритонавир (LPV/r)
+      active_substance: null
+      drug_group: null
+      dose_text: не указана
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: 11
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: допустимо назначение в третьем ряду бустированного атазанавира (далее
+          – ATV) или лопинавира/ритонавира (далее – LPV/r).
+    - drug_name: TDF/FTC
+      active_substance: null
+      drug_group: null
+      dose_text: Противопоказано при КК < 60 мл/мин
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: 19
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: реакция гиперчувствительности на TDF/FTC или TAF/FTC... КК <60 мл/мин.
+          (по формуле Кокрофта-Голта) при планируемом использовании TDF
+    - drug_name: TAF/FTC
+      active_substance: null
+      drug_group: null
+      dose_text: Противопоказано при КК < 30 мл/мин
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: 19
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: реакция гиперчувствительности на TDF/FTC или TAF/FTC... и <30 мл/мин.
+          при планируемом использовании TAF
+    - drug_name: Эфавиренц (EFV)
+      active_substance: null
+      drug_group: null
+      dose_text: При приостановке АРТ по медпоказаниям продлевается прием НИОТ-основания
+        на 7–14 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: для схем, содержащих ННИОТ (эфавиренц (далее – EFV), невирапин (далее
+          – NVP)), по возможности продлевается прием НИОТ-основания на 7–14 дней.
+    - drug_name: Невирапин (NVP)
+      active_substance: null
+      drug_group: null
+      dose_text: При приостановке АРТ по медпоказаниям продлевается прием НИОТ-основания
+        на 7–14 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: для схем, содержащих ННИОТ (эфавиренц (далее – EFV), невирапин (далее
+          – NVP)), по возможности продлевается прием НИОТ-основания на 7–14 дней.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Лабораторный мониторинг эффективности АРТ осуществляется путем определения
-      ВН ВИЧ.
+  - text: Определение ВН ВИЧ через 3 месяца (цель <500 копий/мл) и через 6 месяцев
+      (цель <50 копий/мл) эффективной АРТ
     timing: null
     required_if: []
     expected_actions: []
@@ -679,12 +628,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Лабораторный мониторинг эффективности АРТ осуществляется путем определения
-        ВН ВИЧ.
-  - text: Медицинское наблюдение и лабораторное обследование беременных с ВИЧ-инфекцией,
-      а также лечебно-профилактические мероприятия в родах и послеродовом периоде
-      осуществляются в соответствии с клиническим протоколом «Профилактика передачи
-      ВИЧ-инфекции от матери ребенку».
+      quote: Определение ВН ВИЧ через 3 месяца (цель <500 копий/мл) и через 6 месяцев
+        (цель <50 копий/мл) эффективной АРТ
+  - text: Мониторинг количества CD4+ лимфоцитов для решения вопроса о назначении или
+      прекращении профилактики оппортунистических инфекций
     timing: null
     required_if: []
     expected_actions: []
@@ -698,11 +645,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение и лабораторное обследование беременных с ВИЧ-инфекцией,
-        а также лечебно-профилактические мероприятия в родах и послеродовом периоде
-        осуществляются в соответствии с клиническим п
-  - text: При каждом последующем визите для медицинского наблюдения или госпитализации
-      пациенту рекомендуется начать прием АРТ (в случае отказа от начала АРТ).
+      quote: Мониторинг количества CD4+ лимфоцитов для решения вопроса о назначении
+        или прекращении профилактики оппортунистических инфекций
+  - text: Оценка вирусной нагрузки каждые 3 месяца перед модификацией схемы лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -716,10 +661,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При каждом последующем визите для медицинского наблюдения или госпитализации
-        пациенту рекомендуется начать прием АРТ (в случае отказа от начала АРТ).
-  - text: Дальнейшая тактика лечения определяется после оценки эффективности АРТ (после
-      возобновления АРТ).
+      quote: Оценка вирусной нагрузки каждые 3 месяца перед модификацией схемы лечения
+  - text: Регулярная оценка приверженности к лечению и информирование о режиме приема
+      ЛС
     timing: null
     required_if: []
     expected_actions: []
@@ -733,10 +677,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Дальнейшая тактика лечения определяется после оценки эффективности АРТ
-        (после возобновления АРТ).
-  - text: Лечение начинается эмпирически или рекомендованной схемой с последующей
-      модификацией после получения результата исследования (теста на резистентность).
+      quote: Регулярная оценка приверженности к лечению и информирование о режиме
+        приема ЛС
+  - text: Повторная рекомендация начала АРТ при каждом последующем визите или госпитализации
+      в случае отказа
     timing: null
     required_if: []
     expected_actions: []
@@ -750,38 +694,27 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Лечение начинается эмпирически или рекомендованной схемой с последующей
-        модификацией после получения результата исследования (теста на резистентность).
+      quote: Повторная рекомендация начала АРТ при каждом последующем визите или госпитализации
+        в случае отказа
+  - text: Контроль переносимости АРВ-ЛС и лекарственных взаимодействий осуществляется
+      врачом-инфекционистом или специальным врачом, прошедшим обучение по АРТ
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль переносимости АРВ-ЛС и лекарственных взаимодействий осуществляется
+        врачом-инфекционистом или специальным врачом, прошедшим обучение по АРТ
   hospitalization: []
   routing:
-  - text: Амбулаторно
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Амбулаторно
-  - text: госпитализация
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: госпитализация
   - text: амбулаторно
     timing: null
     required_if: []
@@ -796,8 +729,85 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Первую дозу ПЭП пациент может получить круглосуточно в приемных отделениях
+      инфекционных больниц.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Первую дозу ПЭП пациент может получить круглосуточно в приемных отделениях
+        инфекционных больниц.
+  - text: 'Амбулаторно: получение ПЭП и последующее наблюдение в консультативно-диспансерном
+      отделении (кабинете) по ВИЧ-инфекции либо кабинете инфекционных заболеваний.'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Амбулаторно: получение ПЭП и последующее наблюдение в консультативно-диспансерном
+        отделении (кабинете) по ВИЧ-инфекции либо кабинете инфекционных заболеваний.'
+  - text: Приостановка АРТ по медицинским показаниям в периоперационном периоде производится
+      на 1–2 дня.
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Приостановка АРТ по медицинским показаниям в периоперационном периоде
+        производится на 1–2 дня.
   red_flags:
-  - text: Сохранение через 3 месяца ВН ВИЧ более 200 копий/мл
+  - text: Вирусологическая неудача лечения (сохранение через 3 месяца АРТ ВН ВИЧ более
+      200 копий/мл)
     aliases: []
     red_flag_type: other
     severity: high
@@ -815,9 +825,8 @@ conditions:
       row_index: null
       quote: сохранение через 3 месяца ВН ВИЧ более 200 копий/мл ведет к констатации
         вирусологической неудачи лечения и быстрому переходу на следующий ряд АРТ.
-  - text: Недопустима отсрочка начала АРТ в ожидании теста на резистентность ВИЧ у
-      пациентов с продвинутой ВИЧ-инфекцией, туберкулезом, беременных, детей до 1
-      года.
+  - text: Развитие оппортунистического заболевания (требуется срочный переход на схему
+      3-го ряда)
     aliases: []
     red_flag_type: other
     severity: high
@@ -827,15 +836,88 @@ conditions:
       protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
       document_url: null
       local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
-      page_start: 13
+      page_start: 11
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Не допускается отсрочка начала АРТ в ожидании результатов теста на резистентность
-        ВИЧ у пациентов с продвинутой ВИЧ-инфекцией, туберкулезом (ТБ), беременных,
-        детей в возрасте до 1 года.
+      quote: В случае развития оппортунистического заболевания переход на схему третьего
+        ряда производится в кратчайшие сроки
+  - text: Вирусологическая неудача лечения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Переход на схемы второго и последующего рядов осуществляется при развитии
+        вирусологической неудачи лечения на фоне используемого лечения.
+  - text: Тяжелые нежелательные реакции на ЛС (тяжелая гепатотоксичность, тяжелые
+      реакции гиперчувствительности)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тяжелые нежелательные реакции на ЛС (тяжелая гепатотоксичность, тяжелые
+        реакции гиперчувствительности);
+  - text: Острое психотическое расстройство у пациента, не связанное с оппортунистическим
+      заболеванием ЦНС
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: острое психотическое расстройство у пациента, не связанное с оппортунистическим
+        заболеванием центральной нервной системы (далее – ЦНС)
+  - text: Развитие острой недостаточности органов и систем, не обусловленной ВИЧ-инфекцией
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_оказание_медпомощи_пациентам_с_вич_инфекцией_пост_
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Оказание_медпомощи_пациентам_с_ВИЧ-инфекцией_пост_МЗ_25.07.2022_73.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при развитии острой недостаточности органов и систем, не обусловленной
+        ВИЧ-инфекцией.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -844,7 +926,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:08:19.159237+00:00'
+  extracted_at: '2026-07-23T08:12:14.139301+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -855,4 +937,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:08:19.180611+00:00'
+  validated_at: '2026-07-23T08:12:14.165065+00:00'

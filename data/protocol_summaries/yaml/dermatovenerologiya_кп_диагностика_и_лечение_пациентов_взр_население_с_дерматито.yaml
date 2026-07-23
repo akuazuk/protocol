@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население с дерматитом и экземой
+  title: Диагностика и лечение пациентов (взрослое население) с дерматитом и экземой
   url: null
   local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
   document_sha256: null
@@ -31,24 +31,46 @@ conditions:
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - L20-L30
   - L20
-  - L20.0
-  - L20.82
-  - L20.84
-  - L20.85
   - L21
-  - L21.0
-  - L21.8
-  - L21.9
+  - L22
   - L23
-  - L23.9
+  - L24
+  - L25
+  - L26
+  - L27
+  - L28
+  - L29
+  - L30
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Оценка степени тяжести атопического дерматита с использованием индекса
+        SCORAD (Scoring of Atopic Dermatitis)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+        document_url: null
+        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оценка степени тяжести атопического дерматита с использованием индекса
+          SCORAD (Scoring of Atopic Dermatitis)
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Биопсия кожи и слизистых оболочек
+  - name: Сбор жалоб и анамнеза жизни и заболевания
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -62,17 +84,125 @@ conditions:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
-      page_start: 5
+      page_start: 11
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Биопсия кожи выполняется врачом-дерматовенерологом, врачом-хирургом,
-        врачом-онкологом; биопсия слизистых оболочек – врачом-стоматологом, врачом-хирургом,
-        врачом-онкологом.
+      quote: сбор жалоб и анамнеза жизни и заболевания;
+  - name: Осмотр с оценкой кожных проявлений
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр с оценкой кожных проявлений;
+  - name: Общий (клинический) анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий (клинический) анализ крови (определение уровня гемоглобина, количества
+        эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов,
+        СОЭ);
+  - name: Общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 11
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи.
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: анализ крови биохимический (определение уровня креатинина, мочевины,
+        глюкозы, общего белка, АЛТ, АСТ, общего билирубина, С-реактивного белка);
+  - name: Определение антител к бледной трепонеме (Treponema pallidum) методом ИФА
+      в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 16
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение антител к бледной трепонеме (Treponema pallidum) методом
+        ИФА в сыворотке крови при установлении диагноза, однократно.
   conditional_exams:
-  - name: Исследование уровня общего IgE в крови
+  - name: Биохимический анализ крови (с определением ЩФ)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -86,16 +216,16 @@ conditions:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
-      page_start: 6
+      page_start: 19
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Дополнительные диагностические мероприятия (по медицинским показаниям
-        – при хроническом течении, тяжелом течении, осложненном течении и (или) неэффективности
-        лечения): исследование уровня общего иммуноглобулина E (далее – IgE) в крови.'
-  - name: Микроскопическое исследование соскоба с кожи на клещей
+      quote: анализ крови биохимический (определение уровня креатинина, мочевины,
+        глюкозы, щелочной фосфатазы, общего белка, АЛТ, АСТ, общего билирубина, С-реактивного
+        белка);
+  - name: Микроскопическое исследование соскоба с кожи на клещей (Sarcoptes scabiei)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -109,15 +239,14 @@ conditions:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
-      page_start: 6
+      page_start: 19
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Дополнительные диагностические мероприятия: микроскопическое исследование
-        соскоба с кожи на клещей (Sarcoptes scabiei).'
-  - name: Микроскопическое исследование соскоба с кожи на грибы
+      quote: микроскопическое исследование соскоба с кожи на клещей (Sarcoptes scabiei);
+  - name: Микроскопическое исследование соскоба с кожи на грибы дерматофиты (Dermatophyton)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -131,16 +260,79 @@ conditions:
       protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
       document_url: null
       local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
-      page_start: 6
+      page_start: 19
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Дополнительные диагностические мероприятия: микроскопическое исследование
-        соскоба с кожи на грибы дерматофиты (Dermatophyton), рода малассезия (Malassezia).'
+      quote: микроскопическое исследование соскоба с кожи на грибы дерматофиты (Dermatophyton);
   - name: Микологическое (бактериологическое) исследование отделяемого на грибы рода
-      Candida
+      кандида (Candida saprofita)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: микологическое (бактериологическое) исследование отделяемого на грибы
+        рода кандида (Candida saprofita);
+  - name: Биопсия кожи и морфологическое (гистологическое) исследование препарата
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биопсия кожи и морфологическое (гистологическое) исследование препарата;
+  - name: Определение антител к боррелии Бургдорфера (Borrelia burgdorfery) в крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 19
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение антител к боррелии Бургдорфера (Borrelia burgdorfery) в крови.
+  - name: Исследование уровня общего иммуноглобулина E (IgE) в крови
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -160,8 +352,74 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Дополнительные диагностические мероприятия: микологическое (бактериологическое)
-        исследование отделяемого на грибы рода кандида (Candida saprofita).'
+      quote: исследование уровня общего иммуноглобулина E (далее – IgE) в крови;
+  - name: Микроскопическое исследование соскоба с кожи на клещей (Sarcoptes scabiei)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: микроскопическое исследование соскоба с кожи на клещей (Sarcoptes scabiei);
+  - name: Микроскопическое исследование соскоба с кожи на грибы дерматофиты (Dermatophyton),
+      рода малассезия (Malassezia)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: микроскопическое исследование соскоба с кожи на грибы дерматофиты (Dermatophyton),
+        рода малассезия (Malassezia);
+  - name: Микологическое (бактериологическое) исследование отделяемого на грибы рода
+      кандида (Candida saprofita)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: микологическое (бактериологическое) исследование отделяемого на грибы
+        рода кандида (Candida saprofita);
   - name: Бактериологическое исследование содержимого пустул с определением чувствительности
       к антибактериальным ЛП
     aliases: []
@@ -183,9 +441,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Дополнительные диагностические мероприятия: бактериологическое исследование
-        содержимого пустул с определением чувствительности к антибактериальным ЛП.'
-  - name: Биопсия кожи с морфологическим и иммуногистохимическим исследованием
+      quote: бактериологическое исследование содержимого пустул с определением чувствительности
+        к антибактериальным ЛП;
+  - name: Биопсия кожи и морфологическое (гистологическое), иммуногистохимическое
+      исследование материала
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -205,56 +464,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Дополнительные диагностические мероприятия: биопсия кожи (из нескольких
-        участков, не подвергавшихся лечению кортикостероидами для наружного применения)
-        и морфологическое (гистологическое) исследование препарата, иммуногистохимическое
-        исследование материала.'
-  - name: Исследование уровня аллерген-специфических IgE антител в крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Дополнительные диагностические мероприятия: исследование уровня аллерген-специфических
-        IgE антител в крови.'
-  - name: Консультация врача-аллерголога-иммунолога
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
-      document_url: null
-      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Дополнительные диагностические мероприятия: консультация врача-аллерголога-иммунолога.'
+      quote: биопсия кожи (из нескольких участков, не подвергавшихся лечению кортикостероидами
+        для наружного применения) и морфологическое (гистологическое) исследование
+        препарата
   treatment:
     non_drug:
-    - text: Элиминация аллергенного продукта из диеты при пищевой сенсибилизации.
+    - text: Элиминация аллергенного продукта из диеты при пищевой сенсибилизации
       source_ref:
         protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
         document_url: null
@@ -265,8 +480,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Элиминация аллергенного продукта из диеты при пищевой сенсибилизации.
-    - text: Гипоаллергенный быт.
+        quote: Элиминация аллергенного продукта из диеты при пищевой сенсибилизации
+    - text: Гипоаллергенный быт
       source_ref:
         protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
         document_url: null
@@ -277,9 +492,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Гипоаллергенный быт.
+        quote: Гипоаллергенный быт
     - text: Увлажняющие и смягчающие средства наружно (эмоленты, содержащие мягкий
-        парафин, жиры, декспантенол) 2–4 раза/сутки длительно.
+        парафин, жиры, декспантенол) 2–4 раза/сутки длительно
       source_ref:
         protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
         document_url: null
@@ -291,14 +506,15 @@ conditions:
         table_index: null
         row_index: null
         quote: Увлажняющие и смягчающие средства наружно (эмоленты, содержащие мягкий
-          парафин, жиры, декспантенол) 2–4 раза/сутки длительно.
+          парафин, жиры, декспантенол) 2–4 раза/сутки длительно
     drug_groups: []
     drugs:
-    - drug_name: Гидрокортизон
+    - drug_name: Гидрокортизон (крем, мазь 1 мг/г)
       active_substance: null
       drug_group: null
-      dose_text: крем/мазь для наружного применения 1 мг/г, наносить тонким слоем
-        на область высыпаний 2 раза/сутки 2–4 недели (при легком течении).
+      dose_text: наносить тонким слоем на область высыпаний 2 раза/сутки 2–4 недели
+        (или 7 суток при остром воспалении на кожу лица, подмышечной, генитальной
+        и паховой областей, складок)
       frequency_text: null
       duration_text: null
       route: null
@@ -316,15 +532,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'кортикостероиды для наружного применения I–II класса (в случае легкого
-          течения): гидрокортизон, крем для наружного применения 1 мг/г; мазь крем
-          для наружного применения 1 мг/г – наносить тонким слоем на область высыпаний
-          2 раза/сутки 2–4 недели.'
-    - drug_name: Триамцинолона ацетонид
+        quote: гидрокортизон, крем для наружного применения 1 мг/г; мазь крем для
+          наружного применения 1 мг/г – наносить тонким слоем на область высыпаний
+          2 раза/сутки 2–4 недели
+    - drug_name: Триамцинолона ацетонид (мазь 1 мг/г)
       active_substance: null
       drug_group: null
-      dose_text: мазь для наружного применения 1 мг/г, наносить тонким слоем на область
-        высыпаний 2 раза/сутки 2–3 недели (при среднетяжелом течении).
+      dose_text: наносить тонким слоем на область высыпаний 2 раза/сутки 2–3 недели
       frequency_text: null
       duration_text: null
       route: null
@@ -342,14 +556,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'кортикостероиды для наружного применения II–III класса (в случае среднетяжелого
-          течения): триамцинолона ацетонид, мазь для наружного применения 1 мг/г –
-          наносить тонким слоем на область высыпаний 2 раза/сутки 2–3 недели.'
-    - drug_name: Гидрокортизона бутират
+        quote: триамцинолона ацетонид, мазь для наружного применения 1 мг/г – наносить
+          тонким слоем на область высыпаний 2 раза/сутки 2–3 недели;
+    - drug_name: Гидрокортизона бутират (мазь 1 мг/г)
       active_substance: null
       drug_group: null
-      dose_text: мазь для наружного применения 1 мг/г, наносить тонким слоем на область
-        высыпаний 2 раза/сутки 2–3 недели (при среднетяжелом течении).
+      dose_text: наносить тонким слоем на область высыпаний 2 раза/сутки 2–3 недели
       frequency_text: null
       duration_text: null
       route: null
@@ -368,12 +580,11 @@ conditions:
         table_index: null
         row_index: null
         quote: гидрокортизона бутират, мазь для наружного применения 1 мг/г – наносить
-          тонким слоем на область высыпаний 2 раза/сутки 2–3 недели.
-    - drug_name: Мометазона фуроат
+          тонким слоем на область высыпаний 2 раза/сутки 2–3 недели
+    - drug_name: Мометазона фуроат (крем, мазь 1 мг/г)
       active_substance: null
       drug_group: null
-      dose_text: крем/мазь для наружного применения 1 мг/г, наносить тонким слоем
-        на область высыпаний 1 раз/сутки 2–3 недели (при тяжелом течении).
+      dose_text: наносить тонким слоем на область высыпаний 1 раз/сутки 2–3 недели
       frequency_text: null
       duration_text: null
       route: null
@@ -391,45 +602,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'кортикостероиды для наружного применения III класса (в случае тяжелого
-          течения): мометазона фуроат, крем для наружного применения 1 мг/г; мазь
-          для наружного применения 1 мг/г – наносить тонким слоем на область высыпаний
-          1 раз/сутки 2–3 недели.'
-    - drug_name: Гидрокортизон (для чувствительных областей)
-      active_substance: null
-      drug_group: null
-      dose_text: мазь/крем для наружного применения 1 мг/г, наносить тонким слоем
-        на кожу лица, подмышечной, генитальной и паховой областей, складок 2 раза/сутки
-        7 суток (при остром воспалении).
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
-        document_url: null
-        local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'на кожу лица, подмышечной, генитальной и паховой областей, складок
-          при остром воспалении – кортикостероиды для наружного применения I–II класса:
-          гидрокортизон мазь для наружного применения 1 мг/г, крем для наружного применения
-          1 мг/г – наносить тонким слоем на область высыпаний 2 раза/сутки 7 суток.'
+        quote: мометазона фуроат, крем для наружного применения 1 мг/г; мазь для наружного
+          применения 1 мг/г – наносить тонким слоем на область высыпаний 1 раз/сутки
+          2–3 недели
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: При достижении положительной динамики (уменьшение зуда, эритемы) – постепенное
-      снижение дозы кортикостероидов для наружного применения и проактивная терапия
-      по интермиттирующей схеме (2 раза в неделю или 2 последовательных дня каждую
-      неделю на места предыдущих высыпаний), длительность лечения определяется индивидуально.
+  - text: При достижении положительной динамики – постепенное снижение дозы топических
+      кортикостероидов и проактивная терапия по интермиттирующей схеме (2 раза в неделю
+      или 2 последовательных дня каждую неделю на места предыдущих высыпаний)
     timing: null
     required_if: []
     expected_actions: []
@@ -443,13 +625,29 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'При достижении положительной динамики (уменьшение зуда, эритемы) – постепенное
-        снижение дозы кортикостероидов для наружного применения и проактивная терапия
-        по интермиттирующей схеме (2 раза в неделю '
+      quote: 'При достижении положительной динамики – постепенное снижение дозы топических
+        кортикостероидов и проактивная терапия по интермиттирующей схеме (2 раза в
+        неделю или 2 последовательных дня каждую неделю '
+  - text: Медицинское наблюдение врачом-дерматовенерологом осуществляется 1 раз в
+      месяц в течение 2 месяцев после установления диагноза, далее 2 раза в год.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение врачом-дерматовенерологом осуществляется 1 раз
+        в месяц в течение 2 месяцев после установления диагноза, далее 2 раза в год.
   hospitalization: []
   routing:
-  - text: Госпитализация пациентов с тяжелым течением дерматита и экземы в стационарные
-      условия дерматовенерологических отделений.
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -462,10 +660,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация пациентов с тяжелым течением дерматита и экземы в стационарные
-        условия дерматовенерологических отделений.
-  - text: Госпитализация пациентов с осложнениями и (или) при неэффективности лечения
-      в амбулаторных условиях в стационарные условия дерматовенерологических отделений.
+      quote: амбулаторно
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -478,10 +674,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация пациентов с осложнениями и (или) при неэффективности лечения
-        в амбулаторных условиях в стационарные условия дерматовенерологических отделений.
-  - text: Госпитализация пациентов с тяжелым течением эксфолиативного дерматита в
-      отделения анестезиологии и реанимации.
+      quote: госпитализация
+  - text: Лечение в амбулаторных условиях
     timing: null
     required_if: []
     source_ref:
@@ -494,11 +688,43 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация пациентов с тяжелым течением эксфолиативного дерматита
-        в отделения анестезиологии и реанимации.
+      quote: Лечение в амбулаторных условиях
+  - text: Госпитализация в стационарные условия дерматовенерологических отделений
+      больничных организаций (при тяжелом течении дерматита и экземы, наличии осложнений
+      и/или неэффективности амбулаторного лечения)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в стационарные условия дерматовенерологических отделений
+        больничных организаций (при тяжелом течении дерматита и экземы, наличии осложнений
+        и/или неэффективности амбулаторного лечения)
+  - text: Госпитализация в отделения анестезиологии и реанимации больничных организаций
+      (при тяжелом течении эксфолиативного дерматита)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в отделения анестезиологии и реанимации больничных организаций
+        (при тяжелом течении эксфолиативного дерматита)
   red_flags:
-  - text: Пациенты с тяжелым течением эксфолиативного дерматита требуют лечения в
-      отделениях анестезиологии и реанимации.
+  - text: Тяжелое течение эксфолиативного дерматита (показано лечение в ОАР)
     aliases: []
     red_flag_type: other
     severity: high
@@ -516,6 +742,26 @@ conditions:
       row_index: null
       quote: Пациентам с тяжелым течением эксфолиативного дерматита показано лечение
         в условиях отделений анестезиологии и реанимации больничных организаций.
+  - text: Тяжелое течение дерматита и экземы, наличие осложнений или неэффективность
+      амбулаторного лечения
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: dermatovenerologiya_кп_диагностика_и_лечение_пациентов_взр_население_с_дерматито
+      document_url: null
+      local_path: minzdrav_protocols/dermatovenerologiya/КП_Диагностика_и_лечение_пациентов_взр.население_с_дерматитом_и_экземой_постановление_МЗ_2022_59.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациентам с осложнениями и (или) при неэффективности лечения в амбулаторных
+        условиях показано лечение в стационарных условиях дерматовенерологических
+        отделений
   contraindications: []
   complications: []
   kz_checklist: null
@@ -524,7 +770,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:21:34.244505+00:00'
+  extracted_at: '2026-07-23T07:20:58.095343+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -535,4 +781,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-02T00:21:34.252499+00:00'
+  validated_at: '2026-07-23T07:20:58.103509+00:00'

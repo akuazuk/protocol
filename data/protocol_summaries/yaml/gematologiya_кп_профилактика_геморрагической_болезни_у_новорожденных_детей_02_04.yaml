@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: hemorrhagic_disease_of_newborns
+- condition_id: gemorragicheskaya_bolezn_novorozhdennyh
   name: Геморрагическая болезнь новорожденных
   synonyms: []
   abbreviations: []
@@ -36,18 +36,45 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Повышенная кровоточивость у новорожденных и детей первых месяцев жизни
+        вследствие недостаточности факторов свертывания крови (II, VII, IX, X), активность
+        которых зависит от витамина К
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_профилактика_геморрагической_болезни_у_новорожденных_детей_02_04
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП Профилактика геморрагической
+          болезни у новорожденных детей 02.04.2020 № 28.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повышенная кровоточивость у новорожденных и детей первых месяцев жизни
+          вследствие недостаточности факторов свертывания крови (II, VII, IX, X),
+          активность которых зависит от витамина К
+    optional: []
+    exclusion: []
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug: []
     drug_groups: []
     drugs:
-    - drug_name: Фитоменадион (витамин К1)
+    - drug_name: фитоменадион (витамин К1)
       active_substance: null
       drug_group: null
-      dose_text: 'Внутримышечно: 1 мг доношенным, 0,5 мг недоношенным, 0,3 мг недоношенным
-        с массой тела < 1000 г. Однократно в первый час жизни.'
+      dose_text: 'Внутримышечно однократно в первый час жизни: 1 мг доношенным, 0,5
+        мг недоношенным, 0,3 мг недоношенным с массой тела при рождении менее 1000
+        г'
       frequency_text: null
       duration_text: null
       route: null
@@ -66,14 +93,41 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: вводится... в дозе 1 мг доношенным и 0,5 мг недоношенным детям, для
-          недоношенных детей с массой тела при рождении менее 1000 г доза составляет
-          0,3 мг;
-    - drug_name: Фитоменадион (витамин К1)
+        quote: осуществляется однократно в первый час жизни в стационарных условиях,
+          вводится в переднелатеральную поверхность верхней трети бедра внутримышечно
+          в дозе 1 мг доношенным и 0,5 мг недоношенным
+    - drug_name: фитоменадион (витамин К1)
       active_substance: null
       drug_group: null
-      dose_text: 'Внутривенно: те же дозы, разведенные 5–10% глюкозой. Очень медленно,
-        не более 1 мг/мин.'
+      dose_text: 'Вторая доза в 4–6 недель жизни детям группы риска: перорально (на
+        исключительно грудном вскармливании) или внутривенно (при нарушении всасывания
+        в ЖКТ, гепатите)'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_профилактика_геморрагической_болезни_у_новорожденных_детей_02_04
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП Профилактика геморрагической
+          болезни у новорожденных детей 02.04.2020 № 28.pdf
+        page_start: 2
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'введение второй дозы в 4–6 недель жизни показано детям группы риска
+          по развитию поздней формы геморрагической болезни: находящимся исключительно
+          на грудном вскармливании – перорально'
+    - drug_name: фитоменадион (витамин К1)
+      active_substance: null
+      drug_group: null
+      dose_text: Внутривенно в тех же дозах при разведении раствором глюкозы 5–10
+        %, введение очень медленно (не более 1 мг в минуту)
       frequency_text: null
       duration_text: null
       route: null
@@ -94,13 +148,13 @@ conditions:
         row_index: null
         quote: лекарственное средство вводится внутривенно в тех же дозах при разведении
           раствором глюкозы 5–10 %; внутривенное введение осуществляется очень медленно,
-          не более 1 мг в минуту.
+          не более 1 мг в минуту
     - drug_name: Фитоменадион (витамин К1)
       active_substance: null
       drug_group: null
-      dose_text: Однократная парентеральная доза в первые сутки жизни. Применяется
-        в виде водного раствора для внутривенного, внутримышечного и перорального
-        введения (не более 2 мг действующего вещества в ампуле).
+      dose_text: Однократная парентеральная доза в первые сутки жизни; водный раствор
+        для внутривенного, внутримышечного и перорального введения (не более 2 мг
+        действующего вещества в ампуле)
       frequency_text: null
       duration_text: null
       route: null
@@ -119,15 +173,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Для профилактики ГрБН используется фитоменадион (витамин К1). Однократная
-          парентеральная доза в первые сутки жизни. Применяется в виде водного раствора
-          для в/в, в/м и перорального введения (не более 2 мг).
+        quote: Однократная парентеральная доза фитоменадиона (витамина К1) в первые
+          сутки жизни также снижает риск развития классической и (или) поздней ГрБН
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Введение второй дозы фитоменадиона в 4–6 недель жизни показано детям группы
-      риска по развитию поздней формы геморрагической болезни.
+  - text: Введение второй дозы фитоменадиона в 4–6 недель жизни детям группы риска
+      по развитию поздней формы геморрагической болезни
     timing: null
     required_if: []
     expected_actions: []
@@ -142,11 +195,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Введение второй дозы фитоменадиона в 4–6 недель жизни показано детям
-        группы риска по развитию поздней формы геморрагической болезни.
+      quote: Введение второй дозы фитоменадиона в 4–6 недель жизни детям группы риска
+        по развитию поздней формы геморрагической болезни
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: 'Стационарные условия: внутримышечное введение фитоменадиона в первый час
+      жизни, а также внутривенное введение повторной дозы при гепатите или нарушении
+      всасывания в ЖКТ'
     timing: null
     required_if: []
     source_ref:
@@ -160,8 +215,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: амбулаторно
+      quote: 'Стационарные условия: внутримышечное введение фитоменадиона в первый
+        час жизни, а также внутривенное введение повторной дозы при гепатите или нарушении
+        всасывания в ЖКТ'
+  - text: 'Амбулаторные условия по месту жительства: пероральное введение второй дозы
+      в 4–6 недель жизни детям группы риска, находящимся исключительно на грудном
+      вскармливании'
     timing: null
     required_if: []
     source_ref:
@@ -175,11 +234,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: амбулаторно
+      quote: 'Амбулаторные условия по месту жительства: пероральное введение второй
+        дозы в 4–6 недель жизни детям группы риска, находящимся исключительно на грудном
+        вскармливании'
   red_flags:
-  - text: 'Материнские факторы риска во время беременности: прием антикоагулянтов,
-      противосудорожных, антибиотиков широкого спектра, противотуберкулезных, салицилатов;
-      преэклампсия; заболевания печени и кишечника.'
+  - text: Риск спазма сосудов при внутривенном введении фитоменадиона со скоростью
+      более 1 мг в минуту
     aliases: []
     red_flag_type: other
     severity: high
@@ -190,58 +250,14 @@ conditions:
       document_url: null
       local_path: minzdrav_protocols/gematologiya/КП Профилактика геморрагической
         болезни у новорожденных детей 02.04.2020 № 28.pdf
-      page_start: 2
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: прием женщиной во время беременности антикоагулянтов прямого и непрямого
-        действия, противосудорожных лекарственных средств, антибиотиков широкого спектра
-        действия, противотуберкулезных лекарственных средств, салицилатов, преэклампсия,
-        заболевания печени и кишечника у женщины;
-  - text: 'Интранатальные факторы риска: хроническая гипоксия и асфиксия плода в родах;
-      кесарево сечение; родовая травма.'
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_профилактика_геморрагической_болезни_у_новорожденных_детей_02_04
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП Профилактика геморрагической
-        болезни у новорожденных детей 02.04.2020 № 28.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: хроническая гипоксия и асфиксия плода в родах; родоразрешение путем кесарева
-        сечения; родовая травма;
-  - text: 'Постнатальные факторы риска: недоношенность, исключительно грудное вскармливание,
-      длительное парентеральное питание, антибиотики широкого спектра, нарушение всасывания
-      в ЖКТ, гепатиты.'
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_профилактика_геморрагической_болезни_у_новорожденных_детей_02_04
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП Профилактика геморрагической
-        болезни у новорожденных детей 02.04.2020 № 28.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: недоношенность, исключительно грудное вскармливание, длительное парентеральное
-        питание, антибиотики широкого спектра действия, нарушение всасывания в желудочно-кишечном
-        тракте, гепатиты.
+      quote: внутривенное введение осуществляется очень медленно, не более 1 мг в
+        минуту, из-за риска спазма сосудов;
   contraindications: []
   complications: []
   kz_checklist: null
@@ -250,7 +266,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:06:11.245361+00:00'
+  extracted_at: '2026-07-23T08:03:29.235186+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -264,9 +280,13 @@ validation:
   - level: warning
     code: duplicate_drug
     message: Дублирующийся препарат
-    path: conditions[hemorrhagic_disease_of_newborns].treatment.drugs[1]
+    path: conditions[gemorragicheskaya_bolezn_novorozhdennyh].treatment.drugs[1]
   - level: warning
     code: duplicate_drug
     message: Дублирующийся препарат
-    path: conditions[hemorrhagic_disease_of_newborns].treatment.drugs[2]
-  validated_at: '2026-07-20T16:06:11.247374+00:00'
+    path: conditions[gemorragicheskaya_bolezn_novorozhdennyh].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[gemorragicheskaya_bolezn_novorozhdennyh].treatment.drugs[3]
+  validated_at: '2026-07-23T08:03:29.238154+00:00'

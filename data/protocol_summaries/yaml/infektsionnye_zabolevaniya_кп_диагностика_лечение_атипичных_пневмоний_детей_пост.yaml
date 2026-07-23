@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение атипичных пневмоний детей
+  title: Диагностика и лечение атипичных пневмоний у детей
   url: null
   local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
   document_sha256: null
@@ -26,8 +26,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: atypical_pneumonia
-  name: Атипичные пневмонии
+- condition_id: atypical_pneumonia_children
+  name: Атипичные пневмонии у детей
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -37,16 +37,15 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment:
-    non_drug:
-    - text: Регулярное проветривание помещений; постельный режим на период подъема
-        температуры, полупостельный при нормализации, общий с прогулками через 3 дня
-        после нормализации температуры тела; адекватная гидратация (оральный прием
-        жидкости в объеме 50–70 % от физиологической потребности); диета – адекватное
-        питание соответственно возрасту.
+  diagnostic_criteria:
+    required:
+    - text: Наличие признаков дыхательной недостаточности I степени
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
       source_ref:
         protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
         document_url: null
@@ -57,17 +56,332 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Регулярное проветривание помещений; постельный режим на период подъема
-          температуры, полупостельный при нормализации, общий с прогулками через 3
-          дня после нормализации температуры тела; адекватная гидр
+        quote: Наличие признаков дыхательной недостаточности I степени
+    - text: Лихорадка три и более дня без очага инфекции
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Лихорадка три и более дня без очага инфекции
+    - text: Локальность и (или) асимметрия аускультативных и перкуторных изменений
+        в легких
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Локальность и (или) асимметрия аускультативных и перкуторных изменений
+          в легких
+    - text: Воспалительное поражение респираторных отделов легких с инфильтративными
+        изменениями при рентгенологическом исследовании
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Воспалительное поражение респираторных отделов легких с инфильтративными
+          изменениями при рентгенологическом исследовании
+    - text: 'Вызвано атипичными возбудителями: Mycoplasma pneumoniae, Chlamydia pneumoniae,
+        Legionella pneumophila'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Вызвано атипичными возбудителями: Mycoplasma pneumoniae, Chlamydia
+          pneumoniae, Legionella pneumophila'
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Сбор жалоб, анамнеза и физикальное обследование (в стационаре)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сбор жалоб – ежедневно один раз в день, при необходимости чаще; сбор
+        анамнеза – однократно в первый день госпитализации, при необходимости чаще;
+        физикальное обследование
+  - name: Общий анализ крови (в стационаре)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови (определение уровня гемоглобина, количества эритроцитов
+        и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов, СОЭ) – однократно
+        в первый день госпитализации
+  - name: Общий анализ мочи (в стационаре)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи – однократно в первый день госпитализации;
+  conditional_exams:
+  - name: Общий анализ крови (амбулаторно)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'клинико-лабораторные исследования – общий анализ крови... Первое исследование
+        при наличии следующих признаков: наличие признаков ДН I степени; лихорадка
+        три и более дня'
+  - name: Определение антител класса M и G к возбудителям атипичных пневмоний (ИФА)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: уровень антител класса М (далее – IgM) и класса G (далее – IgG) к возбудителям
+        атипичных пневмоний в парных сыворотках крови методом иммуноферментного анализа
+  - name: ПЦР (мокроты, трахеального аспирата, БАЛ или мазка) на M. pneumoniae, C.
+      pneumoniae, L. pneumophila
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 8
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: полимеразная цепная реакция... для определения дезоксирибонуклеиновой
+        кислоты M. pneumoniae, C. pneumoniae, L. pneumophila при тяжелой, возможно
+        атипичной пневмонии
+  - name: Рентгенография грудной клетки в боковой проекции
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография грудной клетки в боковой проекции (по медицинским показаниям
+        – в сомнительных случаях с целью диагностики пневмонии и осложнений)
+  treatment:
+    non_drug:
+    - text: Оксигенотерапия
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оксигенотерапия
+    - text: ИВЛ / неинвазивная ИВЛ
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ИВЛ / неинвазивная ИВЛ
+    - text: Регулярное проветривание помещений
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Регулярное проветривание помещений
+    - text: 'Режим: постельный (на период лихорадки до фебрильных цифр), полупостельный
+        (при нормализации температуры), общий с прогулками (через 3 дня после нормализации)'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Режим: постельный (на период лихорадки до фебрильных цифр), полупостельный
+          (при нормализации температуры), общий с прогулками (через 3 дня после нормализации)'
+    - text: 'Адекватная гидратация: оральный прием жидкости в объеме 50–70 % от физиологической
+        потребности'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Адекватная гидратация: оральный прием жидкости в объеме 50–70 % от
+          физиологической потребности'
+    - text: 'Диета: адекватное питание соответственно возрасту'
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Диета: адекватное питание соответственно возрасту'
     drug_groups: []
     drugs:
-    - drug_name: Азитромицин
+    - drug_name: фенотерол/ипратропиум бромид
       active_substance: null
       drug_group: null
-      dose_text: 10–14 кг – 100 мг, 15–24 кг – 200 мг, 25–34 кг – 300 мг, 35–44 кг
-        – 400 мг, >45 кг – 500 мг внутрь 1 раз в сутки. Курс при микоплазменной пневмонии
-        – 5 дней, при хламидийной и легионеллезной пневмонии
+      dose_text: аэрозоль дозированный для ингаляций 20 мкг + 50 мкг/доза 1–2 ингаляционных
+        дозы однократно
       frequency_text: null
       duration_text: null
       route: null
@@ -85,16 +399,64 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'азитромицин... детям дозируют исходя из массы тела: 10–14 кг – 100
-          мг, 15–24 кг – 200 мг, 25–34 кг – 300 мг, 35–44 кг – 400 мг, вес >45 кг
-          – 500 мг внутрь 1 раз в сутки, курс при микоплазменной пневмонии – 5 дней,
-          при хламидийной и легионеллезной пневмонии – 5–7 дней;'
-    - drug_name: Кларитромицин
+        quote: фенотерол/ипратропиум бромид, аэрозоль дозированный для ингаляций 20
+          мкг + 50 мкг/доза 1–2 ингаляционных дозы однократно
+    - drug_name: сальбутамол
       active_substance: null
       drug_group: null
-      dose_text: 'Детям от 6 мес. до 12 лет – 15 мг/кг/сутки внутрь в 2 приема. Детям
-        старше 12 лет – 500 мг внутрь в 2 приема. Курс при микоплазменной пневмонии
-        – 10 дней, при хламидийной и легионеллезной пневмонии – '
+      dose_text: аэрозоль дозированный для ингаляций 100 мкг/доза 1–2 ингаляционных
+        дозы однократно детям старше 6 лет
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: сальбутамол, аэрозоль дозированный для ингаляций 100 мкг/доза 1–2 ингаляционных
+          дозы однократно детям старше 6 лет
+    - drug_name: азитромицин
+      active_substance: null
+      drug_group: null
+      dose_text: 'Порошок для приг. сусп. 200 мг/5 мл, 200 мг/20 мл, таб./капс. 125,
+        250, 500 мг. Дозы по массе тела: 10–14 кг – 100 мг; 15–24 кг – 200 мг; 25–34
+        кг – 300 мг; 35–44 кг – 400 мг; >45 кг – 500 мг внутрь 1'
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+        document_url: null
+        local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: азитромицин, порошок для приготовления суспензии... 10–14 кг – 100
+          мг, 15–24 кг – 200 мг... 35–44 кг – 400 мг, вес >45 кг – 500 мг внутрь 1
+          раз в сутки, курс при микоплазменной пневмонии – 5 дней
+    - drug_name: кларитромицин
+      active_substance: null
+      drug_group: null
+      dose_text: 'Суспензия/гранулы 125 мг/5 мл, 250 мг/5 мл; таб. 250, 500 мг. Детям
+        от 6 мес. до 12 лет: 15 мг/кг/сутки внутрь в 2 приема; старше 12 лет: 500
+        мг внутрь в 2 приема. Курс: при микоплазменной пневмонии –'
       frequency_text: null
       duration_text: null
       route: null
@@ -114,14 +476,13 @@ conditions:
         row_index: null
         quote: кларитромицин... детям от 6 мес. до 12 лет – 15 мг/кг/сутки внутрь
           в 2 приема, детям старше 12 лет – 500 мг внутрь в 2 приема, курс при микоплазменной
-          пневмонии – 10 дней, при хламидийной и легионеллезной пневмонии – 10–14
-          дней;
-    - drug_name: Спирамицин (для детей старше 6 лет)
+          пневмонии – 10 дней
+    - drug_name: спирамицин
       active_substance: null
       drug_group: null
-      dose_text: 150–300 тысяч МЕ/кг/сутки внутрь в 2–3 приема, максимальная суточная
-        доза 300 тысяч МЕ/кг/сутки. Курс при микоплазменной пневмонии – 10 дней, при
-        хламидийной и легионеллезной пневмонии – 10–14 дней.
+      dose_text: 'Таблетки 1,5 млн МЕ, 3 млн МЕ (для детей старше 6 лет). 150–300
+        тыс. МЕ/кг/сутки внутрь в 2–3 приема (макс. 300 тыс. МЕ/кг/сутки). Курс: 10
+        дней (микоплазменная) или 10–14 дней (хламидийная, легионелл'
       frequency_text: null
       duration_text: null
       route: null
@@ -140,15 +501,13 @@ conditions:
         table_index: null
         row_index: null
         quote: спирамицин (для детей старше 6 лет)... 150–300 тысяч МЕ/кг/сутки внутрь
-          в 2–3 приема, максимальная суточная доза 300 тысяч МЕ/кг/сутки, курс при
-          микоплазменной пневмонии – 10 дней, при хламидийной и легионеллезной пневмонии
-          – 10–14 дней;
-    - drug_name: Джозамицин (для детей с массой тела >40 кг)
+          в 2–3 приема, максимальная суточная доза 300 тысяч МЕ/кг/сутки
+    - drug_name: джозамицин
       active_substance: null
       drug_group: null
-      dose_text: 50 мг/кг/сутки внутрь в 2 приема, максимальная суточная доза – 2
-        г. Курс при микоплазменной пневмонии – 10 дней, при хламидийной и легионеллезной
-        пневмонии – 10–14 дней.
+      dose_text: 'Таблетки 500 мг, таб. диспергируемые 1 г (для детей с массой >40
+        кг). 50 мг/кг/сутки внутрь в 2 приема (макс. 2 г/сутки). Курс: 10 дней (микоплазменная)
+        или 10–14 дней (хламидийная, легионеллезная).'
       frequency_text: null
       duration_text: null
       route: null
@@ -167,14 +526,13 @@ conditions:
         table_index: null
         row_index: null
         quote: джозамицин (для детей с массой тела >40 кг)... 50 мг/кг/сутки внутрь
-          в 2 приема, максимальная суточная доза – 2 г, курс при микоплазменной пневмонии
-          – 10 дней, при хламидийной и легионеллезной пневмонии – 10–14 дней.
-    - drug_name: Доксициклин (при аллергии на макролиды, для детей старше 8 лет)
+          в 2 приема, максимальная суточная доза – 2 г
+    - drug_name: доксициклин
       active_substance: null
       drug_group: null
-      dose_text: 'С массой тела <50 кг – 4 мг/кг/сутки в первый день, внутрь, в 2
-        приема, 2 мг/кг в последующие дни, 1–2 раза в сутки. С массой тела >50 кг
-        – 200 мг в первый день, внутрь, в 2 приема, 100 мг 1–2 раза в '
+      dose_text: 'При аллергии на макролиды детям старше 8 лет. Масса <50 кг: 4 мг/кг/сутки
+        в 1-й день в 2 приема, затем 2 мг/кг/сут в 1–2 приема. Масса >50 кг: 200 мг
+        в 1-й день в 2 приема, затем 100 мг 1–2 раза в сут'
       frequency_text: null
       duration_text: null
       route: null
@@ -193,15 +551,14 @@ conditions:
         table_index: null
         row_index: null
         quote: 'При аллергии на макролиды: детям в возрасте старше 8 лет – доксициклин...
-          <50 кг – 4 мг/кг/сутки в первый день... 2 мг/кг в последующие дни... >50
-          кг – 200 мг в первый день... 100 мг 1–2 раза в сутки в последующие дни,
-          курс 10–14 дней.'
-    - drug_name: Амброксол (мукорегулирующая терапия)
+          <50 кг – 4 мг/кг/сутки в первый день, внутрь, в 2 приема, 2 мг/кг в последующие
+          дни'
+    - drug_name: амброксол
       active_substance: null
       drug_group: null
-      dose_text: Дети 2–5 лет – 7,5 мг внутрь 3 раза в сутки, 6–12 лет 15 мг внутрь
-        2–3 раза в сутки, старше 12 лет – 30 мг внутрь 3 раза в сутки в первые 2–3
-        дня, затем 30 мг 2 раза в сутки. Курс – 7–10 дней.
+      dose_text: 'Сироп 15 мг/5 мл, 30 мг/5 мл (>2 лет), таб. 30 мг (>6 лет). 2–5
+        лет: 7,5 мг 3 р/сут; 6–12 лет: 15 мг 2–3 р/сут; старше 12 лет: 30 мг 3 р/сут
+        в первые 2–3 дня, затем 30 мг 2 р/сут. Курс: 7–10 дней.'
       frequency_text: null
       duration_text: null
       route: null
@@ -219,14 +576,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: амброксол... дети 2–5 лет – 7,5 мг внутрь 3 раза в сутки, 6–12 лет
-          15 мг внутрь 2–3 раза в сутки, старше 12 лет – 30 мг внутрь 3 раза в сутки
-          в первые 2–3 дня, затем 30 мг 2 раза в сутки, курс – 7–10 дней;
-    - drug_name: Ацетилцистеин (мукорегулирующая терапия, для детей старше 2 лет)
+        quote: амброксол, сироп 15 мг/5 мл... дети 2–5 лет – 7,5 мг внутрь 3 раза
+          в сутки, 6–12 лет 15 мг внутрь 2–3 раза в сутки, старше 12 лет – 30 мг внутрь
+          3 раза в сутки, курс – 7–10 дней;
+    - drug_name: ацетилцистеин
       active_substance: null
       drug_group: null
-      dose_text: Дети 2–12 лет – 100 мг внутрь 3 раза в сутки или 200 мг внутрь 2
-        раза в сутки, старше 12 лет – 200 мг внутрь 3 раза в сутки. Курс – 7–10 дней.
+      dose_text: 'Порошок 100 мг, 200 мг, таб. шипучие 200 мг (для детей старше 2
+        лет). 2–12 лет: 100 мг 3 р/сут или 200 мг 2 р/сут; старше 12 лет: 200 мг 3
+        р/сут. Курс: 7–10 дней.'
       frequency_text: null
       duration_text: null
       route: null
@@ -247,11 +605,11 @@ conditions:
         quote: ацетилцистеин (для детей старше 2 лет)... дети 2–12 лет – 100 мг внутрь
           3 раза в сутки или 200 мг внутрь 2 раза в сутки, старше 12 лет – 200 мг
           внутрь 3 раза в сутки, курс – 7–10 дней;
-    - drug_name: Карбоцистеин (мукорегулирующая терапия, для детей старше 2 лет)
+    - drug_name: карбоцистеин
       active_substance: null
       drug_group: null
-      dose_text: Дети 2–5 лет – 100 мг внутрь 2 раза в сутки, старше 5 лет – 100 мг
-        внутрь 3 раза в сутки. Курс – 7–10 дней.
+      dose_text: 'Сироп 20 мг/мл (для детей старше 2 лет). 2–5 лет: 100 мг 2 р/сут;
+        старше 5 лет: 100 мг 3 р/сут. Курс: 7–10 дней.'
       frequency_text: null
       duration_text: null
       route: null
@@ -269,15 +627,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: карбоцистеин (для детей старше 2 лет)... дети 2–5 лет – 100 мг внутрь
-          2 раза в сутки, старше 5 лет – 100 мг внутрь 3 раза в сутки, курс – 7–10
-          дней;
-    - drug_name: Фенотерол/Ипратропиум бромид (бронхолитическая терапия)
+        quote: карбоцистеин (для детей старше 2 лет) сироп 20 мг/мл... дети 2–5 лет
+          – 100 мг внутрь 2 раза в сутки, старше 5 лет – 100 мг внутрь 3 раза в сутки,
+          курс – 7–10 дней;
+    - drug_name: фенотерол/ипратропиум бромид
       active_substance: null
       drug_group: null
-      dose_text: 'Раствор для ингаляций: до 6 лет – 2 капли/кг (max 12 капель), 6–12
-        лет – 12–48 капель, старше 12 лет – 24–60 капель, 3 раза в день. Аэрозоль:
-        старше 6 лет 1–2 дозы 2–3 раза в день.'
+      dose_text: 'Раствор для ингаляций (0,5 мг + 0,25 мг)/мл через небулайзер 3 р/день:
+        до 6 лет – 2 капли/кг (макс. 12 кап) + физраствор до 3–4 мл; 6–12 лет – 12–48
+        капель; старше 12 лет – 24–60 капель. Аэрозоль (20 '
       frequency_text: null
       duration_text: null
       route: null
@@ -295,14 +653,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: фенотерол/ипратропиум бромид, раствор для ингаляций... до 6 лет – 2
-          капли/кг, максимально 12 капель... 6–12 лет – 12–48 капель... старше 12
-          лет – 24–60 капель... ингаляции 3 раза в день; аэрозоль... старше 6 лет
-          1–2 ингаляционных дозы 2–3 раза в день;
-    - drug_name: Сальбутамол (бронхолитическая терапия)
+        quote: фенотерол/ипратропиум бромид, раствор для ингаляций... детям в возрасте
+          до 6 лет – 2 капли/кг, максимально 12 капель... ингаляции с помощью небулайзера
+          3 раза в день;
+    - drug_name: сальбутамол
       active_substance: null
       drug_group: null
-      dose_text: 1–2 ингаляционных дозы 3–4 раза в день.
+      dose_text: 'Аэрозоль дозированный для ингаляций 100 мкг/доза: 1–2 ингаляционных
+        дозы 3–4 раза в день.'
       frequency_text: null
       duration_text: null
       route: null
@@ -322,11 +680,12 @@ conditions:
         row_index: null
         quote: сальбутамол, аэрозоль дозированный для ингаляций 100 мкг/доза 1–2 ингаляционных
           дозы 3–4 раза в день;
-    - drug_name: Аминофиллин (бронхолитическая терапия)
+    - drug_name: аминофиллин
       active_substance: null
       drug_group: null
-      dose_text: Детям до 6 лет противопоказан. Детям старше 6 лет – 7–10 мг/кг/сутки
-        в 4 приема, максимальная разовая доза – 7 мг/кг.
+      dose_text: 'При невозможности применения ингаляционных форм (детям старше 6
+        лет). Таблетки 150 мг: 7–10 мг/кг/сутки внутрь в 4 приема (макс. разовая доза
+        – 7 мг/кг). Противопоказан детям до 6 лет.'
       frequency_text: null
       duration_text: null
       route: null
@@ -345,13 +704,13 @@ conditions:
         table_index: null
         row_index: null
         quote: аминофиллин (при невозможности использования ингаляционных форм бронхолитиков)...
-          детям до 6 лет противопоказан, детям старше 6 лет – 7–10 мг/кг/сутки в 4
-          приема, максимальная разовая доза – 7 мг/кг.
+          детям старше 6 лет – 7–10 мг/кг/сутки в 4 приема, максимальная разовая доза
+          – 7 мг/кг.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Оценка эффективности антибактериального лечения – через 48–72 ч.
+  - text: Повторный общий анализ крови через 7–10 дней (амбулаторно)
     timing: null
     required_if: []
     expected_actions: []
@@ -365,11 +724,75 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Оценка эффективности антибактериального лечения – через 48–72 ч.
+      quote: Повторный общий анализ крови через 7–10 дней (амбулаторно)
+  - text: Повторное исследование антител к M. pneumoniae через 10–14 дней после первого
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторное исследование антител к M. pneumoniae через 10–14 дней после
+        первого
+  - text: Повторная рентгенография грудной клетки через 4–6 недель после начала пневмонии
+      (по показаниям)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторная рентгенография грудной клетки через 4–6 недель после начала
+        пневмонии (по показаниям)
+  - text: Оценка эффективности антибактериального лечения проводится через 48–72 часа
+      после начала терапии
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка эффективности антибактериального лечения проводится через 48–72
+        часа после начала терапии
+  - text: При неэффективности стартового антибактериального лечения показана госпитализация
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При неэффективности стартового антибактериального лечения показана госпитализация
   hospitalization: []
   routing:
-  - text: 'Амбулаторно: при отсутствии медицинских показаний для стационарного лечения
-      (пункт 7.4).'
+  - text: амбулаторно
     timing: null
     required_if: []
     source_ref:
@@ -382,11 +805,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Амбулаторно: при отсутствии медицинских показаний для стационарного
-        лечения (пункт 7.4).'
-  - text: 'Госпитализация: возраст детей младше 6 мес. жизни; наличие болевого синдрома
-      в грудной клетке; ДН II, III степени; наличие тяжелого фонового заболевания;
-      отсутствие эффекта через 48–72 ч стартового антибактериального лечения.'
+      quote: амбулаторно
+  - text: госпитализация (в стационарных условиях)
     timing: null
     required_if: []
     source_ref:
@@ -399,11 +819,46 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Госпитализация: возраст детей младше 6 мес. жизни; наличие болевого
-        синдрома в грудной клетке; ДН II, III степени; наличие тяжелого фонового заболевания;
-        отсутствие эффекта через 48–72 ч стартового ан'
+      quote: госпитализация (в стационарных условиях)
+  - text: 'Амбулаторное лечение: возможно при отсутствии тяжелого фонового заболевания,
+      отсутствии ДН II-III ст., возрасте старше 6 месяцев и отсутствии болевого синдрома
+      в грудной клетке'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Амбулаторное лечение: возможно при отсутствии тяжелого фонового заболевания,
+        отсутствии ДН II-III ст., возрасте старше 6 месяцев и отсутствии болевого
+        синдрома в грудной клетке'
+  - text: 'Стационарное лечение (госпитализация): возраст <6 месяцев; болевой синдром
+      в грудной клетке; ДН II–III степени; наличие тяжелого фонового заболевания;
+      отсутствие эффекта через 48–72 ч стартовой антибактериальной терапии'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Стационарное лечение (госпитализация): возраст <6 месяцев; болевой синдром
+        в грудной клетке; ДН II–III степени; наличие тяжелого фонового заболевания;
+        отсутствие эффекта через 48–72 ч стартовой антиба'
   red_flags:
-  - text: Возраст детей младше 6 месяцев жизни.
+  - text: Нарастание дыхательной недостаточности, постоянная тахикардия, сохранение
+      SpO2 <92% на фоне оксигенотерапии
     aliases: []
     red_flag_type: other
     severity: high
@@ -413,31 +868,15 @@ conditions:
       protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
       document_url: null
       local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
-      page_start: 4
+      page_start: 6
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 8.1. возраст детей младше 6 мес. жизни;
-  - text: Наличие болевого синдрома в грудной клетке.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
-      document_url: null
-      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 8.2. наличие болевого синдрома в грудной клетке;
-  - text: Дыхательная недостаточность II, III степени.
+      quote: нарастание ДН; наличие постоянной тахикардии; необходимость в кардиотонической
+        поддержке; сохранение SpO2 <92 %, несмотря на адекватную оксигенотерапию
+  - text: Дыхательная недостаточность II, III степени
     aliases: []
     red_flag_type: other
     severity: high
@@ -454,10 +893,28 @@ conditions:
       table_index: null
       row_index: null
       quote: '8.3. ДН II, III степени и наличие любого из следующих признаков:'
-  - text: 'Наличие тяжелого фонового заболевания: иммунодефицитное состояние, лечение
-      иммуносупрессивными препаратами, онкологические заболевания, гемоглобинопатии,
-      пороки сердца, хронические заболевания легких, болезни эндокринной системы (сахарный
-      диабет, ожирение), хронические тяжелые болезни печени, почек, ЖКТ.'
+  - text: Отсутствие эффекта через 48–72 ч стартового антибактериального лечения (сохранение
+      лихорадки >38 °C, ухудшение состояния, нарастание изменений в легких или плевральной
+      полости)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: сохранение лихорадки более 38 °С при ухудшении состояния и (или) нарастании
+        патологических изменений в легких или плевральной полости через 48–72 ч стартового
+        антибактериального лечения
+  - text: Возраст ребенка младше 6 месяцев
     aliases: []
     red_flag_type: other
     severity: high
@@ -473,32 +930,44 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: '8.7. наличие тяжелого фонового заболевания: иммунодефицитное состояние;
-        лечение иммуносупрессивными лекарственными препаратами; онкологические и онкогематологические
-        заболевания; гемоглобинопатии; врожденные и приобретенные пороки и заболевания
-        сердца... врожденные и приобретенные хронические заболевания легких; болезни
-        эндокринной системы... хронические тяжелые болезни печени, почек, желудочно-ки'
-  - text: 'Отсутствие эффекта через 48–72 ч стартового антибактериального лечения:
-      сохранение лихорадки более 38 °С при ухудшении состояния и (или) нарастании
-      патологических изменений в легких или плевральной полости.'
+      quote: 8.1. возраст детей младше 6 мес. жизни;
+  - text: Наличие тяжелого фонового заболевания (иммунодефицит, онкология, пороки
+      сердца, эндокринные болезни, тяжелые болезни печени/почек/ЖКТ)
     aliases: []
     red_flag_type: other
-    severity: high
+    severity: medium
     expected_actions: []
     cap_if_unhandled: null
     source_ref:
       protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
       document_url: null
       local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
-      page_start: 5
+      page_start: 4
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: '8.8. отсутствие эффекта через 48–72 ч стартового антибактериального
-        лечения: сохранение лихорадки более 38 °С при ухудшении состояния и (или)
-        нарастании патологических изменений в легких или плевральной полости;'
+      quote: '8.7. наличие тяжелого фонового заболевания: иммунодефицитное состояние;
+        лечение иммуносупрессивными лекарственными препаратами; онкологические и онкогематологические
+        заболевания...'
+  - text: Наличие болевого синдрома в грудной клетке
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: infektsionnye_zabolevaniya_кп_диагностика_лечение_атипичных_пневмоний_детей_пост
+      document_url: null
+      local_path: minzdrav_protocols/infektsionnye-zabolevaniya/КП_Диагностика_лечение_атипичных_пневмоний_детей_пост_МЗ_29.04.2023_65.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 8.2. наличие болевого синдрома в грудной клетке;
   contraindications: []
   complications: []
   kz_checklist: null
@@ -507,7 +976,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:05:48.593254+00:00'
+  extracted_at: '2026-07-23T08:07:38.440135+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -515,7 +984,15 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=1
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T16:05:48.603234+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[atypical_pneumonia_children].treatment.drugs[10]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[atypical_pneumonia_children].treatment.drugs[11]
+  validated_at: '2026-07-23T08:07:38.455832+00:00'

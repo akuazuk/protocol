@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: диагностики и хирургического лечения пациентов с нейроишемической формой
-    синдрома диабетической стопы
+  title: Диагностика и хирургическое лечение пациентов с нейроишемической формой синдрома
+    диабетической стопы
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
     пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013 №
@@ -29,59 +29,72 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: neuroischemic_diabetic_foot_syndrome
+- condition_id: diabetic_foot_neuroischemic
   name: Нейроишемическая форма синдрома диабетической стопы
   synonyms: []
   abbreviations: []
   icd10_codes:
   - I43
   - B24
+  - E10.7
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Критическая ишемия конечности, развившаяся на фоне диабетической полинейропатии
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
+          лечения пациентов с нейроишемической формой синдрома диабетической стопы
+          20.03.2013 № 348.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Критическая ишемия конечности, развившаяся на фоне диабетической полинейропатии
+    - text: Нарушение чувствительности, боли в покое, акрально расположенные язвенно-некротические
+        дефекты стопы, гангрена пальцев
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
+          лечения пациентов с нейроишемической формой синдрома диабетической стопы
+          20.03.2013 № 348.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нарушение чувствительности, боли в покое, акрально расположенные язвенно-некротические
+          дефекты стопы, гангрена пальцев
+    optional: []
+    exclusion: []
   required_exams: []
   conditional_exams: []
-  treatment:
-    non_drug:
-    - text: Хирургическое лечение нейроишемической формы синдрома диабетической стопы
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое лечение нейроишемической формы синдрома диабетической
-          стопы
-    - text: Интервенционная эндоваскулярная хирургия
-      source_ref:
-        protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-        document_url: null
-        local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического
-          лечения пациентов с нейроишемической формой синдрома диабетической стопы
-          20.03.2013 № 348.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Интервенционная эндоваскулярная хирургия
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
+  treatment: null
   follow_up: []
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Оказание медицинской помощи в стационарных условиях районных, областных
+      и республиканских организаций здравоохранения (отделения гнойной хирургии, осложненной
+      сосудистой патологии, центры диабетической стопы)
     timing: null
     required_if: []
     source_ref:
@@ -96,89 +109,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: Оказание медицинской помощи в стационарных условиях районных, областных
+        и республиканских организаций здравоохранения (отделения гнойной хирургии,
+        осложненной сосудистой патологии, центры диабетическо
   red_flags:
-  - text: Критическая ишемия конечности, развившаяся на фоне диабетической полинейропатии
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
-        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
-        № 348.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Нейроишемическая форма синдрома диабетической стопы (НИО СДС) – это критическая
-        ишемия конечности, развившаяся на фоне диабетической полинейропатии.
-  - text: Глубокое поражение тканей с вовлечением костей и развитием остеомиелитического
-      процесса, гнойных артритов, глубоких абсцессов и флегмон (по Wagner 3 степени)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
-        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
-        № 348.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 3 степень - глубокое поражение тканей с вовлечением костей и развитием
-        остеомиелитического процесса, гнойных артритов, глубоких абсцессов и флегмон;
-  - text: Развитие гангрены пальца или отдела стопы (по Wagner 4 степени)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
-        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
-        № 348.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 4 степень - развитие гангрены пальца или отдела стопы;
-  - text: Обширная гангрена, захватывающая два или все три отдела стопы (по Wagner
-      5 степени)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_хирургического_лечения_пациентов_с_нейроишемической_
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и хирургического лечения
-        пациентов с нейроишемической формой синдрома диабетической стопы 20.03.2013
-        № 348.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 5 степень - обширная гангрена, захватывающая два или все три отдела столы.
-  - text: Осложнение процесса флегмоной стопы
+  - text: Гангрена пальца (пальцев) и возможность развития флегмоны стопы
     aliases: []
     red_flag_type: other
     severity: high
@@ -196,7 +131,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Указанные процессы могут осложниться флегмоной стопы.
+      quote: гангрена пальца (пальцев), язвенно-некротические дефекты межпальцевых
+        промежутков. Указанные процессы могут осложниться флегмоной стопы.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -205,7 +141,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:40:07.820045+00:00'
+  extracted_at: '2026-07-23T08:40:13.642670+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -216,4 +152,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:40:07.820241+00:00'
+  validated_at: '2026-07-23T08:40:13.642867+00:00'

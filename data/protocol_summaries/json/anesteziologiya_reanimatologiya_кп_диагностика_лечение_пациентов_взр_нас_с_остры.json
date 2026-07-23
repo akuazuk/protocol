@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов с острыми гастродуоденальными кровотечениями в стационарных условиях",
+    "title": "Диагностика и лечение пациентов (взрослое население) с острыми гастродуоденальными кровотечениями в стационарных условиях",
     "url": null,
     "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
     "document_sha256": null,
@@ -32,7 +32,7 @@
   },
   "conditions": [
     {
-      "condition_id": "acute_gastroduodenal_hemorrhage",
+      "condition_id": "ostrye_gastroduodenalnye_krovotecheniya",
       "name": "Острые гастродуоденальные кровотечения",
       "synonyms": [],
       "abbreviations": [],
@@ -54,7 +54,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Определение степени тяжести состояния пациента в зависимости от кровопотери на основе клинико-лабораторных критериев",
+            "text": "Оценка степени тяжести состояния пациента с учетом комплексной оценки клинических и лабораторных показателей объема, интенсивности и продолжительности кровопотери",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -71,7 +71,28 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение степени тяжести состояния пациента в зависимости от кровопотери на основе клинико-лабораторных критериев"
+              "quote": "Оценка степени тяжести состояния пациента с учетом комплексной оценки клинических и лабораторных показателей объема, интенсивности и продолжительности кровопотери"
+            }
+          },
+          {
+            "text": "Наличие клинических признаков гастродуоденального кровотечения или подозрение на ОГДК",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие клинических признаков гастродуоденального кровотечения или подозрение на ОГДК"
             }
           }
         ],
@@ -80,7 +101,7 @@
       },
       "required_exams": [
         {
-          "name": "Определение параметров кислотно-основного состояния",
+          "name": "ЭГДС пищевода, желудка и двенадцатиперстной кишки",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -101,14 +122,41 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "клинико-лабораторные исследования: определение параметров кислотно-основного состояния;"
+            "quote": "ЭГДС пищевода, желудка и двенадцатиперстной кишки является основным диагностическим методом при распознавании источника и прогнозировании результатов лечения ОГДК."
+          }
+        }
+      ],
+      "conditional_exams": [
+        {
+          "name": "Определение параметров кислотно-основного состояния",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "13. Дополнительными диагностическими мероприятиями при оказании медицинской 13.1. клинико-лабораторные исследования: определение параметров кислотно-основного состояния;"
           }
         },
         {
           "name": "Биохимический анализ крови",
           "aliases": [],
           "exam_type": "unknown",
-          "requirement_level": "required",
+          "requirement_level": "conditional",
           "accepted_statuses": [
             "performed",
             "recommended"
@@ -126,14 +174,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "биохимический анализ крови (определение содержания билирубина, глюкозы, мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы, С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор));"
+            "quote": "биохимический анализ крови (определение содержания билирубина, глюкозы, мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы, С-реактивного белка..."
           }
         },
         {
           "name": "Коагулограмма",
           "aliases": [],
           "exam_type": "unknown",
-          "requirement_level": "required",
+          "requirement_level": "conditional",
           "accepted_statuses": [
             "performed",
             "recommended"
@@ -153,13 +201,37 @@
             "row_index": null,
             "quote": "коагулограмма (определение фибриногена, активированного частичного тромбопластинового времени, протромбированого времени, международного нормализованного отношения);"
           }
+        },
+        {
+          "name": "УЗИ ОБП, мультиспиральная компьютерная томография и (или) ангиография",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "при выявленной гемобилии, вирсунгоррагии по данным ЭГДС (кровотечение из фатерова соска), УЗИ ОБП, мультиспиральной компьютерной томографии и (или) ангиографии"
+          }
         }
       ],
-      "conditional_exams": [],
       "treatment": {
         "non_drug": [
           {
-            "text": "Консервативная инфузионная терапия",
+            "text": "Консервативная инфузионная и трансфузионная терапия при уровне гемоглобина менее 70 г/л",
             "source_ref": {
               "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
               "document_url": null,
@@ -170,11 +242,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Консервативная инфузионная терапия"
+              "quote": "Консервативная инфузионная и трансфузионная терапия при уровне гемоглобина менее 70 г/л"
             }
           },
           {
-            "text": "Реанимационные мероприятия",
+            "text": "Реанимационные мероприятия и интенсивная терапия при тяжелом состоянии или тяжелой кровопотере",
             "source_ref": {
               "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
               "document_url": null,
@@ -185,11 +257,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Реанимационные мероприятия"
+              "quote": "Реанимационные мероприятия и интенсивная терапия при тяжелом состоянии или тяжелой кровопотере"
             }
           },
           {
-            "text": "Интенсивная терапия",
+            "text": "Установка зонда Сенгстакена-Блэкмора при кровотечении из варикозных вен пищевода и кардиального отдела желудка длительностью до 12 часов",
             "source_ref": {
               "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
               "document_url": null,
@@ -200,17 +272,92 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Интенсивная терапия"
+              "quote": "Установка зонда Сенгстакена-Блэкмора при кровотечении из варикозных вен пищевода и кардиального отдела желудка длительностью до 12 часов"
+            }
+          },
+          {
+            "text": "Эндоваскулярное лечение (эмболизация ветвей гастродуоденальной, селезеночной, печеночной артерии, коронарной и ретрогастральных варикозных вен, установка внутрипеченочного портосистемного шунта)",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эндоваскулярное лечение (эмболизация ветвей гастродуоденальной, селезеночной, печеночной артерии, коронарной и ретрогастральных варикозных вен, установка внутрипеченочного портосистемного шунта)"
+            }
+          },
+          {
+            "text": "Экстренное хирургическое вмешательство (гастротомия, дуоденотомия, резекция желудка, гастрэктомия и др.) при продолжающемся кровотечении или неэффективности эндоскопического гемостаза",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Экстренное хирургическое вмешательство (гастротомия, дуоденотомия, резекция желудка, гастрэктомия и др.) при продолжающемся кровотечении или неэффективности эндоскопического гемостаза"
+            }
+          },
+          {
+            "text": "Неотложное хирургическое вмешательство при риске рецидива кровотечения из хронической язвы по данным ЭГДС и клиники",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Неотложное хирургическое вмешательство при риске рецидива кровотечения из хронической язвы по данным ЭГДС и клиники"
+            }
+          },
+          {
+            "text": "Эндоскопический гемостаз и лигирование варикозных вен пищевода и желудка",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Эндоскопический гемостаз и лигирование варикозных вен пищевода и желудка"
+            }
+          },
+          {
+            "text": "Спленэктомия у пациентов с подпеченочной формой портальной гипертензии",
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Спленэктомия у пациентов с подпеченочной формой портальной гипертензии"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "Трансфузионная терапия",
+            "drug_name": "Транексамовая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "при уровне гемоглобина менее 70 г/л",
+            "dose_text": "Раствор для внутривенного введения 50 мг/мл, 5 мл или 20 мл, по 1 г внутривенно капельно или струйно медленно (1 мл в минуту) каждые 6–8 часов",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -228,7 +375,282 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "консервативной инфузионной и трансфузионной (при уровне гемоглобина менее 70 г/л) терапии параллельно с обследованием пациента."
+              "quote": "транексамовая кислота, раствор для внутривенного введения 50 мг/мл, 5 мл или 20 мл, по 1 г внутривенно капельно или струйно медленно (1 мл в минуту) каждые 6–8 часов;"
+            }
+          },
+          {
+            "drug_name": "Аминокапроновая кислота",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 50 мг/мл, 100 мл или 250 мл, в/в капельно 50–60 кап/мин, в 1-й час до 5 г, затем по 1 г/ч до остановки кровотечения (не более 8 ч)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "аминокапроновая кислота, раствор для инфузий 50 мг/мл, 100 мл или 250 мл, внутривенно капельно со скоростью 50–60 капель в минуту, в течение первого часа вводится до 5 г, затем по 1 г в час"
+            }
+          },
+          {
+            "drug_name": "Этамзилат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инъекций 125 мг/мл, 2 мл, в/в или в/м по 10–20 мг/кг в сутки на 3–4 введения (обычно 1–2 ампулы каждые 6 часов)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "этамзилат, раствор для инъекций 125 мг/мл, 2 мл, внутривенно или внутримышечно по 10–20 мг/кг в сутки, разделенные на 3–4 введения. Чаще всего 1–2 ампулы каждые 6 часов;"
+            }
+          },
+          {
+            "drug_name": "Кальция глюконат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инъекций 100 мг/мл, 5 мл или 10 мл, в/в медленно или капельно по 5–10 мл каждые 24 часа под контролем кальция крови",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "кальция глюконат, раствор для инъекций 100 мг/мл, 5 мл или 10 мл, внутривенно медленно или капельно по 5–10 мл каждые 24 часа, под контролем уровня кальция в крови."
+            }
+          },
+          {
+            "drug_name": "Свежезамороженная плазма",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Внутривенно капельно из расчета 10–15 мл на 1 кг массы тела при неэффективности проводимой гемостатической терапии",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При неэффективности проводимой терапии назначается свежезамороженная плазма внутривенно капельно (из расчета 10–15 мл на 1 кг массы тела);"
+            }
+          },
+          {
+            "drug_name": "Натрия хлорид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 9 мг/мл, среднесуточная доза 1000 мл, внутривенно капельно",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "натрия хлорид, раствор для инфузий 9 мг/мл, среднесуточная доза 1000 мл, внутривенно капельно"
+            }
+          },
+          {
+            "drug_name": "Раствор Рингера",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 200 мл, 400 мл, в/в капельно, суточный объем 500–3000 мл",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "раствор Рингера, раствор для инфузий 200 мл, 400 мл, внутривенно капельно, максимальный суточный объем 500–3000 мл в сутки"
+            }
+          },
+          {
+            "drug_name": "Раствор глюкозы",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 50 мг/мл, 100 мг/мл, в/в капельно, не более 6 г/кг массы тела в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "раствор глюкозы, раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно капельно, не более 6 г/кг массы тела в сутки (в целях дезинтоксикационной терапии);"
+            }
+          },
+          {
+            "drug_name": "Меглюмина натрия сукцинат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор для инфузий 1,5 % 400 мл, в/в капельно, 90 капель в минуту, максимальная суточная доза 800 мл",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "меглюмина натрия сукцинат, раствор для инфузий 1,5 % 400 мл, внутривенно, капельно, 90 капель в минуту, максимальная суточная доза 800 мл;"
+            }
+          },
+          {
+            "drug_name": "Альбумин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1–2 мл/кг раствора с концентрацией 100 мг/мл в/в капельно ежедневно или через день при снижении альбумина более 20%",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "введение альбумина (50 мг/мл, 100 мг/мл, 200 мг/мл) 1–2 мл/кг раствора с концентрацией 100 мг/мл внутривенно капельно, ежедневно или через день"
+            }
+          },
+          {
+            "drug_name": "Лауромакрогол 400",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор 5 мг/мл, 10 мг/мл, 30 мг/мл в амп. 2 мл в толщу стенки пищевода, желудка, кишки, интравазально и/или паравазально",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лауромакрогол 400, раствор для инъекций 5 мг/мл в ампулах 2 мл, 10 мг/мл в ампулах 2 мл, 30 мг/мл в ампулах 2 мл, введение ЛП проводится в толщу стенки пищевода, желудка и кишки"
+            }
+          },
+          {
+            "drug_name": "Этанол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор 70 %, 1 мл паравазально в толщу стенки пищевода, желудка или кишки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "этанол, раствор 70 %, введение 1 мл ЛП проводится паравазально в толщу стенки пищевода, желудка или кишки;"
             }
           }
         ],
@@ -236,11 +658,48 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Повторная ЭГДС проводится по медицинским показаниям",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Повторная ЭГДС проводится по медицинским показаниям"
+          }
+        },
+        {
+          "text": "Контроль уровня кальция в крови при проведении терапии кальция глюконатом",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Контроль уровня кальция в крови при проведении терапии кальция глюконатом"
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "госпитализация",
+          "text": "Лечение начинается в приемном отделении больничной организации",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -253,13 +712,98 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация"
+            "quote": "Лечение начинается в приемном отделении больничной организации"
+          }
+        },
+        {
+          "text": "При тяжелой кровопотере и/или тяжелом состоянии реанимационные мероприятия и терапия проводятся в операционной",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При тяжелой кровопотере и/или тяжелом состоянии реанимационные мероприятия и терапия проводятся в операционной"
+          }
+        },
+        {
+          "text": "Клинические признаки ОГДК являются основанием для экстренной госпитализации в хирургическое отделение больничной организации",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Клинические признаки ОГДК являются основанием для экстренной госпитализации в хирургическое отделение больничной организации"
+          }
+        },
+        {
+          "text": "Медицинская транспортировка пациента осуществляется в положении лежа",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинская транспортировка пациента осуществляется в положении лежа"
+          }
+        },
+        {
+          "text": "Осмотр и оценка степени тяжести состояния врачом-хирургом в приемном отделении проводится в экстренном порядке",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Осмотр и оценка степени тяжести состояния врачом-хирургом в приемном отделении проводится в экстренном порядке"
+          }
+        },
+        {
+          "text": "Пациентам в легкой или средней степени тяжести ЭГДС выполняется в эндоскопическом кабинете (отделении)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Пациентам в легкой или средней степени тяжести ЭГДС выполняется в эндоскопическом кабинете (отделении)"
           }
         }
       ],
       "red_flags": [
         {
-          "text": "Тяжелая кровопотеря и (или) тяжелое состояние пациента",
+          "text": "Тяжелая кровопотеря и (или) тяжелое состояние пациента при поступлении",
           "aliases": [],
           "red_flag_type": "other",
           "severity": "high",
@@ -277,32 +821,51 @@
             "row_index": null,
             "quote": "При поступлении в больничную организацию пациента с тяжелой кровопотерей и (или) в тяжелом состоянии реанимационные мероприятия, интенсивная и трансфузионная терапия проводятся в операционной"
           }
+        },
+        {
+          "text": "Продолжающееся кровотечение и (или) неэффективность эндоскопического гемостаза (показание к экстренной операции)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Продолжающееся кровотечение и (или) неэффективность эндоскопического гемостаза являются медицинским показанием к экстренному хирургическому вмешательству."
+          }
+        },
+        {
+          "text": "Риск рецидива кровотечения из хронической язвы желудка и ДПК по данным ЭГДС и клиники (показание к неотложной операции)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_остры",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинским показанием к неотложному хирургическому вмешательству является риск рецидива кровотечения из хронической язвы желудка и двенадцатиперстной кишки по данным ЭГДС и клинической картины."
+          }
         }
       ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Определение степени тяжести состояния пациента в зависимости от кровопотери на основе кли…",
-          "Назначено/выполнено обследование: Определение параметров кислотно-основного состояния",
-          "Назначено/выполнено обследование: Биохимический анализ крови",
-          "Назначено/выполнено обследование: Коагулограмма",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Трансфузионная терапия",
-          "Немедикаментозно: Консервативная инфузионная терапия",
-          "Немедикаментозно: Реанимационные мероприятия",
-          "Немедикаментозно: Интенсивная терапия"
-        ],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": [
-          "Важно: при «Тяжелая кровопотеря и (или) тяжелое состояние пациента»"
-        ]
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -310,20 +873,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-02T00:07:00.818440+00:00",
+    "extracted_at": "2026-07-23T07:11:01.307177+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-02T00:07:00.825879+00:00"
+    "validated_at": "2026-07-23T07:11:01.319564+00:00"
   }
 }

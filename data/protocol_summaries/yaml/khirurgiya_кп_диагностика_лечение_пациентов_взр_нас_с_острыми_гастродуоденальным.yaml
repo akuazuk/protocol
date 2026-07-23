@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с острыми гастродуоденальными кровотечениями
-    в стационарных условиях
+  title: Диагностика и лечение пациентов (взрослое население) с острыми гастродуоденальными
+    кровотечениями в стационарных условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
   document_sha256: null
@@ -47,9 +47,8 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Комплексная оценка клинических и лабораторных показателей для определения
-        объема, интенсивности и продолжительности кровопотери, реакции организма,
-        наличия фоновых и сопутствующих заболеваний.
+    - text: Комплексная оценка клинических и лабораторных показателей объема, интенсивности
+        и продолжительности кровопотери
       logic_group: null
       operator: unknown
       values: []
@@ -66,11 +65,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Комплексная оценка клинических и лабораторных показателей для определения
-          объема, интенсивности и продолжительности кровопотери, реакции организма,
-          наличия фоновых и сопутствующих заболеваний.
-    - text: Определение степени тяжести состояния пациента в зависимости от кровопотери
-        на основе клинико-лабораторных критериев.
+        quote: Комплексная оценка клинических и лабораторных показателей объема, интенсивности
+          и продолжительности кровопотери
+    - text: Оценка индивидуальной реакции организма на потерю крови, наличия фоновых
+        и сопутствующих заболеваний
       logic_group: null
       operator: unknown
       values: []
@@ -87,12 +85,50 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение степени тяжести состояния пациента в зависимости от кровопотери
-          на основе клинико-лабораторных критериев.
+        quote: Оценка индивидуальной реакции организма на потерю крови, наличия фоновых
+          и сопутствующих заболеваний
+    - text: Выделение степеней кровопотери на основе клинико-лабораторных критериев
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выделение степеней кровопотери на основе клинико-лабораторных критериев
+    - text: Наличие клинических признаков гастродуоденального кровотечения или подозрение
+        на ОГДК
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие клинических признаков гастродуоденального кровотечения или
+          подозрение на ОГДК
     optional: []
     exclusion: []
   required_exams:
-  - name: Определение параметров кислотно-основного состояния
+  - name: ЭГДС пищевода, желудка и двенадцатиперстной кишки
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -112,12 +148,35 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение параметров кислотно-основного состояния
-  - name: Биохимический анализ крови (билирубин, глюкоза, мочевина, общий белок, АСТ,
-      АЛТ, альфа-амилаза, С-реактивный белок, Na, K, Ca, Cl)
+      quote: ЭГДС пищевода, желудка и двенадцатиперстной кишки является основным диагностическим
+        методом при распознавании источника и прогнозировании результатов лечения
+        ОГДК.
+  conditional_exams:
+  - name: Определение параметров кислотно-основного состояния
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение параметров кислотно-основного состояния;
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -136,11 +195,11 @@ conditions:
       row_index: null
       quote: биохимический анализ крови (определение содержания билирубина, глюкозы,
         мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы,
-        С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор))
-  - name: Коагулограмма (фибриноген, АЧТВ, протромбиновое время, МНО)
+        С-реактивного белка, электролитов
+  - name: Коагулограмма
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -158,8 +217,7 @@ conditions:
       table_index: null
       row_index: null
       quote: коагулограмма (определение фибриногена, активированного частичного тромбопластинового
-        времени, протромбированого времени, международного нормализованного отношения)
-  conditional_exams: []
+        времени, протромбированого времени, международного нормализованного отношения);
   treatment:
     non_drug:
     - text: Консервативная инфузионная терапия
@@ -174,6 +232,72 @@ conditions:
         table_index: null
         row_index: null
         quote: Консервативная инфузионная терапия
+    - text: Реанимационные мероприятия и интенсивная терапия
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Реанимационные мероприятия и интенсивная терапия
+    - text: Медицинская транспортировка пациента в положении лежа
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинская транспортировка пациента в положении лежа
+    - text: Установка зонда Сенгстакена-Блэкмора при кровотечении из варикозных вен
+        пищевода и кардиального отдела желудка на срок до 12 часов
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Установка зонда Сенгстакена-Блэкмора при кровотечении из варикозных
+          вен пищевода и кардиального отдела желудка на срок до 12 часов
+    - text: Эндоваскулярное лечение (эмболизация ветвей гастродуоденальной, селезеночной,
+        печеночной артерий, установка внутрипеченочного портосистемного шунта)
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Эндоваскулярное лечение (эмболизация ветвей гастродуоденальной, селезеночной,
+          печеночной артерий, установка внутрипеченочного портосистемного шунта)
+    - text: Хирургическое вмешательство (гастротомия, дуоденотомия, лигирование варикозных
+        вен, спленэктомия и др.)
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Хирургическое вмешательство (гастротомия, дуоденотомия, лигирование
+          варикозных вен, спленэктомия и др.)
     drug_groups: []
     drugs:
     - drug_name: Трансфузионная терапия
@@ -198,14 +322,333 @@ conditions:
         table_index: null
         row_index: null
         quote: трансфузионной (при уровне гемоглобина менее 70 г/л) терапии параллельно
-          с обследованием пациента.
+          с обследованием пациента
+    - drug_name: Транексамовая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: по 1 г внутривенно капельно или струйно медленно (1 мл в минуту)
+        каждые 6–8 часов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: транексамовая кислота, раствор для внутривенного введения 50 мг/мл,
+          5 мл или 20 мл, по 1 г внутривенно капельно или струйно медленно (1 мл в
+          минуту) каждые 6–8 часов;
+    - drug_name: Аминокапроновая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно со скоростью 50–60 капель в минуту, в течение
+        первого часа вводится до 5 г, затем по 1 г в час до полной остановки кровотечения,
+        не более 8 часов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: внутривенно капельно со скоростью 50–60 капель в минуту, в течение
+          первого часа вводится до 5 г, затем по 1 г в час до полной остановки кровотечения,
+          не более 8 часов.
+    - drug_name: Этамзилат
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно или внутримышечно по 10–20 мг/кг в сутки, разделенные
+        на 3–4 введения
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: этамзилат, раствор для инъекций 125 мг/мл, 2 мл, внутривенно или внутримышечно
+          по 10–20 мг/кг в сутки, разделенные на 3–4 введения.
+    - drug_name: Кальция глюконат
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно медленно или капельно по 5–10 мл каждые 24 часа, под
+        контролем уровня кальция в крови
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кальция глюконат, раствор для инъекций 100 мг/мл, 5 мл или 10 мл, внутривенно
+          медленно или капельно по 5–10 мл каждые 24 часа, под контролем уровня кальция
+          в крови.
+    - drug_name: Свежезамороженная плазма
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно (из расчета 10–15 мл на 1 кг массы тела) при
+        неэффективности проводимой терапии
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При неэффективности проводимой терапии назначается свежезамороженная
+          плазма внутривенно капельно (из расчета 10–15 мл на 1 кг массы тела);
+    - drug_name: Натрия хлорид
+      active_substance: null
+      drug_group: null
+      dose_text: среднесуточная доза 1000 мл, внутривенно капельно
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: натрия хлорид, раствор для инфузий 9 мг/мл, среднесуточная доза 1000
+          мл, внутривенно капельно
+    - drug_name: Раствор Рингера
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно, максимальный суточный объем 500–3000 мл в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: раствор Рингера, раствор для инфузий 200 мл, 400 мл, внутривенно капельно,
+          максимальный суточный объем 500–3000 мл в сутки
+    - drug_name: Раствор глюкозы
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно, не более 6 г/кг массы тела в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: раствор глюкозы, раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно
+          капельно, не более 6 г/кг массы тела в сутки
+    - drug_name: Меглюмина натрия сукцинат
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно, капельно, 90 капель в минуту, максимальная суточная
+        доза 800 мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: меглюмина натрия сукцинат, раствор для инфузий 1,5 % 400 мл, внутривенно,
+          капельно, 90 капель в минуту, максимальная суточная доза 800 мл;
+    - drug_name: Альбумин
+      active_substance: null
+      drug_group: null
+      dose_text: 1–2 мл/кг раствора с концентрацией 100 мг/мл внутривенно капельно,
+        ежедневно или через день
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: введение альбумина (50 мг/мл, 100 мг/мл, 200 мг/мл) 1–2 мл/кг раствора
+          с концентрацией 100 мг/мл внутривенно капельно, ежедневно или через день
+    - drug_name: Лауромакрогол 400
+      active_substance: null
+      drug_group: null
+      dose_text: введение в толщу стенки пищевода, желудка и кишки, интравазально
+        и (или) паравазально
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: лауромакрогол 400, раствор для инъекций... введение ЛП проводится в
+          толщу стенки пищевода, желудка и кишки, интравазально и (или) паравазально;
+    - drug_name: Этанол
+      active_substance: null
+      drug_group: null
+      dose_text: введение 1 мл паравазально в толщу стенки пищевода, желудка или кишки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: этанол, раствор 70 %, введение 1 мл ЛП проводится паравазально в толщу
+          стенки пищевода, желудка или кишки;
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Повторная ЭГДС проводится по медицинским показаниям
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторная ЭГДС проводится по медицинским показаниям
+  - text: Контроль уровня кальция в крови при применении кальция глюконата
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контроль уровня кальция в крови при применении кальция глюконата
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Лечение начинается в приемном отделении больничной организации параллельно
+      с обследованием
     timing: null
     required_if: []
     source_ref:
@@ -218,9 +661,72 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: Лечение начинается в приемном отделении больничной организации параллельно
+        с обследованием
+  - text: При поступлении пациента с тяжелой кровопотерей и (или) в тяжелом состоянии
+      мероприятия проводятся в операционной
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При поступлении пациента с тяжелой кровопотерей и (или) в тяжелом состоянии
+        мероприятия проводятся в операционной
+  - text: Госпитализация в хирургическое отделение больничной организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация в хирургическое отделение больничной организации
+  - text: Медицинская транспортировка в больничную организацию осуществляется в положении
+      лежа
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская транспортировка в больничную организацию осуществляется в
+        положении лежа
+  - text: Экстренный осмотр и оценка степени тяжести состояния врачом-хирургом в приемном
+      отделении
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Экстренный осмотр и оценка степени тяжести состояния врачом-хирургом
+        в приемном отделении
   red_flags:
-  - text: Тяжелая кровопотеря и (или) тяжелое состояние
+  - text: Тяжелая кровопотеря и (или) тяжелое состояние пациента
     aliases: []
     red_flag_type: other
     severity: high
@@ -238,37 +744,593 @@ conditions:
       row_index: null
       quote: При поступлении в больничную организацию пациента с тяжелой кровопотерей
         и (или) в тяжелом состоянии реанимационные мероприятия, интенсивная и трансфузионная
-        терапия проводятся в операционной...
+        терапия проводятся в операционной
+  - text: Продолжающееся кровотечение и (или) неэффективность эндоскопического гемостаза
+      (показание к экстренной хирургии)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Продолжающееся кровотечение и (или) неэффективность эндоскопического
+        гемостаза являются медицинским показанием к экстренному хирургическому вмешательству.
+  - text: Риск рецидива кровотечения из хронической язвы желудка и ДПК по данным ЭГДС
+      и клиники (показание к неотложной хирургии)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинским показанием к неотложному хирургическому вмешательству является
+        риск рецидива кровотечения из хронической язвы желудка и двенадцатиперстной
+        кишки по данным ЭГДС и клинической картины.
   contraindications: []
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: zakrytaya_travma_grudnoy_kletki
+- condition_id: zakrytaya_travma_grudnoj_kletki
   name: Закрытая травма грудной клетки
   synonyms: []
   abbreviations: []
   icd10_codes:
   - S20
-  - S21
-  - S22
-  - S23
-  - S24
-  - S25
-  - S26
-  - S27
-  - S28
   - S29
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
+  diagnostic_criteria:
+    required:
+    - text: Комплексная оценка клинических и лабораторных показателей, характеризующих
+        объем, интенсивность и продолжительность кровопотери, реакцию организма и
+        наличие сопутствующих заболеваний
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Комплексная оценка клинических и лабораторных показателей, характеризующих
+          объем, интенсивность и продолжительность кровопотери, реакцию организма
+          и наличие сопутствующих заболеваний
+    - text: Клинические признаки гастродуоденального кровотечения или подозрение на
+        ОГДК
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Клинические признаки гастродуоденального кровотечения или подозрение
+          на ОГДК
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: ЭГДС пищевода, желудка и двенадцатиперстной кишки
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ЭГДС пищевода, желудка и двенадцатиперстной кишки является основным диагностическим
+        методом при распознавании источника и прогнозировании результатов лечения
+        ОГДК.
+  conditional_exams:
+  - name: Определение параметров кислотно-основного состояния
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение параметров кислотно-основного состояния;
+  - name: Биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимический анализ крови (определение содержания билирубина, глюкозы,
+        мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы,
+        С-реактивного белка, электролитов...)
+  - name: Коагулограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: коагулограмма (определение фибриногена, активированного частичного тромбопластинового
+        времени, протромбированого времени, международного нормализованного отношения);
+  treatment:
+    non_drug:
+    - text: Консервативная инфузионная терапия
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Консервативная инфузионная терапия
+    - text: Реанимационные мероприятия и интенсивная терапия в операционной
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Реанимационные мероприятия и интенсивная терапия в операционной
+    - text: Установка зонда Сенгстакена-Блэкмора при кровотечении из варикозных вен
+        пищевода и кардиального отдела желудка длительностью до 12 часов
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Установка зонда Сенгстакена-Блэкмора при кровотечении из варикозных
+          вен пищевода и кардиального отдела желудка длительностью до 12 часов
+    - text: Эндоваскулярное лечение (эмболизация ветвей гастродуоденальной, селезеночной,
+        печеночной артерии, коронарной и ретрогастральных варикозных вен, установка
+        внутрипеченочного портосистемного шунта)
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Эндоваскулярное лечение (эмболизация ветвей гастродуоденальной, селезеночной,
+          печеночной артерии, коронарной и ретрогастральных варикозных вен, установка
+          внутрипеченочного портосистемного шунта)
+    - text: Экстренное или неотложное хирургическое вмешательство (гастротомия, дуоденотомия,
+        прошивание сосуда, иссечение язвы, резекция желудка, гастрэктомия, лигирование
+        варикозных вен)
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экстренное или неотложное хирургическое вмешательство (гастротомия,
+          дуоденотомия, прошивание сосуда, иссечение язвы, резекция желудка, гастрэктомия,
+          лигирование варикозных вен)
+    - text: Эндоскопический гемостаз
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Эндоскопический гемостаз
+    drug_groups: []
+    drugs:
+    - drug_name: Транексамовая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: по 1 г внутривенно капельно или струйно медленно (1 мл в минуту)
+        каждые 6–8 часов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: транексамовая кислота, раствор для внутривенного введения 50 мг/мл,
+          5 мл или 20 мл, по 1 г внутривенно капельно или струйно медленно (1 мл в
+          минуту) каждые 6–8 часов;
+    - drug_name: Аминокапроновая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно со скоростью 50–60 капель в минуту, в течение
+        первого часа вводится до 5 г, затем по 1 г в час до полной остановки кровотечения,
+        не более 8 часов
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: аминокапроновая кислота, раствор для инфузий 50 мг/мл, 100 мл или 250
+          мл, внутривенно капельно со скоростью 50–60 капель в минуту, в течение первого
+          часа вводится до 5 г...
+    - drug_name: Этамзилат
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно или внутримышечно по 10–20 мг/кг в сутки, разделенные
+        на 3–4 введения (чаще всего 1–2 ампулы каждые 6 часов)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: этамзилат, раствор для инъекций 125 мг/мл, 2 мл, внутривенно или внутримышечно
+          по 10–20 мг/кг в сутки, разделенные на 3–4 введения.
+    - drug_name: Кальция глюконат
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно медленно или капельно по 5–10 мл каждые 24 часа под контролем
+        уровня кальция в крови
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: кальция глюконат, раствор для инъекций 100 мг/мл, 5 мл или 10 мл, внутривенно
+          медленно или капельно по 5–10 мл каждые 24 часа, под контролем уровня кальция
+          в крови.
+    - drug_name: Свежезамороженная плазма
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно из расчета 10–15 мл на 1 кг массы тела при неэффективности
+        проводимой терапии
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При неэффективности проводимой терапии назначается свежезамороженная
+          плазма внутривенно капельно (из расчета 10–15 мл на 1 кг массы тела);
+    - drug_name: Натрия хлорид
+      active_substance: null
+      drug_group: null
+      dose_text: среднесуточная доза 1000 мл, внутривенно капельно
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: натрия хлорид, раствор для инфузий 9 мг/мл, среднесуточная доза 1000
+          мл, внутривенно капельно
+    - drug_name: Раствор Рингера
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно, максимальный суточный объем 500–3000 мл в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: раствор Рингера, раствор для инфузий 200 мл, 400 мл, внутривенно капельно,
+          максимальный суточный объем 500–3000 мл в сутки
+    - drug_name: Раствор глюкозы
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно, не более 6 г/кг массы тела в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: раствор глюкозы, раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно
+          капельно, не более 6 г/кг массы тела в сутки
+    - drug_name: Меглюмина натрия сукцинат
+      active_substance: null
+      drug_group: null
+      dose_text: внутривенно капельно, 90 капель в минуту, максимальная суточная доза
+        800 мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: меглюмина натрия сукцинат, раствор для инфузий 1,5 % 400 мл, внутривенно,
+          капельно, 90 капель в минуту, максимальная суточная доза 800 мл;
+    - drug_name: Альбумин
+      active_substance: null
+      drug_group: null
+      dose_text: 1–2 мл/кг раствора с концентрацией 100 мг/мл внутривенно капельно,
+        ежедневно или через день
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: введение альбумина (50 мг/мл, 100 мг/мл, 200 мг/мл) 1–2 мл/кг раствора
+          с концентрацией 100 мг/мл внутривенно капельно, ежедневно или через день
+    - drug_name: Лауромакрогол 400
+      active_substance: null
+      drug_group: null
+      dose_text: в толщу стенки пищевода, желудка и кишки, интравазально и (или) паравазально
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: лауромакрогол 400, раствор для инъекций... введение ЛП проводится в
+          толщу стенки пищевода, желудка и кишки, интравазально и (или) паравазально;
+    - drug_name: Этанол
+      active_substance: null
+      drug_group: null
+      dose_text: введение 1 мл паравазально в толщу стенки пищевода, желудка или кишки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 7
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: этанол, раствор 70 %, введение 1 мл ЛП проводится паравазально в толщу
+          стенки пищевода, желудка или кишки;
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Повторная ЭГДС проводится по медицинским показаниям.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторная ЭГДС проводится по медицинским показаниям.
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: госпитализация (лечение начинается в приемном отделении или операционной
+      больничной организации)
     timing: null
     required_if: []
     source_ref:
@@ -281,8 +1343,127 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  red_flags: []
+      quote: госпитализация (лечение начинается в приемном отделении или операционной
+        больничной организации)
+  - text: Госпитализация пациента в хирургическое отделение больничной организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Госпитализация пациента в хирургическое отделение больничной организации
+  - text: Медицинская транспортировка пациента в положение лежа
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская транспортировка пациента в положение лежа
+  - text: В приемном отделении больничной организации пациента в экстренном порядке
+      осматривает и оценивает степень тяжести состояния врач-хирург
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: В приемном отделении больничной организации пациента в экстренном порядке
+        осматривает и оценивает степень тяжести состояния врач-хирург
+  red_flags:
+  - text: Поступление пациента с тяжелой кровопотерей и (или) в тяжелом состоянии
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При поступлении в больничную организацию пациента с тяжелой кровопотерей
+        и (или) в тяжелом состоянии реанимационные мероприятия, интенсивная и трансфузионная
+        терапия проводятся в операционной
+  - text: Уровень гемоглобина менее 70 г/л
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: трансфузионной (при уровне гемоглобина менее 70 г/л) терапии
+  - text: Продолжающееся кровотечение и (или) неэффективность эндоскопического гемостаза
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Продолжающееся кровотечение и (или) неэффективность эндоскопического
+        гемостаза являются медицинским показанием к экстренному хирургическому вмешательству.
+  - text: Риск рецидива кровотечения из хронической язвы желудка и двенадцатиперстной
+      кишки по данным ЭГДС и клинической картины
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальным
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_острыми_гастродуоденальными_кровотечениями_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинским показанием к неотложному хирургическому вмешательству является
+        риск рецидива кровотечения из хронической язвы желудка и двенадцатиперстной
+        кишки по данным ЭГДС и клинической картины.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -291,7 +1472,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:32:32.533687+00:00'
+  extracted_at: '2026-07-23T08:31:11.602380+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -299,7 +1480,59 @@ extraction_metadata:
   - llm_pipeline_v1
   - conditions=2
 validation:
-  status: valid
+  status: needs_human_review
   errors: []
-  warnings: []
-  validated_at: '2026-07-20T16:32:32.537439+00:00'
+  warnings:
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[zakrytaya_travma_grudnoj_kletki].required_exams[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[3]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[4]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[6]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[7]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[8]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[9]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[10]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[zakrytaya_travma_grudnoj_kletki].treatment.drugs[11]
+  validated_at: '2026-07-23T08:31:11.626730+00:00'

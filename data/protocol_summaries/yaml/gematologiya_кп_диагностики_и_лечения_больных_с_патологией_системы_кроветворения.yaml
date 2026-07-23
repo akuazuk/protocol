@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение больных с патологией системы кроветворения
+  title: Клинический протокол диагностики и лечения больных с патологией системы кроветворения
   url: null
   local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных с патологией
     системы кроветворения 274.pdf
@@ -27,8 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: chronic_myeloproliferative_disease
-  name: Хроническое миелопролиферативное заболевание
+- condition_id: khronicheskaya_mieloproliferativnaya
+  name: Хроническая миелопролиферативная болезнь
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -38,28 +38,6 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria: null
   required_exams:
-  - name: Общий анализ крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Общий ан. крови
   - name: Определение уровней АЧТВ, ПТИ, ТВ, фибриногена
     aliases: []
     exam_type: unknown
@@ -150,7 +128,7 @@ conditions:
       quote: Определение уровней активированного частичного тромбопластинового времени
         (далее-АЧТВ), протромбинового индекса (далее-ПТИ), тромбинового времени (далее-ТВ),
         фибриногена
-  - name: Биохимическое исследование крови
+  - name: Биохимическое исследование крови (общий белок, мочевина, АсАТ, АлАТ)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -217,7 +195,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Трепанобиопсия
-  - name: Ультразвуковое исследование органов брюшной полости
+  - name: УЗИ органов брюшной полости
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -239,7 +217,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Ультразвуковое исследование (далее-УЗИ) органов брюшной полости
-  - name: Полимеразная цепная реакция (ПЦР)
+  - name: ПЦР
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -306,32 +284,11 @@ conditions:
       table_index: null
       row_index: null
       quote: Определение иммунного ингибитора фактора VIII
-  - name: Обследование родственников
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 29
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Обследование родственников
   treatment:
     non_drug:
     - text: 'Физиотерапевтическое лечение: магнитотерапия, лазеротерапия, электрофорез
-        на область гематомы, гемартроза (10 сеансов)'
+        на область гематомы, гемартроза (10 сеансов), массаж № 10 (после купирования
+        кровотечения)'
       source_ref:
         protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
         document_url: null
@@ -344,47 +301,11 @@ conditions:
         table_index: null
         row_index: null
         quote: 'Физиотерапевтическое лечение: магнитотерапия, лазеротерапия, электрофорез
-          на область гематомы, гемартроза (10 сеансов)'
-    - text: Массаж (10 сеансов после купирования кровотечения)
-      source_ref:
-        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-          с патологией системы кроветворения 274.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Массаж (10 сеансов после купирования кровотечения)
+          на область гематомы, гемартроза (10 сеансов), массаж № 10 (после купирования
+          кровотечения)'
     drug_groups: []
     drugs:
-    - drug_name: Криопреципитат
-      active_substance: null
-      drug_group: null
-      dose_text: 15-50 ЕД/кг
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-          с патологией системы кроветворения 274.pdf
-        page_start: 9
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Криопреципитат, концентрированные препараты фактора VIII (15-50 ЕД/кг)
-          в условиях дневного стационара
-    - drug_name: Концентрированные препараты фактора VIII
+    - drug_name: Криопреципитат, концентрированные препараты фактора VIII
       active_substance: null
       drug_group: null
       dose_text: 15-50 ЕД/кг
@@ -411,7 +332,7 @@ conditions:
     - drug_name: Аминокапроновая кислота
       active_substance: null
       drug_group: null
-      dose_text: внутрь 2-4 г/сут
+      dose_text: внутрь 2-4 г/сут (исключая почечные кровотечения)
       frequency_text: null
       duration_text: null
       route: null
@@ -527,7 +448,7 @@ conditions:
     surgery: []
     source_refs: []
   follow_up:
-  - text: Стабилизация
+  - text: Контроль общего анализа крови + тромбоциты 1 раз в неделю
     timing: null
     required_if: []
     expected_actions: []
@@ -542,10 +463,26 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Стабилизация
+      quote: Контроль общего анализа крови + тромбоциты 1 раз в неделю
+  - text: Курс лечения 2-3 недели до достижения цели (стабилизация)
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Курс лечения 2-3 недели до достижения цели (стабилизация)
   hospitalization: []
   routing:
-  - text: амбулаторно
+  - text: амбулаторно-поликлиническая помощь
     timing: null
     required_if: []
     source_ref:
@@ -559,22 +496,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: амбулаторно
-  - text: стационар
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: стационар
+      quote: амбулаторно-поликлиническая помощь
   - text: дневной стационар
     timing: null
     required_if: []
@@ -590,7 +512,7 @@ conditions:
       table_index: null
       row_index: null
       quote: дневной стационар
-  - text: Гематологический кабинет областного уровня
+  - text: Гематологический кабинет областного уровня (ОУ)
     timing: null
     required_if: []
     source_ref:
@@ -604,8 +526,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Гематологический кабинет областного уровня
-  - text: Гематологический кабинет Республиканского уровня
+      quote: Гематологический кабинет областного уровня (ОУ)
+  - text: Гематологический кабинет Республиканского уровня (Респ. У)
     timing: null
     required_if: []
     source_ref:
@@ -619,32 +541,14 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Гематологический кабинет Республиканского уровня
-  red_flags:
-  - text: Почечные кровотечения (при назначении Аминокапроновой кислоты)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 9
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Аминокапроновая кислота внутрь 2-4 г/сут (исключая почечные кровотечения)
+      quote: Гематологический кабинет Республиканского уровня (Респ. У)
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: iron_deficiency_anemia_sideropenic_dysphagia
-  name: Железодефицитная анемия и сидеропеническая дисфагия
+- condition_id: zhelezodeficitnaya_anemiya
+  name: Железодефицитная анемия вторичная / Сидеропеническая дисфагия
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -654,10 +558,152 @@ conditions:
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria: null
-  required_exams: []
+  required_exams:
+  - name: Ирригоскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ирригоскопия
+  - name: 'Консультация: ЛОР-врача, хирурга, эндокринолога'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация: ЛОР-врача, хирурга, эндокринолога'
   conditional_exams: []
-  treatment: null
-  follow_up: []
+  treatment:
+    non_drug:
+    - text: Ликвидация источника кровопотери
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ликвидация источника кровопотери
+    drug_groups: []
+    drugs:
+    - drug_name: Препараты железа
+      active_substance: null
+      drug_group: null
+      dose_text: внутрь 2-3 мг/кг/сут по элементарному (двухвалентному) железу
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 25
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Препараты железа внутрь 2-3 мг/кг/сут по элементарному (двухвалентному)
+          железу
+    - drug_name: Эритроцитная масса
+      active_substance: null
+      drug_group: null
+      dose_text: при Hb<70 г/л в объеме 400-500 мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 25
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Переливание эритроцитной массы при Hb<70 г/л в объеме 400-500 мл
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Нормализация гемограммы, тестов феррикинетики
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Нормализация гемограммы, тестов феррикинетики
+  - text: Исчезновение клинических признаков дефицита железа
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исчезновение клинических признаков дефицита железа
   hospitalization: []
   routing: []
   red_flags: []
@@ -665,24 +711,334 @@ conditions:
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: vitamin_b12_folate_deficiency_anemias
-  name: Витамин-В12-дефицитная и фолиеводефицитная анемии
+- condition_id: vitamin_b12_deficitnaya_anemiya
+  name: Витамин-В12-дефицитная анемия
   synonyms: []
   abbreviations: []
   icd10_codes:
   - D51
-  - D52
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
+  required_exams:
+  - name: Общий ан. крови + тромбоциты, ретикулоциты
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий ан. кро-ви + тромбоци-ты, ретикуло-циты 1р/нед
+  - name: Миелограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Миелограмма 1
+  - name: 'Биохимическое исследование крови: общий белок, белковые фракции, билирубин,
+      АсАТ, АлАТ, ЩФ'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование крови: общий белок, белковые фракции, билирубин,
+        АсАТ, АлАТ, ЩФ 1р/нед'
+  - name: Копрограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Копрограмма 1
+  - name: ФГДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ФГДС 1
+  - name: РРС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: РРС 1
+  - name: УЗИ органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ органов брюшной полости 1
+  conditional_exams:
+  - name: Исследование кала на гельминты
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование кала на гельминты
+  - name: Определение метилмалоновой кислоты в моче
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение метилмалоновой кислоты в моче
+  - name: Определение витамина В12 в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение витамина В12 в сыворотке крови
+  - name: Колоноскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Колоноскопия
+  - name: Определение уровней АЧТВ, ПТИ, ТВ, фибриногена
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение уровней АЧТВ, ПТИ, ТВ, фибриногена
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: Витамин В12
+      active_substance: null
+      drug_group: null
+      dose_text: в суточной дозе 400-500 мкг, на курс 30-40 инъекций, в/м
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 26
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Витамин В12 в суточной дозе 400-500 мкг, на курс 30-40 инъекций, в/м
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: 20 дн. Выздоровление с полным восстановлением физиологического процесса
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 20 дн. Выздоровление с полным восстановлением физиологического процесса
   hospitalization: []
   routing:
-  - text: амбулаторно
+  - text: РУ
     timing: null
     required_if: []
     source_ref:
@@ -696,8 +1052,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: амбулаторно
-  - text: госпитализация
+      quote: РУ
+  - text: МУ
     timing: null
     required_if: []
     source_ref:
@@ -711,14 +1067,375 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: МУ
+  - text: ОУ
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ОУ
+  - text: 'Консультация: ЛОР-врача, хирурга, эндокринолога'
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Консультация: ЛОР-врача, хирурга, эндокринолога'
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: hereditary_spherocytosis
-  name: Наследственная сфероцитарная анемия (Минковского-Шоффара)
+- condition_id: folievodeficitnaya_anemiya
+  name: Фолиеводефицитная анемия
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D52
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria: null
+  required_exams:
+  - name: Общий анализ крови + тромбоциты, ретикулоциты
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий ан. кро- ви + тромбоци- ты, ретикуло- циты 1р/нед
+  - name: 'Биохимическое исследование крови: общий белок, белковые фракции, билирубин,
+      АсАТ, АлАТ, ЩФ'
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Биохимическое исследование крови: общий белок, белковые фракции билирубин,
+        АсАТ, АлАТ, ЩФ'
+  - name: Миелограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Миелограмма
+  - name: ФГДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ФГДС
+  - name: РРС
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: РРС
+  - name: УЗИ органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ органов брюшной поло- сти
+  conditional_exams:
+  - name: Определение метилмалоновой кислоты в моче
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение метилмало- новой кислоты в моче
+  - name: Определение концентрации фолиевой кислоты в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение концентрации фолиевой кис- лоты в сыворотке крови
+  - name: Колоноскопия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 26
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Колоноскопия
+  treatment:
+    non_drug: []
+    drug_groups: []
+    drugs:
+    - drug_name: Фолиевая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: 15 мг/сут внутрь – 30-40 дн., поддерживающая доза 6-3 мг/сут – 2
+        мес.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 26
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фолиевая кислота 15 мг/сут внутрь – 30-40 дн., поддерживающая доза
+          6-3 мг/сут – 2 мес.
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: 'Срок лечения/наблюдения: 14 дней'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Срок лечения/наблюдения: 14 дней'
+  - text: 'Критерий эффективности: выздоровление с полным восстановлением физиологического
+      процесса'
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Критерий эффективности: выздоровление с полным восстановлением физиологического
+        процесса'
+  hospitalization: []
+  routing:
+  - text: Республиканский уровень (РУ)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Республиканский уровень (РУ)
+  - text: Городской уровень (ГУ)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Городской уровень (ГУ)
+  - text: Областной уровень (ОУ)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Областной уровень (ОУ)
+  red_flags: []
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
+- condition_id: boleznh_minkovskogo_shoffara
+  name: Болезнь Минковского-Шоффара
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -750,10 +1467,11 @@ conditions:
       table_index: null
       row_index: null
       quote: Общий ан. крови + тромбоциты, ретикулоциты 1р/нед
+  conditional_exams:
   - name: Определение метилмалоновой кислоты в моче
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -775,7 +1493,7 @@ conditions:
   - name: Определение витамина В12 и фолиевой кислоты в сыворотке крови
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -794,149 +1512,31 @@ conditions:
       table_index: null
       row_index: null
       quote: Определение витамина В12 и фолиевой кислоты в сыворотке крови
-  - name: АсАТ, АлАТ
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: АсАТ, АлАТ
-  - name: ФГДС
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: ФГДС
-  - name: РРС
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: РРС
-  - name: Ультразвуковое исследование органов брюшной полости
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Ультразвуковое исследование (далее-УЗИ) органов брюшной полости
-  - name: Исследование кала на гельминты
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Исследование кала на гельминты
-  - name: АЧТВ, ПТИ, ТВ, фибриногена
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
-        с патологией системы кроветворения 274.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: АЧТВ, ПТИ, ТВ, фибриногена
-  conditional_exams: []
   treatment: null
   follow_up: []
   hospitalization: []
-  routing: []
+  routing:
+  - text: амбулаторно (Гематологический кабинет местного уровня, областного уровня)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно (Гематологический кабинет местного уровня, областного уровня)
   red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: drug_induced_autoimmune_hemolytic_anemia
+- condition_id: medikamentoznaya_autoimmunnaya_anemiya
   name: Медикаментозная аутоиммунная гемолитическая анемия
   synonyms: []
   abbreviations: []
@@ -957,7 +1557,7 @@ conditions:
   complications: []
   kz_checklist: null
   source_refs: []
-- condition_id: drug_induced_aplastic_anemia
+- condition_id: medikamentoznaya_aplasticheskaya_anemiya
   name: Медикаментозная апластическая анемия
   synonyms: []
   abbreviations: []
@@ -978,17 +1578,536 @@ conditions:
   complications: []
   kz_checklist: null
   source_refs: []
+- condition_id: aplasticheskaya_anemiya_vneshnie_agenty
+  name: Апластическая анемия, вызванная другими внешними агентами
+  synonyms: []
+  abbreviations: []
+  icd10_codes:
+  - D61.2
+  condition_applicability: null
+  diagnosis_structure: null
+  clinical_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Нормализация гемограммы, тестов феррикинетики
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нормализация гемограммы, тестов феррикинетики
+    - text: Исчезновение клинических признаков дефицита железа
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Исчезновение клинических признаков дефицита железа
+    - text: Прекращение кровоточивости, купирование болевого синдрома
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Прекращение кровоточивости, купирование болевого синдрома
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Общий анализ крови + ретикулоциты, тромбоциты
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: крови + ретикулоциты, тромбоциты
+  - name: Исследование аспирата костного мозга, окраска на сидеробласты
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Исследование аспирата костного мозга, окраска на сидеробласты
+  conditional_exams:
+  - name: ФГДС
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ФГДС
+  - name: Ультразвуковое исследование органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Ультразвуковое исследование (далее-УЗИ) органов брюшной полости
+  - name: Определение метилмалоновой кислоты в моче
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение метилмалоновой кислоты в моче
+  - name: Определение витамина В12 и фолиевой кислоты в сыворотке крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Определение витамина В12 и фолиевой кислоты в сыворотке крови
+  treatment:
+    non_drug:
+    - text: Ликвидация источника кровопотери
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ликвидация источника кровопотери
+    - text: 'Физиотерапия: магнитотерапия, лазеротерапия, электрофорез на область
+        гематомы, гемартроза (10 сеансов), массаж № 10 (после купирования кровотечения)'
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Физиотерапия: магнитотерапия, лазеротерапия, электрофорез на область
+          гематомы, гемартроза (10 сеансов), массаж № 10 (после купирования кровотечения)'
+    - text: Спленэктомия
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Спленэктомия
+    drug_groups: []
+    drugs:
+    - drug_name: Препараты железа
+      active_substance: null
+      drug_group: null
+      dose_text: 2-3 мг/кг/сут по элементарному (двухвалентному) железу внутрь, 2-3
+        мес.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Препараты железа внутрь 2-3 мг/кг/сут по элементарному (двухвалентному)
+          железу
+    - drug_name: Витамин В12
+      active_substance: null
+      drug_group: null
+      dose_text: 400-500 мкг/сут в/м, на курс 30-40 инъекций
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Витамин В12 в суточной дозе 400-500 мкг, на курс 30-40 инъекций, в/м
+    - drug_name: Фолиевая кислота
+      active_substance: null
+      drug_group: null
+      dose_text: 15 мг/сут внутрь
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Фолиевая кислота по 15 мг/сут. внутрь
+    - drug_name: Этамзилат
+      active_substance: null
+      drug_group: null
+      dose_text: 250 мг 4 раза/сут внутрь
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 9
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Этамзилат 250 мг 4 раза/сут внутрь
+    - drug_name: Флуконазол
+      active_substance: null
+      drug_group: null
+      dose_text: 50-400 мг 1 раз/сут внутрь
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 18
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Антимикотики (флуконазол 50-400 мг 1 раз/сут внутрь)
+    - drug_name: Ацикловир
+      active_substance: null
+      drug_group: null
+      dose_text: 200-400 мг/сут 3-4 раза/сут – 5-10 дней
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 18
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Противовирусные препараты (ацикловир 200-400 мг/сут 3-4 раза/сут –
+          5-10 дн.)
+    - drug_name: Преднизолон
+      active_substance: null
+      drug_group: null
+      dose_text: 1-2 мг/кг со снижением дозы в течение 3 месяцев
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+          с патологией системы кроветворения 274.pdf
+        page_start: 34
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Преднизолон 1-2 мг/кг снижая дозу 3 месяца
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Общий анализ крови + тромбоциты, ретикулоциты 1 раз в неделю
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Общий анализ крови + тромбоциты, ретикулоциты 1 раз в неделю
+  - text: Консультация ЛОР-врача, хирурга, эндокринолога
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Консультация ЛОР-врача, хирурга, эндокринолога
+  hospitalization: []
+  routing:
+  - text: Гематологический кабинет Республиканского уровня (Респ. У)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Гематологический кабинет Республиканского уровня (Респ. У)
+  - text: Гематологический кабинет областного уровня (ОУ)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Гематологический кабинет областного уровня (ОУ)
+  - text: Местный уровень (МУ), городской уровень (ГУ)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Местный уровень (МУ), городской уровень (ГУ)
+  red_flags:
+  - text: Снижение уровня гемоглобина менее 70 г/л
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_диагностики_и_лечения_больных_с_патологией_системы_кроветворения
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП диагностики и лечения больных
+        с патологией системы кроветворения 274.pdf
+      page_start: 25
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Переливание эритроцитной массы при Hb<70 г/л в объеме 400-500 мл
+  contraindications: []
+  complications: []
+  kz_checklist: null
+  source_refs: []
 global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-21T05:41:19.385280+00:00'
+  extracted_at: '2026-07-23T07:59:05.900573+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
   - llm_pipeline_v1
-  - conditions=6
+  - conditions=8
 validation:
   status: needs_human_review
   errors: []
@@ -996,9 +2115,57 @@ validation:
   - level: warning
     code: duplicate_exam
     message: Дублирующееся обследование
-    path: conditions[chronic_myeloproliferative_disease].required_exams[4]
+    path: conditions[khronicheskaya_mieloproliferativnaya].required_exams[3]
   - level: warning
     code: duplicate_exam
     message: Дублирующееся обследование
-    path: conditions[hereditary_spherocytosis].required_exams[6]
-  validated_at: '2026-07-21T05:41:19.406994+00:00'
+    path: conditions[vitamin_b12_deficitnaya_anemiya].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[vitamin_b12_deficitnaya_anemiya].required_exams[6]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[folievodeficitnaya_anemiya].required_exams[1]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[folievodeficitnaya_anemiya].required_exams[2]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[folievodeficitnaya_anemiya].required_exams[3]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[folievodeficitnaya_anemiya].required_exams[4]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[folievodeficitnaya_anemiya].required_exams[5]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[folievodeficitnaya_anemiya].treatment.drugs[0]
+  - level: warning
+    code: duplicate_exam
+    message: Дублирующееся обследование
+    path: conditions[boleznh_minkovskogo_shoffara].required_exams[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[aplasticheskaya_anemiya_vneshnie_agenty].treatment.drugs[0]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[aplasticheskaya_anemiya_vneshnie_agenty].treatment.drugs[1]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[aplasticheskaya_anemiya_vneshnie_agenty].treatment.drugs[2]
+  - level: warning
+    code: duplicate_drug
+    message: Дублирующийся препарат
+    path: conditions[aplasticheskaya_anemiya_vneshnie_agenty].treatment.drugs[6]
+  validated_at: '2026-07-23T07:59:05.934432+00:00'

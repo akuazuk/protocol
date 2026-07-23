@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пиоторакса
+  title: Клинический протокол диагностики и лечения пиоторакса
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса 05.07.2012
     № 768.pdf
@@ -27,8 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: pyothorax
-  name: пиоторакс
+- condition_id: piotoraks
+  name: Пиоторакс
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -42,6 +42,27 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
+    - text: Скопление гнойного экссудата в полости плевры с вторичной компрессией
+        лёгочной ткани
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
+          05.07.2012 № 768.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Скопление гнойного экссудата в полости плевры с вторичной компрессией
+          лёгочной ткани
     - text: Получение гнойного экссудата при плевральной пункции
       logic_group: null
       operator: unknown
@@ -61,9 +82,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Получение гнойного экссудата при плевральной пункции
-    - text: Лихорадочно-септический вариант интоксикационного синдрома, одышка, боли
-        в груди, резкое укорочение перкуторного тона, ослабленные дыхание и голосовое
-        дрожание, синдром затемнения с увеличением гемиторакса на рентгенограммах.
+    - text: Лихорадочно-септический вариант интоксикационного синдрома в сочетании
+        с одышкой и болями в груди
       logic_group: null
       operator: unknown
       values: []
@@ -81,9 +101,50 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лихорадочно-септический вариант интоксикационного синдрома, одышка,
-          боли в груди, резкое укорочение перкуторного тона, ослабленные дыхание и
-          голосовое дрожание, синдром затемнения с увеличением гемито
+        quote: Лихорадочно-септический вариант интоксикационного синдрома в сочетании
+          с одышкой и болями в груди
+    - text: Резкое укорочение перкуторного тона, резко ослабленные дыхание и голосовое
+        дрожание при физикальном исследовании
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
+          05.07.2012 № 768.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Резкое укорочение перкуторного тона, резко ослабленные дыхание и голосовое
+          дрожание при физикальном исследовании
+    - text: Синдром затемнения с увеличением гемиторакса в объеме на обзорной и боковой
+        рентгенограммах
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
+          05.07.2012 № 768.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Синдром затемнения с увеличением гемиторакса в объеме на обзорной и
+          боковой рентгенограммах
     optional: []
     exclusion: []
   required_exams:
@@ -156,6 +217,29 @@ conditions:
       quote: 'Биохимическое исследование крови: определение концентрации мочевины,
         общего белка и белковых фракций, аспартатаминотрансферазы (АсАТ); аланинаминотрансферазы
         (АлАТ)'
+  - name: Плевральная пункция
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
+        05.07.2012 № 768.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Получение гнойного экссудата при плевральной пункции является достоверным
+        критерием диагноза эмпиемы плевры
   - name: Рентгенография органов грудной полости
     aliases: []
     exam_type: unknown
@@ -201,7 +285,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Микроскопическое и бактериологическое исследование плеврального содержимого
-        на аэробные и факультативно-анаэробные микроорганизмы.
+        на  аэробные и факультативно-анаэробные микроорганизмы.
   conditional_exams:
   - name: Морфологическая верификация с исследованием биопсийного материала плевры
     aliases: []
@@ -250,7 +334,7 @@ conditions:
       quote: КТ грудной полости
   treatment:
     non_drug:
-    - text: Хирургическое лечение.
+    - text: Хирургическое лечение
       source_ref:
         protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
         document_url: null
@@ -262,7 +346,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое лечение.
+        quote: Хирургическое лечение
     drug_groups: []
     drugs:
     - drug_name: Амоксициллин/клавулановая кислота
@@ -360,7 +444,7 @@ conditions:
     - drug_name: Цефотаксим
       active_substance: null
       drug_group: null
-      dose_text: 1,0 – 2 раза в сутки в/в (в сочетании с левофлоксацином или амикацином)
+      dose_text: 1,0 – 2 раза в сутки в/в
       frequency_text: null
       duration_text: null
       route: null
@@ -383,8 +467,7 @@ conditions:
     - drug_name: Левофлоксацин
       active_substance: null
       drug_group: null
-      dose_text: 0,5 г (внутрь, или в/в) 1 раз в сутки (в составе комбинированной
-        терапии с цефотаксимом)
+      dose_text: 0,5 г (внутрь, или в/в) 1 раз в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -407,8 +490,7 @@ conditions:
     - drug_name: Амикацин
       active_substance: null
       drug_group: null
-      dose_text: 10 – 15 мг/кг в/в в 1-2 введения в сутки (в составе комбинированной
-        терапии с цефотаксимом)
+      dose_text: 10 – 15 мг/кг в/в в 1-2 введения в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -450,8 +532,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: цефепим 2 г в/в 2 раза в сутки в сочетании с метронидазолом 0,5 г в/в
-          3 раза в сутки
+        quote: цефепим 2 г  в/в  2 раза в сутки
     - drug_name: Метронидазол
       active_substance: null
       drug_group: null
@@ -474,9 +555,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: цефепим 2 г в/в 2 раза в сутки в сочетании с метронидазолом 0,5 г в/в
-          3 раза в сутки
-    - drug_name: Имипенем/Циластатин
+        quote: метронидазолом  0,5 г  в/в  3 раза в сутки
+    - drug_name: Имипенем/циластатин
       active_substance: null
       drug_group: null
       dose_text: 0,5 г в/в 4 раза в сутки
@@ -498,14 +578,63 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: или имипенем/циластатин 0,5 г в/в 4 раза в сутки.
+        quote: имипенем/циластатин  0,5 г  в/в  4 раза в сутки
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Обязательные лабораторные исследования 2 раза в процессе лечения
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
+        05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательные лабораторные исследования 2 раза в процессе лечения
+  - text: Контрольные исследования — по показаниям
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
+        05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Контрольные исследования — по показаниям
+  - text: Критерий эффективности — выздоровление через 30 дней
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
+        05.07.2012 № 768.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Критерий эффективности — выздоровление через 30 дней
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Стационарно (в условиях торакального хирургического отделения районных,
+      областных и республиканских организаций здравоохранения)
     timing: null
     required_if: []
     source_ref:
@@ -519,43 +648,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: Перевод в торакальное хирургическое отделение
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
-        05.07.2012 № 768.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Перевод в торакальное хирургическое отделение
-  red_flags:
-  - text: Показание для консультации торакального хирурга при получении гнойного экссудата
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностики_и_лечения_пиоторакса_05_07_2012_768
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП диагностики и лечения пиоторакса
-        05.07.2012 № 768.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Получение гнойного экссудата при плевральной пункции является достоверным
-        критерием диагноза эмпиемы плевры и показанием для консультации торакального
-        хирурга.
+      quote: Стационарно (в условиях торакального хирургического отделения районных,
+        областных и республиканских организаций здравоохранения)
+  red_flags: []
   contraindications: []
   complications: []
   kz_checklist: null
@@ -564,7 +659,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:46:11.724079+00:00'
+  extracted_at: '2026-07-23T08:39:46.894099+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -575,4 +670,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:46:11.735673+00:00'
+  validated_at: '2026-07-23T08:39:46.902961+00:00'

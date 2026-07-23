@@ -32,7 +32,7 @@
   },
   "conditions": [
     {
-      "condition_id": "gunshot_skeletal_fractures",
+      "condition_id": "ognestrelnye_perelomy_kostej_skeleta",
       "name": "Огнестрельные переломы костей скелета",
       "synonyms": [],
       "abbreviations": [],
@@ -43,68 +43,641 @@
         "S62",
         "S72",
         "S82",
-        "S92",
-        "T02"
+        "S92"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
-        {
-          "text": "Госпитализация при необходимости экстренной помощи – в ближайшую больничную организацию здравоохранения с последующим переводом в травматологическое отделение. (стр. 3)",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Госпитализация при необходимости экстренной помощи – в ближайшую больничную организацию здравоохранения с последующим переводом в травматологическое отделение. (стр. 3)"
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Нагноение огнестрельной раны: выделение из раны гноя без признаков системного воспалительного ответа",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Нагноение огнестрельной раны: выделение из раны гноя без признаков системного воспалительного ответа"
+            }
+          },
+          {
+            "text": "Раневая инфекция: поражение живых тканей около раны с повреждением клеточных структур, новыми очагами некроза и признаками системного воспалительного ответа",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Раневая инфекция: поражение живых тканей около раны с повреждением клеточных структур, новыми очагами некроза и признаками системного воспалительного ответа"
+            }
           }
-        },
+        ],
+        "optional": [],
+        "exclusion": []
+      },
+      "required_exams": [],
+      "conditional_exams": [
         {
-          "text": "Госпитализация при отсутствии угрозы для жизни – в травматологическое отделение больничной организации здравоохранения для оказания специализированной медицинской помощи. (стр. 3)",
-          "timing": null,
+          "name": "Консультация врача-травматолога, выполняющего эндопротезирование тазобедренного и коленного суставов",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
           "required_if": [],
+          "timing": null,
+          "comment": null,
           "source_ref": {
             "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
             "document_url": null,
             "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
-            "page_start": null,
+            "page_start": 5,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Госпитализация при отсутствии угрозы для жизни – в травматологическое отделение больничной организации здравоохранения для оказания специализированной медицинской помощи. (стр. 3)"
+            "quote": "При многооскольчатых внутрисуставных переломах бедра и голени показана консультация врача-травматолога, выполняющего эндопротезирование тазобедренного и коленного суставов"
           }
         }
       ],
-      "red_flags": [],
+      "treatment": {
+        "non_drug": [
+          {
+            "text": "Иммобилизация гипсовой повязкой (при неполных переломах, без смещения отломков)",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Иммобилизация гипсовой повязкой (при неполных переломах, без смещения отломков)"
+            }
+          },
+          {
+            "text": "Стабилизация поврежденного сегмента конечности скелетным вытяжением или аппаратами внешней фиксации",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Стабилизация поврежденного сегмента конечности скелетным вытяжением или аппаратами внешней фиксации"
+            }
+          },
+          {
+            "text": "Первичная (вторичная) хирургическая обработка костно-мышечной раны с восстановлением целостности магистральных сосудов и крупнонервных стволов",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Первичная (вторичная) хирургическая обработка костно-мышечной раны с восстановлением целостности магистральных сосудов и крупнонервных стволов"
+            }
+          },
+          {
+            "text": "Последовательный остеосинтез (первичная стабилизация АВФ с последующим погружным остеосинтезом)",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Последовательный остеосинтез (первичная стабилизация АВФ с последующим погружным остеосинтезом)"
+            }
+          },
+          {
+            "text": "Постельный режим на жестком основании кровати при стабильных переломах костей таза",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Постельный режим на жестком основании кровати при стабильных переломах костей таза"
+            }
+          },
+          {
+            "text": "Обязательное выполнение карпаротомии при переломах костей кисти",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Обязательное выполнение карпаротомии при переломах костей кисти"
+            }
+          },
+          {
+            "text": "Выполнение фасциотомии при выраженном отеке тыла стопы",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выполнение фасциотомии при выраженном отеке тыла стопы"
+            }
+          },
+          {
+            "text": "Ранняя реабилитация для профилактики контрактур суставов",
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ранняя реабилитация для профилактики контрактур суставов"
+            }
+          }
+        ],
+        "drug_groups": [],
+        "drugs": [
+          {
+            "drug_name": "Цефотаксим",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,0 г 3 р/сут в/м, в/в (детям младше 12 лет: 50–100 мг/кг/сут в 3–4 введения)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефотаксим 1,0 г 3 р/сут в/м, в/в (50–100 мг/кг/сут в 3–4 введения)"
+            }
+          },
+          {
+            "drug_name": "Метронидазол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 2 р/сут в/в (детям младше 12 лет: 7,5 мг/кг/сут в 3 введения)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "метронидазол 0,5 г 2 р/сут в/в (7,5 мг/кг/сут в 3 введения)"
+            }
+          },
+          {
+            "drug_name": "Цефтриаксон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,0 г 2 р/сут в/м, в/в (детям младше 12 лет: 20–75 мг/кг/сут в 1–2 введения)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефтриаксон 1,0 г 2 р/сут в/м, в/в (20–75 мг/кг/сут в 1–2 введения)"
+            }
+          },
+          {
+            "drug_name": "Цефепим",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,0 г 2 р/сут в/м, в/в (детям младше 12 лет: 50 мг/кг/сут в 2–3 введения)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефепим 1,0 г 2 р/сут в/м, в/в (50 мг/кг/сут в 2–3 введения)"
+            }
+          },
+          {
+            "drug_name": "Амоксициллин/клавуланат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,0 г 2 р/сут в/в (детям младше 12 лет: 20–40 мг/кг/сут в 3 введения)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амоксициллин/клавуланат 1,0 г 2 р/сут в/в (20–40 мг/кг/сут в 3 введения)"
+            }
+          },
+          {
+            "drug_name": "Ципрофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 2 р/сут в/в",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ципрофлоксацин 0,5 г 2 р/сут в/в"
+            }
+          },
+          {
+            "drug_name": "Левофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 1 р/сут в/в",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "левофлоксацин 0,5 г 1 р/сут в/в"
+            }
+          },
+          {
+            "drug_name": "Имипенем",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 3 р/сут в/в (детям младше 12 лет: 15–25 мг/кг/сут в 4 введения)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "имипенем 0,5 г 3 р/сут в/в (15–25 мг/кг/сут в 4 введения)"
+            }
+          },
+          {
+            "drug_name": "Меропенем",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5 г 3 р/сут в/в (детям младше 12 лет: 10–20 мг/кг/сут в 3 введения)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "меропенем 0,5 г 3 р/сут в/в (10–20 мг/кг/сут в 3 введения)"
+            }
+          },
+          {
+            "drug_name": "Эртапенем",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1,0 г 1 р/сут в/м, в/в (детям младше 12 лет: 15 мг/кг/сут в 2 введения, не более 1,0 г/сут)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "эртапенем 1,0 г 1 р/сут в/м, в/в (15 мг/кг/сут в 2 введения, но не более 1,0 г/сут)"
+            }
+          }
+        ],
+        "procedures": [],
+        "surgery": [],
+        "source_refs": []
+      },
+      "follow_up": [
+        {
+          "text": "Повторный погружной остеосинтез выполняется при стабильном общем состоянии, отсутствии нагноения ран и признаков раневой инфекции, после заживления мягких тканей",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Повторный погружной остеосинтез выполняется при стабильном общем состоянии, отсутствии нагноения ран и признаков раневой инфекции, после заживления мягких тканей"
+          }
+        },
+        {
+          "text": "Раннее проведение реабилитационных мероприятий в послеоперационном периоде для предупреждения развития контрактур",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Раннее проведение реабилитационных мероприятий в послеоперационном периоде для предупреждения развития контрактур"
+          }
+        }
+      ],
+      "hospitalization": [],
+      "routing": [
+        {
+          "text": "Лечение в стационарных условиях",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Лечение в стационарных условиях"
+          }
+        },
+        {
+          "text": "Перевод пациента в специализированное отделение микрохирургии (или вызов специалиста через центр экстренной медицинской помощи)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Перевод пациента в специализированное отделение микрохирургии (или вызов специалиста через центр экстренной медицинской помощи)"
+          }
+        },
+        {
+          "text": "При необходимости оказания экстренной медицинской помощи – госпитализация в ближайшую больничную организацию здравоохранения с последующим переводом в травматологическое отделение больничной организации здравоохранения для оказания специализированной медицинской помощи",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При необходимости оказания экстренной медицинской помощи – госпитализация в ближайшую больничную организацию здравоохранения с последующим переводом в травматологическое отделение больничной организац"
+          }
+        },
+        {
+          "text": "При отсутствии признаков угрозы для жизни пациента – госпитализация в травматологическое отделение больничной организации здравоохранения для оказания специализированной медицинской помощи",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При отсутствии признаков угрозы для жизни пациента – госпитализация в травматологическое отделение больничной организации здравоохранения для оказания специализированной медицинской помощи"
+          }
+        }
+      ],
+      "red_flags": [
+        {
+          "text": "Запрет применения погружного остеосинтеза для первичной фиксации отломков",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При огнестрельных переломах не допускается использование погружных (интрамедуллярного и накостного) методов остеосинтеза для первичной фиксации отломков"
+          }
+        },
+        {
+          "text": "Развитие раневой инфекции с системным воспалительным ответом",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "раневая инфекция – инфекционный процесс, развивающийся в живых тканях... и сопровождающийся повреждением и гибелью клеточных структур... с появлением признаков системного воспалительного ответа"
+          }
+        },
+        {
+          "text": "Невозможность восстановления кровоснабжения стопы при обширных повреждениях",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "khirurgiya_кп_лечение_пациентов_с_огнестрельными_переломами_костей_скелета_в_ста",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/khirurgiya/КП Лечение пациентов с огнестрельными переломами костей скелета в стационарных условиях 29.11.2019 №110.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При отрывах стопы, обширных повреждениях костей и мягких тканей стопы и невозможности восстановления кровоснабжения стопы выполняют ампутацию стопы."
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10"
-        ],
-        "should_have": [],
-        "conditional": [
-          "Маршрутизация: Госпитализация при необходимости экстренной помощи – в ближайшую больничную организацию з… (по показаниям)",
-          "Маршрутизация: Госпитализация при отсутствии угрозы для жизни – в травматологическое отделение больнично… (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -112,20 +685,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T16:37:50.644703+00:00",
+    "extracted_at": "2026-07-23T08:40:53.215102+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-20T16:37:50.645008+00:00"
+    "validated_at": "2026-07-23T08:40:53.222604+00:00"
   }
 }

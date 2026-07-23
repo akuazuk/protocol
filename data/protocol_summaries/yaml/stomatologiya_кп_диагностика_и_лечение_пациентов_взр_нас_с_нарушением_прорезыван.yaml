@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов с нарушением прорезывания зубов
+  title: Диагностика и лечение пациентов (взрослое население) с нарушением прорезывания
+    зубов
   url: null
   local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf
   document_sha256: null
@@ -19,14 +20,14 @@ rubric:
   specialty_slugs: []
 applicability:
   population:
-  - adult_and_child
+  - adult
   age_min_years: null
   age_max_years: null
   sex: unknown
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: tooth_eruption_disorder
+- condition_id: narusheniya_prorezyvaniya_zubov
   name: Нарушения прорезывания зубов
   synonyms: []
   abbreviations: []
@@ -45,7 +46,9 @@ conditions:
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Раннее (преждевременное) прорезывание зубов
+    - text: Раннее (преждевременное) прорезывание зубов — клинически определяется
+        прорезывание зуба ранее среднестатистических сроков (натальные, неонатальные
+        зубы)
       logic_group: null
       operator: unknown
       values: []
@@ -62,8 +65,12 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раннее (преждевременное) прорезывание зубов
-    - text: Позднее прорезывание зубов
+        quote: Раннее (преждевременное) прорезывание зубов — клинически определяется
+          прорезывание зуба ранее среднестатистических сроков (натальные, неонатальные
+          зубы)
+    - text: Позднее прорезывание — клинически определяется наличие места в зубном
+        ряду для запаздывающих зубов, с вестибулярной или оральной стороны обнаруживается
+        твердая выпуклость
       logic_group: null
       operator: unknown
       values: []
@@ -80,14 +87,72 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Позднее прорезывание зубов
+        quote: Позднее прорезывание — клинически определяется наличие места в зубном
+          ряду для запаздывающих зубов, с вестибулярной или оральной стороны обнаруживается
+          твердая выпуклость
+    - text: Данные анамнеза
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Данные анамнеза
+    - text: Данные осмотра полости рта
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Данные осмотра полости рта
+    - text: Сопоставление возраста со средними статистическими сроками прорезывания
+        зубов
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезывания_зубов_пост_МЗ_11.01.2023_4.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сопоставление возраста со средними статистическими сроками прорезывания
+          зубов
     optional: []
     exclusion: []
   required_exams: []
   conditional_exams: []
   treatment:
     non_drug:
-    - text: восстановление анатомической и функциональной целостности зуба и зубных
+    - text: Восстановление анатомической и функциональной целостности зуба и зубных
         рядов
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван
@@ -99,9 +164,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: восстановление анатомической и функциональной целостности зуба и зубных
+        quote: Восстановление анатомической и функциональной целостности зуба и зубных
           рядов
-    - text: предупреждение развития патологических процессов и осложнений
+    - text: Предупреждение развития патологических процессов и осложнений
       source_ref:
         protocol_id: stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_нарушением_прорезыван
         document_url: null
@@ -112,16 +177,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: предупреждение развития патологических процессов и осложнений
+        quote: Предупреждение развития патологических процессов и осложнений
     drug_groups: []
     drugs: []
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение за результатами лечения рекомендовано осуществлять
-      путем проведения медицинских осмотров врачом-стоматологом-терапевтом через 6
-      месяцев после завершения терапевтического лечения.
+  - text: Проведение медицинских осмотров врачом-стоматологом-терапевтом через 6 месяцев
+      после завершения терапевтического лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -135,11 +199,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение за результатами лечения рекомендовано осуществлять
-        путем проведения медицинских осмотров врачом-стоматологом-терапевтом через
+      quote: Проведение медицинских осмотров врачом-стоматологом-терапевтом через
         6 месяцев после завершения терапевтического лечения
   - text: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
-      (при их наличии) рекомендуется выполнять 2 раза в год (каждые 6 месяцев).
+      (при их наличии) 2 раза в год (каждые 6 месяцев)
     timing: null
     required_if: []
     expected_actions: []
@@ -154,7 +217,7 @@ conditions:
       table_index: null
       row_index: null
       quote: Последующее медицинское наблюдение за состоянием зубов и зубных протезов
-        (при их наличии) рекомендуется выполнять 2 раза в год (каждые 6 месяцев).
+        (при их наличии) 2 раза в год (каждые 6 месяцев)
   hospitalization: []
   routing: []
   red_flags: []
@@ -166,7 +229,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:04:05.032601+00:00'
+  extracted_at: '2026-07-23T10:30:05.868748+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -177,4 +240,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:04:05.032810+00:00'
+  validated_at: '2026-07-23T10:30:05.869066+00:00'

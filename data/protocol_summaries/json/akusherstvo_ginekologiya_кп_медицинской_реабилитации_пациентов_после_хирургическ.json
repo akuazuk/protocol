@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Медицинской реабилитации пациентов после хирургического лечения новообразований органов желудочно кишечного тракта",
+    "title": "Клинический протокол медицинской реабилитации пациентов после хирургического лечения новообразований органов желудочно-кишечного тракта",
     "url": null,
     "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/КП медицинской реабилитации пациентов после хирургического лечения новообразований органов желудочно-кишечного тракта04.08.2011 №789.pdf",
     "document_sha256": null,
@@ -22,7 +22,7 @@
   },
   "applicability": {
     "population": [
-      "adult"
+      "adult_and_child"
     ],
     "age_min_years": null,
     "age_max_years": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "rehabilitation_after_gi_tumors_surgery",
-      "name": "Медицинская реабилитация после хирургического лечения новообразований органов желудочно-кишечного тракта",
+      "condition_id": "gi_neoplasms_post_surgery_rehab",
+      "name": "Новообразования органов желудочно-кишечного тракта после хирургического лечения",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -45,35 +45,12 @@
       "diagnostic_criteria": null,
       "required_exams": [],
       "conditional_exams": [],
-      "treatment": {
-        "non_drug": [
-          {
-            "text": "Проведение ранней медицинской реабилитации пациентов после хирургического (комбинированного) лечения новообразований.",
-            "source_ref": {
-              "protocol_id": "akusherstvo_ginekologiya_кп_медицинской_реабилитации_пациентов_после_хирургическ",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/КП медицинской реабилитации пациентов после хирургического лечения новообразований органов желудочно-кишечного тракта04.08.2011 №789.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Проведение ранней медицинской реабилитации пациентов после хирургического (комбинированного) лечения новообразований."
-            }
-          }
-        ],
-        "drug_groups": [],
-        "drugs": [],
-        "procedures": [],
-        "surgery": [],
-        "source_refs": []
-      },
+      "treatment": null,
       "follow_up": [],
       "hospitalization": [],
       "routing": [
         {
-          "text": "госпитализация",
+          "text": "ранняя медицинская реабилитация в стационарных условиях",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -86,25 +63,14 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация"
+            "quote": "ранняя медицинская реабилитация в стационарных условиях"
           }
         }
       ],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10"
-        ],
-        "should_have": [
-          "Немедикаментозно: Проведение ранней медицинской реабилитации пациентов после хирургического (комбинированно…"
-        ],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -112,20 +78,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-01T23:30:16.886916+00:00",
+    "extracted_at": "2026-07-23T06:54:11.055676+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-01T23:30:16.886987+00:00"
+    "validated_at": "2026-07-23T06:54:11.055840+00:00"
   }
 }

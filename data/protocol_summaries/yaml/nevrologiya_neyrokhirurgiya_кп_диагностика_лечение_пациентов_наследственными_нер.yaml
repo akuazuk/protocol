@@ -3,7 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение наследственных нервно-мышечных заболеваний у взрослых
+  title: Диагностика и лечение пациентов с наследственными нервно-мышечными заболеваниями
+    (взрослое население)
   url: null
   local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
   document_sha256: null
@@ -41,7 +42,7 @@ conditions:
   diagnostic_criteria:
     required:
     - text: Алгоритм диагностики дистрофической миотонии установлен согласно приложению
-        3.
+        3
       logic_group: null
       operator: unknown
       values: []
@@ -59,9 +60,11 @@ conditions:
         table_index: null
         row_index: null
         quote: Алгоритм диагностики дистрофической миотонии установлен согласно приложению
-          3.
-    - text: При биаллельной (гомозиготной) делеции 7 или 7 и 8 экзонов гена SMN1 диагноз
-        СМА подтвержден.
+          3
+    - text: 'СМА 5q: диагноз подтвержден при биаллельной (гомозиготной) делеции 7
+        или 7 и 8 экзонов гена SMN1, либо при делеции в гетерозиготном состоянии и
+        патогенной точковой мутации в транс положении, либо при биаллельных патогенных
+        точковых мутациях'
       logic_group: null
       operator: unknown
       values: []
@@ -78,11 +81,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: При биаллельной (гомозиготной) делеции 7 или 7 и 8 экзонов гена SMN1
-          диагноз СМА подтвержден.
-    - text: 'Диагноз СМА подтвержден при наличии: делеции 7 или 7 и 8 экзонов гена
-        SMN1 в гетерозиготном состоянии и патогенной точковой мутаций в транс положении;
-        биаллельного(ых) патогенной(ых) точковой(ых) мутаций.'
+        quote: 'СМА 5q: диагноз подтвержден при биаллельной (гомозиготной) делеции
+          7 или 7 и 8 экзонов гена SMN1, либо при делеции в гетерозиготном состоянии
+          и патогенной точковой мутации в транс положении, либо при '
+    - text: 'НМСН 1А: дупликация гена PMP22 подтверждает диагноз (отсутствие изменений
+        не исключает диагноз)'
       logic_group: null
       operator: unknown
       values: []
@@ -99,10 +102,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Диагноз СМА подтвержден при наличии: делеции 7 или 7 и 8 экзонов гена
-          SMN1 в гетерозиготном состоянии и патогенной точковой мутаций в транс положении;
-          биаллельного(ых) патогенной(ых) точковой(ых) мута'
-    - text: Дупликация гена PMP22 подтверждает диагноз НМСН 1А типа.
+        quote: 'НМСН 1А: дупликация гена PMP22 подтверждает диагноз (отсутствие изменений
+          не исключает диагноз)'
+    - text: 'Клинические признаки дыхательной недостаточности: диспноэ, ортопноэ,
+        тахипноэ, нарушения сна, утренние головные боли, дневная сонливость'
       logic_group: null
       operator: unknown
       values: []
@@ -119,7 +122,28 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Дупликация гена PMP22 подтверждает диагноз НМСН 1А типа.
+        quote: 'Клинические признаки дыхательной недостаточности: диспноэ, ортопноэ,
+          тахипноэ, нарушения сна, утренние головные боли, дневная сонливость'
+    - text: 'Лабораторные признаки дыхательной недостаточности: ЖЕЛ <80% с симптомами
+        или <50% без симптомов, PaO2 <60 мм рт. ст., дневная/ночная гиперкапния'
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Лабораторные признаки дыхательной недостаточности: ЖЕЛ <80% с симптомами
+          или <50% без симптомов, PaO2 <60 мм рт. ст., дневная/ночная гиперкапния'
     optional: []
     exclusion: []
   required_exams:
@@ -165,9 +189,9 @@ conditions:
       table_index: null
       row_index: null
       quote: общий анализ мочи;
-  - name: Биохимический анализ крови (креатинин, мочевина, билирубин, аланинаминотрансфераза,
-      аспартатаминотрансфераза, щелочная фосфатаза, гаммаглютаминтранспептидаза, лактатдегидрогеназа,
-      глюкоза, лактат, кре
+  - name: Биохимический анализ крови (креатинин, мочевина, билирубин, АЛТ, АСТ, ЩФ,
+      ГГТП, ЛДГ, глюкоза, лактат, КФК, С-реактивный белок, Na, K, Ca ионизированный,
+      витамин D)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -189,8 +213,7 @@ conditions:
       row_index: null
       quote: 'биохимический анализ крови: креатинин, мочевина, билирубин, аланинаминотрансфераза,
         аспартатаминотрансфераза, щелочная фосфатаза, гаммаглютаминтранспептидаза,
-        лактатдегидрогеназа, глюкоза, лактат, креатинфосфокиза, С-реактивный, натрий,
-        калий, кальций ионизированный, витамин D;'
+        лактатдегидрогеназа, глюкоза, лактат...'
   - name: Определение уровня глюкозы крови
     aliases: []
     exam_type: unknown
@@ -212,8 +235,7 @@ conditions:
       table_index: null
       row_index: null
       quote: определение уровня глюкозы крови;
-  - name: Коагулограмма (активированное частичное тромбопластиновое время, международное
-      нормализованное отношение, протромбиновое время, фибриноген)
+  - name: Коагулограмма (АЧТВ, МНО, протромбиновое время, фибриноген)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -235,10 +257,11 @@ conditions:
       row_index: null
       quote: 'коагулограмма: активированное частичное тромбопластиновое время, международное
         нормализованное отношение, протромбиновое время, фибриноген;'
-  - name: CNBP (ZNF9)
+  conditional_exams:
+  - name: Молекулярно-генетическое исследование CNBP (ZNF9)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -255,11 +278,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: CNBP (ZNF9).
-  - name: Молекулярно-генетическое исследование генов SMN1/SMN2
+      quote: CNBP (ZNF9). Алгоритм диагностики дистрофической миотонии установлен
+        согласно приложению 3;
+  - name: Молекулярно-генетическое исследование генов SMN1/SMN2 (определение числа
+      копий экзонов 7, 8 гена SMN1, поиск точечных мутаций в гене SMN1)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -276,13 +301,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При подозрении на СМА 5q молекулярно-генетическое исследование генов
+      quote: при подозрении на СМА 5q молекулярно-генетическое исследование генов
         SMN1/SMN2 включает определение числа копий экзонов 7, 8 гена SMN1, поиск точечных
         мутаций в гене SMN1 (при необходимости).
   - name: Определение числа повторов в первом экзоне гена AR
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -299,12 +324,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При подозрении на бульбоспинальную мышечную атрофию Кеннеди определяется
-        число повторов в первом экзоне гена AR.
+      quote: при подозрении на бульбоспинальную мышечную атрофию Кеннеди определяется
+        число повторов в первом экзоне гена AR;
   - name: Выявление дупликации или делеции в гене PMP22
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -321,12 +346,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При подозрении на НМСН 1А – выявление дупликации или делеции в гене PMP22,
+      quote: при подозрении на НМСН 1А – выявление дупликации или делеции в гене PMP22,
         расположенном на коротком плече 17 хромосомы.
   - name: Поиск крупных делеций или дупликаций в гене DMD
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -343,12 +368,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При подозрении на МД Дюшенна-Беккера проводится поиск крупных делеций
+      quote: при подозрении на МД Дюшенна-Беккера проводится поиск крупных делеций
         или дупликаций в гене DMD.
-  - name: Определение количества CTG и CCTG повторов в генах DMPK и CNBP (ZNF9)
+  - name: Определение количества CTG повторов в гене DMPK и CCTG повторов в гене CNBP
+      (ZNF9)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -365,13 +391,13 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При подозрении на дистрофическую миотонию определяется количество CTG
+      quote: при подозрении на дистрофическую миотонию определяется количество CTG
         повторов в 3’-некодируемой области гена DMPK и CCTG повторов в интроне 1 гена
         CNBP (ZNF9).
   - name: Определение числа GCG повторов в первом экзоне гена PABPN1
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -388,32 +414,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При подозрении на окулофарингеальную мышечную дистрофию определяется
-        число GCG повторов в первом экзоне гена PABPN1.
-  - name: Определение активности кислой -глюкозидазы в лимфоцитах крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-      document_url: null
-      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При подозрении на болезнь Помпе определяется активность кислой -глюкозидазы
-        в лимфоцитах крови.
-  conditional_exams:
-  - name: Поиск точечных мутаций в гене DMD
+      quote: при подозрении на окулофарингеальную мышечную дистрофию определяется
+        число GCG повторов в первом экзоне гена PABPN1;
+  - name: Определение активности кислой -глюкозидазы в лимфоцитах крови (и поиск
+      мутаций в гене GAA при положительном тесте)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -433,9 +437,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: При отсутствии в гене DMD крупных патогенных перестроек выполняется поиск
-        точечных мутаций в гене DMD.
-  - name: Поиск мутаций в гене GAA
+      quote: при подозрении на болезнь Помпе определяется активность кислой -глюкозидазы
+        в лимфоцитах крови. При положительном результате ферментного теста проводится
+        поиск мутаций в гене GAA;
+  - name: Ночная оксиметрия
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -449,23 +454,105 @@ conditions:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-      page_start: 7
+      page_start: 12
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: При положительном результате ферментного теста проводится поиск мутаций
-        в гене GAA.
+      quote: более 5 эпизодов десатурации в течение часа по данным ночной оксиметрии
+        (ODI >5/ч)
+  - name: Оценка жизненной емкости легких (ЖЕЛ)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: жизненная емкость легких (далее – ЖЕЛ) <80 % должного объема при наличии
+        клинических симптомов; ЖЕЛ <50 % должного объема без клинических симптомов
+  - name: Оценка газов крови (PaO2, PaCO2)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: 12
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: РаО2 <60 мм рт. ст.; хроническая дневная гиперкапния с PaCO 2 >45 мм
+        рт. ст.; ночная гиперкапния с PaCO 2 >50 мм рт. ст.
   treatment:
-    non_drug: []
+    non_drug:
+    - text: Неинвазивная вентиляция легких (НИВЛ)
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Неинвазивная вентиляция легких (НИВЛ)
+    - text: Сочетание НИВЛ с техникой очищения дыхательных путей у ходячих и сидячих
+        пациентов в острых ситуациях
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сочетание НИВЛ с техникой очищения дыхательных путей у ходячих и сидячих
+          пациентов в острых ситуациях
+    - text: Чрескожная эндоскопическая гастростомия (с учетом противопоказаний)
+      source_ref:
+        protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+        document_url: null
+        local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Чрескожная эндоскопическая гастростомия (с учетом противопоказаний)
     drug_groups: []
     drugs:
     - drug_name: Алглюкозидаза альфа
       active_substance: null
       drug_group: null
-      dose_text: Лиофилизат 50 мг, вводится внутривенно капельно 20 мг/кг 1 раз в
-        2 недели.
+      dose_text: Лиофилизат для приготовления концентрата для приготовления раствора
+        для инфузий 50 мг, вводится внутривенно капельно 20 мг/кг 1 раз в 2 недели
       frequency_text: null
       duration_text: null
       route: null
@@ -489,8 +576,9 @@ conditions:
     - drug_name: Этилметилгидроксипиридина сукцинат
       active_substance: null
       drug_group: null
-      dose_text: Таблетки 125/250 мг, внутрь 250–500 мг/сут в 2–3 приема (макс 600–800
-        мг/сут); раствор для инъекций 50 мг/мл, в/м или в/в 50–400 мг (макс 1200 мг/сут).
+      dose_text: Таблетки 125 мг или 250 мг внутрь 250–500 мг/сут в 2–3 приема (макс.
+        600–800 мг/сут); или р-р для инъекций 50 мг/мл 2, 5, 10 мл в/м или в/в разовая
+        доза 50–400 мг (макс. 1200 мг/сут)
       frequency_text: null
       duration_text: null
       route: null
@@ -508,15 +596,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Этилметилгидроксипиридина сукцинат, таблетки, покрытые оболочкой 125
+        quote: этилметилгидроксипиридина сукцинат, таблетки, покрытые оболочкой 125
           мг, таблетки, покрытые оболочкой 250 мг, внутрь 250–500 мг в сутки в 2–3
-          приема; максимальная суточная доза – 600–800 мг; раствор для инъекций 50
-          мг/мл 2, 5 и 10 мл, при внутримышечно или внутривенно введении разовая доза
-          50–400 мг, максимальная суточная доза – 1200 мг.
+          приема; максимальная суточная доза – 600–800 мг;
     - drug_name: Метилэтилпиридинола гидрохлорид
       active_substance: null
       drug_group: null
-      dose_text: Раствор для инъекций 10 мг/мл, 5 мл внутримышечно или 10 мл внутривенно.
+      dose_text: Раствор для инъекций 10 мг/мл, 5 мл внутримышечно или 10 мл внутривенно
       frequency_text: null
       duration_text: null
       route: null
@@ -534,13 +620,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Метилэтилпиридинола гидрохлорид, раствор для инъекций 10 мг/мл, 5 мл
-          внутримышечно или 10 мл внутривенно.
+        quote: метилэтилпиридинола гидрохлорид, раствор для инъекций 10 мг/мл, 5 мл
+          внутримышечно или 10 мл внутривенно;
     - drug_name: Глицин
       active_substance: null
       drug_group: null
       dose_text: Таблетки подъязычные 100 мг, сублингвально или трансбуккально по
-        100 мг 3 раза в сутки.
+        100 мг 3 раза в сутки
       frequency_text: null
       duration_text: null
       route: null
@@ -558,18 +644,18 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Глицин, таблетки подъязычные 100 мг, сублингвально или трансбуккально
+        quote: глицин, таблетки подъязычные 100 мг, сублингвально или трансбуккально
           по 100 мг 3 раза в сутки;
     procedures: []
     surgery: []
     source_refs: []
-  follow_up:
+  follow_up: []
+  hospitalization: []
+  routing:
   - text: Первые 3 инфузии алглюкозидазы альфа проводятся в больничной организации
-      с мониторингом витальных функций (частота сердечных сокращений, артериальное
-      давление, сатурация) во время инфузии.
+      с мониторингом витальных функций
     timing: null
     required_if: []
-    expected_actions: []
     source_ref:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
       document_url: null
@@ -581,94 +667,140 @@ conditions:
       table_index: null
       row_index: null
       quote: Первые 3 инфузии алглюкозидазы альфа проводятся в больничной организации
-        с мониторингом витальных функций (частота сердечных сокращений, артериальное
-        давление, сатурация) во время инфузии.
-  - text: В дальнейшем ФЗТ при осложненном течении болезни проводится в условиях круглосуточного
-      пребывания в больничной организации, при стабильном состоянии – в организациях
-      дневного пребывания или амбулаторно-поликлинических организациях 1 раз в 2 недели.
+        с мониторингом витальных функций
+  - text: ФЗТ при осложненном течении болезни Помпе проводится в условия круглосуточного
+      пребывания в больничной организации
     timing: null
     required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: ФЗТ при осложненном течении болезни Помпе проводится в условия круглосуточного
+        пребывания в больничной организации
+  - text: При стабильном состоянии пациента ФЗТ проводится в организациях здравоохранения
+      дневного пребывания или амбулаторно-поликлинических организациях 1 раз в 2 недели
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При стабильном состоянии пациента ФЗТ проводится в организациях здравоохранения
+        дневного пребывания или амбулаторно-поликлинических организациях 1 раз в 2
+        недели
+  - text: Перевод на НИВЛ при появлении клинических или лабораторных критериев дыхательной
+      недостаточности
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Перевод на НИВЛ при появлении клинических или лабораторных критериев
+        дыхательной недостаточности
+  - text: Отказ от ингаляций чистого кислорода без дополнительной вентиляции лёгких
+      из-за риска нарастания респираторного ацидоза
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Отказ от ингаляций чистого кислорода без дополнительной вентиляции лёгких
+        из-за риска нарастания респираторного ацидоза
+  - text: Оценка противопоказаний к НИВЛ и чрескожной эндоскопической гастростомии
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
+      document_url: null
+      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Оценка противопоказаний к НИВЛ и чрескожной эндоскопической гастростомии
+  red_flags:
+  - text: Развитие критического состояния, кома, нарушение сознания
+    aliases: []
+    red_flag_type: other
+    severity: high
     expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-      page_start: null
+      page_start: 12
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: В дальнейшем ФЗТ при осложненном течении болезни проводится в условиях
-        круглосуточного пребывания в больничной организации, при стабильном состоянии
-        – в организациях дневного пребывания или амбулаторн
-  hospitalization: []
-  routing:
-  - text: Госпитализация (для первых 3 инфузий и при осложненном течении болезни)
-    timing: null
-    required_if: []
+      quote: нарушение сознания, кома, изменения ментального статуса; ... развитие
+        критического состояния.
+  - text: Невозможность защитить дыхательные пути, хроническая аспирация
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-      page_start: null
+      page_start: 12
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация (для первых 3 инфузий и при осложненном течении болезни)
-  - text: Дневной стационар или амбулаторно-поликлинические организации (при стабильном
-      состоянии пациента)
-    timing: null
-    required_if: []
+      quote: выраженная секреция слизи в дыхательных путях, хроническая аспирация;
+        невозможность защитить дыхательные пути
+  - text: Критическое снижение ЖЕЛ <15% перед установкой гастростомы
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
       document_url: null
       local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-      page_start: null
+      page_start: 14
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: Дневной стационар или амбулаторно-поликлинические организации (при стабильном
-        состоянии пациента)
-  - text: Госпитализация для начала неинвазивной вентиляции легких (НИВЛ) при наличии
-      клинических признаков или лабораторных показателей дыхательной недостаточности,
-      особенно в острых ситуациях (инфекция дыхательных путей).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-      document_url: null
-      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация для начала неинвазивной вентиляции легких (НИВЛ) при наличии
-        клинических признаков или лабораторных показателей дыхательной недостаточности,
-        особенно в острых ситуациях (инфекция дыхате
-  - text: Госпитализация для проведения чрескожной эндоскопической гастростомии при
-      отсутствии медицинских противопоказаний.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: nevrologiya_neyrokhirurgiya_кп_диагностика_лечение_пациентов_наследственными_нер
-      document_url: null
-      local_path: minzdrav_protocols/nevrologiya-neyrokhirurgiya/КП_Диагностика_лечение_пациентов_наследственными_нервно-мышечными_заболеваниями_вз-нас_пост_МЗ_2025_42.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Госпитализация для проведения чрескожной эндоскопической гастростомии
-        при отсутствии медицинских противопоказаний.
-  red_flags: []
+      quote: при ЖЕЛ <15 % установка может быть уже нецелесообразной
   contraindications: []
   complications: []
   kz_checklist: null
@@ -677,7 +809,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-01T23:15:22.257712+00:00'
+  extracted_at: '2026-07-23T08:51:35.266444+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -688,4 +820,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-01T23:15:22.266122+00:00'
+  validated_at: '2026-07-23T08:51:35.272533+00:00'

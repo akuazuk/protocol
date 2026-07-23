@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов взрослое население с перфоративной гастродуоденальной
+  title: Диагностика и лечение пациентов (взрослое население) с перфоративной гастродуоденальной
     язвой в стационарных условиях
   url: null
   local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
@@ -27,8 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: perforative_gastroduodenal_ulcer
-  name: перфоративная гастродуоденальная язва
+- condition_id: perforativnaya_gastroduodenalnaya_yazva
+  name: Перфоративная гастродуоденальная язва
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -47,9 +47,51 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Повреждение стенки желудка или двенадцатиперстной кишки на месте острой
+        или хронической язвы
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Повреждение стенки желудка или двенадцатиперстной кишки на месте острой
+          или хронической язвы
+    - text: Наличие симптомокомплекса «острого живота»
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+        document_url: null
+        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие симптомокомплекса «острого живота»
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Определение параметров кислотно-основного состояния
+  - name: Клинический осмотр (медицинский осмотр, термометрия, ЧСС, ЧД, АД, аускультация
+      легких и сердца, пальпация и перкуссия живота)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -69,11 +111,81 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение параметров кислотно-основного состояния
-  - name: Биохимический анализ крови
+      quote: 'клинические методы исследования: медицинский осмотр; общая термометрия;
+        подсчет частоты сердечных сокращений; подсчет частоты дыхания; измерение артериального
+        давления...'
+  - name: Общий анализ крови и общий анализ мочи
     aliases: []
     exam_type: unknown
     requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'лабораторные методы исследования: общий анализ крови... общий анализ
+        мочи'
+  - name: Обзорная рентгенография или рентгеноскопия брюшной полости, электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: обзорная рентгенография или рентгеноскопия брюшной полости в вертикальном
+        положении пациента... электрокардиограмма
+  conditional_exams:
+  - name: Определение параметров кислотно-основного состояния
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение параметров кислотно-основного состояния;
+  - name: 'Биохимический анализ крови (билирубин, глюкоза, мочевина, общий белок,
+      АСТ, АЛТ, альфа-амилаза, С-реактивный белок, электролиты: натрий, калий, кальций
+      общий, хлор)'
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -92,11 +204,11 @@ conditions:
       row_index: null
       quote: биохимический анализ крови (определение содержания билирубина, глюкозы,
         мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы,
-        С-реактивного белка, электролитов...)
+        С-реактивного белка, электролитов...
   - name: Определение групп крови по системам АВ0 и Rh-фактор
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -113,11 +225,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение групп крови по системам АВ0 и Rh-фактор
-  - name: Коагулограмма
+      quote: определение групп крови по системам АВ0 и Rh-фактор;
+  - name: Коагулограмма (фибриноген, АЧТВ, протромбиновое время, МНО)
     aliases: []
     exam_type: unknown
-    requirement_level: required
+    requirement_level: conditional
     accepted_statuses:
     - performed
     - recommended
@@ -135,12 +247,35 @@ conditions:
       table_index: null
       row_index: null
       quote: коагулограмма (определение фибриногена, активированного частичного тромбопластинового
-        времени, протромбированого времени, международного нормализованного отношения)
-  conditional_exams: []
+        времени, протромбированого времени, международного нормализованного отношения);
+  - name: ФЭГДС, УЗИ органов брюшной полости и забрюшинного пространства, КТ органов
+      брюшной полости, рентгенография желудка с контрастом, рентгенография ОГК
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими мероприятиями... являются: инструментальные
+        методы исследования: фиброэзофагогастродуоденоскопия... ультразвуковое исследование...'
   treatment:
     non_drug:
-    - text: Медицинская транспортировка пациента с ПГДЯ в больничную организацию осуществляется
-        в положении лежа.
+    - text: Экстренное хирургическое вмешательство в течение 2 часов с момента установки
+        диагноза (ушивание язвы, иссечение язвы с ушиванием, иссечение с пластикой,
+        резекция желудка)
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
         document_url: null
@@ -151,9 +286,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Медицинская транспортировка пациента с ПГДЯ в больничную организацию
-          осуществляется в положении лежа.
-    - text: Пациентам с ПГДЯ показано экстренное хирургическое вмешательство.
+        quote: Экстренное хирургическое вмешательство в течение 2 часов с момента
+          установки диагноза (ушивание язвы, иссечение язвы с ушиванием, иссечение
+          с пластикой, резекция желудка)
+    - text: Эвакуация желудочного содержимого с помощью зонда без промывания желудка
+        перед хирургическим вмешательством
       source_ref:
         protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
         document_url: null
@@ -164,59 +301,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Пациентам с ПГДЯ показано экстренное хирургическое вмешательство.
-    - text: Хирургическое вмешательство при установленном диагнозе ПГДЯ выполняется
-        в течение 2 часов с момента установки диагноза.
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое вмешательство при установленном диагнозе ПГДЯ выполняется
-          в течение 2 часов с момента установки диагноза.
-    - text: 'Основными видами хирургических вмешательств являются: ушивание перфоративной
-        язвы; иссечение перфоративной язвы с ушиванием дефекта стенки органа; иссечение
-        перфоративной язвы с пилоро- или дуоденопластикой; резекция желудка.'
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Основными видами хирургических вмешательств являются: ушивание перфоративной
-          язвы; иссечение перфоративной язвы с ушиванием дефекта стенки органа; иссечение
-          перфоративной язвы с пилоро- или дуоденопла'
-    - text: Перед хирургическим вмешательством проводится эвакуация желудочного содержимого
-        с помощью зонда без промывания желудка.
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Перед хирургическим вмешательством проводится эвакуация желудочного
-          содержимого с помощью зонда без промывания желудка.
+        quote: Эвакуация желудочного содержимого с помощью зонда без промывания желудка
+          перед хирургическим вмешательством
     drug_groups: []
     drugs:
     - drug_name: Цефазолин
       active_substance: null
       drug_group: null
-      dose_text: 2,0 г (при весе < 120 кг) или 3,0 г (при весе >= 120 кг) в/в за 60
-        мин до доступа (30-60 мин если пропущено). Повторное введение при длительности
-        операции > 4 ч или кровопотере > 1,5 л.
+      dose_text: 2,0 г в/в (при массе < 120 кг) или 3,0 г в/в (при массе >= 120 кг)
+        за 60 минут до хирургического доступа
       frequency_text: null
       duration_text: null
       route: null
@@ -234,13 +327,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: с целью периоперационной антибиотикопрофилактики используется цефазолин...
-          в дозе 2,0 г (при весе пациента менее 120 кг) и в дозе 3,0 г внутривенно
-          (при весе пациента 120 кг и более) за 60 минут до хирургического доступа...
+        quote: цефазолин... вводится в дозе 2,0 г (при весе пациента менее 120 кг)
+          и в дозе 3,0 г внутривенно (при весе пациента 120 кг и более) за 60 минут
+          до хирургического доступа
     - drug_name: Метронидазол
       active_substance: null
       drug_group: null
-      dose_text: 500 мг внутривенно (при хирургическом вмешательстве на тонком кишечнике).
+      dose_text: 500 мг в/в дополнительно при вмешательстве на тонком кишечнике
       frequency_text: null
       duration_text: null
       route: null
@@ -259,14 +352,12 @@ conditions:
         table_index: null
         row_index: null
         quote: При хирургическом вмешательстве на тонком кишечнике дополнительно вводится
-          метронидазол в дозе 500 мг внутривенно. Повторное введение метронидазола
-          не требуется.
+          метронидазол в дозе 500 мг внутривенно.
     - drug_name: Далтепарин натрия
       active_substance: null
       drug_group: null
-      dose_text: 'Умеренный риск: 2500 МЕ за 1–2 ч до операции. Дополнительный риск:
-        5000 МЕ п/к вечером накануне ИЛИ 2500 МЕ за 1–2 ч до операции и 25000 МЕ через
-        12 ч.'
+      dose_text: 2500 МЕ п/к за 1–2 ч до операции (умеренный риск) или 5000 МЕ п/к
+        вечером накануне операции (дополнительный риск)
       frequency_text: null
       duration_text: null
       route: null
@@ -284,15 +375,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'далтепарин натрия... Умеренный риск: 2500 МЕ за 1–2 ч до операции.
-          Доп. риск: 5000 МЕ п/к накануне ИЛИ 2500 МЕ за 1–2 ч до операции и 25000
-          МЕ через 12 ч.'
+        quote: далтепарин натрия... У пациентов с умеренным риском тромбоза 2500 МЕ
+          за 1–2 часа до хирургического вмешательства, у пациентов с дополнительным
+          риском... 5000 МЕ подкожно
     - drug_name: Эноксапарин кальция
       active_substance: null
       drug_group: null
-      dose_text: 'Умеренный риск: 2000 анти-Ха МЕ (0,2 мл) п/к за 2 ч до операции.
-        Высокий риск: 4000 анти-Ха МЕ (0,4 мл) за 12 ч до операции и возобновить через
-        12 ч после.'
+      dose_text: 2000 МЕ (0,2 мл) п/к за 2 ч до операции (умеренный риск) или 4000
+        МЕ (0,4 мл) за 12 ч до операции (высокий риск)
       frequency_text: null
       duration_text: null
       route: null
@@ -310,14 +400,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'эноксапарин кальция... Умеренный риск: 2000 МЕ (0,2 мл) п/к за 2 ч
-          до операции. Высокий риск: 4000 МЕ (0,4 мл) за 12 ч до операции и возобновляется
-          через 12 ч после операции.'
+        quote: эноксапарин кальция... При умеренном риске тромбоза... 2000 МЕ (0,2
+          мл) подкожно за 2 часа... при высоком риске тромбоза – 4000 МЕ (0,4 мл)
+          за 12 часов
     - drug_name: Надропарин кальция
       active_substance: null
       drug_group: null
-      dose_text: 'Умеренный риск: 2850 МЕ анти-Ха (0,3 мл) п/к 1 раз в сутки. Высокий
-        риск: за 12 ч до операции 2850 МЕ (51–70 кг) или 3800 МЕ (> 70 кг).'
+      dose_text: 2850 МЕ (0,3 мл) п/к 1 раз в сутки (умеренный риск) или 2850–3800
+        МЕ за 12 ч до операции в зависимости от массы тела (высокий риск)
       frequency_text: null
       duration_text: null
       route: null
@@ -335,39 +425,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'надропарин кальция... Умеренный риск: 2850 МЕ (0,3 мл) п/к 1 раз в
-          сутки. Высокий риск: за 12 ч до операции 2850 МЕ (51–70 кг) или 3800 МЕ
-          (более 70 кг).'
-    - drug_name: Бемипарин натрия
-      active_substance: null
-      drug_group: null
-      dose_text: Информация о дозировке неполная.
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
-        document_url: null
-        local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
-        page_start: 6
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: бемипарин натрия, раствор для инъекций
+        quote: надропарин кальция... При умеренном риске тромбоза... 2850 МЕ (0,3
+          мл) подкожно 1 раз в сутки. При высоком риске... за 12 часов до хирургического
+          вмешательства 2850 МЕ... или 3800 МЕ
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: экстренная госпитализация пациента в хирургическое отделение больничной
-      организации.
+  - text: стационарно
     timing: null
     required_if: []
     source_ref:
@@ -380,11 +447,39 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: экстренная госпитализация пациента в хирургическое отделение больничной
-        организации.
+      quote: стационарно
+  - text: Наличие или подозрение на ПГДЯ является основанием для экстренной госпитализации
+      в хирургическое отделение больничной организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Наличие или подозрение на ПГДЯ является основанием для экстренной госпитализации
+        в хирургическое отделение больничной организации
+  - text: Медицинская транспортировка осуществляется в положении лежа
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: anesteziologiya_reanimatologiya_кп_диагностика_лечение_пациентов_взр_нас_с_перфо
+      document_url: null
+      local_path: minzdrav_protocols/anesteziologiya-reanimatologiya/КП_Диагностика_лечение_пациентов_взр_нас_с_перфоративной_гастродуоденальной_язвой_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская транспортировка осуществляется в положении лежа
   red_flags:
-  - text: Агональное состояние пациента является противопоказанием к хирургическому
-      вмешательству при ПГДЯ.
+  - text: Агональное состояние пациента (противопоказание к хирургическому вмешательству)
     aliases: []
     red_flag_type: other
     severity: high
@@ -410,7 +505,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-02T00:08:06.241209+00:00'
+  extracted_at: '2026-07-23T07:11:39.310650+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -421,4 +516,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-02T00:08:06.258051+00:00'
+  validated_at: '2026-07-23T07:11:39.319452+00:00'

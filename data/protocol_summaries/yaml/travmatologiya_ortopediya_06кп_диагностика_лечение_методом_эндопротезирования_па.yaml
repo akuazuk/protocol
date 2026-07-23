@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение методом эндопротезирования пациентов взрослое население
-    заболеваниями коленного сустава
+  title: Диагностика и лечение методом эндопротезирования пациентов (взрослое население)
+    с заболеваниями коленного сустава
   url: null
   local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
   document_sha256: null
@@ -27,8 +27,8 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: knee_joint_diseases_endoprosthesis
-  name: Заболевания коленного сустава, требующие эндопротезирования
+- condition_id: zabolevaniya_kolennogo_sustava
+  name: Заболевания коленного сустава
   synonyms: []
   abbreviations: []
   icd10_codes:
@@ -43,8 +43,271 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Оценка деформации коленного сустава, а также костной структуры бедренной
+        и большеберцовой костей по рентгенограммам
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оценка деформации коленного сустава, а также костной структуры бедренной
+          и большеберцовой костей по рентгенограммам
+    optional: []
+    exclusion: []
   required_exams:
+  - name: общий анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ крови;
+  - name: общий анализ мочи
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: общий анализ мочи;
+  - name: биохимический анализ крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимический анализ крови (общий белок, общий билирубин, мочевина, креатинин,
+        глюкоза, аланинаминотрансфераза (далее – АлАТ), аспартатаминотрансфераза (далее
+        – АсАТ), С-реактивный белок...
+  - name: определение показателей свертывания крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение показателей свертывания крови (активированное частичное тромбопластиновое
+        время, D-димеры, международное нормализованное отношение (далее – МНО), фибриноген);
+  - name: исследование крови на маркеры гепатитов В и С
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: исследование крови на маркеры гепатитов В и С (HbsAg и anti-HCV);
+  - name: определение группы крови и резус-фактора
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови и резус-фактора;
+  - name: электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма, флюорография легких, онкологический осмотр, осмотр
+        врача-акушера-гинеколога (для женщин);
+  - name: флюорография легких
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма, флюорография легких, онкологический осмотр, осмотр
+        врача-акушера-гинеколога (для женщин);
+  - name: онкологический осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма, флюорография легких, онкологический осмотр, осмотр
+        врача-акушера-гинеколога (для женщин);
+  - name: заключение врача-терапевта или врача общей практики
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: заключение врача-терапевта или врача общей практики о состоянии здоровья
+        пациента и отсутствии медицинских противопоказаний к хирургическому вмешательству;
+  - name: повторные лабораторные исследования на 2–3 сутки (ОАК, биохимия, коагулограмма)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 6
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'однократно на 2–3 сутки выполняются лабораторные методы диагностики:
+        общий анализ крови... биохимическое исследование крови... определение показателей
+        свертывания крови'
   - name: Рентгенологическое исследование
     aliases: []
     exam_type: unknown
@@ -68,28 +331,6 @@ conditions:
       quote: Подбор эндопротезов осуществляется индивидуально в ходе предоперационного
         планирования с помощью специальных шаблонов на основании изучения клинических
         данных, данных рентгенологического исследования.
-  - name: Аллергологический и фармакологический анамнез
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
-      page_start: 3
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: При этом учитывается наличие индивидуальных медицинских противопоказаний,
-        аллергологический и фармакологический анамнез.
   - name: Осмотр врачом-анестезиологом-реаниматологом
     aliases: []
     exam_type: unknown
@@ -110,9 +351,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом,
-        по медицинским показаниям повторно могут выполняться лабораторные и функциональные
-        исследования.
+      quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом
   - name: Рентген-контроль имплантированного эндопротеза
     aliases: []
     exam_type: unknown
@@ -135,7 +374,75 @@ conditions:
       row_index: null
       quote: выполнение рентген-контроля имплантированного эндопротеза.
   conditional_exams:
-  - name: Лабораторные и функциональные исследования
+  - name: серологическое исследование на маркеры сифилиса (ИФА или RPR)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: серологическое исследование на маркеры сифилиса методом иммуноферментного
+        анализа или реакция быстрых плазменных реагинов (RPR) при отсутствии достоверного
+        результата обследования за последний месяц;
+  - name: осмотр врача-акушера-гинеколога (для женщин)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма, флюорография легких, онкологический осмотр, осмотр
+        врача-акушера-гинеколога (для женщин);
+  - name: заключение врача-специалиста по профилю сопутствующей патологии
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при наличии у пациента хронического заболевания заключение врача – специалиста
+        по профилю сопутствующей патологии об отсутствии медицинских противопоказаний
+        к плановому хирургическому вмешательству.
+  - name: Повторные лабораторные и функциональные исследования
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -155,13 +462,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: В ходе предоперационной подготовки пациент осматривается врачом-анестезиологом-реаниматологом,
-        по медицинским показаниям повторно могут выполняться лабораторные и функциональные
+      quote: по медицинским показаниям повторно могут выполняться лабораторные и функциональные
         исследования.
   treatment:
     non_drug:
-    - text: Индивидуальный подбор эндопротезов в ходе предоперационного планирования
-        с помощью специальных шаблонов, окончательный типоразмер определяется интраоперационно.
+    - text: Максимально быстрая активизация пациентов
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -172,11 +477,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Индивидуальный подбор эндопротезов в ходе предоперационного планирования
-          с помощью специальных шаблонов, окончательный типоразмер определяется интраоперационно.
-    - text: Предоперационное планирование хирургического вмешательства по рентгенограммам
-        с использованием теймплестов для оценки деформации, костной структуры, типа
-        эндопротеза, осложнений, уровней резекции и типоразмеров имплантатов.
+        quote: Максимально быстрая активизация пациентов
+    - text: Использование компрессионного (профилактического) трикотажа интраоперационно
+        и в послеоперационном периоде
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -187,12 +490,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Предоперационное планирование хирургического вмешательства по рентгенограммам
-          с использованием теймплестов для оценки деформации, костной структуры, типа
-          эндопротеза, осложнений, уровней резекции и ти
-    - text: У женщин проведение хирургического вмешательства планируется не ранее
-        чем на 5–й день от начала менструального цикла и не позднее, чем за 5 дней
-        до предполагаемого его начала.
+        quote: Использование компрессионного (профилактического) трикотажа интраоперационно
+          и в послеоперационном периоде
+    - text: Предоперационное планирование подбора эндопротеза с использованием шаблонов
+        (теймплестов)
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -203,11 +504,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: У женщин проведение хирургического вмешательства планируется не ранее
-          чем на 5–й день от начала менструального цикла и не позднее, чем за 5 дней
-          до предполагаемого его начала.
-    - text: Перед хирургическим вмешательством пациенту назначается гигиенический
-        душ.
+        quote: Предоперационное планирование подбора эндопротеза с использованием
+          шаблонов (теймплестов)
+    - text: Назначение гигиенического душа перед хирургическим вмешательством
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -218,11 +517,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Перед хирургическим вмешательством пациенту назначается гигиенический
-          душ.
-    - text: Бритье кожных покровов зоны оперируемого тазобедренного сустава, лобковой
-        области, бедра по всей окружности осуществляется не ранее, чем за 6 часов
-        до хирургического вмешательства.
+        quote: Назначение гигиенического душа перед хирургическим вмешательством
+    - text: Бритье кожных покровов зоны оперируемого сустава, лобковой области и бедра
+        не ранее чем за 6 часов до вмешательства
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -233,11 +530,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Бритье кожных покровов зоны оперируемого тазобедренного сустава, лобковой
-          области, бедра по всей окружности осуществляется не ранее, чем за 6 часов
-          до хирургического вмешательства.
-    - text: Пациент укладывается на операционном столе в положении на спине. Рекомендуется
-        установка упоров для удерживания оперируемой конечности в согнутом положении.
+        quote: Бритье кожных покровов зоны оперируемого сустава, лобковой области
+          и бедра не ранее чем за 6 часов до вмешательства
+    - text: Укладка пациента на операционном столе на спине с установкой упоров для
+        сгибания конечности
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -248,10 +544,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Пациент укладывается на операционном столе в положении на спине. Рекомендуется
-          установка упоров для удерживания оперируемой конечности в согнутом положении.
-    - text: Хирургическое вмешательство может выполняться с использованием пневматического
-        жгута, наложенного на среднюю треть бедра с давлением 250–400 мм рт. ст.
+        quote: Укладка пациента на операционном столе на спине с установкой упоров
+          для сгибания конечности
+    - text: 'Хирургическое вмешательство: эндопротезирование коленного сустава (доступ,
+        подготовка костных площадок, примерка и имплантация компонентов)'
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -262,11 +558,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое вмешательство может выполняться с использованием пневматического
-          жгута, наложенного на среднюю треть бедра с давлением 250–400 мм рт. ст.
-    - text: Вид обезболивания определяется врачом-анестезиологом-реаниматологом в
-        зависимости от общего состояния пациента, его возраста, массы тела, объема
-        и продолжительности хирургического вмешательства.
+        quote: 'Хирургическое вмешательство: эндопротезирование коленного сустава
+          (доступ, подготовка костных площадок, примерка и имплантация компонентов)'
+    - text: Бинтование ног эластичными бинтами или применение медицинского компрессионного
+        трикотажа (II степень компрессии)
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -277,11 +572,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Вид обезболивания определяется врачом-анестезиологом-реаниматологом
-          в зависимости от общего состояния пациента, его возраста, массы тела, объема
-          и продолжительности хирургического вмешательства.
-    - text: 'Выполнение хирургического доступа к коленному суставу: передний разрез
-        по средней линии, медиальная капсулотомия, рассечение сухожилия m. quadriceps.'
+        quote: Бинтование ног эластичными бинтами или применение медицинского компрессионного
+          трикотажа (II степень компрессии)
+    - text: Использование систем для сбора и реинфузии дренажной крови в раннем послеоперационном
+        периоде (до 6 часов)
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -292,12 +586,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Выполнение хирургического доступа к коленному суставу: передний разрез
-          по средней линии, медиальная капсулотомия, рассечение сухожилия m. quadriceps.'
-    - text: Подготовка бедренной костной площадки для установки имплантата (установка
-        феморального направителя, угла вальгусного отклонения, определение уровня
-        дистальной феморальной резекции, коррекция переднезадней позиции, ротации,
-        резекции костной ткани, установочная сборка).
+        quote: Использование систем для сбора и реинфузии дренажной крови в раннем
+          послеоперационном периоде (до 6 часов)
+    - text: Гемотрансфузия донорской крови и ее компонентов по медицинским показаниям
       source_ref:
         protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
         document_url: null
@@ -308,104 +599,161 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Подготовка бедренной костной площадки для установки имплантата (установка
-          феморального направителя, угла вальгусного отклонения, определение уровня
-          дистальной феморальной резекции, коррекция переднеза
-    - text: Подготовка тибиальной костной площадки для установки имплантата (внешняя
-        центровка, определение уровня тибиальной резекции, проксимальная резекция,
-        регулировка позиции, подготовка крепежных отверстий).
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Подготовка тибиальной костной площадки для установки имплантата (внешняя
-          центровка, определение уровня тибиальной резекции, проксимальная резекция,
-          регулировка позиции, подготовка крепежных отверстий)
-    - text: Подготовка костной площадки для эндопротеза надколенника (при необходимости
-        его имплантации).
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Подготовка костной площадки для эндопротеза надколенника (при необходимости
-          его имплантации).
-    - text: Примерка эндопротеза (с использованием примерочных компонентов), контроль
-        осевых соотношений сегментов конечности, объема движений в суставе, связочной
-        стабильности сустава.
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Примерка эндопротеза (с использованием примерочных компонентов), контроль
-          осевых соотношений сегментов конечности, объема движений в суставе, связочной
-          стабильности сустава.
-    - text: Имплантация компонентов эндопротеза (тибиальный, феморальный, пателлярный
-        при необходимости, установка тибиальной полиэтиленовой вставки).
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Имплантация компонентов эндопротеза (тибиальный, феморальный, пателлярный
-          при необходимости, установка тибиальной полиэтиленовой вставки).
-    - text: Дренирование полости сустава (может выполняться).
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Дренирование полости сустава (может выполняться).
-    - text: Снятие кровоостанавливающей пневмоманжеты.
-      source_ref:
-        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
-        document_url: null
-        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Снятие кровоостанавливающей пневмоманжеты.
+        quote: Гемотрансфузия донорской крови и ее компонентов по медицинским показаниям
     drug_groups: []
-    drugs: []
+    drugs:
+    - drug_name: нефракционный гепарин
+      active_substance: null
+      drug_group: null
+      dose_text: в профилактических дозах
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Используется нефракционный гепарин, низкомолекулярный гепарин либо
+          фондапаринукс натрия в профилактических дозах и в сроки, рекомендуемые для
+          пациентов с умеренным риском.
+    - drug_name: низкомолекулярный гепарин
+      active_substance: null
+      drug_group: null
+      dose_text: в профилактических дозах
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Используется нефракционный гепарин, низкомолекулярный гепарин либо
+          фондапаринукс натрия в профилактических дозах и в сроки, рекомендуемые для
+          пациентов с умеренным риском.
+    - drug_name: фондапаринукс натрия
+      active_substance: null
+      drug_group: null
+      dose_text: в профилактических дозах
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Используется нефракционный гепарин, низкомолекулярный гепарин либо
+          фондапаринукс натрия в профилактических дозах и в сроки, рекомендуемые для
+          пациентов с умеренным риском.
+    - drug_name: Растворы местных антисептиков
+      active_substance: null
+      drug_group: null
+      dose_text: для обработки раны
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: обработка раны растворами местных антисептиков;
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Повторить лабораторные исследования при наличии изменений в результатах
+      на 2–3 сутки после операции
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Повторить лабораторные исследования при наличии изменений в результатах
+        на 2–3 сутки после операции
+  - text: Медицинское наблюдение в отделении анестезиологии и реанимации или палате
+      пробуждения после операции
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в отделении анестезиологии и реанимации или палате
+        пробуждения после операции
+  - text: Перевод в ортопедо-травматологическое отделение после стабилизации показателей
+      сердечно-сосудистой, дыхательной и других систем
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Перевод в ортопедо-травматологическое отделение после стабилизации показателей
+        сердечно-сосудистой, дыхательной и других систем
   hospitalization: []
   routing:
-  - text: После завершения хирургического вмешательства пациент в зависимости от анестезиологического
-      пособия и тяжести состояния переводится в отделение анестезиологии и реанимации
-      или палату пробуждения для медицинского наблюдения.
+  - text: плановая госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -418,12 +766,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: После завершения хирургического вмешательства пациент в зависимости от
-        анестезиологического пособия и тяжести состояния переводится в отделение анестезиологии
-        и реанимации или палату пробуждения для м
-  - text: После стабилизации показателей сердечно-сосудистой, дыхательной и других
-      систем пациент переводится в ортопедо-травматологическое отделение и осматривается
-      лечащим врачом.
+      quote: плановая госпитализация
+  - text: ортопедо-травматологическое отделение
     timing: null
     required_if: []
     source_ref:
@@ -436,10 +780,60 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: После стабилизации показателей сердечно-сосудистой, дыхательной и других
-        систем пациент переводится в ортопедо-травматологическое отделение и осматривается
-        лечащим врачом.
-  red_flags: []
+      quote: ортопедо-травматологическое отделение
+  - text: Стационарно (отделение анестезиологии и реанимации / палата пробуждения,
+      ортопедо-травматологическое отделение)
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Стационарно (отделение анестезиологии и реанимации / палата пробуждения,
+        ортопедо-травматологическое отделение)
+  red_flags:
+  - text: активное кровотечение
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 1
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'С целью медицинской профилактики ВТЭО при отсутствии медицинских противопоказаний
+        (активное кровотечение, уровень тромбоцитов <30 х 109/л):'
+  - text: уровень тромбоцитов <30 х 109/л
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_06кп_диагностика_лечение_методом_эндопротезирования_па
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/06КП_Диагностика_лечение_методом_эндопротезирования_пациентов_взр_нас_заболеваниями_коленного_сустава_пост_МЗ_2024_109.pdf
+      page_start: 1
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'С целью медицинской профилактики ВТЭО при отсутствии медицинских противопоказаний
+        (активное кровотечение, уровень тромбоцитов <30 х 109/л):'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -448,7 +842,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T19:00:12.611216+00:00'
+  extracted_at: '2026-07-23T11:08:19.259686+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -459,4 +853,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T19:00:12.614767+00:00'
+  validated_at: '2026-07-23T11:08:19.274480+00:00'

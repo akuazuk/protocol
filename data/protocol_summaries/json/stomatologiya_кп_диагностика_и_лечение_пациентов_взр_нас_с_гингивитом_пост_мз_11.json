@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов с гингивитом",
+    "title": "Диагностика и лечение пациентов (взрослое население) с гингивитом",
     "url": null,
     "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
     "document_sha256": null,
@@ -38,8 +38,7 @@
       "abbreviations": [],
       "icd10_codes": [
         "K05.0",
-        "K05.1",
-        "A69.10"
+        "K05.1"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
@@ -47,7 +46,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Ранняя стадия гингивита: кровоточивость десны в течение 3 недель.",
+            "text": "Кровоточивость десны (ранняя стадия)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -64,11 +63,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Ранняя стадия гингивита: кровоточивость десны в течение 3 недель."
+              "quote": "Кровоточивость десны (ранняя стадия)"
             }
           },
           {
-            "text": "Развившаяся стадия гингивита: выраженные клинические признаки в течение первых 2 месяцев.",
+            "text": "Выраженные клинические признаки (развившаяся стадия)",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -85,28 +84,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Развившаяся стадия гингивита: выраженные клинические признаки в течение первых 2 месяцев."
-            }
-          },
-          {
-            "text": "Начальная стадия гингивита: без видимых клинических проявлений, определяется специальными методами диагностики.",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Начальная стадия гингивита: без видимых клинических проявлений, определяется специальными методами диагностики."
+              "quote": "Выраженные клинические признаки (развившаяся стадия)"
             }
           }
         ],
@@ -114,11 +92,37 @@
         "exclusion": []
       },
       "required_exams": [],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Специальные методы диагностики",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "начальная – в течение первых нескольких суток без видимых клинических проявлений (определяют при использовании специальных методов диагностики)"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Гидротерапия десны: 7–10 процедур 2 раза в день (для острого гингивита).",
+            "text": "Гидротерапия десны (7–10 процедур 2 раза в день)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
               "document_url": null,
@@ -129,11 +133,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Гидротерапия десны: 7–10 процедур 2 раза в день (для острого гингивита)."
+              "quote": "Гидротерапия десны (7–10 процедур 2 раза в день)"
             }
           },
           {
-            "text": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой оболочки полости рта: 5–6 процедур через день (для острого гингивита).",
+            "text": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой оболочки полости рта (5–6 процедур через день)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
               "document_url": null,
@@ -144,11 +148,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой оболочки полости рта: 5–6 процедур через день (для острого гингивита)."
+              "quote": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой оболочки полости рта (5–6 процедур через день)"
             }
           },
           {
-            "text": "Флюктуоризация: 6–8 процедур ежедневно (для острого гингивита).",
+            "text": "Флюктуоризация (6–8 процедур ежедневно)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
               "document_url": null,
@@ -159,11 +163,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Флюктуоризация: 6–8 процедур ежедневно (для острого гингивита)."
+              "quote": "Флюктуоризация (6–8 процедур ежедневно)"
             }
           },
           {
-            "text": "Местная гипотермия: 3–4 процедуры ежедневно (для острого гингивита).",
+            "text": "Местная гипотермия (3–4 процедуры ежедневно)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
               "document_url": null,
@@ -174,11 +178,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Местная гипотермия: 3–4 процедуры ежедневно (для острого гингивита)."
+              "quote": "Местная гипотермия (3–4 процедуры ежедневно)"
             }
           },
           {
-            "text": "Гидротерапия, гидромассаж десны: 7–10 процедур 2 раза в день (для хронического простого маргинального гингивита средней и тяжелой степени тяжести).",
+            "text": "Гидромассаж десны (7–10 процедур 2 раза в день)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
               "document_url": null,
@@ -189,11 +193,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Гидротерапия, гидромассаж десны: 7–10 процедур 2 раза в день (для хронического простого маргинального гингивита средней и тяжелой степени тяжести)."
+              "quote": "Гидромассаж десны (7–10 процедур 2 раза в день)"
             }
           },
           {
-            "text": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой оболочки полости рта: 5–6 процедур через день (для хронического простого маргинального гингивита средней и тяжелой степени тяжести).",
+            "text": "Дарсонвализация десны (контактная и искровая)",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
               "document_url": null,
@@ -204,11 +208,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Облучение короткими ультрафиолетовыми лучами (КУФ-облучение) очагов слизистой оболочки полости рта: 5–6 процедур через день (для хронического простого маргинального гингивита средней и тяжелой степени"
+              "quote": "Дарсонвализация десны (контактная и искровая)"
             }
           },
           {
-            "text": "Дарсонвализация десны (контактная и искровая): для хронического простого маргинального гингивита средней и тяжелой степени тяжести.",
+            "text": "Регулярный индивидуальный уход за полостью рта с помощью гигиенических средств",
             "source_ref": {
               "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
               "document_url": null,
@@ -219,7 +223,82 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Дарсонвализация десны (контактная и искровая): для хронического простого маргинального гингивита средней и тяжелой степени тяжести."
+              "quote": "Регулярный индивидуальный уход за полостью рта с помощью гигиенических средств"
+            }
+          },
+          {
+            "text": "Профессиональное удаление зубных отложений",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Профессиональное удаление зубных отложений"
+            }
+          },
+          {
+            "text": "Ортодонтическое лечение при зубочелюстных аномалиях",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ортодонтическое лечение при зубочелюстных аномалиях"
+            }
+          },
+          {
+            "text": "Ортопедическое лечение при дефектах зубов и зубных рядов",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Ортопедическое лечение при дефектах зубов и зубных рядов"
+            }
+          },
+          {
+            "text": "Хирургическое лечение (гингивэктомия) при гиперпластическом гингивите",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическое лечение (гингивэктомия) при гиперпластическом гингивите"
+            }
+          },
+          {
+            "text": "Физиотерапевтические методы лечения",
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Физиотерапевтические методы лечения"
             }
           }
         ],
@@ -229,7 +308,7 @@
             "drug_name": "Амоксициллин с клавулановой кислотой",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Взрослые по 1 таблетке 500 мг/125 мг 3 раза в сутки или по 1 таблетке 875 мг/125 мг 2 раза в сутки. Принимают внутрь в начале приема пищи. Минимальный курс 5 дней.",
+            "dose_text": "Взрослые: по 1 таблетке 500 мг/125 мг 3 раза в сутки или по 1 таблетке 875 мг/125 мг 2 раза в сутки внутрь вначале приема пищи. Минимальный курс — 5 дней.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -247,14 +326,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Взрослые по 1 таблетке 500 мг/125 мг 3 раза в сутки или по 1 таблетке 875 мг/125 мг 2 раза в сутки. Лекарственное средство принимают внутрь вначале приема пищи. Минимальный курс антибактериальной терапии составляет 5 дней."
+              "quote": "Взрослые по 1 таблетке 500 мг/125 мг 3 раза в сутки или по 1 таблетке 875 мг/125 мг 2 раза в сутки. Лекарственное средство принимают внутрь вначале приема пищи."
             }
           },
           {
             "drug_name": "Флуметазон 0,2 мг/Клиохинол 30 мг",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Мазь для наружного применения. Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально).",
+            "dose_text": "Мазь наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -272,14 +351,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Мазь для наружного применения в тубах Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально)"
+              "quote": "Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально)"
             }
           },
           {
             "drug_name": "Флуметазон 0,2 мг/Салициловая кислота 30 мг",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Мазь для наружного применения. Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально).",
+            "dose_text": "Мазь наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -297,14 +376,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Мазь для наружного применения в тубах Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально)"
+              "quote": "Наносится на слизистую оболочку полости рта или десну тонким слоем 1 раз в сутки; до 5 процедур (индивидуально)"
             }
           },
           {
             "drug_name": "Биен/Диоксидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Мазь для наружного и местного применения. Местно, в виде аппликаций 1 раз в сутки до завершения эпителизации (не более 7 дней), длительность аппликации 5–7 мин.",
+            "dose_text": "Мазь наносится в виде аппликаций на эрозивные и язвенные поверхности тонким слоем 1 раз в сутки до завершения эпителизации (не более 7 дней). Длительность аппликации 5–7 мин.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -322,14 +401,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Мазь для наружного и местного применения в тубах Местно. Мазь наносится в виде аппликаций (на ватных или марлевых пластинках) на эрозивные и язвенные поверхности слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки до завершения эпителизации (не более 7 дней). Длительность аппликации 5–7 мин"
+              "quote": "Мазь наносится в виде аппликаций (на ватных или марлевых пластинках) на эрозивные и язвенные поверхности слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки"
             }
           },
           {
             "drug_name": "Метилурацил",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Мазь для наружного применения 100 мг/г. Местно, на пораженные участки тонким слоем 1 раз в сутки длительностью до 20 мин. Количество процедур индивидуально.",
+            "dose_text": "Мазь наносится на пораженные участки тонким слоем 1 раз в сутки длительностью до 20 мин.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -347,39 +426,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Мазь для наружного применения 100 мг/г в тубах Местно. Мазь наносится на пораженные участки слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки длительностью до 20 мин. Количество процедур индивидуально"
-            }
-          },
-          {
-            "drug_name": "Депротеинизированный гемодериват из крови молочных телят",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "Дентальная адгезивная паста. Местно.",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
-              "page_start": 15,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Дентальная адгезивная паста в тубах 5 г Местно."
+              "quote": "Мазь наносится на пораженные участки слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки длительностью до 20 мин."
             }
           },
           {
             "drug_name": "Токоферол",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Капли для внутреннего применения (масляные). 10–15 капель наносятся на пораженный участок слизистой оболочки полости рта или десны в течение 10–15 мин, до 10 процедур.",
+            "dose_text": "10–15 капель наносятся на пораженный участок в течение 10–15 мин до 10 процедур.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -397,14 +451,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Капли для внутреннего применения (масляные) 10 % во флаконах 20 мл; ... 10–15 капель наносятся на пораженный участок слизистой оболочки полости рта или десны в течение 10–15 мин до 10 процедур"
+              "quote": "10–15 капель наносятся на пораженный участок слизистой оболочки полости рта или десны в течение 10–15 мин до 10 процедур"
             }
           },
           {
             "drug_name": "Рибофлавин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Мазь для местного применения 10%. Местно, наносится на пораженный участок слизистой оболочки полости рта или десны в течение 10–15 мин, до 10 процедур.",
+            "dose_text": "Мазь наносится на пораженный участок в течение 10–15 мин до 10 процедур.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -422,14 +476,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Мазь для местного применения 10 % в тубах; ... Мазь наносится на пораженный участок слизистой оболочки полости рта или десны в течение 10–15 мин до 10 процедур. Местно."
+              "quote": "Мазь наносится на пораженный участок слизистой оболочки полости рта или десны в течение 10–15 мин до 10 процедур."
             }
           },
           {
             "drug_name": "Лидокаин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Спрей для местного применения 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую оболочку полости рта или десну, или смазывают ватным тампоном.",
+            "dose_text": "1 порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну (или путем смазывания ватным тампоном).",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -447,14 +501,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Спрей для местного применения 100 мг/мл во флаконах 50 мл Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну. Лекарственное средство можно также наносить путем смазывания смоченным в нем ватным тампоном"
+              "quote": "Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку полости рта или десну."
             }
           },
           {
             "drug_name": "Лидокаин/Хлоргексидин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Анестезирующий гель. Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией.",
+            "dose_text": "Гель применяется для аппликационной анестезии слизистой оболочки полости рта.",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -472,7 +526,382 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Анестезирующий гель в шприцах 12,5 г Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией."
+              "quote": "Для аппликационной анестезии слизистой оболочки полости рта, в т. ч. перед инъекционной анестезией."
+            }
+          },
+          {
+            "drug_name": "Хлоргексидин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор 0,5 мг/мл. В виде орошений, полосканий и аппликаций 5–10 мл на 1–3 мин 2–3 раза в сутки.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лекарственное средство применяется в виде орошений, полосканий и аппликаций – 5–10 мл раствора наносят на пораженную поверхность... с экспозицией 1–3 мин 2–3 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "Калия перманганат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,01–0,02–0,1 % водный раствор для полоскания полости рта 4–5 раз в день в течение 3–5 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Местно, в виде водного раствора для полоскания полости рта 0,01–0,02–0,1 % раствор 4–5 раз в день в течении 3–5 дней."
+            }
+          },
+          {
+            "drug_name": "Йод",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Раствор спиртовой 5 % для обработки операционного поля.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Раствором йода смачивают ватный тампон, который используют для обработки операционного поля"
+            }
+          },
+          {
+            "drug_name": "Лизоцим/Пиридоксин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки для рассасывания. По 2 таблетки 3–4 раза в сутки. Курс 5 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Назначается по 2 таблетки 3–4 раза в сутки. Курс лечения – 5 дней"
+            }
+          },
+          {
+            "drug_name": "Цетилпиридиния хлорид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 1,5 мг. По 1 таблетке 3–4 раза в день (макс. 8 в сутки) до 7 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Медленно рассасывать по 1 таблетке 3–4 раза в день (максимально 8 таблеток в сутки). Продолжительность не более 7 дней."
+            }
+          },
+          {
+            "drug_name": "Фурагин растворимый",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Порошок 100 мг. Содержимое пакета растворяют в 200 мл горячей воды, полоскание 2–3 раза в день.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 8,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Содержимое пакетика растворяют в 200 мл горячей воды и теплый раствор используют для полоскания полости рта 2–3 раза в день."
+            }
+          },
+          {
+            "drug_name": "Цефуроксим",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "750 мг каждые 8 часов в/в или в/м; для профилактики 1,5 г в/в струйно за 30 мин до операции.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "750 мг каждые 8 часов внутривенно или внутримышечно."
+            }
+          },
+          {
+            "drug_name": "Доксициклин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Внутрь по 200 мг в сутки в 1-й день, затем 100 мг в сутки. Длительность 7–10 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "по 200 мг в сутки в первый день лечения, в последующие дни – по 100 мг в сутки. Длительность приема 7–10 дней"
+            }
+          },
+          {
+            "drug_name": "Клиндамицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Внутрь от 600 мг до 2400 мг в сутки в 2–4 приема в течение 7–14 дней. Профилактика: 600 мг за час до вмешательства.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лечение инфекций: внутрь от 600 мг до 2 400 мг в сутки в 2–4 приема."
+            }
+          },
+          {
+            "drug_name": "Метронидазол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 250 мг. По 500 мг 2 раза в сутки в течение 3–10 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При язвенных поражениях слизистой оболочки полости рта и десны назначается по 500 мг 2 раза в сутки в течение 3–10 дней"
+            }
+          },
+          {
+            "drug_name": "Ацикловир",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Таблетки 200 мг. По 200 мг 5 раз в сутки. Курс 5–10 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Внутрь, в лечебной дозе 200 мг (1 таблетка) 5 раз в сутки. Курс лечения составляет 5–10 дней"
+            }
+          },
+          {
+            "drug_name": "Нистатин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Мазь 100 000 ЕД/г. Наносится на пораженную поверхность 1–2 раза в сутки, 10–14 дней.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "мазь наносится на пораженную поверхность слизистой оболочки полости рта или десны 1–2 раза в сутки. Курс лечения – 10–14 дней"
+            }
+          },
+          {
+            "drug_name": "Метронидазол/Хлоргексидин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Гель стоматологический. Наносится тонким слоем 1 раз в сутки до 20 мин.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гель наносится на пораженные участки слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки длительностью до 20 мин."
+            }
+          },
+          {
+            "drug_name": "Метронидазол/Хлоргексидин/Лидокаин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Гель стоматологический. Наносится тонким слоем 1 раз в сутки до 20 мин.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Гель наносится на пораженные участки слизистой оболочки полости рта или десны тонким слоем 1 раз в сутки длительностью до 20 мин."
+            }
+          },
+          {
+            "drug_name": "Трипсин кристаллический",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Лиофилизат. 50 мг трипсина растворяют в 5 мл физраствора, салфетку накладывают местно.",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "На изъязвленную или некротизированную слизистую оболочку полости рта или десны накладывают смоченную салфетку раствором трипсина"
             }
           }
         ],
@@ -482,7 +911,7 @@
       },
       "follow_up": [
         {
-          "text": "В первый год медицинского наблюдения пациента с впервые установленным гингивитом наблюдают каждые три месяца для прослеживания динамики развития болезни и перераспределения его в соответствующую группу с дальнейшим наблюдением в течение 2 лет.",
+          "text": "Терапевтические мероприятия с повторной оценкой состояния тканей периодонта",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -496,14 +925,68 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "В первый год медицинского наблюдения пациента с впервые установленным гингивитом наблюдают каждые три месяца для прослеживания динамики развития болезни и перераспределения его в соответствующую групп"
+            "quote": "Терапевтические мероприятия с повторной оценкой состояния тканей периодонта"
+          }
+        },
+        {
+          "text": "Поддерживающее лечение",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Поддерживающее лечение"
+          }
+        },
+        {
+          "text": "Наблюдение пациентов с впервые установленным гингивитом в первый год каждые три месяца с дальнейшим наблюдением в течение 2 лет",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Наблюдение пациентов с впервые установленным гингивитом в первый год каждые три месяца с дальнейшим наблюдением в течение 2 лет"
+          }
+        },
+        {
+          "text": "Оценка результативности лечения по критериям: стабилизация процесса, ремиссия, без изменений, улучшение, ухудшение",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "stomatologiya_кп_диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_мз_11",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/stomatologiya/КП_Диагностика_и_лечение_пациентов_взр_нас_с_гингивитом_пост_МЗ_11.01.2023_4.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка результативности лечения по критериям: стабилизация процесса, ремиссия, без изменений, улучшение, ухудшение"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "амбулаторно",
+          "text": "Распределение и медицинское наблюдение пациентов в дифференцированных группах (амбулаторно)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -516,7 +999,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "амбулаторно"
+            "quote": "Распределение и медицинское наблюдение пациентов в дифференцированных группах (амбулаторно)"
           }
         }
       ],
@@ -531,7 +1014,7 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T18:26:56.326238+00:00",
+    "extracted_at": "2026-07-23T10:24:42.345984+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
@@ -544,6 +1027,6 @@
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-20T18:26:56.337371+00:00"
+    "validated_at": "2026-07-23T10:24:42.376088+00:00"
   }
 }

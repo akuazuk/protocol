@@ -27,13 +27,12 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: congenital_anomalies_eye_ear_face_neck
+- condition_id: vrozhdennye_anomalii_glaza_uha_licza
   name: Врожденные аномалии глаза, уха, лица и шеи
   synonyms: []
   abbreviations: []
   icd10_codes:
   - Q10
-  - Q18
   - Q10.0
   - Q10.1
   - Q10.2
@@ -44,14 +43,38 @@ conditions:
   - Q17.3
   - Q17.4
   - Q17.5
+  - Q18
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Наличие врожденных аномалий глаза, уха, лица и шеи (генетически или не
+        генетически обусловленных), подтвержденное данными клинического обследования,
+        лабораторных и инструментальных исследований
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие врожденных аномалий глаза, уха, лица и шеи (генетически или
+          не генетически обусловленных), подтвержденное данными клинического обследования,
+          лабораторных и инструментальных исследований
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Клиническое обследование пациента (сбор анамнеза, выявление жалоб, аллергический
-      анамнез, соматические заболевания, давность возникновения, течение, связь с
-      хирургическим вмешательством, проведенное р
+  - name: Клиническое обследование пациента
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -71,83 +94,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: сбор анамнеза, установка причины возникновения и развития заболевания
-        (генетически обусловленные или не генетически обусловленные); выявление жалоб
-        (их характер и сроки появления), аллергический анамнез, наличие острых и хронических
-        соматических заболеваний
-  - name: Внешний осмотр челюстно-лицевой области (конфигурация лица, кожные покровы)
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: внешний осмотр челюстно-лицевой области (конфигурация лица, кожные покровы)
-  - name: Пальпация регионарных лимфатических узлов, жевательных мышц, слюнных желез,
-      височно-нижнечелюстного сустава
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: пальпация регионарных лимфатических узлов (увеличены или не увеличены;
-        болезненны или безболезненны; плотные или мягкие; подвижные или неподвижные;
-        спаяны с кожей и подлежащими тканями или не спаяны с кожей и подлежащими тканями),
-        жевательных мышц, слюнных желез, височно-нижнечелюстного сустава
-  - name: Осмотр полости рта с помощью дополнительных инструментов (состояние зубных
-      рядов, прикуса, слизистой, патологические изменения, перкуссия зубов, подвижность,
-      пародонтальные карманы, окклюзионные конта
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-      page_start: 6
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'осмотр полости рта с помощью дополнительных инструментов: оценка состояния
-        зубных рядов, состояние прикуса, слизистой оболочки полости рта, наличие ее
-        патологических изменений; перкуссия зубов; оценка степени подвижности зубов;
-        наличие пародонтального(ых) кармана(ов); оценка окклюзионных контактов; наличие
-        пломб, ортопедических конструкций'
+      quote: 'клиническое обследование пациента: сбор анамнеза, установка причины
+        возникновения и развития заболевания'
   - name: Патогистологическое исследование иссеченных тканей
     aliases: []
     exam_type: unknown
@@ -169,7 +117,7 @@ conditions:
       table_index: null
       row_index: null
       quote: удаление образования (кисты или свища) с обязательным патогистологическим
-        исследованием иссеченных тканей
+        исследованием иссеченных тканей;
   conditional_exams:
   - name: Общий анализ крови
     aliases: []
@@ -191,7 +139,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ крови
+      quote: 'лабораторные диагностические исследования (по медицинским показаниям):
+        общий анализ крови'
   - name: Биохимический анализ крови
     aliases: []
     exam_type: unknown
@@ -255,8 +204,8 @@ conditions:
       table_index: null
       row_index: null
       quote: общий анализ мочи
-  - name: Бактериологическое исследование (при наличии экссудата) с определением чувствительности
-      к антибактериальным и противогрибковым ЛС
+  - name: Бактериологическое исследование (с определением чувствительности к АБ и
+      противогрибковым ЛС)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -293,7 +242,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Перевязка послеоперационной раны
-    - text: Магнитотерапия – 6–10 процедур ежедневно
+    - text: 'Физиотерапевтическое лечение: магнитотерапия (6–10 процедур ежедневно)'
       source_ref:
         protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
         document_url: null
@@ -304,7 +253,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Магнитотерапия – 6–10 процедур ежедневно
+        quote: 'Физиотерапевтическое лечение: магнитотерапия (6–10 процедур ежедневно)'
     - text: Лечебная физическая культура (ЛФК)
       source_ref:
         protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
@@ -317,7 +266,8 @@ conditions:
         table_index: null
         row_index: null
         quote: Лечебная физическая культура (ЛФК)
-    - text: Хирургическое лечение при птозе, врожденном эктропионе и энтропионе
+    - text: Хирургическое лечение (блефаропластика, коррекция наружного уха, отопластика,
+        иссечение кисты/свища, пластическое уменьшение/увеличение ротовой щели и губ)
       source_ref:
         protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
         document_url: null
@@ -328,156 +278,16 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое лечение при птозе, врожденном эктропионе и энтропионе
-    - text: Блефаропластика
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Блефаропластика
-    - text: Наложение швов (снятие на 7–10 сутки)
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Наложение швов (снятие на 7–10 сутки)
-    - text: Хирургическое лечение при анотии, микротии (коррекция формы наружного
-        уха, восстановление проходимости ушного канала)
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое лечение при анотии, микротии (коррекция формы наружного
-          уха, восстановление проходимости ушного канала)
-    - text: Пластическая этапная реконструкция ушной раковины свободным хрящевым аутотрансплантатом
-        (имплантатом)
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Пластическая этапная реконструкция ушной раковины свободным хрящевым
-          аутотрансплантатом (имплантатом)
-    - text: Имплантация фиксирующих элементов в височную кость для фиксации эктопротеза
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Имплантация фиксирующих элементов в височную кость для фиксации эктопротеза
-    - text: Различные виды отопластики (при аномалиях уха)
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Различные виды отопластики (при аномалиях уха)
-    - text: Хирургическое удаление образования (кисты или свища) жаберной щели
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое удаление образования (кисты или свища) жаберной щели
-    - text: Пункция, первичная хирургическая обработка инфекционно-воспалительного
-        очага с последующим дренированием (при воспалении жаберной щели)
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Пункция, первичная хирургическая обработка инфекционно-воспалительного
-          очага с последующим дренированием (при воспалении жаберной щели)
-    - text: Плановое хирургическое вмешательство по удалению образования (кисты или
-        свища) после полного купирования воспалительного процесса
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Плановое хирургическое вмешательство по удалению образования (кисты
-          или свища) после полного купирования воспалительного процесса
-    - text: Пластическое уменьшение или увеличение ротовой щели местными тканями (при
-        макростомии или микростомии)
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Пластическое уменьшение или увеличение ротовой щели местными тканями
-          (при макростомии или микростомии)
-    - text: Хирургическое лечение при макрохейлии или микрохейлии
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хирургическое лечение при макрохейлии или микрохейлии
+        quote: Хирургическое лечение (блефаропластика, коррекция наружного уха, отопластика,
+          иссечение кисты/свища, пластическое уменьшение/увеличение ротовой щели и
+          губ)
     drug_groups: []
     drugs:
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для наружного (местного) применения 0,5 мг/мл; раствор для
-        наружного применения 0,5 мг/мл
+      dose_text: Раствор 0,5 мг/мл. Местно или наружно, неразведенный раствор в виде
+        орошений, полосканий и аппликаций.
       frequency_text: null
       duration_text: null
       route: null
@@ -495,16 +305,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раствор для наружного (местного) применения 0,5 мг/мл; раствор для
-          наружного применения 0,5 мг/мл. Местно или наружно, неразведенный раствор
-          в виде орошений, полосканий и аппликаций. Длительность применения устанавливают
-          индивидуально
+        quote: Хлоргексидин Раствор для наружного (местного) применения 0,5 мг/мл...
+          Местно или наружно, неразведенный раствор в виде орошений, полосканий и
+          аппликаций
     - drug_name: Амоксициллин/клавулановая кислота
       active_substance: null
       drug_group: null
-      dose_text: Таблетки, покрытые оболочкой, 875 мг/125 мг; таблетки, покрытые оболочкой,
-        500 мг/125 мг; порошок для приготовления раствора для внутривенного введения
-        (для инъекций) 1000 мг/200 мг; порошок для приго
+      dose_text: Таблетки 875 мг/125 мг, 500 мг/125 мг; порошок для в/в введения 1000
+        мг/200 мг, 500 мг/100 мг. В/в медленно (1 г в 20,0 мл воды) по 1000 мг/200
+        мг 3 раза в сутки.
       frequency_text: null
       duration_text: null
       route: null
@@ -522,13 +331,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Таблетки, покрытые оболочкой, 875 мг/125 мг; порошок для приготовления
-          раствора для внутривенного введения (для инъекций) 1000 мг/200 мг. Внутривенно
-          медленно по 1000 мг/200 мг 3 раза в сутки.
+        quote: Амоксициллин/клавулановая кислота... Внутривенно медленно (1 г ЛС растворяется
+          в 20,0 мл воды для инъекций) по 1000 мг/200 мг 3 раза в сутки
     - drug_name: Антисептические ЛС
       active_substance: null
       drug_group: null
-      dose_text: для инстилляции при перевязке послеоперационной раны
+      dose_text: инстилляция при перевязке послеоперационной раны (согласно приложению
+        1)
       frequency_text: null
       duration_text: null
       route: null
@@ -547,11 +356,12 @@ conditions:
         table_index: null
         row_index: null
         quote: перевязка послеоперационной раны с инстилляцией антисептическими ЛС
-          согласно приложению 1
+          согласно приложению 1;
     - drug_name: Антибактериальные ЛС
       active_substance: null
       drug_group: null
-      dose_text: по медицинским показаниям при инфекционных осложнениях
+      dose_text: по медицинским показаниям при инфекционных осложнениях (согласно
+        приложению 2)
       frequency_text: null
       duration_text: null
       route: null
@@ -570,11 +380,11 @@ conditions:
         table_index: null
         row_index: null
         quote: при возникновении инфекционных осложнений – антибактериальные ЛС согласно
-          приложению 2
+          приложению 2 (по медицинским показаниям);
     - drug_name: Нестероидные противовоспалительные ЛС
       active_substance: null
       drug_group: null
-      dose_text: с целью снижения болевого синдрома
+      dose_text: для снижения болевого синдрома (согласно приложению 3)
       frequency_text: null
       duration_text: null
       route: null
@@ -593,12 +403,12 @@ conditions:
         table_index: null
         row_index: null
         quote: с целью снижения болевого синдрома – нестероидные противовоспалительные
-          ЛС согласно приложению 3
+          ЛС согласно приложению 3.
     - drug_name: ЛС искусственной слезы, гели и мази
       active_substance: null
       drug_group: null
-      dose_text: для увлажнения конъюнктивы и роговицы при врожденном энтропионе (ранние
-        стадии)
+      dose_text: для увлажнения конъюнктивы и роговицы на ранних стадиях врожденного
+        энтропиона
       frequency_text: null
       duration_text: null
       route: null
@@ -618,34 +428,10 @@ conditions:
         row_index: null
         quote: использование ЛС искусственной слезы, гелей и мазей для увлажнения
           конъюнктивы, а также роговицы
-    - drug_name: ЛС местной анестезии
-      active_substance: null
-      drug_group: null
-      dose_text: по медицинским показаниям, в зависимости от травматичности и продолжительности
-        хирургического вмешательства
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: местная анестезия с использованием ЛС согласно приложению 4; местное
-          потенцированное обезболивание, общее обезболивание
     - drug_name: Стероидные противовоспалительные ЛС
       active_substance: null
       drug_group: null
-      dose_text: с целью уменьшения послеоперационного отека
+      dose_text: для уменьшения послеоперационного отека (согласно приложению 5)
       frequency_text: null
       duration_text: null
       route: null
@@ -664,15 +450,221 @@ conditions:
         table_index: null
         row_index: null
         quote: с целью уменьшения послеоперационного отека – стероидные противовоспалительные
-          ЛС согласно приложению 5
+          ЛС согласно приложению 5.
+    - drug_name: Бензилдиметил-миристоиламино-пропиламмоний
+      active_substance: null
+      drug_group: null
+      dose_text: 5–10 мл раствора 2–3 раза в сутки для антисептической обработки ран
+        или полоскания 2–3 раза в сутки.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Для антисептической обработки ран наносят на пораженную поверхность
+          кожи или слизистых оболочек 5–10 мл раствора
+    - drug_name: Нитрофурал
+      active_substance: null
+      drug_group: null
+      dose_text: Раствор 0,2 мг/мл для орошения ран и наложения влажных повязок.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Нитрофурал Раствор для наружного применения 0,2 мг/мл Для орошения
+          ран и наложения влажных повязок.
+    - drug_name: Калия перманганат
+      active_substance: null
+      drug_group: null
+      dose_text: 0,1–0,5 % водный раствор для промывания инфицированных ран ежедневно.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 10
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: для промывания инфицированных ран – 0,1–0,5 % раствор (1/2–1 пакетик
+          разводят в 1 л воды) ежедневно
+    - drug_name: Цефуроксим
+      active_substance: null
+      drug_group: null
+      dose_text: 750 мг каждые 8 часов внутривенно или внутримышечно.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 750 мг каждые 8 часов внутривенно или внутримышечно.
+    - drug_name: Метронидазол
+      active_substance: null
+      drug_group: null
+      dose_text: Внутривенно капельно по 100 мл 2 раза в сутки, затем переход на прием
+        внутрь 250 мг 2 раза в сутки (в тяжелых случаях 500 мг 2 раза в сутки).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Внутривенно капельно по 100 мл 2 раза в сутки.
+    - drug_name: Клиндамицин
+      active_substance: null
+      drug_group: null
+      dose_text: Внутрь от 600 до 2400 мг в сутки в 2–4 приема.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Внутрь от 600 до 2400 мг в сутки в 2–4 приема одновременно с приемом
+          пищи.
+    - drug_name: Доксициклин
+      active_substance: null
+      drug_group: null
+      dose_text: 200 мг в первый день лечения, затем 100 мг/сутки.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 12
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обычная доза 200 мг в первый день лечения, затем 100 мг/сутки.
+    - drug_name: Кеторолак
+      active_substance: null
+      drug_group: null
+      dose_text: В/м или в/в разовая доза 30–60 мг (макс. 90 мг/сут; старше 65 лет
+        или с нарушением функции почек – 60 мг/сут). Внутрь макс. суточная доза 40
+        мг (4 таблетки), курс не более 5 дней.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При внутримышечном или внутривенном введении разовая доза может варьировать
+          от 30 мг до 60 мг.
+    - drug_name: Ибупрофен
+      active_substance: null
+      drug_group: null
+      dose_text: Внутрь по 200 мг 3–4 раза в сутки, при необходимости до 400 мг 3
+        раза в сутки. Максимальная суточная доза – 1200 мг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+        page_start: 13
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ибупрофен назначают внутрь по 200 мг 3–4 раза в сутки.
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение осуществляется врачом-стоматологом-хирургом амбулаторно
-      по месту жительства и включает медицинский осмотр, выполнение лабораторных и
-      инструментальных (лучевые методы исследования) исследований по медицинским показаниям.
-      Периодичность – 1 раз в 6 месяцев.
+  - text: Медицинское наблюдение в амбулаторных условиях осуществляется врачом-стоматологом-хирургом
+      по месту жительства. Периодичность – 1 раз в 6 месяцев.
     timing: null
     required_if: []
     expected_actions: []
@@ -686,14 +678,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение осуществляется врачом-стоматологом-хирургом амбулаторно
-        по месту жительства и включает медицинский осмотр, выполнение лабораторных
-        и инструментальных (лучевые методы исследовани
-  hospitalization: []
-  routing:
-  - text: госпитализация
+      quote: Медицинское наблюдение в амбулаторных условиях осуществляется врачом-стоматологом-хирургом
+        по месту жительства. Периодичность – 1 раз в 6 месяцев.
+  - text: Снятие швов на 7–10 сутки после хирургического вмешательства
     timing: null
     required_if: []
+    expected_actions: []
     source_ref:
       protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
       document_url: null
@@ -704,7 +694,25 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
+      quote: Снятие швов на 7–10 сутки после хирургического вмешательства
+  - text: Медицинское наблюдение в амбулаторных условиях пациентов с врожденными аномалиями
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение в амбулаторных условиях пациентов с врожденными
+        аномалиями
+  hospitalization: []
+  routing:
   - text: амбулаторно
     timing: null
     required_if: []
@@ -719,7 +727,7 @@ conditions:
       table_index: null
       row_index: null
       quote: амбулаторно
-  - text: Амбулаторно
+  - text: госпитализация
     timing: null
     required_if: []
     source_ref:
@@ -732,8 +740,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторно
-  - text: Стационарно в отделении челюстно-лицевой хирургии или хирургическом отделении
+      quote: госпитализация
+  - text: Амбулаторная помощь (стоматологическая хирургическая)
     timing: null
     required_if: []
     source_ref:
@@ -746,8 +754,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Стационарно в отделении челюстно-лицевой хирургии или хирургическом отделении
-  - text: В отделение интенсивной терапии и реанимации (при развитии тяжелых осложнений)
+      quote: Амбулаторная помощь (стоматологическая хирургическая)
+  - text: 'Стационарно: отделение челюстно-лицевой хирургии или хирургическое отделение'
     timing: null
     required_if: []
     source_ref:
@@ -760,8 +768,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: В отделение интенсивной терапии и реанимации (при развитии тяжелых осложнений)
-  - text: Медицинское наблюдение в амбулаторных условиях пациентов с врожденными
+      quote: 'Стационарно: отделение челюстно-лицевой хирургии или хирургическое отделение'
+  - text: Отделение интенсивной терапии и реанимации (при развитии тяжелых осложнений)
     timing: null
     required_if: []
     source_ref:
@@ -774,7 +782,21 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение в амбулаторных условиях пациентов с врожденными
+      quote: Отделение интенсивной терапии и реанимации (при развитии тяжелых осложнений)
+  - text: амбулаторно
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: stomatologiya_12кп_диагностика_и_лечение_пациентов_взр_насел_с_врожденными_анома
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/12КП_«Диагностика_и_лечение_пациентов_взр_насел_с_врожденными_аномалиями_глаза_уха_лица_и_шеи_пост_МЗ_02.05.2023_66.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: амбулаторно
   red_flags:
   - text: Развитие тяжелых осложнений
     aliases: []
@@ -793,7 +815,7 @@ conditions:
       table_index: null
       row_index: null
       quote: при развитии тяжелых осложнений – в отделении интенсивной терапии и реанимации
-        больничной организации
+        больничной организации.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -802,7 +824,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T17:51:25.553314+00:00'
+  extracted_at: '2026-07-23T10:03:59.257751+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -813,4 +835,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T17:51:25.566655+00:00'
+  validated_at: '2026-07-23T10:03:59.287373+00:00'

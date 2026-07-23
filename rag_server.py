@@ -8383,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-23-r6-gemini3-models-enable"
+BUILD_VERSION = "2026-07-23-r7-kz-deep-eval-dashboard"
 
 
 def _app_version() -> str:
@@ -10665,6 +10665,86 @@ def api_methodist_mis_kz_llm_review_one(request: "Request", body: MisKzLlmReview
     from clinical_knowledge.mis_kz_quality import review_one_visit_full
 
     return review_one_visit_full(month=body.month, visit_id=body.visit_id)
+
+
+@app.get("/api/methodist/mis-kz-quality/cases")
+def api_methodist_mis_kz_cases(
+    request: "Request",
+    month: str = Query("2026-07", min_length=7, max_length=7),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(50, ge=1, le=200),
+    sort_by: str = Query("overall"),
+    sort_dir: str = Query("asc"),
+    specialization: str = Query(""),
+    filial: str = Query(""),
+    doctor: str = Query(""),
+    kz_kind: str = Query(""),
+    mkb_chapter: str = Query(""),
+    mkb_agreement: str = Query(""),
+    age_group: str = Query(""),
+    status: str = Query(""),
+    score_band: str = Query(""),
+    finding_axis: str = Query(""),
+    min_severity: str = Query(""),
+    needs_human: bool = Query(False),
+    potential_harm: bool = Query(False),
+    date_mismatch: bool = Query(False),
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    preset: str = Query(""),
+    q: str = Query(""),
+) -> dict:
+    """Таблица КЗ с deep-скором: фильтры по всем столбцам, facets, агрегат под фильтр (§7Б)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import build_kz_cases_view
+
+    return build_kz_cases_view(
+        month=month,
+        page=page,
+        page_size=page_size,
+        sort_by=sort_by,
+        sort_dir=sort_dir,
+        specialization=specialization,
+        filial=filial,
+        doctor=doctor,
+        kz_kind=kz_kind,
+        mkb_chapter=mkb_chapter,
+        mkb_agreement=mkb_agreement,
+        age_group=age_group,
+        status=status,
+        score_band=score_band,
+        finding_axis=finding_axis,
+        min_severity=min_severity,
+        needs_human=needs_human,
+        potential_harm=potential_harm,
+        date_mismatch=date_mismatch,
+        date_from=date_from,
+        date_to=date_to,
+        preset=preset,
+        q=q,
+    )
+
+
+@app.get("/api/methodist/mis-kz-quality/dynamics")
+def api_methodist_mis_kz_dynamics(request: "Request") -> dict:
+    """Динамика deep-оценки КЗ по месяцам (тренды осей, P0/100, статусы) (§7Б.3)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import build_kz_dynamics
+
+    return build_kz_dynamics()
+
+
+@app.get("/api/methodist/mis-kz-quality/case-detail")
+def api_methodist_mis_kz_case_detail(
+    request: "Request",
+    month: str = Query("2026-07", min_length=7, max_length=7),
+    visit_id: str = Query(..., min_length=1, max_length=64),
+) -> dict:
+    """Разбор одного КЗ (§7Б.4): оси, находки по severity, block_scores, reg55."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import build_kz_case_detail
+
+    return build_kz_case_detail(month=month, visit_id=visit_id)
 
 
 @app.post("/api/methodist/patient-quality/refresh")

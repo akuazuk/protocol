@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика, лечение, реабилитация пациентов с термической травмой и ее последствиями",
+    "title": "Диагностика, лечение и реабилитация пациентов с термической травмой и последствиями",
     "url": null,
     "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "burns_and_thermal_injuries",
-      "name": "Ожоги и термические травмы",
+      "condition_id": "termicheskaya_travma",
+      "name": "Термическая травма",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -45,7 +45,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Определение прогноза по ИТП для пациентов до 50 лет: до 30 единиц – благоприятный; 31–60 единиц – относительно благоприятный; 61–90 единиц – сомнительный; 91–135 единиц – неблагоприятный; свыше 135 единиц – абсолютно неблагоприятный.",
+            "text": "Прогноз по ИТП (до 50 лет): 1% поверхностного ожога = 1 ед., 1% глубокого = 3 ед., ингаляционная травма дает от 15 до 45 ед. в зависимости от тяжести.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -62,11 +62,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение прогноза по ИТП для пациентов до 50 лет: до 30 единиц – благоприятный; 31–60 единиц – относительно благоприятный; 61–90 единиц – сомнительный; 91–135 единиц – неблагоприятный; свыше 135 ед"
+              "quote": "Прогноз по ИТП (до 50 лет): 1% поверхностного ожога = 1 ед., 1% глубокого = 3 ед., ингаляционная травма дает от 15 до 45 ед. в зависимости от тяжести."
             }
           },
           {
-            "text": "Определение прогноза по «правилу сотни» (индекс Бо) для пациентов старше 50 лет: до 60 единиц – благоприятный; 61–80 единиц – относительно благоприятный; 81–100 единиц – сомнительный; 100–125 единиц – неблагоприятный; свыше 125 единиц – абсолютно неблагоприятный.",
+            "text": "Прогноз по индексу Бо (старше 50 лет): возраст (лет) + площадь ожогов (%) + ингаляционная травма (15–45 ед.).",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -83,11 +83,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Определение прогноза по «правилу сотни» (индекс Бо) для пациентов старше 50 лет: до 60 единиц – благоприятный; 61–80 единиц – относительно благоприятный; 81–100 единиц – сомнительный; 100–125 единиц –"
+              "quote": "Прогноз по индексу Бо (старше 50 лет): возраст (лет) + площадь ожогов (%) + ингаляционная травма (15–45 ед.)."
             }
           },
           {
-            "text": "Косвенные признаки ингаляционной травмы: ожоги кожи на лице, шее, передней поверхности грудной клетки; опаленные ресницы, брови, волосы в носовых ходах, следы копоти в носоглотке и ротоглотке; наличие копоти на коже лица, в носовых ходах, на языке, в глотке; изменение голоса; кашель с мокротой, содержащей копоть; покраснение и припухлость ротоглотки; затруднение дыхания; низкое насыщение крови кислородом; нарушение сознания.",
+            "text": "Косвенные признаки ингаляционной травмы: ожоги лица и шеи, копоть в носоглотке/ротоглотке, опаленные волосы/ресницы, дисфония/афония, кашель с копотью, одышка, сухие/влажные хрипы, сниженная сатурация.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -104,11 +104,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Косвенные признаки ингаляционной травмы: ожоги кожи на лице, шее, передней поверхности грудной клетки; опаленные ресницы, брови, волосы в носовых ходах, следы копоти в носоглотке и ротоглотке; наличие"
+              "quote": "Косвенные признаки ингаляционной травмы: ожоги лица и шеи, копоть в носоглотке/ротоглотке, опаленные волосы/ресницы, дисфония/афония, кашель с копотью, одышка, сухие/влажные хрипы, сниженная сатурация"
             }
           },
           {
-            "text": "Лабораторные признаки ингаляционной травмы: повышение уровня карбоксигемоглобина более 10 % и ацидоз (респираторный и (или) метаболический).",
+            "text": "Лабораторные признаки ингаляционной травмы при отравлении продуктами горения: уровень карбоксигемоглобина более 10% и наличие респираторного или метаболического ацидоза.",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -125,7 +125,91 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Лабораторные признаки ингаляционной травмы: повышение уровня карбоксигемоглобина более 10 % и ацидоз (респираторный и (или) метаболический)."
+              "quote": "Лабораторные признаки ингаляционной травмы при отравлении продуктами горения: уровень карбоксигемоглобина более 10% и наличие респираторного или метаболического ацидоза."
+            }
+          },
+          {
+            "text": "Оценка площади ожогового поражения (% ОППТ)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оценка площади ожогового поражения (% ОППТ)"
+            }
+          },
+          {
+            "text": "Оценка уровня сознания по шкале ком Глазго",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оценка уровня сознания по шкале ком Глазго"
+            }
+          },
+          {
+            "text": "Оценка уровня седации по шкале Ричмонда (RASS)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оценка уровня седации по шкале Ричмонда (RASS)"
+            }
+          },
+          {
+            "text": "Оценка признаков дыхательной недостаточности",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оценка признаков дыхательной недостаточности"
             }
           }
         ],
@@ -155,7 +239,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "сбор анамнеза травмы и жалоб (выяснить вид и продолжительность действия повреждающего агента, время и обстоятельства получения травмы), наличие/отсутствие сопутствующих заболеваний"
+            "quote": "сбор анамнеза травмы и жалоб (выяснить вид и продолжительность действия повреждающего агента, время и обстоятельства получения травмы), наличие/отсутствие сопутствующих заболеваний;"
           }
         },
         {
@@ -180,7 +264,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "оценку локального статуса (определение локализации, площади и глубины ожогов, признаков наличия/отсутствия ингаляционной травмы)"
+            "quote": "оценку локального статуса (определение локализации, площади и глубины ожогов, признаков наличия/отсутствия ингаляционной травмы);"
           }
         },
         {
@@ -205,57 +289,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "уточнение прививочного анамнеза против столбняка"
-          }
-        },
-        {
-          "name": "Оценка косвенных признаков ингаляционной травмы при осмотре",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 27,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "оценку косвенных признаков ингаляционной травмы при осмотре: ожоги кожи на лице, шее, передней поверхности грудной клетки; опаленные ресницы, брови, волосы в носовых ходах"
-          }
-        },
-        {
-          "name": "Оценка клинической тяжести состояния при ингаляционной травме",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 27,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "оценку клинической тяжести состояния на основании наличия критериев ингаляционной травмы и времени развития респираторных расстройств"
+            "quote": "уточнение прививочного анамнеза против столбняка;"
           }
         },
         {
@@ -280,7 +314,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "исследование кислотно-основного состояния и газового состава артериальной/венозной крови с расчетом респираторного индекса RI – при поступлении и по медицинским показаниям, но не реже 2 раз в сутки"
+            "quote": "исследование кислотно-основного состояния и газового состава артериальной/венозной крови с расчетом респираторного индекса RI – при поступлении и по медицинским показаниям"
           }
         },
         {
@@ -305,7 +339,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "общий анализ крови с подсчетом лейкоцитарной формулы крови, тромбоцитов, уровня гемоглобина, гематокрита – при поступлении и по медицинским показаниям"
+            "quote": "общий анализ крови с подсчетом лейкоцитарной формулы крови, тромбоцитов, уровня гемоглобина, гематокрита – при поступлении и по медицинским показаниям;"
           }
         },
         {
@@ -330,7 +364,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "биохимическое исследование крови с определением концентрации общего билирубина, связанного билирубина, АлАТ, АсАТ, мочевины, креатинина, общего белка, альбумина, калия, натрия"
+            "quote": "биохимическое исследование крови с определением концентрации общего билирубина, связанного билирубина, АлАТ, АсАТ, мочевины, креатинина, общего белка, альбумина, калия, натрия, хлора, кальция, глюкозы"
           }
         },
         {
@@ -355,7 +389,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "определение уровня лактата в крови – при поступлении и по медицинским показаниям, но не реже 2 раз в сутки"
+            "quote": "определение уровня лактата в крови – при поступлении и по медицинским показаниям, но не реже 2 раз в сутки;"
           }
         },
         {
@@ -380,7 +414,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "определение показателей свертывания крови: фибриноген, тромбиновое время, АЧТВ, МНО – при поступлении и по медицинским показаниям, но не реже 1 раза в 24 часа"
+            "quote": "определение показателей свертывания крови: фибриноген, тромбиновое время, АЧТВ, МНО – при поступлении и по медицинским показаниям"
           }
         },
         {
@@ -405,11 +439,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "общий анализ мочи с определением относительной плотности, кислотности, наличия белка и глюкозы, микроскопия осадка – при поступлении и по медицинским показаниям"
+            "quote": "общий анализ мочи с определением относительной плотности, кислотности, наличия белка и глюкозы, микроскопия осадка – при поступлении и по медицинским показаниям;"
           }
         },
         {
-          "name": "Определение группы крови по системам АВ0 и резус",
+          "name": "Определение группы крови и резус-фактора",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -430,13 +464,113 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "определение группы крови по системам АВ0 и резус – однократно при поступлении и по медицинским показаниям"
+            "quote": "определение группы крови по системам АВ0 и резус – однократно при поступлении и по медицинским показаниям;"
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ крови (определение уровня гемоглобина, гематокрита, количества эритроцитов и лейкоцитов, подсчет лейкоцитарной формулы, уровня тромбоцитов, СОЭ) – 1 раз в 7 дней"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "общий анализ мочи – 1 раз в 7 дней и по медицинским показаниям"
+          }
+        },
+        {
+          "name": "Биохимический анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "биохимический анализ крови: общий белок, общий билирубин, связанный билирубин, мочевина, креатинин, глюкоза, АлАТ, АсАТ, калий, натрий, хлор, кальций – 1 раз в 7 дней"
+          }
+        },
+        {
+          "name": "Бактериологическое исследование раневого отделяемого",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 7,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "бактериологическое исследование раневого отделяемого на аэробные и факультативно-анаэробные микроорганизмы и чувствительность к антибактериальным и противогрибковым ЛП – 1 раз в 7 дней"
           }
         }
       ],
       "conditional_exams": [
         {
-          "name": "Электрокардиография",
+          "name": "Электрокардиография, консультация врача-терапевта",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -457,32 +591,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "электрокардиография... – для пациентов старше 40 лет и во всех возрастных группах при наличии признаков электротравмы"
-          }
-        },
-        {
-          "name": "Консультация врача-терапевта",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "консультация врача-терапевта – для пациентов старше 40 лет и во всех возрастных группах при наличии признаков электротравмы"
+            "quote": "электрокардиография, консультация врача-терапевта – для пациентов старше 40 лет и во всех возрастных группах при наличии признаков электротравмы;"
           }
         },
         {
@@ -511,7 +620,7 @@
           }
         },
         {
-          "name": "Исследование КОС и карбоксигемоглобина в крови",
+          "name": "Исследование кислотно-основного состояния с определением карбоксигемоглобина",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -536,7 +645,7 @@
           }
         },
         {
-          "name": "Определение уровня С-реактивного белка, прокальцитонина, пресепсина",
+          "name": "Исследование крови и мочи на этанол",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -557,11 +666,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "определение уровня С-реактивного белка, прокальцитонина, пресепсина – по медицинским показаниям и при наличии возможности"
+            "quote": "исследование крови, мочи на этанол, обязательно для всех пациентов старше 18 лет – однократно при поступлении, у детей – по медицинским показаниям;"
           }
         },
         {
-          "name": "Бактериологическое исследование мокроты или бронхиального секрета, мочи, крови",
+          "name": "Показатели свертывания крови (фибриноген, тромбиновое время, АЧТВ, МНО)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -576,17 +685,17 @@
             "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
             "document_url": null,
             "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 28,
+            "page_start": 7,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "бактериологическое исследование мокроты или бронхиального секрета, мочи, крови на аэробные и факультативно-анаэробные микроорганизмы и чувствительность к антибактериальным ЛП – 1 раз в 7 дней"
+            "quote": "определение показателей свертывания крови: фибриноген, тромбиновое время, АЧТВ, МНО – перед оперативным вмешательством и по медицинским показаниям"
           }
         },
         {
-          "name": "Обследование на сифилитическую инфекцию",
+          "name": "Определение группы крови и резус-фактора",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -601,95 +710,20 @@
             "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
             "document_url": null,
             "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 28,
+            "page_start": 7,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "обследование на сифилитическую инфекцию (у пациентов старше 14 лет) – однократно и по медицинским показаниям"
-          }
-        },
-        {
-          "name": "Анализ крови на маркеры ВИЧ-инфекции, вирусных гепатитов B и C",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 28,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "анализ крови на маркеры ВИЧ-инфекции, вирусных гепатитов B и C – однократно и по медицинским показаниям (у пациентов моложе 18 лет по медицинским показаниям или при подготовке к опер. лечению)"
-          }
-        },
-        {
-          "name": "Исследование крови, мочи на этанол",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 28,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "исследование крови, мочи на этанол, обязательно для всех пациентов старше 18 лет – однократно при поступлении, у детей – по медицинским показаниям"
-          }
-        },
-        {
-          "name": "Химико-токсикологическое исследование на наркотические, психотропные вещества",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": 28,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "химико-токсикологическое исследование на наркотические, психотропные вещества, скрининг лекарственных средств – по медицинским показаниям"
+            "quote": "определение группы крови по системам АВ0 и резус – однократно у пациентов с ожогами, требующими хирургического лечения, и по медицинским показаниям"
           }
         }
       ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Сроки проведения первой и последующих перевязок после операции индивидуальны и определяются совокупностью клинических и лабораторных данных о состоянии пациента и течении раневого процесса. При необходимости перевязка проводится в операционной или перевязочной под общей анестезией.",
+            "text": "Перевязки после операции в операционной или перевязочной (при необходимости под общей анестезией).",
             "source_ref": {
               "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
               "document_url": null,
@@ -700,19 +734,300 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Сроки проведения первой и последующих перевязок после операции индивидуальны и определяются совокупностью клинических и лабораторных данных о состоянии пациента и течении раневого процесса. При необхо"
+              "quote": "Перевязки после операции в операционной или перевязочной (при необходимости под общей анестезией)."
+            }
+          },
+          {
+            "text": "Оксигенотерапия через назальные канюли или лицевые маски потоком 3-5-10 л/мин",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оксигенотерапия через назальные канюли или лицевые маски потоком 3-5-10 л/мин"
+            }
+          },
+          {
+            "text": "Превентивная интубация трахеи и ИВЛ в экстренном порядке при высоком риске жизнеугрожающих состояний",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Превентивная интубация трахеи и ИВЛ в экстренном порядке при высоком риске жизнеугрожающих состояний"
+            }
+          },
+          {
+            "text": "Плановое наложение трахеостомы при прогнозировании продленной ИВЛ",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Плановое наложение трахеостомы при прогнозировании продленной ИВЛ"
+            }
+          },
+          {
+            "text": "Методы нефармакологической седации (снижение освещенности, шума, обеспечение сна, ранняя мобилизация)",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Методы нефармакологической седации (снижение освещенности, шума, обеспечение сна, ранняя мобилизация)"
+            }
+          },
+          {
+            "text": "Энтеральная регидратация (оральная или через назогастральный зонд)",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Энтеральная регидратация (оральная или через назогастральный зонд)"
+            }
+          },
+          {
+            "text": "Аутологичная трансплантация кожи (показания: ожоги IIIБ–IV степени любой площади, послеоперационные/травматические раны, трофические язвы)",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Аутологичная трансплантация кожи (показания: ожоги IIIБ–IV степени любой площади, послеоперационные/травматические раны, трофические язвы)"
+            }
+          },
+          {
+            "text": "Аллогенная трансплантация кожи (показания: ожоги IIIБ–IV степени > 10 % ПТ при невозможности одномоментной аутотрансплантации, дефицит донорских ресурсов кожи, тяжелое состояние, временное покрытие, ожоги IIIА степени)",
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Аллогенная трансплантация кожи (показания: ожоги IIIБ–IV степени > 10 % ПТ при невозможности одномоментной аутотрансплантации, дефицит донорских ресурсов кожи, тяжелое состояние, временное покрытие, о"
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [],
+        "drugs": [
+          {
+            "drug_name": "Кетамин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор 50 мг/мл 10 мл, 0,5–1 мг/кг в комбинации с бензодиазепинами",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "предпочтительно использование кетамина, раствор для внутривенного и внутримышечного введения (для инъекций) 50 мг/мл 10 мл, в дозах 0,5–1 мг/кг в комбинации"
+            }
+          },
+          {
+            "drug_name": "Мидазолам",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор 5 мг/мл 1 мл; в/в взрослым и детям с 12 лет 2–2,5 мг, от 6 до 12 лет – 0,025–0,05 мг/кг, от 6 месяцев до 5 лет – 0,05–0,1 мг/кг",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "мидазолам, раствор для внутривенного, внутримышечного и ректального введения 5 мг/мл 1 мл; внутривенно взрослым и детям с 12 лет 2–2,5 мг, от 6 до 12 лет – 0,025–0,05 мг/кг"
+            }
+          },
+          {
+            "drug_name": "Дексмедетомидин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "концентрат 100 мкг/мл 2 мл, 0,2–0,7 мкг/кг/час (с 18 лет)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "для предотвращения синдрома отмены рекомендуется использование дексмедетомидина (с 18 лет), концентрат для приготовления раствора для инфузий 100 мкг/мл 2 мл, 0,2–0,7 мгк/кг/час"
+            }
+          },
+          {
+            "drug_name": "Диазепам",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор 5 мг/мл 2 мл, 10–20 мг не менее чем каждые 4 часа, детям с 1 месяца 0,2 мг/кг",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "диазепама, раствор для внутривенного и внутримышечного введения 5 мг/мл 2 мл, 10–20 мг не менее чем каждые 4 часа, детям с 1 месяца 0,2 мг/кг"
+            }
+          },
+          {
+            "drug_name": "Фуросемид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5–1,0 мг/кг/час при темпе диуреза < 0,3 мл/кг/ч у взрослых и < 1 мл/кг/ч у детей",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "введение петлевых диуретиков (фуросемид) в дозе 0,5–1,0 мг/кг/час"
+            }
+          },
+          {
+            "drug_name": "Альбумин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор для инфузий 50 мг/мл, 100 мг/мл, 200 мг/мл (30–40 % вводимого внутривенно объема жидкости со 2-3 суток)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "30–40 % вводимого внутривенно объема жидкости должны составлять коллоидные растворы (альбумин, раствор для инфузий (для инъекций) 50 мг/мл, 100 мг/мл, 200 мг/мл)"
+            }
+          },
+          {
+            "drug_name": "Глюкокортикостероиды",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "Местно в виде аэрозоля или раствора на раны/повязки; при трансплантации кожи на площади 10 % ПТ и более — парентерально и (или) энтерально в начальной дозе 1 мг/кг в сутки с последующим поэтапным сниж",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+              "page_start": 25,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "При выполнении трансплантации кожи на площади 10 % поверхности тела и более допустимо применение глюкокортикостероидов парентерально и (или) энтерально в начальной дозе 1 мг/кг в сутки"
+            }
+          }
+        ],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
       "follow_up": [
         {
-          "text": "Исследование кислотно-основного состояния с определением в крови уровня карбоксигемоглобина – при поступлении, через 6–12 часов и по медицинским показаниям.",
+          "text": "Исследование КОС и газового состава крови — по показаниям, но не реже 2 раз в сутки.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -726,11 +1041,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Исследование кислотно-основного состояния с определением в крови уровня карбоксигемоглобина – при поступлении, через 6–12 часов и по медицинским показаниям."
+            "quote": "Исследование КОС и газового состава крови — по показаниям, но не реже 2 раз в сутки."
           }
         },
         {
-          "text": "Исследование кислотно-основного состояния и газового состава артериальной/венозной крови – при поступлении и по медицинским показаниям, но не реже 2 раз в сутки.",
+          "text": "Определение уровня лактата в крови — по показаниям, но не реже 2 раз в сутки.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -744,11 +1059,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Исследование кислотно-основного состояния и газового состава артериальной/венозной крови – при поступлении и по медицинским показаниям, но не реже 2 раз в сутки."
+            "quote": "Определение уровня лактата в крови — по показаниям, но не реже 2 раз в сутки."
           }
         },
         {
-          "text": "Определение уровня лактата в крови – при поступлении и по медицинским показаниям, но не реже 2 раз в сутки.",
+          "text": "Определение показателей свертывания крови — по показаниям, но не реже 1 раза в 24 часа.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -762,11 +1077,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Определение уровня лактата в крови – при поступлении и по медицинским показаниям, но не реже 2 раз в сутки."
+            "quote": "Определение показателей свертывания крови — по показаниям, но не реже 1 раза в 24 часа."
           }
         },
         {
-          "text": "Определение показателей свертывания крови – при поступлении и по медицинским показаниям, но не реже 1 раза в 24 часа.",
+          "text": "Бактериологическое исследование мокроты/бронхиального секрета, мочи, крови — 1 раз в 7 дней и по медицинским показаниям.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -780,11 +1095,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Определение показателей свертывания крови – при поступлении и по медицинским показаниям, но не реже 1 раза в 24 часа."
+            "quote": "Бактериологическое исследование мокроты/бронхиального секрета, мочи, крови — 1 раз в 7 дней и по медицинским показаниям."
           }
         },
         {
-          "text": "Бактериологическое исследование мокроты или бронхиального секрета, мочи, крови – 1 раз в 7 дней и по медицинским показаниям.",
+          "text": "Контроль общего анализа крови, мочи, биохимии крови и бакпосева раневого отделяемого 1 раз в 7 дней",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -798,11 +1113,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Бактериологическое исследование мокроты или бронхиального секрета, мочи, крови – 1 раз в 7 дней и по медицинским показаниям."
+            "quote": "Контроль общего анализа крови, мочи, биохимии крови и бакпосева раневого отделяемого 1 раз в 7 дней"
           }
         },
         {
-          "text": "Последующие перевязки после операции индивидуальны и определяются совокупностью клинических и лабораторных данных о состоянии пациента.",
+          "text": "Постоянный мониторинг дыхания у пациентов на самостоятельном дыхании при назначении наркотических и психотропных ЛП",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -816,14 +1131,50 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Последующие перевязки после операции индивидуальны и определяются совокупностью клинических и лабораторных данных о состоянии пациента."
+            "quote": "Постоянный мониторинг дыхания у пациентов на самостоятельном дыхании при назначении наркотических и психотропных ЛП"
+          }
+        },
+        {
+          "text": "Почасовой мониторинг диуреза и деэскалация инфузионной терапии со 2–3 суток",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Почасовой мониторинг диуреза и деэскалация инфузионной терапии со 2–3 суток"
+          }
+        },
+        {
+          "text": "Мониторинг целевого уровня гемоглобина не ниже 90 г/л",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Мониторинг целевого уровня гемоглобина не ниже 90 г/л"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "Амбулаторное лечение: первичная диагностика у пациентов с ожогами кожи в амбулаторных условиях районных организаций здравоохранения.",
+          "text": "Первичная диагностика осуществляется в амбулаторных и стационарных условиях районных организаций здравоохранения.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -836,11 +1187,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Амбулаторное лечение: первичная диагностика у пациентов с ожогами кожи в амбулаторных условиях районных организаций здравоохранения."
+            "quote": "Первичная диагностика осуществляется в амбулаторных и стационарных условиях районных организаций здравоохранения."
           }
         },
         {
-          "text": "Госпитализация: первичная диагностика у пациентов с ожогами кожи в стационарных условиях районных организаций здравоохранения.",
+          "text": "Специализированная помощь и диагностика осуществляются в условиях областных ожоговых отделений и Республиканского ожогового центра.",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -853,11 +1204,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Госпитализация: первичная диагностика у пациентов с ожогами кожи в стационарных условиях районных организаций здравоохранения."
+            "quote": "Специализированная помощь и диагностика осуществляются в условиях областных ожоговых отделений и Республиканского ожогового центра."
           }
         },
         {
-          "text": "Госпитализация: первичная диагностика у пациентов с изолированной ингаляционной травмой в стационарных условиях районных, областных и республиканских организаций здравоохранения.",
+          "text": "госпитализация в стационарные условия (хирургические, травматологические, ожоговые отделения)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -870,11 +1221,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Госпитализация: первичная диагностика у пациентов с изолированной ингаляционной травмой в стационарных условиях районных, областных и республиканских организаций здравоохранения."
+            "quote": "госпитализация в стационарные условия (хирургические, травматологические, ожоговые отделения)"
           }
         },
         {
-          "text": "Госпитализация: первичная диагностика у пациентов с ингаляционной травмой и наличием ожогов кожных покровов в стационарных условиях районных организаций здравоохранения.",
+          "text": "Амбулаторно: пациенты с послеожоговыми патологическими рубцами и деформациями подлежат наблюдению по месту жительства (месту пребывания, работы, учебы, службы)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -887,91 +1238,155 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Госпитализация: первичная диагностика у пациентов с ингаляционной травмой и наличием ожогов кожных покровов в стационарных условиях районных организаций здравоохранения."
-          }
-        },
-        {
-          "text": "Госпитализация в специализированные центры: первичная диагностика у пациентов с ингаляционной травмой и наличием ожогов кожных покровов в стационарных условиях областных ожоговых стационаров и Республиканского ожогового центра.",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Госпитализация в специализированные центры: первичная диагностика у пациентов с ингаляционной травмой и наличием ожогов кожных покровов в стационарных условиях областных ожоговых стационаров и Республ"
-          }
-        },
-        {
-          "text": "Госпитализация для аутологичной трансплантации кожи при ожогах IIIБ–IV степени любой площади.",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Госпитализация для аутологичной трансплантации кожи при ожогах IIIБ–IV степени любой площади."
+            "quote": "Амбулаторно: пациенты с послеожоговыми патологическими рубцами и деформациями подлежат наблюдению по месту жительства (месту пребывания, работы, учебы, службы)"
           }
         }
       ],
-      "red_flags": [],
+      "red_flags": [
+        {
+          "text": "Повышение уровня карбоксигемоглобина более 10 % и ацидоз",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 27,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "повышение уровня карбоксигемоглобина более 10 % и ацидоз (респираторный и (или) метаболический)"
+          }
+        },
+        {
+          "text": "Затруднение дыхания, одышка, падение сатурации при пульсоксиметрии",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 27,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "затруднение дыхания, одышка, шумное свистящее дыхание... низкое насыщение крови кислородом (падение сатурации при проведении пульсоксиметрии)"
+          }
+        },
+        {
+          "text": "Признаки дыхательной недостаточности III степени (PaO2 < 65 мм рт. ст., PaCO2 > 55 мм рт. ст., ЖЕЛ < 15 мл/кг)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "наличии признаков дыхательной недостаточности III степени (парциальное давление кислорода в артериальной крови < 65 мм рт. ст. при потоке кислорода > 5 л/мин"
+          }
+        },
+        {
+          "text": "Угнетение сознания по шкале ком Глазго < 8 баллов",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "угнетении сознания по шкале ком Глазго < 8 баллов"
+          }
+        },
+        {
+          "text": "Ожоги кожи IIIБ–IV степени > 40 % ОППТ",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ожогах кожи IIIБ–IV степени > 40 % ОППТ"
+          }
+        },
+        {
+          "text": "Локализация ожогов III–IV степени на лице и шее с риском прогрессирующего отека мягких тканей",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "локализации ожогов III–IV степени на лице и шее с риском прогрессирующего отека мягких тканей"
+          }
+        },
+        {
+          "text": "Ингаляционная травма с риском развития обструкции",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "transplantatsiya_organov_i_tkaney_кп_диагностика_лечение_реабилитация_пациентов_",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/transplantatsiya-organov-i-tkaney/КП_Диагностика_лечение_реабилитация_пациентов_термической_травмой_и_последствиями_пост_МЗ_2025_40.pdf",
+            "page_start": 11,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ингаляционной травме с риском развития обструкции"
+          }
+        }
+      ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Определение прогноза по ИТП для пациентов до 50 лет: до 30 единиц – благоприятный; 31–60…",
-          "Обоснование диагноза: Определение прогноза по «правилу сотни» (индекс Бо) для пациентов старше 50 лет: до 60 ед…",
-          "Обоснование диагноза: Косвенные признаки ингаляционной травмы: ожоги кожи на лице, шее, передней поверхности гр…",
-          "Обоснование диагноза: Лабораторные признаки ингаляционной травмы: повышение уровня карбоксигемоглобина более 10…",
-          "Назначено/выполнено обследование: Сбор анамнеза травмы и жалоб",
-          "Назначено/выполнено обследование: Оценка локального статуса",
-          "Назначено/выполнено обследование: Уточнение прививочного анамнеза против столбняка",
-          "Назначено/выполнено обследование: Оценка косвенных признаков ингаляционной травмы при осмотре",
-          "Назначено/выполнено обследование: Оценка клинической тяжести состояния при ингаляционной травме",
-          "Назначено/выполнено обследование: Исследование КОС и газового состава артериальной/венозной крови",
-          "Назначено/выполнено обследование: Общий анализ крови",
-          "Назначено/выполнено обследование: Биохимическое исследование крови",
-          "Назначено/выполнено обследование: Определение уровня лактата в крови"
-        ],
-        "should_have": [
-          "Немедикаментозно: Сроки проведения первой и последующих перевязок после операции индивидуальны и определяют…",
-          "План наблюдения: Исследование кислотно-основного состояния с определением в крови уровня карбоксигемоглоби…",
-          "План наблюдения: Исследование кислотно-основного состояния и газового состава артериальной/венозной крови…",
-          "План наблюдения: Определение уровня лактата в крови – при поступлении и по медицинским показаниям, но не р…",
-          "План наблюдения: Определение показателей свертывания крови – при поступлении и по медицинским показаниям,…",
-          "План наблюдения: Бактериологическое исследование мокроты или бронхиального секрета, мочи, крови – 1 раз в…",
-          "План наблюдения: Последующие перевязки после операции индивидуальны и определяются совокупностью клиническ…"
-        ],
-        "conditional": [
-          "Обследование: Электрокардиография (по показаниям)",
-          "Обследование: Консультация врача-терапевта (по показаниям)",
-          "Обследование: Консультация врача-педиатра (по показаниям)",
-          "Обследование: Исследование КОС и карбоксигемоглобина в крови (по показаниям)",
-          "Обследование: Определение уровня С-реактивного белка, прокальцитонина, пресепсина (по показаниям)",
-          "Обследование: Бактериологическое исследование мокроты или бронхиального секрета, мочи, крови (по показаниям)",
-          "Обследование: Обследование на сифилитическую инфекцию (по показаниям)",
-          "Обследование: Анализ крови на маркеры ВИЧ-инфекции, вирусных гепатитов B и C (по показаниям)",
-          "Обследование: Исследование крови, мочи на этанол (по показаниям)",
-          "Обследование: Химико-токсикологическое исследование на наркотические, психотропные вещества (по показаниям)",
-          "Маршрутизация: Амбулаторное лечение: первичная диагностика у пациентов с ожогами кожи в амбулаторных усл… (по показаниям)",
-          "Маршрутизация: Госпитализация: первичная диагностика у пациентов с ожогами кожи в стационарных условиях… (по показаниям)",
-          "Маршрутизация: Госпитализация: первичная диагностика у пациентов с изолированной ингаляционной травмой в… (по показаниям)",
-          "Маршрутизация: Госпитализация: первичная диагностика у пациентов с ингаляционной травмой и наличием ожог… (по показаниям)"
-        ],
-        "warnings": []
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -979,20 +1394,32 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T18:09:47.446898+00:00",
+    "extracted_at": "2026-07-23T10:54:48.137320+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-07-20T18:09:47.472695+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[termicheskaya_travma].required_exams[10]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[termicheskaya_travma].required_exams[11]"
+      }
+    ],
+    "validated_at": "2026-07-23T10:54:48.181000+00:00"
   }
 }

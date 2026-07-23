@@ -27,29 +27,29 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: pediatric_oncologic_hematologic_diseases
+- condition_id: pediatric_oncohematology
   name: Онкологические и онкогематологические заболевания у детей
   synonyms: []
   abbreviations: []
   icd10_codes:
   - D33
   - D35.2
-  - C00
-  - C80
-  - C81
-  - C96
   - D35.4
   - D42
   - D43
   - D44.3
   - D44.5
+  - C00
+  - C80
+  - C81
+  - C96
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Определение характера и степени нарушения функций, ограничений жизнедеятельности
-        и реабилитационного потенциала
+    - text: Диагностика характера и степени нарушения функций органов и систем организма
+        пациента, приводящих к ограничению жизнедеятельности
       logic_group: null
       operator: unknown
       values: []
@@ -66,14 +66,32 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Определение характера и степени нарушения функций, ограничений жизнедеятельности
-          и реабилитационного потенциала
+        quote: Диагностика характера и степени нарушения функций органов и систем
+          организма пациента, приводящих к ограничению жизнедеятельности
+    - text: Определение уровня реабилитационного потенциала, цели и задач медицинской
+        реабилитации
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Определение уровня реабилитационного потенциала, цели и задач медицинской
+          реабилитации
     optional: []
     exclusion: []
   required_exams:
-  - name: 'Психологическая диагностика: исследование механизмов защиты, стратегий
-      преодоления кризисных ситуаций (копинг-стратегия, методика определения стрессоустойчивости
-      и социальной адаптации Холмса)'
+  - name: Психологическая диагностика
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -94,56 +112,7 @@ conditions:
       table_index: null
       row_index: null
       quote: 'Психологическая диагностика: исследование механизмов защиты, стратегий
-        преодоления кризисных ситуаций (копинг-стратегия, методика определения стрессоустойчивости
-        и социальной адаптации Холмса)'
-  - name: 'Психологическая диагностика: исследование типа реакций на болезнь, отношения
-      к обследованию и лечению'
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Психологическая диагностика: исследование типа реакций на болезнь, отношения
-        к обследованию и лечению'
-  - name: 'Психологическая диагностика: исследование уровня депрессии и тревожности
-      (шкала депрессии Бека, шкала тревожности Спилбергера-Ханина, для младшей возрастной
-      группы – тест тревожности Амен-Дорки)'
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Психологическая диагностика: исследование уровня депрессии и тревожности
-        (шкала депрессии Бека, шкала тревожности Спилбергера-Ханина, для младшей возрастной
-        группы – тест тревожности Амен-Дорки)'
+        преодоления кризисных ситуаций'
   - name: Осмотр или консультация врача-физиотерапевта
     aliases: []
     exam_type: unknown
@@ -185,7 +154,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Общий анализ крови
+      quote: Общий анализ крови.
   - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -206,7 +175,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Общий анализ мочи
+      quote: Общий анализ мочи.
   - name: ЭКГ
     aliases: []
     exam_type: unknown
@@ -227,7 +196,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: ЭКГ
+      quote: ЭКГ.
   - name: УЗИ сердца
     aliases: []
     exam_type: unknown
@@ -248,7 +217,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: УЗИ сердца
+      quote: УЗИ сердца.
   - name: Электронейромиография
     aliases: []
     exam_type: unknown
@@ -269,7 +238,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Электронейромиография
+      quote: Электронейромиография.
   - name: Исследование показателей гемостаза
     aliases: []
     exam_type: unknown
@@ -290,9 +259,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Исследование показателей гемостаза
-  - name: Исследование детско-родительских отношений (диагностический рисунок, тест
-      Рене-Жиля, ВРР – взаимодействие родителя с ребенком (Марковской))
+      quote: Исследование показателей гемостаза.
+  - name: Исследование детско-родительских отношений
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -336,118 +304,10 @@ conditions:
       table_index: null
       row_index: null
       quote: Осмотр или консультация врача – детского хирурга
-  - name: Оценка уровня лейкоцитов и СОЭ в анализе крови
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: изменения в анализах крови в виде лейкоцитоза и увеличения скорости оседания
-        эритроцитов (далее – СОЭ)
-  - name: Измерение температуры тела
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: фебрильная лихорадка или субфебрильная лихорадка неизвестного происхождения
-  - name: Диагностика острых инфекционных заболеваний
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: острые инфекционные заболевания
-  - name: Оценка неврологического статуса
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: общемозговая симптоматика (нарушение сознания, патологическое дыхание,
-        судороги, арефлексия)
-  - name: Определение локализации и стадии ремиссии опухоли
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: лейкозы, лимфомы, саркомы костей и мягких тканей; опухоли ЦНС – на область
-        позвоночника; опухоли других локализаций – до констатации ремиссии
   treatment:
     non_drug:
-    - text: щадящий в острый период заболевания – до стабилизации или выхода в ремиссию
-        (от нескольких дней до 2–3 месяцев)
+    - text: Щадящий режим в острый период заболевания – до стабилизации или выхода
+        в ремиссию (от нескольких дней до 2–3 месяцев)
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -458,9 +318,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: щадящий в острый период заболевания – до стабилизации или выхода в
-          ремиссию (от нескольких дней до 2–3 месяцев)
-    - text: щадяще-тренирующий после выхода в ремиссию (стабилизацию) по основному
+        quote: Щадящий режим в острый период заболевания – до стабилизации или выхода
+          в ремиссию (от нескольких дней до 2–3 месяцев)
+    - text: Щадяще-тренирующий режим после выхода в ремиссию (стабилизацию) по основному
         заболеванию (до окончания срока лечения основного заболевания)
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
@@ -472,10 +332,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: щадяще-тренирующий после выхода в ремиссию (стабилизацию) по основному
-          заболеванию (до окончания срока лечения основного заболевания)
-    - text: Лечение положением (корригирующие позы с 1 дня; смена положения пациента
-        в постели через каждые 2-4 часа в течение 3–7 дней)
+        quote: Щадяще-тренирующий режим после выхода в ремиссию (стабилизацию) по
+          основному заболеванию (до окончания срока лечения основного заболевания)
+    - text: Постельный режим – при резко выраженных нарушениях
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -486,10 +345,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лечение положением (корригирующие позы с 1 дня; смена положения пациента
-          в постели через каждые 2-4 часа в течение 3–7 дней)
-    - text: Кинезотерапия (пассивные и активные с вспоможением упражнения после оперативного
-        лечения, с 3–4 дня по 5–30 минут в течение 10–14 дней)
+        quote: Постельный режим – при резко выраженных нарушениях
+    - text: 'Лечение положением: корригирующие позы с 1 дня, смена положения каждые
+        2 часа днем и 3–4 часа ночью в течение 3–7 дней'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -500,10 +358,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Кинезотерапия (пассивные и активные с вспоможением упражнения после
-          оперативного лечения, с 3–4 дня по 5–30 минут в течение 10–14 дней)
-    - text: Нейромоторное переобучение (индивидуальные занятия после операций опухолей
-        ЦНС, с 8 дня ежедневно по 10–20 минут в течение 7–10 дней)
+        quote: 'Лечение положением: корригирующие позы с 1 дня, смена положения каждые
+          2 часа днем и 3–4 часа ночью в течение 3–7 дней'
+    - text: 'Кинезотерапия: пассивные и активные упражнения с вспоможением с 3–4 дня
+        по 5–10 минут в день, доводя до 25–30 минут в течение 10–14 дней'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -514,10 +372,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Нейромоторное переобучение (индивидуальные занятия после операций опухолей
-          ЦНС, с 8 дня ежедневно по 10–20 минут в течение 7–10 дней)
-    - text: Эрготерапия (после операций опухолей ЦНС при неврологическом дефиците,
-        с 3–4 дня по 5–30 минут в течение 10–14 дней)
+        quote: 'Кинезотерапия: пассивные и активные упражнения с вспоможением с 3–4
+          дня по 5–10 минут в день, доводя до 25–30 минут в течение 10–14 дней'
+    - text: 'Нейромоторное переобучение: индивидуальные занятия с 8 дня ежедневно
+        по 10–20 минут в день в течение 7–10 дней (обучение самостоятельному сидению,
+        вставанию, ходьбе и т.д.)'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -528,10 +387,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Эрготерапия (после операций опухолей ЦНС при неврологическом дефиците,
-          с 3–4 дня по 5–30 минут в течение 10–14 дней)
-    - text: Голосо-речевая терапия (логопедические занятия после операций опухолей
-        ЦНС при нарушении речи)
+        quote: 'Нейромоторное переобучение: индивидуальные занятия с 8 дня ежедневно
+          по 10–20 минут в день в течение 7–10 дней (обучение самостоятельному сидению,
+          вставанию, ходьбе и т.д.)'
+    - text: 'Эрготерапия: при наличии неврологического дефицита с 3–4 дня по 5–10
+        минут в день, доводя до 25–30 минут в день в течение 10–14 дней'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -542,9 +402,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Голосо-речевая терапия (логопедические занятия после операций опухолей
-          ЦНС при нарушении речи)
-    - text: ЛФК (по 10–15 минут в день, объемы и кратность по приложению)
+        quote: 'Эрготерапия: при наличии неврологического дефицита с 3–4 дня по 5–10
+          минут в день, доводя до 25–30 минут в день в течение 10–14 дней'
+    - text: 'Голосо-речевая терапия (логопедические занятия): при нарушении речи (тренировка
+        артикуляционной мускулатуры, навыков общения)'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -555,9 +416,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: ЛФК (по 10–15 минут в день, объемы и кратность по приложению)
-    - text: 'Массаж лечебный (с 3 дня после окончания блока химиотерапии, 10 процедур:
-        щадящий, классический или рефлекторный)'
+        quote: 'Голосо-речевая терапия (логопедические занятия): при нарушении речи
+          (тренировка артикуляционной мускулатуры, навыков общения)'
+    - text: 'Лечебная физкультура (ЛФК): назначается по 10–15 минут в день'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -568,10 +429,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Массаж лечебный (с 3 дня после окончания блока химиотерапии, 10 процедур:
-          щадящий, классический или рефлекторный)'
-    - text: 'Терапия занятостью (при щадяще-тренирующем режиме, ежедневно или через
-        день по 5–30 минут: игры, лепка, бисероплетение, вышивание)'
+        quote: 'Лечебная физкультура (ЛФК): назначается по 10–15 минут в день'
+    - text: 'Массаж лечебный: щадящий, классический или рефлекторный с 3 дня после
+        окончания блока химиотерапии, 10 процедур на этап'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -582,10 +442,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Терапия занятостью (при щадяще-тренирующем режиме, ежедневно или через
-          день по 5–30 минут: игры, лепка, бисероплетение, вышивание)'
-    - text: Вихревые ванны для конечностей (ежедневно или через день, 8–10 процедур
-        по 10–15 минут)
+        quote: 'Массаж лечебный: щадящий, классический или рефлекторный с 3 дня после
+          окончания блока химиотерапии, 10 процедур на этап'
+    - text: 'Терапия занятостью: ежедневно или через день по 5–30 минут (игры на месте,
+        лепка, бисероплетение)'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -596,10 +456,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Вихревые ванны для конечностей (ежедневно или через день, 8–10 процедур
-          по 10–15 минут)
-    - text: Ингаляции (при постинтубационных осложнениях дыхательных путей, застойных
-        явлениях в легких, 5–7 минут)
+        quote: 'Терапия занятостью: ежедневно или через день по 5–30 минут (игры на
+          месте, лепка, бисероплетение)'
+    - text: 'Вихревые ванны для конечностей: ежедневно или через день, 8–10 процедур
+        по 10–15 минут'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -610,10 +470,10 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ингаляции (при постинтубационных осложнениях дыхательных путей, застойных
-          явлениях в легких, 5–7 минут)
-    - text: Низкоинтенсивная лазеротерапия (при поражениях слизистых оболочек и кожи,
-        через день, 5–10 процедур)
+        quote: 'Вихревые ванны для конечностей: ежедневно или через день, 8–10 процедур
+          по 10–15 минут'
+    - text: 'Ингаляции с противовоспалительными и бронхолитическими средствами: при
+        постинтубационных осложнениях и застойных явлениях ежедневно по 5–7 минут'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -624,11 +484,11 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Низкоинтенсивная лазеротерапия (при поражениях слизистых оболочек и
-          кожи, через день, 5–10 процедур)
-    - text: 'Фитотерапия (заваривание фиточая по 1–2 мл/кг веса 2–3 раза в сутки,
-        курс 20 дней: для регенерации слизистой ЖКТ, спазмолитическое/снотворное/седативное,
-        фитогор)'
+        quote: 'Ингаляции с противовоспалительными и бронхолитическими средствами:
+          при постинтубационных осложнениях и застойных явлениях ежедневно по 5–7
+          минут'
+    - text: 'Низкоинтенсивная лазеротерапия: при поражениях слизистых оболочек и кожи
+        через день, 5–10 процедур'
       source_ref:
         protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
         document_url: null
@@ -639,16 +499,29 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Фитотерапия (заваривание фиточая по 1–2 мл/кг веса 2–3 раза в сутки,
-          курс 20 дней: для регенерации слизистой ЖКТ, спазмолитическое/снотворное/седативное,
-          фитогор)'
+        quote: 'Низкоинтенсивная лазеротерапия: при поражениях слизистых оболочек
+          и кожи через день, 5–10 процедур'
+    - text: 'Фитотерапия: заваривание фиточая по 1–2 мл/кг веса 2–3 раза в сутки между
+        приемами пищи, курс 20 дней'
+      source_ref:
+        protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+        document_url: null
+        local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Фитотерапия: заваривание фиточая по 1–2 мл/кг веса 2–3 раза в сутки
+          между приемами пищи, курс 20 дней'
     drug_groups: []
     drugs:
     - drug_name: Ацетазоламид
       active_substance: null
       drug_group: null
-      dose_text: в возрасте 4–12 мес – 50 мг/сутки в 1–2 приема; 1-4 года 50–125 мг/сутки
-        в 1–2 приема; 5–18 лет – 125–250 мг/сутки в один прием внутрь
+      dose_text: в возрасте 4–12 мес – 50 мг/сутки в 1–2 приема; 1-4 года – 50–125
+        мг/сутки в 1–2 приема; 5–18 лет – 125–250 мг/сутки в один прием внутрь
       frequency_text: null
       duration_text: null
       route: null
@@ -671,7 +544,7 @@ conditions:
     - drug_name: Фуросемид
       active_substance: null
       drug_group: null
-      dose_text: 1–2 мг/кг/сутки парентерально; или фуросемид в сочетании с глюкокортикостероидами
+      dose_text: 1–2 мг/кг/сутки парентерально
       frequency_text: null
       duration_text: null
       route: null
@@ -689,8 +562,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: фуросемид 1–2 мг/кг/сутки парентерально; или фуросемид в сочетании
-          с глюкокортикостероидами
+        quote: фуросемид 1–2 мг/кг/сутки парентерально;
     - drug_name: Дексаметазон
       active_substance: null
       drug_group: null
@@ -713,7 +585,7 @@ conditions:
         table_index: null
         row_index: null
         quote: дексаметазон 0,02–2 мг/кг/сутки в 2–3 приема внутрь или парентерально
-          1–2 мг/кг/сутки
+          1–2 мг/кг/сутки;
     - drug_name: Преднизолон
       active_substance: null
       drug_group: null
@@ -737,38 +609,15 @@ conditions:
         table_index: null
         row_index: null
         quote: преднизолон 1–2 мг/кг/сутки внутрь или парентерально 10 мг/кг/сутки
-          в течение 5–7 дней
-    - drug_name: Противовоспалительные и бронхолитические лекарственные средства (для
-        ингаляций)
-      active_substance: null
-      drug_group: null
-      dose_text: ежедневно, количество процедур 5–7 минут (длительность ингаляции)
-      frequency_text: null
-      duration_text: null
-      route: null
-      indication: null
-      contraindications: []
-      monitoring: []
-      applicability: null
-      source_ref:
-        protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-        document_url: null
-        local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-        page_start: 8
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: ингаляции назначаются... с противовоспалительными и бронхолитическими
-          лекарственными средствами ежедневно, количество процедур 5–7 минут
+          в течение 5–7 дней;
     procedures: []
     surgery: []
     source_refs: []
   follow_up: []
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Наличие общих медицинских противопоказаний исключает направление на медицинскую
+      реабилитацию
     timing: null
     required_if: []
     source_ref:
@@ -781,85 +630,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: амбулаторно
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: амбулаторно
-  - text: Медицинская реабилитация противопоказана при инфекционных и паразитарных
-      болезнях (до выздоровления или окончания срока изоляции).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинская реабилитация противопоказана при инфекционных и паразитарных
-        болезнях (до выздоровления или окончания срока изоляции).
-  - text: Медицинская реабилитация противопоказана при психических расстройствах (заболеваниях).
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинская реабилитация противопоказана при психических расстройствах
-        (заболеваниях).
-  - text: Медицинская реабилитация противопоказана при лихорадке неясного происхождения.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинская реабилитация противопоказана при лихорадке неясного происхождения.
-  - text: Медицинская реабилитация противопоказана при тромбозах артерий и вен в качестве
-      сопутствующих заболеваний.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Медицинская реабилитация противопоказана при тромбозах артерий и вен
-        в качестве сопутствующих заболеваний.
+      quote: Наличие общих медицинских противопоказаний исключает направление на медицинскую
+        реабилитацию
   red_flags:
   - text: Фебрильная лихорадка или субфебрильная лихорадка неизвестного происхождения
-      является противопоказанием к кинезотерапии и массажу.
     aliases: []
     red_flag_type: other
     severity: high
@@ -875,9 +649,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: фебрильная лихорадка или субфебрильная лихорадка неизвестного происхождения
-  - text: Острые инфекционные заболевания являются противопоказанием к кинезотерапии
-      и массажу.
+      quote: фебрильная лихорадка или субфебрильная лихорадка неизвестного происхождения;
+  - text: Острые инфекционные заболевания
     aliases: []
     red_flag_type: other
     severity: high
@@ -893,28 +666,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: острые инфекционные заболевания
-  - text: Изменения в анализах крови (лейкоцитоз, увеличение СОЭ) являются противопоказанием
-      к кинезотерапии и массажу.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: изменения в анализах крови в виде лейкоцитоза и увеличения скорости оседания
-        эритроцитов (далее – СОЭ)
+      quote: острые инфекционные заболевания;
   - text: Общемозговая симптоматика (нарушение сознания, патологическое дыхание, судороги,
-      арефлексия) является противопоказанием к кинезотерапии.
+      арефлексия)
     aliases: []
     red_flag_type: other
     severity: high
@@ -931,64 +685,9 @@ conditions:
       table_index: null
       row_index: null
       quote: общемозговая симптоматика (нарушение сознания, патологическое дыхание,
-        судороги, арефлексия)
-  - text: Лейкозы, лимфомы, саркомы костей и мягких тканей являются противопоказанием
-      к проведению массажа.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: лейкозы, лимфомы, саркомы костей и мягких тканей
-  - text: Опухоли ЦНС – на область позвоночника являются противопоказанием к проведению
-      массажа.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: опухоли ЦНС – на область позвоночника
-  - text: Опухоли других локализаций до констатации ремиссии являются противопоказанием
-      к проведению массажа.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
-      document_url: null
-      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: опухоли других локализаций – до констатации ремиссии
+        судороги, арефлексия);
   - text: Неврологическая симптоматика (нарушение сознания, тремор, судороги, гиперкинезы,
-      нарушение дыхания, чувствительности, болевая реакция) является противопоказанием
-      к массажу.
+      нарушение дыхания, нарушение чувствительности, болевая реакция)
     aliases: []
     red_flag_type: other
     severity: high
@@ -1005,7 +704,113 @@ conditions:
       table_index: null
       row_index: null
       quote: неврологическая симптоматика (нарушение сознания, тремор, судороги, гиперкинезы,
-        нарушение дыхания, нарушение чувствительности, болевая реакция)
+        нарушение дыхания, нарушение чувствительности, болевая реакция);
+  - text: Инфекционные и паразитарные болезни (до выздоровления или окончания срока
+      изоляции)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: инфекционные и паразитарные болезни (до выздоровления или окончания срока
+        изоляции);
+  - text: Психические расстройства (заболевания)
+    aliases: []
+    red_flag_type: other
+    severity: medium
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: психические расстройства (заболевания);
+  - text: Лихорадка неясного происхождения
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: лихорадка неясного происхождения;
+  - text: Тромбозы артерий и вен в качестве сопутствующих заболеваний
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: тромбозы артерий и вен в качестве сопутствующих заболеваний;
+  - text: Болезни органов дыхания с дыхательной недостаточностью III ст.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: болезни органов дыхания с дыхательной недостаточностью III ст.;
+  - text: Болезни системы кровообращения с недостаточностью кровообращения выше IIА
+      ст.
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: gematologiya_кп_медицинская_реабилитация_детей_с_онкологическими_и_онкогематолог
+      document_url: null
+      local_path: minzdrav_protocols/gematologiya/КП_Медицинская_реабилитация_детей_с_онкологическими_и_онкогематологическими_заболеваниями_пост_МЗ_2017_52.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: болезни системы кровообращения с недостаточностью кровообращения выше
+        IIА ст.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1014,7 +819,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:05:17.776341+00:00'
+  extracted_at: '2026-07-23T08:00:56.870100+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -1025,4 +830,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:05:17.786081+00:00'
+  validated_at: '2026-07-23T08:00:56.877875+00:00'

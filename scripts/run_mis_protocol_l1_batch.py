@@ -1148,7 +1148,14 @@ def main() -> int:
         action="store_true",
         help="Глубокая оценка (kz_deep_eval): оси A/B/C/D, детекторы диагноза/лечения, findings, risk-gate",
     )
+    ap.add_argument(
+        "--deep-only",
+        action="store_true",
+        help="Только глубокая оценка без L1 (быстро, без тяжёлого стека) - для датасета дашборда/gold",
+    )
     args = ap.parse_args()
+    if args.deep_only:
+        args.deep_eval = True
 
     base = (args.base or "").strip() or f"http://127.0.0.1:{os.environ.get('PORT', '10000')}"
     out_dir = args.out_dir
@@ -1264,7 +1271,10 @@ def main() -> int:
         )
         print(f"reset fails: kept ok={len(kept)} in state", flush=True)
 
-    if args.direct:
+    if args.deep_only:
+        os.chdir(ROOT)
+        print("mode=deep-only (без L1)", flush=True)
+    elif args.direct:
         os.chdir(ROOT)
         print(f"mode=direct ROOT={ROOT}", flush=True)
     else:
@@ -1309,12 +1319,15 @@ def main() -> int:
         text = build_kz_text(row)
         t0 = time.perf_counter()
         try:
-            if args.direct:
-                result = _direct_tier(text, f"mis-{vid}")
+            if args.deep_only:
+                case = summarize_case(row, {}, 0, len(text))
             else:
-                result = _post_tier(base, text, f"mis-{vid}")
-            ms = int((time.perf_counter() - t0) * 1000)
-            case = summarize_case(row, result, ms, len(text))
+                if args.direct:
+                    result = _direct_tier(text, f"mis-{vid}")
+                else:
+                    result = _post_tier(base, text, f"mis-{vid}")
+                ms = int((time.perf_counter() - t0) * 1000)
+                case = summarize_case(row, result, ms, len(text))
             if args.deep_eval:
                 try:
                     from clinical_knowledge.kz_deep_eval import (

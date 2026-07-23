@@ -27,15 +27,11 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: incarcerated_hernia
+- condition_id: ushchemlennye_gryzhi
   name: Ущемленные грыжи
   synonyms: []
   abbreviations: []
   icd10_codes:
-  - K65.0
-  - K40.0
-  - K40.1
-  - K40.3
   - K40.4
   - K41.0
   - K41.1
@@ -44,12 +40,13 @@ conditions:
   - K42.0
   - K42.1
   - K43.0
+  - K43.1
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: двусторонняя паховая грыжа с непроходимостью без гангрены (МКБ-10 – К40.0)
+    - text: Ущемленная грыжа или подозрение на ущемление
       logic_group: null
       operator: unknown
       values: []
@@ -67,9 +64,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: двусторонняя паховая грыжа с непроходимостью без гангрены (МКБ-10 –
-          К40.0)
-    - text: двусторонняя паховая грыжа с гангреной (МКБ-10 – К40.1)
+        quote: Ущемленная грыжа или подозрение на ущемление
+    - text: Признаки нежизнеспособности кишки после согревания в течение 20 минут
       logic_group: null
       operator: unknown
       values: []
@@ -87,56 +83,392 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: двусторонняя паховая грыжа с гангреной (МКБ-10 – К40.1)
-    - text: односторонняя или неуточненная паховая грыжа с непроходимостью без гангрены
-        (МКБ-10 – К40.3)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
-          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: односторонняя или неуточненная паховая грыжа с непроходимостью без
-          гангрены (МКБ-10 – К40.3)
-    - text: односторонняя или неуточненная паховая грыжа с гангреной
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
-        document_url: null
-        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
-          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: односторонняя или неуточненная паховая грыжа с гангреной
+        quote: Признаки нежизнеспособности кишки после согревания в течение 20 минут
     optional: []
     exclusion: []
-  required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
+  required_exams:
+  - name: Осмотр пациента в течение 30 минут после поступления
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: осмотр пациента в течение 30 минут после поступления в хирургическое
+        отделение;
+  - name: Контроль общего анализа крови перед выпиской
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'в послеоперационном периоде: контроль анализа крови общего и анализа
+        мочи общего перед выпиской пациента из стационара.'
+  - name: Контроль общего анализа мочи перед выпиской
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'в послеоперационном периоде: контроль анализа крови общего и анализа
+        мочи общего перед выпиской пациента из стационара.'
+  conditional_exams:
+  - name: Рентгенография органов брюшной полости
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: рентгенография органов брюшной полости;
+  - name: УЗИ грыжевого выпячивания, органов брюшной полости и забрюшинного пространства
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: УЗИ грыжевого выпячивания, органов брюшной полости и забрюшинного пространства;
+  - name: Определение группы крови по системе АВ0 и резус-принадлежности
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение группы крови по системе АВ0 и резус-принадлежности;
+  - name: Биохимическое исследование крови
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: биохимическое исследование крови (определение содержания билирубина,
+        глюкозы, мочевины, общего белка, аспартатаминотрансферазы (АсАТ), аланинаминотрасферазы
+        (АлАТ), альфа-амилазы, СРБ, электролитов)
+  - name: Определение параметров кислотно-основного состояния (КОС)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: определение параметров кислотно-основного состояния (далее – КОС);
+  - name: Гемостазиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: 10
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: гемостазиограмма (определение активированного частичного тромбопластинового
+        времени (АЧТВ), протромбинового времени (ПВ), активности факторов протромбинового
+        комплекса)
+  treatment:
+    non_drug:
+    - text: Экстренное хирургическое вмешательство при отсутствии эффекта от консервативного
+        лечения
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экстренное хирургическое вмешательство при отсутствии эффекта от консервативного
+          лечения
+    - text: Предоперационная подготовка
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Предоперационная подготовка
+    - text: Зондовая декомпрессия желудка
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Зондовая декомпрессия желудка
+    - text: Сифонная клизма
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Сифонная клизма
+    - text: Согревание кишки в течение 20 минут после устранения ущемления
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Согревание кишки в течение 20 минут после устранения ущемления
+    - text: Резекция кишки в пределах безусловно здоровых тканей
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Резекция кишки в пределах безусловно здоровых тканей
+    drug_groups: []
+    drugs:
+    - drug_name: Прокаин (0,25 % р-р)
+      active_substance: null
+      drug_group: null
+      dose_text: в возрастной дозировке (паравертебральная блокада)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Паравертебральная блокада 0,25 % р-ром прокаина в возрастной дозировке
+    - drug_name: 0,9 % р-р натрия хлорида + 5 % р-р декстрозы + сбалансированный электролитный
+        р-р + производные гидроксиэтилкрахмала
+      active_substance: null
+      drug_group: null
+      dose_text: по показаниям (инфузионная терапия)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+        document_url: null
+        local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение
+          пациентов (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'Инфузионная терапия: 0,9 % р-р натрия хлорида + 5 % р-р декстрозы
+          + сбалансированный электролитный р-р + производные гидроксиэтилкрахмала
+          (по показ.)'
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Длительность лечения в стационарных условиях при неосложненном грыжесечении
+      составляет 3 дня
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительность лечения в стационарных условиях при неосложненном грыжесечении
+        составляет 3 дня
+  - text: Длительность лечения в стационарных условиях при некрозе грыжевого содержимого,
+      перитоните составляет 14 дней
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
+      document_url: null
+      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
+        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Длительность лечения в стационарных условиях при некрозе грыжевого содержимого,
+        перитоните составляет 14 дней
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: госпитализация (оказание медицинской помощи в стационарных условиях)
     timing: null
     required_if: []
     source_ref:
@@ -150,9 +482,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: Необходимость резекции участка кишки при признаках ее нежизнеспособности
-      после устранения ущемления и согревания в течение 20 минут.
+      quote: госпитализация (оказание медицинской помощи в стационарных условиях)
+  - text: Экстренная госпитализация в хирургическое отделение больничной организации
     timing: null
     required_if: []
     source_ref:
@@ -166,30 +497,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Необходимость резекции участка кишки при признаках ее нежизнеспособности
-        после устранения ущемления и согревания в течение 20 минут.
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: acute_appendicitis_peritoneal_abscess
-  name: Острый аппендицит с перитонеальным абсцессом
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - K35.1
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: госпитализация
+      quote: Экстренная госпитализация в хирургическое отделение больничной организации
+  - text: Показания к резекции участка кишки при нежизнеспособности
     timing: null
     required_if: []
     source_ref:
@@ -203,112 +512,64 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: госпитализация
-    timing: null
-    required_if: []
+      quote: Показания к резекции участка кишки при нежизнеспособности
+  red_flags:
+  - text: Некроз грыжевого содержимого
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
         (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
-      page_start: null
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: paralytic_ileus
-  name: Паралитический илеус
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - K56.0
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: госпитализация
-    timing: null
-    required_if: []
+      quote: при некрозе грыжевого содержимого, перитоните – 14 дней.
+  - text: Перитонит
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
         (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
-      page_start: null
+      page_start: 10
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  red_flags: []
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: intussusception
-  name: Инвагинация кишечника
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - K56.1
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
-  treatment: null
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: госпитализация
-    timing: null
-    required_if: []
+      quote: при некрозе грыжевого содержимого, перитоните – 14 дней.
+  - text: 'Признаки нежизнеспособности кишки: отсутствие пульсации сосудов брыжейки,
+      резкий цианоз и отек, отсутствие перистальтики или обширные кровоизлияния'
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
     source_ref:
       protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
       document_url: null
       local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
         (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
-      page_start: null
+      page_start: 12
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: Показания к резекции участка кишки при признаках ее нежизнеспособности после
-      устранения ущемления.
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: gastroenterologiya_кп_диагностика_и_лечение_пациентов_детское_население_с_ущемле
-      document_url: null
-      local_path: minzdrav_protocols/gastroenterologiya/КП Диагностика и лечение пациентов
-        (детское население) с ущемленными грыжами_18.05.2021_№50.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Показания к резекции участка кишки при признаках ее нежизнеспособности
-        после устранения ущемления.
-  red_flags: []
+      quote: пульсация сосудов брыжейки не восстановилась, сохраняются резкий цианоз
+        и отек кишки, нет видимой перистальтики или определяются обширные кровоизлияния
   contraindications: []
   complications: []
   kz_checklist: null
@@ -317,15 +578,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T15:49:10.546332+00:00'
+  extracted_at: '2026-07-23T07:44:07.841564+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
   - llm_pipeline_v1
-  - conditions=4
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T15:49:10.546651+00:00'
+  validated_at: '2026-07-23T07:44:07.846353+00:00'

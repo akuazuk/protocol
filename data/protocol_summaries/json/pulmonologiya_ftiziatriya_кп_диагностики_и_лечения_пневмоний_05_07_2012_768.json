@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностики и лечения пневмоний",
+    "title": "Клинический протокол диагностики и лечения пневмоний",
     "url": null,
     "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
     "document_sha256": null,
@@ -33,21 +33,162 @@
   },
   "conditions": [
     {
-      "condition_id": "influenza_with_pneumonia",
-      "name": "Грипп с пневмонией и с другими респираторными проявлениями",
+      "condition_id": "pnevmoniya",
+      "name": "Пневмония",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
         "J10",
-        "J11"
+        "J11",
+        "J12",
+        "J12.0",
+        "J12.1",
+        "J12.2",
+        "J12.8",
+        "J12.9",
+        "J13",
+        "J14",
+        "J15",
+        "J15.0"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Бронхо-легочно-плевральный и интоксикационный синдромы",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Бронхо-легочно-плевральный и интоксикационный синдромы"
+            }
+          },
+          {
+            "text": "Боль в грудной клетке, одышка",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Боль в грудной клетке, одышка"
+            }
+          },
+          {
+            "text": "Аускультативно: влажные хрипы над пораженными участками легких",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Аускультативно: влажные хрипы над пораженными участками легких"
+            }
+          },
+          {
+            "text": "Изменения в ОАК (лейкоцитоз или лейкопения, нейтрофильный сдвиг)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Изменения в ОАК (лейкоцитоз или лейкопения, нейтрофильный сдвиг)"
+            }
+          },
+          {
+            "text": "Подтвержденный диагноз пневмонии",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Подтвержденный диагноз пневмонии"
+            }
+          },
+          {
+            "text": "Клиническое исследование и рентгенологические изменения в легких",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Клиническое исследование и рентгенологические изменения в легких"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
       "required_exams": [
         {
-          "name": "Ежедневный контроль симптомов",
+          "name": "Общий анализ крови",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -62,22 +203,20 @@
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
             "document_url": null,
             "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-            "page_start": 14,
+            "page_start": 8,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Ежедневный контроль симптомов"
+            "quote": "Лабораторная диагностика: общий анализ крови (лейкоцитоз или лейкопения, нейтрофильный сдвиг)"
           }
-        }
-      ],
-      "conditional_exams": [
+        },
         {
-          "name": "Цитологическое, биохимическое и бактериологическое исследование плеврального экссудата",
+          "name": "Обзорная рентгенограмма органов грудной полости",
           "aliases": [],
           "exam_type": "unknown",
-          "requirement_level": "conditional",
+          "requirement_level": "required",
           "accepted_statuses": [
             "performed",
             "recommended"
@@ -89,15 +228,167 @@
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
             "document_url": null,
             "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-            "page_start": 14,
+            "page_start": 8,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Цитологическое, биохимическое и бактериологическое исследование плеврального экссудата при наличии плеврита."
+            "quote": "Обзорная рентгенограмма органов грудной полости"
           }
         },
+        {
+          "name": "Микроскопическое и бактериологическое исследование мокроты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Микроскопическое исследование мокроты (окраска мазка по Грамму), бактериологическое исследование мокроты на аэробные и факультативно анаэробные микроорганизмы."
+          }
+        },
+        {
+          "name": "Общий анализ крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ крови"
+          }
+        },
+        {
+          "name": "Обзорная рентгенограмма органов грудной полости",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Обзорная рентгенограмма органов грудной полости"
+          }
+        },
+        {
+          "name": "Биохимическое исследование крови",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Биохимическое исследование крови: определение концентрации мочевины, общего белка и белковых фракций, СРБ, натрия, калия, кальция; креатинина; определение активности: АсАТ, АлАТ"
+          }
+        },
+        {
+          "name": "Общий анализ мочи",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Общий анализ мочи"
+          }
+        },
+        {
+          "name": "Микроскопическое и бактериологическое исследование мокроты",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 13,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Микроскопическое и бактериологическое исследование мокроты на аэробные и факультативно анаэробные микроорганизмы с определением чувствительности к антибиотикам"
+          }
+        }
+      ],
+      "conditional_exams": [
         {
           "name": "КТ грудной полости",
           "aliases": [],
@@ -114,13 +405,13 @@
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
             "document_url": null,
             "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-            "page_start": 14,
+            "page_start": 20,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "КТ грудной полости и бронхоскопия - при необходимости дифференциальной диагностики"
+            "quote": "При необходимости дифференциальной диагностики - КТ грудной полости и бронхоскопия"
           }
         },
         {
@@ -139,20 +430,95 @@
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
             "document_url": null,
             "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-            "page_start": 14,
+            "page_start": 20,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "КТ грудной полости и бронхоскопия - при необходимости дифференциальной диагностики"
+            "quote": "При необходимости дифференциальной диагностики - КТ грудной полости и бронхоскопия"
+          }
+        },
+        {
+          "name": "Исследование плеврального экссудата",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Цитологическое, биохимическое и бактериологическое исследование плеврального экссудата при наличии плеврита."
+          }
+        },
+        {
+          "name": "КТ грудной полости, бронхоскопия",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При необходимости дифференциальной диагностики - КТ грудной полости, бронхоскопия."
+          }
+        },
+        {
+          "name": "Исследование гемокультуры",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Исследование гемокультуры (проводить забор не менее двух проб венозной крови из разных вен с интервалом 30-60 минут) при гипертермии."
           }
         }
       ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Использование ступенчатой антибактериальной терапии при возможности.",
+            "text": "Ингаляционная и аэрозольная терапия с использованием УЗИ-приборов или приборов с распределительным клапаном",
             "source_ref": {
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
               "document_url": null,
@@ -163,22 +529,7 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Использование ступенчатой антибактериальной терапии при возможности."
-            }
-          },
-          {
-            "text": "Режим антибактериальной терапии проводить с учетом степени тяжести.",
-            "source_ref": {
-              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Режим антибактериальной терапии проводить с учетом степени тяжести."
+              "quote": "Ингаляционная и аэрозольная терапия с использованием УЗИ-приборов или приборов с распределительным клапаном"
             }
           }
         ],
@@ -188,7 +539,7 @@
             "drug_name": "Амоксициллин/клавулановая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "1000/200мг в/в 3 раза в сутки",
+            "dose_text": "875/125 мг 2 раза в сутки внутрь",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -200,20 +551,20 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-              "page_start": 14,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "амоксициллин/клавулановая кислота 1000/200мг в/в 3 раза в сутки"
+              "quote": "амоксициллин/клавулановая кислота 875/125 мг 2 раза в сутки внутрь"
             }
           },
           {
             "drug_name": "Азитромицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "500 мг в сутки внутрь или в/в",
+            "dose_text": "0,5 г 1 раз в сутки внутрь",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -225,20 +576,20 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-              "page_start": 14,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "в сочетании с азитромицином 500 мг в сутки внутрь или в/в"
+              "quote": "азитромицин 0,5 г 1раз в сутки внутрь"
             }
           },
           {
             "drug_name": "Кларитромицин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,5-1,0 г в сутки",
+            "dose_text": "0,5 г 2 раза в сутки внутрь",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -250,13 +601,63 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-              "page_start": 14,
+              "page_start": 8,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "или кларитромицином 0,5-1,0 г в сутки."
+              "quote": "кларитромицин 0,5г 2раза в сутки внутрь"
+            }
+          },
+          {
+            "drug_name": "Цефтриаксон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1-2 г 1 раз в сутки в/в",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 20,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефтриаксон 1-2 г – 1 раза в сутки в/в"
+            }
+          },
+          {
+            "drug_name": "Цефепим",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1-2 г 2 раза в сутки в/в",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 20,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефепим 1-2 г - 2 раза в сутки в/в"
             }
           },
           {
@@ -275,20 +676,20 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-              "page_start": 14,
+              "page_start": 20,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "респираторные фторхинолоны – левофлоксацин 0,75 г 1раз в сутки внутрь или в/в"
+              "quote": "левофлоксацин 0,75 г 1раз в сутки внутрь или в/в"
             }
           },
           {
-            "drug_name": "Моксифлоксацин",
+            "drug_name": "амоксициллин/клавулановая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "0,4 г 1 раз в сутки – внутрь",
+            "dose_text": "875/125 мг 2 раза в сутки или 500/125 мг 3 раза в сутки внутрь",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -300,13 +701,313 @@
               "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
               "document_url": null,
               "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-              "page_start": 14,
+              "page_start": 2,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "или моксифлоксацин* 0,4 г 1раз в сутки – внутрь."
+              "quote": "амоксициллин/клавулановая кислота 875/125 мг 2 раза в сутки или 500/125 мг -3 раза в сутки внутрь"
+            }
+          },
+          {
+            "drug_name": "азитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "500 мг/сут внутрь",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 2,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "азитромицин 500 мг/сут внутрь"
+            }
+          },
+          {
+            "drug_name": "кларитромицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,5-1,0 г в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 2,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "кларитромицин 0,5-1,0 г в сутки."
+            }
+          },
+          {
+            "drug_name": "амброксол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "30 мг внутрь 3 раза в сутки или ингаляционно",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "амброксол 30 мг внутрь 3 раза в сутки или ингаляционно;"
+            }
+          },
+          {
+            "drug_name": "ацетилцистеин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь 400-600 мг/сутки в 2 приема или для аэрозольной терапии 3-9 мл 10% раствора",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ацетилцистеин внутрь 400-600 мг /сутки в 2 приема или для аэрозольной терапии в УЗИ-приборах - 3-9 мл 10% раствора"
+            }
+          },
+          {
+            "drug_name": "бромгексин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "8-16 мг 3 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 10,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "бромгексин 8-16 мг 3 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "цефтриаксон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1-2 г 1 раз в сутки в/м или в/в",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефтриаксон 1 -2 г 1 раз в сутки в/м или в/в"
+            }
+          },
+          {
+            "drug_name": "цефуроксим",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,75 г 3 р/сут в/в или в/м",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 11,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "цефуроксим 0,75 г 3 р/сут в/в или в/м."
+            }
+          },
+          {
+            "drug_name": "левофлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,75 г 1 раз в сутки в/в",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "левофлоксацин 0,75 г 1раз в сутки в/в"
+            }
+          },
+          {
+            "drug_name": "моксифлоксацин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,4 г в/в 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 13,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "моксифлоксацин* 0,4 г в/в - 1раз в сутки."
+            }
+          },
+          {
+            "drug_name": "линезолид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,6 г в/в 2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 16,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "линезолид 0,6 г в/в 2 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "тейкопланин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "0,4 г 1 раз в сутки в/м или в/в",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 16,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "тейкопланин 0,4 г 1 раз в сутки в/м или в/в"
+            }
+          },
+          {
+            "drug_name": "ванкомицин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1 г в/в 2 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+              "page_start": 16,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ванкомицин 1г в/в 2 раза в сутки"
             }
           }
         ],
@@ -316,7 +1017,7 @@
       },
       "follow_up": [
         {
-          "text": "Ежедневный контроль симптомов",
+          "text": "Оценка эффективности стартовой антибактериальной терапии — через 48-72 часа.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -330,11 +1031,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Ежедневный контроль симптомов"
+            "quote": "Оценка эффективности стартовой антибактериальной терапии — через 48-72 часа."
           }
         },
         {
-          "text": "Оценка эффективности стартовой терапии через 24-48 часов",
+          "text": "Оценка эффективности терапии резерва — через 24-48 часов.",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -348,12 +1049,100 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Оценка эффективности стартовой терапии через 24-48 часов"
+            "quote": "Оценка эффективности терапии резерва — через 24-48 часов."
+          }
+        },
+        {
+          "text": "Ежедневный контроль симптомов и мониторинг состояния пациента",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Ежедневный контроль симптомов и мониторинг состояния пациента"
+          }
+        },
+        {
+          "text": "Оценка эффективности антибактериальной терапии через 48–72 часа (при резервных режимах через 24–48 часов)",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оценка эффективности антибактериальной терапии через 48–72 часа (при резервных режимах через 24–48 часов)"
+          }
+        },
+        {
+          "text": "Кратность лабораторно-инструментальных методов: 1–2 раза в процессе лечения, контрольное исследование по показаниям",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Кратность лабораторно-инструментальных методов: 1–2 раза в процессе лечения, контрольное исследование по показаниям"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
+        {
+          "text": "Амбулаторно",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Амбулаторно"
+          }
+        },
+        {
+          "text": "Госпитализация в стационар (при тяжелом течении или наличии показаний)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в стационар (при тяжелом течении или наличии показаний)"
+          }
+        },
         {
           "text": "Неотложная госпитализация пациентов в отделение реанимации и интенсивной терапии (ОРИТ)",
           "timing": null,
@@ -387,11 +1176,108 @@
             "row_index": null,
             "quote": "Госпитализация при неэффективности стартовой терапии"
           }
+        },
+        {
+          "text": "Оказание медицинской помощи в стационарных условиях",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Оказание медицинской помощи в стационарных условиях"
+          }
         }
       ],
       "red_flags": [
         {
-          "text": "Неэффективность стартового режима терапии",
+          "text": "Малые критерии тяжелого течения пневмонии (ЧДД >= 30/мин, нарушение сознания, SaO2 < 90%, САД < 90 мм рт.ст., многоочаговое поражение)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "«Малые» критерии тяжелого течения пневмонии: частота дыхания 30 за 1 мин и более; нарушение сознания; SaO2 менее 90 %"
+          }
+        },
+        {
+          "text": "Большие критерии тяжелого течения пневмонии (потребность в ИВЛ, септический шок, рост инфильтрации >50% за 2 суток, ОПН)",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "«Большие» критерии тяжелого течения пневмонии: необходимость в проведении искусственной вентиляции легких; септический шок"
+          }
+        },
+        {
+          "text": "Показания к неотложной госпитализации в ОРИТ",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "В таких случаях рекомендуется неотложная госпитализация пациентов в отделение реанимации и интенсивной терапии (ОРИТ)."
+          }
+        },
+        {
+          "text": "Неэффективность стартовой антибактериальной терапии",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "high",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 2,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При неэффективности стартовой терапии – госпитализация."
+          }
+        },
+        {
+          "text": "Подозрение на MRSA-инфекцию",
           "aliases": [],
           "red_flag_type": "other",
           "severity": "medium",
@@ -401,231 +1287,36 @@
             "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
             "document_url": null,
             "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
-            "page_start": 14,
+            "page_start": 16,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Лекарственные средства резерва при неэффективности стартового режима терапии (оценка через 24 - 48 часов)"
+            "quote": "При неэффективности и при подозрении на МRSA-инфекцию:"
+          }
+        },
+        {
+          "text": "Подозрение на аспирационную пневмонию",
+          "aliases": [],
+          "red_flag_type": "other",
+          "severity": "medium",
+          "expected_actions": [],
+          "cap_if_unhandled": null,
+          "source_ref": {
+            "protocol_id": "pulmonologiya_ftiziatriya_кп_диагностики_и_лечения_пневмоний_05_07_2012_768",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/pulmonologiya-ftiziatriya/КП диагностики и лечения пневмоний 05.07.2012 № 768.pdf",
+            "page_start": 16,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "При подозрении на аспирационную пневмонию:"
           }
         }
       ],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначено/выполнено обследование: Ежедневный контроль симптомов",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Амоксициллин/клавулановая кислота",
-          "Препарат: Азитромицин",
-          "Препарат: Кларитромицин",
-          "Препарат: Левофлоксацин",
-          "Препарат: Моксифлоксацин",
-          "Немедикаментозно: Использование ступенчатой антибактериальной терапии при возможности",
-          "Немедикаментозно: Режим антибактериальной терапии проводить с учетом степени тяжести",
-          "План наблюдения: Ежедневный контроль симптомов",
-          "План наблюдения: Оценка эффективности стартовой терапии через 24-48 часов"
-        ],
-        "conditional": [
-          "Обследование: Цитологическое, биохимическое и бактериологическое исследование плеврального экссудата (по показаниям)",
-          "Обследование: КТ грудной полости (по показаниям)",
-          "Обследование: Бронхоскопия (по показаниям)",
-          "Маршрутизация: Неотложная госпитализация пациентов в отделение реанимации и интенсивной терапии (ОРИТ) (по показаниям)",
-          "Маршрутизация: Госпитализация при неэффективности стартовой терапии (по показаниям)"
-        ],
-        "warnings": [
-          "при «Неэффективность стартового режима терапии»"
-        ]
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "viral_pneumonia",
-      "name": "Вирусная пневмония, не классифицированная в других рубриках",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "J12",
-        "J12.0",
-        "J12.1",
-        "J12.2",
-        "J12.8",
-        "J12.9"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "streptococcus_pneumoniae_pneumonia",
-      "name": "Пневмония, вызванная Streptococcus pneumoniae",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "J13"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "haemophilus_influenzae_pneumonia",
-      "name": "Пневмония, вызванная Haemophilus influenzaе",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "J14"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "bacterial_pneumonia_nec",
-      "name": "Бактериальная пневмония, не классифицированная в других рубриках",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "J15",
-        "J15.0",
-        "J15.1",
-        "J15.2",
-        "J15.3",
-        "J15.4"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "pneumonia_other_infectious_agents",
-      "name": "Пневмония, вызванная другими инфекционными агентами, не классифицированная в других рубриках",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "J16",
-        "J16.0",
-        "J16.8"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "pneumonia_in_other_diseases",
-      "name": "Пневмонии при болезнях, классифицированных в других рубриках",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "J17",
-        "J17.0",
-        "J17.1",
-        "J17.2",
-        "J17.3",
-        "J17.8"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": null,
-      "source_refs": []
-    },
-    {
-      "condition_id": "pneumonia_unspecified_organism",
-      "name": "Пневмония без уточнения возбудителя",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "J18",
-        "J18.0",
-        "J18.1",
-        "J18.2"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
-      "red_flags": [],
       "contraindications": [],
       "complications": [],
       "kz_checklist": null,
@@ -636,20 +1327,68 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T18:12:24.945083+00:00",
+    "extracted_at": "2026-07-23T09:43:58.493677+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=8",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-07-20T18:12:24.952243+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[pnevmoniya].required_exams[3]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[pnevmoniya].required_exams[4]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[pnevmoniya].required_exams[7]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[pnevmoniya].treatment.drugs[6]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[pnevmoniya].treatment.drugs[7]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[pnevmoniya].treatment.drugs[8]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[pnevmoniya].treatment.drugs[12]"
+      },
+      {
+        "level": "warning",
+        "code": "duplicate_drug",
+        "message": "Дублирующийся препарат",
+        "path": "conditions[pnevmoniya].treatment.drugs[14]"
+      }
+    ],
+    "validated_at": "2026-07-23T09:43:58.545702+00:00"
   }
 }

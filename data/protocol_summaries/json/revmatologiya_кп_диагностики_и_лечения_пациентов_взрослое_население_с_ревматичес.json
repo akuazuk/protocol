@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов с ревматическими заболеваниями",
+    "title": "Клинический протокол диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями",
     "url": null,
     "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
     "document_sha256": null,
@@ -32,22 +32,158 @@
   },
   "conditions": [
     {
-      "condition_id": "rheumatic_heart_diseases",
-      "name": "Ревматические заболевания сердца",
+      "condition_id": "revmaticheskie_zabolevaniya",
+      "name": "Ревматические заболевания",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
-        "I00",
-        "I04",
         "I05",
-        "I08",
-        "I08.9"
+        "I08"
       ],
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Лабораторное подтверждение хламидийной инфекции (антиген, ДНК, антитела IgA, IgM, IgG)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Лабораторное подтверждение хламидийной инфекции (антиген, ДНК, антитела IgA, IgM, IgG)"
+            }
+          },
+          {
+            "text": "Выявление антифосфолипидных антител (ВА, аКЛ, антитела к β2-ГП I)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Выявление антифосфолипидных антител (ВА, аКЛ, антитела к β2-ГП I)"
+            }
+          },
+          {
+            "text": "Нормализация клинико-лабораторных показателей (АНА, ат к ДНК, СРБ, СОЭ) в процессе лечения",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Нормализация клинико-лабораторных показателей (АНА, ат к ДНК, СРБ, СОЭ) в процессе лечения"
+            }
+          },
+          {
+            "text": "Верификация диагноза осуществляется на основании обязательного объема исследований",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Верификация диагноза осуществляется на основании обязательного объема исследований"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
       "required_exams": [
+        {
+          "name": "Иммунологическое исследование крови: определение концентрации РФ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": 80,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "5. Иммунологическое исследование крови: определение концентрации РФ*."
+          }
+        },
+        {
+          "name": "Определение антигена Chl. trachomatis в биологическом материале",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": 8,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "1. Определение антигена Chl. trachomatis в биологическом материале (соскоб из уретры/цервикального канала +сок простаты) методом иммунофлюоресценции"
+          }
+        },
         {
           "name": "Рентгенография органов грудной полости",
           "aliases": [],
@@ -70,32 +206,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Рентгенография органов грудной полости. 2 раза в течение первого года (включая стационарное лечение); затем 1 раз в год"
-          }
-        },
-        {
-          "name": "Консультация врача-оториноларинголога",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Консультация врача-оториноларинголога 1-2/год"
+            "quote": "6. Рентгенография органов грудной полости."
           }
         },
         {
@@ -120,13 +231,154 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ЭКГ Исходно и в динамике через 7-10 дней (на этапе постановки диагноза); 1/год"
+            "quote": "10. ЭКГ"
           }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "СМЭКГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": 72,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "3. СМЭКГ1,2"
+          }
+        },
+        {
+          "name": "Чреспищеводная Эхо-КГ",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": 72,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "4. Чреспищеводная Эхо-КГ1,2."
+          }
+        },
+        {
+          "name": "Определение в сыворотке крови антител к иерсиниям (при наличии в анамнезе диареи)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": 10,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "7. Определение в сыворотке крови антител к иерсиниям (при наличии в анамнезе диареи)."
+          }
+        },
+        {
+          "name": "Определение минеральной плотности костной ткани (МПК) методом двухэнергетической рентгеновской абсорбциометрии",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": 15,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "10.Определение минеральной плотности костной ткани (далее- МПК) методом двухэнергетической рентгеновской абсорбциометрии"
+          }
+        },
+        {
+          "name": "Консультация врача-оториноларинголога",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": 6,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "7. Консультация врача-оториноларинголога"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
+          {
+            "text": "ЛФК (лечебная физкультура) постоянно по показаниям",
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ЛФК (лечебная физкультура) постоянно по показаниям"
+            }
+          },
           {
             "text": "Соблюдение диетотерапии",
             "source_ref": {
@@ -158,7 +410,7 @@
             }
           },
           {
-            "text": "Занятия ЛФК (под контролем врача-ЛФК) на протяжении жизни пациента",
+            "text": "Занятия ЛФК под контролем врача-ЛФК",
             "source_ref": {
               "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
               "document_url": null,
@@ -169,11 +421,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Занятия ЛФК (под контролем врача-ЛФК) на протяжении жизни пациента"
+              "quote": "Занятия ЛФК под контролем врача-ЛФК"
             }
           },
           {
-            "text": "Физиотерапевтическое лечение (ФТЛ): электро-, бальнео-, ультразвуко-лазеротерапия курсами № 7-10 сеансов (по показаниям в зависимости от активности процесса)",
+            "text": "Физиотерапевтическое лечение (электро-, бальнео-, ультразвуко-, лазеротерапия курсами № 7-10 сеансов)",
             "source_ref": {
               "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
               "document_url": null,
@@ -184,17 +436,112 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Физиотерапевтическое лечение (ФТЛ): электро-, бальнео-, ультразвуко-лазеротерапия курсами № 7-10 сеансов (по показаниям в зависимости от активности процесса)"
+              "quote": "Физиотерапевтическое лечение (электро-, бальнео-, ультразвуко-, лазеротерапия курсами № 7-10 сеансов)"
+            }
+          },
+          {
+            "text": "Физиотерапевтическое лечение (по показаниям): электро-, тепло-, бальнео-, ультразвуко-, лазеротерапия курсами № 7-10 сеансов 1-2 раза в год",
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Физиотерапевтическое лечение (по показаниям): электро-, тепло-, бальнео-, ультразвуко-, лазеротерапия курсами № 7-10 сеансов 1-2 раза в год"
+            }
+          },
+          {
+            "text": "Массаж (по показаниям) № 10 1-2 раза в год",
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Массаж (по показаниям) № 10 1-2 раза в год"
+            }
+          },
+          {
+            "text": "ФТЛ (по показаниям): импульсные токи, лазеротерапия, лекарственный электрофорез курсами № 7-10 сеансов",
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ФТЛ (по показаниям): импульсные токи, лазеротерапия, лекарственный электрофорез курсами № 7-10 сеансов"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "Нестероидные противовоспалительные лекарственные средства (НПВС)",
+            "drug_name": "Ломефлоксацин / Моксифлоксацин / Левофлоксацин",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Ибупрофен 1200-1600 мг/сутки или ацеклофенак 200 мг/сут или диклофенак 75-100 мг/сут или мелоксикам 7,5-15 мг/сут внутрь до стойкой нормализации лабораторных показателей",
+            "dose_text": "0,4-0,8 г/сут; ломефлоксацин 0,8 г/сут; моксифлоксацин внутрь 0,4 г/сут; левофлоксацин 0,5 г/сут. Продолжительность лечения 1 месяц",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": 9,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "0,4-0,8 г/сут; ломефлоксацин 0,8 г/сут; моксифлоксацин внутрь 0,4 г/сут; левофлоксацин 0,5 г/сут. Продолжительность лечения составляет 1 месяц"
+            }
+          },
+          {
+            "drug_name": "Преднизолон / Метилпреднизолон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "преднизолон 0,25-1,0 мг/кг/сут (метилпреднизолон 0,2-0,8 мг/сут) внутрь с последующим снижением до поддерживающей дозы",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": 53,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "преднизолон 0,25-1,0 мг/кг/сут (метилпреднизолон 0,2-0,8 мг/сут) внутрь."
+            }
+          },
+          {
+            "drug_name": "ибупрофен",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "1200-1600 мг/сутки",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -212,14 +559,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Нестероидные противовоспалительные лекарственные средства внутрь (далее-НПВС) - ибупрофен 1200-1600 мг/сутки или ацеклофенак 200 мг/сут или диклофенак – 75-100 мг/сут или мелоксикам 7,5-15 мг/сут внутрь до стойкой нормализации лабораторных показателей"
+              "quote": "ибупрофен 1200-1600 мг/сутки"
             }
           },
           {
-            "drug_name": "Глюкокортикоиды (системного применения)",
+            "drug_name": "ацеклофенак",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Преднизолон 0,25-0,3 мг/кг/сут (метилпреднизолон 0,20-0,25 мг/кг/сут) до 2-х месяцев",
+            "dose_text": "200 мг/сут",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -237,14 +584,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Глюкокортикоиды (далее - ГК) для системного применения: преднизолон 0,25-0,3 мг/кг/сут (метилпреднизолон 0,20-0,25 мг/кг/сут). До 2-х месяцев (с учетом стационарного этапа)"
+              "quote": "ацеклофенак 200 мг/сут"
             }
           },
           {
-            "drug_name": "Ингибиторы протонной помпы",
+            "drug_name": "диклофенак",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Омепразол 20-40 мг/сут или рабепразол 20-40 мг/сут или лансопразол 30-60 мг/сут или пантопразол 20-40 мг/сут или эзомепразол 20-40 мг/сут",
+            "dose_text": "75-100 мг/сут",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -256,20 +603,45 @@
               "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
               "document_url": null,
               "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
-              "page_start": 6,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "При наличии факторов риска ЖК осложнений - ингибиторы протонной помпы: омепразол 20-40 мг/сут или рабепразол 20-40 мг/сут или лансопразол 30-60 мг/сут или пантопразол 20-40 мг/сут или эзомепразол 20-40 мг/сут и др."
+              "quote": "диклофенак – 75-100 мг/сут"
             }
           },
           {
-            "drug_name": "Антибактериальные лекарственные средства",
+            "drug_name": "мелоксикам",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": null,
+            "dose_text": "7,5-15 мг/сут",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "мелоксикам 7,5-15 мг/сут"
+            }
+          },
+          {
+            "drug_name": "Антибактериальные лекарственные средства (тетрациклины, макролиды, фторхинолоны)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "в случае реактивного артрита урогенной этиологии",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -287,14 +659,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Антибактериальные лекарственные средства (тетрациклины, макролиды, фторхинолоны) в случае реактивного артрита урогенной этиологии."
+              "quote": "1. Антибактериальные лекарственные средства (тетрациклины, макролиды, фторхинолоны) в случае реактивного артрита урогенной этиологии."
             }
           },
           {
-            "drug_name": "Патогенетические лекарственные средства",
+            "drug_name": "бензатин бензилпенициллин (ретарпен)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": null,
+            "dose_text": "2,4 млн. ЕД. в/м. 1 раз в 3 недели",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -306,13 +678,13 @@
               "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
               "document_url": null,
               "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
-              "page_start": 3,
+              "page_start": 6,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Препараты патогенетической терапии (метотрексат, сульфасалазин, лефлуномид, гидроксихлорохин и гюкокортикоиды) назначаются врачом-ревматологом или по его рекомендации."
+              "quote": "бензатин бензилпенициллин (ретарпен) 2,4 млн. ЕД. в/м. 1 раз в 3 недели"
             }
           }
         ],
@@ -322,7 +694,7 @@
       },
       "follow_up": [
         {
-          "text": "Регулирование продолжительного приема лекарственных средств лечащим врачом с учетом активности заболевания, темпов прогрессирования, развития осложнений.",
+          "text": "Контрольное обследование исходно (при постановке диагноза, обострении) и через 1,5 месяца после завершения курса антибактериальной терапии",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -336,11 +708,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Регулирование продолжительного приема лекарственных средств лечащим врачом с учетом активности заболевания, темпов прогрессирования, развития осложнений."
+            "quote": "Контрольное обследование исходно (при постановке диагноза, обострении) и через 1,5 месяца после завершения курса антибактериальной терапии"
           }
         },
         {
-          "text": "Продолжение комплексной терапии, подобранной в стационарных условиях (например, лечение хронической сердечной недостаточности, нарушений сердечного ритма).",
+          "text": "Динамическое обследование 1-2 раза в год",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -354,14 +726,122 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Продолжение комплексной терапии, подобранной в стационарных условиях (например, лечение хронической сердечной недостаточности, нарушений сердечного ритма)."
+            "quote": "Динамическое обследование 1-2 раза в год"
+          }
+        },
+        {
+          "text": "Снижение дозы глюкокортикоидов на 2,5-5 мг/сут (преднизолон) или 2-4 мг/сут (метилпреднизолон) каждые 2 недели при нормализации показателей",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Снижение дозы глюкокортикоидов на 2,5-5 мг/сут (преднизолон) или 2-4 мг/сут (метилпреднизолон) каждые 2 недели при нормализации показателей"
+          }
+        },
+        {
+          "text": "Рентгенография органов грудной полости: 2 раза в течение первого года, затем 1 раз в год",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Рентгенография органов грудной полости: 2 раза в течение первого года, затем 1 раз в год"
+          }
+        },
+        {
+          "text": "Консультация врача-оториноларинголога: 1-2 раза в год",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Консультация врача-оториноларинголога: 1-2 раза в год"
+          }
+        },
+        {
+          "text": "ЭКГ: 1 раз в год",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ЭКГ: 1 раз в год"
+          }
+        },
+        {
+          "text": "Профилактика рецидивов в случае острой ревматической лихорадки без кардита (артрит, хорея) не менее 5 лет после последней атаки или до 21-летнего возраста",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Профилактика рецидивов в случае острой ревматической лихорадки без кардита (артрит, хорея) не менее 5 лет после последней атаки или до 21-летнего возраста"
+          }
+        },
+        {
+          "text": "Профилактика рецидивов в случаях излеченного кардита без формирования порока сердца — не менее 10 лет после последней атаки или до 21-летнего возраста",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Профилактика рецидивов в случаях излеченного кардита без формирования порока сердца — не менее 10 лет после последней атаки или до 21-летнего возраста"
           }
         }
       ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "госпитализация",
+          "text": "Амбулаторные условия (ЦРБ, амбулаторно-поликлинические организации)",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -374,7 +854,24 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация"
+            "quote": "Амбулаторные условия (ЦРБ, амбулаторно-поликлинические организации)"
+          }
+        },
+        {
+          "text": "Стационарные условия (областные и республиканские организации здравоохранения)",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Стационарные условия (областные и республиканские организации здравоохранения)"
           }
         },
         {
@@ -393,154 +890,9 @@
             "row_index": null,
             "quote": "амбулаторно"
           }
-        }
-      ],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначено/выполнено обследование: Рентгенография органов грудной полости",
-          "Назначено/выполнено обследование: Консультация врача-оториноларинголога",
-          "Назначено/выполнено обследование: ЭКГ",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: Нестероидные противовоспалительные лекарственные средства (НПВС)",
-          "Препарат: Глюкокортикоиды (системного применения)",
-          "Препарат: Ингибиторы протонной помпы",
-          "Препарат: Антибактериальные лекарственные средства",
-          "Препарат: Патогенетические лекарственные средства",
-          "Немедикаментозно: Соблюдение диетотерапии",
-          "Немедикаментозно: Коррекция ортопедических нарушений",
-          "Немедикаментозно: Занятия ЛФК (под контролем врача-ЛФК) на протяжении жизни пациента",
-          "Немедикаментозно: Физиотерапевтическое лечение (ФТЛ): электро-, бальнео-, ультразвуко-лазеротерапия курсами…",
-          "План наблюдения: Регулирование продолжительного приема лекарственных средств лечащим врачом с учетом актив…",
-          "План наблюдения: Продолжение комплексной терапии, подобранной в стационарных условиях (например, лечение х…"
-        ],
-        "conditional": [
-          "Маршрутизация: госпитализация (по показаниям)",
-          "Маршрутизация: амбулаторно (по показаниям)"
-        ],
-        "warnings": []
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "antiphospholipid_syndrome",
-      "name": "Антифосфолипидный синдром",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "D69.0"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": {
-        "required": [
-          {
-            "text": "Волчаночный антикоагулянт (ВА)",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Волчаночный антикоагулянт (ВА)"
-            }
-          },
-          {
-            "text": "Антитела к кардиолипину (аКЛ) IgG или IgM изотипов",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Антитела к кардиолипину (аКЛ) IgG или IgM изотипов"
-            }
-          },
-          {
-            "text": "Антитела к β2-ГП I IgG и/или IgM изотипов",
-            "logic_group": null,
-            "operator": "unknown",
-            "values": [],
-            "numeric_value": null,
-            "unit": null,
-            "evidence_targets": [],
-            "source_ref": {
-              "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "Антитела к β2-ГП I IgG и/или IgM изотипов"
-            }
-          }
-        ],
-        "optional": [],
-        "exclusion": []
-      },
-      "required_exams": [
+        },
         {
-          "name": "Определение содержания антифосфолипидных антител",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "revmatologiya_кп_диагностики_и_лечения_пациентов_взрослое_население_с_ревматичес",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/revmatologiya/КП диагностики и лечения пациентов (взрослое население) с ревматическими заболеваниями 10.05.2012 № 522.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Определение содержания анти-фосфолипидных анти-тел(волчаночный антикоагулянт (далее - ВА) 1;2; антител к кардиоли-пину (далее - аКЛ) 1;2, IgG или IgM- изо-типов; антител к β2-ГП I1;2 IgG и/или IgM изотипов"
-          }
-        }
-      ],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [
-        {
-          "text": "Медицинская помощь оказывается в амбулаторных и стационарных условиях",
+          "text": "госпитализация",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -553,48 +905,10 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Медицинская помощь оказывается в амбулаторных и стационарных условиях"
+            "quote": "госпитализация"
           }
         }
       ],
-      "red_flags": [],
-      "contraindications": [],
-      "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Волчаночный антикоагулянт (ВА)",
-          "Обоснование диагноза: Антитела к кардиолипину (аКЛ) IgG или IgM изотипов",
-          "Обоснование диагноза: Антитела к β2-ГП I IgG и/или IgM изотипов",
-          "Назначено/выполнено обследование: Определение содержания антифосфолипидных антител"
-        ],
-        "should_have": [],
-        "conditional": [
-          "Маршрутизация: Медицинская помощь оказывается в амбулаторных и стационарных условиях (по показаниям)"
-        ],
-        "warnings": []
-      },
-      "source_refs": []
-    },
-    {
-      "condition_id": "reactive_arthritis",
-      "name": "Реактивные артриты",
-      "synonyms": [],
-      "abbreviations": [],
-      "icd10_codes": [
-        "M02",
-        "M02.3"
-      ],
-      "condition_applicability": null,
-      "diagnosis_structure": null,
-      "clinical_criteria": null,
-      "diagnostic_criteria": null,
-      "required_exams": [],
-      "conditional_exams": [],
-      "treatment": null,
-      "follow_up": [],
-      "hospitalization": [],
-      "routing": [],
       "red_flags": [],
       "contraindications": [],
       "complications": [],
@@ -606,20 +920,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-20T17:33:41.397152+00:00",
+    "extracted_at": "2026-07-23T09:48:23.960611+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=3",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
     "status": "valid",
     "errors": [],
     "warnings": [],
-    "validated_at": "2026-07-20T17:33:41.405122+00:00"
+    "validated_at": "2026-07-23T09:48:23.971097+00:00"
   }
 }

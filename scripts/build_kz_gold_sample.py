@@ -29,7 +29,7 @@ if str(ROOT) not in sys.path:
 # Неклинические роли - исключаем из gold (см. план §9).
 _EXCLUDE_SPEC = {
     "медицинская сестра", "медсестра", "стоматолог-терапевт", "стоматолог",
-    "логопед", "-", "—", "", "лаборатория",
+    "логопед", "-", " - ", "", "лаборатория",
 }
 _RED_FLAG_KW = (
     "образование", "опухол", "нельзя исключить", "малигн", "зно", "c-r", "cr ",
@@ -103,14 +103,27 @@ def main() -> int:
         vid = str(c.get("visit_id") or "")
         if not vid:
             continue
+        deep = c.get("deep") or {}
         pct = c.get("overall_pct")
+        if not isinstance(pct, (int, float)):
+            pct = deep.get("overall_pct")
+        sev = deep.get("n_by_severity") or {}
         diag = (c.get("diagnosis_short") or "").lower()
-        red = bool(c.get("status") == "manual_review_required" or any(k in diag for k in _RED_FLAG_KW))
+        red = bool(
+            c.get("status") == "manual_review_required"
+            or deep.get("has_potential_harm")
+            or int(sev.get("P0", 0) or 0) > 0
+            or int(sev.get("P1", 0) or 0) > 0
+            or deep.get("status") in ("review", "poor", "critical")
+            or any(k in diag for k in _RED_FLAG_KW)
+        )
         cases.append({
             "visit_id": vid,
             "specialty": c.get("doctor_specialization") or "-",
             "band": _band(pct if isinstance(pct, (int, float)) else None),
             "overall_pct": pct,
+            "deep_overall_pct": deep.get("overall_pct"),
+            "deep_status": deep.get("status"),
             "pay_type": pay.get(vid, ""),
             "red_flag": red,
         })

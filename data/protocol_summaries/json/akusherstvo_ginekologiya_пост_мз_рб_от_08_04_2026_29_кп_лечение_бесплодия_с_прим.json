@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Лечение бесплодия с применением ВРТ",
+    "title": "Лечение бесплодия с применением вспомогательных репродуктивных технологий",
     "url": null,
     "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
     "document_sha256": null,
@@ -32,8 +32,8 @@
   },
   "conditions": [
     {
-      "condition_id": "infertility_with_art",
-      "name": "Бесплодие с применением ВРТ",
+      "condition_id": "besplodie_vrt",
+      "name": "Бесплодие (лечение с применением ВРТ)",
       "synonyms": [],
       "abbreviations": [],
       "icd10_codes": [
@@ -56,7 +56,7 @@
       "diagnostic_criteria": {
         "required": [
           {
-            "text": "Снижение овариального резерва (уровень антимюллерова гормона < 0,5 нг/мл и/или < 5 антральных фолликулов в обоих яичниках).",
+            "text": "Снижение овариального резерва: уровень антимюллерова гормона в сыворотке крови менее 0,5 нг/мл и (или) менее 5 антральных фолликулов в обоих яичниках",
             "logic_group": null,
             "operator": "unknown",
             "values": [],
@@ -73,7 +73,49 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Снижение овариального резерва (уровень антимюллерова гормона < 0,5 нг/мл и/или < 5 антральных фолликулов в обоих яичниках)."
+              "quote": "Снижение овариального резерва: уровень антимюллерова гормона в сыворотке крови менее 0,5 нг/мл и (или) менее 5 антральных фолликулов в обоих яичниках"
+            }
+          },
+          {
+            "text": "Наличие медицинских показаний и отсутствие медицинских противопоказаний к применению ВРТ и к донорству половых клеток",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Наличие медицинских показаний и отсутствие медицинских противопоказаний к применению ВРТ и к донорству половых клеток"
+            }
+          },
+          {
+            "text": "Отсутствие ответа на стимуляцию овуляции подтверждается отсутствием роста фолликулов при УЗИ органов малого таза в течение 7–8 дней",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Отсутствие ответа на стимуляцию овуляции подтверждается отсутствием роста фолликулов при УЗИ органов малого таза в течение 7–8 дней"
             }
           }
         ],
@@ -81,56 +123,6 @@
         "exclusion": []
       },
       "required_exams": [
-        {
-          "name": "ПГТ (Преимплантационное генетическое тестирование)",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-            "page_start": 2,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "ПГТ – метод диагностики генетических заболеваний у эмбриона человека до его переноса в полость матки."
-          }
-        },
-        {
-          "name": "Пункция фолликулов яичника",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "required",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-            "page_start": 2,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "пункция фолликулов яичника – медицинская манипуляция с целью получения яйцеклеток (ооцитов) для ЭКО."
-          }
-        },
         {
           "name": "Исследование количественного уровня хорионического гонадотропина в крови",
           "aliases": [],
@@ -153,7 +145,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Диагностика беременности проводится путем исследования количественного уровня хорионического гонадотропина в крови через 10–14 дней со дня переноса эмбрионов."
+            "quote": "Диагностика беременности проводится путем исследования количественного уровня хорионического гонадотропина в крови через 10–14 дней со дня переноса эмбрионов"
           }
         },
         {
@@ -180,13 +172,64 @@
             "row_index": null,
             "quote": "ультразвукового исследования органов малого таза через 21–30 дней со дня переноса эмбрионов."
           }
+        },
+        {
+          "name": "Ультразвуковое исследование органов малого таза",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "required",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 4,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "подтверждается отсутствием роста фолликулов при ультразвуковом исследовании органов малого таза"
+          }
         }
       ],
-      "conditional_exams": [],
+      "conditional_exams": [
+        {
+          "name": "Преимплантационное генетическое тестирование (ПГТ)",
+          "aliases": [],
+          "exam_type": "unknown",
+          "requirement_level": "conditional",
+          "accepted_statuses": [
+            "performed",
+            "recommended"
+          ],
+          "required_if": [],
+          "timing": null,
+          "comment": null,
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": 5,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "ПГТ проводится с целью медицинской профилактики врожденных и наследственных заболеваний, не является альтернативой инвазивной пренатальной диагностике"
+          }
+        }
+      ],
       "treatment": {
         "non_drug": [
           {
-            "text": "Трансплантация (перенос) эмбриона в полость матки (от стадии дробления до бластоцисты).",
+            "text": "Перенос эмбрионов в полость матки (от стадии дробления до стадии бластоцисты)",
             "source_ref": {
               "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
               "document_url": null,
@@ -197,11 +240,11 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Трансплантация (перенос) эмбриона в полость матки (от стадии дробления до бластоцисты)."
+              "quote": "Перенос эмбрионов в полость матки (от стадии дробления до стадии бластоцисты)"
             }
           },
           {
-            "text": "Программа ЭКО с ИКСИ.",
+            "text": "Выполнение программы ЭКО с ИКСИ с использованием инвертированного микроскопа, оснащенного микроманипуляторами",
             "source_ref": {
               "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
               "document_url": null,
@@ -212,19 +255,285 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Программа ЭКО с ИКСИ."
+              "quote": "Выполнение программы ЭКО с ИКСИ с использованием инвертированного микроскопа, оснащенного микроманипуляторами"
+            }
+          },
+          {
+            "text": "Трансвагинальная пункция под ультразвуковым контролем",
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Трансвагинальная пункция под ультразвуковым контролем"
+            }
+          },
+          {
+            "text": "Хирургическая трансплантация (перенос) эмбрионов в полость матки",
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Хирургическая трансплантация (перенос) эмбрионов в полость матки"
+            }
+          },
+          {
+            "text": "Криоконсервация яйцеклеток и эмбрионов",
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Криоконсервация яйцеклеток и эмбрионов"
+            }
+          },
+          {
+            "text": "КОС (при отсутствии медицинских противопоказаний)",
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "КОС (при отсутствии медицинских противопоказаний)"
+            }
+          },
+          {
+            "text": "Специальная подготовка сперматозоидов супруга (донора) с помощью метода специальной обработки спермы",
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Специальная подготовка сперматозоидов супруга (донора) с помощью метода специальной обработки спермы"
+            }
+          },
+          {
+            "text": "Введение подготовленных сперматозоидов в полость матки в объеме не более 1,0 мл суспензии отмытых сперматозоидов через 24–40 часов после введения триггера овуляции или при выявлении признаков спонтанной овуляции",
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Введение подготовленных сперматозоидов в полость матки в объеме не более 1,0 мл суспензии отмытых сперматозоидов через 24–40 часов после введения триггера овуляции или при выявлении признаков спонтанн"
             }
           }
         ],
         "drug_groups": [],
-        "drugs": [],
+        "drugs": [
+          {
+            "drug_name": "Кломифена цитрат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки 50 мг, максимальная суточная доза 150 мг",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "кломифена цитрат (таблетки 50 мг), максимальная суточная доза 150 мг"
+            }
+          },
+          {
+            "drug_name": "Тамоксифен",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки 10 мг, 20 мг, максимальная суточная доза 40 мг",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "тамоксифен (таблетки 10 мг, 20 мг), максимальная суточная доза 40 мг"
+            }
+          },
+          {
+            "drug_name": "Летрозол",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "таблетки 2,5 мг, максимальная суточная доза 7,5 мг",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "летрозол (таблетки 2,5 мг), максимальная суточная доза 7,5 мг"
+            }
+          },
+          {
+            "drug_name": "Гонадотропины (рекомбинантный или мочевой)",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "максимальная суточная доза 450 МЕ, суммарная доза для стимуляции 700–4200 МЕ",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Максимальная суточная доза гонадотропинов 450 МЕ. Суммарная доза гонадотропинов для стимуляции составляет 700–4200 ME"
+            }
+          },
+          {
+            "drug_name": "Рекомбинантный хориогонадотропин альфа",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор для п/к введения 250 мкг / 0,5 мл, в дозе 250 мкг",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "рекомбинантный хориогонадотропин альфа, раствор для п/к введения 250 мкг / 0,5 мл, в дозе 250 мкг"
+            }
+          },
+          {
+            "drug_name": "Гонадотропин хорионический",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "лиофилизат для приготовления раствора для в/м (и п/к) введения в дозах от 1500 МЕ до 10 000 МЕ включительно",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": 4,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "гонадотропин хорионический, лиофилизат для приготовления раствора для в/м (и п/к) введения (для инъекций) в дозах от 1500 ME до 10 000 ME включительно"
+            }
+          },
+          {
+            "drug_name": "Трипторелин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "раствор для п/к введения 0,1 мг/мл 1 мл ежедневно со 2-го дня цикла КОС или с лютеиновой фазы",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+              "page_start": 3,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "трипторелин (раствор для подкожного (далее – п/к) введения 0,1 мг/мл 1 мл) ежедневно со 2-го дня цикла КОС"
+            }
+          }
+        ],
         "procedures": [],
         "surgery": [],
         "source_refs": []
       },
       "follow_up": [
         {
-          "text": "Диагностика беременности: исследование количественного уровня хорионического гонадотропина в крови через 10–14 дней со дня переноса эмбрионов.",
+          "text": "Исследование уровня количественного ХГЧ в крови через 10–14 дней после переноса эмбрионов",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -238,11 +547,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Диагностика беременности: исследование количественного уровня хорионического гонадотропина в крови через 10–14 дней со дня переноса эмбрионов."
+            "quote": "Исследование уровня количественного ХГЧ в крови через 10–14 дней после переноса эмбрионов"
           }
         },
         {
-          "text": "Диагностика беременности: ультразвуковое исследование органов малого таза через 21–30 дней со дня переноса эмбрионов.",
+          "text": "УЗИ органов малого таза через 21–30 дней после переноса эмбрионов",
           "timing": null,
           "required_if": [],
           "expected_actions": [],
@@ -256,33 +565,51 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Диагностика беременности: ультразвуковое исследование органов малого таза через 21–30 дней со дня переноса эмбрионов."
+            "quote": "УЗИ органов малого таза через 21–30 дней после переноса эмбрионов"
+          }
+        },
+        {
+          "text": "Мониторинг стимуляции цикла и индивидуального ответа яичников на КОС для подбора и коррекции доз лекарственных препаратов",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Мониторинг стимуляции цикла и индивидуального ответа яичников на КОС для подбора и коррекции доз лекарственных препаратов"
+          }
+        },
+        {
+          "text": "Поддержка лютеиновой фазы назначается врачом-акушером-гинекологом",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Поддержка лютеиновой фазы назначается врачом-акушером-гинекологом"
           }
         }
       ],
       "hospitalization": [],
-      "routing": [
-        {
-          "text": "амбулаторно",
-          "timing": null,
-          "required_if": [],
-          "source_ref": {
-            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-            "page_start": null,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "амбулаторно"
-          }
-        }
-      ],
+      "routing": [],
       "red_flags": [
         {
-          "text": "Отсутствие эмбрионов после культивирования",
+          "text": "Отсутствие ответа на стимуляцию овуляции (отсутствие роста фолликулов при УЗИ) в течение 7–8 дней (кроме женщин с гипогонадизмом — до 14–15 дней), либо отсутствие ооцитов или эмбрионов является основанием для исключения из протокола ЭКО",
           "aliases": [],
           "red_flag_type": "other",
           "severity": "high",
@@ -298,55 +625,13 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "При отсутствии эмбрионов (подтверждается протоколом культивирования эмбрионов) женщина исключается из протокола ЭКО."
-          }
-        },
-        {
-          "text": "Снижение овариального резерва, не позволяющее получить собственные яйцеклетки",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "high",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "akusherstvo_ginekologiya_пост_мз_рб_от_08_04_2026_29_кп_лечение_бесплодия_с_прим",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/akusherstvo-ginekologiya/пост._МЗ_РБ_от 08.04.2026_№29_КП_лечение_бесплодия_с_применением_ВРТ_оф. опубл.pdf",
-            "page_start": 6,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "Критерием... который с высокой вероятностью не позволит получить собственные яйцеклетки, является уровень антимюллерова гормона в сыворотке крови менее 0,5 нг/мл и (или) менее 5 антральных фолликулов..."
+            "quote": "При отсутствии ответа на стимуляцию овуляции (подтверждается отсутствием роста фолликулов при ультразвуковом исследовании органов малого таза) в течение 7–8 дней"
           }
         }
       ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Обоснование диагноза: Снижение овариального резерва (уровень антимюллерова гормона < 0,5 нг/мл и/или < 5 антрал…",
-          "Назначено/выполнено обследование: ПГТ (Преимплантационное генетическое тестирование)",
-          "Назначено/выполнено обследование: Пункция фолликулов яичника",
-          "Назначено/выполнено обследование: Исследование количественного уровня хорионического гонадотропина в крови",
-          "Назначено/выполнено обследование: Ультразвуковое исследование органов малого таза"
-        ],
-        "should_have": [
-          "Немедикаментозно: Трансплантация (перенос) эмбриона в полость матки (от стадии дробления до бластоцисты)",
-          "Немедикаментозно: Программа ЭКО с ИКСИ",
-          "План наблюдения: Диагностика беременности: исследование количественного уровня хорионического гонадотропин…",
-          "План наблюдения: Диагностика беременности: ультразвуковое исследование органов малого таза через 21–30 дне…"
-        ],
-        "conditional": [
-          "Маршрутизация: амбулаторно (по показаниям)"
-        ],
-        "warnings": [
-          "Важно: при «Отсутствие эмбрионов после культивирования»",
-          "Важно: при «Снижение овариального резерва, не позволяющее получить собственные яйцеклетки»"
-        ]
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -354,20 +639,26 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-01T23:43:42.816797+00:00",
+    "extracted_at": "2026-07-23T06:58:34.613622+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "valid",
+    "status": "needs_human_review",
     "errors": [],
-    "warnings": [],
-    "validated_at": "2026-07-01T23:43:42.819174+00:00"
+    "warnings": [
+      {
+        "level": "warning",
+        "code": "duplicate_exam",
+        "message": "Дублирующееся обследование",
+        "path": "conditions[besplodie_vrt].required_exams[2]"
+      }
+    ],
+    "validated_at": "2026-07-23T06:58:34.621875+00:00"
   }
 }

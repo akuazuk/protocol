@@ -4,7 +4,7 @@
   "extraction_status": "llm_extracted",
   "review_status": "needs_review",
   "source": {
-    "title": "Диагностика и лечение пациентов детское население с аллергическим ринитом",
+    "title": "Диагностика и лечение пациентов (детское население) с аллергическим ринитом",
     "url": null,
     "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
     "document_sha256": null,
@@ -32,7 +32,7 @@
   },
   "conditions": [
     {
-      "condition_id": "allergicheskiy_rinit",
+      "condition_id": "allergic_rhinitis",
       "name": "Аллергический ринит",
       "synonyms": [],
       "abbreviations": [],
@@ -45,10 +45,57 @@
       "condition_applicability": null,
       "diagnosis_structure": null,
       "clinical_criteria": null,
-      "diagnostic_criteria": null,
+      "diagnostic_criteria": {
+        "required": [
+          {
+            "text": "Оценка влияния заболевания по ВАШ (визуально-аналоговая шкала от 0 до 100 мм)",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Оценка влияния заболевания по ВАШ (визуально-аналоговая шкала от 0 до 100 мм)"
+            }
+          },
+          {
+            "text": "Заболевание слизистой оболочки носа, в основе которого лежит аллергическое воспаление, вызываемое причинно-значимым аллергеном, проявляющееся обильной ринореей, назальной блокадой, зудом в полости носа и повторяющимся чиханием",
+            "logic_group": null,
+            "operator": "unknown",
+            "values": [],
+            "numeric_value": null,
+            "unit": null,
+            "evidence_targets": [],
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Заболевание слизистой оболочки носа, в основе которого лежит аллергическое воспаление, вызываемое причинно-значимым аллергеном, проявляющееся обильной ринореей, назальной блокадой, зудом в полости нос"
+            }
+          }
+        ],
+        "optional": [],
+        "exclusion": []
+      },
       "required_exams": [
         {
-          "name": "Медицинский осмотр врача-специалиста",
+          "name": "Медицинский осмотр врача-специалиста со сбором анамнеза и жалоб",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -69,11 +116,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "медицинский осмотр врача-специалиста со сбором анамнеза и жалоб"
+            "quote": "Объем обязательных методов исследования при диагностике АР: медицинский осмотр врача-специалиста со сбором анамнеза и жалоб"
           }
         },
         {
-          "name": "Общий анализ крови",
+          "name": "Общий анализ крови (эритроциты, гемоглобин, лейкоциты, лейкоцитарная формула, тромбоциты, СОЭ)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "required",
@@ -94,7 +141,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "общий анализ крови: эритроциты, гемоглобин, лейкоциты, лейкоцитарная формула, тромбоциты, скорость оседания эритроцитов"
+            "quote": "общий анализ крови: эритроциты, гемоглобин, лейкоциты, лейкоцитарная формула, тромбоциты, скорость оседания эритроцитов;"
           }
         },
         {
@@ -119,7 +166,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "риноцитограмма"
+            "quote": "риноцитограмма;"
           }
         },
         {
@@ -144,13 +191,13 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "консультация врача-оториноларинголога"
+            "quote": "консультация врача-оториноларинголога."
           }
         }
       ],
       "conditional_exams": [
         {
-          "name": "Биохимический анализ крови",
+          "name": "Биохимический анализ крови (креатинин, мочевина, глюкоза, общий белок, АЛТ, АСТ, СРБ)",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -171,7 +218,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "биохимический анализ крови: креатинин, мочевина, глюкоза, общий белок, аланинаминотрансфераза, аспартатаминотрансфераза, С-реактивный белок"
+            "quote": "биохимический анализ крови: креатинин, мочевина, глюкоза, общий белок, аланинаминотрансфераза, аспартатаминотрансфераза, С-реактивный белок;"
           }
         },
         {
@@ -196,11 +243,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "консультация врача-аллерголога-иммунолога"
+            "quote": "консультация врача-аллерголога-иммунолога;"
           }
         },
         {
-          "name": "Аллергологическое обследование методом кожных проб",
+          "name": "Аллергологическое обследование методом кожных проб вне обострения",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -221,7 +268,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "аллергологическое обследованием методом кожных проб вне обострения"
+            "quote": "аллергологическое обследованием методом кожных проб вне обострения;"
           }
         },
         {
@@ -246,7 +293,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "определение аллергенспецифических IgE-антител"
+            "quote": "определение аллергенспецифических IgE-антител;"
           }
         },
         {
@@ -271,7 +318,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "рентгенография придаточных пазух носа"
+            "quote": "рентгенография придаточных пазух носа;"
           }
         },
         {
@@ -296,7 +343,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "компьютерная томография придаточных пазух носа, гортани"
+            "quote": "компьютерная томография придаточных пазух носа, гортани;"
           }
         },
         {
@@ -321,7 +368,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "эндоскопическая эндоназальная ревизия полости носа, носоглотки и придаточных пазух носа"
+            "quote": "эндоскопическая эндоназальная ревизия полости носа, носоглотки и придаточных пазух носа;"
           }
         },
         {
@@ -346,7 +393,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "аппликационная проба с раствором адреномиметика"
+            "quote": "аппликационная проба с раствором адреномиметика;"
           }
         },
         {
@@ -371,11 +418,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "мазок со слизистой полости носа на микрофлору и чувствительность к антибиотикам"
+            "quote": "мазок со слизистой полости носа на микрофлору и чувствительность к антибиотикам;"
           }
         },
         {
-          "name": "Спирометрия",
+          "name": "Спирометрия у пациентов с 6 лет",
           "aliases": [],
           "exam_type": "unknown",
           "requirement_level": "conditional",
@@ -396,7 +443,7 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "спирометрия у пациентов с 6 лет"
+            "quote": "спирометрия у пациентов с 6 лет;"
           }
         },
         {
@@ -421,52 +468,12 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "ринопневмоманометрия"
-          }
-        },
-        {
-          "name": "Консультация других врачей-специалистов",
-          "aliases": [],
-          "exam_type": "unknown",
-          "requirement_level": "conditional",
-          "accepted_statuses": [
-            "performed",
-            "recommended"
-          ],
-          "required_if": [],
-          "timing": null,
-          "comment": null,
-          "source_ref": {
-            "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-            "page_start": 4,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "консультация других врачей-специалистов при наличии медицинских показаний"
+            "quote": "ринопневмоманометрия;"
           }
         }
       ],
       "treatment": {
         "non_drug": [
-          {
-            "text": "АСИТ",
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-              "page_start": null,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "АСИТ"
-            }
-          },
           {
             "text": "Контроль факторов внешней среды (элиминационные мероприятия)",
             "source_ref": {
@@ -483,7 +490,7 @@
             }
           },
           {
-            "text": "Рассмотреть хирургическое лечение сопутствующей патологии",
+            "text": "Рассмотрение хирургического лечения сопутствующей патологии",
             "source_ref": {
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
               "document_url": null,
@@ -494,17 +501,62 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "Рассмотреть хирургическое лечение сопутствующей патологии"
+              "quote": "Рассмотрение хирургического лечения сопутствующей патологии"
+            }
+          },
+          {
+            "text": "Аллерген-специфическая иммунотерапия (АСИТ)",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Аллерген-специфическая иммунотерапия (АСИТ)"
+            }
+          },
+          {
+            "text": "Решение о необходимости хирургического лечения, предоперационной подготовке и послеоперационному ведению принимает врач-оториноларинголог",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Решение о необходимости хирургического лечения, предоперационной подготовке и послеоперационному ведению принимает врач-оториноларинголог"
+            }
+          },
+          {
+            "text": "Не рекомендовано проведение планового хирургического лечения в сезон пыления причинно-значимых аллергенов",
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": null,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "Не рекомендовано проведение планового хирургического лечения в сезон пыления причинно-значимых аллергенов"
             }
           }
         ],
         "drug_groups": [],
         "drugs": [
           {
-            "drug_name": "нсН1-АГ",
+            "drug_name": "нсН1-АГ (неседативные антигистаминные препараты)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Один из: нсН1-АГ; инАГ; кромоглициевая кислота (1 ступень)",
+            "dose_text": "1 ступень, 2 ступень, 3 ступень (в комбинации)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -522,14 +574,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "1 ступень (легкая степень тяжести) Один из: нсН1-АГ"
+              "quote": "Один из: нсН1-АГ; инАГ; кромоглициевая кислота"
             }
           },
           {
-            "drug_name": "инАГ",
+            "drug_name": "инАГ (интраназальные антигистаминные препараты)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Один из: нсН1-АГ; инАГ; кромоглициевая кислота (1 ступень)",
+            "dose_text": "1 ступень, 2 ступень, 3 ступень (в комбинации)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -547,14 +599,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "1 ступень (легкая степень тяжести) Один из: инАГ"
+              "quote": "Один из: нсН1-АГ; инАГ; кромоглициевая кислота"
             }
           },
           {
             "drug_name": "Кромоглициевая кислота",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Один из: нсН1-АГ; инАГ; кромоглициевая кислота (1 ступень)",
+            "dose_text": "1 ступень (легкая степень тяжести)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -572,14 +624,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "1 ступень (легкая степень тяжести) Один из: кромоглициевая кислота"
+              "quote": "кромоглициевая кислота"
             }
           },
           {
-            "drug_name": "инГКС",
+            "drug_name": "инГКС (интраназальные глюкокортикостероиды)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Один из: инГКС (предпочтительно); нсН1-АГ; инАГ (2 ступень)",
+            "dose_text": "2 ступень (предпочтительно), 3 ступень (в комбинации)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -597,14 +649,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "2 ступень (среднетяжелая степень тяжести) Один из: инГКС (предпочтительно)"
+              "quote": "Один из: инГКС (предпочтительно); нсН1-АГ; инАГ"
             }
           },
           {
-            "drug_name": "нсН1-АГ",
+            "drug_name": "АЛТР (антагонисты лейкотриеновых рецепторов)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Один из: инГКС (предпочтительно); нсН1-АГ; инАГ (2 ступень)",
+            "dose_text": "3 ступень (в комбинации с инГКС)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -622,14 +674,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "2 ступень (среднетяжелая степень тяжести) Один из: нсН1-АГ"
+              "quote": "Комбинация инГКС с одним или более из: нсН1-АГ; инАГ; АЛТР"
             }
           },
           {
-            "drug_name": "инАГ",
+            "drug_name": "Пероральный СГКС (системные глюкокортикостероиды)",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Один из: инГКС (предпочтительно); нсН1-АГ; инАГ (2 ступень)",
+            "dose_text": "4 ступень (дополнительно) / Скорая помощь",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -647,139 +699,14 @@
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "2 ступень (среднетяжелая степень тяжести) Один из: инАГ"
-            }
-          },
-          {
-            "drug_name": "инГКС",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "Комбинация инГКС с одним или более из: нсН1-АГ; инАГ; АЛТР (3 ступень)",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "3 ступень (тяжелая степень тяжести) Комбинация инГКС"
-            }
-          },
-          {
-            "drug_name": "нсН1-АГ",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "Комбинация инГКС с одним или более из: нсН1-АГ; инАГ; АЛТР (3 ступень)",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "3 ступень (тяжелая степень тяжести) с одним или более из: нсН1-АГ"
-            }
-          },
-          {
-            "drug_name": "инАГ",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "Комбинация инГКС с одним или более из: нсН1-АГ; инАГ; АЛТР (3 ступень)",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "3 ступень (тяжелая степень тяжести) с одним или более из: инАГ"
-            }
-          },
-          {
-            "drug_name": "АЛТР",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "Комбинация инГКС с одним или более из: нсН1-АГ; инАГ; АЛТР (3 ступень)",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "3 ступень (тяжелая степень тяжести) с одним или более из: АЛТР"
-            }
-          },
-          {
-            "drug_name": "Пероральный СГКС",
-            "active_substance": null,
-            "drug_group": null,
-            "dose_text": "Дополнительно к терапии 3 ступени (4 ступень)",
-            "frequency_text": null,
-            "duration_text": null,
-            "route": null,
-            "indication": null,
-            "contraindications": [],
-            "monitoring": [],
-            "applicability": null,
-            "source_ref": {
-              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-              "document_url": null,
-              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-              "page_start": 8,
-              "page_end": null,
-              "section_title": null,
-              "section_type": null,
-              "table_index": null,
-              "row_index": null,
-              "quote": "4 ступень (при неэффективности 3 ступени терапии) Дополнительно к терапии 3 ступени: пероральный СГКС"
+              "quote": "Дополнительно к терапии 3 ступени: пероральный СГКС"
             }
           },
           {
             "drug_name": "Симпатомиметики для местного применения",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "Коротким курсом (ЛП скорой помощи)",
+            "dose_text": "Коротким курсом (скорая помощь)",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -801,10 +728,10 @@
             }
           },
           {
-            "drug_name": "Пероральный СГКС",
+            "drug_name": "цетиризина гидрохлорид",
             "active_substance": null,
             "drug_group": null,
-            "dose_text": "ЛП скорой помощи",
+            "dose_text": "внутрь от 6 мес до 1 года по 5 капель 1 раз/сут; 1-2 года по 5 капель 1-2 раза/сут; 2-6 лет по 5 капель 2 раза/сут; 6-12 лет по 10 мг 1 раз/сут или 10 капель 2 раза/сут; 12 лет и старше по 10 мг или 2",
             "frequency_text": null,
             "duration_text": null,
             "route": null,
@@ -816,13 +743,413 @@
               "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
               "document_url": null,
               "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-              "page_start": 8,
+              "page_start": 5,
               "page_end": null,
               "section_title": null,
               "section_type": null,
               "table_index": null,
               "row_index": null,
-              "quote": "ЛП скорой помощи: Пероральный СГКС"
+              "quote": "цетиризина гидрохлорид (капли для приема внутрь 10 мг/мл, таблетки 10 мг, капсулы 5 мг, 10 мг) – внутрь у пациентов возрасте от 6 месяцев до 1 года по 5 капель 1 раз/сутки 14–28 суток"
+            }
+          },
+          {
+            "drug_name": "лоратадин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь от 2 до 6 лет (при массе тела 30 кг и менее) по 5 мл 1 раз/сут 14–28 суток; 6 лет и старше (масса тела более 30 кг) по 10 мг или 10 мл сиропа 1 раз/сут 14–28 суток",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "лоратадин (сироп 5 мг/5 мл, таблетки 10 мг) – внутрь у пациентов в возрасте от 2 до 6 лет (при массе тела 30 кг и менее) по 5 мл 1 раз/сутки 14–28 суток"
+            }
+          },
+          {
+            "drug_name": "дезлоратадин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь от 6 до 11 месяцев по 2 мл сиропа 1 раз/сут; от 11 месяцев до 5 лет по 2,5 мл сиропа 1 раз/сут; от 5 до 12 лет по 5 мл сиропа 1 раз/сут; 12 лет и старше по 5 мг или 10 мл сиропа 1 раз/сут; курс",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "дезлоратадин (сироп 0,5 мг/мл, таблетки 5 мг) – внутрь у пациентов в возрасте от 6 до 11 месяцев по 2 мл сиропа 1 раз/сутки 14–28 суток"
+            }
+          },
+          {
+            "drug_name": "левоцетиризин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь от 2 до 6 лет по 5 капель 2 раза/сут; от 6 до 12 лет по 5 мг или по 10 капель 2 раза/сут; 12 лет и старше по 5 мг или 20 капель 1 раз/сут; курс 14–28 суток",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "левоцетиризин (капли для приема внутрь 5 мг/мл, таблетки 5 мг) – внутрь у пациентов в возрасте от 2 до 6 лет по 5 капель 2 раза/сутки 14–28 суток"
+            }
+          },
+          {
+            "drug_name": "биластин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь с 12 лет и старше по 20 мг 1 раз/сутки 14–28 суток",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "биластин (таблетки 20 мг) – внутрь у пациентов в возрасте 12 лет и старше по 20 мг 1 раз/сутки 14–28 суток"
+            }
+          },
+          {
+            "drug_name": "эбастин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь с 12 лет и старше по 10 мг 1 раз/сутки 14–28 суток (возможно увеличение дозы до 20 мг 1 раз/сутки)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "эбастин (таблетки 10 мг, 20 мг) – внутрь у пациентов в возрасте 12 лет и старше по 10 мг 1 раз/сутки 14–28 суток (возможно увеличение дозы до 20 мг 1 раз/сутки)"
+            }
+          },
+          {
+            "drug_name": "фексофенадин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь от 6 до 12 лет по 1/2 таблетки (30 мг) 2 раза/сутки; 12 лет и старше по 60 мг 2 раза/сутки; курс 14–28 суток",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "фексофенадин (таблетки 60 мг) – внутрь у пациентов в возрасте от 6 лет до 12 лет по 1/2 таблетки (30 мг) 2 раза/сутки 14–28 суток"
+            }
+          },
+          {
+            "drug_name": "хифенадин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "внутрь до 3 лет по 5 мг 2–3 раза/сут; от 3 до 7 лет по 10 мг 2 раза/сут; от 7 до 12 лет по 10–15 мг 2–3 раза/сут; 12 лет и старше по 25–50 мг 2–4 раза/сут; курс 14–28 суток",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 5,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "хифенадин (таблетки 10, 25, 50 мг) – внутрь у пациентов в возрасте до 3 лет по 5 мг 2–3 раза/сутки 14–28 суток"
+            }
+          },
+          {
+            "drug_name": "азеластин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально пациентам старше 6 лет по 1 дозе (140 мкг) в каждый носовой ход 2 раза в сутки; старше 12 лет при необходимости по 2 дозы (280 мкг) 2 раза в сутки (не более 8 недель)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "азеластин (спрей назальный дозированный 140 мкг/доза) пациентам старше 6 лет по 1 дозе (140 мкг) в каждый носовой ход 2 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "левокабастин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально пациентам старше 6 лет по 2 дозы (200 мкг) в каждый носовой ход 2 раза в сутки, при более выраженных симптомах 3–4 раза в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "левокабастин (спрей назальный дозированный 100 мкг/доза) пациентам старше 6 лет по 2 дозы (200 мкг) в каждый носовой ход 2 раза в сутки"
+            }
+          },
+          {
+            "drug_name": "мометазон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально от 2 до 12 лет по 1 дозе (50 мкг) в каждый носовой ход 1 раз в сутки; старше 12 лет по 2 дозы (100 мкг) 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "мометазон (спрей назальный дозированный 50 мкг/доза) – пациентам старше 12 лет по 2 дозы (100 мкг) в каждый носовой ход 1 раз в сутки."
+            }
+          },
+          {
+            "drug_name": "флутиказона фуроат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально от 2 до 12 лет по 1 дозе (27,5 мкг) в каждый носовой ход 1 раз в сутки; старше 12 лет по 2 дозы (55 мкг) 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "флутиказона фуроат (спрей назальный дозированный 27,5 мкг/доза) – пациентам старше 12 лет по 2 дозы (55 мкг) в каждый носовой ход 1 раз в сутки."
+            }
+          },
+          {
+            "drug_name": "флутиказона пропионат",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально от 4 до 12 лет по 1 дозе (50 мкг) в каждый носовой ход 1 раз в сутки; старше 12 лет по 2 дозы (100 мкг) 1 раз в сутки",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "флутиказона пропионат (спрей назальный дозированный 50 мкг/доза) – пациентам старше 12 лет по 2 дозы (100 мкг) в каждый носовой ход 1 раз в сутки."
+            }
+          },
+          {
+            "drug_name": "будесонид",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально пациентам старше 6 лет по 2 дозы (128 мкг) в каждый носовой ход 1 раз в сутки или по 1 дозе (64 мкг) 2 раза в сутки (не более 3 месяцев)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "будесонид (спрей назальный дозированный 64 мкг/доза) – пациентам старше 6 лет по 2 дозы (128 мкг) в каждый носовой ход 1 раз в сутки или по 1 дозе (64 мкг) в каждый носовой ход 2 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "беклометазон",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально пациентам старше 6 лет по 1 дозе (50 мкг) в каждый носовой ход 2–4 раза в сутки (200–400 мкг/сут)",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 6,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "беклометазон (спрей назальный дозированный 50 мкг/доза) – пациентам старше 6 лет по 1 дозе (50 мкг) в каждый носовой ход 2–4 раза в сутки (200–400 мкг/сут)."
+            }
+          },
+          {
+            "drug_name": "оксиметазолин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально до 4 недель по 1 капле 0,01% раствора 2–3 р/сут; от 5 недель до 1 года по 1–2 капли 0,01% раствора 2–3 р/сут; от 1 года до 6 лет по 1–2 капли 0,025% раствора 2–3 р/сут; старше 6 лет по 1",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "оксиметазолин (спрей назальный дозированный или капли для носа 0,01 %, 0,025 %, 0,05 %) – пациентам старше 6 лет по 1–2 дозе 0,05 % раствора в каждый носовой ход 2–3 раза в сутки."
+            }
+          },
+          {
+            "drug_name": "ксилометазолин",
+            "active_substance": null,
+            "drug_group": null,
+            "dose_text": "интраназально от 2 до 6 лет по 1 дозе 0,05% раствора 1–2 р/сут; старше 6 лет по 1 дозе 0,1% раствора 1–3 р/сут; не более 5–7 дней",
+            "frequency_text": null,
+            "duration_text": null,
+            "route": null,
+            "indication": null,
+            "contraindications": [],
+            "monitoring": [],
+            "applicability": null,
+            "source_ref": {
+              "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+              "document_url": null,
+              "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+              "page_start": 7,
+              "page_end": null,
+              "section_title": null,
+              "section_type": null,
+              "table_index": null,
+              "row_index": null,
+              "quote": "ксилометазолин (спрей назальный дозированный или капли для носа 0,05 %, 0,1 %) – пациентам старше 6 лет по 1 дозе 0,1 % раствора в каждый носовой ход 1–3 раза в сутки."
             }
           }
         ],
@@ -830,11 +1157,48 @@
         "surgery": [],
         "source_refs": []
       },
-      "follow_up": [],
+      "follow_up": [
+        {
+          "text": "Перепроверить диагноз, приверженность лечению, влияние сопутствующих заболеваний и/или анатомических аномалий перед увеличением ступени терапии",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Перепроверить диагноз, приверженность лечению, влияние сопутствующих заболеваний и/или анатомических аномалий перед увеличением ступени терапии"
+          }
+        },
+        {
+          "text": "Медицинское наблюдение за пациентами с АР прекращается при отсутствии обострений без использования ЛП в течение 3 лет.",
+          "timing": null,
+          "required_if": [],
+          "expected_actions": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Медицинское наблюдение за пациентами с АР прекращается при отсутствии обострений без использования ЛП в течение 3 лет."
+          }
+        }
+      ],
       "hospitalization": [],
       "routing": [
         {
-          "text": "госпитализация: трудности дифференциальной диагностики в амбулаторных условиях",
+          "text": "Амбулаторное оказание медицинской помощи",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -847,11 +1211,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация: трудности дифференциальной диагностики в амбулаторных условиях"
+            "quote": "Амбулаторное оказание медицинской помощи"
           }
         },
         {
-          "text": "госпитализация: тяжелое течение заболевания, тяжелое обострение с выраженной назальной обструкцией при неэффективности лечения в амбулаторных условиях",
+          "text": "Госпитализация в стационар при трудностях дифференциальной диагностики в амбулаторных условиях",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -864,11 +1228,11 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация: тяжелое течение заболевания, тяжелое обострение с выраженной назальной обструкцией при неэффективности лечения в амбулаторных условиях"
+            "quote": "Госпитализация в стационар при трудностях дифференциальной диагностики в амбулаторных условиях"
           }
         },
         {
-          "text": "госпитализация: подбор индивидуальной схемы АСИТ",
+          "text": "Госпитализация в стационар при тяжелом течении заболевания или тяжелом обострении с выраженной назальной обструкцией при неэффективности амбулаторного лечения",
           "timing": null,
           "required_if": [],
           "source_ref": {
@@ -881,33 +1245,30 @@
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "госпитализация: подбор индивидуальной схемы АСИТ"
+            "quote": "Госпитализация в стационар при тяжелом течении заболевания или тяжелом обострении с выраженной назальной обструкцией при неэффективности амбулаторного лечения"
+          }
+        },
+        {
+          "text": "Госпитализация в стационар для подбора индивидуальной схемы АСИТ",
+          "timing": null,
+          "required_if": [],
+          "source_ref": {
+            "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
+            "document_url": null,
+            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
+            "page_start": null,
+            "page_end": null,
+            "section_title": null,
+            "section_type": null,
+            "table_index": null,
+            "row_index": null,
+            "quote": "Госпитализация в стационар для подбора индивидуальной схемы АСИТ"
           }
         }
       ],
       "red_flags": [
         {
-          "text": "Трудности дифференциальной диагностики в амбулаторных условиях требуют госпитализации.",
-          "aliases": [],
-          "red_flag_type": "other",
-          "severity": "medium",
-          "expected_actions": [],
-          "cap_if_unhandled": null,
-          "source_ref": {
-            "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
-            "document_url": null,
-            "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-            "page_start": 3,
-            "page_end": null,
-            "section_title": null,
-            "section_type": null,
-            "table_index": null,
-            "row_index": null,
-            "quote": "трудности дифференциальной диагностики в амбулаторных условиях"
-          }
-        },
-        {
-          "text": "Тяжелое течение или обострение с назальной обструкцией при неэффективности амбулаторного лечения.",
+          "text": "Тяжелое обострение с выраженной назальной обструкцией при неэффективности лечения в амбулаторных условиях",
           "aliases": [],
           "red_flag_type": "other",
           "severity": "high",
@@ -927,71 +1288,29 @@
           }
         },
         {
-          "text": "Перед увеличением ступени терапии необходимо перепроверить диагноз, приверженность лечению, влияние сопутствующих заболеваний или анатомических аномалий.",
+          "text": "Риск развития нежелательных реакций и медикаментозного ринита при длительном использовании местных симпатомиметиков",
           "aliases": [],
           "red_flag_type": "other",
-          "severity": "medium",
+          "severity": "high",
           "expected_actions": [],
           "cap_if_unhandled": null,
           "source_ref": {
             "protocol_id": "allergologiya_immunologiya_кп_диагностика_и_лечение_пациентов_д_нас_с_аллергичес",
             "document_url": null,
             "local_path": "minzdrav_protocols/allergologiya-immunologiya/КП_Диагностика_и_лечение_пациентов_д-нас_с_аллергическим_ринитом_пост_МЗ_2025_38.pdf",
-            "page_start": 8,
+            "page_start": 7,
             "page_end": null,
             "section_title": null,
             "section_type": null,
             "table_index": null,
             "row_index": null,
-            "quote": "Перепроверить диагноз и/или приверженность лечению либо влияние сопутствующих заболеваний и/или анатомических аномалий, прежде чем увеличивать ступень терапии"
+            "quote": "Не рекомендуется использование длительных курсов симпатомиметиков для местного применения для лечения АР в связи с риском развития нежелательных реакций и медикаментозного ринита у пациентов."
           }
         }
       ],
       "contraindications": [],
       "complications": [],
-      "kz_checklist": {
-        "must_have": [
-          "Диагноз сформулирован и указан код МКБ-10",
-          "Назначено/выполнено обследование: Медицинский осмотр врача-специалиста",
-          "Назначено/выполнено обследование: Общий анализ крови",
-          "Назначено/выполнено обследование: Риноцитограмма",
-          "Назначено/выполнено обследование: Консультация врача-оториноларинголога",
-          "Назначена медикаментозная терапия согласно протоколу"
-        ],
-        "should_have": [
-          "Препарат: нсН1-АГ",
-          "Препарат: инАГ",
-          "Препарат: Кромоглициевая кислота",
-          "Препарат: инГКС",
-          "Препарат: АЛТР",
-          "Препарат: Пероральный СГКС",
-          "Препарат: Симпатомиметики для местного применения",
-          "Немедикаментозно: АСИТ",
-          "Немедикаментозно: Контроль факторов внешней среды (элиминационные мероприятия)",
-          "Немедикаментозно: Рассмотреть хирургическое лечение сопутствующей патологии"
-        ],
-        "conditional": [
-          "Обследование: Биохимический анализ крови (по показаниям)",
-          "Обследование: Консультация врача-аллерголога-иммунолога (по показаниям)",
-          "Обследование: Аллергологическое обследование методом кожных проб (по показаниям)",
-          "Обследование: Определение аллергенспецифических IgE-антител (по показаниям)",
-          "Обследование: Рентгенография придаточных пазух носа (по показаниям)",
-          "Обследование: Компьютерная томография придаточных пазух носа, гортани (по показаниям)",
-          "Обследование: Эндоскопическая эндоназальная ревизия полости носа, носоглотки и придаточных пазух носа (по показаниям)",
-          "Обследование: Аппликационная проба с раствором адреномиметика (по показаниям)",
-          "Обследование: Мазок со слизистой полости носа на микрофлору и чувствительность к антибиотикам (по показаниям)",
-          "Обследование: Спирометрия (по показаниям)",
-          "Обследование: Ринопневмоманометрия (по показаниям)",
-          "Обследование: Консультация других врачей-специалистов (по показаниям)",
-          "Маршрутизация: госпитализация: трудности дифференциальной диагностики в амбулаторных условиях (по показаниям)",
-          "Маршрутизация: госпитализация: тяжелое течение заболевания, тяжелое обострение с выраженной назальной об… (по показаниям)"
-        ],
-        "warnings": [
-          "при «Трудности дифференциальной диагностики в амбулаторных условиях требуют госпитал…»",
-          "Важно: при «Тяжелое течение или обострение с назальной обструкцией при неэффективности амбу…»",
-          "при «Перед увеличением ступени терапии необходимо перепроверить диагноз, приверженно…»"
-        ]
-      },
+      "kz_checklist": null,
       "source_refs": []
     }
   ],
@@ -999,57 +1318,19 @@
   "global_contraindications": [],
   "global_notes": [],
   "extraction_metadata": {
-    "extracted_at": "2026-07-01T23:46:06.260786+00:00",
+    "extracted_at": "2026-07-23T07:00:24.551389+00:00",
     "extractor": "llm_extractor",
     "extractor_version": "1.0",
     "source_document_sha256": null,
     "notes": [
       "llm_pipeline_v1",
-      "conditions=1",
-      "kz_checklist=auto_derived_v1@2026-07-22T05:36:21Z"
+      "conditions=1"
     ]
   },
   "validation": {
-    "status": "needs_human_review",
+    "status": "valid",
     "errors": [],
-    "warnings": [
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[allergicheskiy_rinit].treatment.drugs[4]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[allergicheskiy_rinit].treatment.drugs[5]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[allergicheskiy_rinit].treatment.drugs[6]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[allergicheskiy_rinit].treatment.drugs[7]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[allergicheskiy_rinit].treatment.drugs[8]"
-      },
-      {
-        "level": "warning",
-        "code": "duplicate_drug",
-        "message": "Дублирующийся препарат",
-        "path": "conditions[allergicheskiy_rinit].treatment.drugs[12]"
-      }
-    ],
-    "validated_at": "2026-07-01T23:46:06.274140+00:00"
+    "warnings": [],
+    "validated_at": "2026-07-23T07:00:24.583646+00:00"
   }
 }

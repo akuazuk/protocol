@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов взрослое население травмами позвоночника стационарных
-    условиях
+  title: Диагностика и лечение пациентов (взрослое население) с травмами позвоночника
+    в стационарных условиях
   url: null
   local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
   document_sha256: null
@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: spine_trauma
+- condition_id: travmy_pozvonochnika
   name: Травмы позвоночника
   synonyms: []
   abbreviations: []
@@ -47,19 +47,362 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
-  required_exams: []
-  conditional_exams: []
+  diagnostic_criteria:
+    required:
+    - text: Перелом Джефферсона (лопающийся перелом первого шейного позвонка)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перелом Джефферсона (лопающийся перелом первого шейного позвонка)
+    - text: Перелом C1 со смещением фрагментов и стенозом позвоночного канала
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перелом C1 со смещением фрагментов и стенозом позвоночного канала
+    - text: Выраженный болевой синдром при компрессионных переломах шейных позвонков
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Выраженный болевой синдром при компрессионных переломах шейных позвонков
+    optional: []
+    exclusion: []
+  required_exams:
+  - name: Клинические, лабораторные (ОАК, ОАМ, биохимия, коагулограмма, гепатиты,
+      сифилис, группа и резус-фактор)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Обязательными диагностическими исследованиями при поступлении пациента
+        с травмой позвоночника в приемное отделение являются: 7.1. клинические'
+  - name: Рентгенография шейного отдела позвоночника в прямой и боковой проекциях;
+      рентгенография в прямой проекции (через рот)
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография шейного отдела позвоночника в прямой и боковой проекциях;
+        рентгенография в прямой проекции (через рот)
+  - name: Рентгенография грудного отдела позвоночника в прямой и боковой проекциях
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография грудного отдела позвоночника в прямой и боковой проекциях
+  - name: Рентгенография поясничного отдела позвоночника в прямой и боковой проекциях
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Рентгенография поясничного отдела позвоночника в прямой и боковой проекциях
+  conditional_exams:
+  - name: ЭКГ, рентгенография легких, онкоосмотр, консультации узких специалистов
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Дополнительными диагностическими исследованиями при поступлении пациента
+        с травмой позвоночника в приемное отделение являются: электрокардиограмма;
+        рентгенография легких'
+  - name: Повторные лабораторные и функциональные исследования перед операцией
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: по медицинским показаниям повторно могут выполняться лабораторные и функциональные
+        исследования.
+  - name: КТ верхнешейных позвонков; МРТ шейного отдела позвоночника; рентгенография
+      в переднезадних косоаксиальных проекциях под углом 30–45°; ЭНМГ верхних и нижних
+      конечностей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: КТ верхнешейных позвонков; магнитно-резонансная томография (далее – МРТ)
+        шейного отдела позвоночника; рентгенография в переднезадних косоаксиальных
+        проекциях под углом 30–45°; электронейромиография
+  - name: КТ пораженного позвоночно-двигательного сегмента с захватом двух смежных
+      интактных сегментов; МРТ грудного отдела; ЭНМГ нижних конечностей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: КТ пораженного позвоночно-двигательного сегмента с захватом двух смежных
+        интактных позвоночно-двигательных сегментов (выше- и нижележащих); МРТ грудного
+        отдела позвоночника
+  - name: КТ пораженного позвоночно-двигательного сегмента, поясничного отдела, таза;
+      МРТ поясничного отдела; ЭНМГ нижних конечностей
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 15
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: КТ пораженного позвоночно-двигательного сегмента с захватом двух смежных
+        интактных позвоночно-двигательных сегментов (выше- и нижележащих), поясничного
+        отдела, таза
   treatment:
-    non_drug: []
+    non_drug:
+    - text: Ранняя послеоперационная мобилизация
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Ранняя послеоперационная мобилизация
+    - text: Использование механических методов тромбопрофилактики (компрессионный
+        трикотаж или перемежающаяся пневматическая компрессия)
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Использование механических методов тромбопрофилактики (компрессионный
+          трикотаж или перемежающаяся пневматическая компрессия)
+    - text: Иммобилизация шейного отдела позвоночника шейным ортезом или гипсовой
+        торако-краниальной повязкой
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Иммобилизация шейного отдела позвоночника шейным ортезом или гипсовой
+          торако-краниальной повязкой
+    - text: Наложение Гало-аппарата
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наложение Гало-аппарата
+    - text: Задняя декомпрессия спинного мозга на уровне первого шейного позвонка
+        (ламинэктомия)
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Задняя декомпрессия спинного мозга на уровне первого шейного позвонка
+          (ламинэктомия)
+    - text: Постельный режим сроком 4–6 недель с момента травмы при компрессионном
+        переломе грудного позвонка.
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Постельный режим сроком 4–6 недель с момента травмы при компрессионном
+          переломе грудного позвонка.
     drug_groups: []
     drugs:
     - drug_name: Гепарин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для внутривенного и подкожного введения (для инъекций) 5000
-        МЕ/мл 5 мл. За 2 часа до хирургического вмешательства по 5000 МЕ подкожно
-        с последующим подкожным введением в послеоперационном пери
+      dose_text: За 2 часа до хирургического вмешательства по 5000 МЕ подкожно с последующим
+        подкожным введением в послеоперационном периоде каждые 8–12 часов по 5000
+        МЕ (до 100 кг) или 7500 МЕ (100 кг и более) в тече
       frequency_text: null
       duration_text: null
       route: null
@@ -71,20 +414,19 @@ conditions:
         protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: 100
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Гепарин Раствор для внутривенного и подкожного введения (для инъекций)
-          5000 МЕ/мл 5 мл За 2 часа до хирургического вмешательства по 5000 МЕ подкожно
-          с последующим подкожным введением в послеоперационном периоде...
+        quote: За 2 часа до хирургического вмешательства по 5000 МЕ подкожно с последующим
+          подкожным введением в послеоперационном периоде (после оценки состояния
+          гемостаза) каждые 8–12 часов по 5000 МЕ
     - drug_name: Дальтепарин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для инъекций 2500 МЕ анти-Ха/0,2 мл. Вводится строго подкожно
-        по одному из альтернативных режимов дозирования.
+      dose_text: ЛП вводится строго подкожно по одному из альтернативных режимов дозирования.
       frequency_text: null
       duration_text: null
       route: null
@@ -96,21 +438,566 @@ conditions:
         protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
         document_url: null
         local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-        page_start: 100
+        page_start: 1
         page_end: null
         section_title: null
         section_type: null
         table_index: null
         row_index: null
-        quote: Дальтепарин Раствор для инъекций 2500 МЕ анти-Ха/0,2 мл ЛП вводится
-          строго подкожно по одному из альтернативных режимов дозирования.
+        quote: ЛП вводится строго подкожно по одному из альтернативных режимов дозирования.
+    - drug_name: Нефракционированный гепарин
+      active_substance: null
+      drug_group: null
+      dose_text: Согласно приложению 2, начало через 24–48 часов после хирургического
+        вмешательства
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: фармакологической профилактикой с применением нефракционированного
+          гепарина, низкомолекулярного гепарина или фондапаринукса натрия.
+    - drug_name: Низкомолекулярный гепарин
+      active_substance: null
+      drug_group: null
+      dose_text: Согласно приложению 2; при повреждении спинного мозга — до 4 недель
+        во время реабилитации
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: тромбопрофилактика с использованием низкомолекулярного гепарина продолжается
+          во время медицинской реабилитации в стационарных условиях до 4 недель
+    - drug_name: Фондапаринукс натрия
+      active_substance: null
+      drug_group: null
+      dose_text: Согласно приложению 2, начало через 24–48 часов после хирургического
+        вмешательства
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 1
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: в сочетании с фармакологической профилактикой с применением нефракционированного
+          гепарина, низкомолекулярного гепарина или фондапаринукса натрия.
+    - drug_name: Варфарин или не витамин К-зависимые антикоагулянты
+      active_substance: null
+      drug_group: null
+      dose_text: Возможен перевод через 2 недели терапии низкомолекулярным гепарином
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 4
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: 'перевод пациента на прием пероральных антикоагулянтов: варфарина или
+          не витамин К-зависимых антикоагулянтов'
+    - drug_name: Периоперационная антибиотикопрофилактика
+      active_substance: null
+      drug_group: null
+      dose_text: Один из ЛП согласно приложению 4 (при хирургических вмешательствах
+        с имплантацией чужеродного материала)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: С целью периоперационной антибиотикопрофилактики применяется один из
+          ЛП, указанных в приложении 4.
+    - drug_name: Ривароксабан
+      active_substance: null
+      drug_group: null
+      dose_text: Перорально 10 мг (1 таблетка) 1 раз в день через 6–10 часов после
+        хирургического вмешательства при условии достигнутого гемостаза.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 14
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перорально 1 таблетка (10 мг) 1 раз в день. Прием первой дозы может
+          быть осуществлен через 6–10 часов после хирургического вмешательства при
+          условии достигнутого гемостаза
+    - drug_name: Апиксабан
+      active_substance: null
+      drug_group: null
+      dose_text: Перорально 2,5 мг 2 раза в сутки. Первая доза через 12–24 часа после
+        хирургического вмешательства.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 14
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перорально 1 таблетка (2,5 мг) два раза в сутки. Первая доза принимается
+          через 12–24 часа после хирургического вмешательства
+    - drug_name: Варфарин
+      active_substance: null
+      drug_group: null
+      dose_text: Начальная доза 5 мг перорально в день. Может быть снижена до 2,5
+        мг в сутки у пациентов старше 65 лет при массе тела менее 60 кг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 14
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Начальная доза составляет 2 таблетки в день (5 мг) перорально. Начальная
+          доза может быть снижена до 2,5 мг в сутки у пациентов старше 65 лет при
+          массе тела менее 60 кг.
+    - drug_name: Цефазолин
+      active_substance: null
+      drug_group: null
+      dose_text: В дозе 2 г при весе пациента менее 120 кг, 3 г при весе пациента
+        более 120 кг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 15
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: В дозе 2 г при весе пациента менее 120 кг, 3 г при весе пациента более
+          120 кг.
+    - drug_name: Кеторолак
+      active_substance: null
+      drug_group: null
+      dose_text: В/м или в/в струйно каждые 6 часов, макс. суточная доза 90 мг (при
+        массе <50 кг — 60 мг), не более 2 дней. Далее перорально по 10 мг до 4 раз
+        в сутки (макс. 40 мг/сут) не более 5 дней.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: ЛП вводится внутримышечно или внутривенно струйно каждые 6 часов. Максимальная
+          суточная доза – 90 мг, у пациентов с массой тела менее 50 кг – 60 мг. Парентеральное
+          введение не применяется более 2 дней
+    - drug_name: Диклофенак
+      active_substance: null
+      drug_group: null
+      dose_text: В/м по 75 мг 1 раз в день до 2 дней. Затем перорально 150 мг/сут
+        в 2-3 приема до нескольких суток.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Глубоко внутримышечно по 75 мг 1 раз в день в течение не более 2 дней.
+          Затем осуществляется переход на прием ЛП перорально. Суточная доза при пероральном
+          применении – 150 мг
+    - drug_name: Трамадол
+      active_substance: null
+      drug_group: null
+      dose_text: Разовая доза в/в, в/м, п/к 50–100 мг. Перорально 50 мг каждые 4–6
+        часов. Макс. суточная доза 400 мг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Обычная разовая доза для парентерального введения составляет 0,05–0,1
+          г (50–100 мг). Обычная доза для однократного перорального приема составляет
+          50 мг (1 таблетка)
+    - drug_name: Тримеперидин
+      active_substance: null
+      drug_group: null
+      dose_text: П/к в дозе 10–20 мг (0,5–1 мл 2% раствора). Макс. разовая доза 40
+        мг, макс. суточная доза 160 мг.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: В послеоперационном периоде ЛП вводится под кожу в дозе 10–20 мг (0,5–1
+          мл 2 % раствора). Максимальная разовая доза – 40 мг. Максимальная суточная
+          доза – 160 мг
+    - drug_name: Парацетамол
+      active_substance: null
+      drug_group: null
+      dose_text: Разовая доза 1 г (100 мл) в/в в течение 15 минут, интервал не менее
+        4 часов. Макс. суточная доза 4 г.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 17
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Разовая доза составляет 100 мл (1 г). ЛП вводится строго внутривенно
+          в течение 15 минут, интервал между инфузиями должен составлять не менее
+          4 часов.
+    - drug_name: Лансопразол
+      active_substance: null
+      drug_group: null
+      dose_text: Перорально по 15 мг 1 раз в сутки (при необходимости до 30 мг в сутки).
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 18
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перорально по 15 мг (1 капсула) 1 раз в сутки (при необходимости доза
+          может быть увеличена до 30 мг в сутки)
+    - drug_name: Омепразол
+      active_substance: null
+      drug_group: null
+      dose_text: Перорально по 20 мг 1 раз в сутки.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 18
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перорально по 20 мг 1 раз в сутки
+    - drug_name: Пантопразол
+      active_substance: null
+      drug_group: null
+      dose_text: Перорально по 40 мг 1 раз в сутки.
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+        document_url: null
+        local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+        page_start: 18
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Перорально по 40 мг (1 таблетка) 1 раз в сутки
     procedures: []
     surgery: []
     source_refs: []
-  follow_up: []
+  follow_up:
+  - text: Медицинское наблюдение пациентов при переломе поясничного позвонка
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинское наблюдение пациентов при переломе поясничного позвонка
+  - text: Медицинская профилактика ВТЭО продолжается до выписки пациента, но не менее
+      7 дней.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Медицинская профилактика ВТЭО продолжается до выписки пациента, но не
+        менее 7 дней.
+  - text: У пациентов с повреждением спинного мозга или двигательными нарушениями
+      тромбопрофилактика НМГ продолжается до 4 недель.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: У пациентов с повреждением спинного мозга или двигательными нарушениями
+        тромбопрофилактика НМГ продолжается до 4 недель.
+  - text: Механическая тромбопрофилактика продолжается не менее 48 часов после хирургического
+      вмешательства или до начала мобилизации.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Механическая тромбопрофилактика продолжается не менее 48 часов после
+        хирургического вмешательства или до начала мобилизации.
+  - text: Амбулаторное медицинское наблюдение осуществляет врач-травматолог-ортопед
+      (врач-хирург) поликлиники по месту жительства на срок не менее иммобилизации
+      позвоночника.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Амбулаторное медицинское наблюдение осуществляет врач-травматолог-ортопед
+        (врач-хирург) поликлиники по месту жительства на срок не менее иммобилизации
+        позвоночника.
+  - text: При компрессионном переломе грудного позвонка контрольная рентгенография
+      проводится через 1 и 3 месяца после травмы.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При компрессионном переломе грудного позвонка контрольная рентгенография
+        проводится через 1 и 3 месяца после травмы.
+  - text: После хирургического вмешательства контрольная рентгенография проводится
+      через 1, 2 и 3 месяца, КТ оперированного сегмента — через 3 месяца.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: После хирургического вмешательства контрольная рентгенография проводится
+        через 1, 2 и 3 месяца, КТ оперированного сегмента — через 3 месяца.
+  - text: При наличии неврологических расстройств пациент наблюдается врачом-неврологом,
+      при нарушении функции тазовых органов — врачом-урологом.
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При наличии неврологических расстройств пациент наблюдается врачом-неврологом,
+        при нарушении функции тазовых органов — врачом-урологом.
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Лечение в стационарных условиях
     timing: null
     required_if: []
     source_ref:
@@ -123,9 +1010,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: Госпитализация на 3–5 дней при выраженном болевом синдроме при компрессионных
-      переломах грудных позвонков.
+      quote: Лечение в стационарных условиях
+  - text: Консервативное лечение в стационаре до купирования болевого синдрома с последующей
+      выпиской на амбулаторное лечение при отсутствии смещения отломков C1.
     timing: null
     required_if: []
     source_ref:
@@ -138,10 +1025,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация на 3–5 дней при выраженном болевом синдроме при компрессионных
-        переломах грудных позвонков.
-  - text: Госпитализация на 3–5 дней при выраженном болевом синдроме при компрессионных
-      переломах поясничных позвонков.
+      quote: Консервативное лечение в стационаре до купирования болевого синдрома
+        с последующей выпиской на амбулаторное лечение при отсутствии смещения отломков
+        C1.
+  - text: Госпитализация в больничную организацию сроком на 3–5 дней при выраженном
+      болевом синдроме при компрессионных переломах шейных позвонков.
     timing: null
     required_if: []
     source_ref:
@@ -154,11 +1042,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Госпитализация на 3–5 дней при выраженном болевом синдроме при компрессионных
-        переломах поясничных позвонков.
-  - text: Амбулаторное наблюдение врачом-травматологом-ортопедом (хирургом) при переломе
-      грудного позвонка, множественных переломах грудного отдела позвоночника, травме
-      нервов и спинного мозга в грудном отделе, вывихе грудного позвонка.
+      quote: Госпитализация в больничную организацию сроком на 3–5 дней при выраженном
+        болевом синдроме при компрессионных переломах шейных позвонков.
+  - text: Госпитализация в больничную организацию сроком на 3–5 дней при выраженном
+      болевом синдроме при компрессионных переломах грудных позвонков (цель — купирование
+      болевого синдрома).
     timing: null
     required_if: []
     source_ref:
@@ -171,11 +1059,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторное наблюдение врачом-травматологом-ортопедом (хирургом) при
-        переломе грудного позвонка, множественных переломах грудного отдела позвоночника,
-        травме нервов и спинного мозга в грудном отделе,
-  - text: Амбулаторное наблюдение врачом-неврологом при неврологических расстройствах,
-      обусловленных травматическим повреждением спинного мозга.
+      quote: Госпитализация в больничную организацию сроком на 3–5 дней при выраженном
+        болевом синдроме при компрессионных переломах грудных позвонков (цель — купирование
+        болевого синдрома).
+  - text: Госпитализация в больничную организацию сроком на 3–5 дней при выраженном
+      болевом синдроме при компрессионных переломах поясничных позвонков (цель — купирование
+      болевого синдрома).
     timing: null
     required_if: []
     source_ref:
@@ -188,9 +1077,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторное наблюдение врачом-неврологом при неврологических расстройствах,
-        обусловленных травматическим повреждением спинного мозга.
-  - text: Амбулаторное наблюдение врачом-урологом при нарушении функции тазовых органов.
+      quote: Госпитализация в больничную организацию сроком на 3–5 дней при выраженном
+        болевом синдроме при компрессионных переломах поясничных позвонков (цель —
+        купирование болевого синдрома).
+  - text: Амбулаторное наблюдение врачом-травматологом-ортопедом (хирургом) по месту
+      жительства.
     timing: null
     required_if: []
     source_ref:
@@ -203,150 +1094,10 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Амбулаторное наблюдение врачом-урологом при нарушении функции тазовых
-        органов.
+      quote: Амбулаторное наблюдение врачом-травматологом-ортопедом (хирургом) по
+        месту жительства.
   red_flags:
-  - text: Возраст старше 60 лет (Малый фактор риска ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: возраст старше 60 лет...'
-  - text: ВТЭО (глубокий венозный тромбоз и (или) тромбоэмболия легочной артерии)
-      в анамнезе (Малый фактор риска ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: ...ВТЭО (глубокий венозный тромбоз и (или) тромбоэмболия легочной
-        артерии) в анамнезе...'
-  - text: Использование системных глюкокортикоидов (>10 дней) (Малый фактор риска
-      ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: ...использование системных глюкокортикоидов (>10 дней)...'
-  - text: Беременность (Малый фактор риска ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: ...беременность...'
-  - text: Послеродовый период (первые 6 недель после родов) (Малый фактор риска ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: ...послеродовый период (первые 6 недель после родов)...'
-  - text: Индекс массы тела >30 (Малый фактор риска ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: ...индекс массы тела >30...'
-  - text: Активный инфекционный процесс (Малый фактор риска ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: ...активный инфекционный процесс...'
-  - text: Состояния, сопровождающиеся гиперкоагуляцией (Малый фактор риска ВТЭО)
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
-      document_url: null
-      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Малые ФР: ...состояния, сопровождающиеся гиперкоагуляцией...'
-  - text: Иммобилизация пациента до и (или) после хирургического вмешательства (Большой
-      фактор риска ВТЭО)
+  - text: Тяжелый неврологический дефицит (глубокий гемипарез или гемиплегия)
     aliases: []
     red_flag_type: other
     severity: high
@@ -356,15 +1107,15 @@ conditions:
       protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
+      page_start: 1
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Большие ФР: иммобилизация пациента до и (или) после хирургического вмешательства...'
-  - text: Длительность хирургического вмешательства >4 часов и (или) ожидаемый послеоперационный
-      постельный режим >72 часов (Большой фактор риска ВТЭО)
+      quote: тяжелый неврологический дефицит (такой, как глубокий гемипарез или гемиплегия)
+  - text: 'Противопоказания к медицинской профилактике ВТЭО: активное кровотечение,
+      уровень тромбоцитов <30 х 109/л'
     aliases: []
     red_flag_type: other
     severity: high
@@ -374,14 +1125,52 @@ conditions:
       protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
       document_url: null
       local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
-      page_start: 99
+      page_start: 1
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Большие ФР: ...длительность хирургического вмешательства >4 часов и
-        (или) ожидаемый послеоперационный постельный режим >72 часов...'
+      quote: отсутствии медицинских противопоказаний (активное кровотечение, уровень
+        тромбоцитов <30 х 109/л)
+  - text: Высокий и очень высокий риск развития ВТЭО (наличие 1 или >2 баллов по шкале
+      факторов риска)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Высокий риск развития ВТЭО – хирургические вмешательства на позвоночнике
+        по поводу травматических повреждений при наличии 1 балла по шкале ФР.
+  - text: Перелом первого шейного позвонка со смещением фрагментов и стенозом позвоночного
+      канала
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: travmatologiya_ortopediya_03кп_диагностика_лечение_пациентов_взр_нас_травмами_по
+      document_url: null
+      local_path: minzdrav_protocols/travmatologiya-ortopediya/03КП_Диагностика_лечение_пациентов_взр_нас_травмами_позвоночника_стац_условиях_пост_МЗ_2024_109.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: перелом первого шейного позвонка со смещением фрагментов и стенозом позвоночного
+        канала.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -390,7 +1179,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T18:15:21.618702+00:00'
+  extracted_at: '2026-07-23T11:05:59.626518+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -401,4 +1190,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T18:15:21.622386+00:00'
+  validated_at: '2026-07-23T11:05:59.659835+00:00'

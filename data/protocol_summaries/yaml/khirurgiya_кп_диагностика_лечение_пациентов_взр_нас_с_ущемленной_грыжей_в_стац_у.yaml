@@ -3,8 +3,8 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика лечение пациентов взрослое население с ущемленной грыжей в стационарных
-    условиях
+  title: Диагностика и лечение пациентов (взрослое население) с ущемленной грыжей
+    в стационарных условиях
   url: null
   local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
   document_sha256: null
@@ -27,7 +27,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: incarcerated_hernia
+- condition_id: ushemlyennaya_gryzha
   name: Ущемленная грыжа
   synonyms: []
   abbreviations: []
@@ -47,9 +47,30 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Наличие грыжи любой локализации с ущемлением или подозрением на ущемление
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Наличие грыжи любой локализации с ущемлением или подозрением на ущемление
+    optional: []
+    exclusion: []
   required_exams:
-  - name: Общий анализ крови (с лейкоцитарной формулой)
+  - name: Общий анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -70,7 +91,7 @@ conditions:
       table_index: null
       row_index: null
       quote: общий анализ крови (определение количества эритроцитов, лейкоцитов, тромбоцитов,
-        гематокрита, содержания гемоглобина, подсчет лейкоцитарной формулы)
+        гематокрита, содержания гемоглобина, подсчет лейкоцитарной формулы);
   - name: Общий анализ мочи
     aliases: []
     exam_type: unknown
@@ -91,9 +112,32 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: общий анализ мочи
+      quote: общий анализ мочи;
+  - name: Медицинский осмотр
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Обязательным диагностическим мероприятием при оказании медицинской помощи
+        пациентам с УГ в хирургическом отделении больничной организации является медицинский
+        осмотр в течение 30 минут после поступления.
   conditional_exams:
-  - name: Определение параметров кислотно-основного состояния (приемное отделение)
+  - name: Определение параметров кислотно-основного состояния
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -113,9 +157,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение параметров кислотно-основного состояния
-  - name: Биохимический анализ крови (билирубин, глюкоза, мочевина, общий белок, АСТ,
-      АЛТ, альфа-амилаза, СРБ, электролиты) (приемное отделение)
+      quote: определение параметров кислотно-основного состояния;
+  - name: Биохимический анализ крови
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -137,9 +180,8 @@ conditions:
       row_index: null
       quote: биохимический анализ крови (определение содержания билирубина, глюкозы,
         мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы,
-        С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор))
+        С-реактивного белка, электролитов...);
   - name: Ультразвуковое исследование органов брюшной полости и забрюшинного пространства
-      (приемное отделение)
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -159,7 +201,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: ультразвуковое исследование органов брюшной полости и забрюшинного пространства
+      quote: ультразвуковое исследование органов брюшной полости и забрюшинного пространства;
   - name: Обзорная рентгенография органов брюшной и грудной полостей
     aliases: []
     exam_type: unknown
@@ -180,8 +222,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: обзорная рентгенография органов брюшной и грудной полостей
-  - name: Компьютерная томография органов брюшной полости (приемное отделение)
+      quote: обзорная рентгенография органов брюшной и грудной полостей;
+  - name: Компьютерная томография органов брюшной полости
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -201,8 +243,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: компьютерная томография органов брюшной полости
-  - name: Консультации врачей-специалистов (приемное отделение)
+      quote: компьютерная томография органов брюшной полости;
+  - name: Консультации врачей-специалистов
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -222,52 +264,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: консультации врачей-специалистов
-  - name: Определение параметров кислотно-основного состояния (хирургическое отделение)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: определение параметров кислотно-основного состояния
-  - name: Биохимический анализ крови (билирубин, глюкоза, мочевина, общий белок, АСТ,
-      АЛТ, альфа-амилаза, СРБ, электролиты) (хирургическое отделение)
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: биохимический анализ крови (определение содержания билирубина, глюкозы,
-        мочевины, общего белка, аспартатаминотрансферазы, аланинаминотрасферазы, альфа-амилазы,
-        С-реактивного белка, электролитов (натрий, калий, кальций общий, хлор))
+      quote: консультации врачей-специалистов;
   - name: Определение групп крови по системам АВ0 и Rh-фактор
     aliases: []
     exam_type: unknown
@@ -288,8 +285,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: определение групп крови по системам АВ0 и Rh-фактор
-  - name: Коагулограмма (фибриноген, АЧТВ, ПТВ, МНО)
+      quote: определение групп крови по системам АВ0 и Rh-фактор;
+  - name: Коагулограмма
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -310,28 +307,7 @@ conditions:
       table_index: null
       row_index: null
       quote: коагулограмма (определение фибриногена, активированного частичного тромбопластинового
-        времени, протромбированого времени, международного нормализованного отношения)
-  - name: Повторный общий анализ крови и мочи
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
-      document_url: null
-      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: повторный общий анализ крови и мочи
+        времени, протромбированого времени, международного нормализованного отношения);
   - name: Фиброэзофагогастродуоденоскопия
     aliases: []
     exam_type: unknown
@@ -352,12 +328,363 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: фиброэзофагогастродуоденоскопия
-  treatment: null
-  follow_up: []
+      quote: фиброэзофагогастродуоденоскопия;
+  - name: Электрокардиограмма
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: электрокардиограмма (пациентам в возрасте 40 лет и старше).
+  - name: Диагностическая лапароскопия или лапаротомия
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при ухудшении общего состояния пациента в процессе медицинского наблюдения
+        и при появлении перитонеальной симптоматики показаны диагностическая лапароскопия
+        или лапаротомия.
+  treatment:
+    non_drug:
+    - text: Медицинская транспортировка в положении лежа
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Медицинская транспортировка в положении лежа
+    - text: Опорожнение мочевого пузыря перед хирургическим вмешательством
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Опорожнение мочевого пузыря перед хирургическим вмешательством
+    - text: Гигиеническая подготовка области хирургического вмешательства и всей передней
+        брюшной стенки
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Гигиеническая подготовка области хирургического вмешательства и всей
+          передней брюшной стенки
+    - text: Постановка желудочного зонда и эвакуация желудочного содержимого по медицинским
+        показаниям
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Постановка желудочного зонда и эвакуация желудочного содержимого по
+          медицинским показаниям
+    - text: Экстренное хирургическое вмешательство в сроки не позднее 3 часов после
+        поступления (ликвидация ущемления, осмотр ущемленного органа и вмешательство
+        на нем при необходимости, пластика грыжевых ворот)
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Экстренное хирургическое вмешательство в сроки не позднее 3 часов после
+          поступления (ликвидация ущемления, осмотр ущемленного органа и вмешательство
+          на нем при необходимости, пластика грыжевых ворот)
+    drug_groups: []
+    drugs:
+    - drug_name: натрия хлорид
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для инфузий 9 мг/мл, среднесуточная доза 1000 мл, внутривенно
+        капельно
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: натрия хлорид, раствор для инфузий 9 мг/мл, среднесуточная доза 1000
+          мл, внутривенно капельно
+    - drug_name: глюкоза
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно капельно, не
+        более 6 г/кг массы тела в сутки
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: глюкоза, раствор для инфузий 50 мг/мл, 100 мг/мл, внутривенно капельно,
+          не более 6 г/кг массы тела в сутки
+    - drug_name: меглюмина натрия сукцинат
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для инфузий 1,5 % 400 мл, внутривенно капельно, 90 капель
+        в минуту, максимальная суточная доза 800 мл
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: меглюмина натрия сукцинат, раствор для инфузий 1,5 % 400 мл, внутривенно
+          капельно, 90 капель в минуту, максимальная суточная доза 800 мл
+    - drug_name: цефазолин
+      active_substance: null
+      drug_group: null
+      dose_text: порошок для приготовления раствора для внутривенного и внутримышечного
+        введения 500 мг, 1000 мг; вводится 2,0 г (при весе < 120 кг) или 3,0 г в/в
+        (при весе >= 120 кг) за 60 минут до доступа
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: цефазолин, порошок для приготовления раствора для внутривенного и внутримышечного
+          введения 500 мг, 100 мг, вводится в дозе 2,0 г (при весе пациента менее
+          120 кг) и в дозе 3,0 г внутривенно
+    - drug_name: метронидазол
+      active_substance: null
+      drug_group: null
+      dose_text: в дозе 500 мг внутривенно при хирургическом вмешательстве на тонком
+        кишечнике
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 5
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: При хирургическом вмешательстве на тонком кишечнике дополнительно вводится
+          метронидазол в дозе 500 мг внутривенно.
+    - drug_name: далтепарин натрия
+      active_substance: null
+      drug_group: null
+      dose_text: раствор для инъекций 2500 МЕ/0,2 мл в шприцах 0,2 мл (или 5000 МЕ/0,2
+        мл в шприцах 0,2 мл)
+      frequency_text: null
+      duration_text: null
+      route: null
+      indication: null
+      contraindications: []
+      monitoring: []
+      applicability: null
+      source_ref:
+        protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+        document_url: null
+        local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+        page_start: 6
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: далтепарин натрия, раствор для инъекций 2500 МЕ/0,2 мл в шприцах 0,2
+          мл (раствор для инъекций 5000 МЕ/0,2 мл в шприцах 0,2 мл).
+    procedures: []
+    surgery: []
+    source_refs: []
+  follow_up:
+  - text: Дальнейшее медицинское наблюдение в хирургическом отделении при самостоятельном
+      вправлении ущемленной грыжи
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Дальнейшее медицинское наблюдение в хирургическом отделении при самостоятельном
+        вправлении ущемленной грыжи
   hospitalization: []
-  routing: []
-  red_flags: []
+  routing:
+  - text: госпитализация
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: госпитализация
+  - text: Экстренная госпитализация пациента с ущемленной грыжей или подозрением на
+      нее в хирургическое отделение больничной организации
+    timing: null
+    required_if: []
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Экстренная госпитализация пациента с ущемленной грыжей или подозрением
+        на нее в хирургическое отделение больничной организации
+  red_flags:
+  - text: Развитие осложнений ущемленной грыжи (острая кишечная непроходимость, перитонит,
+      флегмона грыжевого мешка)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Пациентам с осложненной УГ (острая кишечная непроходимость, перитонит,
+        флегмона грыжевого мешка) или сопутствующей патологией проводится предоперационная
+        инфузионная терапия
+  - text: Ухудшение общего состояния и появление перитонеальной симптоматики после
+      самостоятельного вправления грыжи
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: khirurgiya_кп_диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_у
+      document_url: null
+      local_path: minzdrav_protocols/khirurgiya/КП_Диагностика_лечение_пациентов_взр_нас_с_ущемленной_грыжей_в_стац_условиях_пост_МЗ_2023_182.pdf
+      page_start: 5
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: при ухудшении общего состояния пациента в процессе медицинского наблюдения
+        и при появлении перитонеальной симптоматики показаны диагностическая лапароскопия
+        или лапаротомия.
   contraindications: []
   complications: []
   kz_checklist: null
@@ -366,7 +693,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T16:43:44.911178+00:00'
+  extracted_at: '2026-07-23T08:32:29.588514+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -377,4 +704,4 @@ validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T16:43:44.914114+00:00'
+  validated_at: '2026-07-23T08:32:29.596469+00:00'

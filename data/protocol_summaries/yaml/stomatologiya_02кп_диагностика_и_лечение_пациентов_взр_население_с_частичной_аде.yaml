@@ -3,7 +3,7 @@ summary_version: '2.0'
 extraction_status: llm_extracted
 review_status: needs_review
 source:
-  title: Диагностика и лечение пациентов взрослое население с частичной адентией
+  title: Диагностика и лечение пациентов взрослого населения с частичной адентией
   url: null
   local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
   document_sha256: null
@@ -26,7 +26,7 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: partial_adentia
+- condition_id: chastichnaya_adentiya
   name: Частичная адентия
   synonyms: []
   abbreviations: []
@@ -36,7 +36,66 @@ conditions:
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
-  diagnostic_criteria: null
+  diagnostic_criteria:
+    required:
+    - text: Частичное отсутствие зубов (частичная адентия)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Частичное отсутствие зубов (частичная адентия)
+    - text: Оценка общесоматического состояния и выявление абсолютных и относительных
+        противопоказаний к хирургическому лечению
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Оценка общесоматического состояния и выявление абсолютных и относительных
+          противопоказаний к хирургическому лечению
+    - text: Частичное отсутствие зубов (частичная первичная и вторичная адентия)
+      logic_group: null
+      operator: unknown
+      values: []
+      numeric_value: null
+      unit: null
+      evidence_targets: []
+      source_ref:
+        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+        document_url: null
+        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Частичное отсутствие зубов (частичная первичная и вторичная адентия)
+    optional: []
+    exclusion: []
   required_exams:
   - name: Сбор анамнеза
     aliases: []
@@ -58,7 +117,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Основными методами диагностики ЧА являются: сбор анамнеза;'
+      quote: 'Основными методами диагностики ЧА являются: сбор анамнеза'
   - name: Внешний осмотр и пальпация челюстно-лицевой области
     aliases: []
     exam_type: unknown
@@ -79,8 +138,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: внешний осмотр и пальпация челюстно-лицевой области;
-  - name: Осмотр полости рта с дополнительными инструментами
+      quote: внешний осмотр и пальпация челюстно-лицевой области
+  - name: Осмотр полости рта с помощью дополнительных инструментов
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -100,7 +159,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: осмотр полости рта с помощью дополнительных инструментов;
+      quote: осмотр полости рта с помощью дополнительных инструментов
   - name: Перкуссия
     aliases: []
     exam_type: unknown
@@ -121,7 +180,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: перкуссия;
+      quote: перкуссия
   - name: Оценка состояния зубов, зубных рядов, зубных протезов
     aliases: []
     exam_type: unknown
@@ -142,7 +201,7 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: оценка состояния зубов, зубных рядов, зубных протезов;
+      quote: оценка состояния зубов, зубных рядов, зубных протезов
   - name: Оценка состояния тканей периодонта и слизистой оболочки полости рта
     aliases: []
     exam_type: unknown
@@ -163,8 +222,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: оценка состояния тканей периодонта и слизистой оболочки полости рта;
-  - name: Индексная оценка стоматологического здоровья (гигиенический индекс OHI-S)
+      quote: оценка состояния тканей периодонта и слизистой оболочки полости рта
+  - name: Индексная оценка стоматологического здоровья (индекс гигиены Green, Vermillion
+      – OHI-S)
     aliases: []
     exam_type: unknown
     requirement_level: required
@@ -185,7 +245,7 @@ conditions:
       table_index: null
       row_index: null
       quote: 'индексная оценка стоматологического здоровья: индекс гигиены (гигиенический
-        индекс Green, Vermillion – OHI-S);'
+        индекс Green, Vermillion – OHI-S)'
   - name: Прицельная внутриротовая контактная рентгенография или ортопантомография
       челюстей
     aliases: []
@@ -207,76 +267,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'инструментальные исследования (лучевые методы исследования): прицельная
-        внутриротовая контактная рентгенография или ортопантомография челюстей.'
-  - name: Определение и фиксация центрального соотношения челюстей или центральной
-      окклюзии
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: определение и фиксацию центрального соотношения челюстей или центральной
-        окклюзии при помощи восковых или пластмассовых базисов с окклюзионными валиками
-        или окклюзионных силиконовых материалов
-  - name: Получение аналоговых или оптических (3D) оттисков
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 5
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: получение аналоговых или оптических (3D) оттисков
-  - name: Медицинский осмотр и рентгенологический контроль
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 7
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: медицинский осмотр и рентгенологический контроль в течение 1 недели после
-        проведения хирургического этапа дентальной имплантации и непосредственно перед
-        протезированием
+      quote: прицельная внутриротовая контактная рентгенография или ортопантомография
+        челюстей
   conditional_exams:
   - name: Конусно-лучевая компьютерная томография (КЛКТ) челюстно-лицевой области
     aliases: []
@@ -301,7 +293,7 @@ conditions:
       quote: При применении метода лечения ЧА с использованием дентальных имплантатов
         – конусно-лучевая компьютерная томография (далее – КЛКТ) челюстно-лицевой
         области.
-  - name: Проведение параллелометрии
+  - name: КЛКТ височно-нижнечелюстных суставов
     aliases: []
     exam_type: unknown
     requirement_level: conditional
@@ -315,17 +307,63 @@ conditions:
       protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 14
+      page_start: 3
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: проведение параллелометрии
+      quote: 'Дополнительными методами диагностики ЧА являются: инструментальные исследования
+        (лучевые методы исследования): КЛКТ челюстно-лицевой области, КЛКТ височно-нижнечелюстных
+        суставов'
+  - name: Функционально-диагностические исследования (функциональные пробы, электромиография)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 3
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: функционально-диагностические исследования (функциональные пробы, электромиография)
+  - name: Рентгенологический контроль
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 7
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: медицинский осмотр и рентгенологический контроль в течение 1 недели после
+        проведения хирургического этапа дентальной имплантации и непосредственно перед
+        протезированием.
   treatment:
     non_drug:
-    - text: Мотивация к формированию здоровых повседневных привычек, имеющих отношение
-        к стоматологическому здоровью.
+    - text: Пространственное ориентирование модели верхней челюсти в артикуляторе
+        и функциональный анализ зубочелюстной системы
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -336,10 +374,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Мотивация к формированию здоровых повседневных привычек, имеющих отношение
-          к стоматологическому здоровью.
-    - text: Рекомендации по выбору методов, предметов и средств индивидуальной гигиены
-        рта.
+        quote: Пространственное ориентирование модели верхней челюсти в артикуляторе
+          и функциональный анализ зубочелюстной системы
+    - text: Дентальная имплантация при отсутствии противопоказаний
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -350,9 +387,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Рекомендации по выбору методов, предметов и средств индивидуальной
-          гигиены рта.
-    - text: Рекомендации по питанию.
+        quote: Дентальная имплантация при отсутствии противопоказаний
+    - text: Профессиональное удаление зубных отложений
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -363,8 +399,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Рекомендации по питанию.
-    - text: Профессиональное удаление зубных отложений.
+        quote: Профессиональное удаление зубных отложений
+    - text: Ортопедическое лечение с использованием мостовидных, адгезивных, съемных
+        пластинчатых или бюгельных протезов
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -375,9 +412,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Профессиональное удаление зубных отложений.
-    - text: Терапевтическое лечение (при кариесе, некариозных поражениях, болезнях
-        периодонта).
+        quote: Ортопедическое лечение с использованием мостовидных, адгезивных, съемных
+          пластинчатых или бюгельных протезов
+    - text: Хирургическое лечение с использованием дентальных имплантатов
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -388,9 +425,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Терапевтическое лечение (при кариесе, некариозных поражениях, болезнях
-          периодонта).
-    - text: Ортодонтическое лечение (при зубочелюстных аномалиях).
+        quote: Хирургическое лечение с использованием дентальных имплантатов
+    - text: Использование направленной костной регенерации и пластики мягких тканей
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -401,9 +437,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ортодонтическое лечение (при зубочелюстных аномалиях).
-    - text: Ортопедическое лечение (при дефектах зубов, подвижности зубов, при повышенной
-        стираемости зубов).
+        quote: Использование направленной костной регенерации и пластики мягких тканей
+    - text: Применение окклюзионной шины
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -414,9 +449,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Ортопедическое лечение (при дефектах зубов, подвижности зубов, при
-          повышенной стираемости зубов).
-    - text: Хирургическое лечение (при потере уровня эпителиального прикрепления).
+        quote: Применение окклюзионной шины
+    - text: Изготовление адгезивных конструкций методом прямого моделирования композиционным
+        материалом
       source_ref:
         protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
         document_url: null
@@ -427,123 +462,15 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хирургическое лечение (при потере уровня эпителиального прикрепления).
-    - text: Планирование лечения ЧА с использованием дентальной имплантации осуществляется
-        врачом-стоматологом-ортопедом совместно с врачом-стоматологом-хирургом или
-        врачом-челюстно-лицевым хирургом.
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Планирование лечения ЧА с использованием дентальной имплантации осуществляется
-          врачом-стоматологом-ортопедом совместно с врачом-стоматологом-хирургом или
-          врачом-челюстно-лицевым хирургом.
-    - text: Препарирование опорных зубов под искусственные коронки (для мостовидных
-        протезов).
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Препарирование опорных зубов под искусственные коронки (для мостовидных
-          протезов).
-    - text: Изготовление временных коронок и временных мостовидных протезов в области
-        препарированных зубов.
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Изготовление временных коронок и временных мостовидных протезов в области
-          препарированных зубов.
-    - text: Выбор цвета, размера и формы искусственных коронок и зубов в соответствии
-        с имеющимися зубами и индивидуальными особенностями пациента.
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Выбор цвета, размера и формы искусственных коронок и зубов в соответствии
-          с имеющимися зубами и индивидуальными особенностями пациента.
-    - text: Наложение и припасовка каркаса мостовидного протеза.
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Наложение и припасовка каркаса мостовидного протеза.
-    - text: Наложение и припасовка готового мостовидного протеза.
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Наложение и припасовка готового мостовидного протеза.
-    - text: Фиксация мостовидного протеза на временный материал (по медицинским показаниям).
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Фиксация мостовидного протеза на временный материал (по медицинским
-          показаниям).
-    - text: Фиксация несъемной конструкции зубного протеза на постоянный материал
-        (для мостовидных и адгезивных протезов).
-      source_ref:
-        protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-        document_url: null
-        local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Фиксация несъемной конструкции зубного протеза на постоянный материал
-          (для мостовидных и адгезивных протезов).
+        quote: Изготовление адгезивных конструкций методом прямого моделирования композиционным
+          материалом
     drug_groups: []
     drugs:
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Спрей 100 мг/мл. Одну порцию (1–3 нажатия) наносят на слизистую оболочку
-        полости рта или десну. Можно наносить смазыванием ватным тампоном.
+      dose_text: 'Спрей 100 мг/мл: 1 порция (1–3 нажатия) на слизистую оболочку полости
+        рта или десну'
       frequency_text: null
       duration_text: null
       route: null
@@ -561,16 +488,14 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Спрей для местного применения 100 мг/мл во флаконах 50 мл. Одну порцию
-          (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую оболочку
-          полости рта или десну. Лекарственное средство можно также наносить путем
-          смазывания смоченным в нем ватным тампоном
+        quote: Лидокаин Спрей для местного применения 100 мг/мл во флаконах 50 мл
+          Одну порцию (1–3 нажатия на дозирующий клапан) аэрозоля наносят на слизистую
+          оболочку полости рта или десну.
     - drug_name: Лидокаин
       active_substance: null
       drug_group: null
-      dose_text: Раствор для инъекций 10 мг/мл (ампулы 5 мл) или 20 мг/мл (ампулы
-        2 мл). Режим дозирования индивидуальный. Дозы до 500 мг (12,5 мл раствора)
-        хорошо переносились.
+      dose_text: 'Раствор для инъекций 10 мг/мл (ампулы 5 мл) или 20 мг/мл (ампулы
+        2 мл): режим дозирования устанавливают индивидуально'
       frequency_text: null
       duration_text: null
       route: null
@@ -588,15 +513,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для инъекций
-          20 мг/мл в ампулах 2 мл. Режим дозирования устанавливают индивидуально...
-          дозы до 500 мг (соответствует 12,5 мл раствора для инъекций)
+        quote: Лидокаин Раствор для инъекций 10 мг/мл в ампулах 5 мл; раствор для
+          инъекций 20 мг/мл в ампулах 2 мл Режим дозирования устанавливают индивидуально
     - drug_name: Хлоргексидин
       active_substance: null
       drug_group: null
-      dose_text: 'Раствор для местного и наружного применения 0,5 мг/мл. Орошения,
-        полоскания, аппликации: 5–10 мл раствора наносят на пораженную поверхность
-        или десну с экспозицией 1–3 мин 2–3 раза в сутки.'
+      dose_text: 'Раствор 0,5 мг/мл: 5–10 мл на пораженную поверхность 2–3 раза в
+        сутки, экспозиция 1–3 мин'
       frequency_text: null
       duration_text: null
       route: null
@@ -614,14 +537,13 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Раствор для местного и наружного применения 0,5 мг/мл. Лекарственное
-          средство применяется в виде орошений, полосканий и аппликаций – 5–10 мл
-          раствора наносят на пораженную поверхность слизистой оболочки полости рта
-          или на десну с экспозицией 1–3 мин 2–3 раза в сутки
-    - drug_name: Обезболивающие лекарственные средства
+        quote: Хлоргексидин Раствор для местного и наружного применения 0,5 мг/мл
+          Лекарственное средство применяется в виде орошений, полосканий и аппликаций
+          – 5–10 мл раствора... 2–3 раза в сутки
+    - drug_name: Лекарственные средства для обезболивания (согласно Приложению 1)
       active_substance: null
       drug_group: null
-      dose_text: по медицинским показаниям
+      dose_text: По медицинским показаниям
       frequency_text: null
       duration_text: null
       route: null
@@ -641,11 +563,11 @@ conditions:
         row_index: null
         quote: обезболивание по медицинским показаниям с использованием лекарственных
           средств, применяемых при лечении пациентов (взрослое население) с ЧА, согласно
-          приложению 1
-    - drug_name: Дополнительные лекарственные средства
+          приложению 1;
+    - drug_name: Дополнительные лекарственные средства (согласно Приложению 2)
       active_substance: null
       drug_group: null
-      dose_text: по медицинским показаниям
+      dose_text: По медицинским показаниям
       frequency_text: null
       duration_text: null
       route: null
@@ -664,12 +586,12 @@ conditions:
         table_index: null
         row_index: null
         quote: назначение дополнительных лекарственных средств, применяемых при лечении
-          пациентов (взрослое население) с ЧА, согласно приложению 2
+          пациентов (взрослое население) с ЧА, согласно приложению 2;
     procedures: []
     surgery: []
     source_refs: []
   follow_up:
-  - text: Медицинское наблюдение за результатами лечения рекомендовано осуществлять.
+  - text: Медицинское наблюдение за результатами лечения
     timing: null
     required_if: []
     expected_actions: []
@@ -683,8 +605,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Медицинское наблюдение за результатами лечения рекомендовано осуществлять.
-  - text: Поддерживающее лечение (медицинское наблюдение).
+      quote: Медицинское наблюдение за результатами лечения
+  - text: Поддерживающее лечение (медицинское наблюдение)
     timing: null
     required_if: []
     expected_actions: []
@@ -698,9 +620,8 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Поддерживающее лечение (медицинское наблюдение).
-  - text: Рекомендации по гигиеническому уходу за зубными протезами, а также срокам
-      службы (замены) конструкций.
+      quote: Поддерживающее лечение (медицинское наблюдение)
+  - text: Снятие швов не ранее чем на 7 сутки после хирургического этапа
     timing: null
     required_if: []
     expected_actions: []
@@ -714,41 +635,9 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: Рекомендации по гигиеническому уходу за зубными протезами, а также срокам
-        службы (замены) конструкций.
-  - text: Коррекция съемного протеза (по медицинским показаниям).
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Коррекция съемного протеза (по медицинским показаниям).
-  - text: Коррекция бюгельного протеза (по медицинским показаниям).
-    timing: null
-    required_if: []
-    expected_actions: []
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Коррекция бюгельного протеза (по медицинским показаниям).
+      quote: Снятие швов не ранее чем на 7 сутки после хирургического этапа
   - text: Медицинский осмотр и рентгенологический контроль в течение 1 недели после
-      проведения хирургического этапа дентальной имплантации и непосредственно перед
-      протезированием.
+      дентальной имплантации и перед протезированием
     timing: null
     required_if: []
     expected_actions: []
@@ -763,8 +652,22 @@ conditions:
       table_index: null
       row_index: null
       quote: Медицинский осмотр и рентгенологический контроль в течение 1 недели после
-        проведения хирургического этапа дентальной имплантации и непосредственно перед
-        протезированием.
+        дентальной имплантации и перед протезированием
+  - text: Коррекция съемного или бюгельного протеза по медицинским показаниям
+    timing: null
+    required_if: []
+    expected_actions: []
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: null
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Коррекция съемного или бюгельного протеза по медицинским показаниям
   hospitalization: []
   routing:
   - text: амбулаторно
@@ -782,7 +685,128 @@ conditions:
       row_index: null
       quote: амбулаторно
   red_flags:
-  - text: Неадекватное психоэмоциональное состояние пациента
+  - text: Общесоматические заболевания в стадии декомпенсации
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: 'Абсолютными медицинскими противопоказаниями хирургического лечения ЧА...
+        являются: общесоматические заболевания в стадии декомпенсации'
+  - text: Инфаркт миокарда (до 6 месяцев с момента заболевания)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: инфаркт миокарда (6 месяцев с момента заболевания)
+  - text: Нарушение мозгового кровообращения (до 6 месяцев с момента заболевания)
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: нарушение мозгового кровообращения (6 месяцев с момента заболевания)
+  - text: Перенесенная операция по протезированию клапанов сердца
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: перенесенная операция по протезированию клапанов сердца
+  - text: Иммуносупрессия
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: иммуносупрессия
+  - text: Злокачественные новообразования челюстно-лицевой области или период ЛТ/ХТ
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: злокачественные новообразования в челюстно-лицевой области; злокачественные
+        новообразования в период лучевой терапии и химиотерапии
+  - text: Внутривенное введение бисфосфонатов
+    aliases: []
+    red_flag_type: other
+    severity: high
+    expected_actions: []
+    cap_if_unhandled: null
+    source_ref:
+      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
+      document_url: null
+      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: внутривенное введение бисфосфонатов
+  - text: Аллергия на местные анестетики
     aliases: []
     red_flag_type: other
     severity: medium
@@ -792,175 +816,14 @@ conditions:
       protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
       document_url: null
       local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
+      page_start: 1
       page_end: null
       section_title: null
       section_type: null
       table_index: null
       row_index: null
-      quote: 'При диагностике ЧА также определяют общесоматическое состояние пациентов...
-        целенаправленно выявляют: неадекватное психоэмоциональное состояние пациента;'
-  - text: Острые поражения слизистой оболочки полости рта и красной каймы губ
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: острые поражения слизистой оболочки полости
-        рта и красной каймы губ;'
-  - text: Острые воспалительные заболевания органов и тканей рта
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: острые воспалительные заболевания органов
-        и тканей рта;'
-  - text: Болезни периодонта в стадии обострения
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: болезни периодонта в стадии обострения;'
-  - text: Неудовлетворительное гигиеническое состояние полости рта
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: неудовлетворительное гигиеническое состояние
-        полости рта;'
-  - text: Отказ пациента от лечения
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'целенаправленно выявляют: желание лечиться или отказ от лечения.'
-  - text: Абсолютные медицинские противопоказания к хирургическому лечению ЧА с имплантацией
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Абсолютными медицинскими противопоказаниями хирургического лечения ЧА
-        с применением методов дентальной имплантации на момент обращения пациента
-        являются:'
-  - text: Общесоматические заболевания в стадии декомпенсации (противопоказание к
-      имплантации)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: общесоматические заболевания в стадии декомпенсации;
-  - text: Инфаркт миокарда (менее 6 месяцев с момента заболевания) (противопоказание
-      к имплантации)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: инфаркт миокарда (6 месяцев с момента заболевания);
-  - text: Нарушение мозгового кровообращения (менее 6 месяцев с момента заболевания)
-      (противопоказание к имплантации)
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: stomatologiya_02кп_диагностика_и_лечение_пациентов_взр_население_с_частичной_аде
-      document_url: null
-      local_path: minzdrav_protocols/stomatologiya/02КП_Диагностика_и_лечение_пациентов_взр_население_с_частичной_адентией_пост_МЗ_10.08.2022_84.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: нарушение мозгового кровообращения (6 месяцев с момента заболевания);
+      quote: 'Относительными медицинским противопоказаниями хирургического лечения
+        ЧА... являются: аллергия на местные анестетики'
   contraindications: []
   complications: []
   kz_checklist: null
@@ -969,7 +832,7 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T17:34:53.373909+00:00'
+  extracted_at: '2026-07-23T09:52:21.343744+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
@@ -983,5 +846,5 @@ validation:
   - level: warning
     code: duplicate_drug
     message: Дублирующийся препарат
-    path: conditions[partial_adentia].treatment.drugs[1]
-  validated_at: '2026-07-20T17:34:53.388320+00:00'
+    path: conditions[chastichnaya_adentiya].treatment.drugs[1]
+  validated_at: '2026-07-23T09:52:21.356424+00:00'

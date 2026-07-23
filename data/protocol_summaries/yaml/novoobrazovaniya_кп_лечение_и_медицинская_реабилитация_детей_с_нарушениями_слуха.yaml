@@ -27,19 +27,21 @@ applicability:
   pregnancy: unknown
   care_setting: []
 conditions:
-- condition_id: congenital_ear_anomalies_hearing_loss
-  name: Врожденные аномалии уха, вызывающие нарушение слуха
+- condition_id: narusheniya_sluha_u_detej
+  name: Нарушения слуха у детей
   synonyms: []
   abbreviations: []
   icd10_codes:
   - Q16
+  - D14
+  - H60-H95
   condition_applicability: null
   diagnosis_structure: null
   clinical_criteria: null
   diagnostic_criteria:
     required:
-    - text: Хронический гнойный средний отит с деструкцией или отсутствием функциональности
-        слуховых косточек
+    - text: Хронический гнойный или адгезивный средний отит с деструкцией или отсутствием
+        функциональности слуховых косточек
       logic_group: null
       operator: unknown
       values: []
@@ -57,50 +59,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хронический гнойный средний отит с деструкцией или отсутствием функциональности
-          слуховых косточек
-    - text: Хронический адгезивный средний отит с деструкцией или отсутствием функциональности
-        слуховых косточек
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Хронический адгезивный средний отит с деструкцией или отсутствием функциональности
-          слуховых косточек
-    - text: Удаление слуховых косточек для полной санации очага воспаления (в т.ч.
-        холестеатомного)
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Удаление слуховых косточек для полной санации очага воспаления (в т.ч.
-          холестеатомного)
+        quote: Хронический гнойный или адгезивный средний отит с деструкцией или отсутствием
+          функциональности слуховых косточек
     - text: Травматический разрыв цепи слуховых косточек
       logic_group: null
       operator: unknown
@@ -120,7 +80,7 @@ conditions:
         table_index: null
         row_index: null
         quote: Травматический разрыв цепи слуховых косточек
-    - text: Врожденные аномалии среднего уха, требующие восстановления слуховых косточек
+    - text: Врожденные аномалии развития среднего и наружного уха
       logic_group: null
       operator: unknown
       values: []
@@ -138,10 +98,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Врожденные аномалии среднего уха, требующие восстановления слуховых
-          косточек
+        quote: Врожденные аномалии развития среднего и наружного уха
     - text: Кондуктивные и смешанные формы тугоухости с положительной пробой с костным
-        телефоном, не подлежащие/не поддающиеся стандартной хирургической коррекции
+        телефоном
       logic_group: null
       operator: unknown
       values: []
@@ -160,9 +119,9 @@ conditions:
         table_index: null
         row_index: null
         quote: Кондуктивные и смешанные формы тугоухости с положительной пробой с
-          костным телефоном, не подлежащие/не поддающиеся стандартной хирургической
-          коррекции
-    - text: Отсутствие возможности носить слуховой аппарат (аллергия на материалы)
+          костным телефоном
+    - text: Невозможность носить слуховой аппарат (аллергия, наружный отит, анатомические
+        особенности)
       logic_group: null
       operator: unknown
       values: []
@@ -180,9 +139,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Отсутствие возможности носить слуховой аппарат (аллергия на материалы)
-    - text: Наружный/хронический средний отит, после реконструкций с «открытой мастоидальной
-        полостью», когда слуховые аппараты усугубляют течение
+        quote: Невозможность носить слуховой аппарат (аллергия, наружный отит, анатомические
+          особенности)
+    - text: Односторонняя нейросенсорная глухота
       logic_group: null
       operator: unknown
       values: []
@@ -200,10 +159,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Наружный/хронический средний отит, после реконструкций с «открытой
-          мастоидальной полостью», когда слуховые аппараты усугубляют течение
-    - text: Врожденные аномалии уха с сохранной улитковой функцией, отсутствием наружных
-        слуховых проходов, недоразвитием косточек, синдромальной патологией
+        quote: Односторонняя нейросенсорная глухота
+    - text: Хроническая нейросенсорная тугоухость 1–3 степени
       logic_group: null
       operator: unknown
       values: []
@@ -221,9 +178,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Врожденные аномалии уха с сохранной улитковой функцией, отсутствием
-          наружных слуховых проходов, недоразвитием косточек, синдромальной патологией
-    - text: Односторонняя нейросенсорная глухота (эффект псевдостерео)
+        quote: Хроническая нейросенсорная тугоухость 1–3 степени
+    - text: Определение степени тугоухости по среднеарифметическому показателю на
+        частотах 500, 1000, 2000, 4000 Гц
       logic_group: null
       operator: unknown
       values: []
@@ -241,9 +198,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Односторонняя нейросенсорная глухота (эффект псевдостерео)
-    - text: Хроническая нейросенсорная тугоухость 1–3 степени при невозможности носить
-        слуховой аппарат (аллергия, рецидивирующие наружные отиты)
+        quote: Определение степени тугоухости по среднеарифметическому показателю
+          на частотах 500, 1000, 2000, 4000 Гц
+    - text: 'I степень (легкая): 26–40 дБ'
       logic_group: null
       operator: unknown
       values: []
@@ -261,9 +218,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хроническая нейросенсорная тугоухость 1–3 степени при невозможности
-          носить слуховой аппарат (аллергия, рецидивирующие наружные отиты)
-    - text: Врожденные пороки развития наружного и среднего уха
+        quote: 'I степень (легкая): 26–40 дБ'
+    - text: 'II степень (умеренная): 41–55 дБ'
       logic_group: null
       operator: unknown
       values: []
@@ -281,9 +237,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Врожденные пороки развития наружного и среднего уха
-    - text: Хронические деструктивные формы средних отитов при неэффективности стандартной
-        тимпанопластики
+        quote: 'II степень (умеренная): 41–55 дБ'
+    - text: 'III степень (умеренно тяжелая): 56–70 дБ'
       logic_group: null
       operator: unknown
       values: []
@@ -301,9 +256,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хронические деструктивные формы средних отитов при неэффективности
-          стандартной тимпанопластики
-    - text: Хронический адгезивный средний отит при неэффективности стандартной тимпанопластики
+        quote: 'III степень (умеренно тяжелая): 56–70 дБ'
+    - text: 'IV степень (тяжелая): 71–90 дБ'
       logic_group: null
       operator: unknown
       values: []
@@ -321,446 +275,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Хронический адгезивный средний отит при неэффективности стандартной
-          тимпанопластики
-    optional: []
-    exclusion: []
-  required_exams:
-  - name: Скрининг и ранняя диагностика нарушений слуха у детей
-    aliases: []
-    exam_type: unknown
-    requirement_level: required
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 2
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: Скрининг и ранняя диагностика нарушений слуха у пациентов детского возраста
-        осуществляются в порядке, установленном Министерством здравоохранения.
-  conditional_exams:
-  - name: Проба с костным телефоном
-    aliases: []
-    exam_type: unknown
-    requirement_level: conditional
-    accepted_statuses:
-    - performed
-    - recommended
-    required_if: []
-    timing: null
-    comment: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: кондуктивные и смешанные формы тугоухости при заболеваниях наружного
-        и среднего уха, у которых возможен эффект от усиления звуков (положительная
-        проба с костным телефоном)
-  treatment:
-    non_drug:
-    - text: Лечение пациентов с кондуктивной и смешанной тугоухостью проводится в
-        зависимости от врожденных или приобретенных причин, вызвавших их.
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Лечение пациентов с кондуктивной и смешанной тугоухостью проводится
-          в зависимости от врожденных или приобретенных причин, вызвавших их.
-    - text: Миринготомия при отсутствии положительного эффекта от консервативного
-        лечения острого (гнойного среднего отита), наличии экссудата в барабанной
-        полости, гнойном среднем отите в доперфоративной стадии с выраженными явлениями
-        интоксикации, развитии нейросенсорной тугоухости при наличии экссудата, или
-        подозрении на внутричерепной/внутрилабиринтный гнойный процесс/отогенную нейропатию
-        лицевого нерва.
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Миринготомия при отсутствии положительного эффекта от консервативного
-          лечения острого (гнойного среднего отита), наличии экссудата в барабанной
-          полости, гнойном среднем отите в доперфоративной стадии '
-    - text: Шунтирование барабанной полости при стойком сохранении экссудата при хроническом
-        негнойном среднем отите, наличии экссудата при рецидивирующей форме острого
-        гнойного среднего отита, стойкой дисфункции/закупорке слуховой трубы, тубарном
-        рефлюксе, стойком нарушении вентиляции среднего уха без установленной причины,
-        внутричерепном/внутрилабиринтном гнойном процессе или отогенной нейропатии
-        лицевого нерва.
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Шунтирование барабанной полости при стойком сохранении экссудата при
-          хроническом негнойном среднем отите, наличии экссудата при рецидивирующей
-          форме острого гнойного среднего отита, стойкой дисфункции
-    - text: Антромастоидотомия при мастоидите, отоантрите, атипичных формах воспалительного
-        процесса в сосцевидных ячейках, наличии внутричерепных осложнений, мастоидите,
-        осложненном нарушением функции лицевого нерва или гнойном воспалении шейных
-        клетчаточных пространств, рецидивирующем мастоидите/антрите, необходимости
-        диагностики для исключения деструктивного процесса в сосцевидном отростке.
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Антромастоидотомия при мастоидите, отоантрите, атипичных формах воспалительного
-          процесса в сосцевидных ячейках, наличии внутричерепных осложнений, мастоидите,
-          осложненном нарушением функции лицевого н
-    - text: Реконструктивно-восстановительная хирургия среднего уха при наличии у
-        детей тугоухости кондуктивного или смешанного характера с кохлеарным резервом
-        и возможности хирургического восстановления прохождения звуковой волны.
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Реконструктивно-восстановительная хирургия среднего уха при наличии
-          у детей тугоухости кондуктивного или смешанного характера с кохлеарным резервом
-          и возможности хирургического восстановления прохожде
-    - text: Установка активных имплантируемых слуховых систем при наличии у детей
-        тугоухости кондуктивного или смешанного характера с кохлеарным резервом и
-        возможности хирургического восстановления прохождения звуковой волны.
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Установка активных имплантируемых слуховых систем при наличии у детей
-          тугоухости кондуктивного или смешанного характера с кохлеарным резервом
-          и возможности хирургического восстановления прохождения зв
-    drug_groups: []
-    drugs: []
-    procedures: []
-    surgery: []
-    source_refs: []
-  follow_up: []
-  hospitalization: []
-  routing:
-  - text: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-      костной проводимости: заболевания, нарушающие остеоинтеграцию; отсутствие достаточного
-      объема и качества костной ткани; костно-воздушный интервал менее 15–20 дБ.'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-        костной проводимости: заболевания, нарушающие остеоинтеграцию; отсутствие
-        достаточного объема и качества костной ткани; ко'
-  - text: 'Противопоказания для имплантации системы имплантации среднего уха воздушной
-      проводимости: заболевания кожи в околоушной области; ретрокохлеарная патология
-      или центральные слуховые нарушения.'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Противопоказания для имплантации системы имплантации среднего уха воздушной
-        проводимости: заболевания кожи в околоушной области; ретрокохлеарная патология
-        или центральные слуховые нарушения.'
-  - text: 'Противопоказания для проведения кохлеарной имплантации (КИ): полная облитерация
-      улитки; ретрокохлеарное поражение; отрицательные результаты электрофизиологического
-      тестирования слуха; соматическая патология в стадии декомпенсации; психические
-      заболевания и грубые неврологические нарушения, затрудняющие использование импланта
-      и препятствующие реабилитации; отсутствие мотивации пациента и родителей '
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Противопоказания для проведения кохлеарной имплантации (КИ): полная
-        облитерация улитки; ретрокохлеарное поражение; отрицательные результаты электрофизиологического
-        тестирования слуха; соматическая пат'
-  red_flags:
-  - text: Выраженные явления интоксикации при гнойном среднем отите
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: наличии гнойного среднего отита в доперфоративной стадии при выраженных
-        явлениях интоксикации
-  - text: Развитие нейросенсорной тугоухости при наличии экссудата в барабанной полости
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: развитии нейросенсорной тугоухости при наличии экссудата в барабанной
-        полости
-  - text: Наличие или подозрение на внутричерепной или внутрилабиринтный гнойный процесс
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: наличии или подозрении на внутричерепной или внутрилабиринтный гнойный
-        процесс
-  - text: Отогенная нейропатия лицевого нерва
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: отогенную нейропатию лицевого нерва при наличии острого воспаления в
-        среднем ухе
-  - text: Рецидивирующая форма острого гнойного среднего отита
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: наличии экссудата при рецидивирующей форме острого гнойного среднего
-        отита
-  - text: Внутричерепные осложнения (экстрадуральный абсцесс, абсцессы мозга и мозжечка,
-      поражение мозговых оболочек), тромбофлебит сигмовидного синуса и отогенный сепсис
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: наличии внутричерепных осложнений (экстрадуральный абсцесс, абсцессы
-        мозга и мозжечка, поражение мозговых оболочек), тромбофлебите сигмовидного
-        синуса и отогенном сепсисе
-  - text: Мастоидит, осложненный нарушением функции лицевого нерва
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: мастоидите, осложненном нарушением функции лицевого нерва
-  - text: Гнойное воспаление шейных клетчаточных пространств
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: гнойном воспалении шейных клетчаточных пространств
-  - text: Рецидивирующий мастоидит/антрит
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: рецидивирующем мастоидите/антрите
-  - text: Необходимость диагностики для исключения деструктивного процесса в сосцевидном
-      отростке
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: необходимости диагностики для исключения деструктивного процесса в сосцевидном
-        отростке
-  contraindications: []
-  complications: []
-  kz_checklist: null
-  source_refs: []
-- condition_id: benign_neoplasm_middle_ear
-  name: Доброкачественное новообразование среднего уха, полости носа и придаточных
-    пазух
-  synonyms: []
-  abbreviations: []
-  icd10_codes:
-  - D14
-  condition_applicability: null
-  diagnosis_structure: null
-  clinical_criteria: null
-  diagnostic_criteria:
-    required:
-    - text: 'Критерии отбора для эндопротезирования слуховых косточек: хронический
-        гнойный/адгезивный средний отит с деструкцией косточек, травматический разрыв,
-        врожденные аномалии среднего уха.'
+        quote: 'IV степень (тяжелая): 71–90 дБ'
+    - text: 'V степень (глухота): более 90 дБ'
       logic_group: null
       operator: unknown
       values: []
@@ -778,80 +294,7 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: 'Критерии отбора для эндопротезирования слуховых косточек: хронический
-          гнойный/адгезивный средний отит с деструкцией косточек, травматический разрыв,
-          врожденные аномалии среднего уха.'
-    - text: 'Критерии отбора для аппарата слухового цифрового имплантируемого костной
-        проводимости: кондуктивная/смешанная тугоухость без эффекта от коррекции,
-        невозможность носить слуховой аппарат, отит с «открытой мастоидальной полостью»,
-        врожденные аномалии уха с сохранной улитковой функцией, односторонняя нейросенсорная
-        глухота.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Критерии отбора для аппарата слухового цифрового имплантируемого костной
-          проводимости: кондуктивная/смешанная тугоухость без эффекта от коррекции,
-          невозможность носить слуховой аппарат, отит с «открыт'
-    - text: Возраст 6 лет и старше для имплантации аппарата слухового цифрового костной
-        проводимости.
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: Возраст 6 лет и старше для имплантации аппарата слухового цифрового
-          костной проводимости.
-    - text: 'Критерии отбора для системы имплантации среднего уха воздушной проводимости:
-        хроническая нейросенсорная тугоухость 1–3 степени при невозможности носить
-        слуховой аппарат, врожденные пороки развития наружного и среднего уха, неэффективность
-        стандартной тимпанопластики при хронических деструктивных/адгезивных средних
-        отитах.'
-      logic_group: null
-      operator: unknown
-      values: []
-      numeric_value: null
-      unit: null
-      evidence_targets: []
-      source_ref:
-        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-        document_url: null
-        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-          детей с нарушениями слуха 23.08.2019 № 88.pdf
-        page_start: null
-        page_end: null
-        section_title: null
-        section_type: null
-        table_index: null
-        row_index: null
-        quote: 'Критерии отбора для системы имплантации среднего уха воздушной проводимости:
-          хроническая нейросенсорная тугоухость 1–3 степени при невозможности носить
-          слуховой аппарат, врожденные пороки развития нар'
+        quote: 'V степень (глухота): более 90 дБ'
     optional: []
     exclusion: []
   required_exams:
@@ -878,12 +321,82 @@ conditions:
       row_index: null
       quote: Скрининг и ранняя диагностика нарушений слуха у пациентов детского возраста
         осуществляются в порядке, установленном Министерством здравоохранения.
-  conditional_exams: []
+  - name: Тональная аудиометрия
+    aliases: []
+    exam_type: unknown
+    requirement_level: required
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
+        детей с нарушениями слуха 23.08.2019 № 88.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: Степень тугоухости у детей определяется по типу конфигурации кривой аудиограммы
+        при проведении тональной аудиометрии
+  conditional_exams:
+  - name: Проба с костным телефоном
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
+        детей с нарушениями слуха 23.08.2019 № 88.pdf
+      page_start: 4
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: кондуктивные и смешанные формы тугоухости при заболеваниях наружного
+        и среднего уха, у которых возможен эффект от усиления звуков (положительная
+        проба с костным телефоном)
+  - name: Объективные методы исследования слуха (вызванная отоакустическая эмиссия,
+      КСВП, ASSR)
+    aliases: []
+    exam_type: unknown
+    requirement_level: conditional
+    accepted_statuses:
+    - performed
+    - recommended
+    required_if: []
+    timing: null
+    comment: null
+    source_ref:
+      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
+      document_url: null
+      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
+        детей с нарушениями слуха 23.08.2019 № 88.pdf
+      page_start: 2
+      page_end: null
+      section_title: null
+      section_type: null
+      table_index: null
+      row_index: null
+      quote: При невозможности выполнения тональной аудиометрии или при несоответствии
+        результатов акуметрии и аудиометрии показано проведение объективных методов
+        исследования слуха
   treatment:
     non_drug:
-    - text: Консервативное лечение при острых воспалительных явлениях в полости наружного
-        и среднего уха (согласно клиническому протоколу «Диагностика и лечение пациентов
-        (детское население) с болезнями уха, горла и носа»).
+    - text: Эндопротезирование системы слуховых косточек полости среднего уха
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -895,11 +408,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Консервативное лечение при острых воспалительных явлениях в полости
-          наружного и среднего уха (согласно клиническому протоколу «Диагностика и
-          лечение пациентов (детское население) с болезнями уха, горл
-    - text: Использование специальных мягких бандажей для фиксации аппарата слухового
-        цифрового имплантируемого костной проводимости у детей младше 6 лет.
+        quote: Эндопротезирование системы слуховых косточек полости среднего уха
+    - text: Применение аппарата слухового цифрового имплантируемого костной проводимости
+        (имплантация с 6 лет, до 6 лет — использование мягких бандажей)
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -911,11 +422,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Использование специальных мягких бандажей для фиксации аппарата слухового
-          цифрового имплантируемого костной проводимости у детей младше 6 лет.
-    - text: Консервативное лечение при острой или хронической нейросенсорной тугоухости
-        (согласно клиническому протоколу «Диагностика и лечение пациентов (детское
-        население) с болезнями уха, горла и носа»).
+        quote: Применение аппарата слухового цифрового имплантируемого костной проводимости
+          (имплантация с 6 лет, до 6 лет — использование мягких бандажей)
+    - text: Применение системы имплантации среднего уха воздушной проводимости
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -927,11 +436,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Консервативное лечение при острой или хронической нейросенсорной тугоухости
-          (согласно клиническому протоколу «Диагностика и лечение пациентов (детское
-          население) с болезнями уха, горла и носа»).
-    - text: Лечение пациентов с кондуктивной и смешанной тугоухостью проводится в
-        зависимости от причин, вызвавших их, включая опухоли.
+        quote: Применение системы имплантации среднего уха воздушной проводимости
+    - text: Консервативное лечение острых воспалительных явлений или нейросенсорной
+        тугоухости в соответствии с профильным клиническим протоколом
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -943,11 +450,9 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Лечение пациентов с кондуктивной и смешанной тугоухостью проводится
-          в зависимости от причин, вызвавших их, включая опухоли.
-    - text: Миринготомия при наличии экссудата в барабанной полости (при отсутствии
-        эффекта от консервативного лечения), гнойного среднего отита, развития нейросенсорной
-        тугоухости или подозрении на внутричерепной/внутрилабиринтный гнойный процесс.
+        quote: Консервативное лечение острых воспалительных явлений или нейросенсорной
+          тугоухости в соответствии с профильным клиническим протоколом
+    - text: Миринготомия
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -959,12 +464,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Миринготомия при наличии экссудата в барабанной полости (при отсутствии
-          эффекта от консервативного лечения), гнойного среднего отита, развития нейросенсорной
-          тугоухости или подозрении на внутричерепно
-    - text: Шунтирование барабанной полости при стойком экссудате, рецидивирующем
-        гнойном отите, дисфункции слуховой трубы, тубарном рефлюксе, нарушении вентиляции
-        среднего уха или внутричерепном/внутрилабиринтном гнойном процессе.
+        quote: Миринготомия
+    - text: Шунтирование барабанной полости
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -976,13 +477,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Шунтирование барабанной полости при стойком экссудате, рецидивирующем
-          гнойном отите, дисфункции слуховой трубы, тубарном рефлюксе, нарушении вентиляции
-          среднего уха или внутричерепном/внутрилабиринтно
-    - text: Антромастоидотомия при мастоидите, отоантрите, атипичных формах воспаления,
-        внутричерепных осложнениях, нарушении функции лицевого нерва, рецидивирующем
-        мастоидите/антрите, или для исключения деструктивного процесса в сосцевидном
-        отростке.
+        quote: Шунтирование барабанной полости
+    - text: Антромастоидотомия
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -994,12 +490,8 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Антромастоидотомия при мастоидите, отоантрите, атипичных формах воспаления,
-          внутричерепных осложнениях, нарушении функции лицевого нерва, рецидивирующем
-          мастоидите/антрите, или для исключения деструкт
-    - text: Реконструктивно-восстановительная хирургия среднего уха или установка
-        активных имплантируемых слуховых систем при кондуктивной или смешанной тугоухости
-        с кохлеарным резервом, если возможно восстановление прохождения звуковой волны.
+        quote: Антромастоидотомия
+    - text: Реконструктивно-восстановительная хирургия среднего уха
       source_ref:
         protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
         document_url: null
@@ -1011,9 +503,20 @@ conditions:
         section_type: null
         table_index: null
         row_index: null
-        quote: Реконструктивно-восстановительная хирургия среднего уха или установка
-          активных имплантируемых слуховых систем при кондуктивной или смешанной тугоухости
-          с кохлеарным резервом, если возможно восстановле
+        quote: Реконструктивно-восстановительная хирургия среднего уха
+    - text: Установка активных имплантируемых слуховых систем
+      source_ref:
+        protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
+        document_url: null
+        local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
+          детей с нарушениями слуха 23.08.2019 № 88.pdf
+        page_start: null
+        page_end: null
+        section_title: null
+        section_type: null
+        table_index: null
+        row_index: null
+        quote: Установка активных имплантируемых слуховых систем
     drug_groups: []
     drugs: []
     procedures: []
@@ -1022,7 +525,8 @@ conditions:
   follow_up: []
   hospitalization: []
   routing:
-  - text: госпитализация
+  - text: Специализированная медицинская помощь оказывается в амбулаторных и стационарных
+      условиях
     timing: null
     required_if: []
     source_ref:
@@ -1036,9 +540,11 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: госпитализация
-  - text: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-      костной проводимости: заболевания, нарушающие остеоинтеграцию.'
+      quote: Специализированная медицинская помощь оказывается в амбулаторных и стационарных
+        условиях
+  - text: 'Противопоказания к имплантации цифрового слухового аппарата костной проводимости:
+      заболевания, нарушающие остеоинтеграцию; недостаточность объема и качества костной
+      ткани; костно-воздушный интервал менее 15–20 дБ.'
     timing: null
     required_if: []
     source_ref:
@@ -1052,10 +558,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-        костной проводимости: заболевания, нарушающие остеоинтеграцию.'
-  - text: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-      костной проводимости: отсутствие достаточного объема и качества костной ткани.'
+      quote: 'Противопоказания к имплантации цифрового слухового аппарата костной
+        проводимости: заболевания, нарушающие остеоинтеграцию; недостаточность объема
+        и качества костной ткани; костно-воздушный интервал ме'
+  - text: 'Противопоказания к имплантации системы среднего уха: заболевания кожи околоушной
+      области, препятствующие креплению аудиопроцессора магнитом; ретрокохлеарная
+      патология или центральные слуховые нарушения.'
     timing: null
     required_if: []
     source_ref:
@@ -1069,10 +577,14 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-        костной проводимости: отсутствие достаточного объема и качества костной ткани.'
-  - text: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-      костной проводимости: костно-воздушный интервал менее 15–20 дБ.'
+      quote: 'Противопоказания к имплантации системы среднего уха: заболевания кожи
+        околоушной области, препятствующие креплению аудиопроцессора магнитом; ретрокохлеарная
+        патология или центральные слуховые нарушени'
+  - text: 'Противопоказания к кохлеарной имплантации (КИ): полная облитерация улитки;
+      ретрокохлеарное поражение; отрицательные результаты электрофизиологического
+      тестирования слуха; соматическая патология в стадии декомпенсации; психические
+      заболевания и грубые неврологические нарушения; отсутствие мотивации пациента
+      и родителей к длительной реабилитации.'
     timing: null
     required_if: []
     source_ref:
@@ -1086,85 +598,12 @@ conditions:
       section_type: null
       table_index: null
       row_index: null
-      quote: 'Противопоказания для имплантации аппарата слухового цифрового имплантируемого
-        костной проводимости: костно-воздушный интервал менее 15–20 дБ.'
-  - text: 'Противопоказания для имплантации системы имплантации среднего уха воздушной
-      проводимости: заболевания кожи в околоушной области, препятствующие креплению
-      аудиопроцессора.'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Противопоказания для имплантации системы имплантации среднего уха воздушной
-        проводимости: заболевания кожи в околоушной области, препятствующие креплению
-        аудиопроцессора.'
-  - text: 'Противопоказания для имплантации системы имплантации среднего уха воздушной
-      проводимости: ретрокохлеарная патология или центральные слуховые нарушения.'
-    timing: null
-    required_if: []
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: null
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: 'Противопоказания для имплантации системы имплантации среднего уха воздушной
-        проводимости: ретрокохлеарная патология или центральные слуховые нарушения.'
+      quote: 'Противопоказания к кохлеарной имплантации (КИ): полная облитерация улитки;
+        ретрокохлеарное поражение; отрицательные результаты электрофизиологического
+        тестирования слуха; соматическая патология в стад'
   red_flags:
-  - text: Выраженные явления интоксикации при гнойном среднем отите в доперфоративной
-      стадии.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: наличии гнойного среднего отита в доперфоративной стадии при выраженных
-        явлениях интоксикации;
-  - text: Развитие нейросенсорной тугоухости при наличии экссудата в барабанной полости.
-    aliases: []
-    red_flag_type: other
-    severity: medium
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: развитии нейросенсорной тугоухости при наличии экссудата в барабанной
-        полости;
-  - text: Наличие или подозрение на внутричерепной или внутрилабиринтный гнойный процесс.
+  - text: Подозрение на внутричерепной или внутрилабиринтный гнойный процесс, отогенную
+      нейропатию лицевого нерва
     aliases: []
     red_flag_type: other
     severity: high
@@ -1183,30 +622,9 @@ conditions:
       row_index: null
       quote: наличии или подозрении на внутричерепной или внутрилабиринтный гнойный
         процесс, или отогенную нейропатию лицевого нерва при наличии острого воспаления
-        в среднем ухе;
-  - text: Отогенная нейропатия лицевого нерва при наличии острого воспаления в среднем
-      ухе.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: отогенную нейропатию лицевого нерва при наличии острого воспаления в
-        среднем ухе;
-  - text: Наличие внутричерепных осложнений (экстрадуральный абсцесс, отогенные абсцессы
-      мозга и мозжечка, поражение мозговых оболочек), тромбофлебит сигмовидного синуса
-      и отогенный сепсис.
+        в среднем ухе
+  - text: Внутричерепные осложнения (абсцессы мозга и мозжечка, поражение оболочек),
+      тромбофлебит сигмовидного синуса, отогенный сепсис
     aliases: []
     red_flag_type: other
     severity: high
@@ -1225,47 +643,7 @@ conditions:
       row_index: null
       quote: наличии внутричерепных осложнений (экстрадуральный абсцесс, отогенные
         абсцессы мозга и мозжечка, поражение мозговых оболочек), тромбофлебите сигмовидного
-        синуса и отогенном сепсисе;
-  - text: Мастоидит, осложненный нарушением функции лицевого нерва или гнойным воспалением
-      шейных клетчаточных пространств.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: мастоидите, осложненном нарушением функции лицевого нерва или гнойном
-        воспалении шейных клетчаточных пространств;
-  - text: Необходимость диагностики для исключения деструктивного процесса в сосцевидном
-      отростке.
-    aliases: []
-    red_flag_type: other
-    severity: high
-    expected_actions: []
-    cap_if_unhandled: null
-    source_ref:
-      protocol_id: novoobrazovaniya_кп_лечение_и_медицинская_реабилитация_детей_с_нарушениями_слуха
-      document_url: null
-      local_path: minzdrav_protocols/novoobrazovaniya/КП Лечение и медицинская реабилитация
-        детей с нарушениями слуха 23.08.2019 № 88.pdf
-      page_start: 4
-      page_end: null
-      section_title: null
-      section_type: null
-      table_index: null
-      row_index: null
-      quote: необходимости диагностики для исключения деструктивного процесса в сосцевидном
-        отростке.
+        синуса и отогенном сепсисе
   contraindications: []
   complications: []
   kz_checklist: null
@@ -1274,15 +652,15 @@ global_red_flags: []
 global_contraindications: []
 global_notes: []
 extraction_metadata:
-  extracted_at: '2026-07-20T17:05:18.390110+00:00'
+  extracted_at: '2026-07-23T09:03:20.188932+00:00'
   extractor: llm_extractor
   extractor_version: '1.0'
   source_document_sha256: null
   notes:
   - llm_pipeline_v1
-  - conditions=2
+  - conditions=1
 validation:
   status: valid
   errors: []
   warnings: []
-  validated_at: '2026-07-20T17:05:18.392301+00:00'
+  validated_at: '2026-07-23T09:03:20.191336+00:00'
