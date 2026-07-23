@@ -36,6 +36,14 @@ data/mis_protocol/*_state.jsonl
 !data/mis_protocol/*_llm_queue.json
 data/mis_protocol/*_gemini_reviews.json
 
+# Мировые базы ЛС: сырьё/большие индексы регенерируются скриптами (fetch_*/build_*),
+# рукотворные seed'ы (high_alert, stopp_start_beers) — коммитим.
+data/drug_safety/ddinter/
+data/drug_safety/ddinter_pairs.json
+data/drug_safety/rxnorm_cache.json
+!data/drug_safety/high_alert.json
+!data/drug_safety/stopp_start_beers.json
+
 # ML feedback: тексты КЗ и снимки прогонов (on-prem, ПДн)
 data/ml/secure/
 data/ml/analyses/
