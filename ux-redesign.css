@@ -1,0 +1,190 @@
+/* ТЗ №2 - UX redesign foundation.
+ * Семантические design tokens (§G1), минимальные размеры и accessibility (§G2),
+ * стили простого режима проверки КЗ (§D2) и статусов результата поиска (§A2/A3).
+ * Файл аддитивный и изолированный: подключается последним, не переопределяет
+ * бизнес-логику, только усиливает контраст, размеры и доступность.
+ */
+
+:root {
+  /* --- семантические токены (§G1) --- */
+  --ux-bg-canvas: #f4f8f6;
+  --ux-bg-surface: #ffffff;
+  --ux-bg-surface-alt: #f0f5f3;
+  --ux-text-strong: #10241f;
+  --ux-text: #1f3a33;
+  --ux-text-muted: #4a5f59;         /* >= 4.5:1 на белом (было слишком светло) */
+  --ux-border: #c4d6cf;             /* заметнее пастельного #e5efe c */
+  --ux-border-strong: #8fb3a8;
+  --ux-action: #0f9d76;
+  --ux-action-strong: #0b7f5f;
+  --ux-action-contrast: #ffffff;
+  --ux-status-error: #b42318;
+  --ux-status-warning: #b25c00;
+  --ux-status-success: #0b7f5f;
+  --ux-status-info: #1d5fb0;
+
+  --ux-space-1: 4px;
+  --ux-space-2: 8px;
+  --ux-space-3: 12px;
+  --ux-space-4: 16px;
+  --ux-space-5: 24px;
+  --ux-space-6: 32px;
+
+  --ux-radius-sm: 8px;
+  --ux-radius-md: 12px;
+  --ux-radius-lg: 18px;
+
+  --ux-shadow-1: 0 1px 2px rgba(16, 36, 31, 0.08);
+  --ux-shadow-2: 0 6px 20px rgba(16, 36, 31, 0.12);
+
+  --ux-font-body: 16px;      /* §G2 body >= 16px */
+  --ux-font-secondary: 14px; /* §G2 secondary >= 14px */
+  --ux-line-body: 1.5;
+  --ux-touch-min: 44px;      /* §G2 touch target */
+
+  --ux-motion-fast: 140ms;
+  --ux-motion-drawer: 220ms;
+}
+
+/* --- §G2 минимальные размеры рабочих текстов --- */
+.query-form-hint,
+.consult-deep-toggle__hint,
+.result-status-badge,
+.result-why-list li {
+  font-size: var(--ux-font-secondary);
+  line-height: var(--ux-line-body);
+}
+
+/* --- §G2 видимый focus indicator на ключевых интерактивных элементах --- */
+.btn:focus-visible,
+.btn-submit-row:focus-visible,
+.btn-consult-primary:focus-visible,
+.search-inline-population__btn:focus-visible,
+.search-settings-trigger:focus-visible,
+.consult-deep-toggle input:focus-visible,
+.ux-filter-chip:focus-visible,
+.ux-role-nav__link:focus-visible {
+  outline: 3px solid var(--ux-action-strong);
+  outline-offset: 2px;
+  border-radius: var(--ux-radius-sm);
+}
+
+/* --- §G2 touch targets: верхние вкладки и population-кнопки --- */
+.search-inline-population__btn,
+.search-settings-trigger {
+  min-height: var(--ux-touch-min);
+}
+
+/* --- §D2 простой режим проверки КЗ --- */
+.consult-simple-mode {
+  margin: var(--ux-space-3) 0;
+}
+.consult-deep-toggle {
+  display: flex;
+  gap: var(--ux-space-3);
+  align-items: flex-start;
+  padding: var(--ux-space-3) var(--ux-space-4);
+  border: 1px solid var(--ux-border);
+  border-radius: var(--ux-radius-md);
+  background: var(--ux-bg-surface);
+  box-shadow: var(--ux-shadow-1);
+  cursor: pointer;
+  min-height: var(--ux-touch-min);
+}
+.consult-deep-toggle:hover {
+  border-color: var(--ux-border-strong);
+}
+.consult-deep-toggle input {
+  width: 22px;
+  height: 22px;
+  margin-top: 2px;
+  accent-color: var(--ux-action);
+  flex: 0 0 auto;
+}
+.consult-deep-toggle__text {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.consult-deep-toggle__title {
+  font-size: var(--ux-font-body);
+  font-weight: 600;
+  color: var(--ux-text-strong);
+}
+.consult-deep-toggle__hint {
+  color: var(--ux-text-muted);
+}
+.consult-advanced-tier {
+  margin: var(--ux-space-2) 0 var(--ux-space-3);
+  border: 1px dashed var(--ux-border);
+  border-radius: var(--ux-radius-md);
+  padding: 0 var(--ux-space-3);
+}
+.consult-advanced-tier > summary {
+  cursor: pointer;
+  padding: var(--ux-space-3) 0;
+  font-size: var(--ux-font-secondary);
+  color: var(--ux-text-muted);
+  min-height: var(--ux-touch-min);
+  display: flex;
+  align-items: center;
+}
+.consult-advanced-tier[open] > summary {
+  color: var(--ux-text-strong);
+  font-weight: 600;
+}
+
+/* --- §A2/A3 честные статусы результата поиска --- */
+.result-status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 3px 10px;
+  border-radius: 999px;
+  font-weight: 600;
+  border: 1px solid transparent;
+  white-space: nowrap;
+}
+.result-status-badge[data-status="exact_match"] {
+  background: #e4f6ee; color: var(--ux-status-success); border-color: #a9dcc6;
+}
+.result-status-badge[data-status="icd_match"] {
+  background: #e8f1fb; color: var(--ux-status-info); border-color: #b6d3f0;
+}
+.result-status-badge[data-status="possible"] {
+  background: var(--ux-bg-surface-alt); color: var(--ux-text-muted); border-color: var(--ux-border);
+}
+.result-status-badge[data-status="needs_clarification"] {
+  background: #fdf2e3; color: var(--ux-status-warning); border-color: #f0d3a8;
+}
+.result-status-badge[data-status="not_for_audience"],
+.result-status-badge[data-status="outdated"] {
+  background: #fdecec; color: var(--ux-status-error); border-color: #f2c0bb;
+}
+.result-why-list {
+  margin: var(--ux-space-2) 0 0;
+  padding-left: 1.1rem;
+  color: var(--ux-text-muted);
+}
+
+/* --- §G4 motion: уважать prefers-reduced-motion --- */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.001ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+/* --- §G2 reflow: без горизонтального overflow на узких экранах --- */
+@media (max-width: 400px) {
+  .consult-actions {
+    flex-wrap: wrap;
+  }
+  .consult-deep-toggle {
+    padding: var(--ux-space-3);
+  }
+}

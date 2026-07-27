@@ -589,7 +589,13 @@
     var wrap = document.getElementById("tone-chips");
     if (!wrap) return;
     wrap.innerHTML = "";
-    questionTonesCatalog.forEach(function (t) {
+    // ТЗ №2 §E2: спокойный нейтральный тон по умолчанию; «Шуточно» убран из основного
+    // пути и доступен только под feature flag (window.__PATIENT_PLAYFUL_TONE__ === true).
+    var playfulEnabled = window.__PATIENT_PLAYFUL_TONE__ === true;
+    var visibleTones = questionTonesCatalog.filter(function (t) {
+      return playfulEnabled || t.id !== "playful";
+    });
+    visibleTones.forEach(function (t) {
       var btn = document.createElement("button");
       btn.type = "button";
       var active = selectedQuestionTone === t.id;

@@ -623,6 +623,26 @@
       box-shadow: var(--shadow);
     }
     .onboard.hidden { display: none !important; }
+    .onboard--collapsible > summary {
+      cursor: pointer;
+      list-style: none;
+      display: flex;
+      flex-direction: column;
+      gap: 0.15rem;
+      min-height: 44px;
+      justify-content: center;
+    }
+    .onboard--collapsible > summary::-webkit-details-marker { display: none; }
+    .onboard__summary-title {
+      font-family: Outfit, sans-serif;
+      font-size: 1.02rem;
+      font-weight: 700;
+      color: var(--g900, #10241f);
+    }
+    .onboard__summary-title::after { content: " ▸"; font-size: 0.85em; opacity: 0.6; }
+    .onboard--collapsible[open] .onboard__summary-title::after { content: " ▾"; }
+    .onboard__summary-steps { font-size: 0.8rem; color: var(--muted); }
+    .onboard--collapsible[open] > summary { margin-bottom: 0.6rem; }
     .onboard h2 {
       font-family: Outfit, sans-serif;
       font-size: 1.05rem;
@@ -1135,8 +1155,11 @@
       <p class="hero-lead">Поймите своё заключение, подготовьте вопросы врачу и лист на следующий визит. Сверка с протоколами Минздрава РБ - ориентир, не диагноз.</p>
     </header>
 
-    <section class="onboard" id="onboard">
-      <h2>Как это работает</h2>
+    <details class="onboard onboard--collapsible" id="onboard">
+      <summary class="onboard__summary">
+        <span class="onboard__summary-title">Как это работает</span>
+        <span class="onboard__summary-steps">1) Загрузите заключение · 2) получите понятный разбор · 3) возьмите вопросы к врачу</span>
+      </summary>
       <p class="onboard-lead">Загрузите заключение после приёма (КЗ, медосмотр или консультацию) - поможем понять его и подготовить вопросы врачу. Это не диагноз и не оценка врача.</p>
       <div class="onboard-grid">
         <div class="onboard-item">
@@ -1153,8 +1176,8 @@
         </div>
       </div>
       <button type="button" class="btn-primary" id="btn-onboard-ok">К загрузке документа</button>
-      <p class="onboard-cta-hint">Откроется форма ниже - нажмите «Сделать фото» или «Загрузить файл».</p>
-    </section>
+      <p class="onboard-cta-hint">Форма загрузки - сразу ниже: «Сделать фото» или «Загрузить файл».</p>
+    </details>
 
     <section class="card" id="form-card">
       <p class="card-title">Документы</p>

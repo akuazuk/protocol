@@ -287,6 +287,22 @@ def match_protocol_cards(
         )
         if len(out) >= limit:
             break
+
+    # Applicability-gate (ТЗ №2, §A): честный статус результата + безопасный re-rank,
+    # чтобы неподтверждённый population-specific (особенно детский) протокол не стал
+    # рекомендуемым Top-1 при взрослом/неопределённом запросе. Аддитивно, за флагом.
+    try:
+        from .search_applicability_gate import apply_applicability_gate, gate_enabled
+
+        if gate_enabled():
+            _pat = patient or {}
+            _aud = (_pat.get("adult_or_child") or "").lower()
+            pediatric_signal = _aud in ("child", "newborn")
+            out = apply_applicability_gate(
+                out, _pat, icd_list, pediatric_signal=pediatric_signal
+            )
+    except Exception:
+        pass
     return out
 
 

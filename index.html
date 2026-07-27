@@ -20,6 +20,7 @@
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,600;0,9..40,700;1,9..40,400&family=Outfit:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/protocol-chrome-tabs.css" />
   <link rel="stylesheet" href="/search-flow.css" />
+  <link rel="stylesheet" href="/ux-redesign.css" />
   <style>
     :root {
       /* Палитра в духе kravira.by: глубокий изумруд + мята */
@@ -12938,10 +12939,12 @@
           <p class="hint search-query-status" id="search-query-status" aria-live="polite" hidden></p>
         </div>
       </div>
-      <div class="search-settings-drawer" id="search-settings-drawer" hidden>
+      <div class="search-settings-drawer" id="search-settings-drawer" role="region" aria-labelledby="search-settings-drawer-title" hidden>
         <div class="search-settings-drawer__head">
-          <button type="button" class="search-settings-drawer__close" id="btn-search-settings-close">Закрыть</button>
+          <h3 class="search-settings-drawer__title" id="search-settings-drawer-title">Все фильтры и режим поиска</h3>
+          <button type="button" class="search-settings-drawer__close" id="btn-search-settings-close" aria-label="Закрыть панель фильтров">Закрыть</button>
         </div>
+        <p class="search-settings-drawer__lead" style="margin:0 0 var(--ux-space-3);font-size:var(--ux-font-secondary);color:var(--ux-text-muted)">Выберите глубину подбора и режим ответа. Возрастная группа и особые состояния - кнопками «Аудитория» выше.</p>
         <div id="search-settings-drawer-body">
           <div class="search-mode-toolbar" role="group" aria-label="Режим отображения результатов">
             <label class="search-mode-toolbar__citations-only">
@@ -13410,6 +13413,17 @@
             </div>
           </details>
 
+          <div class="consult-simple-mode consult-hide-print" id="consult-simple-mode">
+            <label class="consult-deep-toggle" for="consult-deep-check">
+              <input type="checkbox" id="consult-deep-check" />
+              <span class="consult-deep-toggle__text">
+                <span class="consult-deep-toggle__title">Глубокая сверка с клиническим протоколом</span>
+                <span class="consult-deep-toggle__hint">Дольше (≈ 10-25 с): alignment и выдержки протокола. Без галочки - обычный структурный разбор.</span>
+              </span>
+            </label>
+          </div>
+          <details class="consult-advanced-tier consult-hide-print" id="consult-advanced-tier">
+            <summary class="consult-advanced-tier__summary">Расширенные настройки анализа (уровни L0 / L1 / L2, для методиста)</summary>
           <div class="consult-tier-panel consult-hide-print" id="consult-tier-panel" role="group" aria-labelledby="consult-tier-title">
             <div class="consult-tier-panel__head">
               <h3 class="consult-tier-panel__title" id="consult-tier-title">Уровень проверки</h3>
@@ -13447,9 +13461,10 @@
             </div>
             <p class="consult-tier-hint" id="consult-tier-hint" aria-live="polite"></p>
           </div>
+          </details>
           <div class="consult-actions">
-            <button type="button" class="btn-consult-primary" id="consult-btn-run">Проанализировать (L1)</button>
-            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="L2: сверка с протоколом и evidence pack - быстрее полного RAG">Сверка L2</button>
+            <button type="button" class="btn-consult-primary" id="consult-btn-run">Проверить заключение</button>
+            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="L2: сверка с протоколом и evidence pack - быстрее полного RAG" hidden aria-hidden="true">Сверка L2</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-demo-text">Демо-текст КЗ (СКВ)</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-reset">Сбросить раздел</button>
           </div>
@@ -33706,6 +33721,33 @@
         }
         btnRun.click();
       });
+    }
+
+    // ТЗ №2 §D2: простой режим - одна галочка «Глубокая сверка» вместо выбора L0/L1/L2.
+    // Внутренние уровни остаются в раскрываемом блоке «Расширенные настройки» (для методиста).
+    var deepCheck = document.getElementById("consult-deep-check");
+    if (deepCheck) {
+      var setTierRadio = function (val) {
+        var input = document.querySelector('input[name="consult-tier"][value="' + val + '"]');
+        if (input && !input.checked) {
+          input.checked = true;
+          try { localStorage.setItem("consult_review_tier", val); } catch (e) {}
+          if (typeof updateConsultTierHint === "function") updateConsultTierHint(val);
+        }
+      };
+      deepCheck.addEventListener("change", function () {
+        setTierRadio(deepCheck.checked ? "L2" : "L1");
+      });
+      // Синхронизация в обратную сторону: если методист вручную выбрал уровень в
+      // расширенном блоке, галочка отражает только L2.
+      document.querySelectorAll('input[name="consult-tier"]').forEach(function (inp) {
+        inp.addEventListener("change", function () {
+          if (inp.checked) deepCheck.checked = inp.value === "L2";
+        });
+      });
+      try {
+        if (localStorage.getItem("consult_review_tier") === "L2") deepCheck.checked = true;
+      } catch (e3) {}
     }
 
     var btnL2Narrative = document.getElementById("consult-btn-l2-narrative");
