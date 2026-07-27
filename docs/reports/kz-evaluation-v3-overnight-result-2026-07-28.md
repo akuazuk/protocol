@@ -128,5 +128,13 @@ python -m clinical_knowledge.protocol_knowledge_model --validate <summary.json>
 ```
 
 ## 15. Commit SHA и remote branch
-См. финальный ответ сессии (SHA коммитов и результат `git push -u origin
-codex/kz-evaluation-quality-v3`).
+- Ветка: `codex/kz-evaluation-quality-v3` (push в `origin` выполнен).
+- Коммиты поверх baseline `ce82af2`:
+  - `ab5af54` feat(kz): trust-aware evaluation v3 contract, engine и applicability
+  - `b7244ee` feat(protocols): knowledge-model + аудит корпуса + очередь методиста
+  - `f6bd0de` feat(kz): medication findings, gold, shadow benchmark + аддитивный API
+- Полный pytest: **6 pre-existing baseline failures** (подтверждены на baseline main
+  worktree, модули не затронуты задачей): `test_drug_normalizer` (amoxicillin
+  нормализация ×2), `test_consult_cache::test_same_pdf_returns_identical_result`,
+  `test_medication_safety::test_obgyn_61_...pregnancy`,
+  `test_assist_search_speed` (×2). Остальные — зелёные. Новые v3-тесты (44) зелёные.
