@@ -9,23 +9,25 @@
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
 <style>
   :root {
-    --ink: #3d4a55;
-    --muted: #7a8b98;
-    --line: #e4ebe8;
-    --card: rgba(255,255,255,.86);
-    --bg0: #f4f7f5;
-    --bg1: #faf8f6;
-    --teal: #7a9e95;
-    --teal-deep: #5f7d76;
-    --mint: #d8ebe4;
-    --lavender: #e4e0f0;
-    --peach: #f3e4d8;
-    --sky: #d9e6f2;
-    --rose: #eddde3;
-    --good: #6f9e8c;
-    --mid: #c4a574;
-    --low: #c4898a;
-    --shadow: 0 14px 40px rgba(95, 125, 118, 0.08);
+    /* Единая палитра kravira (как в основном кабинете index.html) */
+    --ink: #1a2e2a;
+    --muted: #5a6f6a;
+    --line: #dbe7e2;
+    --card: rgba(255,255,255,.92);
+    --bg0: #f4fbf7;
+    --bg1: #eaf6f1;
+    --teal: #1a8a72;
+    --teal-deep: #0d5c4a;
+    --mint: #d6f3e8;
+    --lavender: #ebe6fa;
+    --peach: #fdebd3;
+    --sky: #dbeefe;
+    --rose: #fce4ec;
+    --good: #10b981;
+    --mid: #f59e0b;
+    --low: #e11d48;
+    --shadow: 0 12px 40px rgba(6, 61, 53, 0.12);
+    --glow-green: 0 8px 26px rgba(13, 92, 74, 0.28);
     --radius: 20px;
   }
   * { box-sizing: border-box; }
@@ -34,10 +36,9 @@
     color: var(--ink);
     font-family: "DM Sans", "Outfit", system-ui, sans-serif;
     background:
-      radial-gradient(900px 420px at 8% -8%, #e5f0ea 0%, transparent 58%),
-      radial-gradient(780px 360px at 100% 0%, #ebe6f4 0%, transparent 55%),
-      radial-gradient(700px 300px at 50% 100%, #f3e9df 0%, transparent 50%),
-      linear-gradient(180deg, var(--bg0), var(--bg1) 45%, #fff);
+      radial-gradient(ellipse 90% 55% at 0% 0%, rgba(219, 238, 254, 0.55), transparent 52%),
+      radial-gradient(ellipse 80% 50% at 100% 0%, rgba(216, 245, 234, 0.65), transparent 48%),
+      linear-gradient(180deg, #f4fbf7 0%, #eaf6f1 42%, #e2f0ea 100%);
     min-height: 100vh;
   }
   h1, h2, h3 { font-family: "Outfit", "DM Sans", system-ui, sans-serif; font-weight: 650; letter-spacing: -0.02em; color: var(--teal-deep); }
@@ -70,10 +71,15 @@
   .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
   .btn {
     appearance: none; border: 0; cursor: pointer; border-radius: 999px;
-    padding: 10px 14px; font: inherit; font-size: 13px; font-weight: 600;
-    background: #fff; color: var(--teal-deep); text-decoration: none;
+    padding: 10px 16px; font: inherit; font-size: 13px; font-weight: 700;
+    background: linear-gradient(135deg, var(--teal), var(--teal-deep));
+    color: #fff; text-decoration: none; box-shadow: var(--glow-green);
+    transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
   }
-  .btn--ghost { background: rgba(255,255,255,.55); color: var(--teal-deep); border: 1px solid rgba(122,158,149,.28); }
+  .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
+  .btn:active { transform: translateY(0); }
+  .btn--ghost { background: rgba(255,255,255,.7); color: var(--teal-deep); border: 1px solid rgba(26,138,114,.32); box-shadow: none; }
+  .btn--ghost:hover { background: #fff; filter: none; }
   .meta { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: 13px; color: var(--muted); }
   .kpi-grid {
     display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 18px 0 8px;
@@ -99,9 +105,9 @@
   .bar-row { display: grid; grid-template-columns: 72px 1fr 48px; gap: 10px; align-items: center; }
   .bar-row .name { font-size: 12px; color: var(--muted); font-weight: 600; }
   .bar-track { height: 12px; border-radius: 999px; background: #eef2f0; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #a8c9be, #c5d8e8); }
-  .bar-fill.is-mid { background: linear-gradient(90deg, #e2c9a8, #f0d9b8); }
-  .bar-fill.is-low { background: linear-gradient(90deg, #e2b8bc, #edd0d4); }
+  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #34d399, #10b981); }
+  .bar-fill.is-mid { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+  .bar-fill.is-low { background: linear-gradient(90deg, #fb7185, #e11d48); }
   .bar-row .pct { font-size: 12px; font-weight: 700; text-align: right; }
   table { width: 100%; border-collapse: collapse; font-size: 13px; }
   th, td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
@@ -111,9 +117,9 @@
     display: inline-flex; min-width: 52px; justify-content: center;
     padding: 3px 8px; border-radius: 999px; font-weight: 700; font-size: 12px;
   }
-  .score.good { background: #e8f2ee; color: #4f7a6a; }
-  .score.mid { background: #f6eee3; color: #8a6b3d; }
-  .score.low { background: #f4e8ea; color: #9a6064; }
+  .score.good { background: #d1fae5; color: #047857; }
+  .score.mid { background: #fef3c7; color: #b45309; }
+  .score.low { background: #ffe4e6; color: #be123c; }
   .error {
     margin-top: 16px; padding: 14px 16px; border-radius: 14px;
     background: #fdecec; color: #7f1d1d; border: 1px solid #f5c2c2;
@@ -202,8 +208,8 @@
     color: var(--muted); background: transparent; padding: 9px 16px; border-radius: 999px;
     transition: background .15s ease, color .15s ease;
   }
-  .topnav button:hover { color: var(--teal-deep); }
-  .topnav button.is-on { background: var(--teal-deep); color: #fff; box-shadow: 0 6px 16px rgba(95,125,118,.24); }
+  .topnav button:hover { color: var(--teal-deep); background: rgba(26,138,114,.10); }
+  .topnav button.is-on { background: linear-gradient(135deg, var(--teal), var(--teal-deep)); color: #fff; box-shadow: var(--glow-green); }
   .view[hidden] { display: none; }
 
   .scorecard {
@@ -1503,7 +1509,7 @@
 
   /* ===================== Редизайн v2: командный центр ===================== */
   function scoreTone(v) { return v == null ? "" : (v >= 80 ? "good" : (v >= 60 ? "mid" : "low")); }
-  function scoreColor(v) { return v == null ? "#c2ccc8" : (v >= 80 ? "#6f9e8c" : (v >= 60 ? "#c4a574" : "#c4898a")); }
+  function scoreColor(v) { return v == null ? "#c2ccc8" : (v >= 80 ? "#10b981" : (v >= 60 ? "#f59e0b" : "#e11d48")); }
   function verdictOf(v) {
     if (v == null) return ["Нет данных", ""];
     if (v >= 90) return ["Отлично", "качество записей высокое"];
@@ -1609,7 +1615,7 @@
         var cell = map[s + "||" + c.chapter];
         if (!cell || cell.avg == null) return "<td><div class='cell empty'>·</div></td>";
         var col = scoreColor(cell.avg);
-        return "<td><div class='cell' title='" + esc(s + " · " + c.label + ": avg " + cell.avg + "% (" + cell.n + " КЗ)') style='background:" + col + "33'>" + Math.round(cell.avg) + "</div></td>";
+        return "<td><div class='cell' title='" + esc(s + " · " + c.label + ": avg " + cell.avg + "% (" + cell.n + " КЗ)") + "' style='background:" + col + "33'>" + Math.round(cell.avg) + "</div></td>";
       }).join("") + "</tr>";
     }).join("");
     box.innerHTML = "<table>" + head + body + "</table>";
