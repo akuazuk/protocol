@@ -62,6 +62,9 @@ def _card_icd_roots(card: dict[str, Any]) -> set[str]:
         code = f.get("code") if isinstance(f, dict) else None
         if code:
             roots.add(_icd_root(str(code)))
+    for code in card.get("matched_icd_codes") or []:
+        if code:
+            roots.add(_icd_root(str(code)))
     return roots
 
 
@@ -99,7 +102,14 @@ def classify_result(
     icd_exact = bool(q_roots and c_roots and (q_roots & c_roots))
     icd_query_present = bool(q_roots)
 
-    score = float(card.get("match_score") or card.get("score") or 0.0)
+    raw_score = card.get("match_score")
+    if raw_score is None:
+        raw_score = card.get("score")
+    if raw_score is None:
+        raw_score = card.get("confidence_score")
+        if raw_score is not None and float(raw_score) <= 1.0:
+            raw_score = float(raw_score) * 100.0
+    score = float(raw_score or 0.0)
 
     reasons: list[str] = []
     if icd_exact:
@@ -189,8 +199,16 @@ def _sort_key(item: dict[str, Any]) -> tuple:
     is_child = g.get("population") in ("child", "children", "pediatric")
     # внутри needs_clarification детское население - ниже взрослого/нейтрального
     child_penalty = 1 if (status == STATUS_CLARIFY and is_child) else 0
-    score = float(item.get("match_score") or item.get("score") or 0.0)
-    return (rank, child_penalty, -score)
+    route_delta = float(g.get("clinical_route_delta") or 0.0)
+    score = item.get("match_score")
+    if score is None:
+        score = item.get("score")
+    if score is None:
+        score = item.get("confidence_score")
+        if score is not None and float(score) <= 1.0:
+            score = float(score) * 100.0
+    score = float(score or 0.0)
+    return (rank, child_penalty, -route_delta, -score)
 
 
 def apply_applicability_gate(
@@ -200,6 +218,7 @@ def apply_applicability_gate(
     *,
     pediatric_signal: bool = False,
     keep_not_applicable: bool = False,
+    query: str = "",
 ) -> list[dict[str, Any]]:
     """Классифицировать и пере-ранжировать результаты с applicability-gate.
 
@@ -207,9 +226,40 @@ def apply_applicability_gate(
     поднимает подтверждённые/нейтральные результаты выше неподтверждённых population-
     specific. Не удаляет карточки (кроме not_applicable при keep_not_applicable=False).
     """
+    route_ids: list[str] = []
+    if query:
+        try:
+            from .search_clinical_routing import detect_clinical_route_ids
+
+            route_ids = detect_clinical_route_ids(query, list(icd_query_codes or []))
+        except Exception:
+            route_ids = []
+
     out: list[dict[str, Any]] = []
     for card in cards:
         g = classify_result(card, patient, icd_query_codes, pediatric_signal=pediatric_signal)
+        if route_ids:
+            try:
+                from .search_clinical_routing import score_path_for_clinical_routes
+
+                route_delta, route_matches = score_path_for_clinical_routes(
+                    str(card.get("source_path") or card.get("path") or ""),
+                    str(card.get("title") or ""),
+                    route_ids=route_ids,
+                )
+                g["clinical_route_delta"] = route_delta
+                g["clinical_route_matches"] = route_matches
+                if route_delta > 0:
+                    g["why_reasons"].append("Название соответствует клиническому запросу.")
+                elif route_delta < 0:
+                    g["why_reasons"].append("Название указывает на другой клинический контекст.")
+                # ICD compatibility can come from a comorbidity mention. For a
+                # recognised clinical route, the stronger "recommended" claim
+                # additionally requires positive title/path evidence.
+                if route_delta <= 0:
+                    g["recommended"] = False
+            except Exception:
+                pass
         if g["status"] == STATUS_NOT_FOR_AUDIENCE and not keep_not_applicable:
             continue
         enriched = dict(card)

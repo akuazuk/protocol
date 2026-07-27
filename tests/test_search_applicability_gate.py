@@ -147,3 +147,69 @@ def test_gate_never_labels_recommended_below_threshold_across_dataset() -> None:
                 assert float(item.get("match_score") or 0) >= 60.0
                 assert g["applicability"] == "applicable"
                 assert g["status"] in (STATUS_EXACT, "icd_match")
+
+
+def test_fast_icd_payload_fields_are_supported() -> None:
+    """Боевой /api/search/protocols-by-icd использует path/audience/confidence_score."""
+    cards = [
+        {
+            "path": "protocols/antiphospholipid-syndrome.pdf",
+            "title": "Антифосфолипидный синдром",
+            "audience": "mixed",
+            "confidence_score": 0.98,
+            "matched_icd_codes": ["I10"],
+        },
+        {
+            "path": "protocols/pediatric-hypertension.pdf",
+            "title": "Гипертензия, детское население",
+            "audience": "pediatric",
+            "confidence_score": 0.95,
+            "matched_icd_codes": ["I10"],
+        },
+        {
+            "path": "protocols/hypertension.pdf",
+            "title": "Болезни, характеризующиеся повышенным кровяным давлением",
+            "audience": "any",
+            "confidence_score": 0.64,
+            "matched_icd_codes": ["I10"],
+        },
+    ]
+    ranked = apply_applicability_gate(
+        cards,
+        {},
+        ["I10"],
+        query="I10 эссенциальная гипертензия",
+    )
+    assert ranked[0]["path"].endswith("hypertension.pdf")
+    assert ranked[0]["result_status"] == STATUS_EXACT
+    assert ranked[-1]["result_status"] == STATUS_CLARIFY
+    assert not any(item["recommended"] for item in ranked)
+
+
+def test_clinical_route_suppresses_comorbidity_recommendation() -> None:
+    cards = [
+        {
+            "path": "protocols/hypertension.pdf",
+            "title": "Болезни, характеризующиеся повышенным кровяным давлением",
+            "audience": "any",
+            "confidence_score": 0.70,
+            "matched_icd_codes": ["I10"],
+        },
+        {
+            "path": "protocols/dialysis.pdf",
+            "title": "Лечение пациентов на хроническом диализе",
+            "audience": "adult",
+            "confidence_score": 0.90,
+            "matched_icd_codes": ["I10"],
+        },
+    ]
+    ranked = apply_applicability_gate(
+        cards,
+        {"adult_or_child": "adult"},
+        ["I10"],
+        query="I10 эссенциальная гипертензия",
+    )
+    assert ranked[0]["path"].endswith("hypertension.pdf")
+    assert ranked[0]["recommended"] is True
+    assert ranked[1]["_gate"]["clinical_route_delta"] <= 0
+    assert ranked[1]["recommended"] is False

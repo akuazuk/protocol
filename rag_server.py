@@ -9993,6 +9993,31 @@ def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
         lookup_result=lookup,
         icd_analysis=icd_analysis,
     )
+    # ТЗ №2 P0: быстрый ICD endpoint является основным путём UI. Применяем
+    # applicability-gate здесь, а не только в matcher проверки КЗ.
+    try:
+        from clinical_knowledge.search_applicability_gate import (
+            apply_applicability_gate,
+            gate_enabled,
+        )
+
+        if gate_enabled():
+            population = (body.population or "").strip().lower()
+            if population == "pediatric":
+                population = "child"
+            patient = {"adult_or_child": population} if population in ("adult", "child") else {}
+            protocols = list((payload.get("llm_json") or {}).get("protocols") or [])
+            gated = apply_applicability_gate(
+                protocols,
+                patient,
+                list(body.icd_codes or []),
+                pediatric_signal=population == "child",
+                query=q,
+            )
+            payload.setdefault("llm_json", {})["protocols"] = gated
+            payload["applicability_gate_applied"] = True
+    except Exception as exc:
+        logger.warning("search applicability gate failed: %s", str(exc)[:200])
     payload["icd"] = _icd_client_payload(icd_analysis)
     payload["search_timing"] = _build_search_timing(
         path="icd_fast_lookup",

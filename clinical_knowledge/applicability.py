@@ -30,7 +30,11 @@ ADULT_TITLE_MARKERS = (
 
 
 def _card_text(card: dict[str, Any]) -> str:
-    return ((card.get("title") or "") + " " + (card.get("source_path") or "")).lower()
+    return (
+        (card.get("title") or "")
+        + " "
+        + (card.get("source_path") or card.get("path") or "")
+    ).lower()
 
 
 def _title_population_marker(title: str) -> str | None:
@@ -48,7 +52,7 @@ def infer_card_population(card: dict[str, Any]) -> str:
     title_pop = _title_population_marker(str(card.get("title") or ""))
     if title_pop:
         return title_pop
-    raw = str(card.get("population") or "any").lower().strip()
+    raw = str(card.get("population") or card.get("audience") or "any").lower().strip()
     if raw in ("child", "children", "pediatric"):
         return "child"
     if raw == "adult":

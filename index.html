@@ -15962,6 +15962,9 @@
 
   function dedupeProtocolsByPath(protocols) {
     if (!protocols || !protocols.length) return [];
+    var hasApplicabilityGate = protocols.some(function (pr) {
+      return !!(pr && pr.result_status);
+    });
     var byPath = {};
     var i;
     for (i = 0; i < protocols.length; i++) {
@@ -16020,9 +16023,14 @@
     for (var b in byBase) {
       if (Object.prototype.hasOwnProperty.call(byBase, b)) out.push(byBase[b]);
     }
-    out.sort(function (a, b) {
-      return confidenceFromProtocol(b) - confidenceFromProtocol(a);
-    });
+    // The server-side applicability gate deliberately combines population,
+    // ICD and clinical-route signals. Do not undo that ordering in the UI by
+    // sorting only on the legacy retrieval confidence.
+    if (!hasApplicabilityGate) {
+      out.sort(function (a, b) {
+        return confidenceFromProtocol(b) - confidenceFromProtocol(a);
+      });
+    }
     return out;
   }
 
@@ -18685,15 +18693,21 @@
     var href = protocolPrimaryHref(pr.path || "");
     var title = formatProtocolDisplayTitle(pr.path || "", pr.title || "");
     var methodist = !!window.__methodistMode;
+    var isRecommended = pr.recommended === true;
     var explain = protocolWhyEnrichedRu(pr, data);
     var html =
       '<article class="proto-nav-card' +
-      (isTop ? " proto-nav-card--recommended" : "") +
+      (isRecommended ? " proto-nav-card--recommended" : "") +
       '" data-proto-path="' +
       escapeHtmlAttr(pr.path || "") +
       '">';
-    if (isTop) {
+    if (isRecommended) {
       html += '<p class="proto-nav-card__rec-label">Рекомендуем проверить первым</p>';
+    } else if (isTop && pr.result_status_label) {
+      html +=
+        '<p class="proto-nav-card__rec-label">' +
+        escapeHtml(pr.result_status_label) +
+        "</p>";
     }
     html += '<div class="proto-nav-card__head-row">';
     if (rank > 0 && !isTop) {
@@ -18829,7 +18843,8 @@
       "</span>";
     var sub = [];
     if (codes) sub.push(codes);
-    if (opts.top) sub.push("рекомендуем");
+    if (pr.recommended === true) sub.push("рекомендуем");
+    else if (pr.result_status_label) sub.push(pr.result_status_label.toLowerCase());
     else if (opts.weak) sub.push("ниже по близости");
     if (sub.length) {
       html += '<span class="proto-nav-index__sub">' + escapeHtml(sub.join(" · ")) + "</span>";
@@ -18871,10 +18886,18 @@
     if (!protos || !protos.length) return "";
     var high = [];
     var low = [];
+    var hasApplicabilityGate = protos.some(function (p) {
+      return !!(p && p.result_status);
+    });
     var pi;
-    for (pi = 0; pi < protos.length; pi++) {
-      if (confidenceFromProtocol(protos[pi]) >= 0.65) high.push(protos[pi]);
-      else low.push(protos[pi]);
+    if (hasApplicabilityGate) {
+      high = protos.slice(0, 3);
+      low = protos.slice(3, 5);
+    } else {
+      for (pi = 0; pi < protos.length; pi++) {
+        if (confidenceFromProtocol(protos[pi]) >= 0.65) high.push(protos[pi]);
+        else low.push(protos[pi]);
+      }
     }
     if (!high.length) high = protos.slice(0, 3);
     high = high.slice(0, 3);
@@ -18885,8 +18908,8 @@
     html += renderRecentProtocolsBar();
     html +=
       '<div class="proto-nav-top-cta" role="note">' +
-      '<p class="proto-nav-top-cta__lead">Список отсортирован по близости к запросу. Откройте <strong>раздел PDF</strong> или файл целиком. ' +
-      "Под рекомендованным протоколом - чек-лист оформления КЗ по СОП Кравира.</p>" +
+      '<p class="proto-nav-top-cta__lead">Список отсортирован по применимости и близости к запросу. Откройте <strong>раздел PDF</strong> или файл целиком. ' +
+      "Если аудитория не подтверждена, сначала уточните контекст пациента.</p>" +
       "</div>";
     var all = high.concat(low);
     html += '<div class="proto-nav-split">';
@@ -18895,7 +18918,7 @@
       html += renderProtocolNavIndexItem(all[pi], {
         rank: pi + 1,
         active: pi === 0,
-        top: pi === 0,
+        top: all[pi].recommended === true,
         weak: pi >= high.length,
       });
     }
