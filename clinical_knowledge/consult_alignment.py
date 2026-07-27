@@ -21,6 +21,7 @@ from clinical_knowledge.consult_criteria_enrichment import (
 from clinical_knowledge.consult_evidence_quality import is_kp_checklist_item
 from clinical_knowledge.consult_schema import ConsultationDocument
 from clinical_knowledge.dispensary_regulations import (
+    completeness_regulation_ref,
     follow_up_mentioned_in_text,
     lookup_follow_up_expectations,
 )
@@ -759,6 +760,74 @@ def _limitations_card(
     )
 
 
+_COMPLETENESS_NPA_BLOCKS = ("complaints", "anamnesis", "objective_status")
+
+
+def _attach_npa_to_completeness(card: dict[str, Any]) -> None:
+    """G: показать НПА-эталон (127) в карточке полноты, СОП оставить деталью."""
+    bid = str(card.get("block_id") or "")
+    if bid not in _COMPLETENESS_NPA_BLOCKS:
+        return
+    ref = completeness_regulation_ref(bid)
+    if not ref:
+        return
+    npa_src = ref.get("regulation_source") or "Постановление № 127"
+    npa_excerpt = ref.get("excerpt_ru") or ""
+    sop_ref = (card.get("reference_ru") or "").strip()
+    combined = f"НПА - {npa_src}: {npa_excerpt}."
+    if sop_ref and "127" not in sop_ref:
+        combined += f" Внутр. стандарт - {sop_ref}"
+    card["reference_ru"] = combined
+    card["protocol_excerpt"] = npa_excerpt or card.get("protocol_excerpt") or ""
+    card["protocol_section"] = f"{npa_src} · СОП № 2 Кравира"
+    card["regulation_source_ru"] = npa_src
+    card["regulation_url"] = ref.get("url") or ""
+    card["source_label"] = "НПА № 127 / СОП"
+
+
+def _kp_confidence(
+    ctx: dict[str, Any],
+    protocol_matches: list[dict[str, Any]] | None,
+) -> dict[str, Any]:
+    """Оценка уверенности подбора КП для E-quick."""
+    matches = protocol_matches or []
+    top = matches[0] if matches else {}
+    try:
+        score = float(top.get("match_score") or 0)
+    except (TypeError, ValueError):
+        score = 0.0
+    blob = f"{top.get('title') or ''} {top.get('path') or ''}".lower()
+    stationary = ("стационар" in blob) and ("амбулатор" not in blob)
+    scope_mismatch = stationary and (ctx.get("setting") or "ambulatory") == "ambulatory"
+    low = bool(score) and score < 45.0
+    return {"score": score, "scope_mismatch": scope_mismatch, "low": low}
+
+
+def _apply_kp_confidence_guard(card: dict[str, Any], conf: dict[str, Any]) -> None:
+    """E-quick: при слабом подборе КП не штрафовать жёстко за «пробелы»."""
+    if str(card.get("block_id") or "") not in ("exams", "treatment"):
+        return
+    if not (conf.get("low") or conf.get("scope_mismatch")):
+        return
+    floor = 50
+    if int(card.get("score_pct") or 0) < floor:
+        card["score_pct"] = floor
+    reasons: list[str] = []
+    if conf.get("scope_mismatch"):
+        reasons.append("подобран протокол для стационара, а КЗ амбулаторное")
+    if conf.get("low"):
+        reasons.append(f"низкое соответствие КП ({conf.get('score', 0):.0f}%)")
+    note = (
+        "Подбор КП низкой уверенности (" + "; ".join(reasons)
+        + ") - пробелы информативны, но не штрафуются жёстко."
+    )
+    card["kp_low_confidence"] = True
+    card["confidence_note_ru"] = note
+    base_comment = (card.get("comment_ru") or "").rstrip()
+    if note not in base_comment:
+        card["comment_ru"] = (base_comment + " " + note).strip()
+
+
 def build_consult_alignment(
     doc: ConsultationDocument,
     *,
@@ -800,11 +869,16 @@ def build_consult_alignment(
     cards.append(_follow_up_card(doc, icd_codes, profile))
     cards.append(_limitations_card(profile, ctx, protocol_matches))
 
+    kp_conf = _kp_confidence(ctx, protocol_matches)
     for card in cards:
         bid = str(card.get("block_id") or "")
         if bid and bid != "limitations":
             merge_sop_into_card(card, evaluate_sop_block(doc, bid))
             finalize_completeness_card(card)
+        # A + G: НПА-эталон полноты (127) поверх СОП для карточек осмотра.
+        _attach_npa_to_completeness(card)
+        # E-quick: гасим ложные пробелы КП при слабом/нерелевантном подборе.
+        _apply_kp_confidence_guard(card, kp_conf)
 
     by_id = {c["block_id"]: c for c in cards}
     ordered = [by_id[bid] for bid in ALIGNMENT_CARD_ORDER if bid in by_id]

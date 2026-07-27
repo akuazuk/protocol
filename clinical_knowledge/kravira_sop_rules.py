@@ -59,6 +59,20 @@ _DATE_TIME = re.compile(
 _ALLERGY = re.compile(r"аллерг|непереносим|гиперчувств", re.I)
 _HEALTHY_BAD = re.compile(r"\bздоров\w*\b|\bбез\s+патолог", re.I)
 
+# Специальности с профильным осмотром: полные витальные (АД/пульс/ЧД/t) не
+# обязательны при содержательном профильном/локальном статусе. Для терапевта,
+# ВОП, кардиолога и медосмотра общий осмотр с витальными остаётся обязательным.
+_VITALS_OPTIONAL_SPECIALTIES: tuple[str, ...] = (
+    "невролог", "оторинолар", "лор", "офтальмолог", "окулист", "дерматолог",
+    "дерматовенеролог", "психотерапевт", "психиатр", "психолог", "стоматолог",
+    "ортопед", "травматолог", "уролог", "логопед", "сурдолог", "аллерголог",
+)
+
+
+def _vitals_optional_for(doc: ConsultationDocument) -> bool:
+    spec = (getattr(doc, "doctor_specialty", "") or "").lower()
+    return any(k in spec for k in _VITALS_OPTIONAL_SPECIALTIES)
+
 
 def sop_reference_for_block(block_id: str) -> str:
     return _BLOCK_REFERENCES.get(block_id, KRAVIRA_SOP_SOURCE)
@@ -125,6 +139,10 @@ def evaluate_sop_block(doc: ConsultationDocument, block_id: str) -> dict[str, An
             findings.append("Объективный статус заполнен.")
         if _VITALS.search(combined):
             findings.append("В статусе есть витальные параметры (АД, пульс, температура и т.п.).")
+        elif _vitals_optional_for(doc) and len(combined) >= 25:
+            findings.append(
+                "Профильный статус описан; полные витальные (АД/пульс/ЧД/t) для этой специальности не обязательны."
+            )
         else:
             gaps.append("Не отражены витальные параметры (АД, пульс, ЧД, температура).")
             penalty += 10

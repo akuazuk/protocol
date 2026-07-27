@@ -91,7 +91,11 @@ def test_complaints_not_compared_to_kp():
     assert "жалоб" in complaints["comment_ru"].lower()
     assert "отдельн" not in complaints["comment_ru"].lower()
     assert complaints.get("reference_ru") or complaints.get("protocol_excerpt")
-    assert "СОП" in (complaints.get("protocol_excerpt") or complaints.get("reference_ru") or "")
+    # G: карточка полноты показывает НПА-эталон (Постановление № 127) в excerpt,
+    # а внутренний СОП № 2 - в reference_ru.
+    ref_blob = complaints.get("reference_ru") or ""
+    assert "127" in ref_blob and "СОП" in ref_blob
+    assert "127" in (complaints.get("protocol_section") or "")
 
 
 def test_anamnesis_separate_from_complaints():

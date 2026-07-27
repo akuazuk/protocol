@@ -104,6 +104,45 @@ def completeness_requirements_from_regulation() -> dict[str, str]:
     return out
 
 
+# Пофрагментный НПА-эталон полноты по блоку (Постановление № 127, структура осмотра).
+_COMPLETENESS_NPA_HINT: dict[str, str] = {
+    "complaints": "расспрос: жалобы (характер, давность, динамика)",
+    "anamnesis": "расспрос: анамнез заболевания и жизни, факторы риска",
+    "objective_status": "общий осмотр: АД, пульс, температура; пальпация, перкуссия, аускультация; локальный статус",
+}
+
+
+def completeness_regulation_ref(block_id: str) -> dict[str, str]:
+    """НПА-эталон полноты раздела осмотра (Постановление № 127) для блока КЗ.
+
+    Возвращает {} если 127 не покрывает блок. Используется для колонки
+    «Эталон / источник»: показываем официальный НПА-минимум, а внутренний
+    СОП № 2 остаётся детализацией.
+    """
+    reg = _load_regulation("mz_2015_127")
+    if not reg:
+        return {}
+    hint = _COMPLETENESS_NPA_HINT.get(str(block_id) or "")
+    if not hint:
+        return {}
+    # Блок должен входить в completeness_sections постановления.
+    covered: set[str] = set()
+    for sec in reg.get("sections") or []:
+        if sec.get("id") == "exam_structure":
+            covered = {str(k) for k in (sec.get("completeness_sections") or [])}
+            break
+    if covered and block_id not in covered:
+        return {}
+    source = reg.get("source") or "Постановление МЗ РБ № 127"
+    return {
+        "regulation_id": reg.get("id") or "mz_2015_127",
+        "regulation_source": source,
+        "label_ru": f"{source}, структура осмотра",
+        "excerpt_ru": hint,
+        "url": reg.get("url") or "",
+    }
+
+
 def follow_up_mentioned_in_text(text: str, *, min_months: int | None = None) -> bool:
     low = (text or "").lower()
     if not low:
