@@ -127,6 +127,65 @@
   }
   .footnote { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.5; }
   .loading { color: var(--muted); padding: 24px 0; }
+
+  /* --- Глубокая оценка: папки-вкладки / месяцы / фильтры --- */
+  .deep-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
+  .dtabs { display: flex; gap: 4px; flex-wrap: wrap; margin: 16px 0 0; border-bottom: 2px solid var(--line); }
+  .dtab {
+    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
+    font-weight: 600; font-size: 13.5px; color: var(--muted); padding: 9px 16px;
+    border-radius: 12px 12px 0 0; position: relative; top: 2px; transition: background .15s, color .15s;
+  }
+  .dtab:hover { color: var(--teal-deep); background: rgba(122,158,149,.09); }
+  .dtab.is-active { color: var(--teal-deep); background: #fff; border: 2px solid var(--line); border-bottom: 2px solid #fff; }
+  .dpanel { display: none; padding-top: 16px; }
+  .dpanel.is-active { display: block; }
+  .fgroup { display: flex; flex-direction: column; gap: 5px; }
+  .fgroup-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
+  .month-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+  .mpill {
+    display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; border-radius: 999px;
+    border: 1px solid var(--line); background: #fff; font-size: 12.5px; cursor: pointer;
+    user-select: none; color: var(--ink); font-weight: 600;
+  }
+  .mpill input { display: none; }
+  .mpill.is-on { background: var(--teal); color: #fff; border-color: var(--teal); }
+  .fbar {
+    display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end;
+    padding: 13px 15px; background: #fbfdfc; border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px;
+  }
+  .fbar select, .fbar input[type=text], .fbar input[type=search], .fbar input[type=date] {
+    padding: 7px 9px; border-radius: 9px; border: 1px solid var(--line); font: inherit; font-size: 12.5px; background: #fff;
+  }
+  .fbar .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding-bottom: 6px; }
+  .more-filters { width: 100%; }
+  .more-filters summary { cursor: pointer; font-size: 12.5px; color: var(--teal-deep); font-weight: 600; padding: 4px 0; }
+  .more-filters .fbar { margin-top: 8px; background: #fff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+  .chip {
+    appearance: none; border: 1px solid var(--line); background: #fff; cursor: pointer; font: inherit;
+    font-size: 12px; font-weight: 600; color: var(--teal-deep); padding: 6px 12px; border-radius: 999px;
+  }
+  .chip:hover { background: rgba(122,158,149,.09); }
+  .chip.is-on { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
+  .chip.is-flag.is-on { background: var(--low); border-color: var(--low); }
+  .mini { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: 0 8px 24px rgba(20,36,31,.04); }
+  .mini h3 { margin: 0 0 4px; font-size: 1.02rem; color: var(--teal-deep); font-family: "Outfit","DM Sans",sans-serif; }
+  .legend-axis { padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; background: #fff; margin: 8px 0; }
+  .legend-axis .lg-t { font-weight: 700; color: var(--teal-deep); }
+  .legend-axis .lg-d { color: var(--muted); font-size: 13px; margin-top: 3px; line-height: 1.5; }
+  .table-wrap { overflow: auto; max-height: 640px; border-top: 1px solid var(--line); }
+  .cmp-row { display: grid; grid-template-columns: 74px 1fr auto; gap: 12px; align-items: center; padding: 5px 0; }
+  .cmp-row .m { font-weight: 700; font-size: 13px; color: var(--teal-deep); }
+  .cmp-row .meta { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
+  details.legacy summary {
+    cursor: pointer; font-weight: 600; color: var(--teal-deep); font-size: 14px;
+    padding: 12px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; list-style: none;
+  }
+  details.legacy summary::-webkit-details-marker { display: none; }
+  details.legacy summary::before { content: "▸ "; color: var(--teal); }
+  details.legacy[open] summary::before { content: "▾ "; }
+  details.legacy[open] summary { border-radius: 14px 14px 0 0; margin-bottom: 0; }
 </style>
 </head>
 <body>
@@ -135,10 +194,11 @@
       <div class="hero-top">
         <div>
           <div class="eyebrow">Кабинет методиста · MIS</div>
-          <h1>Качество КЗ за месяц</h1>
+          <h1>Качество КЗ: глубокая оценка</h1>
           <p>
-            Детерминированный L1-срез всех консультативных заключений из выгрузки МИС:
-            без LLM, по врачам, специальностям и филиалам.
+            Точный скор консультативных заключений по осям A/B/C/D (оформление ·
+            согласованность · безопасность · регуляторика №55), находки P0-P3 и risk-gate.
+            Сравнение по месяцам, фильтры, диаграммы и разбор каждого КЗ.
           </p>
         </div>
         <div class="hero-actions">
@@ -159,6 +219,9 @@
     <div id="loading" class="loading">Считаем агрегаты L1…</div>
 
     <div id="dashboard" hidden>
+      <details class="legacy" id="l1-legacy">
+      <summary>Детерминированная L1-сводка (быстрый проход без LLM: KPI, №55, гигиена, врачи, слабые визиты)</summary>
+      <div style="border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;padding:16px 16px 4px;background:rgba(255,255,255,.45)">
       <div class="kpi-grid">
         <div class="kpi"><div class="label">КЗ клинич.</div><div class="value" id="kpi-n"> - </div><div class="hint" id="kpi-n-hint"></div></div>
         <div class="kpi"><div class="label">Средний overall</div><div class="value" id="kpi-avg"> - </div><div class="hint" id="kpi-avg-hint"></div></div>
@@ -328,33 +391,97 @@
           <div id="llm-report-body" style="padding:14px 16px 18px;font-size:14px;line-height:1.55"></div>
         </div>
       </section>
+      </div>
+      </details>
 
       <section class="card" id="deep-card" style="margin-top:18px">
-        <h2>Глубокая оценка КЗ · оси A/B/C/D · находки · risk-gate</h2>
-        <p class="sub" id="deep-sub">Точный скор по осям (оформление / согласованность / безопасность / регуляторика) с находками по severity P0-P3. Ищем плохие КЗ и неверные диагнозы / лечение / обследования. Фильтры по всем столбцам, диаграммы, разбор одного КЗ.</p>
-        <div id="deep-unavail" class="sub" hidden style="padding:10px 0"></div>
-        <div id="deep-body" hidden>
-          <div class="kpi-grid" id="deep-kpi" style="margin:6px 0 12px"></div>
-
-          <div id="deep-filters" style="display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:10px"></div>
-          <div id="deep-presets" style="display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px"></div>
-          <div id="deep-filter-summary" class="sub" style="margin:2px 0 12px"></div>
-
-          <div id="deep-tabs" style="display:flex;gap:6px;flex-wrap:wrap;margin-bottom:10px"></div>
-          <div id="deep-chart" class="bars" style="min-height:40px;margin-bottom:14px"></div>
-
-          <div style="overflow:auto;max-height:640px;border-top:1px solid var(--line)">
-            <table>
-              <thead>
-                <tr>
-                  <th>Дата</th><th>Врач / спец.</th><th>Осн. Dx + код</th><th>Тип</th>
-                  <th>Overall</th><th>A/B/C/D</th><th>№55</th><th>P0-3</th><th>needs_hu</th><th></th>
-                </tr>
-              </thead>
-              <tbody id="deep-rows"></tbody>
-            </table>
+        <div class="deep-head">
+          <div>
+            <h2>Глубокая оценка КЗ</h2>
+            <p class="sub" id="deep-sub" style="max-width:70ch">Точный скор по осям A/B/C/D (оформление · согласованность · безопасность · регуляторика) с находками P0-P3 и risk-gate. Ищем плохие КЗ и неверные диагнозы / лечение / обследования на основе жалоб, анамнеза и данных.</p>
           </div>
-          <div id="deep-pager" style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap"></div>
+          <button class="btn btn--ghost" type="button" id="deep-refresh">Обновить</button>
+        </div>
+
+        <div id="deep-unavail" class="error" hidden style="margin-top:12px"></div>
+
+        <div id="deep-body" hidden>
+          <div style="display:flex;flex-wrap:wrap;gap:18px 28px;align-items:flex-end;margin-top:14px">
+            <div class="fgroup">
+              <span class="fgroup-label">Месяцы для сравнения (обзор · диаграммы · динамика)</span>
+              <div class="month-pills" id="deep-months"></div>
+            </div>
+            <div class="fgroup">
+              <span class="fgroup-label">Активный месяц (таблица · диаграммы)</span>
+              <select id="deep-active-month" style="padding:8px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;font-size:13px;background:#fff"></select>
+            </div>
+          </div>
+
+          <nav class="dtabs" id="deep-nav">
+            <button type="button" class="dtab is-active" data-tab="overview">Обзор</button>
+            <button type="button" class="dtab" data-tab="cases">Кейсы</button>
+            <button type="button" class="dtab" data-tab="charts">Диаграммы</button>
+            <button type="button" class="dtab" data-tab="dynamics">Динамика</button>
+            <button type="button" class="dtab" data-tab="scoring">Как считается скор</button>
+          </nav>
+
+          <!-- Обзор -->
+          <div class="dpanel is-active" id="panel-overview">
+            <div class="kpi-grid" id="ov-kpi" style="margin:2px 0 14px"></div>
+            <section class="mini" style="margin-bottom:14px">
+              <h3>Сравнение месяцев</h3>
+              <p class="sub" style="margin:2px 0 12px">Средний overall (полоса), % КЗ на разбор (внимания) и критические P0 на 100 КЗ по выбранным месяцам</p>
+              <div id="ov-compare"></div>
+            </section>
+            <div class="grid-2">
+              <section class="mini">
+                <h3>Слабые специальности</h3>
+                <p class="sub" id="ov-specs-sub" style="margin:2px 0 8px"></p>
+                <div id="ov-specs"></div>
+              </section>
+              <section class="mini">
+                <h3>Топ проблемных диагнозов</h3>
+                <p class="sub" style="margin:2px 0 8px">Коды МКБ с наибольшим числом плохих КЗ (активный месяц)</p>
+                <div id="ov-icd"></div>
+              </section>
+            </div>
+          </div>
+
+          <!-- Кейсы -->
+          <div class="dpanel" id="panel-cases">
+            <div class="chips" id="deep-presets"></div>
+            <div class="fbar" id="deep-filters"></div>
+            <div id="deep-filter-summary" class="sub" style="margin:0 0 10px"></div>
+            <div class="table-wrap">
+              <table>
+                <thead>
+                  <tr>
+                    <th>Дата</th><th>Врач / спец.</th><th>Осн. Dx + код</th><th>Тип</th>
+                    <th>Overall</th><th>A/B/C/D</th><th>№55</th><th>P0-3</th><th>needs_hu</th><th></th>
+                  </tr>
+                </thead>
+                <tbody id="deep-rows"></tbody>
+              </table>
+            </div>
+            <div id="deep-pager" style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap"></div>
+          </div>
+
+          <!-- Диаграммы -->
+          <div class="dpanel" id="panel-charts">
+            <div class="chips" id="deep-chart-tabs"></div>
+            <div class="bars" id="deep-chart" style="min-height:60px"></div>
+          </div>
+
+          <!-- Динамика -->
+          <div class="dpanel" id="panel-dynamics">
+            <p class="sub" style="margin:0 0 12px">Тренд по выбранным месяцам: средние оси, % КЗ на разбор (внимания) и критические находки P0 на 100 КЗ</p>
+            <div id="deep-dyn"></div>
+          </div>
+
+          <!-- Как считается скор -->
+          <div class="dpanel" id="panel-scoring">
+            <div id="deep-scoring"><div class="loading">Загрузка описания скоринга…</div></div>
+          </div>
         </div>
       </section>
 
@@ -368,12 +495,6 @@
         </div>
         <div id="deep-detail-body" style="padding:14px 16px 18px;font-size:14px;line-height:1.55"></div>
       </div>
-
-      <section class="card" id="deep-dyn-card" style="margin-top:14px" hidden>
-        <h2>Динамика deep-оценки по месяцам</h2>
-        <p class="sub">Средние оси и критические находки P0 на 100 КЗ (тренд по месяцам)</p>
-        <div id="deep-dyn" style="margin-top:10px"></div>
-      </section>
 
       <p class="footnote" id="notes"></p>
     </div>
@@ -1012,16 +1133,29 @@
   var TOKEN_KEY = "protocol_methodist_token";
   var urlMonth = (new URLSearchParams(location.search).get("month") || "2026-07");
   var state = {
-    month: urlMonth,
+    month: urlMonth,        // активный месяц (таблица · диаграммы), синхр. с селектором
+    months: [],             // выбранные месяцы для сравнения (обзор · диаграммы · динамика)
     page: 1,
     page_size: 50,
     sort_by: "overall",
     sort_dir: "asc",
     filters: {},
     chart: "axes",
+    tab: "overview",
     facets: null,
-    filtersBuilt: false
+    dyn: null,              // {series:[...]} по выбранным месяцам
+    ovAgg: null,            // агрегат активного месяца без фильтров (обзор · диаграммы)
+    filtersBuilt: false,
+    casesLoaded: false
   };
+  var RU_MONTHS = ["", "января", "февраля", "марта", "апреля", "мая", "июня",
+    "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+  function monthLabel(m) {
+    var p = String(m || "").split("-");
+    if (p.length < 2) return m || " - ";
+    var mi = parseInt(p[1], 10);
+    return (RU_MONTHS[mi] || p[1]) + " " + p[0];
+  }
 
   function token() {
     try { return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY) || ""; }
@@ -1061,12 +1195,182 @@
       "<div class='pct'>" + (Number.isFinite(v) ? (max > 100 || max === undefined ? v : v.toFixed(0)) : " - ") + "</div></div>";
   }
 
+  /* ------------------------- Навигация по папкам ------------------------- */
+  function bindNav() {
+    document.querySelectorAll("#deep-nav .dtab").forEach(function (btn) {
+      btn.addEventListener("click", function () { switchTab(btn.getAttribute("data-tab")); });
+    });
+  }
+  function switchTab(tab) {
+    state.tab = tab;
+    document.querySelectorAll("#deep-nav .dtab").forEach(function (b) {
+      b.classList.toggle("is-active", b.getAttribute("data-tab") === tab);
+    });
+    document.querySelectorAll("#deep-card .dpanel").forEach(function (p) {
+      p.classList.toggle("is-active", p.id === "panel-" + tab);
+    });
+    if (tab === "cases" && !state.casesLoaded) fetchCases();
+    if (tab === "charts") { renderChartTabs(); renderChart(state.ovAgg || {}); }
+    if (tab === "scoring") renderScoring();
+  }
+
+  /* --------------------- Мультивыбор месяцев / актив. --------------------- */
+  function buildMonthPills(all) {
+    $("deep-months").innerHTML = all.map(function (m) {
+      var on = state.months.indexOf(m) >= 0;
+      return "<label class='mpill" + (on ? " is-on" : "") + "' data-m='" + m + "'>" +
+        "<input type='checkbox'" + (on ? " checked" : "") + "/>" + esc(monthLabel(m)) + "</label>";
+    }).join("");
+    $("deep-months").querySelectorAll(".mpill").forEach(function (el) {
+      el.addEventListener("click", function (ev) {
+        ev.preventDefault();
+        var m = el.getAttribute("data-m");
+        var i = state.months.indexOf(m);
+        if (i >= 0) { if (state.months.length > 1) state.months.splice(i, 1); }
+        else state.months.push(m);
+        state.months.sort();
+        el.classList.toggle("is-on", state.months.indexOf(m) >= 0);
+        buildActiveMonthSelect();
+        fetchDynamics(false);
+      });
+    });
+  }
+  function buildActiveMonthSelect() {
+    var sel = $("deep-active-month");
+    if (!sel) return;
+    var ms = state.months.slice();
+    if (ms.indexOf(state.month) < 0) state.month = ms.length ? ms[ms.length - 1] : state.month;
+    sel.innerHTML = ms.map(function (m) {
+      return "<option value='" + m + "'" + (m === state.month ? " selected" : "") + ">" + esc(monthLabel(m)) + "</option>";
+    }).join("");
+  }
+
+  /* ------------------------------- Обзор -------------------------------- */
+  function renderCompare() {
+    var series = (state.dyn && state.dyn.series) || [];
+    var el = $("ov-compare");
+    if (!el) return;
+    el.innerHTML = series.length ? series.map(cmpRow).join("")
+      : "<div class='sub'>Нет данных по выбранным месяцам</div>";
+  }
+  function cmpRow(s) {
+    var ov = s.avg_overall;
+    var w = Math.max(0, Math.min(100, ov || 0));
+    var cls = ov >= 75 ? "" : (ov >= 60 ? "is-mid" : "is-low");
+    return "<div class='cmp-row'><div class='m'>" + esc(monthLabel(s.month)) + "</div>" +
+      "<div class='bar-track'><div class='bar-fill " + cls + "' style='width:" + w + "%'></div></div>" +
+      "<div class='meta'>" + (ov != null ? Math.round(ov) : " - ") + "% · внимания " +
+      (s.pct_bad != null ? s.pct_bad : 0) + "% · P0/100 " + (s.p0_per_100 != null ? s.p0_per_100 : 0) +
+      " · n" + (s.n || 0) + "</div></div>";
+  }
+  function renderOverviewLists(agg) {
+    var specs = (agg.by_specialty || []).filter(function (x) { return (x.n || 0) >= 3; }).slice(0, 10);
+    var ss = $("ov-specs-sub");
+    if (ss) ss.textContent = "Ниже по среднему overall (мин. 3 КЗ) · активный месяц " + monthLabel(state.month);
+    $("ov-specs").innerHTML = specs.length ?
+      ("<table><thead><tr><th>Специальность</th><th>N</th><th>Avg</th><th>% плохих</th><th>P0</th></tr></thead><tbody>" +
+        specs.map(function (r) {
+          return "<tr><td>" + esc(r.specialization) + "</td><td>" + r.n + "</td><td>" + pill(r.avg_overall) +
+            "</td><td>" + r.bad_pct + "%</td><td>" + r.p0 + "</td></tr>";
+        }).join("") + "</tbody></table>")
+      : "<div class='sub'>Нет данных</div>";
+    var icd = agg.top_bad_icd || [];
+    $("ov-icd").innerHTML = icd.length ?
+      ("<table><thead><tr><th>Код</th><th>Диагноз</th><th>Плохих</th></tr></thead><tbody>" +
+        icd.map(function (b) {
+          return "<tr><td><code>" + esc(b.mkb_code) + "</code></td><td>" + esc((b.diagnosis || "").slice(0, 80)) +
+            "</td><td>" + b.n + "</td></tr>";
+        }).join("") + "</tbody></table>")
+      : "<div class='sub'>Нет плохих КЗ с кодом</div>";
+  }
+
+  /* ------------------------------ Динамика ------------------------------ */
+  function renderDynamics() {
+    var series = (state.dyn && state.dyn.series) || [];
+    var el = $("deep-dyn");
+    if (!el) return;
+    if (!series.length) { el.innerHTML = "<div class='sub'>Нет данных</div>"; return; }
+    var maxP0 = Math.max.apply(null, series.map(function (s) { return s.p0_per_100 || 0; }).concat([0.1]));
+    el.innerHTML = "<div style='overflow:auto'><table><thead><tr><th>Месяц</th><th>N</th><th>Overall</th>" +
+      "<th>Оформл.</th><th>Соглас.</th><th>Безоп.</th><th>Регул.</th><th title='статусы на разбор + плохо + критично'>% внимания</th><th>P0/100</th></tr></thead><tbody>" +
+      series.map(function (s) {
+        var a = s.axis_means || {};
+        return "<tr><td>" + esc(monthLabel(s.month)) + "</td><td>" + (s.n || 0) + "</td><td>" + pill(s.avg_overall) + "</td>" +
+          "<td>" + (a.documentation != null ? Math.round(a.documentation) : " - ") + "</td>" +
+          "<td>" + (a.clinical_concordance != null ? Math.round(a.clinical_concordance) : " - ") + "</td>" +
+          "<td>" + (a.safety != null ? Math.round(a.safety) : " - ") + "</td>" +
+          "<td>" + (a.regulatory != null ? Math.round(a.regulatory) : " - ") + "</td>" +
+          "<td>" + (s.pct_bad != null ? s.pct_bad + "%" : " - ") + "</td>" +
+          "<td><span style='display:inline-block;height:8px;border-radius:4px;background:#c4898a;vertical-align:middle;width:" +
+          Math.max(4, (s.p0_per_100 || 0) / maxP0 * 80) + "px'></span> " + (s.p0_per_100 != null ? s.p0_per_100 : 0) + "</td></tr>";
+      }).join("") + "</tbody></table></div>";
+  }
+
+  /* -------------------------- Как считается скор ------------------------- */
+  var scoringCache = null;
+  async function renderScoring() {
+    var el = $("deep-scoring");
+    if (!el) return;
+    if (scoringCache) { el.innerHTML = scoringHtml(scoringCache); return; }
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality/scoring-info", { headers: headers() });
+      var d = await res.json();
+      if (!d.ok) { el.innerHTML = "<div class='sub'>Нет описания</div>"; return; }
+      scoringCache = d;
+      el.innerHTML = scoringHtml(d);
+    } catch (e) { el.innerHTML = "<div class='error'>" + esc(String(e && e.message || e)) + "</div>"; }
+  }
+  function scoringHtml(d) {
+    var axes = (d.axes || []).map(function (a) {
+      return "<div class='legend-axis'><div class='lg-t'>" + esc(a.label) + "</div><div class='lg-d'>" + esc(a.desc) + "</div></div>";
+    }).join("");
+    var sev = (d.severity || []).map(function (s) {
+      return "<div class='legend-axis'><div class='lg-t'>" + esc(s.key) + " · " + esc(s.label) + "</div><div class='lg-d'>" + esc(s.desc) + "</div></div>";
+    }).join("");
+    var gate = (d.risk_gate || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("");
+    var th = d.thresholds || {};
+    return "<p class='sub' style='margin:0 0 12px'>" + esc(d.overall_rule || "") + "</p>" +
+      "<h3 style='color:var(--teal-deep);margin:6px 0'>Оси оценки</h3>" + axes +
+      "<h3 style='color:var(--teal-deep);margin:16px 0 6px'>Severity находок</h3>" + sev +
+      "<h3 style='color:var(--teal-deep);margin:16px 0 6px'>Risk-gate: как статус ограничивается</h3>" +
+      "<ul style='margin:0;padding-left:1.2rem;font-size:13.5px;line-height:1.65'>" + gate + "</ul>" +
+      "<p class='sub' style='margin-top:12px'>Пороги: хорошо ≥ " + esc(th.good) + " · приемлемо ≥ " + esc(th.acceptable) +
+      (th.min_axis_review != null ? (" · min-axis " + esc(th.min_axis_review)) : "") + "</p>" +
+      "<p class='sub' style='margin-top:6px'>Источник: " + esc(d.source || "") + "</p>";
+  }
+
+  /* ------------------- Загрузка агрегата активного месяца ------------------ */
+  async function loadActiveAgg() {
+    var qs = new URLSearchParams();
+    qs.set("month", state.month); qs.set("page", 1); qs.set("page_size", 1);
+    qs.set("sort_by", "overall"); qs.set("sort_dir", "asc");
+    try {
+      var res = await fetch("/api/methodist/mis-kz-quality/cases?" + qs.toString(), { headers: headers() });
+      if (res.status === 401 || res.status === 403) { showUnavail("Нужна авторизация методиста."); return; }
+      var v = await res.json();
+      $("deep-body").hidden = false;
+      if (!v.ok) {
+        state.ovAgg = null;
+        renderKpi({}); renderOverviewLists({}); renderChartTabs(); renderChart({});
+        $("ov-specs").innerHTML = "<div class='sub'>" + esc(v.hint_ru || v.error || ("Нет кейсов за " + monthLabel(state.month))) + "</div>";
+        return;
+      }
+      state.ovAgg = v.filtered_agg || {};
+      state.facets = v.facets || {};
+      renderKpi(state.ovAgg);
+      renderOverviewLists(state.ovAgg);
+      renderChartTabs(); renderChart(state.ovAgg);
+      buildFilters(state.facets);
+    } catch (e) { showUnavail(String(e && e.message || e)); }
+  }
+
   function renderKpi(agg) {
-    var ax = agg.axis_means || {};
     var sev = agg.severity_totals || {};
     var p0per100 = agg.n ? (100 * (sev.P0 || 0) / agg.n) : 0;
-    $("deep-kpi").innerHTML =
-      kpiCard("КЗ в выборке", agg.n != null ? agg.n : " - ", "с учётом фильтров") +
+    var el = $("ov-kpi");
+    if (!el) return;
+    el.innerHTML =
+      kpiCard("КЗ оценено", agg.n != null ? agg.n : " - ", monthLabel(state.month)) +
       kpiCard("Средний overall", agg.avg_overall != null ? agg.avg_overall + "%" : " - ", "по осям A-D") +
       kpiCard("Находок P0", (sev.P0 || 0), p0per100.toFixed(2) + " на 100 КЗ") +
       kpiCard("Потенц. вред", agg.n_potential_harm != null ? agg.n_potential_harm : 0, "КЗ с риском вреда") +
@@ -1089,43 +1393,50 @@
       options.join("") + "</select>";
   }
 
+  function fg(label, inner) {
+    return "<div class='fgroup'><span class='fgroup-label'>" + esc(label) + "</span>" + inner + "</div>";
+  }
   function buildFilters(facets) {
     var f = state.filters;
     var mkbChapters = (facets.mkb_chapters || []).map(function (c) { return { value: c.key, label: c.label, n: c.n }; });
-    var html = [
-      selectHtml("specialization", "Спец.", facets.specialties, f.specialization),
-      selectHtml("filial", "Филиал", facets.filials, f.filial),
-      selectHtml("kz_kind", "Тип", facets.kz_kinds, f.kz_kind),
-      selectHtml("mkb_chapter", "Глава МКБ", mkbChapters, f.mkb_chapter),
-      selectHtml("mkb_agreement", "Код-совпад.", facets.agreements, f.mkb_agreement),
-      selectHtml("age_group", "Возраст", facets.age_groups, f.age_group),
-      selectHtml("status", "Статус", facets.statuses, f.status),
-      selectHtml("score_band", "Скор-банд", facets.score_bands, f.score_band),
-      selectHtml("finding_axis", "Ось находки", (facets.finding_axes || []).map(function (a) { return { value: a.value, label: a.label, n: a.n }; }), f.finding_axis),
-      "<select data-filter='min_severity' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;background:#fff'>" +
-        "<option value=''>Severity: любой</option>" +
-        "<option value='P0'" + (f.min_severity === "P0" ? " selected" : "") + ">есть P0</option>" +
-        "<option value='P1'" + (f.min_severity === "P1" ? " selected" : "") + ">P0-P1</option></select>",
-      "<input data-filter='doctor' placeholder='Врач (ФИО)' value='" + esc(f.doctor || "") + "' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;max-width:150px'/>",
-      "<input data-filter='q' placeholder='Поиск: Dx / код' value='" + esc(f.q || "") + "' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;max-width:150px'/>",
-      "<input data-filter='date_from' type='date' value='" + esc(f.date_from || "") + "' title='с даты' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px'/>",
-      "<input data-filter='date_to' type='date' value='" + esc(f.date_to || "") + "' title='по дату' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px'/>",
-      "<label style='display:inline-flex;align-items:center;gap:5px;font-size:12.5px'><input type='checkbox' data-filter='needs_human'" + (f.needs_human ? " checked" : "") + "/> needs_human</label>",
-      "<label style='display:inline-flex;align-items:center;gap:5px;font-size:12.5px'><input type='checkbox' data-filter='potential_harm'" + (f.potential_harm ? " checked" : "") + "/> потенц.вред</label>",
-      "<button type='button' id='deep-filter-reset' class='btn btn--ghost' style='padding:6px 10px;font-size:12px'>Сбросить</button>"
+    var sevSel = "<select data-filter='min_severity'>" +
+      "<option value=''>любой</option>" +
+      "<option value='P0'" + (f.min_severity === "P0" ? " selected" : "") + ">есть P0</option>" +
+      "<option value='P1'" + (f.min_severity === "P1" ? " selected" : "") + ">P0-P1</option></select>";
+    var primary = [
+      fg("Специальность", selectHtml("specialization", "спец.", facets.specialties, f.specialization)),
+      fg("Статус", selectHtml("status", "статус", facets.statuses, f.status)),
+      fg("Severity", sevSel),
+      fg("Тип КЗ", selectHtml("kz_kind", "тип", facets.kz_kinds, f.kz_kind)),
+      fg("Поиск (диагноз / код)", "<input data-filter='q' type='search' placeholder='например: J06 или ОРВИ' value='" + esc(f.q || "") + "' style='min-width:190px'/>"),
+      fg("Врач (ФИО)", "<input data-filter='doctor' type='text' placeholder='фамилия' value='" + esc(f.doctor || "") + "' style='min-width:150px'/>"),
+      "<button type='button' id='deep-filter-reset' class='btn btn--ghost' style='padding:8px 12px;font-size:12px'>Сбросить фильтры</button>"
     ];
-    $("deep-filters").innerHTML = html.join("");
+    var more = [
+      fg("Филиал", selectHtml("filial", "филиал", facets.filials, f.filial)),
+      fg("Глава МКБ", selectHtml("mkb_chapter", "глава", mkbChapters, f.mkb_chapter)),
+      fg("Код МКБ ↔ МИС", selectHtml("mkb_agreement", "совпад.", facets.agreements, f.mkb_agreement)),
+      fg("Возраст", selectHtml("age_group", "возраст", facets.age_groups, f.age_group)),
+      fg("Скор-банд", selectHtml("score_band", "банд", facets.score_bands, f.score_band)),
+      fg("Ось находки", selectHtml("finding_axis", "ось", (facets.finding_axes || []).map(function (a) { return { value: a.value, label: a.label, n: a.n }; }), f.finding_axis)),
+      fg("С даты", "<input data-filter='date_from' type='date' value='" + esc(f.date_from || "") + "'/>"),
+      fg("По дату", "<input data-filter='date_to' type='date' value='" + esc(f.date_to || "") + "'/>"),
+      "<label class='chk'><input type='checkbox' data-filter='needs_human'" + (f.needs_human ? " checked" : "") + "/> needs_human</label>",
+      "<label class='chk'><input type='checkbox' data-filter='potential_harm'" + (f.potential_harm ? " checked" : "") + "/> потенц. вред</label>"
+    ];
+    $("deep-filters").innerHTML = primary.join("") +
+      "<details class='more-filters'><summary>Ещё фильтры</summary><div class='fbar'>" + more.join("") + "</div></details>";
 
     var presets = [
-      { id: "p0", label: "⚑ P0 (риск вреда)" },
-      { id: "dx_no_code", label: "⚑ Dx без валид. кода" },
-      { id: "treatment_off_protocol", label: "⚑ Согласованность" },
-      { id: "needs_human", label: "⚑ Нужен человек" }
+      { id: "p0", label: "⚑ P0 (риск вреда)", flag: true },
+      { id: "dx_no_code", label: "Dx без валид. кода" },
+      { id: "treatment_off_protocol", label: "Проблемы согласованности" },
+      { id: "needs_human", label: "Нужен человек" }
     ];
     $("deep-presets").innerHTML = presets.map(function (p) {
       var active = state.filters.preset === p.id;
-      return "<button type='button' class='btn" + (active ? "" : " btn--ghost") + "' data-preset='" + p.id +
-        "' style='padding:6px 11px;font-size:12px" + (active ? ";background:var(--teal);color:#fff" : "") + "'>" + esc(p.label) + "</button>";
+      return "<button type='button' class='chip" + (p.flag ? " is-flag" : "") + (active ? " is-on" : "") +
+        "' data-preset='" + p.id + "'>" + esc(p.label) + "</button>";
     }).join("");
 
     bindFilterEvents();
@@ -1153,6 +1464,9 @@
       btn.addEventListener("click", function () {
         var p = btn.getAttribute("data-preset");
         state.filters.preset = (state.filters.preset === p) ? "" : p;
+        $("deep-presets").querySelectorAll("[data-preset]").forEach(function (b) {
+          b.classList.toggle("is-on", b.getAttribute("data-preset") === state.filters.preset);
+        });
         state.page = 1; fetchCases();
       });
     });
@@ -1164,16 +1478,18 @@
     { id: "severity", label: "Severity P0-P3" },
     { id: "findings", label: "Типы находок" },
     { id: "specialty", label: "Спец: avg / % плохих" },
-    { id: "bad_icd", label: "Топ плохих Dx" }
+    { id: "bad_icd", label: "Топ плохих Dx" },
+    { id: "months", label: "Сравнение месяцев" }
   ];
-  function renderTabs() {
-    $("deep-tabs").innerHTML = CHART_TABS.map(function (t) {
-      var active = state.chart === t.id;
-      return "<button type='button' class='btn" + (active ? "" : " btn--ghost") + "' data-chart='" + t.id +
-        "' style='padding:6px 11px;font-size:12px" + (active ? ";background:var(--teal-deep);color:#fff" : "") + "'>" + esc(t.label) + "</button>";
+  function renderChartTabs() {
+    var el = $("deep-chart-tabs");
+    if (!el) return;
+    el.innerHTML = CHART_TABS.map(function (t) {
+      return "<button type='button' class='chip" + (state.chart === t.id ? " is-on" : "") +
+        "' data-chart='" + t.id + "'>" + esc(t.label) + "</button>";
     }).join("");
-    $("deep-tabs").querySelectorAll("[data-chart]").forEach(function (b) {
-      b.addEventListener("click", function () { state.chart = b.getAttribute("data-chart"); renderChart(window.__deepAgg || {}); renderTabs(); });
+    el.querySelectorAll("[data-chart]").forEach(function (b) {
+      b.addEventListener("click", function () { state.chart = b.getAttribute("data-chart"); renderChart(state.ovAgg || {}); renderChartTabs(); });
     });
   }
   var SEV_COLOR = { P0: "#c4898a", P1: "#d8b48a", P2: "#a8c0d8", P3: "#c2ccc8" };
@@ -1211,6 +1527,11 @@
       el.innerHTML = bad.length ? ("<table><thead><tr><th>Код</th><th>Диагноз</th><th>Плохих КЗ</th></tr></thead><tbody>" +
         bad.map(function (b3) { return "<tr><td><code>" + esc(b3.mkb_code) + "</code></td><td>" + esc((b3.diagnosis || "").slice(0, 90)) + "</td><td>" + b3.n + "</td></tr>"; }).join("") +
         "</tbody></table>") : "<div class='sub'>Нет плохих КЗ с кодом в выборке</div>";
+    } else if (state.chart === "months") {
+      var series = (state.dyn && state.dyn.series) || [];
+      el.innerHTML = series.length
+        ? series.map(function (s) { return chartBar(monthLabel(s.month), s.avg_overall, 100); }).join("")
+        : "<div class='sub'>Нет данных по выбранным месяцам</div>";
     }
   }
 
@@ -1298,8 +1619,10 @@
   function filterSummary(v) {
     var f = v.applied_filters || {};
     var keys = Object.keys(f).filter(function (k) { return f[k] !== "" && f[k] != null && f[k] !== false; });
+    var agg = v.filtered_agg || {};
+    var badTxt = agg.pct_bad != null ? (" · плохих " + agg.pct_bad + "% · P0 " + ((agg.severity_totals || {}).P0 || 0)) : "";
     var txt = keys.length ? ("Фильтры: " + keys.map(function (k) { return k + "=" + f[k]; }).join(" · ")) : "Фильтры не заданы - вся выборка.";
-    $("deep-filter-summary").textContent = txt + " · показано " + (v.rows || []).length + " из " + v.total;
+    $("deep-filter-summary").textContent = txt + " · показано " + (v.rows || []).length + " из " + v.total + badTxt;
   }
 
   async function fetchCases() {
@@ -1318,25 +1641,25 @@
       var res = await fetch("/api/methodist/mis-kz-quality/cases?" + qs.toString(), { headers: headers() });
       if (res.status === 401 || res.status === 403) { showUnavail("Нужна авторизация методиста."); return; }
       var v = await res.json();
-      if (!v.ok) { showUnavail(v.hint_ru || v.error || "Нет данных deep-оценки за " + state.month + "."); return; }
-      $("deep-unavail").hidden = true;
-      $("deep-body").hidden = false;
-      window.__deepAgg = v.filtered_agg || {};
-      renderKpi(v.filtered_agg || {});
+      if (!v.ok) {
+        $("deep-rows").innerHTML = "<tr><td colspan='10'>" + esc(v.hint_ru || v.error || ("Нет кейсов за " + monthLabel(state.month))) + "</td></tr>";
+        $("deep-pager").innerHTML = "";
+        return;
+      }
+      state.casesLoaded = true;
       if (!state.filtersBuilt) buildFilters(v.facets || {});
-      renderTabs();
-      renderChart(v.filtered_agg || {});
       renderTable(v);
       renderPager(v);
       filterSummary(v);
-    } catch (e) { showUnavail(String(e && e.message || e)); }
+    } catch (e) { $("deep-rows").innerHTML = "<tr><td colspan='10'>" + esc(String(e && e.message || e)) + "</td></tr>"; }
   }
 
   function showUnavail(msg) {
-    $("deep-body").hidden = true;
     var el = $("deep-unavail");
     el.hidden = false;
     el.textContent = msg;
+    // Прячем тело только если совсем нет данных (даже динамики)
+    if (!(state.dyn && state.dyn.series && state.dyn.series.length)) $("deep-body").hidden = true;
   }
 
   /* --------------------------- Экран B: разбор --------------------------- */
@@ -1396,10 +1719,28 @@
     var passedHtml = passed.length ? ("<details style='margin-top:.6rem'><summary style='cursor:pointer;font-size:12px;color:var(--muted)'>Пройденные проверки (" + passed.length + ")</summary>" +
       "<div style='margin-top:.4rem'>" + passed.map(function (f) { return "<div style='font-size:12.5px;color:#4f7a6a;margin:.2rem 0'>✔ " + esc(f.title || f.code) + "</div>"; }).join("") + "</div></details>") : "";
 
-    $("deep-detail-body").innerHTML = head + axesHtml +
+    $("deep-detail-body").innerHTML = head + axesHtml + explainHtml(d, ax) +
       "<div style='font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin:.8rem 0 .3rem'>Находки по severity</div>" +
       findHtml + passedHtml +
       "<div id='deep-detail-llm-out' style='margin-top:.8rem'></div>";
+  }
+  function explainHtml(d, ax) {
+    var n = d.n_by_severity || {};
+    var reason;
+    if (n.P0) reason = "Есть критическая находка <b>P0</b> (риск вреда) → risk-gate ограничивает overall до 40, статус «критично».";
+    else if (n.P1) reason = "Есть клинический дефект <b>P1</b> → risk-gate ограничивает overall до 60, статус «на разбор».";
+    else {
+      var vals = [["Оформление", ax.documentation], ["Согласованность", ax.clinical_concordance],
+        ["Безопасность", ax.safety], ["Регуляторика", ax.regulatory]].filter(function (x) { return x[1] != null; });
+      vals.sort(function (a, b) { return a[1] - b[1]; });
+      var low = vals[0];
+      reason = low
+        ? ("Критических находок нет. Самая слабая ось: <b>" + esc(low[0]) + "</b> " + Math.round(low[1]) +
+           "%. Overall = среднее доступных осей → статус «" + esc(STATUS_RU[d.deep_status] || d.deep_status || "-") + "».")
+        : "Overall = среднее доступных осей.";
+    }
+    return "<div class='legend-axis' style='background:#f4f7f5'><div class='lg-t'>Как получен статус</div>" +
+      "<div class='lg-d'>" + reason + "</div></div>";
   }
   function chip(label, val, toneCls) {
     var color = toneCls === "low" ? "#b91c1c" : toneCls === "good" ? "var(--teal-deep)" : toneCls === "mid" ? "#b45309" : "var(--teal-deep)";
@@ -1433,43 +1774,57 @@
     } catch (e) { out.innerHTML = "<div class='error'>" + esc(String(e && e.message || e)) + "</div>"; }
   }
 
-  /* --------------------------- Динамика --------------------------- */
-  async function fetchDynamics() {
+  /* --------------------- Динамика: загрузка серий --------------------- */
+  async function fetchDynamics(initial) {
+    var url = "/api/methodist/mis-kz-quality/dynamics";
+    if (!initial && state.months.length) url += "?months=" + encodeURIComponent(state.months.join(","));
     try {
-      var res = await fetch("/api/methodist/mis-kz-quality/dynamics", { headers: headers() });
+      var res = await fetch(url, { headers: headers() });
+      if (res.status === 401 || res.status === 403) { showUnavail("Нужна авторизация методиста."); return; }
       if (!res.ok) return;
       var d = await res.json();
       var series = (d.series || []).filter(function (s) { return s.has_deep; });
-      if (series.length < 1) return;
-      var card = $("deep-dyn-card");
-      card.hidden = false;
-      var maxP0 = Math.max.apply(null, series.map(function (s) { return s.p0_per_100 || 0; }).concat([0.1]));
-      $("deep-dyn").innerHTML = "<div style='overflow:auto'><table><thead><tr><th>Месяц</th><th>N</th><th>Overall</th>" +
-        "<th>Оформл.</th><th>Соглас.</th><th>Безоп.</th><th>Регул.</th><th>P0/100</th></tr></thead><tbody>" +
-        series.map(function (s) {
-          var a = s.axis_means || {};
-          return "<tr><td>" + esc(s.month) + "</td><td>" + (s.n || 0) + "</td><td>" + pill(s.avg_overall) + "</td>" +
-            "<td>" + (a.documentation != null ? Math.round(a.documentation) : " - ") + "</td>" +
-            "<td>" + (a.clinical_concordance != null ? Math.round(a.clinical_concordance) : " - ") + "</td>" +
-            "<td>" + (a.safety != null ? Math.round(a.safety) : " - ") + "</td>" +
-            "<td>" + (a.regulatory != null ? Math.round(a.regulatory) : " - ") + "</td>" +
-            "<td><span style='display:inline-block;height:8px;border-radius:4px;background:#c4898a;vertical-align:middle;width:" +
-            Math.max(4, (s.p0_per_100 || 0) / maxP0 * 80) + "px'></span> " + (s.p0_per_100 != null ? s.p0_per_100 : 0) + "</td></tr>";
-        }).join("") + "</tbody></table></div>";
+      state.dyn = { series: series };
+      if (initial) {
+        var all = series.map(function (s) { return s.month; });
+        state.months = all.slice();
+        if (all.indexOf(state.month) < 0) state.month = all.length ? all[all.length - 1] : state.month;
+        buildMonthPills(all);
+        buildActiveMonthSelect();
+        if (all.length) $("deep-body").hidden = false;
+      }
+      renderCompare();
+      renderDynamics();
+      if (state.tab === "charts" && state.chart === "months") renderChart(state.ovAgg || {});
     } catch (e) {}
   }
 
+  async function init() {
+    await fetchDynamics(true);
+    await loadActiveAgg();
+    if (state.tab === "scoring") renderScoring();
+  }
+
   document.addEventListener("DOMContentLoaded", function () {
+    bindNav();
     var closeBtn = $("deep-detail-close");
     if (closeBtn) closeBtn.addEventListener("click", function () { $("deep-detail").style.display = "none"; });
     var llmBtn = $("deep-detail-llm");
     if (llmBtn) llmBtn.addEventListener("click", runDetailLlm);
+    var am = $("deep-active-month");
+    if (am) am.addEventListener("change", function () {
+      state.month = this.value; state.page = 1; state.filtersBuilt = false; state.casesLoaded = false;
+      loadActiveAgg();
+      if (state.tab === "cases") fetchCases();
+    });
+    var dref = $("deep-refresh");
+    if (dref) dref.addEventListener("click", function () { state.filtersBuilt = false; state.casesLoaded = false; init(); });
     var refresh = $("btn-refresh");
-    if (refresh) refresh.addEventListener("click", function () { setTimeout(function () { state.filtersBuilt = false; fetchCases(); fetchDynamics(); }, 300); });
+    if (refresh) refresh.addEventListener("click", function () { setTimeout(function () { state.filtersBuilt = false; state.casesLoaded = false; init(); }, 400); });
   });
 
   // Первичная загрузка (даём основному модулю время проверить авторизацию)
-  setTimeout(function () { fetchCases(); fetchDynamics(); }, 600);
+  setTimeout(init, 600);
 })();
 </script>
 </body>

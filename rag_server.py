@@ -8383,7 +8383,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-23-r8-kz-deep-calibration"
+BUILD_VERSION = "2026-07-27-r9-kz-dashboard-redesign"
 
 
 def _app_version() -> str:
@@ -10726,12 +10726,28 @@ def api_methodist_mis_kz_cases(
 
 
 @app.get("/api/methodist/mis-kz-quality/dynamics")
-def api_methodist_mis_kz_dynamics(request: "Request") -> dict:
-    """Динамика deep-оценки КЗ по месяцам (тренды осей, P0/100, статусы) (§7Б.3)."""
+def api_methodist_mis_kz_dynamics(
+    request: "Request",
+    months: str = Query("", max_length=200),
+) -> dict:
+    """Динамика deep-оценки КЗ по месяцам (тренды осей, P0/100, статусы) (§7Б.3).
+
+    months - опциональный CSV выбранных месяцев (YYYY-MM) для сравнения; пусто = все.
+    """
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import build_kz_dynamics
 
-    return build_kz_dynamics()
+    sel = [m.strip() for m in (months or "").split(",") if m.strip()]
+    return build_kz_dynamics(months=sel or None)
+
+
+@app.get("/api/methodist/mis-kz-quality/scoring-info")
+def api_methodist_mis_kz_scoring_info(request: "Request") -> dict:
+    """Объяснимость скора КЗ: критерии осей, severity, risk-gate, пороги (Э4)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import build_scoring_info
+
+    return build_scoring_info()
 
 
 @app.get("/api/methodist/mis-kz-quality/case-detail")

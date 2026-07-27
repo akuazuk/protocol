@@ -7,6 +7,16 @@ alwaysApply: true
 
 Источник правды по подключению - проект `~/CURSOR/sql_epam` (`sql_csv_compare.py`, `.env`).
 
+## VPN «Дядя Ваня» (обязательно перед SQL)
+
+БД доступна **только при выключенном** VanyaVPN (профиль «Нидерланды»). Перед любым запросом:
+
+```bash
+~/CURSOR/bin/vanya_vpn.sh ensure-off   # или: scutil --nc stop "Нидерланды"
+```
+
+Статус: `~/CURSOR/bin/vanya_vpn.sh status`. После SQL, если нужна сильная модель (Opus и т.п.) или Gemini - `ensure-on`. Подробнее: user-правило `vanya-vpn.mdc`.
+
 ## Параметры (без пароля)
 
 | | |

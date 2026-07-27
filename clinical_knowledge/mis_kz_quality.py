@@ -880,6 +880,61 @@ def _load_summary_prefer_deep(month: str) -> dict[str, Any] | None:
     return fallback
 
 
+def build_scoring_info() -> dict[str, Any]:
+    """Объяснимость скора: критерии осей, risk-gate, действующие пороги (Э4-конфиг).
+
+    Используется дашбордом (вкладка «Как считается скор») - методист видит, из чего
+    складывается overall и почему выставлен статус.
+    """
+    cfg = {}
+    try:
+        from .kz_deep_eval import load_deep_config
+
+        cfg = load_deep_config()
+    except Exception:  # noqa: BLE001
+        cfg = {"t_good": 80.0, "t_acc": 60.0, "min_axis_review": None}
+    t_good = cfg.get("t_good", 80.0)
+    t_acc = cfg.get("t_acc", 60.0)
+    min_axis = cfg.get("min_axis_review")
+    return {
+        "ok": True,
+        "overall_rule": (
+            "Overall = среднее доступных осей (оси без данных не штрафуются - объективность). "
+            "Затем применяется risk-gate: критичные находки ограничивают итог независимо от среднего."
+        ),
+        "axes": [
+            {"key": "documentation", "label": "Оформление (A)",
+             "desc": "Полнота КЗ: жалобы, анамнез, объективный статус, диагноз, рекомендации по обследованию и лечению, наблюдение."},
+            {"key": "clinical_concordance", "label": "Согласованность (B)",
+             "desc": "Диагноз опирается на жалобы/анамнез/статус; валидность и совпадение кода МКБ; покрытие обязательных обследований и диагностических критериев протокола МЗ; лечение соответствует протоколу."},
+            {"key": "safety", "label": "Безопасность (C)",
+             "desc": "Red flags без маршрутизации, дубли НПВС, лекарственные взаимодействия (DDInter), препараты высокого риска без дозы/мониторинга (ISMP), STOPP/Beers у пожилых."},
+            {"key": "regulatory", "label": "Регуляторика (D)",
+             "desc": "Соответствие требованиям Пост. №55 (обязательные реквизиты и разделы КЗ)."},
+        ],
+        "severity": [
+            {"key": "P0", "label": "Критично", "desc": "Потенциальный вред пациенту. Ограничивает overall до 40, статус «критично»."},
+            {"key": "P1", "label": "Клинический дефект", "desc": "Серьёзное несоответствие. Ограничивает overall до 60, статус «на разбор»/«плохо»."},
+            {"key": "P2", "label": "Документирование", "desc": "Умеренный дефект оформления/согласованности."},
+            {"key": "P3", "label": "Формальное", "desc": "Незначительное замечание."},
+        ],
+        "risk_gate": [
+            "Есть находка P0 → overall ≤ 40, статус «критично».",
+            "Есть находка P1 → overall ≤ 60, статус «на разбор» (или «плохо» при <50).",
+            (f"Любая ось ниже {int(min_axis)} → статус не выше «на разбор» "
+             "(сильная ось не маскирует провал другой)." if min_axis is not None
+             else "Правило min-axis отключено."),
+            f"Иначе overall ≥ {int(t_good)} → «хорошо»; ≥ {int(t_acc)} → «приемлемо»; ниже → «на разбор».",
+        ],
+        "thresholds": {"good": t_good, "acceptable": t_acc, "min_axis_review": min_axis},
+        "status_labels": {
+            "good": "хорошо", "acceptable": "приемлемо", "review": "на разбор",
+            "poor": "плохо", "critical": "критично", "insufficient_data": "мало данных",
+        },
+        "source": "config/deep_thresholds.yaml (Э4-калибровка на LLM-прокси); движок clinical_knowledge/kz_deep_eval.py",
+    }
+
+
 def build_kz_dynamics(*, months: list[str] | None = None) -> dict[str, Any]:
     """Динамика deep-оценки по месяцам (для линий/спарклайнов дашборда)."""
     ms = months or _available_months()
@@ -895,6 +950,9 @@ def build_kz_dynamics(*, months: list[str] | None = None) -> dict[str, Any]:
         axis_means = deep.get("axis_means") or {}
         status_dist = deep.get("status_distribution") or {}
         overall_vals = [v for v in axis_means.values() if isinstance(v, (int, float))]
+        # «плохие» = статусы, требующие внимания методиста
+        n_bad = sum(int(status_dist.get(k, 0) or 0) for k in ("review", "poor", "critical"))
+        n_harm = deep.get("n_potential_harm")
         series.append({
             "month": m,
             "n": n,
@@ -902,7 +960,9 @@ def build_kz_dynamics(*, months: list[str] | None = None) -> dict[str, Any]:
             "axis_means": axis_means,
             "p0": p0,
             "p0_per_100": round(100 * p0 / n, 2) if n else 0.0,
-            "n_potential_harm": deep.get("n_potential_harm"),
+            "n_potential_harm": n_harm,
+            "n_bad": n_bad,
+            "pct_bad": round(100 * n_bad / n, 1) if n else 0.0,
             "status_distribution": status_dist,
             "has_deep": bool(deep),
         })
