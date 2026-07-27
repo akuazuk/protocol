@@ -934,6 +934,9 @@ def build_kz_case_detail(*, month: str | None = None, visit_id: str) -> dict[str
         "findings": findings,
         "block_scores": case.get("block_scores") or {},
         "reg55": deep.get("reg55") or {},
+        # Аддитивно (shadow, feature-flag методиста): канонический scorer v3, если посчитан
+        # в батче. Не заменяет legacy-поля выше (см. ТЗ §5.3, §14.2).
+        "evaluation_v3": case.get("evaluation_v3"),
     }
 
 

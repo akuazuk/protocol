@@ -1349,6 +1349,27 @@ def main() -> int:
                         "protocol_used": deep["protocol_used"],
                         "findings": deep["findings"][:20],
                     }
+                    # Аддитивно: scorer v3 в shadow-режиме (не переключает prod score/gate).
+                    try:
+                        from clinical_knowledge.kz_evaluation_engine import (
+                            evaluate_kz_v3,
+                            resolve_mode,
+                        )
+
+                        mode = resolve_mode()
+                        if mode.enabled:
+                            v3 = evaluate_kz_v3(
+                                deep_case, protocol_ctx=proto, drug_ctx=load_drug_ctx(),
+                                legacy={
+                                    "deep_overall_pct": deep.get("overall_pct"),
+                                    "deep_status": deep.get("overall_status"),
+                                    "l1_overall_pct": case.get("overall_pct"),
+                                },
+                                mode=mode,
+                            )
+                            case["evaluation_v3"] = v3.to_public_dict()
+                    except Exception as e:  # noqa: BLE001
+                        case["evaluation_v3_error"] = str(e)[:200]
                 except Exception as e:  # noqa: BLE001
                     case["deep_error"] = str(e)[:200]
             return case
