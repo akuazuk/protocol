@@ -3965,6 +3965,41 @@ GEMINI_METHODIST_AI_REVIEW_TIMEOUT = float(
 _methodist_model = None
 _methodist_model_name: str | None = None
 _methodist_model_warn: str | None = None
+# Индекс активного ключа для методистского пути (ротация при 429/spend-cap).
+_gemini_key_idx = 0
+
+
+def _methodist_key_list() -> list[str]:
+    """Упорядоченный список ключей Gemini для методистского пути (без дублей).
+
+    Первый - основной (GOOGLE_API_KEY/GEMINI_API_KEY), далее - резервные из другого
+    GCP-проекта (GEMINI_API_KEY_2 / GOOGLE_API_KEY_2 / GEMINI_METHODIST_API_KEY),
+    чтобы при исчерпании spend-cap автоматически переключиться на некапнутый проект.
+    """
+    raw = [
+        os.environ.get("GOOGLE_API_KEY", ""),
+        os.environ.get("GEMINI_API_KEY", ""),
+        os.environ.get("GEMINI_API_KEY_2", ""),
+        os.environ.get("GOOGLE_API_KEY_2", ""),
+        os.environ.get("GEMINI_METHODIST_API_KEY", ""),
+    ]
+    out: list[str] = []
+    for k in raw:
+        k = (k or "").strip()
+        if k and k not in out:
+            out.append(k)
+    return out
+
+
+def _rotate_methodist_key() -> bool:
+    """Переключиться на следующий доступный ключ. True - если переключились."""
+    global _gemini_key_idx
+    keys = _methodist_key_list()
+    if _gemini_key_idx + 1 < len(keys):
+        _gemini_key_idx += 1
+        reset_methodist_gemini_cache()
+        return True
+    return False
 
 
 def reset_methodist_gemini_cache() -> None:
@@ -4009,15 +4044,18 @@ def get_gemini():
 
 def get_methodist_gemini():
     """Отдельная модель для AI-оценки методиста (GEMINI_METHODIST_MODEL или gemini-2.5-pro)."""
-    global _methodist_model, _methodist_model_name, _methodist_model_warn
+    global _methodist_model, _methodist_model_name, _methodist_model_warn, _gemini_key_idx
     if _methodist_model is not None:
         return _methodist_model
-    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not key:
+    keys = _methodist_key_list()
+    if not keys:
         raise HTTPException(
             status_code=503,
             detail="На сервере не настроен ключ API для обработки текста.",
         )
+    if _gemini_key_idx >= len(keys):
+        _gemini_key_idx = 0
+    key = keys[_gemini_key_idx]
     try:
         genai = _legacy_genai_module()
         HarmBlockThreshold, HarmCategory = _legacy_genai_types()
@@ -4303,6 +4341,9 @@ def generate_gemini_methodist_ai_review(model, full_prompt: str):
         err = str(exc).lower()
         if "not found" in err or "is not supported" in err:
             reset_methodist_gemini_cache()
+            return _run_model_with_retry(_fn, get_methodist_gemini(), full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
+        # Исчерпан spend-cap / quota на текущем ключе - пробуем резервный ключ (другой проект).
+        if ("spend" in err or _is_quota_error(exc)) and _rotate_methodist_key():
             return _run_model_with_retry(_fn, get_methodist_gemini(), full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
         raise
 
@@ -8383,7 +8424,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-27-r10-llm-spendcap-msg"
+BUILD_VERSION = "2026-07-27-r11-gemini-key-rotation"
 
 
 def _app_version() -> str:
