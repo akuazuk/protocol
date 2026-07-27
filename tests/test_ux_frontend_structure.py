@@ -62,6 +62,37 @@ def test_advanced_drawer_has_title(index_html: str) -> None:
     assert 'aria-labelledby="search-settings-drawer-title"' in index_html
 
 
+def test_search_filters_are_clinically_separated_and_url_backed(index_html: str) -> None:
+    flow = _read("search-flow.js")
+    assert 'id="search-active-filters"' in index_html
+    assert 'data-search-special="pregnant"' in index_html
+    assert 'data-search-setting="emergency"' in index_html
+    for param in ("population", "special", "setting", "specialty"):
+        assert f'"{param}"' in flow
+    assert "URLSearchParams(location.search" in flow
+
+
+def test_role_navigation_uses_clean_urls(index_html: str) -> None:
+    assert 'href="/doctor/search"' in index_html
+    assert ">Найти протокол<" in index_html
+    assert ">Проверить КЗ<" in index_html
+    assert ">Пациентам<" in index_html
+    assert '"/methodist/overview"' in index_html
+    assert '"/methodist/cases"' in index_html
+    assert '"/methodist/search-quality"' in index_html
+
+
+def test_exact_icd_result_can_skip_stepper(ux_css: str) -> None:
+    index = _read("index.html")
+    assert "search-direct-results" in index
+    assert "body.search-direct-results #search-flow-shell" in ux_css
+
+
+def test_methodist_source_quality_panel(index_html: str) -> None:
+    assert 'id="methodist-source-quality"' in index_html
+    assert "/api/methodist/source-quality" in index_html
+
+
 # --- §G1/G2: design tokens и минимальные размеры ---
 
 def test_design_tokens_defined(ux_css: str) -> None:

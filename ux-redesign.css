@@ -75,6 +75,84 @@
   min-height: var(--ux-touch-min);
 }
 
+.search-filter-group {
+  margin: var(--ux-space-4) 0;
+  padding: var(--ux-space-3);
+  border: 1px solid var(--ux-border);
+  border-radius: var(--ux-radius-md);
+}
+.search-filter-group legend {
+  padding: 0 var(--ux-space-2);
+  font-weight: 650;
+  color: var(--ux-text-strong);
+}
+.search-filter-options,
+.search-active-filters {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--ux-space-2);
+}
+.search-filter-options button,
+.ux-filter-chip,
+.ux-filter-clear {
+  min-height: var(--ux-touch-min);
+  padding: 8px 12px;
+  border: 1px solid var(--ux-border-strong);
+  border-radius: 999px;
+  background: var(--ux-bg-surface);
+  color: var(--ux-text);
+  cursor: pointer;
+}
+.search-filter-options button[aria-pressed="true"],
+.ux-filter-chip {
+  border-color: var(--ux-action);
+  background: #e4f6ee;
+  color: var(--ux-action-strong);
+}
+.search-active-filters {
+  margin-top: var(--ux-space-3);
+}
+.search-active-filters[hidden] {
+  display: none;
+}
+.ux-filter-clear {
+  border-style: dashed;
+  color: var(--ux-text-muted);
+}
+
+/* Для однозначного быстрого ответа не показываем искусственные четыре шага. */
+body.search-direct-results #search-flow-shell,
+body.search-direct-results #search-wizard-bar {
+  display: none !important;
+}
+
+/* Кабинет методиста: постоянная боковая навигация на широком экране. */
+@media (min-width: 901px) {
+  body.methodist-mode .methodist-workspace-tabs {
+    float: left;
+    position: sticky;
+    top: 76px;
+    width: 248px;
+    max-height: calc(100vh - 92px);
+    overflow-y: auto;
+    flex-direction: column;
+    align-items: stretch;
+    margin-right: var(--ux-space-5);
+  }
+  body.methodist-mode .methodist-workspace-tabs button {
+    width: 100%;
+    min-height: 52px;
+    justify-content: flex-start;
+    text-align: left;
+  }
+  body.methodist-mode [id^="panel-methodist-"] {
+    margin-left: 272px;
+  }
+  body.methodist-mode footer {
+    clear: both;
+  }
+}
+
 /* --- §D2 простой режим проверки КЗ --- */
 .consult-simple-mode {
   margin: var(--ux-space-3) 0;
@@ -186,5 +264,11 @@
   }
   .consult-deep-toggle {
     padding: var(--ux-space-3);
+  }
+  .search-filter-options > button,
+  .ux-filter-chip,
+  .ux-filter-clear {
+    flex: 1 1 100%;
+    text-align: left;
   }
 }

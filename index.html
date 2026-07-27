@@ -12733,20 +12733,20 @@
     </div>
     <div class="app-chrome consult-hide-print" id="app-chrome">
       <div class="app-chrome__masthead">
-        <a class="app-chrome__brand" href="#" aria-label="Protocol - на главную">
+        <a class="app-chrome__brand" href="/doctor/search" aria-label="Protocol — найти клинический протокол">
           <img class="app-sticky-bar__logo" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
         </a>
       </div>
       <div class="app-chrome__journal">
         <div class="app-main-tabs app-main-tabs--journal app-main-tabs--primary" role="tablist" aria-label="Раздел приложения" id="app-main-tabs">
-      <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review" title="Проверка КЗ, медосмотра или консультации">
-        <span class="app-main-tab-title">Проверка</span>
-      </button>
       <button type="button" role="tab" id="tab-main-search" aria-selected="false" aria-controls="panel-main-search" title="Поиск клинических протоколов">
-        <span class="app-main-tab-title">Поиск</span>
+        <span class="app-main-tab-title">Найти протокол</span>
       </button>
-      <a href="patient.html" class="app-main-tab app-main-tab--patient" id="tab-patient-b2c" title="После приема - понять своё заключение">
-        <span class="app-main-tab-title">После приема</span>
+      <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review" title="Проверка КЗ, медосмотра или консультации">
+        <span class="app-main-tab-title">Проверить КЗ</span>
+      </button>
+      <a href="/patient" class="app-main-tab app-main-tab--patient" id="tab-patient-b2c" title="Информация для пациента после приёма">
+        <span class="app-main-tab-title">Пациентам</span>
       </a>
         </div>
       </div>
@@ -12760,8 +12760,8 @@
           </svg>
         </span>
         <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Очередь</span>
-          <span class="app-main-tab-sub">active learning - разметка приоритетных КЗ</span>
+          <span class="app-main-tab-title">Очередь случаев</span>
+          <span class="app-main-tab-sub">приоритетная проверка и разметка КЗ</span>
         </span>
       </button>
       <button type="button" role="tab" id="tab-methodist-ml-stats" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-ml-stats" hidden>
@@ -12773,8 +12773,8 @@
           </svg>
         </span>
         <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Дашборд ML</span>
-          <span class="app-main-tab-sub">база для обучения, прогресс движка и ML</span>
+          <span class="app-main-tab-title">Обзор качества</span>
+          <span class="app-main-tab-sub">источники, разметка и готовность движка</span>
         </span>
       </button>
       <button type="button" role="tab" id="tab-methodist-search-stats" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-search-stats" hidden>
@@ -12785,8 +12785,8 @@
           </svg>
         </span>
         <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Поиск · оценки</span>
-          <span class="app-main-tab-sub">AI-разметка retrieval и улучшения RAG</span>
+          <span class="app-main-tab-title">Качество поиска</span>
+          <span class="app-main-tab-sub">оценка выдачи и улучшения поиска</span>
         </span>
       </button>
       <button type="button" role="tab" id="tab-methodist-b2c" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-b2c" hidden>
@@ -12818,7 +12818,7 @@
           </svg>
         </span>
         <span class="app-main-tab-text">
-          <span class="app-main-tab-title">MIS · КЗ</span>
+          <span class="app-main-tab-title">Критические нарушения</span>
           <span class="app-main-tab-sub">L1-срез выгрузки МИС по врачам и филиалам</span>
         </span>
       </button>
@@ -12848,12 +12848,10 @@
       <div class="search-entry-compose" id="search-entry-compose">
         <div class="search-entry-actions">
           <div class="search-entry-actions__audience">
-            <span class="search-entry-actions__label" id="search-audience-label">Аудитория</span>
+            <span class="search-entry-actions__label" id="search-audience-label">Возрастная группа</span>
             <div class="search-inline-population" id="search-inline-population" role="group" aria-labelledby="search-audience-label">
               <button type="button" class="search-inline-population__btn" data-inline-pop="adult" aria-pressed="false">Взрослые</button>
               <button type="button" class="search-inline-population__btn" data-inline-pop="pediatric" aria-pressed="false">Дети</button>
-              <button type="button" class="search-inline-population__btn" data-inline-pop="pregnant" aria-pressed="false">Беременные</button>
-              <button type="button" class="search-inline-population__btn" data-inline-pop="emergency" aria-pressed="false">Неотложно</button>
             </div>
           </div>
           <button
@@ -12863,7 +12861,7 @@
             aria-expanded="false"
             aria-controls="search-settings-drawer"
           >
-            <span class="search-settings-trigger__text">Дополнительно</span>
+            <span class="search-settings-trigger__text">Все фильтры</span>
           </button>
         </div>
         <p class="search-audience-continue" id="search-audience-continue" hidden role="status" aria-live="polite"></p>
@@ -12938,14 +12936,30 @@
           </form>
           <p class="hint search-query-status" id="search-query-status" aria-live="polite" hidden></p>
         </div>
+        <div class="search-active-filters" id="search-active-filters" aria-live="polite" aria-label="Активные фильтры"></div>
       </div>
       <div class="search-settings-drawer" id="search-settings-drawer" role="region" aria-labelledby="search-settings-drawer-title" hidden>
         <div class="search-settings-drawer__head">
           <h3 class="search-settings-drawer__title" id="search-settings-drawer-title">Все фильтры и режим поиска</h3>
           <button type="button" class="search-settings-drawer__close" id="btn-search-settings-close" aria-label="Закрыть панель фильтров">Закрыть</button>
         </div>
-        <p class="search-settings-drawer__lead" style="margin:0 0 var(--ux-space-3);font-size:var(--ux-font-secondary);color:var(--ux-text-muted)">Выберите глубину подбора и режим ответа. Возрастная группа и особые состояния - кнопками «Аудитория» выше.</p>
+        <p class="search-settings-drawer__lead" style="margin:0 0 var(--ux-space-3);font-size:var(--ux-font-secondary);color:var(--ux-text-muted)">Уточните клинический контекст. Выбранные фильтры сохраняются в адресе страницы.</p>
         <div id="search-settings-drawer-body">
+          <fieldset class="search-filter-group">
+            <legend>Особое состояние</legend>
+            <div class="search-filter-options" id="search-special-state">
+              <button type="button" data-search-special="pregnant" aria-pressed="false">Беременность</button>
+              <button type="button" data-search-special="postpartum" aria-pressed="false">Послеродовый период</button>
+            </div>
+          </fieldset>
+          <fieldset class="search-filter-group">
+            <legend>Условия оказания помощи</legend>
+            <div class="search-filter-options" id="search-care-setting">
+              <button type="button" data-search-setting="outpatient" aria-pressed="false">Амбулаторно</button>
+              <button type="button" data-search-setting="inpatient" aria-pressed="false">Стационар</button>
+              <button type="button" data-search-setting="emergency" aria-pressed="false">Неотложно</button>
+            </div>
+          </fieldset>
           <div class="search-mode-toolbar" role="group" aria-label="Режим отображения результатов">
             <label class="search-mode-toolbar__citations-only">
               <input type="checkbox" id="citations-only-mode" />
@@ -13902,6 +13916,17 @@
         <div id="methodist-ml-dash-error" class="methodist-ml-error" hidden></div>
         <div id="methodist-ml-dash-meta" class="methodist-ml-meta"></div>
         <div id="methodist-ml-kpi-grid" class="methodist-ml-kpi-grid"></div>
+        <section class="methodist-ml-section" id="methodist-source-quality">
+          <h3>Качество клинических источников</h3>
+          <p class="methodist-ml-meta">Структурированность протоколов, уровень доверия и очередь документов, требующих проверки.</p>
+          <div id="methodist-source-quality-kpis" class="methodist-ml-kpi-grid methodist-ml-kpi-grid--compact"></div>
+          <div class="methodist-ml-table-wrap">
+            <table class="methodist-ml-table" id="methodist-source-quality-table">
+              <thead><tr><th>Протокол</th><th>Приоритет</th><th>Доверие</th><th>Готовность правил</th></tr></thead>
+              <tbody><tr><td colspan="4">Загрузка…</td></tr></tbody>
+            </table>
+          </div>
+        </section>
         <div class="methodist-ml-two-col">
           <section class="methodist-ml-section">
             <h3>Готовность к ML fine-tune</h3>
@@ -15731,6 +15756,7 @@
     var sec = document.getElementById("section-results");
     if (sec) sec.hidden = !visible;
     document.body.classList.toggle("search-has-results", !!visible);
+    if (!visible) document.body.classList.remove("search-direct-results");
     updateScrollFabVisibility();
   }
 
@@ -21889,6 +21915,11 @@
         showExplore: stepped && wiz.step === "detail",
       };
       var rawProtos = dedupeProtocolsByPath(j.protocols || []);
+      var directExact =
+        !!data.icd_fast_lookup &&
+        data.icd_lookup_ambiguous !== true &&
+        rawProtos.length > 0;
+      document.body.classList.toggle("search-direct-results", directExact);
       if (stepped && wiz.step === "detail" && wiz.selectedProto) {
         var filtered = [];
         var fp;
@@ -22608,7 +22639,7 @@
     var p = new URLSearchParams(window.location.search || "");
     if (p.get("mode") === "methodist") return true;
     var path = (window.location.pathname || "").replace(/\/$/, "");
-    return path === "/methodist";
+    return path === "/methodist" || path.indexOf("/methodist/") === 0;
   }
 
   function methodistHeaders() {
@@ -22865,7 +22896,28 @@
 
   function syncMainAppTabFromLocation() {
     if (typeof switchMainAppTab !== "function") return;
+    var path = (window.location.pathname || "").replace(/\/$/, "");
     var h = window.location.hash || "";
+    if (path === "/doctor/search") {
+      switchMainAppTab(MAIN_TAB_SEARCH);
+      return;
+    }
+    if (path === "/doctor/review") {
+      switchMainAppTab(MAIN_TAB_CONSULT);
+      return;
+    }
+    if (path === "/methodist/overview" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_ML_STATS);
+      return;
+    }
+    if (path === "/methodist/cases" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_QUEUE);
+      return;
+    }
+    if (path === "/methodist/search-quality" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_SEARCH_STATS);
+      return;
+    }
     if (!window.__methodistMode && isMethodistOnlyMainTabHash(h)) {
       switchMainAppTab(MAIN_TAB_CONSULT);
       return;
@@ -24305,6 +24357,44 @@
       })
       .finally(function () {
         if (root) root.classList.remove("is-loading");
+      });
+    fetch(base + "/api/methodist/source-quality", {
+      headers: {
+        "X-Methodist-Token": window.__methodistToken,
+        "X-Methodist-Reviewer": window.__methodistReviewer || "",
+      },
+    })
+      .then(function (r) {
+        if (!r.ok) throw new Error(String(r.status));
+        return r.json();
+      })
+      .then(function (data) {
+        var s = data.summary || {};
+        var review = s.review_status || {};
+        var trust = s.trust_levels || {};
+        var kpis = document.getElementById("methodist-source-quality-kpis");
+        if (kpis) {
+          kpis.innerHTML =
+            '<div class="methodist-ml-kpi"><strong>' + escapeHtml(String(s.protocols_total || 0)) + '</strong><span>протоколов в аудите</span></div>' +
+            '<div class="methodist-ml-kpi"><strong>' + escapeHtml(String(s.protocols_penalty_ready || 0)) + '</strong><span>готовы к штрафным правилам</span></div>' +
+            '<div class="methodist-ml-kpi"><strong>' + escapeHtml(String(review.needs_review || 0)) + '</strong><span>нуждаются в проверке</span></div>' +
+            '<div class="methodist-ml-kpi"><strong>' + escapeHtml(String(trust.A || 0)) + '</strong><span>источников уровня A</span></div>';
+        }
+        var body = document.querySelector("#methodist-source-quality-table tbody");
+        if (body) {
+          var rows = data.top_queue || [];
+          body.innerHTML = rows.length ? rows.map(function (item) {
+            return "<tr><td>" + escapeHtml(item.title || item.protocol_id || "—") +
+              "</td><td>" + escapeHtml(String(item.priority != null ? item.priority : "—")) +
+              "</td><td>" + escapeHtml(item.trust_level || "—") +
+              "</td><td>" + escapeHtml(String(item.penalty_ready_pct != null ? item.penalty_ready_pct + "%" : "—")) +
+              "</td></tr>";
+          }).join("") : '<tr><td colspan="4">Очередь пуста или отчёт ещё не сформирован.</td></tr>';
+        }
+      })
+      .catch(function () {
+        var body = document.querySelector("#methodist-source-quality-table tbody");
+        if (body) body.innerHTML = '<tr><td colspan="4">Не удалось загрузить аудит источников.</td></tr>';
       });
   }
 
@@ -31149,14 +31239,16 @@
       mountPendingSearchReviewWorkbench();
     }
     try {
-      if (isMl) {
-        history.replaceState(null, "", window.location.pathname + window.location.search + "#ml-dashboard");
+      if (isMethodistModeRequested() && !window.__methodistMode) {
+        /* Сохраняем прямой URL кабинета, пока пользователь проходит вход. */
+      } else if (isMl) {
+        history.replaceState(null, "", "/methodist/overview" + window.location.search);
         if (typeof loadMethodistMlDashboard === "function") loadMethodistMlDashboard();
       } else if (isSearchStats) {
-        history.replaceState(null, "", window.location.pathname + window.location.search + "#search-dashboard");
+        history.replaceState(null, "", "/methodist/search-quality" + window.location.search);
         if (typeof loadMethodistSearchDashboard === "function") loadMethodistSearchDashboard();
       } else if (isQueue) {
-        history.replaceState(null, "", window.location.pathname + window.location.search + "#methodist-queue");
+        history.replaceState(null, "", "/methodist/cases" + window.location.search);
         if (typeof loadMethodistQueuePanel === "function") loadMethodistQueuePanel();
       } else if (isB2c) {
         history.replaceState(null, "", window.location.pathname + window.location.search + "#b2c-monetization");
@@ -31171,9 +31263,9 @@
         history.replaceState(null, "", window.location.pathname + window.location.search + "#analytics-stats");
         if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
       } else if (isConsult) {
-        history.replaceState(null, "", window.location.pathname + window.location.search + "#consult-review");
+        history.replaceState(null, "", "/doctor/review" + window.location.search);
       } else {
-        history.replaceState(null, "", window.location.pathname + window.location.search + "#search");
+        history.replaceState(null, "", "/doctor/search" + window.location.search);
       }
     } catch (e) {}
     scrollToPageTop();
@@ -34467,7 +34559,8 @@
           setAssistSearchProgress("ai_review", "Формирование списка протоколов…");
           clearAssistTick();
           renderLlmOut(data);
-          clearSpecialtySelectionAndCollapse();
+          var specialtyPanelAfterSearch = document.getElementById("specialty-panel");
+          if (specialtyPanelAfterSearch) specialtyPanelAfterSearch.removeAttribute("open");
           if (st) st.textContent = "Готово.";
           setSearchQueryStatus("");
           if (typeof refreshAnalyticsAfterSearch === "function") refreshAnalyticsAfterSearch();
@@ -34606,7 +34699,7 @@
   }
 
   // protocols.json нужен только для счётчика протоколов в бейдже - необязателен для работы.
-  fetch("protocols.json")
+  fetch("/protocols.json")
     .then(function (r) {
       if (!r.ok) throw new Error("protocols.json: " + r.status);
       return r.json();

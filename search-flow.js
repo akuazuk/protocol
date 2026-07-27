@@ -36,6 +36,12 @@
     pregnant: "Жалоба, диагноз или МКБ-10 для беременной…",
     emergency: "Неотложная ситуация: кратко симптомы или код МКБ-10…",
   };
+  var SPECIAL_LABELS = { pregnant: "Беременность", postpartum: "Послеродовый период" };
+  var SETTING_LABELS = {
+    outpatient: "Амбулаторно",
+    inpatient: "Стационар",
+    emergency: "Неотложно",
+  };
 
   var DEFAULT_QUERY_PLACEHOLDER =
     "Сначала выберите аудиторию выше или сразу введите диагноз, МКБ-10 (J20.9, I10) или жалобы.";
@@ -206,7 +212,7 @@
     if (ctx.rubric_slugs && ctx.rubric_slugs.length && activeStep !== "rubric") {
       rows.push({
         key: "Рубрика",
-        val: ctx.rubric_slugs.slice(0, 2).join(", "),
+        val: ctx.rubric_slugs.slice(0, 2).map(specialtyLabel).join(", "),
         jump: "rubric",
       });
     }
@@ -302,7 +308,11 @@
     if (!step || step === "query" || historyPushing) return;
     try {
       var state = { searchFlowStep: step, ts: Date.now() };
-      history.pushState(state, "", "#search-step-" + step);
+      history.pushState(
+        state,
+        "",
+        location.pathname + location.search + "#search-step-" + step
+      );
     } catch (e) {}
   }
 
@@ -438,8 +448,190 @@
         trackEvent("search_inline_population", { population: pop });
       }
       syncInlinePopulationUi();
+      syncFilterState();
     });
     syncInlinePopulationUi();
+  }
+
+  function selectedSpecialties() {
+    return Array.prototype.slice
+      .call(document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]:checked'))
+      .map(function (el) { return el.value; });
+  }
+
+  function specialtyLabel(slug) {
+    var input = document.querySelector(
+      '#specialty-rubrics input[name="specialty-slug"][value="' +
+        String(slug || "").replace(/"/g, '\\"') +
+        '"]'
+    );
+    var label = input && input.closest("label");
+    return label ? label.textContent.trim() : String(slug || "").replace(/[-_]+/g, " ");
+  }
+
+  function syncClinicalContextFields() {
+    var ctx = global.__funnelContext || {};
+    var extra = document.getElementById("ctx-extra");
+    if (!extra) return;
+    var lines = (extra.value || "").split(/\n/).filter(function (line) {
+      return !/^Особое состояние:|^Условия помощи:/.test(line);
+    });
+    if (ctx.special_state && SPECIAL_LABELS[ctx.special_state]) {
+      lines.push("Особое состояние: " + SPECIAL_LABELS[ctx.special_state]);
+    }
+    if (ctx.care_setting && SETTING_LABELS[ctx.care_setting]) {
+      lines.push("Условия помощи: " + SETTING_LABELS[ctx.care_setting]);
+    }
+    extra.value = lines.filter(Boolean).join("\n");
+  }
+
+  function renderActiveFilters() {
+    var host = document.getElementById("search-active-filters");
+    if (!host) return;
+    var ctx = global.__funnelContext || {};
+    var chips = [];
+    if (ctx.populationConfirmed && ctx.population) {
+      chips.push({ type: "population", value: ctx.population, label: POP_LABELS[ctx.population] });
+    }
+    if (ctx.special_state) {
+      chips.push({ type: "special", value: ctx.special_state, label: SPECIAL_LABELS[ctx.special_state] });
+    }
+    if (ctx.care_setting) {
+      chips.push({ type: "setting", value: ctx.care_setting, label: SETTING_LABELS[ctx.care_setting] });
+    }
+    selectedSpecialties().forEach(function (slug) {
+      chips.push({ type: "specialty", value: slug, label: specialtyLabel(slug) });
+    });
+    host.hidden = !chips.length;
+    host.innerHTML = chips
+      .map(function (chip) {
+        return (
+          '<button type="button" class="ux-filter-chip" data-filter-remove="' +
+          escAttr(chip.type) +
+          '" data-filter-value="' +
+          escAttr(chip.value) +
+          '" aria-label="Убрать фильтр ' +
+          escAttr(chip.label) +
+          '">' +
+          esc(chip.label) +
+          " ×</button>"
+        );
+      })
+      .join("") +
+      (chips.length
+        ? '<button type="button" class="ux-filter-clear" data-filter-clear>Сбросить фильтры</button>'
+        : "");
+    var triggerText = document.querySelector("#btn-search-settings .search-settings-trigger__text");
+    if (triggerText) triggerText.textContent = "Все фильтры" + (chips.length ? " (" + chips.length + ")" : "");
+  }
+
+  function writeFilterUrl() {
+    try {
+      var url = new URL(location.href);
+      var ctx = global.__funnelContext || {};
+      var q = document.getElementById("q");
+      var query = q ? q.value.trim() : "";
+      if (hooks.stripPopulationContextFromQuery) query = hooks.stripPopulationContextFromQuery(query);
+      ["q", "population", "special", "setting", "specialty"].forEach(function (key) {
+        url.searchParams.delete(key);
+      });
+      if (query) url.searchParams.set("q", query);
+      if (ctx.populationConfirmed && ctx.population) url.searchParams.set("population", ctx.population);
+      if (ctx.special_state) url.searchParams.set("special", ctx.special_state);
+      if (ctx.care_setting) url.searchParams.set("setting", ctx.care_setting);
+      selectedSpecialties().forEach(function (slug) { url.searchParams.append("specialty", slug); });
+      history.replaceState(history.state, "", url.pathname + url.search + url.hash);
+    } catch (e) {}
+  }
+
+  function syncFilterButtons() {
+    var ctx = global.__funnelContext || {};
+    document.querySelectorAll("[data-search-special]").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", btn.getAttribute("data-search-special") === ctx.special_state ? "true" : "false");
+    });
+    document.querySelectorAll("[data-search-setting]").forEach(function (btn) {
+      btn.setAttribute("aria-pressed", btn.getAttribute("data-search-setting") === ctx.care_setting ? "true" : "false");
+    });
+  }
+
+  function syncFilterState() {
+    syncClinicalContextFields();
+    syncFilterButtons();
+    renderActiveFilters();
+    writeFilterUrl();
+  }
+
+  function clearAllFilters() {
+    global.__funnelContext = global.__funnelContext || {};
+    ["population", "_inlinePopulationChoice", "special_state", "care_setting"].forEach(function (key) {
+      delete global.__funnelContext[key];
+    });
+    global.__funnelContext.populationConfirmed = false;
+    document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]').forEach(function (el) {
+      el.checked = false;
+    });
+    syncInlinePopulationUi();
+    syncFilterState();
+  }
+
+  function initFilterState() {
+    var ctx = global.__funnelContext = global.__funnelContext || {};
+    var params = new URLSearchParams(location.search || "");
+    var q = document.getElementById("q");
+    if (q && params.get("q")) q.value = params.get("q");
+    var pop = params.get("population");
+    if (pop && POP_LABELS[pop]) {
+      ctx.population = pop;
+      ctx._inlinePopulationChoice = pop;
+      ctx.populationConfirmed = true;
+    }
+    if (SPECIAL_LABELS[params.get("special")]) ctx.special_state = params.get("special");
+    if (SETTING_LABELS[params.get("setting")]) ctx.care_setting = params.get("setting");
+    var pendingSpecialties = params.getAll("specialty");
+    function restoreSpecialties() {
+      if (!pendingSpecialties.length) return;
+      document.querySelectorAll('#specialty-rubrics input[name="specialty-slug"]').forEach(function (el) {
+        el.checked = pendingSpecialties.indexOf(el.value) !== -1;
+      });
+      renderActiveFilters();
+    }
+    restoreSpecialties();
+    var specialtyHost = document.getElementById("specialty-rubrics");
+    if (specialtyHost && global.MutationObserver) {
+      new MutationObserver(restoreSpecialties).observe(specialtyHost, { childList: true });
+    }
+    document.addEventListener("click", function (ev) {
+      var btn = ev.target && ev.target.closest ? ev.target.closest("[data-search-special],[data-search-setting],[data-filter-remove],[data-filter-clear]") : null;
+      if (!btn) return;
+      if (btn.hasAttribute("data-filter-clear")) {
+        clearAllFilters();
+        return;
+      }
+      var special = btn.getAttribute("data-search-special");
+      var setting = btn.getAttribute("data-search-setting");
+      if (special) ctx.special_state = ctx.special_state === special ? "" : special;
+      if (setting) ctx.care_setting = ctx.care_setting === setting ? "" : setting;
+      var remove = btn.getAttribute("data-filter-remove");
+      var value = btn.getAttribute("data-filter-value");
+      if (remove === "population") {
+        delete ctx.population;
+        delete ctx._inlinePopulationChoice;
+        ctx.populationConfirmed = false;
+        syncInlinePopulationUi();
+      } else if (remove === "special") ctx.special_state = "";
+      else if (remove === "setting") ctx.care_setting = "";
+      else if (remove === "specialty") {
+        var input = document.querySelector('#specialty-rubrics input[name="specialty-slug"][value="' + String(value || "").replace(/"/g, '\\"') + '"]');
+        if (input) input.checked = false;
+      }
+      syncFilterState();
+    });
+    document.addEventListener("change", function (ev) {
+      if (ev.target && ev.target.matches('#specialty-rubrics input[name="specialty-slug"]')) syncFilterState();
+    });
+    if (q) q.addEventListener("input", writeFilterUrl);
+    syncInlinePopulationUi();
+    syncFilterState();
   }
 
   function showRestoreBanner() {
@@ -562,6 +754,7 @@
     wireShell();
     initSettingsDrawer();
     initInlinePopulation();
+    initFilterState();
     initHistory();
     showRestoreBanner();
     var q = document.getElementById("q");
@@ -578,6 +771,7 @@
     trackEvent: trackEvent,
     saveSession: saveSession,
     clearSession: clearSession,
+    clearAllFilters: clearAllFilters,
     phaseForStep: phaseForStep,
     MACRO_PHASES: MACRO_PHASES,
   };

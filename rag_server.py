@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-27-r18-ux-applicability-gate-kz-simplify"
+BUILD_VERSION = "2026-07-27-r19-role-navigation-filter-state"
 
 
 def _app_version() -> str:
@@ -10636,6 +10636,40 @@ def api_methodist_stats(request: "Request") -> dict:
     return build_methodist_dashboard_stats()
 
 
+@app.get("/api/methodist/source-quality")
+def api_methodist_source_quality(request: "Request") -> dict:
+    """Read-only сводка структурированности корпуса и очередь проверки источников."""
+    _require_methodist_auth(request)
+    reports_dir = ROOT / "data" / "ml" / "reports"
+    audit_path = reports_dir / "kz_protocol_knowledge_audit_latest.json"
+    queue_path = reports_dir / "kz_protocol_methodist_queue_latest.json"
+    audit: dict = {}
+    queue: list = []
+    try:
+        audit = json.loads(audit_path.read_text(encoding="utf-8")) if audit_path.is_file() else {}
+    except (OSError, ValueError):
+        audit = {}
+    try:
+        raw_queue = json.loads(queue_path.read_text(encoding="utf-8")) if queue_path.is_file() else []
+        queue = raw_queue if isinstance(raw_queue, list) else []
+    except (OSError, ValueError):
+        queue = []
+    return {
+        "ok": True,
+        "build_version": BUILD_VERSION,
+        "available": bool(audit),
+        "summary": {
+            "protocols_total": audit.get("protocols_total", 0),
+            "protocols_penalty_ready": audit.get("protocols_penalty_ready", 0),
+            "requirements_total": audit.get("requirements_total", 0),
+            "review_status": audit.get("review_status", {}),
+            "trust_levels": audit.get("trust_levels", {}),
+        },
+        "queue_total": len(queue),
+        "top_queue": queue[:20],
+    }
+
+
 @app.get("/api/methodist/patient-monetization")
 def api_methodist_patient_monetization_get(request: "Request") -> dict:
     """Настройки монетизации B2C для кабинета методиста."""
@@ -12389,8 +12423,7 @@ async def api_patient_review_stream(
 # Иначе GET / даёт 404 «Not Found» на Render при открытии корня в браузере.
 if (ROOT / "index.html").is_file():
 
-    @app.get("/", include_in_schema=False)
-    def _serve_index_html() -> FileResponse:
+    def _index_html_response() -> FileResponse:
         """Без долгого кэша HTML: после деплоя сразу подхватывается новый JS/разметка."""
         return FileResponse(
             path=str(ROOT / "index.html"),
@@ -12398,9 +12431,23 @@ if (ROOT / "index.html").is_file():
             headers={"Cache-Control": "no-cache"},
         )
 
+    @app.get("/", include_in_schema=False)
+    def _serve_index_html() -> FileResponse:
+        return _index_html_response()
+
+    @app.get("/doctor/search", include_in_schema=False)
+    @app.get("/doctor/review", include_in_schema=False)
+    @app.get("/doctor/recent", include_in_schema=False)
+    @app.get("/methodist/overview", include_in_schema=False)
+    @app.get("/methodist/cases", include_in_schema=False)
+    @app.get("/methodist/search-quality", include_in_schema=False)
+    def _serve_role_workspace() -> FileResponse:
+        """Прямые URL рабочих пространств; состояние вкладки выбирает клиент."""
+        return _index_html_response()
+
     @app.get("/methodist", include_in_schema=False)
     def _redirect_methodist() -> RedirectResponse:
-        return RedirectResponse(url="/?mode=methodist", status_code=302)
+        return RedirectResponse(url="/methodist/overview", status_code=302)
 
     @app.get("/consult_review.html", include_in_schema=False)
     def _serve_consult_review_html() -> FileResponse:

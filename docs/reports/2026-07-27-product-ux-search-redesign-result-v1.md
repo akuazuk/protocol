@@ -3,7 +3,7 @@
 **Дата:** 2026-07-27
 **Ветка задачи №2:** `codex/product-ux-redesign-v1`
 **База (SHA задачи №1):** `c811b04c04962f42a7f51f77e6040c2e3a12cc1d`
-**BUILD_VERSION:** `2026-07-27-r17-...` (до) → `2026-07-27-r18-ux-applicability-gate-kz-simplify` (после)
+**BUILD_VERSION:** `2026-07-27-r17-...` (до) → `2026-07-27-r19-role-navigation-filter-state` (после)
 
 Отчёт по формату §16 ТЗ `docs/plans/2026-07-27-product-ux-search-navigation-redesign-v1.md`.
 
@@ -143,15 +143,11 @@ node --check patient-ui.js && node --check search-flow.js         # OK
    browser smoke: desktop, mobile 390×844, поиск I10 и `/patient.html`; критический
    сценарий и responsive layout работают. Остаётся прогнать axe-core/Lighthouse и
    расширенную матрицу viewport из §12.
-2. **Полный раздел ролей (Phase 2) с прямыми URL** (`/doctor/*`, `/methodist/*`, `/patient`)
-   не внедрён: высокий риск на монолите `index.html` (1.2 МБ) без браузерной регрессии.
-   Фундамент оставлен; продолжение — вынести clinical workspace в отдельный layout за флагом,
-   сохранив старые deep-links.
-3. **Полная модель фильтров chips + URL-state (Phase 3)** — фундамент (заголовок drawer,
-   inline population). Продолжение — компоненты `FilterChip`/`FilterDrawer` + восстановление
-   запроса/фильтров из URL.
-4. **App-shell методиста (Phase 5)** — source-quality из scorer v3 (задача №1) доступен в API;
-   UI-оболочка отложена.
+2. Автоматизированная visual-regression матрица пока не добавлена; ключевые desktop-сценарии,
+   reload URL-state и auth-screen проверены интерактивно. Структурные/маршрутные регрессии
+   закреплены в `tests/test_ux_frontend_structure.py` и `tests/test_workspace_routes.py`.
+3. Монолитный `index.html` остаётся техническим долгом. Чистые URL сейчас обслуживают один
+   совместимый app shell; вынос экранов в отдельные bundle не требуется для текущей приёмки.
 
 Ни один блокер не ослабляет clinical safety: gate только повышает строгость.
 
@@ -200,3 +196,38 @@ Browser smoke на 390×844 и desktop подтвердил: профильны�
 - Cursor commit: `56581b9`
 - Post-audit correctness fix: `7e8cf25`
 - Push: `git push -u origin codex/product-ux-redesign-v1`
+
+## 11. Завершение отложенных UX-блоков (r19)
+
+После повторного аудита закрыты пункты, оставленные Cursor в §7:
+
+- прямые рабочие URL `/doctor/search`, `/doctor/review`, `/doctor/recent`,
+  `/methodist/overview`, `/methodist/cases`, `/methodist/search-quality`; старые hash-ссылки
+  остаются совместимыми;
+- понятная верхняя навигация «Найти протокол / Проверить КЗ / Пациентам»;
+- отдельные фильтры возраста, особого состояния и условий помощи, chips с удалением по одному
+  и общим сбросом, восстановление параметров после reload через URL;
+- выбранные фильтры больше не очищаются после успешной выдачи;
+- однозначный быстрый результат по МКБ скрывает избыточный macro-stepper;
+- slug рубрики преобразуется в видимое пользователю название;
+- кабинет методиста получил desktop sidebar и защищённый read-only
+  `/api/methodist/source-quality` со сводкой аудита корпуса и очередью проверки;
+- исправлен root-relative путь `/protocols.json`, обнаруженный browser smoke на вложенных URL.
+
+Проверки r19:
+
+```bash
+node --check search-flow.js
+pytest -q tests/test_ux_frontend_structure.py tests/test_workspace_routes.py
+# 19 passed
+
+pytest -q tests/test_ux_frontend_structure.py tests/test_workspace_routes.py \
+  tests/test_health.py tests/test_methodist_feedback.py tests/test_search_funnel_api.py
+# 58 passed
+```
+
+Интерактивный browser smoke подтвердил прямые URL, выбранные/восстановленные фильтры,
+chips, human-readable labels и экран входа методиста. Полный `pytest -q`: 6 baseline
+failures, уже зафиксированных и подтверждённых на baseline задачи №1
+(`tests/test_assist_search_speed.py` ×2, `test_consult_cache.py`,
+`test_drug_normalizer.py` ×2, `test_medication_safety.py`); новых падений от r19 нет.
