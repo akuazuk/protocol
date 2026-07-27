@@ -189,6 +189,70 @@
   details.legacy summary::before { content: "▸ "; color: var(--teal); }
   details.legacy[open] summary::before { content: "▾ "; }
   details.legacy[open] summary { border-radius: 14px 14px 0 0; margin-bottom: 0; }
+
+  /* ---------- Редизайн v2: единая навигация + командный центр ---------- */
+  .topnav {
+    position: sticky; top: 0; z-index: 30; margin: 14px 0 18px;
+    display: flex; flex-wrap: wrap; gap: 4px; padding: 6px;
+    background: rgba(255,255,255,.78); backdrop-filter: blur(8px);
+    border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow);
+  }
+  .topnav button {
+    appearance: none; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600;
+    color: var(--muted); background: transparent; padding: 9px 16px; border-radius: 999px;
+    transition: background .15s ease, color .15s ease;
+  }
+  .topnav button:hover { color: var(--teal-deep); }
+  .topnav button.is-on { background: var(--teal-deep); color: #fff; box-shadow: 0 6px 16px rgba(95,125,118,.24); }
+  .view[hidden] { display: none; }
+
+  .scorecard {
+    display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 18px;
+    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
+    padding: 22px; box-shadow: var(--shadow); margin-bottom: 16px;
+  }
+  @media (max-width: 820px) { .scorecard { grid-template-columns: 1fr; } }
+  .scorecard__score { display: flex; flex-direction: column; justify-content: center; align-items: center;
+    text-align: center; border-right: 1px solid var(--line); padding-right: 18px; }
+  @media (max-width: 820px) { .scorecard__score { border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 16px; } }
+  .scorecard__ring { position: relative; width: 168px; height: 168px; border-radius: 50%;
+    display: grid; place-items: center; }
+  .scorecard__ring .big { font-family: "Outfit", sans-serif; font-size: 3rem; font-weight: 700; line-height: 1; color: var(--teal-deep); }
+  .scorecard__ring .unit { font-size: 1.1rem; color: var(--muted); font-weight: 600; }
+  .scorecard__verdict { margin-top: 12px; font-weight: 700; font-size: 15px; }
+  .scorecard__sub { margin-top: 3px; font-size: 12.5px; color: var(--muted); }
+  .scorecard__kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; align-content: center; }
+  @media (max-width: 560px) { .scorecard__kpis { grid-template-columns: 1fr; } }
+  .mini-kpi { background: rgba(244,247,245,.7); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
+  .mini-kpi .l { font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
+  .mini-kpi .v { margin-top: 4px; font-family: "Outfit", sans-serif; font-size: 1.5rem; font-weight: 650; color: var(--teal-deep); }
+  .mini-kpi .h { margin-top: 2px; font-size: 11.5px; color: var(--muted); }
+
+  .attn-list { display: flex; flex-direction: column; gap: 8px; }
+  .attn-item {
+    display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; cursor: pointer;
+    background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--mid);
+    border-radius: 14px; padding: 12px 14px; font: inherit; transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .attn-item:hover { transform: translateX(2px); box-shadow: 0 8px 20px rgba(20,36,31,.06); }
+  .attn-item.sev-low { border-left-color: var(--low); }
+  .attn-item.sev-mid { border-left-color: var(--mid); }
+  .attn-item.sev-good { border-left-color: var(--good); }
+  .attn-item .ico { font-size: 1.2rem; width: 26px; text-align: center; }
+  .attn-item .body { flex: 1; }
+  .attn-item .t { font-weight: 700; font-size: 13.5px; color: var(--ink); }
+  .attn-item .d { font-size: 12px; color: var(--muted); margin-top: 1px; }
+  .attn-item .go { font-size: 11.5px; color: var(--teal-deep); font-weight: 600; white-space: nowrap; }
+
+  .heat { overflow: auto; }
+  .heat table { border-collapse: separate; border-spacing: 3px; }
+  .heat th { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: none; padding: 3px 5px;
+    border: 0; text-align: center; max-width: 74px; }
+  .heat th.rowh { text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .heat td { border: 0; padding: 0; }
+  .heat .cell { min-width: 46px; height: 38px; border-radius: 8px; display: grid; place-items: center;
+    font-size: 12px; font-weight: 700; color: #3d4a55; cursor: default; }
+  .heat .cell.empty { background: #f1f4f2; color: #c2ccc8; font-weight: 400; }
 </style>
 </head>
 <body>
@@ -222,6 +286,47 @@
     <div id="loading" class="loading">Считаем агрегаты L1…</div>
 
     <div id="dashboard" hidden>
+      <nav class="topnav" id="topnav">
+        <button type="button" data-nav="overview" class="is-on">Обзор</button>
+        <button type="button" data-nav="people">Специальности и врачи</button>
+        <button type="button" data-nav="mkb">Главы МКБ</button>
+        <button type="button" data-nav="cases">Кейсы</button>
+        <button type="button" data-nav="dynamics">Динамика</button>
+      </nav>
+
+      <section class="view" data-view="overview" id="view-overview">
+        <div class="scorecard">
+          <div class="scorecard__score">
+            <div class="scorecard__ring" id="ov2-ring">
+              <div><span class="big" id="ov2-score"> - </span><span class="unit">%</span></div>
+            </div>
+            <div class="scorecard__verdict" id="ov2-verdict"> - </div>
+            <div class="scorecard__sub" id="ov2-verdict-sub"></div>
+          </div>
+          <div class="scorecard__kpis" id="ov2-kpis"></div>
+        </div>
+
+        <div class="grid-2">
+          <section class="card">
+            <h2>Требует внимания</h2>
+            <p class="sub">Топ проблемных зон месяца - кликните, чтобы открыть кейсы</p>
+            <div class="attn-list" id="ov2-attn"></div>
+          </section>
+          <section class="card" id="ov2-chapters-card">
+            <h2>Качество по главам МКБ</h2>
+            <p class="sub">Средний балл и доля слабых по главам (кликните для фильтра)</p>
+            <div class="bars" id="ov2-chapters"></div>
+          </section>
+        </div>
+
+        <section class="card" style="margin-top:14px">
+          <h2>Тепловая карта: специальности × главы МКБ</h2>
+          <p class="sub">Средний overall в пересечении (зелёный - выше, красный - ниже). Топ по числу КЗ.</p>
+          <div class="heat" id="ov2-heat"></div>
+        </section>
+      </section>
+
+      <div class="view" data-view="full" id="view-full" hidden>
       <details class="legacy" id="l1-legacy">
       <summary>Детерминированная L1-сводка (быстрый проход без LLM: KPI, №55, гигиена, врачи, слабые визиты)</summary>
       <div style="border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;padding:16px 16px 4px;background:rgba(255,255,255,.45)">
@@ -497,6 +602,7 @@
           </div>
         </div>
         <div id="deep-detail-body" style="padding:14px 16px 18px;font-size:14px;line-height:1.55"></div>
+      </div>
       </div>
 
       <p class="footnote" id="notes"></p>
@@ -1217,6 +1323,31 @@
     if (tab === "scoring") renderScoring();
   }
 
+  /* ----------------- Верхняя навигация (единая рубрика) ----------------- */
+  function scrollToEl(id) { var el = $(id); if (el) setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 40); }
+  function switchView(view) {
+    state.view = view;
+    var mapView = (view === "overview" || view === "mkb") ? "overview" : "full";
+    document.querySelectorAll("#dashboard .view").forEach(function (v) {
+      v.hidden = (v.getAttribute("data-view") !== mapView);
+    });
+    document.querySelectorAll("#topnav [data-nav]").forEach(function (b) {
+      b.classList.toggle("is-on", b.getAttribute("data-nav") === view);
+    });
+    var legacy = $("l1-legacy");
+    if (mapView === "full" && legacy) legacy.open = true;
+    if (view === "people") scrollToEl("top-docs");
+    else if (view === "mkb") scrollToEl("ov2-chapters-card");
+    else if (view === "cases") { switchTab("cases"); scrollToEl("deep-card"); }
+    else if (view === "dynamics") { switchTab("dynamics"); scrollToEl("deep-card"); }
+    else window.scrollTo({ top: 0, behavior: "smooth" });
+  }
+  function bindTopNav() {
+    document.querySelectorAll("#topnav [data-nav]").forEach(function (b) {
+      b.addEventListener("click", function () { switchView(b.getAttribute("data-nav")); });
+    });
+  }
+
   /* --------------------- Мультивыбор месяцев / актив. --------------------- */
   function buildMonthPills(all) {
     $("deep-months").innerHTML = all.map(function (m) {
@@ -1366,7 +1497,133 @@
       renderOverviewLists(state.ovAgg);
       renderChartTabs(); renderChart(state.ovAgg);
       buildFilters(state.facets);
+      renderOverviewV2(state.ovAgg);
     } catch (e) { showUnavail(String(e && e.message || e)); }
+  }
+
+  /* ===================== Редизайн v2: командный центр ===================== */
+  function scoreTone(v) { return v == null ? "" : (v >= 80 ? "good" : (v >= 60 ? "mid" : "low")); }
+  function scoreColor(v) { return v == null ? "#c2ccc8" : (v >= 80 ? "#6f9e8c" : (v >= 60 ? "#c4a574" : "#c4898a")); }
+  function verdictOf(v) {
+    if (v == null) return ["Нет данных", ""];
+    if (v >= 90) return ["Отлично", "качество записей высокое"];
+    if (v >= 80) return ["Хорошо", "большинство КЗ в норме"];
+    if (v >= 75) return ["Приемлемо", "есть что подтянуть"];
+    if (v >= 60) return ["Требует внимания", "заметная доля слабых КЗ"];
+    return ["Низкое качество", "нужен системный разбор"];
+  }
+
+  function renderOverviewV2(agg) {
+    agg = agg || {};
+    var avg = agg.avg_overall;
+    var ring = $("ov2-ring");
+    if (ring) {
+      var col = scoreColor(avg);
+      var pct = Math.max(0, Math.min(100, Number(avg) || 0));
+      ring.style.background = "conic-gradient(" + col + " " + pct + "%, #eef2f0 " + pct + "% 100%)";
+      ring.style.padding = "13px";
+      ring.style.boxShadow = "inset 0 0 0 13px #fff";
+    }
+    if ($("ov2-score")) $("ov2-score").textContent = avg != null ? avg : " - ";
+    var vd = verdictOf(avg);
+    if ($("ov2-verdict")) { $("ov2-verdict").textContent = vd[0]; $("ov2-verdict").style.color = scoreColor(avg); }
+    if ($("ov2-verdict-sub")) $("ov2-verdict-sub").textContent = vd[1];
+
+    var sd = agg.status_distribution || {};
+    var review = (sd.manual_review_required || 0) + (sd.needs_review || 0);
+    var mk = function (l, v, h) { return "<div class='mini-kpi'><div class='l'>" + esc(l) + "</div><div class='v'>" + esc(v) + "</div><div class='h'>" + esc(h || "") + "</div></div>"; };
+    if ($("ov2-kpis")) $("ov2-kpis").innerHTML =
+      mk("КЗ оценено", agg.n != null ? agg.n : " - ", monthLabel(state.month)) +
+      mk("Слабых (<75)", (agg.pct_bad != null ? agg.pct_bad : 0) + "%", (agg.n_bad || 0) + " КЗ") +
+      mk("Требуют пересмотра", review, "статус manual_review") +
+      mk(state.deepAvailable ? "Находок P0" : "Глав МКБ", state.deepAvailable ? ((agg.severity_totals || {}).P0 || 0) : ((agg.by_chapter || []).length), state.deepAvailable ? "риск вреда" : "покрыто кодом");
+
+    renderAttnList(agg);
+    renderOvChapters(agg);
+    renderHeat(agg);
+  }
+
+  function attnItem(sev, ico, title, desc, patch) {
+    var b = document.createElement("button");
+    b.className = "attn-item sev-" + sev;
+    b.innerHTML = "<span class='ico'>" + ico + "</span><span class='body'><span class='t'>" + esc(title) +
+      "</span><span class='d'>" + esc(desc) + "</span></span><span class='go'>Открыть кейсы →</span>";
+    b.addEventListener("click", function () { goToCasesWithFilter(patch); });
+    return b;
+  }
+  function renderAttnList(agg) {
+    var box = $("ov2-attn");
+    if (!box) return;
+    box.innerHTML = "";
+    var specs = (agg.by_specialty || []).filter(function (s) { return (s.n || 0) >= 10 && s.avg_overall != null; });
+    if (specs.length) {
+      var w = specs[0];
+      box.appendChild(attnItem(scoreTone(w.avg_overall), "🩺", "Слабая специальность: " + w.specialization,
+        "avg " + w.avg_overall + "% · " + w.n + " КЗ · слабых " + w.bad_pct + "%", { specialization: w.specialization }));
+    }
+    var chaps = (agg.by_chapter || []).filter(function (c) { return (c.n || 0) >= 10 && c.avg_overall != null; })
+      .slice().sort(function (a, b2) { return a.avg_overall - b2.avg_overall; });
+    if (chaps.length) {
+      var wc = chaps[0];
+      box.appendChild(attnItem(scoreTone(wc.avg_overall), "📋", "Слабая глава МКБ: " + (wc.label || wc.chapter),
+        "avg " + wc.avg_overall + "% · " + wc.n + " КЗ · слабых " + wc.bad_pct + "%", { mkb_chapter: wc.chapter }));
+    }
+    if (agg.n_bad) {
+      box.appendChild(attnItem("mid", "⚠️", "Слабые КЗ (<75%): " + agg.n_bad,
+        (agg.pct_bad || 0) + "% всех КЗ месяца - разобрать в первую очередь", { score_band: "<50", _sortAsc: true }));
+    }
+    var tb = (agg.top_bad_icd || [])[0];
+    if (tb) {
+      box.appendChild(attnItem("low", "🔎", "Частый слабый диагноз: " + tb.mkb_code,
+        (tb.diagnosis || "").slice(0, 60) + " · " + tb.n + " слабых КЗ", { q: tb.mkb_code }));
+    }
+    if (!box.children.length) box.innerHTML = "<div class='sub'>Нет выраженных проблемных зон за месяц.</div>";
+  }
+
+  function renderOvChapters(agg) {
+    var box = $("ov2-chapters");
+    if (!box) return;
+    var chaps = (agg.by_chapter || []).filter(function (c) { return (c.n || 0) >= 5 && c.avg_overall != null; })
+      .slice().sort(function (a, b) { return a.avg_overall - b.avg_overall; }).slice(0, 8);
+    if (!chaps.length) { box.innerHTML = "<div class='sub'>Нет данных по главам (нужны коды МКБ).</div>"; return; }
+    box.innerHTML = chaps.map(function (c) {
+      return chartBar((c.label || c.chapter) + " · " + c.n, c.avg_overall, 100);
+    }).join("");
+    box.querySelectorAll(".bar-row").forEach(function (row, i) {
+      row.style.cursor = "pointer";
+      row.addEventListener("click", function () { goToCasesWithFilter({ mkb_chapter: chaps[i].chapter }); });
+    });
+  }
+
+  function renderHeat(agg) {
+    var box = $("ov2-heat");
+    if (!box) return;
+    var h = agg.spec_chapter_heat || {};
+    var specs = h.specialties || [], chaps = h.chapters || [], cells = h.cells || [];
+    if (!specs.length || !chaps.length) { box.innerHTML = "<div class='sub'>Недостаточно данных для тепловой карты.</div>"; return; }
+    var map = {};
+    cells.forEach(function (c) { map[c.s + "||" + c.c] = c; });
+    var head = "<tr><th class='rowh'></th>" + chaps.map(function (c) { return "<th title='" + esc(c.label) + "'>" + esc((c.chapter || "")) + "</th>"; }).join("") + "</tr>";
+    var body = specs.map(function (s) {
+      return "<tr><th class='rowh' title='" + esc(s) + "'>" + esc(s) + "</th>" + chaps.map(function (c) {
+        var cell = map[s + "||" + c.chapter];
+        if (!cell || cell.avg == null) return "<td><div class='cell empty'>·</div></td>";
+        var col = scoreColor(cell.avg);
+        return "<td><div class='cell' title='" + esc(s + " · " + c.label + ": avg " + cell.avg + "% (" + cell.n + " КЗ)') style='background:" + col + "33'>" + Math.round(cell.avg) + "</div></td>";
+      }).join("") + "</tr>";
+    }).join("");
+    box.innerHTML = "<table>" + head + body + "</table>";
+  }
+
+  function goToCasesWithFilter(patch) {
+    patch = patch || {};
+    var sortAsc = patch._sortAsc; delete patch._sortAsc;
+    state.filters = {};
+    Object.keys(patch).forEach(function (k) { state.filters[k] = patch[k]; });
+    state.page = 1; state.filtersBuilt = false; state.casesLoaded = false;
+    if (sortAsc) { state.sort_by = "overall"; state.sort_dir = "asc"; }
+    switchView("cases");
+    fetchCases();
   }
 
   function renderKpi(agg) {
@@ -1873,6 +2130,7 @@
 
   document.addEventListener("DOMContentLoaded", function () {
     bindNav();
+    bindTopNav();
     var closeBtn = $("deep-detail-close");
     if (closeBtn) closeBtn.addEventListener("click", function () { $("deep-detail").style.display = "none"; });
     var llmBtn = $("deep-detail-llm");

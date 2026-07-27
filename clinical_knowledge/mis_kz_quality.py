@@ -726,6 +726,43 @@ def _filtered_agg(records: list[dict[str, Any]]) -> dict[str, Any]:
         for k, v in icd_bad.most_common(15)
     ]
 
+    # Качество по главам МКБ (Обзор v2 / отчёт "по главам").
+    by_chap: dict[str, dict[str, Any]] = {}
+    for r in records:
+        ck = r.get("icd_chapter") or ""
+        if not ck:
+            continue
+        e = by_chap.setdefault(ck, {"chapter": ck, "label": r.get("icd_chapter_label") or ck,
+                                    "n": 0, "_ov": [], "n_bad": 0})
+        e["n"] += 1
+        e["_ov"].append(r.get("overall_pct"))
+        if isinstance(r.get("overall_pct"), (int, float)) and r["overall_pct"] < 75:
+            e["n_bad"] += 1
+    chap_rows = [{
+        "chapter": e["chapter"], "label": e["label"], "n": e["n"],
+        "avg_overall": _mean(e["_ov"]),
+        "bad_pct": round(100 * e["n_bad"] / e["n"], 1) if e["n"] else 0.0,
+    } for e in by_chap.values()]
+    chap_rows.sort(key=lambda x: -x["n"])
+
+    # Тепловая карта: топ специальностей x топ глав МКБ (avg overall в ячейке).
+    top_specs = [s["specialization"] for s in sorted(spec_rows, key=lambda x: -x["n"])[:8]]
+    top_chaps = [c for c in chap_rows[:8]]
+    cell_ov: dict[tuple[str, str], list] = {}
+    for r in records:
+        sp = r.get("specialization") or " - "
+        ck = r.get("icd_chapter") or ""
+        if sp in top_specs and ck and any(c["chapter"] == ck for c in top_chaps):
+            cell_ov.setdefault((sp, ck), []).append(r.get("overall_pct"))
+    heat_cells = [{
+        "s": sp, "c": ck, "n": len(vals), "avg": _mean(vals),
+    } for (sp, ck), vals in cell_ov.items()]
+    spec_chapter_heat = {
+        "specialties": top_specs,
+        "chapters": [{"chapter": c["chapter"], "label": c["label"]} for c in top_chaps],
+        "cells": heat_cells,
+    }
+
     return {
         "n": n,
         "avg_overall": _mean([r.get("overall_pct") for r in records]),
@@ -743,6 +780,8 @@ def _filtered_agg(records: list[dict[str, Any]]) -> dict[str, Any]:
         "n_bad": n_bad,
         "pct_bad": round(100 * n_bad / n, 1) if n else 0.0,
         "by_specialty": spec_rows,
+        "by_chapter": chap_rows,
+        "spec_chapter_heat": spec_chapter_heat,
         "top_bad_icd": top_bad_icd,
     }
 
