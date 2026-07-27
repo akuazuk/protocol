@@ -3967,14 +3967,32 @@ _methodist_model_name: str | None = None
 _methodist_model_warn: str | None = None
 # Индекс активного ключа для методистского пути (ротация при 429/spend-cap).
 _gemini_key_idx = 0
+# Fallback-модель, если текущий проект/ключ не даёт заданную модель (404 «недоступна
+# новым пользователям» - типично для billed-проекта с только новыми моделями).
+_METHODIST_MODEL_FALLBACK = "gemini-flash-latest"
+_methodist_model_name_override: str | None = None
+
+
+def _set_methodist_model_override(name: str) -> bool:
+    """Зафиксировать fallback-модель методиста. True - если реально сменили."""
+    global _methodist_model_name_override
+    name = (name or "").strip()
+    if not name or _methodist_model_name_override == name:
+        return False
+    _methodist_model_name_override = name
+    reset_methodist_gemini_cache()
+    return True
 
 
 def _methodist_key_list() -> list[str]:
     """Упорядоченный список ключей Gemini для методистского пути (без дублей).
 
     Первый - основной (GOOGLE_API_KEY/GEMINI_API_KEY), далее - резервные из другого
-    GCP-проекта (GEMINI_API_KEY_2 / GOOGLE_API_KEY_2 / GEMINI_METHODIST_API_KEY),
+    GCP-проекта (GEMINI_API_KEY_2 / GOOGLE_API_KEY_2 / GEMINI_METHODIST_API_KEY) и
+    оплачиваемый ключ Generative Language API (GENERATIVE_LANGUAGE_API_KEY, формат AQ.…),
     чтобы при исчерпании spend-cap автоматически переключиться на некапнутый проект.
+    NB: у billed-проекта доступны только новые модели (3.x-flash); старые 2.x дают 404 -
+    generate_gemini_methodist_ai_review при этом сам переключает модель на fallback.
     """
     raw = [
         os.environ.get("GOOGLE_API_KEY", ""),
@@ -3982,6 +4000,7 @@ def _methodist_key_list() -> list[str]:
         os.environ.get("GEMINI_API_KEY_2", ""),
         os.environ.get("GOOGLE_API_KEY_2", ""),
         os.environ.get("GEMINI_METHODIST_API_KEY", ""),
+        os.environ.get("GENERATIVE_LANGUAGE_API_KEY", ""),
     ]
     out: list[str] = []
     for k in raw:
@@ -4068,6 +4087,9 @@ def get_methodist_gemini():
     from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
 
     name, warn = methodist_gemini_model_name()
+    if _methodist_model_name_override:
+        name = _methodist_model_name_override
+        warn = None
     _methodist_model_name = name
     _methodist_model_warn = warn
     safety = [
@@ -4335,17 +4357,31 @@ def generate_gemini_methodist_ai_review(model, full_prompt: str):
                 return _call(m, prompt, json_mode=False)
             raise
 
-    try:
-        return _run_model_with_retry(_fn, model, full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
-    except Exception as exc:
-        err = str(exc).lower()
-        if "not found" in err or "is not supported" in err:
-            reset_methodist_gemini_cache()
-            return _run_model_with_retry(_fn, get_methodist_gemini(), full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
-        # Исчерпан spend-cap / quota на текущем ключе - пробуем резервный ключ (другой проект).
-        if ("spend" in err or _is_quota_error(exc)) and _rotate_methodist_key():
-            return _run_model_with_retry(_fn, get_methodist_gemini(), full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
-        raise
+    def _model_unavailable(e: Exception) -> bool:
+        s = str(e).lower()
+        return (
+            "not found" in s
+            or "is not supported" in s
+            or "no longer available" in s
+            or "not available to new users" in s
+        )
+
+    # Перебор ключей (spend-cap/quota) и fallback модели (404 у billed-проекта).
+    cur_model = model
+    max_attempts = len(_methodist_key_list()) + 2
+    for _ in range(max_attempts):
+        try:
+            return _run_model_with_retry(_fn, cur_model, full_prompt, GEMINI_METHODIST_AI_REVIEW_TIMEOUT)
+        except Exception as exc:
+            err = str(exc).lower()
+            if _model_unavailable(exc) and _set_methodist_model_override(_METHODIST_MODEL_FALLBACK):
+                cur_model = get_methodist_gemini()
+                continue
+            if ("spend" in err or _is_quota_error(exc)) and _rotate_methodist_key():
+                cur_model = get_methodist_gemini()
+                continue
+            raise
+    raise RuntimeError("Не удалось получить ответ методистской модели после перебора ключей.")
 
 
 def refine_clinical_query_gemini(
@@ -8424,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-27-r12-kz-npa127-vitals-kpguard"
+BUILD_VERSION = "2026-07-27-r13-gemini-billed-key-model-fallback"
 
 
 def _app_version() -> str:
