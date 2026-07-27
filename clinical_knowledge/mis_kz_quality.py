@@ -1391,14 +1391,30 @@ def review_one_visit_full(*, month: str, visit_id: str) -> dict[str, Any]:
             "storage_path": stored["path"],
         }
     except Exception as e:
+        msg = str(e)
+        low = msg.lower()
+        if "spend" in low or "spending cap" in low:
+            friendly = (
+                "LLM-разбор недоступен: исчерпан месячный лимит расходов проекта Gemini "
+                "(spend cap). Поднимите лимит в Google AI Studio (ai.studio/spend) или "
+                "дождитесь начала нового месяца. Детерминированная оценка (оси A/B/C/D, "
+                "находки, risk-gate) в дашборде работает без LLM."
+            )
+        elif "429" in msg or "resource_exhausted" in low or "rate limit" in low or "quota" in low:
+            friendly = (
+                "LLM временно недоступен: превышен лимит запросов Gemini (429). "
+                "Повторите позже. Детерминированная оценка доступна без LLM."
+            )
+        else:
+            friendly = f"Ошибка LLM: {msg}"[:300]
         item = {
             "visit_id": vid,
             "patient_id": str(row.get("patient_id") or "").strip(),
             "date": (row.get("date") or "")[:19],
             "doctor_fio": (row.get("doctor_fio") or "").strip(),
             "error": str(e)[:300],
-            "comment": f"Ошибка LLM: {e}"[:300],
-            "report_full_ru": f"Ошибка LLM: {e}"[:500],
+            "comment": friendly[:300],
+            "report_full_ru": friendly[:500],
             "l2_overall_pct": l2_ctx.get("l2_overall_pct"),
             "protocols_mz": l2_ctx.get("protocols") or [],
             "report_kind": "full",
@@ -1408,8 +1424,8 @@ def review_one_visit_full(*, month: str, visit_id: str) -> dict[str, Any]:
         stored = upsert_llm_review(month=month, item=item)
         return {
             "ok": False,
-            "error": "llm_failed",
-            "hint_ru": str(e)[:300],
+            "error": "llm_spend_cap" if ("spend" in low or "spending cap" in low) else "llm_failed",
+            "hint_ru": friendly[:300],
             "item": item,
             "reviews": stored["reviews"],
             "storage_path": stored["path"],
