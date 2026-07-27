@@ -152,3 +152,46 @@ severity P0-P3, potential_harm, needs_human, код МКБ, agreement, возр�
 - **Расхождение двух поверхностей:** устранить единым источником summary/агрегата.
 - **Правило PDF/версии:** при правках UI поднять `BUILD_VERSION`, прогнать
   `normalize_ui_dashes.py`, запушить.
+
+## 9. Хендофф: продолжение с другой машины
+
+**Состояние на 2026-07-27 (коммит `63a42ce`, ветка `main`, деплой r14 live).**
+
+### Что уже сделано (Фаза 1, в проде)
+- Backend `clinical_knowledge/mis_kz_quality.py`: `extract_main_icd` (код МКБ из
+  `diagnosis_list` слот 22 / `clinical_diagnosis`), заполнены `mkb_code_main`/`icd_chapter`;
+  флаги `deep_available`/`mkb_available` в ответе `/cases`; пресет `dx_no_code` = «нет кода».
+- Фронт `mis-kz-quality.html`: `fgOpt` (select только при >=2 значениях), `deepLock`
+  (deep-фильтры/пресеты disabled с «нужен deep-eval»), `activeChartTabs` (скрыты
+  deep-диаграммы), адаптивные KPI, колонки таблицы `col-deep`/`col-kind`, человекочит.
+  `filterSummary` + пустое состояние.
+- Вкладка `index.html` `#methodist-mis-kz-root`: сведена к сводке + CTA; дубли `hidden`.
+- Проверено на Render (янв 2026): главы МКБ 0→19, `mkb_chapter=X`=2849,
+  `dx_no_code`=1728, `q=J06`=1992.
+
+### Что дальше (продолжить здесь)
+- **Фаза 2 (без БД):** (4) отчёт «Качество по главам МКБ» - новая вкладка диаграмм
+  `by_chapter` (avg overall + N + % плохих по главам, есть данные в `top_bad_icd` и
+  фасете `mkb_chapters`); (5) чипы активных фильтров с крестиком; (6) динамика L1 без
+  пустых трендов осей; (7) единый источник summary для вкладки-мостика и канона.
+- **Фаза 3 (нужна БД):** см. `2026-07-22-kz-deep-eval-db-task-v1.md` - сгенерировать
+  deep-eval (`kz_l1_<месяц>_cases.jsonl` с блоком `deep`), после чего Фаза 1 сама включит
+  оси/severity/harm/needs_human, а Фаза 2 - возраст/agreement.
+
+### Как продолжить с другой машины
+1. `git pull origin main` (взять `63a42ce`+).
+2. Прочитать этот план (`docs/plans/2026-07-27-mis-kz-dashboard-rubric-v1.md`) и
+   `docs/plans/README.md`.
+3. Тест backend без БД - на машине с доступом к Render:
+   `ssh <render> 'curl -s ".../api/methodist/mis-kz-quality/cases?month=2026-01&page_size=1"
+   -H "X-Methodist-Token: $METHODIST_TOKEN"'` (внешний URL `protocol-bimy.onrender.com`,
+   SSH-host `srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com`).
+4. Ключевые точки правок Фазы 2: `mis-kz-quality.html` - `CHART_TABS`/`renderChart`
+   (добавить `by_chapter`), `buildFilters`/`filterSummary` (чипы), `renderDynamics`.
+   Backend при необходимости - `_filtered_agg` (агрегат по главам уже частично есть в
+   `top_bad_icd`; можно добавить `by_chapter`).
+5. Не забыть правила: поднять `BUILD_VERSION` (r15+), `python3 scripts/normalize_ui_dashes.py`
+   (стейджить только свои файлы!), `git push origin main`.
+
+**Внимание:** `normalize_ui_dashes.py` трогает ~56 несвязанных файлов - коммитить только
+свои (`git add <файлы>`), остальное не стейджить.
