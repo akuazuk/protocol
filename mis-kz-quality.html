@@ -161,6 +161,9 @@
   .more-filters { width: 100%; }
   .more-filters summary { cursor: pointer; font-size: 12.5px; color: var(--teal-deep); font-weight: 600; padding: 4px 0; }
   .more-filters .fbar { margin-top: 8px; background: #fff; }
+  #deep-cases-table.hide-deep .col-deep { display: none; }
+  #deep-cases-table.hide-kind .col-kind { display: none; }
+  .chip.is-locked { opacity: .5; cursor: not-allowed; }
   .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
   .chip {
     appearance: none; border: 1px solid var(--line); background: #fff; cursor: pointer; font: inherit;
@@ -453,11 +456,11 @@
             <div class="fbar" id="deep-filters"></div>
             <div id="deep-filter-summary" class="sub" style="margin:0 0 10px"></div>
             <div class="table-wrap">
-              <table>
+              <table id="deep-cases-table">
                 <thead>
                   <tr>
-                    <th>Дата</th><th>Врач / спец.</th><th>Осн. Dx + код</th><th>Тип</th>
-                    <th>Overall</th><th>A/B/C/D</th><th>№55</th><th>P0-3</th><th>needs_hu</th><th></th>
+                    <th>Дата</th><th>Врач / спец.</th><th>Осн. Dx + код</th><th class="col-kind">Тип</th>
+                    <th>Overall</th><th class="col-deep">A/B/C/D</th><th class="col-deep">№55</th><th class="col-deep">P0-3</th><th class="col-deep">needs_hu</th><th></th>
                   </tr>
                 </thead>
                 <tbody id="deep-rows"></tbody>
@@ -1357,6 +1360,8 @@
       }
       state.ovAgg = v.filtered_agg || {};
       state.facets = v.facets || {};
+      state.deepAvailable = !!v.deep_available;
+      state.mkbAvailable = !!v.mkb_available;
       renderKpi(state.ovAgg);
       renderOverviewLists(state.ovAgg);
       renderChartTabs(); renderChart(state.ovAgg);
@@ -1369,12 +1374,21 @@
     var p0per100 = agg.n ? (100 * (sev.P0 || 0) / agg.n) : 0;
     var el = $("ov-kpi");
     if (!el) return;
-    el.innerHTML =
+    var base =
       kpiCard("КЗ оценено", agg.n != null ? agg.n : " - ", monthLabel(state.month)) +
-      kpiCard("Средний overall", agg.avg_overall != null ? agg.avg_overall + "%" : " - ", "по осям A-D") +
-      kpiCard("Находок P0", (sev.P0 || 0), p0per100.toFixed(2) + " на 100 КЗ") +
-      kpiCard("Потенц. вред", agg.n_potential_harm != null ? agg.n_potential_harm : 0, "КЗ с риском вреда") +
+      kpiCard("Средний overall", agg.avg_overall != null ? agg.avg_overall + "%" : " - ", state.deepAvailable ? "по осям A-D" : "L1 (детерминир.)") +
       kpiCard("% плохих (<75)", (agg.pct_bad != null ? agg.pct_bad : 0) + "%", (agg.n_bad || 0) + " КЗ");
+    if (state.deepAvailable) {
+      el.innerHTML = base +
+        kpiCard("Находок P0", (sev.P0 || 0), p0per100.toFixed(2) + " на 100 КЗ") +
+        kpiCard("Потенц. вред", agg.n_potential_harm != null ? agg.n_potential_harm : 0, "КЗ с риском вреда");
+    } else {
+      var sd = agg.status_distribution || {};
+      var review = (sd.manual_review_required || 0) + (sd.needs_review || 0);
+      el.innerHTML = base +
+        kpiCard("Требуют пересмотра", review, "статус manual_review") +
+        kpiCard("Deep-оценка", "нет", "запуск на машине с БД");
+    }
   }
   function kpiCard(label, value, hint) {
     return "<div class='kpi'><div class='label'>" + esc(label) + "</div><div class='value'>" +
@@ -1396,47 +1410,63 @@
   function fg(label, inner) {
     return "<div class='fgroup'><span class='fgroup-label'>" + esc(label) + "</span>" + inner + "</div>";
   }
+  // Показывать select-фильтр только если в фасете >= 2 значений (иначе он бесполезен).
+  function fgOpt(label, id, shortLbl, arr, cur) {
+    if (!arr || arr.length < 2) return "";
+    return fg(label, selectHtml(id, shortLbl, arr, cur));
+  }
+  // Обёртка для deep-eval фильтров: видны, но неактивны с честным пояснением.
+  function deepLock(inner) {
+    return "<span class='deep-locked' title='Доступно после генерации deep-eval (машина с доступом к БД, см. план)' " +
+      "style='opacity:.45;pointer-events:none;display:inline-flex;align-items:center;gap:6px'>" +
+      inner + "<em style='font-style:normal;font-size:10.5px;color:#b26a00;font-weight:600'>нужен deep-eval</em></span>";
+  }
   function buildFilters(facets) {
     var f = state.filters;
+    var deepOn = !!state.deepAvailable;
     var mkbChapters = (facets.mkb_chapters || []).map(function (c) { return { value: c.key, label: c.label, n: c.n }; });
-    var sevSel = "<select data-filter='min_severity'>" +
+    var sevSel = "<select data-filter='min_severity'" + (deepOn ? "" : " disabled") + ">" +
       "<option value=''>любой</option>" +
       "<option value='P0'" + (f.min_severity === "P0" ? " selected" : "") + ">есть P0</option>" +
       "<option value='P1'" + (f.min_severity === "P1" ? " selected" : "") + ">P0-P1</option></select>";
+    var faSel = selectHtml("finding_axis", "ось", (facets.finding_axes || []).map(function (a) { return { value: a.value, label: a.label, n: a.n }; }), f.finding_axis);
     var primary = [
-      fg("Специальность", selectHtml("specialization", "спец.", facets.specialties, f.specialization)),
-      fg("Статус", selectHtml("status", "статус", facets.statuses, f.status)),
-      fg("Severity", sevSel),
-      fg("Тип КЗ", selectHtml("kz_kind", "тип", facets.kz_kinds, f.kz_kind)),
-      fg("Поиск (диагноз / код)", "<input data-filter='q' type='search' placeholder='например: J06 или ОРВИ' value='" + esc(f.q || "") + "' style='min-width:190px'/>"),
+      fgOpt("Специальность", "specialization", "спец.", facets.specialties, f.specialization),
+      fgOpt("Статус", "status", "статус", facets.statuses, f.status),
+      fg("Severity", deepOn ? sevSel : deepLock(sevSel)),
+      fg("Поиск (диагноз / код МКБ)", "<input data-filter='q' type='search' placeholder='например: J06 или ОРВИ' value='" + esc(f.q || "") + "' style='min-width:190px'/>"),
       fg("Врач (ФИО)", "<input data-filter='doctor' type='text' placeholder='фамилия' value='" + esc(f.doctor || "") + "' style='min-width:150px'/>"),
       "<button type='button' id='deep-filter-reset' class='btn btn--ghost' style='padding:8px 12px;font-size:12px'>Сбросить фильтры</button>"
     ];
     var more = [
-      fg("Филиал", selectHtml("filial", "филиал", facets.filials, f.filial)),
-      fg("Глава МКБ", selectHtml("mkb_chapter", "глава", mkbChapters, f.mkb_chapter)),
-      fg("Код МКБ ↔ МИС", selectHtml("mkb_agreement", "совпад.", facets.agreements, f.mkb_agreement)),
-      fg("Возраст", selectHtml("age_group", "возраст", facets.age_groups, f.age_group)),
-      fg("Скор-банд", selectHtml("score_band", "банд", facets.score_bands, f.score_band)),
-      fg("Ось находки", selectHtml("finding_axis", "ось", (facets.finding_axes || []).map(function (a) { return { value: a.value, label: a.label, n: a.n }; }), f.finding_axis)),
+      fgOpt("Филиал", "filial", "филиал", facets.filials, f.filial),
+      fgOpt("Глава МКБ", "mkb_chapter", "глава", mkbChapters, f.mkb_chapter),
+      fgOpt("Скор-банд", "score_band", "банд", facets.score_bands, f.score_band),
+      fg("Ось находки", deepOn ? faSel : deepLock(faSel)),
       fg("С даты", "<input data-filter='date_from' type='date' value='" + esc(f.date_from || "") + "'/>"),
       fg("По дату", "<input data-filter='date_to' type='date' value='" + esc(f.date_to || "") + "'/>"),
-      "<label class='chk'><input type='checkbox' data-filter='needs_human'" + (f.needs_human ? " checked" : "") + "/> needs_human</label>",
-      "<label class='chk'><input type='checkbox' data-filter='potential_harm'" + (f.potential_harm ? " checked" : "") + "/> потенц. вред</label>"
+      "<label class='chk'>" + (deepOn
+        ? "<input type='checkbox' data-filter='needs_human'" + (f.needs_human ? " checked" : "") + "/> needs_human"
+        : deepLock("<input type='checkbox' disabled/> needs_human")) + "</label>",
+      "<label class='chk'>" + (deepOn
+        ? "<input type='checkbox' data-filter='potential_harm'" + (f.potential_harm ? " checked" : "") + "/> потенц. вред"
+        : deepLock("<input type='checkbox' disabled/> потенц. вред")) + "</label>"
     ];
-    $("deep-filters").innerHTML = primary.join("") +
-      "<details class='more-filters'><summary>Ещё фильтры</summary><div class='fbar'>" + more.join("") + "</div></details>";
+    $("deep-filters").innerHTML = primary.filter(Boolean).join("") +
+      "<details class='more-filters'><summary>Ещё фильтры</summary><div class='fbar'>" + more.filter(Boolean).join("") + "</div></details>";
 
     var presets = [
-      { id: "p0", label: "⚑ P0 (риск вреда)", flag: true },
-      { id: "dx_no_code", label: "Dx без валид. кода" },
-      { id: "treatment_off_protocol", label: "Проблемы согласованности" },
-      { id: "needs_human", label: "Нужен человек" }
+      { id: "p0", label: "⚑ P0 (риск вреда)", flag: true, deep: true },
+      { id: "dx_no_code", label: "Dx без кода МКБ" },
+      { id: "treatment_off_protocol", label: "Проблемы согласованности", deep: true },
+      { id: "needs_human", label: "Нужен человек", deep: true }
     ];
     $("deep-presets").innerHTML = presets.map(function (p) {
+      var locked = p.deep && !deepOn;
       var active = state.filters.preset === p.id;
       return "<button type='button' class='chip" + (p.flag ? " is-flag" : "") + (active ? " is-on" : "") +
-        "' data-preset='" + p.id + "'>" + esc(p.label) + "</button>";
+        (locked ? " is-locked" : "") + "'" + (locked ? " disabled title='Доступно после deep-eval'" : "") +
+        " data-preset='" + p.id + "'>" + esc(p.label) + (locked ? " ·нужен deep-eval" : "") + "</button>";
     }).join("");
 
     bindFilterEvents();
@@ -1473,18 +1503,27 @@
   }
 
   var CHART_TABS = [
-    { id: "axes", label: "Оси A/B/C/D" },
+    { id: "axes", label: "Оси A/B/C/D", deep: true },
     { id: "bands", label: "Скор-банды" },
-    { id: "severity", label: "Severity P0-P3" },
-    { id: "findings", label: "Типы находок" },
+    { id: "severity", label: "Severity P0-P3", deep: true },
+    { id: "findings", label: "Типы находок", deep: true },
     { id: "specialty", label: "Спец: avg / % плохих" },
     { id: "bad_icd", label: "Топ плохих Dx" },
     { id: "months", label: "Сравнение месяцев" }
   ];
+  function activeChartTabs() {
+    var deepOn = !!state.deepAvailable;
+    return CHART_TABS.filter(function (t) { return deepOn || !t.deep; });
+  }
   function renderChartTabs() {
     var el = $("deep-chart-tabs");
     if (!el) return;
-    el.innerHTML = CHART_TABS.map(function (t) {
+    var tabs = activeChartTabs();
+    // Дефолт/текущая вкладка не должна указывать на скрытую deep-диаграмму.
+    if (!tabs.some(function (t) { return t.id === state.chart; })) {
+      state.chart = tabs.length ? tabs[0].id : "bands";
+    }
+    el.innerHTML = tabs.map(function (t) {
       return "<button type='button' class='chip" + (state.chart === t.id ? " is-on" : "") +
         "' data-chart='" + t.id + "'>" + esc(t.label) + "</button>";
     }).join("");
@@ -1549,18 +1588,23 @@
   }
   function renderTable(v) {
     var rows = v.rows || [];
+    var tbl = $("deep-cases-table");
+    if (tbl) {
+      tbl.classList.toggle("hide-deep", !state.deepAvailable);
+      tbl.classList.toggle("hide-kind", !((v.facets && v.facets.kz_kinds && v.facets.kz_kinds.length > 1)));
+    }
     $("deep-rows").innerHTML = rows.length ? rows.map(function (r) {
       var reg = r.axis_regulatory;
       return "<tr data-vid='" + esc(r.visit_id) + "' style='cursor:pointer'>" +
         "<td>" + esc(r.date || " - ") + "</td>" +
         "<td>" + esc(r.doctor_fio) + "<div style='color:var(--muted);font-size:11px'>" + esc(r.specialization) + "</div></td>" +
         "<td>" + (r.mkb_code_main ? "<code>" + esc(r.mkb_code_main) + "</code> " : "") + esc((r.diagnosis_short || "").slice(0, 46)) + "</td>" +
-        "<td>" + esc(r.kz_kind) + "</td>" +
+        "<td class='col-kind'>" + esc(r.kz_kind) + "</td>" +
         "<td>" + pill(r.overall_pct) + (r.has_potential_harm ? " <span title='потенц. вред' style='color:#c0392b'>&#9679;</span>" : "") + "</td>" +
-        "<td style='font-size:12px'>" + axesCell(r) + "</td>" +
-        "<td>" + pill(reg) + "</td>" +
-        "<td style='font-size:12px'>" + sevCell(r) + "</td>" +
-        "<td>" + (r.needs_human ? "да" : " - ") + "</td>" +
+        "<td class='col-deep' style='font-size:12px'>" + axesCell(r) + "</td>" +
+        "<td class='col-deep'>" + pill(reg) + "</td>" +
+        "<td class='col-deep' style='font-size:12px'>" + sevCell(r) + "</td>" +
+        "<td class='col-deep'>" + (r.needs_human ? "да" : " - ") + "</td>" +
         "<td><button type='button' class='btn btn--ghost' data-detail='" + esc(r.visit_id) + "' style='padding:4px 9px;font-size:11px'>Разбор</button></td>" +
         "</tr>";
     }).join("") : "<tr><td colspan='10'>Нет КЗ под фильтр</td></tr>";
@@ -1616,13 +1660,33 @@
     a.click();
   }
 
+  var FILTER_LABELS = {
+    specialization: "спец.", status: "статус", filial: "филиал", score_band: "скор-банд",
+    mkb_chapter: "глава МКБ", finding_axis: "ось находки", min_severity: "severity",
+    doctor: "врач", q: "поиск", date_from: "с", date_to: "по",
+    needs_human: "нужен человек", potential_harm: "потенц. вред"
+  };
+  var PRESET_LABELS = {
+    p0: "P0 (риск вреда)", dx_no_code: "Dx без кода МКБ",
+    treatment_off_protocol: "проблемы согласованности", needs_human: "нужен человек"
+  };
   function filterSummary(v) {
     var f = v.applied_filters || {};
-    var keys = Object.keys(f).filter(function (k) { return f[k] !== "" && f[k] != null && f[k] !== false; });
     var agg = v.filtered_agg || {};
-    var badTxt = agg.pct_bad != null ? (" · плохих " + agg.pct_bad + "% · P0 " + ((agg.severity_totals || {}).P0 || 0)) : "";
-    var txt = keys.length ? ("Фильтры: " + keys.map(function (k) { return k + "=" + f[k]; }).join(" · ")) : "Фильтры не заданы - вся выборка.";
-    $("deep-filter-summary").textContent = txt + " · показано " + (v.rows || []).length + " из " + v.total + badTxt;
+    var parts = [];
+    if (f.preset && PRESET_LABELS[f.preset]) parts.push("пресет: " + PRESET_LABELS[f.preset]);
+    Object.keys(f).forEach(function (k) {
+      if (k === "preset" || k.charAt(0) === "_") return;
+      var val = f[k];
+      if (val === "" || val == null || val === false) return;
+      var lbl = FILTER_LABELS[k] || k;
+      parts.push(lbl + (val === true ? "" : "=" + val));
+    });
+    var badTxt = agg.pct_bad != null ? (" · плохих " + agg.pct_bad + "%" +
+      (state.deepAvailable ? (" · P0 " + ((agg.severity_totals || {}).P0 || 0)) : "")) : "";
+    var txt = parts.length ? ("Фильтры: " + parts.join(" · ")) : "Фильтры не заданы - вся выборка.";
+    var empty = (v.total === 0) ? " · ничего не найдено под фильтр (сбросьте условия)" : "";
+    $("deep-filter-summary").textContent = txt + " · показано " + (v.rows || []).length + " из " + v.total + badTxt + empty;
   }
 
   async function fetchCases() {
@@ -1647,6 +1711,8 @@
         return;
       }
       state.casesLoaded = true;
+      state.deepAvailable = !!v.deep_available;
+      state.mkbAvailable = !!v.mkb_available;
       if (!state.filtersBuilt) buildFilters(v.facets || {});
       renderTable(v);
       renderPager(v);

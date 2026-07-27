@@ -14367,16 +14367,17 @@
       <div id="methodist-mis-kz-root" class="methodist-mis-kz-panel consult-hide-print">
         <div class="methodist-ml-dashboard__hero">
           <div>
-            <h2>MIS · качество КЗ (L1)</h2>
+            <h2>MIS · качество КЗ</h2>
             <p>
-              Массовый детерминированный срез выгрузки <code>mis_protocol</code> по врачам, специальностям и филиалам.
-              Без LLM (API cost ~$0). Полная визуализация - на отдельной странице.
+              Быстрая сводка детерминированного среза выгрузки <code>mis_protocol</code> (L1, API cost ~$0).
+              Фильтры по всем столбцам, диаграммы, сравнение месяцев, топ слабых визитов, прогон через LLM
+              и разбор каждого КЗ - в полном дашборде.
             </p>
             <p class="methodist-tier-hint" id="methodist-mis-kz-meta"></p>
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-refresh">Обновить</button>
-            <a href="mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть дашборд</a>
+            <a href="mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть полный дашборд →</a>
           </div>
         </div>
         <div id="methodist-mis-kz-error" class="methodist-ml-error" hidden></div>
@@ -14395,7 +14396,14 @@
           <p class="methodist-tier-hint" id="methodist-mis-kz-reg55-hint" style="margin:0.6rem 0 0"></p>
         </div>
         <div id="methodist-mis-kz-compare" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9"></div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1rem">
+        <div style="margin-top:1.25rem;padding:1.1rem 1.2rem;border:1px solid rgba(15,107,92,.18);border-radius:14px;background:linear-gradient(180deg,#f2f8f6 0%,#eaf3f0 100%);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
+          <div>
+            <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Полный дашборд качества КЗ</h3>
+            <p class="methodist-tier-hint" style="margin:0">Фильтры по специальности, филиалу, статусу, скор-банду, главе МКБ и датам; диаграммы, сравнение месяцев, топ слабых визитов, прогон через LLM и разбор каждого КЗ.</p>
+          </div>
+          <a href="mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open" style="white-space:nowrap">Открыть полный дашборд →</a>
+        </div>
+        <div class="methodist-ml-table-wrap" style="margin-top:1rem" hidden>
           <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Клинические специальности</h3>
           <p class="methodist-tier-hint" style="margin-bottom:0.75rem">Только врачебные роли (без стоматологов, медсестёр, логопеда, лаборатории)</p>
           <table class="methodist-ml-table" id="methodist-mis-kz-specs-table">
@@ -14411,7 +14419,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1rem">
+        <div class="methodist-ml-table-wrap" style="margin-top:1rem" hidden>
           <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Врачи (клинические)</h3>
           <table class="methodist-ml-table" id="methodist-mis-kz-table">
             <thead>
@@ -14428,7 +14436,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem">
+        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem" hidden>
           <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Топ-50 слабых визитов (L1 + L2)</h3>
           <p class="methodist-tier-hint" id="methodist-mis-kz-worst-meta" style="margin-bottom:0.75rem"></p>
           <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.75rem">
@@ -14465,7 +14473,7 @@
             <tbody></tbody>
           </table>
         </div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem">
+        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem" hidden>
           <h3 style="margin:0 0 0.5rem;font-size:1.05rem">LLM-разбор</h3>
           <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-meta" style="margin-bottom:0.75rem"></p>
           <table class="methodist-ml-table" id="methodist-mis-kz-gemini-table">

@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-27-r13-gemini-billed-key-model-fallback"
+BUILD_VERSION = "2026-07-27-r14-miskz-mkb-filter-triage"
 
 
 def _app_version() -> str:

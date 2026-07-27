@@ -444,6 +444,35 @@ def icd10_chapter(code: str) -> tuple[str, str]:
     return table.get(letter, ("?", "прочее"))
 
 
+_ICD_CODE_RX = re.compile(r"\b([A-TV-Z]\d{2}(?:\.\d{1,2})?)\b")
+
+
+def extract_main_icd(row: dict[str, Any]) -> str:
+    """Основной код МКБ КЗ без БД: слот 22 (`diagnosis_list`, главный по
+    `diagnosis_main_index`), fallback - свободный текст `clinical_diagnosis`.
+
+    Покрытие на выгрузке ~86% КЗ (см. план 2026-07-27-mis-kz-dashboard-rubric).
+    """
+    dl = (row.get("diagnosis_list") or "").strip()
+    if dl:
+        parts = [p for p in dl.split("|") if p.strip()]
+        if parts:
+            idx = 0
+            raw_idx = str(row.get("diagnosis_main_index") or "").strip()
+            if raw_idx.isdigit() and int(raw_idx) < len(parts):
+                idx = int(raw_idx)
+            m = _ICD_CODE_RX.search(parts[idx])
+            if not m:
+                for p in parts:
+                    m = _ICD_CODE_RX.search(p)
+                    if m:
+                        break
+            if m:
+                return m.group(1).upper()
+    m = _ICD_CODE_RX.search(row.get("clinical_diagnosis") or "")
+    return m.group(1).upper() if m else ""
+
+
 def _age_group(age: Any) -> str:
     try:
         a = int(float(age))
@@ -503,6 +532,8 @@ def _flat_case(case: dict[str, Any], csvrow: dict | None) -> dict[str, Any]:
     findings = [f for f in (deep.get("findings") or []) if isinstance(f, dict) and not f.get("passed")]
     row = csvrow or {}
     code_main = (row.get("mkb_code_main") or "").strip()
+    if not code_main:
+        code_main = extract_main_icd(row)
     chap_key, chap_label = icd10_chapter(code_main)
     overall = deep.get("overall_pct")
     if overall is None:
@@ -566,6 +597,8 @@ def _match_filters(rec: dict[str, Any], flt: dict[str, Any]) -> bool:
         return False
     if not eq("age_group", "age_group"):
         return False
+    if flt.get("_no_mkb_code") and rec.get("icd_chapter"):
+        return False
     if not eq("status", "status"):
         return False
     if not eq("score_band", "score_band"):
@@ -606,7 +639,7 @@ def _apply_preset(flt: dict[str, Any]) -> dict[str, Any]:
     if preset == "p0":
         flt["min_severity"] = "P0"
     elif preset == "dx_no_code":
-        flt["mkb_agreement"] = "mismatch"
+        flt["_no_mkb_code"] = True
     elif preset == "treatment_off_protocol":
         flt["finding_axis"] = "clinical_concordance"
     elif preset == "exams_gap":
@@ -772,6 +805,16 @@ def build_kz_cases_view(
 
     agg = _filtered_agg(filtered)
 
+    # Флаги доступности данных: фронт честно гасит фильтры без данных вместо пустых списков.
+    deep_available = any(
+        (r.get("axis_documentation") is not None)
+        or (r.get("n_findings") or 0)
+        or r.get("finding_axes")
+        or r.get("has_potential_harm")
+        for r in records
+    )
+    mkb_available = any(r.get("icd_chapter") for r in records)
+
     page = max(1, int(page or 1))
     page_size = max(1, min(200, int(page_size or 50)))
     total = len(filtered)
@@ -782,6 +825,8 @@ def build_kz_cases_view(
     return {
         "ok": True,
         "available": True,
+        "deep_available": deep_available,
+        "mkb_available": mkb_available,
         "month": month_s,
         "source_path": path,
         "n_total_cases": len(records),
