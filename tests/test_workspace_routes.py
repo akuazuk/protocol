@@ -12,6 +12,7 @@ def test_workspace_routes_serve_index() -> None:
         "/methodist/overview",
         "/methodist/cases",
         "/methodist/search-quality",
+        "/methodist/mis-kz",
     ):
         response = client.get(path)
         assert response.status_code == 200
@@ -33,6 +34,17 @@ def test_legacy_methodist_route_redirects_to_workspace() -> None:
     assert response.headers["location"] == "/methodist/overview"
 
 
+def test_methodist_mis_kz_dashboard_has_stable_nested_url() -> None:
+    client = TestClient(rag_server.app)
+    for path in ("/methodist/mis-kz-quality", "/methodist/mis-kz-quality.html"):
+        response = client.get(path)
+        assert response.status_code == 200
+        assert "MIS · качество КЗ" in response.text
+        assert response.headers["cache-control"] == "no-cache, must-revalidate"
+        assert 'href="/methodist/mis-kz"' in response.text
+        assert 'fetch("/api/methodist/mis-kz-quality' in response.text
+
+
 def test_source_quality_requires_methodist_auth(monkeypatch) -> None:
     monkeypatch.setenv("METHODIST_TOKEN", "workspace-test-token")
     client = TestClient(rag_server.app)
@@ -45,3 +57,19 @@ def test_source_quality_requires_methodist_auth(monkeypatch) -> None:
     assert allowed.status_code == 200
     payload = allowed.json()
     assert {"summary", "queue_total", "top_queue"} <= payload.keys()
+
+
+def test_mis_kz_summary_api_reads_current_project_export(monkeypatch) -> None:
+    monkeypatch.setenv("METHODIST_TOKEN", "mis-kz-test-token")
+    client = TestClient(rag_server.app)
+    response = client.get(
+        "/api/methodist/mis-kz-quality?month=2026-07&compare_month=2026-01",
+        headers={"X-Methodist-Token": "mis-kz-test-token"},
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["ok"] is True
+    assert payload["available"] is True
+    assert payload["month"] == "2026-07"
+    assert payload["n_cases"] > 0
+    assert payload["doctors_n"] > 0

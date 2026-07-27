@@ -14417,7 +14417,7 @@
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-refresh">Обновить</button>
-            <a href="mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть полный дашборд →</a>
+            <a href="/methodist/mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть полный дашборд →</a>
           </div>
         </div>
         <div id="methodist-mis-kz-error" class="methodist-ml-error" hidden></div>
@@ -14441,7 +14441,7 @@
             <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Полный дашборд качества КЗ</h3>
             <p class="methodist-tier-hint" style="margin:0">Фильтры по специальности, филиалу, статусу, скор-банду, главе МКБ и датам; диаграммы, сравнение месяцев, топ слабых визитов, прогон через LLM и разбор каждого КЗ.</p>
           </div>
-          <a href="mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open" style="white-space:nowrap">Открыть полный дашборд →</a>
+          <a href="/methodist/mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open" style="white-space:nowrap">Открыть полный дашборд →</a>
         </div>
         <div class="methodist-ml-table-wrap" style="margin-top:1rem" hidden>
           <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Клинические специальности</h3>
@@ -22916,6 +22916,10 @@
     }
     if (path === "/methodist/search-quality" && window.__methodistMode) {
       switchMainAppTab(MAIN_TAB_SEARCH_STATS);
+      return;
+    }
+    if (path === "/methodist/mis-kz" && window.__methodistMode) {
+      switchMainAppTab(MAIN_TAB_MIS_KZ);
       return;
     }
     if (!window.__methodistMode && isMethodistOnlyMainTabHash(h)) {

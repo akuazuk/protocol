@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-27-r19-role-navigation-filter-state"
+BUILD_VERSION = "2026-07-27-r20-mis-kz-route"
 
 
 def _app_version() -> str:
@@ -12441,9 +12441,23 @@ if (ROOT / "index.html").is_file():
     @app.get("/methodist/overview", include_in_schema=False)
     @app.get("/methodist/cases", include_in_schema=False)
     @app.get("/methodist/search-quality", include_in_schema=False)
+    @app.get("/methodist/mis-kz", include_in_schema=False)
     def _serve_role_workspace() -> FileResponse:
         """Прямые URL рабочих пространств; состояние вкладки выбирает клиент."""
         return _index_html_response()
+
+    @app.get("/methodist/mis-kz-quality", include_in_schema=False)
+    @app.get("/methodist/mis-kz-quality.html", include_in_schema=False)
+    def _serve_methodist_mis_kz_quality() -> FileResponse:
+        """Standalone MIS-КЗ dashboard по стабильному публичному URL."""
+        p = ROOT / "mis-kz-quality.html"
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Страница MIS-КЗ не найдена")
+        return FileResponse(
+            path=str(p),
+            media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
 
     @app.get("/methodist", include_in_schema=False)
     def _redirect_methodist() -> RedirectResponse:

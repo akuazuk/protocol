@@ -4,6 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>MIS · качество КЗ (L1) | Кабинет методиста · Protocol</title>
+<link rel="icon" href="/protocol-logo-mini.svg" type="image/svg+xml" />
 <link rel="preconnect" href="https://fonts.googleapis.com" />
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
 <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
@@ -275,7 +276,7 @@
           </p>
         </div>
         <div class="hero-actions">
-          <a class="btn btn--ghost" href="index.html?mode=methodist#mis-kz">← В кабинет</a>
+          <a class="btn btn--ghost" href="/methodist/mis-kz">← В кабинет</a>
           <button class="btn" type="button" id="btn-refresh">Обновить</button>
         </div>
       </div>
@@ -1154,6 +1155,11 @@
         document.getElementById("meta-line").textContent = "Нужна авторизация методиста";
         return;
       }
+      if (res.status === 503) {
+        showError("Доступ методиста не настроен на сервере. Проверьте METHODIST_TOKEN.");
+        document.getElementById("meta-line").textContent = "Кабинет методиста недоступен";
+        return;
+      }
       var data = await res.json();
       if (!data.ok && !data.available) {
         showError(data.hint_ru || data.error || "Summary ещё не готов");
@@ -1220,6 +1226,9 @@
     var t = (document.getElementById("token-input").value || "").trim();
     if (t) setToken(t);
     load();
+    if (typeof window.__misKzDeepReload === "function") {
+      window.__misKzDeepReload();
+    }
   });
   document.getElementById("btn-select-all").addEventListener("click", function () {
     document.querySelectorAll(".worst-cb").forEach(function (el) { el.checked = true; });
@@ -1973,6 +1982,10 @@
         $("deep-pager").innerHTML = "";
         return;
       }
+      var unavailable = $("deep-unavail");
+      if (unavailable) unavailable.hidden = true;
+      var deepBody = $("deep-body");
+      if (deepBody) deepBody.hidden = false;
       state.casesLoaded = true;
       state.deepAvailable = !!v.deep_available;
       state.mkbAvailable = !!v.mkb_available;
@@ -2113,6 +2126,8 @@
       if (!res.ok) return;
       var d = await res.json();
       var series = (d.series || []).filter(function (s) { return s.has_deep; });
+      var unavailable = $("deep-unavail");
+      if (unavailable) unavailable.hidden = true;
       state.dyn = { series: series };
       if (initial) {
         var all = series.map(function (s) { return s.month; });
@@ -2133,6 +2148,7 @@
     await loadActiveAgg();
     if (state.tab === "scoring") renderScoring();
   }
+  window.__misKzDeepReload = init;
 
   document.addEventListener("DOMContentLoaded", function () {
     bindNav();
