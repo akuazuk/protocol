@@ -83,6 +83,18 @@ scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 
 Если guard упал, deploy не выполняем, сначала исправляем причину.
 
+### 5.1. Если Render деплоит напрямую из Git
+
+Если в Render сервис подключён к git-ветке (обычно `main`), используйте строгий режим:
+
+```bash
+scripts/git_deploy_guard.sh --render-git --render-branch=main \
+  --prod-url=https://protocol-bimy.onrender.com
+```
+
+Этот режим дополнительно блокирует deploy, если текущая ветка не совпадает с веткой,
+связанной с Render.
+
 ## 6) Минимальный handoff между ПК
 
 После каждой сессии фиксируем:
@@ -124,4 +136,5 @@ scripts/git_task_start.sh <task-slug> --pc=pc1
 
 # before deploy
 scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
+scripts/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
 ```

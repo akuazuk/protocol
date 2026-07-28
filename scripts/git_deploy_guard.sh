@@ -10,22 +10,28 @@ ALLOWED_BRANCHES_DEFAULT="main release/* hotfix/* codex/main-sync"
 ALLOWED_BRANCHES="${ALLOWED_BRANCHES:-$ALLOWED_BRANCHES_DEFAULT}"
 REMOTE_NAME="${REMOTE_NAME:-origin}"
 PROD_URL="${PROTOCOL_PROD_URL:-}"
+RENDER_GIT_MODE="${RENDER_GIT_MODE:-0}"
+RENDER_DEPLOY_BRANCH="${RENDER_DEPLOY_BRANCH:-main}"
 
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/git_deploy_guard.sh [--prod-url URL]
+  scripts/git_deploy_guard.sh [--prod-url URL] [--render-git] [--render-branch main]
 
 Env:
   ALLOWED_BRANCHES="main release/* hotfix/* codex/main-sync"
   REMOTE_NAME=origin
   PROTOCOL_PROD_URL=https://protocol-bimy.onrender.com
+  RENDER_GIT_MODE=1
+  RENDER_DEPLOY_BRANCH=main
 EOF
 }
 
 for arg in "$@"; do
   case "$arg" in
     --prod-url=*) PROD_URL="${arg#*=}" ;;
+    --render-git) RENDER_GIT_MODE=1 ;;
+    --render-branch=*) RENDER_DEPLOY_BRANCH="${arg#*=}" ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown arg: $arg" >&2; usage; exit 2 ;;
   esac
@@ -46,6 +52,12 @@ for pattern in $ALLOWED_BRANCHES; do
 done
 if [[ "$allowed" -ne 1 ]]; then
   echo "ERROR: branch '$branch' is not in deploy allowlist: $ALLOWED_BRANCHES" >&2
+  exit 1
+fi
+
+if [[ "$RENDER_GIT_MODE" == "1" ]] && [[ "$branch" != "$RENDER_DEPLOY_BRANCH" ]]; then
+  echo "ERROR: Render Git deploy mode requires branch '$RENDER_DEPLOY_BRANCH', current '$branch'." >&2
+  echo "Fix: switch to '$RENDER_DEPLOY_BRANCH' and sync it before deploy." >&2
   exit 1
 fi
 
@@ -99,6 +111,9 @@ echo "OK: deploy guard passed."
 echo "Branch:        $branch"
 echo "Upstream:      $upstream_ref"
 echo "BUILD_VERSION: $build_version"
+if [[ "$RENDER_GIT_MODE" == "1" ]]; then
+  echo "Render mode:   git-connected branch '$RENDER_DEPLOY_BRANCH'"
+fi
 
 if [[ -n "$PROD_URL" ]]; then
   prod_ver="$(curl -fsS "${PROD_URL%/}/api/version" 2>/dev/null | python3 -c 'import json,sys; print(json.load(sys.stdin).get("version",""))' 2>/dev/null || true)"
