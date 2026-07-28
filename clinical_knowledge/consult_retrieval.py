@@ -110,7 +110,7 @@ def _consult_audience_from_context(
     consult_text: str | None,
     facts: dict[str, Any] | None,
 ) -> str | None:
-    """adult | child | None — из facts и текста КЗ."""
+    """adult | child | None - из facts и текста КЗ."""
     patient = ((facts or {}).get("patient_context") or {})
     aud = str(patient.get("adult_or_child") or "").strip().lower()
     if aud in ("adult", "child"):
@@ -229,7 +229,7 @@ def consult_target_protocol_paths(
     rejected_protocols: list[dict[str, Any]] = []
 
     _WHY_REJECTED_RU = {
-        "admin_order": "Приказ об утверждении — не клинический эталон",
+        "admin_order": "Приказ об утверждении - не клинический эталон",
         "low_score": "Низкий балл соответствия жалобам, анамнезу и МКБ",
         "population_mismatch": "Не подходит по возрасту/популяции",
         "wrong_nosology_spine": "Чужая нозология (не позвоночник/ишиас)",
@@ -506,7 +506,7 @@ def consult_target_protocol_paths(
                     "match_breakdown": {"icd": round(rel_pct / 100.0, 2)},
                     "icd_fit": [{"code": c, "weight": round(rel_pct / 100.0, 2)} for c in icd_list[:2]],
                     "icd_fit_label": ", ".join(f"{c} ({rel_pct:.0f}%)" for c in icd_list[:2]),
-                    "pick_reason_ru": f"Подбор по МКБ {', '.join(icd_list[:2])} — {rel_pct:.0f}%",
+                    "pick_reason_ru": f"Подбор по МКБ {', '.join(icd_list[:2])} - {rel_pct:.0f}%",
                     "pick_risk_flags": ["icd_lookup_fallback"],
                     "why_rejected_ru": [],
                     "pick_source": "icd_lookup_fallback",

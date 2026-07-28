@@ -134,7 +134,7 @@ UI и API могут показывать разные проценты для �
 Текущие метрики:
 
 - PDF: 478;
-- protocol summary: около 475–477;
+- protocol summary: около 475-477;
 - valid summary, включая warnings: 240;
 - approved методистом: 0;
 - needs review: 462;
@@ -213,7 +213,7 @@ PDF протокола
 
 ---
 
-## 5. Workstream A — единый контракт `KzEvaluationResultV3`
+## 5. Workstream A - единый контракт `KzEvaluationResultV3`
 
 ### 5.1. Добавить модели
 
@@ -280,8 +280,8 @@ clinical_knowledge/kz_evaluation_engine.py
 
 - Все поля имеют безопасные defaults.
 - Никаких `NaN`/`Infinity`.
-- Значения score: 0–100.
-- Coverage/confidence: 0–1.
+- Значения score: 0-100.
+- Coverage/confidence: 0-1.
 - Отсутствие данных выражается `None`, а не нулём.
 - `legacy` содержит старые scores только для shadow-сравнения.
 - Контракт сериализуется Pydantic и стабилен в API.
@@ -304,7 +304,7 @@ clinical_knowledge/kz_evaluation_engine.py
 
 ---
 
-## 6. Workstream B — trust levels для правил протокола
+## 6. Workstream B - trust levels для правил протокола
 
 ### 6.1. Ввести уровни доверия
 
@@ -372,7 +372,7 @@ D = heuristic
 
 ---
 
-## 7. Workstream C — исправление structural score
+## 7. Workstream C - исправление structural score
 
 ### 7.1. Обязательные поля не компенсируются optional-полями
 
@@ -420,7 +420,7 @@ coverage = сумма весов проверенных требований / �
 Статус:
 
 - coverage >= 0.80: обычный;
-- 0.50–0.79: score с `limited_evidence`;
+- 0.50-0.79: score с `limited_evidence`;
 - coverage < 0.50: `insufficient_evidence`;
 - critical safety finding действует независимо от coverage.
 
@@ -439,7 +439,7 @@ Confidence не должен повышать или снижать клинич
 
 ---
 
-## 8. Workstream D — единый scorer поверх A/B/C/D
+## 8. Workstream D - единый scorer поверх A/B/C/D
 
 ### 8.1. Использовать существующий deep engine как основу, не дублировать
 
@@ -518,7 +518,7 @@ Production score и gate не переключать автоматически.
 
 ---
 
-## 9. Workstream E — улучшение protocol applicability
+## 9. Workstream E - улучшение protocol applicability
 
 ### 9.1. Разделить уверенности
 
@@ -561,7 +561,7 @@ Production score и gate не переключать автоматически.
 
 ---
 
-## 10. Workstream F — аудит и приоритизация корпуса
+## 10. Workstream F - аудит и приоритизация корпуса
 
 ### 10.1. Создать воспроизводимый аудит
 
@@ -632,7 +632,7 @@ data/ml/reports/kz_protocol_methodist_queue_latest.md
 
 ---
 
-## 11. Workstream G — каноническая knowledge model протокола
+## 11. Workstream G - каноническая knowledge model протокола
 
 ### 11.1. Добавить модель без массовой миграции всех PDF
 
@@ -695,7 +695,7 @@ Knowledge document не penalty-ready, если:
 
 ---
 
-## 12. Workstream H — parser КЗ и provenance
+## 12. Workstream H - parser КЗ и provenance
 
 В пределах ночной итерации сделать безопасный фундамент:
 
@@ -719,7 +719,7 @@ Knowledge document не penalty-ready, если:
 
 ---
 
-## 13. Workstream I — лекарственная терапия
+## 13. Workstream I - лекарственная терапия
 
 ### 13.1. Разделить типы находок
 
@@ -760,7 +760,7 @@ needs_human
 
 ---
 
-## 14. Workstream J — API, UI и gate
+## 14. Workstream J - API, UI и gate
 
 ### 14.1. API
 
@@ -801,7 +801,7 @@ needs_human
 
 ---
 
-## 15. Workstream K — gold set и калибровка
+## 15. Workstream K - gold set и калибровка
 
 Нельзя создать экспертный gold без методистов. За ночь подготовить инфраструктуру:
 
@@ -816,7 +816,7 @@ needs_human
 
 Целевая будущая выборка:
 
-- 800–1200 КЗ;
+- 800-1200 КЗ;
 - специальности;
 - типы приёма;
 - score bands;
@@ -937,19 +937,19 @@ python -m scripts.compare_kz_evaluation_v3 \
 - C/D findings excluded from penalties;
 - protocol mismatch cases.
 
-Если доступны безопасные агрегированные MIS cases без ПДн — поддержать `--cases`.
+Если доступны безопасные агрегированные MIS cases без ПДн - поддержать `--cases`.
 Не коммитить raw cases.
 
 ---
 
 ## 18. Критерии приёмки ночной итерации
 
-### P0 — обязательно до push
+### P0 - обязательно до push
 
 - [x] Работа идёт в отдельном clean worktree/ветке (`codex/kz-evaluation-quality-v3`).
 - [x] Добавлен `KzEvaluationResultV3` (`clinical_knowledge/kz_evaluation_schema.py`).
 - [x] Добавлены score/coverage/confidence/risk/provenance.
-- [x] Добавлены trust levels A–D (`clinical_knowledge/rule_trust.py`).
+- [x] Добавлены trust levels A-D (`clinical_knowledge/rule_trust.py`).
 - [x] C/D rules не создают штраф или hard gate (тесты `test_rule_trust`, `test_kz_v3_gate`).
 - [x] Optional fields не компенсируют required (`test_kz_coverage_scoring`).
 - [x] Добавлен coverage-aware calculation (`score_documentation`/`score_concordance`).
@@ -959,13 +959,13 @@ python -m scripts.compare_kz_evaluation_v3 \
 - [x] Добавлен Protocol Knowledge schema + summary adapter (`protocol_knowledge_model.py`).
 - [x] Добавлены tests для trust/coverage/gate (+ knowledge/audit).
 - [x] Узкие тесты зелёные.
-- [x] Полный pytest — см. итог сессии/отчёт (baseline failures задокументированы, если есть).
+- [x] Полный pytest - см. итог сессии/отчёт (baseline failures задокументированы, если есть).
 - [x] Ruff зелёный для изменённых файлов.
 - [x] Создан итоговый markdown-отчёт (`docs/reports/kz-evaluation-v3-overnight-result-2026-07-28.md`).
 - [x] Создан коммит.
 - [x] Ветка отправлена в origin.
 
-### P1 — выполнить, если P0 завершён
+### P1 - выполнить, если P0 завершён
 
 - [ ] Provenance spans для ключевых полей КЗ (отложено: требует правки parser; §12).
 - [x] Trust-aware medication findings (`clinical_knowledge/medication_findings.py`).
@@ -974,7 +974,7 @@ python -m scripts.compare_kz_evaluation_v3 \
 - [x] Feature-flagged методистский UI для v3 diagnostics (data-поле `evaluation_v3` в деталях).
 - [x] Gold annotation schema/evaluator (`clinical_knowledge/kz_gold_annotation.py`).
 
-### P2 — не блокирует ночной push
+### P2 - не блокирует ночной push
 
 - [ ] Полная ручная валидация top-50 протоколов.
 - [ ] Настоящий gold set.
@@ -1044,7 +1044,7 @@ git diff
 
 ### 20.2. Коммиты
 
-Предпочтительно 2–4 осмысленных коммита:
+Предпочтительно 2-4 осмысленных коммита:
 
 ```text
 feat(kz): add trust-aware evaluation v3 contract

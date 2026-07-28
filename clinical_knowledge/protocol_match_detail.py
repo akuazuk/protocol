@@ -38,7 +38,7 @@ def compute_match_detail(
     complaints: list[str],
     performed_exams: list[str],
 ) -> dict[str, Any]:
-    """Score 0–100 + breakdown + icd_fit + risk_flags."""
+    """Score 0-100 + breakdown + icd_fit + risk_flags."""
     from clinical_knowledge.condition_registry import score_card_for_hint
     from clinical_knowledge.protocol_pick_filters import is_administrative_protocol
 
@@ -51,7 +51,7 @@ def compute_match_detail(
             "icd_fit": [],
             "icd_fit_label": "",
             "pick_risk_flags": risk_flags,
-            "pick_reason_ru": "Приказ об утверждении — не клинический эталон",
+            "pick_reason_ru": "Приказ об утверждении - не клинический эталон",
             "rejected": True,
         }
 
@@ -157,7 +157,7 @@ def compute_match_detail(
     icd_s = ", ".join(icd_list[:2])
     reason = f"МКБ {icd_s}, балл {score:.0f}"
     if title:
-        reason = f"{reason} — «{title}»"
+        reason = f"{reason} - «{title}»"
 
     return {
         "match_score": score,

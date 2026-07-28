@@ -147,6 +147,13 @@ class ProtocolMatchInfo(_V3Base):
         return clamp_unit(v)
 
 
+class EvidenceSpan(_V3Base):
+    field: str
+    start: int
+    end: int
+    text: str = ""
+
+
 class EvaluationFinding(_V3Base):
     code: str
     axis: str
@@ -156,6 +163,7 @@ class EvaluationFinding(_V3Base):
     title_ru: str = ""
     detail_ru: str = ""
     evidence: str = ""
+    evidence_span: EvidenceSpan | None = None
     source_ref: str = ""
     trust_level: TrustLevelLit = "D"
     penalty_applied: bool = False

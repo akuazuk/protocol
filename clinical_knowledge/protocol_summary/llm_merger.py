@@ -102,10 +102,19 @@ def _merge_condition_block(
     for d in block.get("drugs") or []:
         if not isinstance(d, dict):
             continue
+        monitoring = [
+            str(item).strip()[:240]
+            for item in (d.get("monitoring") or [])
+            if isinstance(item, str) and item.strip()
+        ]
         out["drugs"].append(
             DrugTreatmentItem(
                 drug_name=str(d.get("name") or "")[:120] or None,
                 dose_text=str(d.get("dose_text") or "")[:200] or None,
+                frequency_text=str(d.get("frequency_text") or "")[:200] or None,
+                duration_text=str(d.get("duration_text") or "")[:200] or None,
+                route=str(d.get("route") or "")[:120] or None,
+                monitoring=monitoring[:12],
                 source_ref=_ref(
                     protocol_id,
                     local_path,

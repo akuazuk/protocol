@@ -18,12 +18,15 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-07-27-mis-kz-dashboard-rubric-v1.md](2026-07-27-mis-kz-dashboard-rubric-v1.md) | MIS · КЗ: единая рубрика дашборда + починка фильтров (аудит: 7/15 фильтров рабочие) и тест каждого отчёта | active |
-| [2026-07-22-kz-deep-eval-db-task-v1.md](2026-07-22-kz-deep-eval-db-task-v1.md) | ТЗ для машины с БД: глубокая оценка КЗ + поиск ошибок диагноза/лечения (МКБ + протоколы МЗ + №55 + формуляр + DDInter + мировые методики) | active |
-| [2026-07-22-kz-data-separation-viz-v1.md](2026-07-22-kz-data-separation-viz-v1.md) | Разделение КЗ и не-КЗ (УЗИ и пр.) в данных + понятная визуализация | active |
-| [2026-07-22-kz-scoring-methodology-v1.md](2026-07-22-kz-scoring-methodology-v1.md) | Методология оценки КЗ 2.0: 3 оси + разметка + обогащение протоколов | active |
-| [2026-07-22-mis-kz-pay-services-l1-v1.md](2026-07-22-mis-kz-pay-services-l1-v1.md) | Новые КЗ июля + pay/services/core + pastel UI | active |
-| [2026-07-22-mis-kz-quality-analysis.md](2026-07-22-mis-kz-quality-analysis.md) | Анализ качества L1 после догрузки (8123 визита) | active |
+| [2026-07-28-mo-daily-bi-platform-v1.md](2026-07-28-mo-daily-bi-platform-v1.md) | МО из БД: ежедневная загрузка «вчера», объективная оценка, CRM/BI, отчёты, терминология КЗ/МО и полный перенесённый backlog | active |
+| [2026-07-27-product-ux-search-navigation-redesign-v1.md](2026-07-27-product-ux-search-navigation-redesign-v1.md) | UX, applicability-gate, роли, фильтры и навигация | archived (реализовано до r20; незавершённое перенесено в mo-daily-bi-platform-v1) |
+| [2026-07-27-kz-evaluation-quality-overnight-v1.md](2026-07-27-kz-evaluation-quality-overnight-v1.md) | Scorer v3, trust, coverage/confidence, knowledge-model, gold-инфраструктура | archived (P0 реализован в r17; P1/P2 перенесены в mo-daily-bi-platform-v1) |
+| [2026-07-27-mis-kz-dashboard-rubric-v1.md](2026-07-27-mis-kz-dashboard-rubric-v1.md) | MIS · КЗ: единая рубрика дашборда и фильтры | archived (реализовано до r20; преемник: mo-daily-bi-platform-v1) |
+| [2026-07-22-kz-deep-eval-db-task-v1.md](2026-07-22-kz-deep-eval-db-task-v1.md) | Глубокая оценка данных МИС и клинические проверки | archived (преемник: mo-daily-bi-platform-v1) |
+| [2026-07-22-kz-data-separation-viz-v1.md](2026-07-22-kz-data-separation-viz-v1.md) | Разделение клинических и не-клинических записей | archived (преемник: mo-daily-bi-platform-v1) |
+| [2026-07-22-kz-scoring-methodology-v1.md](2026-07-22-kz-scoring-methodology-v1.md) | Методология оценки и обогащение протоколов | archived (преемник: scorer v3 в mo-daily-bi-platform-v1) |
+| [2026-07-22-mis-kz-pay-services-l1-v1.md](2026-07-22-mis-kz-pay-services-l1-v1.md) | Данные МИС, оплата, услуги и L1 | archived (преемник: mo-daily-bi-platform-v1) |
+| [2026-07-22-mis-kz-quality-analysis.md](2026-07-22-mis-kz-quality-analysis.md) | Исторический анализ качества L1 после догрузки | archived (исторический отчёт; преемник: mo-daily-bi-platform-v1) |
 | [2026-07-21-mis-kz-llm-progress-full-report-v1.md](2026-07-21-mis-kz-llm-progress-full-report-v1.md) | Прогресс LLM-прогона + полный разбор по протоколам МЗ | archived (преемник: mis-kz-pay-services-l1-v1) |
 | [2026-07-21-mis-kz-worst50-l2-gemini-v1.md](2026-07-21-mis-kz-worst50-l2-gemini-v1.md) | Топ-50 худших КЗ + L2 + выборочный Gemini | archived (преемник: llm-progress-full-report-v1) |
 | [2026-07-21-mis-kz-l1-batch-v1.md](2026-07-21-mis-kz-l1-batch-v1.md) | Массовый L1 mis_protocol (июль: 7648 визитов) + дашборд методиста | archived (преемник: worst50-l2-gemini-v1) |

@@ -1,4 +1,4 @@
-"""Path-level manifest: rubric, ICD, chunk counts — без загрузки текстов в RAM."""
+"""Path-level manifest: rubric, ICD, chunk counts - без загрузки текстов в RAM."""
 from __future__ import annotations
 
 import hashlib

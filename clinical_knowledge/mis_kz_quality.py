@@ -504,6 +504,81 @@ _AXIS_RU = {
     "regulatory": "регуляторика",
 }
 
+_DOCUMENT_KIND_LABELS = {
+    "medical_exam": "Медицинский осмотр",
+    "consultation": "Консультация",
+    "certificate": "Справка",
+    "diagnostic": "Диагностика",
+    "non_clinical": "Неклиническая запись",
+    "empty": "Пустая запись",
+    "unknown": "Требует уточнения",
+}
+
+_DOCUMENT_TAXONOMY_PATH = ROOT / "config" / "mo_document_kind_rules.json"
+_DOCUMENT_TAXONOMY_DEFAULTS = {
+    "medical_exam": ["профосмотр", "проф осмотр", "медосмотр", "медицинский осмотр"],
+    "certificate": ["справк", "медкомис", "водительск"],
+    "diagnostic": ["узи", "рентген", "мрт", "кт ", "томограф", "лаборатор", "анализ крови"],
+    "non_clinical": ["администратор", "регистратор", "кассир"],
+    "consultation": ["консультац", "прием врача", "приём врача"],
+}
+
+
+def _document_taxonomy_rules() -> dict[str, list[str]]:
+    try:
+        data = json.loads(_DOCUMENT_TAXONOMY_PATH.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return _DOCUMENT_TAXONOMY_DEFAULTS
+    if not isinstance(data, dict):
+        return _DOCUMENT_TAXONOMY_DEFAULTS
+    configured = data.get("keywords") if isinstance(data.get("keywords"), dict) else data
+    return {
+        kind: [str(token).lower() for token in configured.get(kind, defaults) if str(token).strip()]
+        for kind, defaults in _DOCUMENT_TAXONOMY_DEFAULTS.items()
+    }
+
+
+def classify_document_kind(row: dict[str, Any], case: dict[str, Any] | None = None) -> str:
+    """Аддитивная классификация записи МО без изменения legacy ``kz_kind``.
+
+    Сначала принимается уже рассчитанное каноническое значение. Эвристика нужна для
+    исторических CSV/cases и намеренно возвращает ``unknown`` для неоднозначных строк.
+    """
+    case = case or {}
+    explicit = str((row or {}).get("document_kind") or case.get("document_kind") or "").strip().lower()
+    if explicit in _DOCUMENT_KIND_LABELS:
+        return explicit
+    fields = case.get("fields_present") if isinstance(case.get("fields_present"), dict) else {}
+    text_len = case.get("text_len")
+    clinical_present = any(bool(v) for v in fields.values()) or bool(
+        (row or {}).get("clinical_diagnosis") or case.get("diagnosis_short")
+    )
+    if (text_len == 0 or text_len == "0") and not clinical_present:
+        return "empty"
+
+    services = (row or {}).get("service_names") or case.get("service_names") or []
+    if isinstance(services, str):
+        services = services.split("|")
+    hay = " ".join(
+        [
+            str((row or {}).get("pay_type_label") or case.get("pay_type_label") or ""),
+            str((row or {}).get("kz_kind") or ""),
+            str((row or {}).get("doctor_specialization") or case.get("doctor_specialization") or ""),
+            " ".join(str(item) for item in services),
+        ]
+    ).lower()
+    rules = _document_taxonomy_rules()
+    for kind in ("medical_exam", "certificate", "diagnostic", "non_clinical"):
+        if any(token in hay for token in rules[kind]):
+            return kind
+    if any(token in hay for token in rules["consultation"]) and clinical_present:
+        return "consultation"
+    return "consultation" if clinical_present else "unknown"
+
+
+def document_kind_label(kind: str) -> str:
+    return _DOCUMENT_KIND_LABELS.get(kind, _DOCUMENT_KIND_LABELS["unknown"])
+
 
 def _deep_status_calibrated(deep: dict) -> Any:
     """Пересчёт deep-статуса из overall+axes+severity через каноническую risk-gate
@@ -541,6 +616,7 @@ def _flat_case(case: dict[str, Any], csvrow: dict | None) -> dict[str, Any]:
     finding_axes = sorted({str(f.get("axis") or "") for f in findings if f.get("axis")})
     diag = (case.get("diagnosis_short") or (row.get("clinical_diagnosis") or "").strip())
     diag = re.sub(r"\s+", " ", diag).strip()[:160]
+    document_kind = classify_document_kind(row, case)
     return {
         "visit_id": str(case.get("visit_id") or ""),
         "patient_id": str(case.get("patient_id") or row.get("patient_id") or ""),
@@ -549,6 +625,8 @@ def _flat_case(case: dict[str, Any], csvrow: dict | None) -> dict[str, Any]:
         "specialization": case.get("doctor_specialization") or (row.get("doctor_specialization") or "").strip() or " - ",
         "filial": case.get("filial") or (row.get("filial") or "").strip() or " - ",
         "kz_kind": (row.get("kz_kind") or "").strip() or "kz",
+        "document_kind": document_kind,
+        "document_kind_label": document_kind_label(document_kind),
         "mkb_code_main": code_main,
         "icd_chapter": chap_key,
         "icd_chapter_label": chap_label,
@@ -590,6 +668,8 @@ def _match_filters(rec: dict[str, Any], flt: dict[str, Any]) -> bool:
     if not eq("filial", "filial"):
         return False
     if not eq("kz_kind", "kz_kind"):
+        return False
+    if not eq("document_kind", "document_kind"):
         return False
     if not eq("icd_chapter", "mkb_chapter"):
         return False
@@ -672,6 +752,7 @@ def _facets(records: list[dict[str, Any]]) -> dict[str, Any]:
         "specialties": top("specialization"),
         "filials": top("filial"),
         "kz_kinds": top("kz_kind"),
+        "document_kinds": top("document_kind"),
         "statuses": top("status"),
         "score_bands": top("score_band"),
         "age_groups": top("age_group"),

@@ -36,7 +36,7 @@ def norm_audience_blob(text: str) -> str:
 
 
 def infer_protocol_audience(path: str, title: str = "") -> str | None:
-    """pediatric | adult | mixed | None — по имени файла/заголовка."""
+    """pediatric | adult | mixed | None - по имени файла/заголовка."""
     blob = norm_audience_blob(f"{path} {title}")
     has_p = any(m in blob for m in _PED_MARKERS)
     has_a = any(m in blob for m in _ADULT_MARKERS)

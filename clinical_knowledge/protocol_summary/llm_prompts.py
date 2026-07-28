@@ -47,11 +47,24 @@ SYSTEM_CONDITION_BLOCK = """Ты медицинский редактор. Изв
   "required_exams": [{"name": "...", "level": "required|conditional", "quote": "...", "page_start": 1}],
   "diagnostic_criteria": ["краткая фраза"],
   "treatment_non_drug": ["..."],
-  "drugs": [{"name": "...", "dose_text": "...", "quote": "...", "page_start": 1}],
+  "drugs": [{
+    "name": "...",
+    "dose_text": "...",
+    "route": "перорально|в/в|в/м|местно|...",
+    "frequency_text": "...",
+    "duration_text": "...",
+    "monitoring": ["что и когда контролировать"],
+    "quote": "...",
+    "page_start": 1
+  }],
   "red_flags": [{"text": "...", "severity": "high|medium", "quote": "...", "page_start": 1}],
   "follow_up": ["..."],
   "routing": ["госпитализация/амбулаторно"]
-}"""
+}
+
+Для лекарств не объединяй разные режимы в одну запись. Заполняй route,
+frequency_text, duration_text и monitoring только когда они явно есть в тексте;
+иначе ставь null или пустой список. Цитата должна подтверждать препарат и режим."""
 
 
 def prompt_condition_block(

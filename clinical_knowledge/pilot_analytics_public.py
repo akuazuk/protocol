@@ -23,7 +23,7 @@ def _compliance_buckets(kz_events: list[dict[str, Any]]) -> list[dict[str, Any]]
         by_hash[th] = float(val) if isinstance(val, (int, float)) else None
     buckets = [
         ("≥85%", 85, 101),
-        ("70–84%", 70, 85),
+        ("70-84%", 70, 85),
         ("<70% (риск)", 0, 70),
         ("нет %", None, None),
     ]
@@ -168,7 +168,7 @@ def build_public_pilot_analytics(
         "note_ru": (
             "Данные обновляются при каждом запросе; персональные данные и тексты КЗ не показываются."
             if has_real
-            else "Разметка КЗ началась — метрики появятся после первых прогонов в кабинете методиста."
+            else "Разметка КЗ началась - метрики появятся после первых прогонов в кабинете методиста."
         ),
     }
     return out

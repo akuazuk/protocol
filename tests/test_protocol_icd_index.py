@@ -59,7 +59,7 @@ def test_format_assist_payload_shape():
 
 
 def test_lookup_rubric_fallback_when_icd_missing_from_catalog():
-    """C50.9 may be absent in catalog ICD lists — rubric novoobrazovaniya must still match."""
+    """C50.9 may be absent in catalog ICD lists - rubric novoobrazovaniya must still match."""
     pii = _load_module("protocol_icd_index", "clinical_knowledge/protocol_icd_index.py")
     pii._inverted_index.cache_clear()
     result = pii.lookup_protocols_by_icd(

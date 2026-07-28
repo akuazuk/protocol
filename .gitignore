@@ -5,6 +5,8 @@ __pycache__/
 .venv/
 .env
 .env.local
+.cursor/render-watch-state.json
+.cursor/render-watch.log
 
 # Выход corpus_pipeline: полные чанки/документы/таблицы > лимита GitHub — генерировать локально
 output/chunks/
@@ -24,6 +26,7 @@ eval/golden_queries.prod.jsonl
 # Консультативные заключения пациентов (ПДн) — никогда не коммитить
 clients_consult/*
 !clients_consult/README.md
+data/KZ/
 
 # Выгрузка mis_protocol (ПДн пациентов) — только локально
 data/mis_protocol/*.parquet
@@ -35,6 +38,11 @@ data/mis_protocol/*_state.jsonl
 !data/mis_protocol/*_summary.json
 !data/mis_protocol/*_llm_queue.json
 data/mis_protocol/*_gemini_reviews.json
+data/mis_protocol/*.log
+
+# Ежедневный МО-pipeline: raw/ПДн, state, warehouse, reports и runtime public snapshots.
+# Публикация обезличенных агрегатов выполняется отдельным разрешённым каналом, не через git.
+data/medical_exams/
 
 # Мировые базы ЛС: сырьё/большие индексы регенерируются скриптами (fetch_*/build_*),
 # рукотворные seed'ы (high_alert, stopp_start_beers) — коммитим.
@@ -47,11 +55,13 @@ data/drug_safety/rxnorm_cache.json
 # ML feedback: тексты КЗ и снимки прогонов (on-prem, ПДн)
 data/ml/secure/
 data/ml/analyses/
+data/ml/feedback/*.jsonl
 
 # Deep-eval датасет КЗ (ПДн: cases с patient_id/ФИО; регенерируется --deep-only).
 # Агрегатные summary/отчёты без ПДн можно коммитить точечно.
 data/ml/reports/deep_eval/*_cases.jsonl
 data/ml/reports/deep_eval/*_state.jsonl
+data/ml/reports/deep_eval/*_llm_queue.json
 # Gold-манифест содержит visit_id (ПДн-смежное) — в git только strata_summary*.md (§9).
 data/ml/kz_gold/*.jsonl
 
@@ -63,3 +73,11 @@ ml/registry/checkpoints/
 ml/datasets/chunk_qa_sft.jsonl
 ml/datasets/chunk_qa_classifier.jsonl
 ml/experiments/**/run.log
+ml/experiments/**/render_reviews.json
+ml/experiments/**/priority_ai_reviews.json
+ml/experiments/**/render_submit.log
+ml/experiments/**/batch_summary.csv
+
+# Локальные расширенные фрагменты и метаданные корпуса.
+output/rich_chunks/
+output/rich_meta/

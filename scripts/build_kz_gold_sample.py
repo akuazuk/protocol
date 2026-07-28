@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Э4.1: стратифицированная gold-выборка КЗ для калибровки/валидации оценки.
+"""Стратифицированная gold-выборка МО из БД для калибровки/валидации оценки.
 
 Страты: специальность (клинические) × L1-банд overall (0-49/50-59/60-69/70-79/80+),
 с гарантией покрытия справок (pay_type=12) и red-flag страты. Источник - L1 cases jsonl
@@ -10,7 +10,7 @@
     --cases /var/data/mis_protocol/kz_l1_2026-07_cases.jsonl \\
     --csv /var/data/mis_protocol/mis_protocol_2026-07.csv \\
     --out /var/data/mis_protocol/kz_gold/gold_sample.jsonl \\
-    --target-n 300
+    --target-n 1000
 """
 from __future__ import annotations
 
@@ -79,7 +79,7 @@ def main() -> int:
     ap.add_argument("--out", required=True, type=Path)
     ap.add_argument("--report", type=Path,
                     default=ROOT / "data" / "ml" / "kz_gold" / "strata_summary.md")
-    ap.add_argument("--target-n", type=int, default=300)
+    ap.add_argument("--target-n", type=int, default=1000)
     ap.add_argument("--min-per-stratum", type=int, default=2)
     ap.add_argument("--seed", type=int, default=42)
     args = ap.parse_args()
@@ -124,7 +124,7 @@ def main() -> int:
             "overall_pct": pct,
             "deep_overall_pct": deep.get("overall_pct"),
             "deep_status": deep.get("status"),
-            "pay_type": pay.get(vid, ""),
+            "pay_type": pay.get(vid, str(c.get("pay_type") or "")),
             "red_flag": red,
         })
 
@@ -136,37 +136,62 @@ def main() -> int:
     for c in cases:
         strata[(c["specialty"], c["band"])].append(c)
 
-    total = len(cases)
     picked: list[dict] = []
     picked_ids: set[str] = set()
 
-    # 1) минимум на страту.
-    for key, items in strata.items():
-        for c in items[: args.min_per_stratum]:
-            if c["visit_id"] not in picked_ids:
-                picked.append(c)
-                picked_ids.add(c["visit_id"])
-
-    # 2) добор пропорционально до target-n.
-    if len(picked) < args.target_n:
-        remaining = [c for c in cases if c["visit_id"] not in picked_ids]
-        need = args.target_n - len(picked)
-        for c in remaining[:need]:
+    def _pick(c: dict) -> None:
+        if c["visit_id"] not in picked_ids and len(picked) < args.target_n:
             picked.append(c)
             picked_ids.add(c["visit_id"])
 
-    # 3) гарантируем справки (pay_type=12) и red-flag.
-    def _ensure(pred, want: int, label: str) -> None:
+    # 1) Покрытие каждой клинической специальности. Минимум по каждой комбинации
+    # specialty×band сильно смещал выборку к частому банду 80+.
+    by_spec: dict[str, list[dict]] = defaultdict(list)
+    for c in cases:
+        by_spec[c["specialty"]].append(c)
+    for items in by_spec.values():
+        for c in items[: args.min_per_stratum]:
+            _pick(c)
+
+    # 2) Балансируем score bands. Gold нужен для оценки границ и вреда, поэтому
+    # пропорциональная случайная выборка (где 80+ доминирует) непригодна.
+    ordered_bands = ["0-49", "50-59", "60-69", "70-79", "80+", "na"]
+    by_band: dict[str, list[dict]] = defaultdict(list)
+    for c in cases:
+        by_band[c["band"]].append(c)
+    active_bands = [b for b in ordered_bands if by_band.get(b)]
+    quota = max(1, args.target_n // max(1, len(active_bands)))
+    for band in active_bands:
+        have = sum(1 for c in picked if c["band"] == band)
+        for c in by_band[band]:
+            if have >= quota or len(picked) >= args.target_n:
+                break
+            before = len(picked)
+            _pick(c)
+            if len(picked) > before:
+                have += 1
+
+    # 3) Гарантируем справки/медосмотры и red-flag до общего добора.
+    def _ensure(pred, want: int) -> None:
         have = sum(1 for c in picked if pred(c))
         if have >= want:
             return
         pool = [c for c in cases if c["visit_id"] not in picked_ids and pred(c)]
         for c in pool[: want - have]:
-            picked.append(c)
-            picked_ids.add(c["visit_id"])
+            _pick(c)
 
-    _ensure(lambda c: str(c["pay_type"]) == "12", 20, "справки")
-    _ensure(lambda c: c["red_flag"], 30, "red-flag")
+    _ensure(lambda c: str(c["pay_type"]) == "12", min(100, args.target_n // 10))
+    _ensure(lambda c: c["red_flag"], min(200, args.target_n // 5))
+
+    # 4) Добор до target-n.
+    if len(picked) < args.target_n:
+        remaining = [c for c in cases if c["visit_id"] not in picked_ids]
+        for c in remaining:
+            _pick(c)
+            if len(picked) >= args.target_n:
+                break
+
+    total = len(cases)
 
     args.out.parent.mkdir(parents=True, exist_ok=True)
     with args.out.open("w", encoding="utf-8") as f:
@@ -174,12 +199,12 @@ def main() -> int:
             f.write(json.dumps(c, ensure_ascii=False) + "\n")
 
     # Агрегатный отчёт (без ПДн) в git.
-    by_spec = Counter(c["specialty"] for c in picked)
-    by_band = Counter(c["band"] for c in picked)
+    by_spec_count = Counter(c["specialty"] for c in picked)
+    by_band_count = Counter(c["band"] for c in picked)
     n_spravki = sum(1 for c in picked if str(c["pay_type"]) == "12")
     n_red = sum(1 for c in picked if c["red_flag"])
     lines = [
-        "# Gold-выборка КЗ (Э4) - страты",
+        "# Gold-выборка МО из БД - страты",
         "",
         f"Источник: {args.cases.name}  |  всего клинич. кейсов: {total}  |  "
         f"отобрано: **{len(picked)}** (seed={args.seed})",
@@ -189,17 +214,17 @@ def main() -> int:
         "| Специальность | n |",
         "|--|--|",
     ]
-    for spec, n in by_spec.most_common():
+    for spec, n in by_spec_count.most_common():
         lines.append(f"| {spec} | {n} |")
     lines += ["", "## По L1-бандам", "| Банд | n |", "|--|--|"]
     for band in ("0-49", "50-59", "60-69", "70-79", "80+", "na"):
-        if by_band.get(band):
-            lines.append(f"| {band} | {by_band[band]} |")
+        if by_band_count.get(band):
+            lines.append(f"| {band} | {by_band_count[band]} |")
     args.report.parent.mkdir(parents=True, exist_ok=True)
     args.report.write_text("\n".join(lines), encoding="utf-8")
 
     print(f"gold отобрано: {len(picked)} / {total} клинич.")
-    print(f"справок(12): {n_spravki}  red-flag: {n_red}  специальностей: {len(by_spec)}")
+    print(f"справок(12): {n_spravki}  red-flag: {n_red}  специальностей: {len(by_spec_count)}")
     print(f"манифест -> {args.out}")
     print(f"отчёт    -> {args.report}")
     return 0

@@ -50,7 +50,7 @@ Redeploy. Поведение как до lazy store (с OOM caps consult).
 
 ## Local dev
 
-По умолчанию `RAG_STARTUP_MODE=full` — полная загрузка корпуса. Для проверки manifest mode:
+По умолчанию `RAG_STARTUP_MODE=full` - полная загрузка корпуса. Для проверки manifest mode:
 
 ```bash
 export RAG_STARTUP_MODE=manifest

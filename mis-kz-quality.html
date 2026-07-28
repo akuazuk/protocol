@@ -1,2177 +1,1087 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="ru">
 <head>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>MIS · качество КЗ (L1) | Кабинет методиста · Protocol</title>
-<link rel="icon" href="/protocol-logo-mini.svg" type="image/svg+xml" />
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
-<style>
-  :root {
-    /* Единая палитра kravira (как в основном кабинете index.html) */
-    --ink: #1a2e2a;
-    --muted: #5a6f6a;
-    --line: #dbe7e2;
-    --card: rgba(255,255,255,.92);
-    --bg0: #f4fbf7;
-    --bg1: #eaf6f1;
-    --teal: #1a8a72;
-    --teal-deep: #0d5c4a;
-    --mint: #d6f3e8;
-    --lavender: #ebe6fa;
-    --peach: #fdebd3;
-    --sky: #dbeefe;
-    --rose: #fce4ec;
-    --good: #10b981;
-    --mid: #f59e0b;
-    --low: #e11d48;
-    --shadow: 0 12px 40px rgba(6, 61, 53, 0.12);
-    --glow-green: 0 8px 26px rgba(13, 92, 74, 0.28);
-    --radius: 20px;
-  }
-  * { box-sizing: border-box; }
-  body {
-    margin: 0;
-    color: var(--ink);
-    font-family: "DM Sans", "Outfit", system-ui, sans-serif;
-    background:
-      radial-gradient(ellipse 90% 55% at 0% 0%, rgba(219, 238, 254, 0.55), transparent 52%),
-      radial-gradient(ellipse 80% 50% at 100% 0%, rgba(216, 245, 234, 0.65), transparent 48%),
-      linear-gradient(180deg, #f4fbf7 0%, #eaf6f1 42%, #e2f0ea 100%);
-    min-height: 100vh;
-  }
-  h1, h2, h3 { font-family: "Outfit", "DM Sans", system-ui, sans-serif; font-weight: 650; letter-spacing: -0.02em; color: var(--teal-deep); }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 22px 18px 64px; }
-  .hero {
-    position: relative;
-    overflow: hidden;
-    border-radius: 28px;
-    padding: 28px 28px 24px;
-    color: var(--teal-deep);
-    background:
-      linear-gradient(135deg, rgba(216,235,228,.95), rgba(228,224,240,.9) 55%, rgba(243,228,216,.88)),
-      url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160' viewBox='0 0 40 40'%3E%3Cg fill='%235f7d76' fill-opacity='0.04'%3E%3Cpath d='M0 20h40v1H0zM20 0v40h1V0z'/%3E%3C/g%3E%3C/svg%3E");
-    box-shadow: var(--shadow);
-    border: 1px solid rgba(122,158,149,.18);
-  }
-  .hero::after {
-    content: "";
-    position: absolute; right: -40px; top: -40px; width: 220px; height: 220px;
-    border-radius: 50%; background: rgba(255,255,255,.35);
-  }
-  .hero-top { display: flex; flex-wrap: wrap; gap: 12px; justify-content: space-between; align-items: flex-start; }
-  .eyebrow {
-    display: inline-flex; align-items: center; gap: .4rem;
-    font-size: 12px; font-weight: 600; letter-spacing: .04em; text-transform: uppercase;
-    color: var(--teal); margin-bottom: 8px;
-  }
-  .hero h1 { margin: 0 0 8px; font-size: clamp(1.6rem, 3vw, 2.2rem); }
-  .hero p { margin: 0; max-width: 62ch; color: var(--muted); font-size: 15px; line-height: 1.5; }
-  .hero-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-  .btn {
-    appearance: none; border: 0; cursor: pointer; border-radius: 999px;
-    padding: 10px 16px; font: inherit; font-size: 13px; font-weight: 700;
-    background: linear-gradient(135deg, var(--teal), var(--teal-deep));
-    color: #fff; text-decoration: none; box-shadow: var(--glow-green);
-    transition: transform .12s ease, box-shadow .12s ease, filter .12s ease;
-  }
-  .btn:hover { transform: translateY(-1px); filter: brightness(1.05); }
-  .btn:active { transform: translateY(0); }
-  .btn--ghost { background: rgba(255,255,255,.7); color: var(--teal-deep); border: 1px solid rgba(26,138,114,.32); box-shadow: none; }
-  .btn--ghost:hover { background: #fff; filter: none; }
-  .meta { margin-top: 16px; display: flex; flex-wrap: wrap; gap: 10px 16px; font-size: 13px; color: var(--muted); }
-  .kpi-grid {
-    display: grid; grid-template-columns: repeat(5, 1fr); gap: 12px; margin: 18px 0 8px;
-  }
-  @media (max-width: 1100px) { .kpi-grid { grid-template-columns: repeat(3, 1fr); } }
-  @media (max-width: 700px) { .kpi-grid { grid-template-columns: repeat(2, 1fr); } }
-  .kpi {
-    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 16px 16px 14px; box-shadow: 0 8px 24px rgba(20,36,31,.04);
-  }
-  .kpi .label { font-size: 12px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .04em; }
-  .kpi .value { margin-top: 6px; font-family: "Outfit", "DM Sans", sans-serif; font-size: 1.85rem; color: var(--teal-deep); font-weight: 650; }
-  .kpi .hint { margin-top: 4px; font-size: 12px; color: var(--muted); }
-  .grid-2 { display: grid; grid-template-columns: 1.1fr .9fr; gap: 14px; margin-top: 14px; }
-  @media (max-width: 960px) { .grid-2 { grid-template-columns: 1fr; } }
-  .card {
-    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 18px; box-shadow: 0 8px 24px rgba(20,36,31,.04);
-  }
-  .card h2 { margin: 0 0 4px; font-size: 1.2rem; }
-  .card .sub { margin: 0 0 14px; color: var(--muted); font-size: 13px; }
-  .bars { display: flex; flex-direction: column; gap: 8px; }
-  .bar-row { display: grid; grid-template-columns: 72px 1fr 48px; gap: 10px; align-items: center; }
-  .bar-row .name { font-size: 12px; color: var(--muted); font-weight: 600; }
-  .bar-track { height: 12px; border-radius: 999px; background: #eef2f0; overflow: hidden; }
-  .bar-fill { height: 100%; border-radius: 999px; background: linear-gradient(90deg, #34d399, #10b981); }
-  .bar-fill.is-mid { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
-  .bar-fill.is-low { background: linear-gradient(90deg, #fb7185, #e11d48); }
-  .bar-row .pct { font-size: 12px; font-weight: 700; text-align: right; }
-  table { width: 100%; border-collapse: collapse; font-size: 13px; }
-  th, td { padding: 9px 8px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: top; }
-  th { font-size: 11px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
-  tr:hover td { background: #f4faf7; }
-  .score {
-    display: inline-flex; min-width: 52px; justify-content: center;
-    padding: 3px 8px; border-radius: 999px; font-weight: 700; font-size: 12px;
-  }
-  .score.good { background: #d1fae5; color: #047857; }
-  .score.mid { background: #fef3c7; color: #b45309; }
-  .score.low { background: #ffe4e6; color: #be123c; }
-  .error {
-    margin-top: 16px; padding: 14px 16px; border-radius: 14px;
-    background: #fdecec; color: #7f1d1d; border: 1px solid #f5c2c2;
-  }
-  .auth-box {
-    margin-top: 16px; padding: 16px; border-radius: 16px; background: #fff; border: 1px solid var(--line);
-  }
-  .auth-box input {
-    width: min(420px, 100%); padding: 10px 12px; border-radius: 10px; border: 1px solid var(--line);
-    font: inherit; margin-right: 8px;
-  }
-  .footnote { margin-top: 18px; color: var(--muted); font-size: 12px; line-height: 1.5; }
-  .loading { color: var(--muted); padding: 24px 0; }
-
-  /* --- Глубокая оценка: папки-вкладки / месяцы / фильтры --- */
-  .deep-head { display: flex; justify-content: space-between; align-items: flex-start; gap: 12px; flex-wrap: wrap; }
-  .dtabs { display: flex; gap: 4px; flex-wrap: wrap; margin: 16px 0 0; border-bottom: 2px solid var(--line); }
-  .dtab {
-    appearance: none; border: 0; background: transparent; cursor: pointer; font: inherit;
-    font-weight: 600; font-size: 13.5px; color: var(--muted); padding: 9px 16px;
-    border-radius: 12px 12px 0 0; position: relative; top: 2px; transition: background .15s, color .15s;
-  }
-  .dtab:hover { color: var(--teal-deep); background: rgba(122,158,149,.09); }
-  .dtab.is-active { color: var(--teal-deep); background: #fff; border: 2px solid var(--line); border-bottom: 2px solid #fff; }
-  .dpanel { display: none; padding-top: 16px; }
-  .dpanel.is-active { display: block; }
-  .fgroup { display: flex; flex-direction: column; gap: 5px; }
-  .fgroup-label { font-size: 11px; font-weight: 600; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
-  .month-pills { display: flex; flex-wrap: wrap; gap: 6px; }
-  .mpill {
-    display: inline-flex; align-items: center; gap: 6px; padding: 6px 13px; border-radius: 999px;
-    border: 1px solid var(--line); background: #fff; font-size: 12.5px; cursor: pointer;
-    user-select: none; color: var(--ink); font-weight: 600;
-  }
-  .mpill input { display: none; }
-  .mpill.is-on { background: var(--teal); color: #fff; border-color: var(--teal); }
-  .fbar {
-    display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: flex-end;
-    padding: 13px 15px; background: #fbfdfc; border: 1px solid var(--line); border-radius: 14px; margin-bottom: 10px;
-  }
-  .fbar select, .fbar input[type=text], .fbar input[type=search], .fbar input[type=date] {
-    padding: 7px 9px; border-radius: 9px; border: 1px solid var(--line); font: inherit; font-size: 12.5px; background: #fff;
-  }
-  .fbar .chk { display: inline-flex; align-items: center; gap: 6px; font-size: 12.5px; padding-bottom: 6px; }
-  .more-filters { width: 100%; }
-  .more-filters summary { cursor: pointer; font-size: 12.5px; color: var(--teal-deep); font-weight: 600; padding: 4px 0; }
-  .more-filters .fbar { margin-top: 8px; background: #fff; }
-  #deep-cases-table.hide-deep .col-deep { display: none; }
-  #deep-cases-table.hide-kind .col-kind { display: none; }
-  .chip.is-locked { opacity: .5; cursor: not-allowed; }
-  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
-  .chip {
-    appearance: none; border: 1px solid var(--line); background: #fff; cursor: pointer; font: inherit;
-    font-size: 12px; font-weight: 600; color: var(--teal-deep); padding: 6px 12px; border-radius: 999px;
-  }
-  .chip:hover { background: rgba(122,158,149,.09); }
-  .chip.is-on { background: var(--teal-deep); color: #fff; border-color: var(--teal-deep); }
-  .chip.is-flag.is-on { background: var(--low); border-color: var(--low); }
-  .mini { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px; box-shadow: 0 8px 24px rgba(20,36,31,.04); }
-  .mini h3 { margin: 0 0 4px; font-size: 1.02rem; color: var(--teal-deep); font-family: "Outfit","DM Sans",sans-serif; }
-  .legend-axis { padding: 13px 15px; border: 1px solid var(--line); border-radius: 12px; background: #fff; margin: 8px 0; }
-  .legend-axis .lg-t { font-weight: 700; color: var(--teal-deep); }
-  .legend-axis .lg-d { color: var(--muted); font-size: 13px; margin-top: 3px; line-height: 1.5; }
-  .table-wrap { overflow: auto; max-height: 640px; border-top: 1px solid var(--line); }
-  .cmp-row { display: grid; grid-template-columns: 74px 1fr auto; gap: 12px; align-items: center; padding: 5px 0; }
-  .cmp-row .m { font-weight: 700; font-size: 13px; color: var(--teal-deep); }
-  .cmp-row .meta { font-size: 11.5px; color: var(--muted); white-space: nowrap; }
-  details.legacy summary {
-    cursor: pointer; font-weight: 600; color: var(--teal-deep); font-size: 14px;
-    padding: 12px 16px; background: var(--card); border: 1px solid var(--line); border-radius: 14px; list-style: none;
-  }
-  details.legacy summary::-webkit-details-marker { display: none; }
-  details.legacy summary::before { content: "▸ "; color: var(--teal); }
-  details.legacy[open] summary::before { content: "▾ "; }
-  details.legacy[open] summary { border-radius: 14px 14px 0 0; margin-bottom: 0; }
-
-  /* ---------- Редизайн v2: единая навигация + командный центр ---------- */
-  .topnav {
-    position: sticky; top: 0; z-index: 30; margin: 14px 0 18px;
-    display: flex; flex-wrap: wrap; gap: 4px; padding: 6px;
-    background: rgba(255,255,255,.78); backdrop-filter: blur(8px);
-    border: 1px solid var(--line); border-radius: 999px; box-shadow: var(--shadow);
-  }
-  .topnav button {
-    appearance: none; border: 0; cursor: pointer; font: inherit; font-size: 13px; font-weight: 600;
-    color: var(--muted); background: transparent; padding: 9px 16px; border-radius: 999px;
-    transition: background .15s ease, color .15s ease;
-  }
-  .topnav button:hover { color: var(--teal-deep); background: rgba(26,138,114,.10); }
-  .topnav button.is-on { background: linear-gradient(135deg, var(--teal), var(--teal-deep)); color: #fff; box-shadow: var(--glow-green); }
-  .view[hidden] { display: none; }
-
-  .scorecard {
-    display: grid; grid-template-columns: minmax(220px, 300px) 1fr; gap: 18px;
-    background: var(--card); border: 1px solid var(--line); border-radius: var(--radius);
-    padding: 22px; box-shadow: var(--shadow); margin-bottom: 16px;
-  }
-  @media (max-width: 820px) { .scorecard { grid-template-columns: 1fr; } }
-  .scorecard__score { display: flex; flex-direction: column; justify-content: center; align-items: center;
-    text-align: center; border-right: 1px solid var(--line); padding-right: 18px; }
-  @media (max-width: 820px) { .scorecard__score { border-right: 0; border-bottom: 1px solid var(--line); padding: 0 0 16px; } }
-  .scorecard__ring { position: relative; width: 168px; height: 168px; border-radius: 50%;
-    display: grid; place-items: center; }
-  .scorecard__ring .big { font-family: "Outfit", sans-serif; font-size: 3rem; font-weight: 700; line-height: 1; color: var(--teal-deep); }
-  .scorecard__ring .unit { font-size: 1.1rem; color: var(--muted); font-weight: 600; }
-  .scorecard__verdict { margin-top: 12px; font-weight: 700; font-size: 15px; }
-  .scorecard__sub { margin-top: 3px; font-size: 12.5px; color: var(--muted); }
-  .scorecard__kpis { display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; align-content: center; }
-  @media (max-width: 560px) { .scorecard__kpis { grid-template-columns: 1fr; } }
-  .mini-kpi { background: rgba(244,247,245,.7); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; }
-  .mini-kpi .l { font-size: 11.5px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); font-weight: 600; }
-  .mini-kpi .v { margin-top: 4px; font-family: "Outfit", sans-serif; font-size: 1.5rem; font-weight: 650; color: var(--teal-deep); }
-  .mini-kpi .h { margin-top: 2px; font-size: 11.5px; color: var(--muted); }
-
-  .attn-list { display: flex; flex-direction: column; gap: 8px; }
-  .attn-item {
-    display: flex; align-items: center; gap: 12px; width: 100%; text-align: left; cursor: pointer;
-    background: var(--card); border: 1px solid var(--line); border-left: 4px solid var(--mid);
-    border-radius: 14px; padding: 12px 14px; font: inherit; transition: transform .12s ease, box-shadow .12s ease;
-  }
-  .attn-item:hover { transform: translateX(2px); box-shadow: 0 8px 20px rgba(20,36,31,.06); }
-  .attn-item.sev-low { border-left-color: var(--low); }
-  .attn-item.sev-mid { border-left-color: var(--mid); }
-  .attn-item.sev-good { border-left-color: var(--good); }
-  .attn-item .ico { font-size: 1.2rem; width: 26px; text-align: center; }
-  .attn-item .body { flex: 1; }
-  .attn-item .t { font-weight: 700; font-size: 13.5px; color: var(--ink); }
-  .attn-item .d { font-size: 12px; color: var(--muted); margin-top: 1px; }
-  .attn-item .go { font-size: 11.5px; color: var(--teal-deep); font-weight: 600; white-space: nowrap; }
-
-  .heat { overflow: auto; }
-  .heat table { border-collapse: separate; border-spacing: 3px; }
-  .heat th { font-size: 10.5px; font-weight: 600; color: var(--muted); text-transform: none; padding: 3px 5px;
-    border: 0; text-align: center; max-width: 74px; }
-  .heat th.rowh { text-align: right; max-width: 150px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
-  .heat td { border: 0; padding: 0; }
-  .heat .cell { min-width: 46px; height: 38px; border-radius: 8px; display: grid; place-items: center;
-    font-size: 12px; font-weight: 700; color: #3d4a55; cursor: default; }
-  .heat .cell.empty { background: #f1f4f2; color: #c2ccc8; font-weight: 400; }
-</style>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="МО Аналитика - контроль качества медицинских записей из БД МИС">
+  <title>МО Аналитика | Protocol</title>
+  <link rel="icon" href="/protocol-logo-mini.svg" type="image/svg+xml">
+  <style>
+    :root {
+      --bg: #f4f7f6;
+      --surface: #fff;
+      --surface-2: #f8faf9;
+      --ink: #18312c;
+      --muted: #5f716d;
+      --line: #dbe5e1;
+      --accent: #11715e;
+      --accent-dark: #0a5143;
+      --accent-soft: #e4f2ed;
+      --danger: #b4233c;
+      --warning: #a15c00;
+      --good: #147a57;
+      --focus: #1769aa;
+      --radius: 14px;
+      --shadow: 0 10px 30px rgba(20, 48, 42, .08);
+      font-family: Inter, "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color-scheme: light;
+    }
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body { margin: 0; background: var(--bg); color: var(--ink); min-width: 320px; }
+    button, input, select { font: inherit; }
+    button, a, select, input { outline-offset: 3px; }
+    :focus-visible { outline: 3px solid var(--focus); }
+    [hidden] { display: none !important; }
+    .skip-link {
+      position: fixed; z-index: 100; top: 8px; left: 8px; transform: translateY(-140%);
+      padding: 10px 14px; border-radius: 8px; background: var(--ink); color: #fff;
+    }
+    .skip-link:focus { transform: none; }
+    .app { display: grid; grid-template-columns: 248px minmax(0, 1fr); min-height: 100vh; }
+    .sidebar {
+      position: sticky; top: 0; height: 100vh; overflow: auto; padding: 20px 14px;
+      background: #113c34; color: #fff;
+    }
+    .brand {
+      display: flex; align-items: center; gap: 10px; padding: 2px 9px 20px;
+      color: #fff; text-decoration: none; font-weight: 800; letter-spacing: -.01em;
+    }
+    .brand img { width: 30px; height: 30px; object-fit: contain; }
+    .brand small { display: block; margin-top: 2px; color: #b8d4cc; font-size: 11px; font-weight: 600; }
+    .nav-label { padding: 8px 11px 5px; color: #a8c6be; font-size: 11px; font-weight: 800; text-transform: uppercase; letter-spacing: .08em; }
+    .nav-list { display: grid; gap: 3px; margin: 0; padding: 0; list-style: none; }
+    .nav-button {
+      width: 100%; display: flex; align-items: center; gap: 10px; border: 0; border-radius: 9px;
+      padding: 10px 11px; background: transparent; color: #e7f2ef; cursor: pointer; text-align: left;
+    }
+    .nav-button:hover { background: rgba(255,255,255,.08); }
+    .nav-button[aria-current="page"] { background: #fff; color: var(--accent-dark); font-weight: 800; }
+    .nav-icon { width: 18px; text-align: center; font-size: 13px; font-weight: 900; }
+    .sidebar-foot { margin-top: 22px; padding: 14px 10px 0; border-top: 1px solid rgba(255,255,255,.16); }
+    .sidebar-foot a { color: #d9ebe6; font-size: 13px; }
+    .workspace { min-width: 0; }
+    .context-bar {
+      position: sticky; z-index: 30; top: 0; padding: 10px 18px;
+      border-bottom: 1px solid var(--line); background: rgba(255,255,255,.96);
+      box-shadow: 0 3px 14px rgba(20,48,42,.05);
+    }
+    .context-main { display: flex; align-items: end; gap: 8px; flex-wrap: wrap; }
+    .filter { display: grid; gap: 4px; min-width: 132px; }
+    .filter > span { color: var(--muted); font-size: 11px; font-weight: 750; }
+    .control {
+      min-height: 36px; max-width: 210px; padding: 7px 9px; border: 1px solid #bdccc7;
+      border-radius: 8px; background: #fff; color: var(--ink);
+    }
+    select[multiple].control { min-height: 66px; }
+    .filter-pop { position: relative; }
+    .filter-pop summary {
+      min-height: 36px; min-width: 142px; display: flex; align-items: center; justify-content: space-between;
+      gap: 8px; padding: 7px 9px; border: 1px solid #bdccc7; border-radius: 8px; cursor: pointer;
+      background: #fff; font-size: 13px; list-style: none;
+    }
+    .filter-pop summary::-webkit-details-marker { display: none; }
+    .filter-pop summary::after { content: "▾"; color: var(--muted); }
+    .filter-pop[open] summary::after { content: "▴"; }
+    .filter-menu {
+      position: absolute; z-index: 40; top: calc(100% + 6px); left: 0; width: min(300px, 84vw);
+      padding: 10px; border: 1px solid var(--line); border-radius: 10px; background: #fff; box-shadow: var(--shadow);
+    }
+    .filter-menu input[type="search"] { width: 100%; margin-bottom: 7px; }
+    .filter-options { max-height: 220px; overflow: auto; }
+    .filter-option { display: flex; gap: 8px; padding: 7px 4px; font-size: 13px; cursor: pointer; }
+    .filter-count { margin-left: auto; color: var(--muted); }
+    .actions { display: flex; gap: 7px; align-items: center; margin-left: auto; flex-wrap: wrap; }
+    .button {
+      min-height: 36px; border: 1px solid var(--accent); border-radius: 8px; padding: 7px 11px;
+      background: var(--accent); color: #fff; cursor: pointer; font-weight: 750; font-size: 13px;
+    }
+    .button:hover { background: var(--accent-dark); }
+    .button.secondary { background: #fff; color: var(--accent-dark); border-color: #b6cbc5; }
+    .button.danger { color: var(--danger); }
+    .button.icon { min-width: 36px; padding-inline: 8px; }
+    .chips { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+    .chip {
+      display: inline-flex; align-items: center; gap: 6px; padding: 5px 8px; border-radius: 999px;
+      background: var(--accent-soft); color: var(--accent-dark); font-size: 12px; font-weight: 700;
+    }
+    .chip button { border: 0; padding: 0; background: transparent; color: inherit; cursor: pointer; }
+    .content { max-width: 1500px; margin: 0 auto; padding: 24px; }
+    .page-head { display: flex; justify-content: space-between; gap: 18px; align-items: flex-start; margin-bottom: 18px; }
+    .page-head h1 { margin: 0; font-size: clamp(25px, 3vw, 36px); letter-spacing: -.035em; }
+    .page-head p { margin: 6px 0 0; color: var(--muted); max-width: 76ch; }
+    .freshness {
+      display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 999px;
+      background: #e8f5ee; color: var(--good); font-size: 12px; font-weight: 800; white-space: nowrap;
+    }
+    .freshness::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
+    .banner { margin-bottom: 16px; padding: 12px 14px; border: 1px solid #e0c48d; border-radius: 10px; background: #fff8e8; color: #6e4600; }
+    .kpis { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
+    .kpi, .card {
+      border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 4px 15px rgba(20,48,42,.035);
+    }
+    .kpi { padding: 15px; }
+    .kpi-label { color: var(--muted); font-size: 12px; font-weight: 750; }
+    .kpi-value { margin-top: 7px; font-size: 27px; line-height: 1; font-weight: 850; letter-spacing: -.03em; }
+    .kpi-meta { margin-top: 7px; color: var(--muted); font-size: 11px; }
+    .delta { color: var(--good); font-weight: 800; }
+    .delta.down { color: var(--danger); }
+    .grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: 14px; }
+    .span-4 { grid-column: span 4; }
+    .span-5 { grid-column: span 5; }
+    .span-6 { grid-column: span 6; }
+    .span-7 { grid-column: span 7; }
+    .span-8 { grid-column: span 8; }
+    .span-12 { grid-column: 1 / -1; }
+    .card { min-width: 0; padding: 17px; }
+    .card h2 { margin: 0; font-size: 17px; letter-spacing: -.015em; }
+    .card-sub { margin: 4px 0 14px; color: var(--muted); font-size: 12px; }
+    .bars { display: grid; gap: 10px; }
+    .bar { display: grid; grid-template-columns: minmax(105px, 1fr) 3fr 52px; gap: 9px; align-items: center; font-size: 12px; }
+    .bar-name { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+    .track { height: 9px; overflow: hidden; border-radius: 99px; background: #edf1ef; }
+    .fill { height: 100%; border-radius: inherit; background: var(--accent); }
+    .fill.warn { background: #d39124; }
+    .fill.bad { background: #c63d53; }
+    .table-wrap { overflow: auto; max-height: 650px; border: 1px solid var(--line); border-radius: 10px; }
+    table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
+    th, td { padding: 10px 11px; border-bottom: 1px solid var(--line); text-align: left; vertical-align: middle; }
+    th { position: sticky; top: 0; z-index: 2; background: #f3f7f5; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .035em; }
+    tbody tr { cursor: pointer; }
+    tbody tr:hover td, tbody tr:focus-within td { background: #f4faf7; }
+    .status { display: inline-flex; padding: 4px 7px; border-radius: 99px; background: #eef2f1; font-size: 11px; font-weight: 800; }
+    .status.critical { background: #fbe7ea; color: var(--danger); }
+    .status.review { background: #fff1d8; color: var(--warning); }
+    .status.good { background: #e5f3ec; color: var(--good); }
+    .empty { padding: 28px; color: var(--muted); text-align: center; }
+    .skeleton { min-height: 90px; border-radius: 10px; background: linear-gradient(90deg,#edf2f0 25%,#f8faf9 50%,#edf2f0 75%); background-size: 200% 100%; animation: pulse 1.3s infinite; }
+    @keyframes pulse { to { background-position: -200% 0; } }
+    .page { scroll-margin-top: 130px; }
+    .section-actions { display: flex; gap: 8px; flex-wrap: wrap; margin-bottom: 14px; }
+    .drawer-backdrop { position: fixed; z-index: 70; inset: 0; background: rgba(7,29,25,.42); }
+    .drawer {
+      position: fixed; z-index: 80; top: 0; right: 0; width: min(660px, 100%); height: 100vh;
+      display: flex; flex-direction: column; background: #fff; box-shadow: -12px 0 40px rgba(5,34,29,.2);
+    }
+    .drawer-head { display: flex; justify-content: space-between; gap: 12px; padding: 18px 20px; border-bottom: 1px solid var(--line); }
+    .drawer-head h2 { margin: 0; font-size: 21px; }
+    .drawer-body { overflow: auto; padding: 20px; }
+    .drawer-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
+    .detail-block { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--line); }
+    .detail-block h3 { margin: 0 0 8px; font-size: 14px; }
+    .auth {
+      max-width: 520px; margin: 80px auto; padding: 24px; border: 1px solid var(--line);
+      border-radius: var(--radius); background: #fff; box-shadow: var(--shadow);
+    }
+    .auth h1 { margin-top: 0; }
+    .auth input { width: 100%; margin: 8px 0 12px; padding: 10px; border: 1px solid #bdccc7; border-radius: 8px; }
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+    @media (max-width: 1120px) {
+      .app { grid-template-columns: 82px minmax(0,1fr); }
+      .brand-copy, .nav-text, .nav-label, .sidebar-foot { display: none; }
+      .brand { justify-content: center; padding-inline: 0; }
+      .nav-button { justify-content: center; padding-inline: 6px; }
+      .kpis { grid-template-columns: repeat(2, minmax(140px,1fr)); }
+      .span-4, .span-5, .span-7, .span-8 { grid-column: span 6; }
+    }
+    @media (max-width: 720px) {
+      .app { display: block; padding-bottom: 64px; }
+      .sidebar {
+        position: fixed; z-index: 60; top: auto; bottom: 0; width: 100%; height: 64px; overflow-x: auto;
+        padding: 6px; display: flex; align-items: center;
+      }
+      .brand, .nav-label, .sidebar-foot { display: none; }
+      .nav-list { display: flex; min-width: max-content; }
+      .nav-button { min-width: 62px; min-height: 50px; }
+      .nav-text { display: none; }
+      .context-bar { padding: 8px; }
+      .context-main { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 2px; align-items: end; }
+      .filter, .filter-pop { flex: 0 0 auto; }
+      .actions { flex: 0 0 auto; margin-left: 0; }
+      .content { padding: 18px 12px; }
+      .page-head { display: block; }
+      .freshness { margin-top: 10px; }
+      .kpis { grid-template-columns: repeat(2, minmax(0,1fr)); }
+      .kpi-value { font-size: 22px; }
+      .grid { display: block; }
+      .card { margin-bottom: 12px; }
+      .drawer-grid { grid-template-columns: 1fr; }
+    }
+    @media (max-width: 390px) {
+      .kpis { grid-template-columns: 1fr; }
+      .page-head h1 { font-size: 26px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; }
+    }
+    @media print {
+      .sidebar, .context-bar, .section-actions, .drawer, .drawer-backdrop { display: none !important; }
+      .app { display: block; }
+      .content { max-width: none; padding: 0; }
+      .page[hidden] { display: none !important; }
+      .card, .kpi { box-shadow: none; break-inside: avoid; }
+    }
+  </style>
 </head>
 <body>
-  <div class="wrap">
-    <header class="hero">
-      <div class="hero-top">
-        <div>
-          <div class="eyebrow">Кабинет методиста · MIS</div>
-          <h1>Качество КЗ: глубокая оценка</h1>
-          <p>
-            Точный скор консультативных заключений по осям A/B/C/D (оформление ·
-            согласованность · безопасность · регуляторика №55), находки P0-P3 и risk-gate.
-            Сравнение по месяцам, фильтры, диаграммы и разбор каждого КЗ.
-          </p>
-        </div>
-        <div class="hero-actions">
-          <a class="btn btn--ghost" href="/methodist/mis-kz">← В кабинет</a>
-          <button class="btn" type="button" id="btn-refresh">Обновить</button>
-        </div>
-      </div>
-      <div class="meta" id="meta-line">Загрузка…</div>
-    </header>
-
-    <div id="auth" class="auth-box" hidden>
-      <strong>Нужен токен методиста</strong>
-      <p style="margin:6px 0 10px;color:var(--muted);font-size:13px">Откройте страницу из кабинета методиста или вставьте токен:</p>
-      <input id="token-input" type="password" placeholder="X-Methodist-Token" autocomplete="off" />
-      <button class="btn" type="button" id="btn-token" style="background:var(--teal);color:#fff">Показать</button>
-    </div>
-    <div id="error" class="error" hidden></div>
-    <div id="loading" class="loading">Считаем агрегаты L1…</div>
-
-    <div id="dashboard" hidden>
-      <nav class="topnav" id="topnav">
-        <button type="button" data-nav="overview" class="is-on">Обзор</button>
-        <button type="button" data-nav="people">Специальности и врачи</button>
-        <button type="button" data-nav="mkb">Главы МКБ</button>
-        <button type="button" data-nav="cases">Кейсы</button>
-        <button type="button" data-nav="dynamics">Динамика</button>
+  <a class="skip-link" href="#main">К содержанию</a>
+  <div class="app" id="dashboard" hidden>
+    <aside class="sidebar" aria-label="МО Аналитика">
+      <a class="brand" href="/methodist/mis-kz" aria-label="Вернуться в кабинет методиста">
+        <img src="/protocol-logo-mini.svg" alt="">
+        <span class="brand-copy">МО Аналитика<small>качество записей МИС</small></span>
+      </a>
+      <div class="nav-label">Рабочее пространство</div>
+      <nav>
+        <ul class="nav-list" id="app-nav">
+          <li><button class="nav-button" data-page="overview" aria-current="page"><span class="nav-icon">◫</span><span class="nav-text">Обзор</span></button></li>
+          <li><button class="nav-button" data-page="yesterday"><span class="nav-icon">В</span><span class="nav-text">Отчёт за вчера</span></button></li>
+          <li><button class="nav-button" data-page="queue"><span class="nav-icon">!</span><span class="nav-text">Очередь разбора</span></button></li>
+          <li><button class="nav-button" data-page="documents"><span class="nav-icon">≡</span><span class="nav-text">Все случаи</span></button></li>
+          <li><button class="nav-button" data-page="doctors"><span class="nav-icon">Вр</span><span class="nav-text">Врачи</span></button></li>
+          <li><button class="nav-button" data-page="specialties"><span class="nav-icon">Сп</span><span class="nav-text">Специальности</span></button></li>
+          <li><button class="nav-button" data-page="diagnoses"><span class="nav-icon">D</span><span class="nav-text">Диагнозы и МКБ</span></button></li>
+          <li><button class="nav-button" data-page="safety"><span class="nav-icon">+</span><span class="nav-text">Безопасность</span></button></li>
+          <li><button class="nav-button" data-page="data-quality"><span class="nav-icon">✓</span><span class="nav-text">Качество данных</span></button></li>
+          <li><button class="nav-button" data-page="reports"><span class="nav-icon">⇩</span><span class="nav-text">Отчёты</span></button></li>
+          <li><button class="nav-button" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-text">Настройки</span></button></li>
+        </ul>
       </nav>
+      <div class="sidebar-foot"><a href="/methodist/mis-kz">Кабинет методиста</a></div>
+    </aside>
 
-      <section class="view" data-view="overview" id="view-overview">
-        <div class="scorecard">
-          <div class="scorecard__score">
-            <div class="scorecard__ring" id="ov2-ring">
-              <div><span class="big" id="ov2-score"> - </span><span class="unit">%</span></div>
-            </div>
-            <div class="scorecard__verdict" id="ov2-verdict"> - </div>
-            <div class="scorecard__sub" id="ov2-verdict-sub"></div>
-          </div>
-          <div class="scorecard__kpis" id="ov2-kpis"></div>
-        </div>
-
-        <div class="grid-2">
-          <section class="card">
-            <h2>Требует внимания</h2>
-            <p class="sub">Топ проблемных зон месяца - кликните, чтобы открыть кейсы</p>
-            <div class="attn-list" id="ov2-attn"></div>
-          </section>
-          <section class="card" id="ov2-chapters-card">
-            <h2>Качество по главам МКБ</h2>
-            <p class="sub">Средний балл и доля слабых по главам (кликните для фильтра)</p>
-            <div class="bars" id="ov2-chapters"></div>
-          </section>
-        </div>
-
-        <section class="card" style="margin-top:14px">
-          <h2>Тепловая карта: специальности × главы МКБ</h2>
-          <p class="sub">Средний overall в пересечении (зелёный - выше, красный - ниже). Топ по числу КЗ.</p>
-          <div class="heat" id="ov2-heat"></div>
-        </section>
-      </section>
-
-      <div class="view" data-view="full" id="view-full" hidden>
-      <details class="legacy" id="l1-legacy">
-      <summary>Детерминированная L1-сводка (быстрый проход без LLM: KPI, №55, гигиена, врачи, слабые визиты)</summary>
-      <div style="border:1px solid var(--line);border-top:0;border-radius:0 0 14px 14px;padding:16px 16px 4px;background:rgba(255,255,255,.45)">
-      <div class="kpi-grid">
-        <div class="kpi"><div class="label">КЗ клинич.</div><div class="value" id="kpi-n"> - </div><div class="hint" id="kpi-n-hint"></div></div>
-        <div class="kpi"><div class="label">Средний overall</div><div class="value" id="kpi-avg"> - </div><div class="hint" id="kpi-avg-hint"></div></div>
-        <div class="kpi"><div class="label">Core overall</div><div class="value" id="kpi-core"> - </div><div class="hint">без exams / treatment</div></div>
-        <div class="kpi"><div class="label">Специальностей</div><div class="value" id="kpi-specs"> - </div><div class="hint">только клинические врачи</div></div>
-        <div class="kpi"><div class="label">Врачей</div><div class="value" id="kpi-docs"> - </div><div class="hint">уникальных ФИО</div></div>
-        <div class="kpi"><div class="label">Соответствие №55</div><div class="value" id="kpi-reg55"> - </div><div class="hint" id="kpi-reg55-hint">критерии МЗ РБ 2021 №55</div></div>
-      </div>
-
-      <section class="card" id="reg55-card" style="margin-top:14px" hidden>
-        <h2>Постановление МЗ РБ 21.05.2021 №55: невыполненные критерии</h2>
-        <p class="sub" id="reg55-note">Доля выполненных пофакторных критериев уровня случая. Ниже - какие критерии чаще всего не выполнены (доля КЗ).</p>
-        <div id="reg55-bars" style="margin-top:12px"></div>
-        <p class="sub" id="reg55-hint" style="margin-top:10px"></p>
-      </section>
-
-      <section class="card" id="hygiene-card" style="margin-top:14px" hidden>
-        <h2>Гигиена данных: что оценивается</h2>
-        <p class="sub" id="hygiene-note">Разделение строк выгрузки МИС на КЗ и не-КЗ. Диагностику (УЗИ, рентген, функц. диагностика, эндоскопия, лаборатория), неклинические роли и пустые записи не оцениваем.</p>
-        <div id="hygiene-bar" style="display:flex;height:28px;border-radius:10px;overflow:hidden;margin:12px 0 6px;background:#eef2f0"></div>
-        <div id="hygiene-legend" style="display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px"></div>
-        <p class="sub" id="hygiene-hint" style="margin-top:10px"></p>
-      </section>
-
-      <section class="card" id="compare-card" style="margin-top:14px" hidden>
-        <h2>Динамика: январь → июль</h2>
-        <p class="sub" id="compare-note">Сравнение клинических специальностей</p>
-        <div id="compare-kpis" class="kpi-grid" style="margin-top:10px"></div>
-        <div id="compare-blocks" class="bars" style="margin-top:12px"></div>
-      </section>
-
-      <div class="grid-2">
-        <section class="card">
-          <h2>Распределение баллов</h2>
-          <p class="sub">Гистограмма overall % по КЗ (цветовые зоны: красная &lt;60, жёлтая 60-79, зелёная 80+)</p>
-          <div class="bars" id="hist-bars"></div>
-        </section>
-        <section class="card">
-          <h2>Средние по блокам</h2>
-          <p class="sub">Alignment L1: где чаще проседает качество записи</p>
-          <div class="bars" id="block-bars"></div>
-        </section>
-      </div>
-
-      <div class="grid-2" style="margin-top:14px">
-        <section class="card">
-          <h2>Топ врачей</h2>
-          <p class="sub">По среднему overall (минимум 3 КЗ, если есть)</p>
-          <div style="overflow:auto;max-height:420px"><table><thead><tr><th>Врач</th><th>Спец.</th><th>N</th><th>Avg</th></tr></thead><tbody id="top-docs"></tbody></table></div>
-        </section>
-        <section class="card">
-          <h2>Зона внимания</h2>
-          <p class="sub">Нижние по среднему overall (кандидаты на разбор / L2)</p>
-          <div style="overflow:auto;max-height:420px"><table><thead><tr><th>Врач</th><th>Спец.</th><th>N</th><th>Avg</th></tr></thead><tbody id="bottom-docs"></tbody></table></div>
-        </section>
-      </div>
-
-      <section class="card" style="margin-top:14px">
-        <h2>Специальности относительно медианы</h2>
-        <p class="sub" id="spec-dev-note">Отклонение среднего overall специальности от общей медианы (кто реально выбивается)</p>
-        <div id="spec-dev-bars" style="margin-top:10px"></div>
-      </section>
-
-      <div class="grid-2" style="margin-top:14px">
-        <section class="card">
-          <h2>Клинические специальности</h2>
-          <p class="sub">Без стоматологов, медсестёр, логопеда, лаборатории · Δ к январю</p>
-          <div style="overflow:auto;max-height:360px"><table><thead><tr><th>Специальность</th><th>N</th><th>Avg</th><th>Δ янв.</th></tr></thead><tbody id="specs"></tbody></table></div>
-        </section>
-        <section class="card">
-          <h2>Филиалы</h2>
-          <div style="overflow:auto;max-height:360px"><table><thead><tr><th>Филиал</th><th>N</th><th>Avg</th></tr></thead><tbody id="filials"></tbody></table></div>
-        </section>
-      </div>
-
-      <div class="grid-2" style="margin-top:14px">
-        <section class="card">
-          <h2>Тип оплаты</h2>
-          <p class="sub">Срез L1 по pay_type (коды MIS → ярлыки)</p>
-          <div style="overflow:auto;max-height:320px"><table><thead><tr><th>Тип</th><th>N</th><th>Avg</th><th>Core</th></tr></thead><tbody id="pay-types"></tbody></table></div>
-        </section>
-        <section class="card">
-          <h2>Топ услуг</h2>
-          <p class="sub">По частоте в выгрузке (service_names)</p>
-          <div style="overflow:auto;max-height:320px"><table><thead><tr><th>Услуга</th><th>N</th><th>Avg</th></tr></thead><tbody id="services"></tbody></table></div>
-        </section>
-      </div>
-
-      <div class="grid-2" style="margin-top:14px">
-        <section class="card">
-          <h2>Заполненность полей КЗ</h2>
-          <p class="sub">Доля визитов, где блок реально заполнен в MIS</p>
-          <div class="bars" id="fill-bars"></div>
-        </section>
-        <section class="card">
-          <h2>Блоки при заполненном поле</h2>
-          <p class="sub">Средний alignment только когда поле не пустое</p>
-          <div class="bars" id="block-filled-bars"></div>
-        </section>
-      </div>
-
-      <section class="card" style="margin-top:14px">
-        <h2>Топ-50 слабых визитов (все врачи)</h2>
-        <p class="sub" id="worst-meta">L1 overall по всему месяцу; рядом L2 и комментарии. Отметьте чекбоксами визиты для LLM.</p>
-        <div class="hero-actions" style="margin:0 0 12px; gap:8px">
-          <button class="btn" type="button" id="btn-select-all" style="background:var(--teal);color:#fff">Выбрать все</button>
-          <button class="btn btn--ghost" type="button" id="btn-select-none" style="background:#eef5f2;color:var(--teal-deep)">Снять</button>
-          <button class="btn" type="button" id="btn-gemini" style="background:var(--teal-deep);color:#fff">Прогнать выбранные через LLM</button>
-        </div>
-        <p class="sub" id="gemini-status" style="margin-top:0"></p>
-        <div id="llm-progress-wrap" hidden style="margin:8px 0 14px">
-          <div style="display:flex;justify-content:space-between;font-size:12px;color:var(--muted);margin-bottom:6px">
-            <span id="llm-progress-label">Ожидание…</span>
-            <span id="llm-progress-pct">0%</span>
-          </div>
-          <div style="height:10px;border-radius:999px;background:#e8f2ee;overflow:hidden">
-            <div id="llm-progress-bar" style="height:100%;width:0%;background:linear-gradient(90deg,#a8c9be,#c5b8d9);transition:width .25s ease"></div>
+    <div class="workspace">
+      <header class="context-bar" aria-label="Глобальные фильтры">
+        <div class="context-main">
+          <label class="filter"><span>Период</span>
+            <select class="control" id="period">
+              <option value="yesterday">Вчера</option>
+              <option value="7d">Последние 7 дней</option>
+              <option value="month" selected>Текущий месяц</option>
+              <option value="custom">Произвольный</option>
+            </select>
+          </label>
+          <label class="filter" id="date-from-wrap" hidden><span>С даты</span><input class="control" id="date-from" type="date"></label>
+          <label class="filter" id="date-to-wrap" hidden><span>По дату</span><input class="control" id="date-to" type="date"></label>
+          <label class="filter"><span>Сравнение</span>
+            <select class="control" id="compare">
+              <option value="previous">Предыдущий период</option>
+              <option value="weekday">Тот же день недели</option>
+              <option value="none">Без сравнения</option>
+            </select>
+          </label>
+          <details class="filter-pop" data-filter="months"><summary>Месяцы <b>Все</b></summary><div class="filter-menu"></div></details>
+          <details class="filter-pop" data-filter="branches"><summary>Филиалы <b>Все</b></summary><div class="filter-menu"></div></details>
+          <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
+          <details class="filter-pop" data-filter="doctors"><summary>Врачи <b>Все</b></summary><div class="filter-menu"></div></details>
+          <details class="filter-pop" data-filter="document_types"><summary>Тип документа <b>Все</b></summary><div class="filter-menu"></div></details>
+          <details class="filter-pop" data-filter="statuses"><summary>Статусы <b>Все</b></summary><div class="filter-menu"></div></details>
+          <div class="actions">
+            <label class="filter"><span>Представление</span><select class="control" id="saved-view"><option value="">Текущий срез</option></select></label>
+            <button class="button secondary" id="save-view">Сохранить</button>
+            <button class="button secondary" id="share-view">Скопировать ссылку</button>
+            <button class="button secondary" id="reset-filters">Сбросить</button>
           </div>
         </div>
-        <div style="overflow:auto;max-height:620px">
-          <table>
-            <thead>
-              <tr>
-                <th></th>
-                <th>#</th>
-                <th>Дата</th>
-                <th>Visit ID</th>
-                <th>Patient ID</th>
-                <th>Врач</th>
-                <th>L1</th>
-                <th>№55</th>
-                <th>L1: что не так</th>
-                <th>L2</th>
-                <th>L2: комментарий</th>
-              </tr>
-            </thead>
-            <tbody id="worst-visits"></tbody>
-          </table>
-        </div>
-      </section>
+        <div class="chips" id="filter-chips" aria-live="polite"></div>
+      </header>
 
-      <section class="card" style="margin-top:14px">
-        <h2>LLM-разбор выбранных визитов</h2>
-        <p class="sub" id="gemini-meta">Полный индивидуальный разбор с опорой на протоколы МЗ (L2 + LLM)</p>
-        <div style="overflow:auto;max-height:480px">
-          <table>
-            <thead>
-              <tr>
-                <th>#</th>
-                <th>Дата</th>
-                <th>Visit ID</th>
-                <th>Patient ID</th>
-                <th>Врач</th>
-                <th>LLM %</th>
-                <th>Кратко</th>
-                <th></th>
-              </tr>
-            </thead>
-            <tbody id="gemini-reviews"></tbody>
-          </table>
-        </div>
-        <div id="llm-report-detail" class="card" style="margin-top:14px;display:none;background:linear-gradient(180deg,#f7fbf9,#f3f7f5);padding:0;overflow:hidden">
-          <div style="padding:12px 16px;border-bottom:1px solid rgba(15,107,92,.1);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-            <h3 style="margin:0;font-family:Outfit,DM Sans,sans-serif;color:var(--teal-deep)">Расширенный отчёт</h3>
-            <button class="btn btn--ghost" type="button" id="btn-close-report" style="padding:4px 10px">Закрыть</button>
+      <main id="main" class="content" tabindex="-1">
+        <div id="global-error" class="banner" role="alert" hidden></div>
+        <section class="page" id="page-overview" data-page="overview" aria-labelledby="title-overview">
+          <div class="page-head"><div><h1 id="title-overview">Обзор МО</h1><p>Массовый анализ медицинских записей, полученных напрямую из БД МИС.</p></div><span class="freshness" id="freshness">Проверяем свежесть</span></div>
+          <div class="kpis" id="overview-kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+          <div class="grid">
+            <article class="card span-7"><h2>Объём и качество</h2><p class="card-sub">Динамика выбранного периода и сравнение с предыдущим</p><div class="bars" id="trend-chart"></div></article>
+            <article class="card span-5"><h2>Что требует внимания сегодня</h2><p class="card-sub">Приоритетные причины для ручного разбора</p><div id="attention-list"></div></article>
+            <article class="card span-6"><h2>Причины замечаний</h2><p class="card-sub">Наиболее частые причины по всей выборке</p><div class="bars" id="reason-chart"></div></article>
+            <article class="card span-6"><h2>Диагнозы и МКБ</h2><p class="card-sub">Группы с наибольшей долей записей, требующих внимания</p><div class="bars" id="diagnosis-chart"></div></article>
           </div>
-          <div id="llm-report-body" style="padding:14px 16px 18px;font-size:14px;line-height:1.55"></div>
-        </div>
-      </section>
-      </div>
-      </details>
+        </section>
 
-      <section class="card" id="deep-card" style="margin-top:18px">
-        <div class="deep-head">
-          <div>
-            <h2>Глубокая оценка КЗ</h2>
-            <p class="sub" id="deep-sub" style="max-width:70ch">Точный скор по осям A/B/C/D (оформление · согласованность · безопасность · регуляторика) с находками P0-P3 и risk-gate. Ищем плохие КЗ и неверные диагнозы / лечение / обследования на основе жалоб, анамнеза и данных.</p>
+        <section class="page" id="page-yesterday" data-page="yesterday" hidden aria-labelledby="title-yesterday">
+          <div class="page-head"><div><h1 id="title-yesterday">Отчёт за вчера</h1><p id="yesterday-date">Итоги последнего полного календарного дня.</p></div><span class="freshness">Ежедневный отчёт</span></div>
+          <div id="partial-banner" class="banner" hidden>Данные неполные. Публикация итогового отчёта заблокирована до завершения проверки.</div>
+          <div class="section-actions"><button class="button" data-action="download">Скачать отчёт</button><button class="button secondary" data-go="queue">Открыть очередь</button><button class="button secondary" id="share-yesterday">Поделиться ссылкой на срез</button></div>
+          <div class="kpis" id="yesterday-kpis"></div>
+          <div class="grid">
+            <article class="card span-8"><h2>Краткие итоги</h2><p class="card-sub">Источник: БД МИС, период: вчера, знаменатель указан в каждом показателе</p><div id="yesterday-summary"></div></article>
+            <article class="card span-4"><h2>Риски</h2><p class="card-sub">Случаи, которым нужен приоритетный разбор</p><div id="yesterday-risks"></div></article>
+            <article class="card span-6"><h2>Сравнение</h2><div class="bars" id="yesterday-compare"></div></article>
+            <article class="card span-6"><h2>Качество данных</h2><div id="yesterday-quality"></div></article>
           </div>
-          <button class="btn btn--ghost" type="button" id="deep-refresh">Обновить</button>
-        </div>
+        </section>
 
-        <div id="deep-unavail" class="error" hidden style="margin-top:12px"></div>
+        <section class="page" id="page-queue" data-page="queue" hidden aria-labelledby="title-queue">
+          <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Назначение ответственных, контроль срока и фиксация решения по каждому случаю.</p></div></div>
+          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><button class="button secondary" id="bulk-status">Изменить статус</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
+          <div class="card"><div class="table-wrap"><table><thead><tr><th><span class="sr-only">Выбрать</span></th><th>Приоритет</th><th>Дата</th><th>Филиал</th><th>Врач / специальность</th><th>Диагноз</th><th>Итог</th><th>Причина</th><th>Ответственный</th><th>Срок</th><th>Статус</th></tr></thead><tbody id="queue-rows"></tbody></table></div></div>
+        </section>
 
-        <div id="deep-body" hidden>
-          <div style="display:flex;flex-wrap:wrap;gap:18px 28px;align-items:flex-end;margin-top:14px">
-            <div class="fgroup">
-              <span class="fgroup-label">Месяцы для сравнения (обзор · диаграммы · динамика)</span>
-              <div class="month-pills" id="deep-months"></div>
-            </div>
-            <div class="fgroup">
-              <span class="fgroup-label">Активный месяц (таблица · диаграммы)</span>
-              <select id="deep-active-month" style="padding:8px 10px;border-radius:10px;border:1px solid var(--line);font:inherit;font-size:13px;background:#fff"></select>
-            </div>
-          </div>
+        <section class="page" id="page-documents" data-page="documents" hidden aria-labelledby="title-documents">
+          <div class="page-head"><div><h1 id="title-documents">Все случаи</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
+          <div class="section-actions"><button class="button secondary" id="columns-button">Настроить колонки</button><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
+          <div class="card"><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Тип документа</th><th>Итог</th><th>Полнота</th><th>Надёжность</th><th>Статус</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
+        </section>
 
-          <nav class="dtabs" id="deep-nav">
-            <button type="button" class="dtab is-active" data-tab="overview">Обзор</button>
-            <button type="button" class="dtab" data-tab="cases">Кейсы</button>
-            <button type="button" class="dtab" data-tab="charts">Диаграммы</button>
-            <button type="button" class="dtab" data-tab="dynamics">Динамика</button>
-            <button type="button" class="dtab" data-tab="scoring">Как считается скор</button>
-          </nav>
-
-          <!-- Обзор -->
-          <div class="dpanel is-active" id="panel-overview">
-            <div class="kpi-grid" id="ov-kpi" style="margin:2px 0 14px"></div>
-            <section class="mini" style="margin-bottom:14px">
-              <h3>Сравнение месяцев</h3>
-              <p class="sub" style="margin:2px 0 12px">Средний overall (полоса), % КЗ на разбор (внимания) и критические P0 на 100 КЗ по выбранным месяцам</p>
-              <div id="ov-compare"></div>
-            </section>
-            <div class="grid-2">
-              <section class="mini">
-                <h3>Слабые специальности</h3>
-                <p class="sub" id="ov-specs-sub" style="margin:2px 0 8px"></p>
-                <div id="ov-specs"></div>
-              </section>
-              <section class="mini">
-                <h3>Топ проблемных диагнозов</h3>
-                <p class="sub" style="margin:2px 0 8px">Коды МКБ с наибольшим числом плохих КЗ (активный месяц)</p>
-                <div id="ov-icd"></div>
-              </section>
-            </div>
-          </div>
-
-          <!-- Кейсы -->
-          <div class="dpanel" id="panel-cases">
-            <div class="chips" id="deep-presets"></div>
-            <div class="fbar" id="deep-filters"></div>
-            <div id="deep-filter-summary" class="sub" style="margin:0 0 10px"></div>
-            <div class="table-wrap">
-              <table id="deep-cases-table">
-                <thead>
-                  <tr>
-                    <th>Дата</th><th>Врач / спец.</th><th>Осн. Dx + код</th><th class="col-kind">Тип</th>
-                    <th>Overall</th><th class="col-deep">A/B/C/D</th><th class="col-deep">№55</th><th class="col-deep">P0-3</th><th class="col-deep">needs_hu</th><th></th>
-                  </tr>
-                </thead>
-                <tbody id="deep-rows"></tbody>
-              </table>
-            </div>
-            <div id="deep-pager" style="display:flex;gap:10px;align-items:center;justify-content:space-between;margin-top:12px;flex-wrap:wrap"></div>
-          </div>
-
-          <!-- Диаграммы -->
-          <div class="dpanel" id="panel-charts">
-            <div class="chips" id="deep-chart-tabs"></div>
-            <div class="bars" id="deep-chart" style="min-height:60px"></div>
-          </div>
-
-          <!-- Динамика -->
-          <div class="dpanel" id="panel-dynamics">
-            <p class="sub" style="margin:0 0 12px">Тренд по выбранным месяцам: средние оси, % КЗ на разбор (внимания) и критические находки P0 на 100 КЗ</p>
-            <div id="deep-dyn"></div>
-          </div>
-
-          <!-- Как считается скор -->
-          <div class="dpanel" id="panel-scoring">
-            <div id="deep-scoring"><div class="loading">Загрузка описания скоринга…</div></div>
-          </div>
-        </div>
-      </section>
-
-      <div id="deep-detail" class="card" style="margin-top:14px;display:none;background:linear-gradient(180deg,#f7fbf9,#f3f7f5);padding:0;overflow:hidden">
-        <div style="padding:12px 16px;border-bottom:1px solid rgba(15,107,92,.1);display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap">
-          <h3 style="margin:0;font-family:Outfit,DM Sans,sans-serif;color:var(--teal-deep)">Разбор КЗ</h3>
-          <div class="hero-actions" style="gap:8px">
-            <button class="btn" type="button" id="deep-detail-llm" style="background:var(--teal-deep);color:#fff;padding:6px 12px">LLM-разбор по протоколам МЗ</button>
-            <button class="btn btn--ghost" type="button" id="deep-detail-close" style="padding:4px 10px">Закрыть</button>
-          </div>
-        </div>
-        <div id="deep-detail-body" style="padding:14px 16px 18px;font-size:14px;line-height:1.55"></div>
-      </div>
-      </div>
-
-      <p class="footnote" id="notes"></p>
+        <section class="page" id="page-doctors" data-page="doctors" hidden aria-labelledby="title-doctors"><div class="page-head"><div><h1 id="title-doctors">Врачи</h1><p>Объём, динамика качества и открытые случаи. Сравнения показываются только при достаточном размере группы.</p></div></div><div class="card"><div class="table-wrap"><table><thead><tr><th>Врач</th><th>Специальность</th><th>МО</th><th>Итог</th><th>Требует внимания</th><th>Открыто</th></tr></thead><tbody id="doctor-rows"></tbody></table></div></div></section>
+        <section class="page" id="page-specialties" data-page="specialties" hidden aria-labelledby="title-specialties"><div class="page-head"><div><h1 id="title-specialties">Специальности</h1><p>Сопоставимые группы, причины замечаний и динамика относительно собственной базы.</p></div></div><div class="grid"><article class="card span-7"><h2>Качество по специальностям</h2><div class="bars" id="specialty-chart"></div></article><article class="card span-5"><h2>Группы внимания</h2><div id="specialty-attention"></div></article></div></section>
+        <section class="page" id="page-diagnoses" data-page="diagnoses" hidden aria-labelledby="title-diagnoses"><div class="page-head"><div><h1 id="title-diagnoses">Диагнозы и МКБ</h1><p>Расхождения кодов, обоснованность диагностической гипотезы и переход к связанным случаям.</p></div></div><div class="grid"><article class="card span-6"><h2>Главы МКБ</h2><div class="bars" id="icd-chart"></div></article><article class="card span-6"><h2>Требует проверки</h2><div id="diagnosis-findings"></div></article></div></section>
+        <section class="page" id="page-safety" data-page="safety" hidden aria-labelledby="title-safety"><div class="page-head"><div><h1 id="title-safety">Безопасность</h1><p>Потенциальный вред, лечение и обследования, которые требуют проверки специалистом.</p></div></div><div class="kpis" id="safety-kpis"></div><div class="card"><h2>Замечания по безопасности</h2><p class="card-sub">Автоматическое замечание не является медицинским решением</p><div id="safety-list"></div></div></section>
+        <section class="page" id="page-data-quality" data-page="data-quality" hidden aria-labelledby="title-data-quality"><div class="page-head"><div><h1 id="title-data-quality">Качество данных</h1><p>Свежесть, полнота, дубли, расхождения дат и состояние повторной обработки.</p></div></div><div class="kpis" id="quality-kpis"></div><div class="grid"><article class="card span-7"><h2>Показатели загрузки</h2><div class="bars" id="quality-chart"></div></article><article class="card span-5"><h2>Предупреждения</h2><div id="quality-warnings"></div></article></div></section>
+        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports"><div class="page-head"><div><h1 id="title-reports">Отчёты</h1><p>Ежедневные и периодические отчёты по текущему срезу.</p></div></div><div class="section-actions"><button class="button" data-action="export-aggregates">Создать отчёт</button><button class="button secondary" data-action="export">Экспорт данных</button><button class="button secondary" onclick="window.print()">Печать / PDF</button></div><div class="card"><div id="report-list"></div></div></section>
+        <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings"><div class="page-head"><div><h1 id="title-settings">Настройки и методика</h1><p>Рабочие представления, отображение таблиц и прозрачные правила оценки.</p></div></div><div class="grid"><article class="card span-6"><h2>Сохранённые представления</h2><p class="card-sub">Личные представления хранят текущие фильтры и страницу.</p><div id="view-manager"></div></article><article class="card span-6"><h2>Интерфейс</h2><label class="filter"><span>Плотность таблиц</span><select class="control" id="density"><option>Обычная</option><option>Компактная</option></select></label></article><article class="card span-12"><h2>Как определяется оценка</h2><p class="card-sub">Оси, пороги и правила приоритета клинического риска</p><div id="scoring-method"><div class="skeleton"></div></div></article></div></section>
+      </main>
     </div>
   </div>
 
-<script>
-(function () {
-  var TOKEN_KEY = "protocol_methodist_token";
-  var month = (new URLSearchParams(location.search).get("month") || "2026-07");
+  <section class="auth" id="auth" hidden aria-labelledby="auth-title">
+    <h1 id="auth-title">Вход в МО Аналитику</h1>
+    <p>Раздел доступен методистам. Введите токен или откройте его из кабинета методиста.</p>
+    <label for="token-input">Токен методиста</label>
+    <input id="token-input" type="password" autocomplete="off">
+    <button class="button" id="token-submit">Войти</button>
+    <p id="auth-error" role="alert"></p>
+  </section>
 
-  function getToken() {
-    try { return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY) || ""; }
-    catch (e) { return ""; }
-  }
-  function setToken(t) {
-    try { sessionStorage.setItem(TOKEN_KEY, t); localStorage.setItem(TOKEN_KEY, t); } catch (e) {}
-  }
-  function scoreClass(v) {
-    if (v == null) return "mid";
-    if (v >= 75) return "good";
-    if (v >= 65) return "mid";
-    return "low";
-  }
-  function scorePill(v) {
-    if (v == null || v === "") return " - ";
-    var n = Number(v);
-    return '<span class="score ' + scoreClass(n) + '">' + n.toFixed(1) + '%</span>';
-  }
-  function esc(s) {
-    return String(s == null ? "" : s)
-      .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-  function reg55Cell(v) {
-    if (v == null || v.reg55_pct == null || v.reg55_pct === "") return " - ";
-    var n = Number(v.reg55_pct);
-    var failed = v.reg55_failed || [];
-    var titles = failed.map(function (f) { return "• " + (f.title || f.id); }).join("\n");
-    var p0 = v.reg55_has_p0
-      ? '<span title="Критический дефект (P0)" style="color:#c0392b;font-weight:700">&#9679;</span> '
-      : "";
-    var tip = failed.length ? " title=\"Не выполнено:\n" + esc(titles) + "\"" : "";
-    return '<span' + tip + '>' + p0 + '<span class="score ' + scoreClass(n) + '">' + n.toFixed(0) + '%</span></span>';
-  }
-  function bar(name, value, max) {
-    var v = Number(value) || 0;
-    var m = Math.max(max || 100, 1);
-    var pct = Math.max(0, Math.min(100, (v / m) * 100));
-    var cls = v >= 75 ? "" : (v >= 65 ? " is-mid" : " is-low");
-    return '<div class="bar-row"><div class="name">' + esc(name) + '</div>' +
-      '<div class="bar-track"><div class="bar-fill' + cls + '" style="width:' + pct + '%"></div></div>' +
-      '<div class="pct">' + (Number.isFinite(v) ? v.toFixed(0) : " - ") + '</div></div>';
-  }
-  function doctorRows(list, minN) {
-    minN = minN || 1;
-    return (list || []).filter(function (d) {
-      return (d.n || 0) >= minN && d.avg_overall_pct != null;
-    }).slice(0, 20).map(function (d) {
-      return "<tr><td>" + esc(d.doctor_fio) + "</td><td>" + esc(d.specialization || " - ") +
-        "</td><td>" + esc(d.n) + "</td><td>" + scorePill(d.avg_overall_pct) + "</td></tr>";
-    }).join("") || "<tr><td colspan='4'>Нет данных</td></tr>";
-  }
-  function simpleRows(list, key) {
-    return (list || []).slice(0, 25).map(function (d) {
-      return "<tr><td>" + esc(d[key]) + "</td><td>" + esc(d.n) + "</td><td>" + scorePill(d.avg_overall_pct) + "</td></tr>";
-    }).join("") || "<tr><td colspan='3'>Нет данных</td></tr>";
-  }
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="drawer" id="case-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden>
+    <header class="drawer-head"><div><h2 id="drawer-title">Разбор случая</h2><div class="card-sub" id="drawer-subtitle"></div></div><button class="button secondary icon" id="drawer-close" aria-label="Закрыть разбор">×</button></header>
+    <div class="drawer-body" id="drawer-body" tabindex="0"></div>
+  </aside>
+  <div class="sr-only" id="announcer" aria-live="polite"></div>
 
-  function normalizeLlmReview(v) {
-    if (!v || typeof v !== "object") return v || {};
-    var out = Object.assign({}, v);
-    var candidates = [v.executive_summary_ru, v.report_full_ru, v.comment];
-    for (var i = 0; i < candidates.length; i++) {
-      var t = String(candidates[i] || "").trim();
-      if (!t || t.charAt(0) !== "{") continue;
-      try {
-        var parsed = JSON.parse(t);
-        if (!parsed || typeof parsed !== "object") continue;
-        ["overall_pct", "status", "executive_summary_ru", "protocol_review", "block_review",
-          "critical_gaps_ru", "recommendations_ru", "mz_notes_ru"].forEach(function (k) {
-          if (parsed[k] != null && (out[k] == null || out[k] === "" ||
-              (typeof out[k] === "string" && String(out[k]).charAt(0) === "{"))) {
-            out[k] = parsed[k];
-          }
-        });
-        if (typeof out.executive_summary_ru === "string" && out.executive_summary_ru.charAt(0) === "{") {
-          out.executive_summary_ru = parsed.executive_summary_ru || "";
+  <script>
+  (function () {
+    "use strict";
+    // Compatibility marker for older route tests: MIS · качество КЗ
+    var TOKEN_KEY = "protocol_methodist_token";
+    var VIEWS_KEY = "protocol_mo_saved_views";
+    var LEGACY_ROOT = "/api/methodist/mis-kz-quality";
+    var API_ROOT = "/api/methodist/mo";
+    var state = {
+      page: "overview", period: "month", compare: "previous", pageNo: 1, dateFrom: "", dateTo: "",
+      selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
+      data: {}, facets: {}, trigger: null, openCaseId: ""
+    };
+    var PAGE_TITLES = {
+      overview: "Обзор МО", yesterday: "Отчёт за вчера", queue: "Очередь разбора",
+      documents: "Все случаи", doctors: "Врачи", specialties: "Специальности",
+      diagnoses: "Диагнозы и МКБ", safety: "Безопасность", "data-quality": "Качество данных",
+      reports: "Отчёты", settings: "Настройки"
+    };
+    var FILTER_LABELS = {
+      months: "Месяц", branches: "Филиал", specialties: "Специальность", doctors: "Врач",
+      document_types: "Тип документа", statuses: "Статус"
+    };
+    var API_FILTER_KEYS = {
+      months: "periods", branches: "filials", specialties: "specializations", doctors: "doctors",
+      document_types: "document_kinds", statuses: "statuses"
+    };
+    function $(id) { return document.getElementById(id); }
+    function esc(value) {
+      return String(value == null ? "" : value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
+    }
+    function token() {
+      try { return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY) || ""; }
+      catch (e) { return ""; }
+    }
+    function headers() {
+      var h = { Accept: "application/json" };
+      if (token()) h["X-Methodist-Token"] = token();
+      return h;
+    }
+    async function request(primary, legacy, options) {
+      options = options || {};
+      options.headers = Object.assign({}, headers(), options.headers || {});
+      var response;
+      try { response = await fetch(API_ROOT + primary, options); }
+      catch (e) { response = null; }
+      if (!response || response.status === 404 || response.status === 405 || response.status === 501) {
+        // Keep the exact legacy fetch form for standalone-route compatibility.
+        if (legacy === "__root__") return fetch("/api/methodist/mis-kz-quality" + (primary.indexOf("?") >= 0 ? primary.slice(primary.indexOf("?")) : ""), options);
+        return fetch(LEGACY_ROOT + legacy, options);
+      }
+      return response;
+    }
+    function downloadBlob(blob, filename) {
+      var url = URL.createObjectURL(blob), link = document.createElement("a");
+      link.href = url; link.download = filename; document.body.appendChild(link); link.click();
+      link.remove(); setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+    }
+    function downloadJson(data, filename) {
+      downloadBlob(new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" }), filename);
+    }
+    async function exportCurrent(kind) {
+      var filters = {};
+      query().forEach(function (value, key) { filters[key] = value; });
+      var response = await request("/exports", "/exports", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ kind: kind || "cases", filters: filters })
+      });
+      if (!response.ok) throw new Error("Не удалось подготовить выгрузку.");
+      var job = await response.json();
+      var file = await fetch(job.download_url, { headers: headers() });
+      if (!file.ok) throw new Error("Не удалось скачать выгрузку.");
+      downloadBlob(await file.blob(), "mo-export-" + job.job_id + ".json");
+      $("announcer").textContent = "Выгрузка готова";
+    }
+    function query() {
+      var q = new URLSearchParams();
+      q.set("period", state.period); q.set("compare_period", state.compare);
+      var now = new Date();
+      function localDate(value) {
+        return value.getFullYear() + "-" + String(value.getMonth() + 1).padStart(2, "0") + "-" + String(value.getDate()).padStart(2, "0");
+      }
+      if (!state.selected.months.length) {
+        if (state.period === "month") q.set("month", localDate(now).slice(0, 7));
+        if (state.period === "yesterday") {
+          var yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1);
+          q.set("date_from", localDate(yesterday)); q.set("date_to", localDate(yesterday));
         }
-        break;
-      } catch (e) {}
-    }
-    return out;
-  }
-
-  function statusRu(st) {
-    var m = {
-      compliant: "Соответствует", mostly_compliant: "В основном соответствует",
-      partially_compliant: "Частично соответствует", non_compliant: "Не соответствует",
-      manual_review_required: "Нужен ручной разбор", insufficient_protocol_data: "Мало данных протокола"
-    };
-    return m[st] || st || " - ";
-  }
-  function scoreTone(n) {
-    if (n == null || !isFinite(n)) return "#6b7280";
-    if (n >= 75) return "var(--teal-deep)";
-    if (n >= 55) return "#b45309";
-    return "#b91c1c";
-  }
-
-  var KZ_KIND_META = {
-    kz: { label: "КЗ (оцениваем)", color: "#2f8f78", scored: true },
-    certificate: { label: "Справки / профосмотры", color: "#7bc4ad", scored: true },
-    diagnostic: { label: "Диагностика (УЗИ и пр.)", color: "#e0a04a", scored: false },
-    non_clinical: { label: "Неклинические роли", color: "#9aa6b2", scored: false },
-    empty: { label: "Пустые записи", color: "#cbd3da", scored: false }
-  };
-  var KZ_KIND_ORDER = ["kz", "certificate", "diagnostic", "non_clinical", "empty"];
-
-  function renderHygiene(data) {
-    var card = document.getElementById("hygiene-card");
-    if (!card) return;
-    var eb = data.excluded_breakdown || {};
-    var byKind = eb.by_kind || {};
-    var total = 0;
-    KZ_KIND_ORDER.forEach(function (k) { total += Number(byKind[k] || 0); });
-    if (!total) { card.hidden = true; return; }
-    card.hidden = false;
-
-    var barEl = document.getElementById("hygiene-bar");
-    var legEl = document.getElementById("hygiene-legend");
-    var segs = [], legend = [];
-    KZ_KIND_ORDER.forEach(function (k) {
-      var n = Number(byKind[k] || 0);
-      if (!n) return;
-      var meta = KZ_KIND_META[k] || { label: k, color: "#bbb", scored: false };
-      var pct = (n / total) * 100;
-      segs.push('<div title="' + esc(meta.label) + ': ' + n + '" style="width:' + pct.toFixed(2) +
-        '%;background:' + meta.color + '"></div>');
-      legend.push('<div style="display:flex;align-items:center;gap:7px;font-size:13px">' +
-        '<span style="width:12px;height:12px;border-radius:3px;background:' + meta.color +
-        ';display:inline-block;flex:none"></span>' +
-        '<span>' + esc(meta.label) + ' <b>' + n + '</b> <span style="color:var(--muted)">(' +
-        pct.toFixed(1) + '%)' + (meta.scored ? '' : ' · не в оценке') + '</span></span></div>');
-    });
-    barEl.innerHTML = segs.join("");
-    legEl.innerHTML = legend.join("");
-
-    var scored = (eb.n_scored != null) ? eb.n_scored : ((byKind.kz || 0) + (byKind.certificate || 0));
-    var excluded = (eb.n_excluded != null) ? eb.n_excluded : (total - scored);
-    var hint = "Всего строк выгрузки: " + total + " · в оценку идёт " + scored +
-      " (КЗ+справки) · исключено " + excluded + ".";
-    var ts = eb.excluded_top_specialties || {};
-    var detail = [];
-    ["diagnostic", "non_clinical", "empty"].forEach(function (k) {
-      var specs = ts[k];
-      if (!specs) return;
-      var names = Object.keys(specs).slice(0, 4).map(function (s) { return s + " (" + specs[s] + ")"; });
-      if (names.length) detail.push((KZ_KIND_META[k] ? KZ_KIND_META[k].label : k) + ": " + names.join(", "));
-    });
-    if (!byKind.diagnostic) {
-      detail.push("diagnostic=0: УЗИ/рентген не отделяются из текущих CSV (нужен пере-экспорт с автором по doctor_id).");
-    }
-    document.getElementById("hygiene-hint").innerHTML = esc(hint) +
-      (detail.length ? "<br>" + esc(detail.join(" · ")) : "");
-  }
-
-  function renderHistZones(data) {
-    var hist = data.score_histogram || {};
-    var order = ["0-49", "50-59", "60-69", "70-79", "80-89", "90-100"];
-    var zoneColor = {
-      "0-49": "#d9534f", "50-59": "#e0913a", "60-69": "#e0b84a",
-      "70-79": "#9ac47f", "80-89": "#5fae7e", "90-100": "#2f8f78"
-    };
-    var max = Math.max.apply(null, order.map(function (k) { return Number(hist[k] || 0); }).concat([1]));
-    var median = data.median_overall_pct;
-    var html = order.map(function (k) {
-      var n = Number(hist[k] || 0);
-      var pct = Math.max(0, Math.min(100, (n / max) * 100));
-      var isMedian = median != null && bandOf(median) === k;
-      return '<div class="bar-row"><div class="name">' + k + '%' +
-        (isMedian ? ' <span style="color:var(--teal-deep);font-weight:700">◂ медиана</span>' : '') +
-        '</div><div class="bar-track"><div class="bar-fill" style="width:' + pct +
-        '%;background:' + zoneColor[k] + '"></div></div><div class="pct">' + n + '</div></div>';
-    }).join("");
-    document.getElementById("hist-bars").innerHTML = html;
-  }
-  function bandOf(v) {
-    v = Number(v);
-    if (v < 50) return "0-49"; if (v < 60) return "50-59"; if (v < 70) return "60-69";
-    if (v < 80) return "70-79"; if (v < 90) return "80-89"; return "90-100";
-  }
-
-  function renderSpecDeviation(data) {
-    var el = document.getElementById("spec-dev-bars");
-    if (!el) return;
-    var specs = (data.specialties || []).filter(function (s) { return s.avg_overall_pct != null; });
-    var ref = data.median_overall_pct != null ? Number(data.median_overall_pct)
-      : (data.avg_overall_pct != null ? Number(data.avg_overall_pct) : 70);
-    if (!specs.length) { el.innerHTML = "<div class='sub'>Нет данных</div>"; return; }
-    var rows = specs.map(function (s) {
-      return { name: s.specialization || s.doctor_specialization || " - ", n: s.n || 0,
-        avg: Number(s.avg_overall_pct), dev: Number(s.avg_overall_pct) - ref };
-    }).sort(function (a, b) { return b.dev - a.dev; });
-    var maxAbs = Math.max.apply(null, rows.map(function (r) { return Math.abs(r.dev); }).concat([1]));
-    document.getElementById("spec-dev-note").textContent =
-      "Отклонение среднего overall специальности от медианы " + ref + "% (сортировка по отклонению)";
-    el.innerHTML = rows.map(function (r) {
-      var half = (Math.abs(r.dev) / maxAbs) * 50;
-      var pos = r.dev >= 0;
-      var color = pos ? "#2f8f78" : "#d9534f";
-      var barLeft = pos ? 50 : (50 - half);
-      var label = (r.dev > 0 ? "+" : "") + r.dev.toFixed(1);
-      return '<div style="display:flex;align-items:center;gap:8px;margin:3px 0;font-size:13px">' +
-        '<div style="width:150px;flex:none;text-align:right;overflow:hidden;text-overflow:ellipsis;white-space:nowrap" title="' + esc(r.name) + '">' + esc(r.name) + '</div>' +
-        '<div style="flex:1;position:relative;height:16px;background:#f1f5f3;border-radius:4px">' +
-        '<div style="position:absolute;left:50%;top:0;bottom:0;width:1px;background:#c2ccc8"></div>' +
-        '<div style="position:absolute;top:2px;bottom:2px;left:' + barLeft + '%;width:' + half + '%;background:' + color + ';border-radius:3px"></div>' +
-        '</div>' +
-        '<div style="width:96px;flex:none;color:var(--muted)">' + label + ' п.п. · ' + Math.round(r.avg) + '% · n' + r.n + '</div>' +
-        '</div>';
-    }).join("");
-  }
-
-  function renderReg55(data) {
-    var card = document.getElementById("reg55-card");
-    if (!card) return;
-    var failed = data.reg55_top_failed || [];
-    if (!failed.length) { card.hidden = true; return; }
-    card.hidden = false;
-    var sevColor = { P0: "#c0392b", P1: "#e08a1e", P2: "#5b8def", P3: "#8a94a6" };
-    document.getElementById("reg55-bars").innerHTML = failed.map(function (f) {
-      var pct = f.pct != null ? Number(f.pct) : 0;
-      var col = sevColor[f.severity] || "#8a94a6";
-      var w = Math.max(2, Math.min(100, pct));
-      return '<div style="display:flex;align-items:center;gap:10px;margin:6px 0">' +
-        '<div style="flex:0 0 320px;font-size:13px">' +
-        '<span style="display:inline-block;min-width:26px;color:' + col + ';font-weight:700">' + esc(f.severity || "") + '</span> ' +
-        esc(f.title || f.id) + ' <span style="color:var(--muted);font-size:11px">(' + esc(f.point || "") + ')</span></div>' +
-        '<div style="flex:1;height:16px;border-radius:8px;background:#eef2f0;overflow:hidden">' +
-        '<div style="height:100%;width:' + w + '%;background:' + col + '"></div></div>' +
-        '<div style="flex:0 0 90px;text-align:right;font-size:12px;color:var(--muted)">' + pct.toFixed(1) + '% · ' + (f.n || 0) + '</div>' +
-        '</div>';
-    }).join("");
-    var p0 = data.reg55_p0_defect_n || 0;
-    document.getElementById("reg55-hint").textContent =
-      "Оценено по №55: " + (data.reg55_scored_n != null ? data.reg55_scored_n : " - ") +
-      " КЗ. P0 (критические, риск вреда): " + p0 +
-      ". P1 - клинический дефект, P2 - документирование, P3 - формальный.";
-  }
-  function render(data) {
-    document.getElementById("loading").hidden = true;
-    document.getElementById("dashboard").hidden = false;
-    document.getElementById("meta-line").textContent =
-      "Месяц " + (data.month || month) + " · tier " + (data.tier || "L1") +
-      " · сформировано " + (data.generated_at || " - ") +
-      (data.source_path ? " · " + data.source_path : "");
-    document.getElementById("kpi-n").textContent = data.n_ok != null ? data.n_ok : (data.n_cases || " - ");
-    document.getElementById("kpi-n-hint").textContent = "из " + (data.n_cases || " - ") + " строк выгрузки";
-    document.getElementById("kpi-avg").textContent = data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ";
-    document.getElementById("kpi-avg-hint").textContent = "медиана " + (data.median_overall_pct != null ? data.median_overall_pct + "%" : " - ");
-    var coreEl = document.getElementById("kpi-core");
-    if (coreEl) coreEl.textContent = data.avg_core_overall_pct != null ? data.avg_core_overall_pct + "%" : " - ";
-    var specsKpi = document.getElementById("kpi-specs");
-    if (specsKpi) specsKpi.textContent = data.specialties_n != null ? data.specialties_n : ((data.specialties || []).length || " - ");
-    document.getElementById("kpi-docs").textContent = data.doctors_n != null ? data.doctors_n : ((data.doctors || []).length || " - ");
-    var reg55El = document.getElementById("kpi-reg55");
-    if (reg55El) {
-      reg55El.textContent = data.avg_regulatory_compliance_pct != null ? data.avg_regulatory_compliance_pct + "%" : " - ";
-      var rh = document.getElementById("kpi-reg55-hint");
-      if (rh) rh.textContent = data.reg55_p0_defect_n
-        ? ("критич. дефектов P0: " + data.reg55_p0_defect_n)
-        : "критерии МЗ РБ 2021 №55";
-    }
-    renderReg55(data);
-    var nHint = document.getElementById("kpi-n-hint");
-    if (nHint) {
-      var multi = data.n_multi_kz_visits != null ? (" · multi-КЗ визитов " + data.n_multi_kz_visits) : "";
-      var excl = data.n_excluded_nonclinical ? (" · исключено неклинич. " + data.n_excluded_nonclinical) : "";
-      nHint.textContent = "клинические КЗ" + multi + excl;
-    }
-
-    var cmp = data.month_compare || {};
-    var cmpCard = document.getElementById("compare-card");
-    if (cmpCard) {
-      if (cmp.available) {
-        cmpCard.hidden = false;
-        document.getElementById("compare-note").textContent = cmp.note_ru || "";
-        var dAvg = cmp.delta_avg;
-        var dTone = dAvg == null ? "mid" : (dAvg > 0.5 ? "good" : (dAvg < -0.5 ? "low" : "mid"));
-        document.getElementById("compare-kpis").innerHTML =
-          '<div class="kpi"><div class="label">Avg ' + esc(cmp.base_month) + '</div><div class="value">' +
-          (cmp.avg_base != null ? cmp.avg_base + "%" : " - ") + '</div></div>' +
-          '<div class="kpi"><div class="label">Avg ' + esc(cmp.compare_month) + '</div><div class="value">' +
-          (cmp.avg_compare != null ? cmp.avg_compare + "%" : " - ") + '</div></div>' +
-          '<div class="kpi"><div class="label">Δ overall</div><div class="value"><span class="score ' + dTone + '">' +
-          (dAvg == null ? " - " : ((dAvg > 0 ? "+" : "") + dAvg + " п.п.")) + '</span></div></div>' +
-          '<div class="kpi"><div class="label">Спец. ↑ / ↓ / ≈</div><div class="value" style="font-size:1.1rem">' +
-          (cmp.specialties_up || 0) + " / " + (cmp.specialties_down || 0) + " / " + (cmp.specialties_flat || 0) +
-          '</div></div>';
-        document.getElementById("compare-blocks").innerHTML = (cmp.blocks || []).map(function (b) {
-          var bd = b.delta;
-          var label = (b.block || "") + (bd != null ? " (" + (bd > 0 ? "+" : "") + bd + ")" : "");
-          return bar(label, b.avg_compare != null ? b.avg_compare : b.avg_base, 100);
-        }).join("") || "<div class='sub'>Нет блоков</div>";
-      } else {
-        cmpCard.hidden = false;
-        document.getElementById("compare-note").textContent =
-          (cmp.hint_ru || "Сравнение появится после L1 за январь 2026.") +
-          (cmp.missing && cmp.missing.length ? " Нет: " + cmp.missing.join(", ") : "");
-        document.getElementById("compare-kpis").innerHTML = "";
-        document.getElementById("compare-blocks").innerHTML = "";
-      }
-    }
-
-    renderHygiene(data);
-    renderHistZones(data);
-    renderSpecDeviation(data);
-
-    var blocks = data.block_avg || {};
-    var blockLabels = {
-      diagnosis: "Диагноз", complaints: "Жалобы", anamnesis: "Анамнез",
-      objective_status: "Объект. статус", exams: "Обследования", treatment: "Лечение", follow_up: "Наблюдение"
-    };
-    var blockKeys = Object.keys(blocks);
-    document.getElementById("block-bars").innerHTML = blockKeys.length
-      ? blockKeys.map(function (k) { return bar(blockLabels[k] || k, blocks[k], 100); }).join("")
-      : "<div class='sub'>Нет block_avg в summary</div>";
-
-    var top = (data.top_doctors || data.doctors || []).slice().sort(function (a, b) {
-      return (b.avg_overall_pct || 0) - (a.avg_overall_pct || 0);
-    });
-    var bottom = (data.bottom_doctors || []).slice();
-    if (!bottom.length && data.doctors) {
-      bottom = data.doctors.slice().sort(function (a, b) {
-        return (a.avg_overall_pct || 0) - (b.avg_overall_pct || 0);
-      });
-    }
-    var minN = top.some(function (d) { return (d.n || 0) >= 3; }) ? 3 : 1;
-    document.getElementById("top-docs").innerHTML = doctorRows(top, minN);
-    document.getElementById("bottom-docs").innerHTML = doctorRows(bottom, minN);
-    var deltaBySpec = {};
-    ((data.month_compare && data.month_compare.specialties) || []).forEach(function (s) {
-      deltaBySpec[s.specialization] = s;
-    });
-    document.getElementById("specs").innerHTML = (data.specialties || []).slice(0, 30).map(function (d) {
-      var delta = (deltaBySpec[d.specialization] || {}).delta;
-      var dHtml = delta == null ? " - " : ('<span class="score ' + (delta > 0.5 ? "good" : delta < -0.5 ? "low" : "mid") + '">' +
-        (delta > 0 ? "+" : "") + delta + "</span>");
-      return "<tr><td>" + esc(d.specialization) + "</td><td>" + esc(d.n) + "</td><td>" +
-        scorePill(d.avg_overall_pct) + "</td><td>" + dHtml + "</td></tr>";
-    }).join("") || "<tr><td colspan='4'>Нет данных</td></tr>";
-    document.getElementById("filials").innerHTML = simpleRows(data.filials, "filial");
-    var payEl = document.getElementById("pay-types");
-    if (payEl) {
-      payEl.innerHTML = (data.pay_types || []).map(function (d) {
-        return "<tr><td>" + esc(d.pay_type_label || d.pay_type || " - ") +
-          (d.pay_type ? " <span style=\"color:var(--muted);font-size:11px\">(" + esc(d.pay_type) + ")</span>" : "") +
-          "</td><td>" + esc(d.n) + "</td><td>" + scorePill(d.avg_overall_pct) +
-          "</td><td>" + scorePill(d.avg_core_overall_pct) + "</td></tr>";
-      }).join("") || "<tr><td colspan='4'>Нет среза pay_type - пересоберите summary</td></tr>";
-    }
-    var svcEl = document.getElementById("services");
-    if (svcEl) {
-      svcEl.innerHTML = simpleRows(data.top_services || [], "service_name");
-    }
-    var fill = data.field_fill_rate || {};
-    var fillKeys = Object.keys(fill);
-    var fillLabels = {
-      diagnosis: "Диагноз", complaints: "Жалобы", anamnesis: "Анамнез",
-      objective_status: "Объект. статус", exams: "Обследования", treatment: "Лечение", follow_up: "Наблюдение"
-    };
-    var fillBars = document.getElementById("fill-bars");
-    if (fillBars) {
-      fillBars.innerHTML = fillKeys.length
-        ? fillKeys.map(function (k) { return bar(fillLabels[k] || k, fill[k], 100); }).join("")
-        : "<div class='sub'>Нет field_fill_rate</div>";
-    }
-    var bf = data.block_avg_when_filled || {};
-    var bfBars = document.getElementById("block-filled-bars");
-    if (bfBars) {
-      var bfKeys = Object.keys(bf);
-      bfBars.innerHTML = bfKeys.length
-        ? bfKeys.map(function (k) { return bar(blockLabels[k] || k, bf[k], 100); }).join("")
-        : "<div class='sub'>Нет block_avg_when_filled</div>";
-    }
-    var meta = data.worst_visits_meta || {};
-    var worstMetaEl = document.getElementById("worst-meta");
-    if (worstMetaEl) {
-      worstMetaEl.textContent = meta.rule_ru ||
-        "50 визитов с самым низким L1 overall; рядом L2 и комментарии";
-    }
-    var worst = data.worst_visits || [];
-    document.getElementById("worst-visits").innerHTML = worst.length
-      ? worst.map(function (v, i) {
-          var l1 = v.l1_overall_pct != null ? v.l1_overall_pct : v.overall_pct;
-          var l1c = v.l1_comment || v.comment || " - ";
-          return "<tr><td><input type='checkbox' class='worst-cb' value='" + esc(v.visit_id || "") + "'/></td>" +
-            "<td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
-            "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td><code>" +
-            esc(v.patient_id || " - ") + "</code></td><td>" + esc(v.doctor_fio || " - ") +
-            "</td><td>" + scorePill(l1) + "</td><td>" + reg55Cell(v) + "</td><td>" + esc(l1c) +
-            "</td><td>" + scorePill(v.l2_overall_pct) + "</td><td>" +
-            esc(v.l2_comment || v.l2_error || " - ") + "</td></tr>";
-        }).join("")
-      : "<tr><td colspan='11'>Нет worst_visits в summary - пересоберите batch summary</td></tr>";
-
-    var gmeta = data.gemini_meta || {};
-    var gmetaEl = document.getElementById("gemini-meta");
-    if (gmetaEl) {
-      gmetaEl.textContent = gmeta.note_ru || "Полный LLM-разбор с опорой на протоколы МЗ";
-    }
-    window.__misKzLlmReviews = data.gemini_reviews || [];
-    var greviews = window.__misKzLlmReviews;
-    document.getElementById("gemini-reviews").innerHTML = greviews.length
-      ? greviews.map(function (v, i) {
-          return "<tr><td>" + (i + 1) + "</td><td>" + esc(v.date || " - ") +
-            "</td><td><code>" + esc(v.visit_id || " - ") + "</code></td><td><code>" +
-            esc(v.patient_id || " - ") + "</code></td><td>" + esc(v.doctor_fio || " - ") +
-            "</td><td>" + scorePill(v.overall_pct) + "</td><td>" +
-            esc((v.comment || v.error || " - ").slice(0, 160)) +
-            "</td><td><button type='button' class='btn btn--ghost' data-report-idx='" + i +
-            "' style='padding:6px 10px;background:#eef5f2;color:var(--teal-deep)'>Отчёт</button></td></tr>";
-        }).join("")
-      : "<tr><td colspan='8'>Пока пусто - отметьте визиты выше и нажмите «Прогнать через LLM»</td></tr>";
-    document.querySelectorAll("[data-report-idx]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        showFullReport(Number(btn.getAttribute("data-report-idx")));
-      });
-    });
-    document.getElementById("notes").textContent = (data.notes || []).join(" ");
-  }
-
-  function showFullReport(idx) {
-    var list = window.__misKzLlmReviews || [];
-    var raw = list[idx];
-    var box = document.getElementById("llm-report-detail");
-    var body = document.getElementById("llm-report-body");
-    if (!raw || !box || !body) return;
-    var v = normalizeLlmReview(raw);
-    function pill(label, val, tone) {
-      return '<span style="display:inline-flex;gap:6px;align-items:center;padding:5px 10px;border-radius:999px;background:rgba(15,107,92,.08);font-size:13px">' +
-        '<span style="opacity:.7">' + esc(label) + '</span><strong style="color:' + (tone || "var(--teal-deep)") + '">' +
-        esc(val) + "</strong></span>";
-    }
-    function section(title, html, accent) {
-      if (!html) return "";
-      return '<section style="margin-top:1rem;padding-top:.85rem;border-top:1px solid rgba(15,107,92,.1)">' +
-        '<div style="font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:' + (accent || "var(--teal-deep)") +
-        ';font-weight:600;margin-bottom:.4rem">' + esc(title) + "</div>" + html + "</section>";
-    }
-    function bullets(items, color) {
-      items = (items || []).filter(Boolean);
-      if (!items.length) return "";
-      return '<ul style="margin:0;padding-left:1.15rem">' + items.slice(0, 10).map(function (g) {
-        return '<li style="margin:.35rem 0;color:' + (color || "inherit") + '">' + esc(g) + "</li>";
-      }).join("") + "</ul>";
-    }
-    var llm = v.overall_pct, l2 = v.l2_overall_pct;
-    var summary = String(v.executive_summary_ru || "").trim();
-    if (summary.charAt(0) === "{") summary = "";
-    var protoHtml = (v.protocol_review || []).slice(0, 6).map(function (p) {
-      var gaps = (p.gaps_ru || []).slice(0, 4);
-      return '<div style="padding:.7rem .85rem;margin:.45rem 0;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)">' +
-        '<div style="font-weight:600;font-size:13px;color:var(--teal-deep);margin-bottom:.25rem">' + esc(p.protocol || "Протокол МЗ") + "</div>" +
-        '<div style="font-size:13.5px">' + esc(p.compliance_ru || "Оценка не указана") + "</div>" +
-        (gaps.length ? '<ul style="margin:.4rem 0 0;padding-left:1.1rem;font-size:13px;color:#9a3412">' +
-          gaps.map(function (g) { return "<li>" + esc(g) + "</li>"; }).join("") + "</ul>" : "") +
-        "</div>";
-    }).join("");
-    var blocksHtml = "";
-    if ((v.block_review || []).length) {
-      blocksHtml = '<div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:8px">' +
-        (v.block_review || []).slice(0, 8).map(function (b) {
-          var sc = b.score_pct;
-          return '<div style="padding:.65rem .75rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)">' +
-            '<div style="display:flex;justify-content:space-between;gap:8px;margin-bottom:.25rem">' +
-            '<span style="font-size:12px;text-transform:capitalize;color:var(--muted)">' + esc(b.block || "блок") +
-            '</span><strong style="color:' + scoreTone(sc) + '">' + (sc != null ? Number(sc).toFixed(0) + "%" : " - ") +
-            "</strong></div><div style=\"font-size:13px\">" + esc(b.comment_ru || "") + "</div></div>";
-        }).join("") + "</div>";
-    }
-    body.innerHTML =
-      '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:.85rem">' +
-      pill("LLM", llm != null ? Number(llm).toFixed(1) + "%" : " - ", scoreTone(llm)) +
-      pill("L2", l2 != null ? Number(l2).toFixed(1) + "%" : " - ", scoreTone(l2)) +
-      pill("Статус", statusRu(v.status), scoreTone(llm)) + "</div>" +
-      '<div style="font-size:14px;margin-bottom:.3rem"><strong>' + esc(v.doctor_fio || "Врач не указан") + "</strong>" +
-      (v.doctor_specialization ? " · " + esc(v.doctor_specialization) : "") +
-      (v.filial ? " · " + esc(v.filial) : "") + "</div>" +
-      '<div style="font-size:12px;color:var(--muted)">Визит <code>' + esc(v.visit_id || "-") +
-      "</code> · пациент <code>" + esc(v.patient_id || "-") + "</code> · " + esc(v.date || "-") + "</div>" +
-      section("Итог для методиста", summary
-        ? '<p style="margin:0;font-size:15px;line-height:1.6">' + esc(summary) + "</p>"
-        : '<p style="margin:0;opacity:.7">Краткое резюме отсутствует.</p>') +
-      section("Протоколы Минздрава", protoHtml) +
-      section("Блоки КЗ", blocksHtml) +
-      section("Критичные пробелы", bullets(v.critical_gaps_ru || v.l2_gaps || [], "#9a3412"), "#9a3412") +
-      section("Рекомендации", bullets(v.recommendations_ru || [])) +
-      section("Оформление / МЗ", v.mz_notes_ru
-        ? '<p style="margin:0">' + esc(v.mz_notes_ru) + "</p>" : "");
-    box.style.display = "block";
-    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
-  }
-
-  function setProgress(done, total, label) {
-    var wrap = document.getElementById("llm-progress-wrap");
-    var bar = document.getElementById("llm-progress-bar");
-    var pctEl = document.getElementById("llm-progress-pct");
-    var lab = document.getElementById("llm-progress-label");
-    if (!wrap) return;
-    wrap.hidden = false;
-    var pct = total ? Math.round((done / total) * 100) : 0;
-    if (bar) bar.style.width = pct + "%";
-    if (pctEl) pctEl.textContent = pct + "%";
-    if (lab) lab.textContent = label || (done + " / " + total);
-  }
-
-  function showError(msg) {
-    document.getElementById("loading").hidden = true;
-    var el = document.getElementById("error");
-    el.hidden = false;
-    el.textContent = msg;
-  }
-
-  function selectedVisitIds() {
-    return Array.prototype.slice.call(document.querySelectorAll(".worst-cb:checked"))
-      .map(function (el) { return el.value; })
-      .filter(Boolean);
-  }
-
-  async function load() {
-    document.getElementById("error").hidden = true;
-    document.getElementById("loading").hidden = false;
-    document.getElementById("dashboard").hidden = true;
-    var token = getToken();
-    var headers = { "Accept": "application/json" };
-    if (token) headers["X-Methodist-Token"] = token;
-    try {
-      var res = await fetch("/api/methodist/mis-kz-quality?month=" + encodeURIComponent(month) + "&compare_month=2026-01", { headers: headers });
-      if (res.status === 401 || res.status === 403) {
-        document.getElementById("loading").hidden = true;
-        document.getElementById("auth").hidden = false;
-        document.getElementById("meta-line").textContent = "Нужна авторизация методиста";
-        return;
-      }
-      if (res.status === 503) {
-        showError("Доступ методиста не настроен на сервере. Проверьте METHODIST_TOKEN.");
-        document.getElementById("meta-line").textContent = "Кабинет методиста недоступен";
-        return;
-      }
-      var data = await res.json();
-      if (!data.ok && !data.available) {
-        showError(data.hint_ru || data.error || "Summary ещё не готов");
-        document.getElementById("meta-line").textContent = "Нет агрегата L1";
-        return;
-      }
-      document.getElementById("auth").hidden = true;
-      render(data);
-    } catch (e) {
-      showError(String(e && e.message || e));
-    }
-  }
-
-  async function runGemini() {
-    var ids = selectedVisitIds().slice(0, 20);
-    var st = document.getElementById("gemini-status");
-    var btn = document.getElementById("btn-gemini");
-    if (!ids.length) {
-      st.textContent = "Сначала отметьте хотя бы один визит.";
-      return;
-    }
-    var token = getToken();
-    if (!token) {
-      st.textContent = "Нужен токен методиста.";
-      return;
-    }
-    if (btn) btn.disabled = true;
-    var ok = 0, fail = 0;
-    setProgress(0, ids.length, "Старт: 0 / " + ids.length);
-    st.textContent = "Полный LLM-разбор (протоколы МЗ): 0 / " + ids.length;
-    for (var i = 0; i < ids.length; i++) {
-      var vid = ids[i];
-      setProgress(i, ids.length, "Визит " + (i + 1) + " / " + ids.length + " · " + vid + " (L2 + LLM)…");
-      st.textContent = "Идёт разбор " + (i + 1) + " / " + ids.length + " · visit " + vid;
-      try {
-        var res = await fetch("/api/methodist/mis-kz-quality/llm-review-one", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Accept": "application/json",
-            "X-Methodist-Token": token
-          },
-          body: JSON.stringify({ month: month, visit_id: vid })
-        });
-        var data = await res.json();
-        if (res.ok && data.ok) ok += 1;
-        else fail += 1;
-        if (data.item) {
-          window.__misKzLlmReviews = data.reviews || window.__misKzLlmReviews || [];
+        if (state.period === "7d") {
+          var weekStart = new Date(now); weekStart.setDate(weekStart.getDate() - 6);
+          q.set("date_from", localDate(weekStart)); q.set("date_to", localDate(now));
         }
-      } catch (e) {
-        fail += 1;
-        st.textContent = "Ошибка на visit " + vid + ": " + String(e && e.message || e);
+        if (state.period === "custom" && state.dateFrom && state.dateTo) {
+          q.set("date_from", state.dateFrom); q.set("date_to", state.dateTo);
+        }
       }
-      setProgress(i + 1, ids.length, "Готово " + (i + 1) + " / " + ids.length);
-    }
-    st.textContent = "Готово: успешно " + ok + ", ошибок " + fail + " из " + ids.length;
-    if (btn) btn.disabled = false;
-    await load();
-  }
-
-  document.getElementById("btn-refresh").addEventListener("click", load);
-  document.getElementById("btn-token").addEventListener("click", function () {
-    var t = (document.getElementById("token-input").value || "").trim();
-    if (t) setToken(t);
-    load();
-    if (typeof window.__misKzDeepReload === "function") {
-      window.__misKzDeepReload();
-    }
-  });
-  document.getElementById("btn-select-all").addEventListener("click", function () {
-    document.querySelectorAll(".worst-cb").forEach(function (el) { el.checked = true; });
-  });
-  document.getElementById("btn-select-none").addEventListener("click", function () {
-    document.querySelectorAll(".worst-cb").forEach(function (el) { el.checked = false; });
-  });
-  document.getElementById("btn-gemini").addEventListener("click", runGemini);
-  var btnCloseReport = document.getElementById("btn-close-report");
-  if (btnCloseReport) {
-    btnCloseReport.addEventListener("click", function () {
-      var box = document.getElementById("llm-report-detail");
-      if (box) box.style.display = "none";
-    });
-  }
-  load();
-})();
-</script>
-
-<script>
-/* ------------------------------------------------------------------ *
- * §7Б. Дашборд глубокой оценки КЗ: фильтры / диаграммы / динамика /
- *      расширенный разбор одного КЗ. Отдельный модуль (свои хелперы).
- * ------------------------------------------------------------------ */
-(function () {
-  var TOKEN_KEY = "protocol_methodist_token";
-  var urlMonth = (new URLSearchParams(location.search).get("month") || "2026-07");
-  var state = {
-    month: urlMonth,        // активный месяц (таблица · диаграммы), синхр. с селектором
-    months: [],             // выбранные месяцы для сравнения (обзор · диаграммы · динамика)
-    page: 1,
-    page_size: 50,
-    sort_by: "overall",
-    sort_dir: "asc",
-    filters: {},
-    chart: "axes",
-    tab: "overview",
-    facets: null,
-    dyn: null,              // {series:[...]} по выбранным месяцам
-    ovAgg: null,            // агрегат активного месяца без фильтров (обзор · диаграммы)
-    filtersBuilt: false,
-    casesLoaded: false
-  };
-  var RU_MONTHS = ["", "января", "февраля", "марта", "апреля", "мая", "июня",
-    "июля", "августа", "сентября", "октября", "ноября", "декабря"];
-  function monthLabel(m) {
-    var p = String(m || "").split("-");
-    if (p.length < 2) return m || " - ";
-    var mi = parseInt(p[1], 10);
-    return (RU_MONTHS[mi] || p[1]) + " " + p[0];
-  }
-
-  function token() {
-    try { return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY) || ""; }
-    catch (e) { return ""; }
-  }
-  function headers() {
-    var h = { "Accept": "application/json" };
-    var t = token();
-    if (t) h["X-Methodist-Token"] = t;
-    return h;
-  }
-  function esc(s) {
-    return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
-  }
-  function tone(v) {
-    if (v == null || !isFinite(v)) return "mid";
-    if (v >= 75) return "good"; if (v >= 60) return "mid"; return "low";
-  }
-  function pill(v, digits) {
-    if (v == null || v === "") return "<span class='score mid'> - </span>";
-    var n = Number(v);
-    return "<span class='score " + tone(n) + "'>" + n.toFixed(digits == null ? 0 : digits) + "%</span>";
-  }
-  var AXIS_RU = { documentation: "Оформление", clinical_concordance: "Согласованность", safety: "Безопасность", regulatory: "Регуляторика" };
-  var STATUS_RU = { good: "хорошо", acceptable: "приемлемо", review: "на разбор", poor: "плохо", critical: "критично", insufficient_data: "мало данных", needs_review: "на разбор", non_compliant: "не соответ.", unknown: " - " };
-
-  function $(id) { return document.getElementById(id); }
-
-  function chartBar(name, value, max, colorOverride) {
-    var v = Number(value) || 0;
-    var m = Math.max(max || 100, 1);
-    var pct = Math.max(0, Math.min(100, (v / m) * 100));
-    var cls = colorOverride ? "" : (v >= 75 ? "" : (v >= 60 ? " is-mid" : " is-low"));
-    var style = "width:" + pct + "%" + (colorOverride ? (";background:" + colorOverride) : "");
-    return "<div class='bar-row'><div class='name' title='" + esc(name) + "'>" + esc(name) + "</div>" +
-      "<div class='bar-track'><div class='bar-fill" + cls + "' style='" + style + "'></div></div>" +
-      "<div class='pct'>" + (Number.isFinite(v) ? (max > 100 || max === undefined ? v : v.toFixed(0)) : " - ") + "</div></div>";
-  }
-
-  /* ------------------------- Навигация по папкам ------------------------- */
-  function bindNav() {
-    document.querySelectorAll("#deep-nav .dtab").forEach(function (btn) {
-      btn.addEventListener("click", function () { switchTab(btn.getAttribute("data-tab")); });
-    });
-  }
-  function switchTab(tab) {
-    state.tab = tab;
-    document.querySelectorAll("#deep-nav .dtab").forEach(function (b) {
-      b.classList.toggle("is-active", b.getAttribute("data-tab") === tab);
-    });
-    document.querySelectorAll("#deep-card .dpanel").forEach(function (p) {
-      p.classList.toggle("is-active", p.id === "panel-" + tab);
-    });
-    if (tab === "cases" && !state.casesLoaded) fetchCases();
-    if (tab === "charts") { renderChartTabs(); renderChart(state.ovAgg || {}); }
-    if (tab === "scoring") renderScoring();
-  }
-
-  /* ----------------- Верхняя навигация (единая рубрика) ----------------- */
-  function scrollToEl(id) { var el = $(id); if (el) setTimeout(function () { el.scrollIntoView({ behavior: "smooth", block: "start" }); }, 40); }
-  function switchView(view) {
-    state.view = view;
-    var mapView = (view === "overview" || view === "mkb") ? "overview" : "full";
-    document.querySelectorAll("#dashboard .view").forEach(function (v) {
-      v.hidden = (v.getAttribute("data-view") !== mapView);
-    });
-    document.querySelectorAll("#topnav [data-nav]").forEach(function (b) {
-      b.classList.toggle("is-on", b.getAttribute("data-nav") === view);
-    });
-    var legacy = $("l1-legacy");
-    if (mapView === "full" && legacy) legacy.open = true;
-    if (view === "people") scrollToEl("top-docs");
-    else if (view === "mkb") scrollToEl("ov2-chapters-card");
-    else if (view === "cases") { switchTab("cases"); scrollToEl("deep-card"); }
-    else if (view === "dynamics") { switchTab("dynamics"); scrollToEl("deep-card"); }
-    else window.scrollTo({ top: 0, behavior: "smooth" });
-  }
-  function bindTopNav() {
-    document.querySelectorAll("#topnav [data-nav]").forEach(function (b) {
-      b.addEventListener("click", function () { switchView(b.getAttribute("data-nav")); });
-    });
-  }
-
-  /* --------------------- Мультивыбор месяцев / актив. --------------------- */
-  function buildMonthPills(all) {
-    $("deep-months").innerHTML = all.map(function (m) {
-      var on = state.months.indexOf(m) >= 0;
-      return "<label class='mpill" + (on ? " is-on" : "") + "' data-m='" + m + "'>" +
-        "<input type='checkbox'" + (on ? " checked" : "") + "/>" + esc(monthLabel(m)) + "</label>";
-    }).join("");
-    $("deep-months").querySelectorAll(".mpill").forEach(function (el) {
-      el.addEventListener("click", function (ev) {
-        ev.preventDefault();
-        var m = el.getAttribute("data-m");
-        var i = state.months.indexOf(m);
-        if (i >= 0) { if (state.months.length > 1) state.months.splice(i, 1); }
-        else state.months.push(m);
-        state.months.sort();
-        el.classList.toggle("is-on", state.months.indexOf(m) >= 0);
-        buildActiveMonthSelect();
-        fetchDynamics(false);
+      Object.keys(state.selected).forEach(function (key) {
+        if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join(","));
       });
-    });
-  }
-  function buildActiveMonthSelect() {
-    var sel = $("deep-active-month");
-    if (!sel) return;
-    var ms = state.months.slice();
-    if (ms.indexOf(state.month) < 0) state.month = ms.length ? ms[ms.length - 1] : state.month;
-    sel.innerHTML = ms.map(function (m) {
-      return "<option value='" + m + "'" + (m === state.month ? " selected" : "") + ">" + esc(monthLabel(m)) + "</option>";
-    }).join("");
-  }
-
-  /* ------------------------------- Обзор -------------------------------- */
-  function renderCompare() {
-    var series = (state.dyn && state.dyn.series) || [];
-    var el = $("ov-compare");
-    if (!el) return;
-    el.innerHTML = series.length ? series.map(cmpRow).join("")
-      : "<div class='sub'>Нет данных по выбранным месяцам</div>";
-  }
-  function cmpRow(s) {
-    var ov = s.avg_overall;
-    var w = Math.max(0, Math.min(100, ov || 0));
-    var cls = ov >= 75 ? "" : (ov >= 60 ? "is-mid" : "is-low");
-    return "<div class='cmp-row'><div class='m'>" + esc(monthLabel(s.month)) + "</div>" +
-      "<div class='bar-track'><div class='bar-fill " + cls + "' style='width:" + w + "%'></div></div>" +
-      "<div class='meta'>" + (ov != null ? Math.round(ov) : " - ") + "% · внимания " +
-      (s.pct_bad != null ? s.pct_bad : 0) + "% · P0/100 " + (s.p0_per_100 != null ? s.p0_per_100 : 0) +
-      " · n" + (s.n || 0) + "</div></div>";
-  }
-  function renderOverviewLists(agg) {
-    var specs = (agg.by_specialty || []).filter(function (x) { return (x.n || 0) >= 3; }).slice(0, 10);
-    var ss = $("ov-specs-sub");
-    if (ss) ss.textContent = "Ниже по среднему overall (мин. 3 КЗ) · активный месяц " + monthLabel(state.month);
-    $("ov-specs").innerHTML = specs.length ?
-      ("<table><thead><tr><th>Специальность</th><th>N</th><th>Avg</th><th>% плохих</th><th>P0</th></tr></thead><tbody>" +
-        specs.map(function (r) {
-          return "<tr><td>" + esc(r.specialization) + "</td><td>" + r.n + "</td><td>" + pill(r.avg_overall) +
-            "</td><td>" + r.bad_pct + "%</td><td>" + r.p0 + "</td></tr>";
-        }).join("") + "</tbody></table>")
-      : "<div class='sub'>Нет данных</div>";
-    var icd = agg.top_bad_icd || [];
-    $("ov-icd").innerHTML = icd.length ?
-      ("<table><thead><tr><th>Код</th><th>Диагноз</th><th>Плохих</th></tr></thead><tbody>" +
-        icd.map(function (b) {
-          return "<tr><td><code>" + esc(b.mkb_code) + "</code></td><td>" + esc((b.diagnosis || "").slice(0, 80)) +
-            "</td><td>" + b.n + "</td></tr>";
-        }).join("") + "</tbody></table>")
-      : "<div class='sub'>Нет плохих КЗ с кодом</div>";
-  }
-
-  /* ------------------------------ Динамика ------------------------------ */
-  function renderDynamics() {
-    var series = (state.dyn && state.dyn.series) || [];
-    var el = $("deep-dyn");
-    if (!el) return;
-    if (!series.length) { el.innerHTML = "<div class='sub'>Нет данных</div>"; return; }
-    var maxP0 = Math.max.apply(null, series.map(function (s) { return s.p0_per_100 || 0; }).concat([0.1]));
-    el.innerHTML = "<div style='overflow:auto'><table><thead><tr><th>Месяц</th><th>N</th><th>Overall</th>" +
-      "<th>Оформл.</th><th>Соглас.</th><th>Безоп.</th><th>Регул.</th><th title='статусы на разбор + плохо + критично'>% внимания</th><th>P0/100</th></tr></thead><tbody>" +
-      series.map(function (s) {
-        var a = s.axis_means || {};
-        return "<tr><td>" + esc(monthLabel(s.month)) + "</td><td>" + (s.n || 0) + "</td><td>" + pill(s.avg_overall) + "</td>" +
-          "<td>" + (a.documentation != null ? Math.round(a.documentation) : " - ") + "</td>" +
-          "<td>" + (a.clinical_concordance != null ? Math.round(a.clinical_concordance) : " - ") + "</td>" +
-          "<td>" + (a.safety != null ? Math.round(a.safety) : " - ") + "</td>" +
-          "<td>" + (a.regulatory != null ? Math.round(a.regulatory) : " - ") + "</td>" +
-          "<td>" + (s.pct_bad != null ? s.pct_bad + "%" : " - ") + "</td>" +
-          "<td><span style='display:inline-block;height:8px;border-radius:4px;background:#c4898a;vertical-align:middle;width:" +
-          Math.max(4, (s.p0_per_100 || 0) / maxP0 * 80) + "px'></span> " + (s.p0_per_100 != null ? s.p0_per_100 : 0) + "</td></tr>";
-      }).join("") + "</tbody></table></div>";
-  }
-
-  /* -------------------------- Как считается скор ------------------------- */
-  var scoringCache = null;
-  async function renderScoring() {
-    var el = $("deep-scoring");
-    if (!el) return;
-    if (scoringCache) { el.innerHTML = scoringHtml(scoringCache); return; }
-    try {
-      var res = await fetch("/api/methodist/mis-kz-quality/scoring-info", { headers: headers() });
-      var d = await res.json();
-      if (!d.ok) { el.innerHTML = "<div class='sub'>Нет описания</div>"; return; }
-      scoringCache = d;
-      el.innerHTML = scoringHtml(d);
-    } catch (e) { el.innerHTML = "<div class='error'>" + esc(String(e && e.message || e)) + "</div>"; }
-  }
-  function scoringHtml(d) {
-    var axes = (d.axes || []).map(function (a) {
-      return "<div class='legend-axis'><div class='lg-t'>" + esc(a.label) + "</div><div class='lg-d'>" + esc(a.desc) + "</div></div>";
-    }).join("");
-    var sev = (d.severity || []).map(function (s) {
-      return "<div class='legend-axis'><div class='lg-t'>" + esc(s.key) + " · " + esc(s.label) + "</div><div class='lg-d'>" + esc(s.desc) + "</div></div>";
-    }).join("");
-    var gate = (d.risk_gate || []).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("");
-    var th = d.thresholds || {};
-    return "<p class='sub' style='margin:0 0 12px'>" + esc(d.overall_rule || "") + "</p>" +
-      "<h3 style='color:var(--teal-deep);margin:6px 0'>Оси оценки</h3>" + axes +
-      "<h3 style='color:var(--teal-deep);margin:16px 0 6px'>Severity находок</h3>" + sev +
-      "<h3 style='color:var(--teal-deep);margin:16px 0 6px'>Risk-gate: как статус ограничивается</h3>" +
-      "<ul style='margin:0;padding-left:1.2rem;font-size:13.5px;line-height:1.65'>" + gate + "</ul>" +
-      "<p class='sub' style='margin-top:12px'>Пороги: хорошо ≥ " + esc(th.good) + " · приемлемо ≥ " + esc(th.acceptable) +
-      (th.min_axis_review != null ? (" · min-axis " + esc(th.min_axis_review)) : "") + "</p>" +
-      "<p class='sub' style='margin-top:6px'>Источник: " + esc(d.source || "") + "</p>";
-  }
-
-  /* ------------------- Загрузка агрегата активного месяца ------------------ */
-  async function loadActiveAgg() {
-    var qs = new URLSearchParams();
-    qs.set("month", state.month); qs.set("page", 1); qs.set("page_size", 1);
-    qs.set("sort_by", "overall"); qs.set("sort_dir", "asc");
-    try {
-      var res = await fetch("/api/methodist/mis-kz-quality/cases?" + qs.toString(), { headers: headers() });
-      if (res.status === 401 || res.status === 403) { showUnavail("Нужна авторизация методиста."); return; }
-      var v = await res.json();
-      $("deep-body").hidden = false;
-      if (!v.ok) {
-        state.ovAgg = null;
-        renderKpi({}); renderOverviewLists({}); renderChartTabs(); renderChart({});
-        $("ov-specs").innerHTML = "<div class='sub'>" + esc(v.hint_ru || v.error || ("Нет кейсов за " + monthLabel(state.month))) + "</div>";
-        return;
-      }
-      state.ovAgg = v.filtered_agg || {};
-      state.facets = v.facets || {};
-      state.deepAvailable = !!v.deep_available;
-      state.mkbAvailable = !!v.mkb_available;
-      renderKpi(state.ovAgg);
-      renderOverviewLists(state.ovAgg);
-      renderChartTabs(); renderChart(state.ovAgg);
-      buildFilters(state.facets);
-      renderOverviewV2(state.ovAgg);
-    } catch (e) { showUnavail(String(e && e.message || e)); }
-  }
-
-  /* ===================== Редизайн v2: командный центр ===================== */
-  function scoreTone(v) { return v == null ? "" : (v >= 80 ? "good" : (v >= 60 ? "mid" : "low")); }
-  function scoreColor(v) { return v == null ? "#c2ccc8" : (v >= 80 ? "#10b981" : (v >= 60 ? "#f59e0b" : "#e11d48")); }
-  function verdictOf(v) {
-    if (v == null) return ["Нет данных", ""];
-    if (v >= 90) return ["Отлично", "качество записей высокое"];
-    if (v >= 80) return ["Хорошо", "большинство КЗ в норме"];
-    if (v >= 75) return ["Приемлемо", "есть что подтянуть"];
-    if (v >= 60) return ["Требует внимания", "заметная доля слабых КЗ"];
-    return ["Низкое качество", "нужен системный разбор"];
-  }
-
-  function renderOverviewV2(agg) {
-    agg = agg || {};
-    var avg = agg.avg_overall;
-    var ring = $("ov2-ring");
-    if (ring) {
-      var col = scoreColor(avg);
-      var pct = Math.max(0, Math.min(100, Number(avg) || 0));
-      ring.style.background = "conic-gradient(" + col + " " + pct + "%, #eef2f0 " + pct + "% 100%)";
-      ring.style.padding = "13px";
-      ring.style.boxShadow = "inset 0 0 0 13px #fff";
+      return q;
     }
-    if ($("ov2-score")) $("ov2-score").textContent = avg != null ? avg : " - ";
-    var vd = verdictOf(avg);
-    if ($("ov2-verdict")) { $("ov2-verdict").textContent = vd[0]; $("ov2-verdict").style.color = scoreColor(avg); }
-    if ($("ov2-verdict-sub")) $("ov2-verdict-sub").textContent = vd[1];
-
-    var sd = agg.status_distribution || {};
-    var review = (sd.manual_review_required || 0) + (sd.needs_review || 0);
-    var mk = function (l, v, h) { return "<div class='mini-kpi'><div class='l'>" + esc(l) + "</div><div class='v'>" + esc(v) + "</div><div class='h'>" + esc(h || "") + "</div></div>"; };
-    if ($("ov2-kpis")) $("ov2-kpis").innerHTML =
-      mk("КЗ оценено", agg.n != null ? agg.n : " - ", monthLabel(state.month)) +
-      mk("Слабых (<75)", (agg.pct_bad != null ? agg.pct_bad : 0) + "%", (agg.n_bad || 0) + " КЗ") +
-      mk("Требуют пересмотра", review, "статус manual_review") +
-      mk(state.deepAvailable ? "Находок P0" : "Глав МКБ", state.deepAvailable ? ((agg.severity_totals || {}).P0 || 0) : ((agg.by_chapter || []).length), state.deepAvailable ? "риск вреда" : "покрыто кодом");
-
-    renderAttnList(agg);
-    renderOvChapters(agg);
-    renderHeat(agg);
-  }
-
-  function attnItem(sev, ico, title, desc, patch) {
-    var b = document.createElement("button");
-    b.className = "attn-item sev-" + sev;
-    b.innerHTML = "<span class='ico'>" + ico + "</span><span class='body'><span class='t'>" + esc(title) +
-      "</span><span class='d'>" + esc(desc) + "</span></span><span class='go'>Открыть кейсы →</span>";
-    b.addEventListener("click", function () { goToCasesWithFilter(patch); });
-    return b;
-  }
-  function renderAttnList(agg) {
-    var box = $("ov2-attn");
-    if (!box) return;
-    box.innerHTML = "";
-    var specs = (agg.by_specialty || []).filter(function (s) { return (s.n || 0) >= 10 && s.avg_overall != null; });
-    if (specs.length) {
-      var w = specs[0];
-      box.appendChild(attnItem(scoreTone(w.avg_overall), "🩺", "Слабая специальность: " + w.specialization,
-        "avg " + w.avg_overall + "% · " + w.n + " КЗ · слабых " + w.bad_pct + "%", { specialization: w.specialization }));
-    }
-    var chaps = (agg.by_chapter || []).filter(function (c) { return (c.n || 0) >= 10 && c.avg_overall != null; })
-      .slice().sort(function (a, b2) { return a.avg_overall - b2.avg_overall; });
-    if (chaps.length) {
-      var wc = chaps[0];
-      box.appendChild(attnItem(scoreTone(wc.avg_overall), "📋", "Слабая глава МКБ: " + (wc.label || wc.chapter),
-        "avg " + wc.avg_overall + "% · " + wc.n + " КЗ · слабых " + wc.bad_pct + "%", { mkb_chapter: wc.chapter }));
-    }
-    if (agg.n_bad) {
-      box.appendChild(attnItem("mid", "⚠️", "Слабые КЗ (<75%): " + agg.n_bad,
-        (agg.pct_bad || 0) + "% всех КЗ месяца - разобрать в первую очередь", { score_band: "<50", _sortAsc: true }));
-    }
-    var tb = (agg.top_bad_icd || [])[0];
-    if (tb) {
-      box.appendChild(attnItem("low", "🔎", "Частый слабый диагноз: " + tb.mkb_code,
-        (tb.diagnosis || "").slice(0, 60) + " · " + tb.n + " слабых КЗ", { q: tb.mkb_code }));
-    }
-    if (!box.children.length) box.innerHTML = "<div class='sub'>Нет выраженных проблемных зон за месяц.</div>";
-  }
-
-  function renderOvChapters(agg) {
-    var box = $("ov2-chapters");
-    if (!box) return;
-    var chaps = (agg.by_chapter || []).filter(function (c) { return (c.n || 0) >= 5 && c.avg_overall != null; })
-      .slice().sort(function (a, b) { return a.avg_overall - b.avg_overall; }).slice(0, 8);
-    if (!chaps.length) { box.innerHTML = "<div class='sub'>Нет данных по главам (нужны коды МКБ).</div>"; return; }
-    box.innerHTML = chaps.map(function (c) {
-      return chartBar((c.label || c.chapter) + " · " + c.n, c.avg_overall, 100);
-    }).join("");
-    box.querySelectorAll(".bar-row").forEach(function (row, i) {
-      row.style.cursor = "pointer";
-      row.addEventListener("click", function () { goToCasesWithFilter({ mkb_chapter: chaps[i].chapter }); });
-    });
-  }
-
-  function renderHeat(agg) {
-    var box = $("ov2-heat");
-    if (!box) return;
-    var h = agg.spec_chapter_heat || {};
-    var specs = h.specialties || [], chaps = h.chapters || [], cells = h.cells || [];
-    if (!specs.length || !chaps.length) { box.innerHTML = "<div class='sub'>Недостаточно данных для тепловой карты.</div>"; return; }
-    var map = {};
-    cells.forEach(function (c) { map[c.s + "||" + c.c] = c; });
-    var head = "<tr><th class='rowh'></th>" + chaps.map(function (c) { return "<th title='" + esc(c.label) + "'>" + esc((c.chapter || "")) + "</th>"; }).join("") + "</tr>";
-    var body = specs.map(function (s) {
-      return "<tr><th class='rowh' title='" + esc(s) + "'>" + esc(s) + "</th>" + chaps.map(function (c) {
-        var cell = map[s + "||" + c.chapter];
-        if (!cell || cell.avg == null) return "<td><div class='cell empty'>·</div></td>";
-        var col = scoreColor(cell.avg);
-        return "<td><div class='cell' title='" + esc(s + " · " + c.label + ": avg " + cell.avg + "% (" + cell.n + " КЗ)") + "' style='background:" + col + "33'>" + Math.round(cell.avg) + "</div></td>";
-      }).join("") + "</tr>";
-    }).join("");
-    box.innerHTML = "<table>" + head + body + "</table>";
-  }
-
-  function goToCasesWithFilter(patch) {
-    patch = patch || {};
-    var sortAsc = patch._sortAsc; delete patch._sortAsc;
-    state.filters = {};
-    Object.keys(patch).forEach(function (k) { state.filters[k] = patch[k]; });
-    state.page = 1; state.filtersBuilt = false; state.casesLoaded = false;
-    if (sortAsc) { state.sort_by = "overall"; state.sort_dir = "asc"; }
-    switchView("cases");
-    fetchCases();
-  }
-
-  function renderKpi(agg) {
-    var sev = agg.severity_totals || {};
-    var p0per100 = agg.n ? (100 * (sev.P0 || 0) / agg.n) : 0;
-    var el = $("ov-kpi");
-    if (!el) return;
-    var base =
-      kpiCard("КЗ оценено", agg.n != null ? agg.n : " - ", monthLabel(state.month)) +
-      kpiCard("Средний overall", agg.avg_overall != null ? agg.avg_overall + "%" : " - ", state.deepAvailable ? "по осям A-D" : "L1 (детерминир.)") +
-      kpiCard("% плохих (<75)", (agg.pct_bad != null ? agg.pct_bad : 0) + "%", (agg.n_bad || 0) + " КЗ");
-    if (state.deepAvailable) {
-      el.innerHTML = base +
-        kpiCard("Находок P0", (sev.P0 || 0), p0per100.toFixed(2) + " на 100 КЗ") +
-        kpiCard("Потенц. вред", agg.n_potential_harm != null ? agg.n_potential_harm : 0, "КЗ с риском вреда");
-    } else {
-      var sd = agg.status_distribution || {};
-      var review = (sd.manual_review_required || 0) + (sd.needs_review || 0);
-      el.innerHTML = base +
-        kpiCard("Требуют пересмотра", review, "статус manual_review") +
-        kpiCard("Deep-оценка", "нет", "запуск на машине с БД");
-    }
-  }
-  function kpiCard(label, value, hint) {
-    return "<div class='kpi'><div class='label'>" + esc(label) + "</div><div class='value'>" +
-      esc(value) + "</div><div class='hint'>" + esc(hint || "") + "</div></div>";
-  }
-
-  function selectHtml(id, label, opts, current, withN) {
-    var options = ["<option value=''>" + esc(label) + ": все</option>"];
-    (opts || []).forEach(function (o) {
-      var val = (o.value != null ? o.value : o.key);
-      var lab = (o.label || o.value || o.key || "");
-      if (o.n != null && withN !== false) lab += " (" + o.n + ")";
-      options.push("<option value='" + esc(val) + "'" + (String(current || "") === String(val) ? " selected" : "") + ">" + esc(lab) + "</option>");
-    });
-    return "<select data-filter='" + id + "' style='padding:7px 9px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12.5px;background:#fff;max-width:200px'>" +
-      options.join("") + "</select>";
-  }
-
-  function fg(label, inner) {
-    return "<div class='fgroup'><span class='fgroup-label'>" + esc(label) + "</span>" + inner + "</div>";
-  }
-  // Показывать select-фильтр только если в фасете >= 2 значений (иначе он бесполезен).
-  function fgOpt(label, id, shortLbl, arr, cur) {
-    if (!arr || arr.length < 2) return "";
-    return fg(label, selectHtml(id, shortLbl, arr, cur));
-  }
-  // Обёртка для deep-eval фильтров: видны, но неактивны с честным пояснением.
-  function deepLock(inner) {
-    return "<span class='deep-locked' title='Доступно после генерации deep-eval (машина с доступом к БД, см. план)' " +
-      "style='opacity:.45;pointer-events:none;display:inline-flex;align-items:center;gap:6px'>" +
-      inner + "<em style='font-style:normal;font-size:10.5px;color:#b26a00;font-weight:600'>нужен deep-eval</em></span>";
-  }
-  function buildFilters(facets) {
-    var f = state.filters;
-    var deepOn = !!state.deepAvailable;
-    var mkbChapters = (facets.mkb_chapters || []).map(function (c) { return { value: c.key, label: c.label, n: c.n }; });
-    var sevSel = "<select data-filter='min_severity'" + (deepOn ? "" : " disabled") + ">" +
-      "<option value=''>любой</option>" +
-      "<option value='P0'" + (f.min_severity === "P0" ? " selected" : "") + ">есть P0</option>" +
-      "<option value='P1'" + (f.min_severity === "P1" ? " selected" : "") + ">P0-P1</option></select>";
-    var faSel = selectHtml("finding_axis", "ось", (facets.finding_axes || []).map(function (a) { return { value: a.value, label: a.label, n: a.n }; }), f.finding_axis);
-    var primary = [
-      fgOpt("Специальность", "specialization", "спец.", facets.specialties, f.specialization),
-      fgOpt("Статус", "status", "статус", facets.statuses, f.status),
-      fg("Severity", deepOn ? sevSel : deepLock(sevSel)),
-      fg("Поиск (диагноз / код МКБ)", "<input data-filter='q' type='search' placeholder='например: J06 или ОРВИ' value='" + esc(f.q || "") + "' style='min-width:190px'/>"),
-      fg("Врач (ФИО)", "<input data-filter='doctor' type='text' placeholder='фамилия' value='" + esc(f.doctor || "") + "' style='min-width:150px'/>"),
-      "<button type='button' id='deep-filter-reset' class='btn btn--ghost' style='padding:8px 12px;font-size:12px'>Сбросить фильтры</button>"
-    ];
-    var more = [
-      fgOpt("Филиал", "filial", "филиал", facets.filials, f.filial),
-      fgOpt("Глава МКБ", "mkb_chapter", "глава", mkbChapters, f.mkb_chapter),
-      fgOpt("Скор-банд", "score_band", "банд", facets.score_bands, f.score_band),
-      fg("Ось находки", deepOn ? faSel : deepLock(faSel)),
-      fg("С даты", "<input data-filter='date_from' type='date' value='" + esc(f.date_from || "") + "'/>"),
-      fg("По дату", "<input data-filter='date_to' type='date' value='" + esc(f.date_to || "") + "'/>"),
-      "<label class='chk'>" + (deepOn
-        ? "<input type='checkbox' data-filter='needs_human'" + (f.needs_human ? " checked" : "") + "/> needs_human"
-        : deepLock("<input type='checkbox' disabled/> needs_human")) + "</label>",
-      "<label class='chk'>" + (deepOn
-        ? "<input type='checkbox' data-filter='potential_harm'" + (f.potential_harm ? " checked" : "") + "/> потенц. вред"
-        : deepLock("<input type='checkbox' disabled/> потенц. вред")) + "</label>"
-    ];
-    $("deep-filters").innerHTML = primary.filter(Boolean).join("") +
-      "<details class='more-filters'><summary>Ещё фильтры</summary><div class='fbar'>" + more.filter(Boolean).join("") + "</div></details>";
-
-    var presets = [
-      { id: "p0", label: "⚑ P0 (риск вреда)", flag: true, deep: true },
-      { id: "dx_no_code", label: "Dx без кода МКБ" },
-      { id: "treatment_off_protocol", label: "Проблемы согласованности", deep: true },
-      { id: "needs_human", label: "Нужен человек", deep: true }
-    ];
-    $("deep-presets").innerHTML = presets.map(function (p) {
-      var locked = p.deep && !deepOn;
-      var active = state.filters.preset === p.id;
-      return "<button type='button' class='chip" + (p.flag ? " is-flag" : "") + (active ? " is-on" : "") +
-        (locked ? " is-locked" : "") + "'" + (locked ? " disabled title='Доступно после deep-eval'" : "") +
-        " data-preset='" + p.id + "'>" + esc(p.label) + (locked ? " ·нужен deep-eval" : "") + "</button>";
-    }).join("");
-
-    bindFilterEvents();
-    state.filtersBuilt = true;
-  }
-
-  function bindFilterEvents() {
-    $("deep-filters").querySelectorAll("[data-filter]").forEach(function (el) {
-      var key = el.getAttribute("data-filter");
-      var evt = (el.tagName === "SELECT" || el.type === "checkbox" || el.type === "date") ? "change" : "input";
-      var handler = function () {
-        if (el.type === "checkbox") state.filters[key] = el.checked;
-        else state.filters[key] = el.value;
-        state.page = 1;
-        if (evt === "input") { clearTimeout(el.__t); el.__t = setTimeout(fetchCases, 400); }
-        else fetchCases();
+    function normalizeSummary(raw) {
+      raw = raw || {};
+      var agg = raw.filtered_agg || raw.overview || raw;
+      var contractKpi = raw.kpi || agg.kpi || {};
+      return {
+        raw: raw,
+        n: contractKpi.source_records != null ? contractKpi.source_records : (agg.n || raw.n_ok || raw.n_cases || 0),
+        evaluated: contractKpi.evaluated != null ? contractKpi.evaluated : (agg.n_evaluated || raw.n_ok || agg.n || 0),
+        score: contractKpi.avg_score != null ? contractKpi.avg_score : (agg.avg_overall != null ? agg.avg_overall : raw.avg_overall_pct),
+        attention: contractKpi.needs_attention != null ? contractKpi.needs_attention : (agg.n_bad || ((agg.status_distribution || {}).needs_review) || 0),
+        attentionPct: contractKpi.needs_attention_pct != null ? contractKpi.needs_attention_pct : (agg.pct_bad || 0),
+        critical: contractKpi.critical != null ? contractKpi.critical : (((agg.severity_totals || {}).P0) || raw.reg55_p0_defect_n || 0),
+        coverage: agg.avg_coverage || raw.avg_coverage || null,
+        confidence: agg.avg_confidence || raw.avg_confidence || null,
+        specialties: raw.specialties || raw.by_specialty || agg.by_specialty || [],
+        doctors: raw.doctors || raw.top_doctors || agg.by_doctor || [],
+        branches: raw.filials || agg.by_branch || [],
+        diagnoses: raw.by_chapter || agg.by_chapter || [],
+        findings: agg.finding_types || raw.reg55_top_failed || [],
+        generated: raw.generated_at || raw.data_freshness || raw.data_through || ""
       };
-      el.addEventListener(evt, handler);
-    });
-    var reset = $("deep-filter-reset");
-    if (reset) reset.addEventListener("click", function () {
-      state.filters = {}; state.page = 1; state.filtersBuilt = false; fetchCases();
-    });
-    $("deep-presets").querySelectorAll("[data-preset]").forEach(function (btn) {
-      btn.addEventListener("click", function () {
-        var p = btn.getAttribute("data-preset");
-        state.filters.preset = (state.filters.preset === p) ? "" : p;
-        $("deep-presets").querySelectorAll("[data-preset]").forEach(function (b) {
-          b.classList.toggle("is-on", b.getAttribute("data-preset") === state.filters.preset);
+    }
+    function kpi(label, value, meta, delta) {
+      return '<article class="kpi"><div class="kpi-label">' + esc(label) + '</div><div class="kpi-value">' +
+        esc(value == null ? "Нет данных" : value) + '</div><div class="kpi-meta">' +
+        (delta ? '<span class="delta' + (String(delta).charAt(0) === "-" ? " down" : "") + '">' + esc(delta) + '</span> · ' : "") +
+        esc(meta || "по выбранному периоду") + "</div></article>";
+    }
+    function score(value) { return value == null ? "Нет данных" : Math.round(Number(value)) + "%"; }
+    function bar(name, value, suffix) {
+      var n = Math.max(0, Math.min(100, Number(value) || 0));
+      var cls = n < 60 ? " bad" : n < 75 ? " warn" : "";
+      return '<div class="bar"><div class="bar-name" title="' + esc(name) + '">' + esc(name) +
+        '</div><div class="track"><div class="fill' + cls + '" style="width:' + n + '%"></div></div><b>' +
+        esc(suffix == null ? Math.round(n) + "%" : suffix) + "</b></div>";
+    }
+    function notice(title, text, tone) {
+      return '<div style="padding:10px 0;border-bottom:1px solid var(--line)"><span class="status ' +
+        esc(tone || "review") + '">' + esc(title) + '</span><div style="margin-top:6px;font-size:13px">' + esc(text) + "</div></div>";
+    }
+    function showError(message) {
+      $("global-error").textContent = message; $("global-error").hidden = false;
+    }
+    function setAuth(show, message) {
+      $("auth").hidden = !show; $("dashboard").hidden = show;
+      if (message) $("auth-error").textContent = message;
+    }
+    function values(list, keys) {
+      return (list || []).map(function (item) {
+        if (typeof item === "string") return { value: item, label: item, count: null };
+        var value = "";
+        for (var i = 0; i < keys.length; i++) if (item[keys[i]]) { value = item[keys[i]]; break; }
+        return { value: String(value), label: String(value), count: item.n == null ? item.count : item.n };
+      }).filter(function (x) { return x.value; });
+    }
+    function monthValues() {
+      var out = [], cursor = new Date();
+      cursor.setDate(1);
+      for (var i = 0; i < 24; i++) {
+        var value = cursor.getFullYear() + "-" + String(cursor.getMonth() + 1).padStart(2, "0");
+        out.push({ value: value, label: cursor.toLocaleDateString("ru-RU", { month: "long", year: "numeric" }), count: null });
+        cursor.setMonth(cursor.getMonth() - 1);
+      }
+      return out;
+    }
+    function buildFacets(summary, rawFacets) {
+      rawFacets = rawFacets || {};
+      state.facets = {
+        months: monthValues(),
+        branches: values(rawFacets.branches || rawFacets.filials || summary.branches, ["value","filial","branch"]),
+        specialties: values(rawFacets.specialties || summary.specialties, ["value","specialization","specialty"]),
+        doctors: values(rawFacets.doctors || summary.doctors, ["value","doctor_fio","doctor"]),
+        document_types: values(rawFacets.document_types || rawFacets.document_kinds || rawFacets.kz_kind || ["medical_exam","consultation","certificate","diagnostic"], ["value"]),
+        statuses: values(rawFacets.statuses || ["Хорошо","Требует внимания","Критично","Недостаточно данных"], ["value"])
+      };
+      document.querySelectorAll(".filter-pop").forEach(renderFilter);
+    }
+    function renderFilter(details) {
+      var key = details.getAttribute("data-filter");
+      var list = state.facets[key] || [];
+      var selected = state.selected[key] || [];
+      details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
+      details.querySelector(".filter-menu").innerHTML =
+        '<input class="control" type="search" placeholder="Найти" aria-label="Поиск по фильтру">' +
+        '<div class="filter-options">' + list.map(function (item) {
+          return '<label class="filter-option" data-label="' + esc(item.label.toLowerCase()) + '"><input type="checkbox" value="' +
+            esc(item.value) + '"' + (selected.indexOf(item.value) >= 0 ? " checked" : "") + '><span>' +
+            esc(item.label) + '</span><span class="filter-count">' + esc(item.count == null ? "" : item.count) + "</span></label>";
+        }).join("") + "</div>";
+      var search = details.querySelector('input[type="search"]');
+      search.addEventListener("input", function () {
+        var term = search.value.trim().toLowerCase();
+        details.querySelectorAll(".filter-option").forEach(function (option) {
+          option.hidden = option.getAttribute("data-label").indexOf(term) < 0;
         });
-        state.page = 1; fetchCases();
       });
-    });
-  }
-
-  var CHART_TABS = [
-    { id: "axes", label: "Оси A/B/C/D", deep: true },
-    { id: "bands", label: "Скор-банды" },
-    { id: "severity", label: "Severity P0-P3", deep: true },
-    { id: "findings", label: "Типы находок", deep: true },
-    { id: "specialty", label: "Спец: avg / % плохих" },
-    { id: "bad_icd", label: "Топ плохих Dx" },
-    { id: "months", label: "Сравнение месяцев" }
-  ];
-  function activeChartTabs() {
-    var deepOn = !!state.deepAvailable;
-    return CHART_TABS.filter(function (t) { return deepOn || !t.deep; });
-  }
-  function renderChartTabs() {
-    var el = $("deep-chart-tabs");
-    if (!el) return;
-    var tabs = activeChartTabs();
-    // Дефолт/текущая вкладка не должна указывать на скрытую deep-диаграмму.
-    if (!tabs.some(function (t) { return t.id === state.chart; })) {
-      state.chart = tabs.length ? tabs[0].id : "bands";
-    }
-    el.innerHTML = tabs.map(function (t) {
-      return "<button type='button' class='chip" + (state.chart === t.id ? " is-on" : "") +
-        "' data-chart='" + t.id + "'>" + esc(t.label) + "</button>";
-    }).join("");
-    el.querySelectorAll("[data-chart]").forEach(function (b) {
-      b.addEventListener("click", function () { state.chart = b.getAttribute("data-chart"); renderChart(state.ovAgg || {}); renderChartTabs(); });
-    });
-  }
-  var SEV_COLOR = { P0: "#c4898a", P1: "#d8b48a", P2: "#a8c0d8", P3: "#c2ccc8" };
-  function renderChart(agg) {
-    var el = $("deep-chart");
-    if (!el) return;
-    if (state.chart === "axes") {
-      var ax = agg.axis_means || {};
-      el.innerHTML = Object.keys(AXIS_RU).map(function (k) { return chartBar(AXIS_RU[k], ax[k], 100); }).join("") || "<div class='sub'>Нет данных</div>";
-    } else if (state.chart === "bands") {
-      var b = agg.score_band_distribution || {};
-      var order = ["<50", "50-75", "75-90", "≥90", "нет скора"];
-      var max = Math.max.apply(null, order.map(function (k) { return b[k] || 0; }).concat([1]));
-      var col = { "<50": "#c4898a", "50-75": "#d8b48a", "75-90": "#a8c0d8", "≥90": "#8fb8a6", "нет скора": "#cbd3da" };
-      el.innerHTML = order.filter(function (k) { return b[k]; }).map(function (k) { return chartBar(k, b[k], max, col[k]); }).join("") || "<div class='sub'>Нет данных</div>";
-    } else if (state.chart === "severity") {
-      var s = agg.severity_totals || {};
-      var mx = Math.max.apply(null, ["P0", "P1", "P2", "P3"].map(function (k) { return s[k] || 0; }).concat([1]));
-      el.innerHTML = ["P0", "P1", "P2", "P3"].map(function (k) { return chartBar(k + " находок", s[k] || 0, mx, SEV_COLOR[k]); }).join("");
-    } else if (state.chart === "findings") {
-      var fd = agg.finding_axis_distribution || {};
-      var keys = Object.keys(fd).sort(function (a, b2) { return fd[b2] - fd[a]; });
-      var mx2 = Math.max.apply(null, keys.map(function (k) { return fd[k]; }).concat([1]));
-      el.innerHTML = keys.map(function (k) { return chartBar(AXIS_RU[k] || k, fd[k], mx2, "#a8c0d8"); }).join("") || "<div class='sub'>Нет находок</div>";
-    } else if (state.chart === "specialty") {
-      var rows = (agg.by_specialty || []).slice(0, 15);
-      el.innerHTML = rows.map(function (r) {
-        return "<div class='bar-row'><div class='name' title='" + esc(r.specialization) + "'>" + esc(r.specialization) + "</div>" +
-          "<div class='bar-track'><div class='bar-fill " + (r.avg_overall >= 75 ? "" : r.avg_overall >= 60 ? "is-mid" : "is-low") + "' style='width:" + Math.max(0, Math.min(100, r.avg_overall || 0)) + "%'></div></div>" +
-          "<div class='pct'>" + (r.avg_overall != null ? Math.round(r.avg_overall) : " - ") + "</div>" +
-          "<div style='font-size:11px;color:var(--muted);grid-column:1 / -1;margin:-2px 0 4px 82px'>n" + r.n + " · плохих " + r.bad_pct + "% · P0 " + r.p0 + "</div></div>";
-      }).join("") || "<div class='sub'>Нет данных</div>";
-    } else if (state.chart === "bad_icd") {
-      var bad = agg.top_bad_icd || [];
-      el.innerHTML = bad.length ? ("<table><thead><tr><th>Код</th><th>Диагноз</th><th>Плохих КЗ</th></tr></thead><tbody>" +
-        bad.map(function (b3) { return "<tr><td><code>" + esc(b3.mkb_code) + "</code></td><td>" + esc((b3.diagnosis || "").slice(0, 90)) + "</td><td>" + b3.n + "</td></tr>"; }).join("") +
-        "</tbody></table>") : "<div class='sub'>Нет плохих КЗ с кодом в выборке</div>";
-    } else if (state.chart === "months") {
-      var series = (state.dyn && state.dyn.series) || [];
-      el.innerHTML = series.length
-        ? series.map(function (s) { return chartBar(monthLabel(s.month), s.avg_overall, 100); }).join("")
-        : "<div class='sub'>Нет данных по выбранным месяцам</div>";
-    }
-  }
-
-  function axesCell(r) {
-    function c(v) { return v == null ? " - " : Math.round(v); }
-    return "<span title='оформл/соглас/безоп/регул'>" + c(r.axis_documentation) + "/" + c(r.axis_concordance) + "/" + c(r.axis_safety) + "/" + c(r.axis_regulatory) + "</span>";
-  }
-  function sevCell(r) {
-    var parts = [];
-    [["p0", "#c0392b"], ["p1", "#d8933a"], ["p2", "#5b8def"], ["p3", "#9aa6b2"]].forEach(function (p) {
-      var n = r[p[0]] || 0;
-      parts.push("<span style='color:" + (n ? p[1] : "#c2ccc8") + ";font-weight:" + (n ? 700 : 400) + "'>" + n + "</span>");
-    });
-    return parts.join("/");
-  }
-  function renderTable(v) {
-    var rows = v.rows || [];
-    var tbl = $("deep-cases-table");
-    if (tbl) {
-      tbl.classList.toggle("hide-deep", !state.deepAvailable);
-      tbl.classList.toggle("hide-kind", !((v.facets && v.facets.kz_kinds && v.facets.kz_kinds.length > 1)));
-    }
-    $("deep-rows").innerHTML = rows.length ? rows.map(function (r) {
-      var reg = r.axis_regulatory;
-      return "<tr data-vid='" + esc(r.visit_id) + "' style='cursor:pointer'>" +
-        "<td>" + esc(r.date || " - ") + "</td>" +
-        "<td>" + esc(r.doctor_fio) + "<div style='color:var(--muted);font-size:11px'>" + esc(r.specialization) + "</div></td>" +
-        "<td>" + (r.mkb_code_main ? "<code>" + esc(r.mkb_code_main) + "</code> " : "") + esc((r.diagnosis_short || "").slice(0, 46)) + "</td>" +
-        "<td class='col-kind'>" + esc(r.kz_kind) + "</td>" +
-        "<td>" + pill(r.overall_pct) + (r.has_potential_harm ? " <span title='потенц. вред' style='color:#c0392b'>&#9679;</span>" : "") + "</td>" +
-        "<td class='col-deep' style='font-size:12px'>" + axesCell(r) + "</td>" +
-        "<td class='col-deep'>" + pill(reg) + "</td>" +
-        "<td class='col-deep' style='font-size:12px'>" + sevCell(r) + "</td>" +
-        "<td class='col-deep'>" + (r.needs_human ? "да" : " - ") + "</td>" +
-        "<td><button type='button' class='btn btn--ghost' data-detail='" + esc(r.visit_id) + "' style='padding:4px 9px;font-size:11px'>Разбор</button></td>" +
-        "</tr>";
-    }).join("") : "<tr><td colspan='10'>Нет КЗ под фильтр</td></tr>";
-    $("deep-rows").querySelectorAll("[data-detail]").forEach(function (b) {
-      b.addEventListener("click", function (e) { e.stopPropagation(); openDetail(b.getAttribute("data-detail")); });
-    });
-    $("deep-rows").querySelectorAll("tr[data-vid]").forEach(function (tr) {
-      tr.addEventListener("click", function () { openDetail(tr.getAttribute("data-vid")); });
-    });
-  }
-
-  function renderPager(v) {
-    var sortOpts = [["overall", "overall"], ["date", "дата"], ["p0", "P0"], ["n_findings", "находок"],
-      ["documentation", "ось A"], ["concordance", "ось B"], ["safety", "ось C"], ["regulatory", "ось D"]];
-    $("deep-pager").innerHTML =
-      "<div style='display:flex;gap:8px;align-items:center'>" +
-      "<button type='button' class='btn btn--ghost' id='deep-prev' style='padding:6px 12px'" + (v.page <= 1 ? " disabled" : "") + ">← Назад</button>" +
-      "<span class='sub'>стр. " + v.page + " / " + v.n_pages + " · всего " + v.total + "</span>" +
-      "<button type='button' class='btn btn--ghost' id='deep-next' style='padding:6px 12px'" + (v.page >= v.n_pages ? " disabled" : "") + ">Вперёд →</button>" +
-      "</div>" +
-      "<div style='display:flex;gap:8px;align-items:center'>" +
-      "<span class='sub'>сорт.</span><select id='deep-sortby' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px;background:#fff'>" +
-      sortOpts.map(function (o) { return "<option value='" + o[0] + "'" + (state.sort_by === o[0] ? " selected" : "") + ">" + o[1] + "</option>"; }).join("") + "</select>" +
-      "<select id='deep-sortdir' style='padding:6px 8px;border-radius:9px;border:1px solid var(--line);font:inherit;font-size:12px;background:#fff'>" +
-      "<option value='asc'" + (state.sort_dir === "asc" ? " selected" : "") + ">↑ хуже сверху</option>" +
-      "<option value='desc'" + (state.sort_dir === "desc" ? " selected" : "") + ">↓ лучше сверху</option></select>" +
-      "<button type='button' class='btn' id='deep-export' style='padding:6px 12px;background:var(--teal);color:#fff'>Экспорт CSV</button>" +
-      "</div>";
-    var prev = $("deep-prev"), next = $("deep-next");
-    if (prev) prev.addEventListener("click", function () { if (state.page > 1) { state.page--; fetchCases(); } });
-    if (next) next.addEventListener("click", function () { if (state.page < v.n_pages) { state.page++; fetchCases(); } });
-    $("deep-sortby").addEventListener("change", function () { state.sort_by = this.value; state.page = 1; fetchCases(); });
-    $("deep-sortdir").addEventListener("change", function () { state.sort_dir = this.value; state.page = 1; fetchCases(); });
-    $("deep-export").addEventListener("click", function () { exportCsv(v.rows || []); });
-  }
-
-  function exportCsv(rows) {
-    var cols = ["visit_id", "patient_id", "date", "doctor_fio", "specialization", "filial", "kz_kind",
-      "mkb_code_main", "diagnosis_short", "overall_pct", "axis_documentation", "axis_concordance",
-      "axis_safety", "axis_regulatory", "p0", "p1", "p2", "p3", "needs_human", "has_potential_harm", "status"];
-    var lines = [cols.join(",")];
-    rows.forEach(function (r) {
-      lines.push(cols.map(function (c) {
-        var v = r[c];
-        v = (v == null ? "" : String(v)).replace(/"/g, '""').replace(/[\r\n]+/g, " ");
-        return /[",]/.test(v) ? '"' + v + '"' : v;
-      }).join(","));
-    });
-    var blob = new Blob(["\ufeff" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
-    var a = document.createElement("a");
-    a.href = URL.createObjectURL(blob);
-    a.download = "kz_deep_" + state.month + "_page" + state.page + ".csv";
-    a.click();
-  }
-
-  var FILTER_LABELS = {
-    specialization: "спец.", status: "статус", filial: "филиал", score_band: "скор-банд",
-    mkb_chapter: "глава МКБ", finding_axis: "ось находки", min_severity: "severity",
-    doctor: "врач", q: "поиск", date_from: "с", date_to: "по",
-    needs_human: "нужен человек", potential_harm: "потенц. вред"
-  };
-  var PRESET_LABELS = {
-    p0: "P0 (риск вреда)", dx_no_code: "Dx без кода МКБ",
-    treatment_off_protocol: "проблемы согласованности", needs_human: "нужен человек"
-  };
-  function filterSummary(v) {
-    var f = v.applied_filters || {};
-    var agg = v.filtered_agg || {};
-    var parts = [];
-    if (f.preset && PRESET_LABELS[f.preset]) parts.push("пресет: " + PRESET_LABELS[f.preset]);
-    Object.keys(f).forEach(function (k) {
-      if (k === "preset" || k.charAt(0) === "_") return;
-      var val = f[k];
-      if (val === "" || val == null || val === false) return;
-      var lbl = FILTER_LABELS[k] || k;
-      parts.push(lbl + (val === true ? "" : "=" + val));
-    });
-    var badTxt = agg.pct_bad != null ? (" · плохих " + agg.pct_bad + "%" +
-      (state.deepAvailable ? (" · P0 " + ((agg.severity_totals || {}).P0 || 0)) : "")) : "";
-    var txt = parts.length ? ("Фильтры: " + parts.join(" · ")) : "Фильтры не заданы - вся выборка.";
-    var empty = (v.total === 0) ? " · ничего не найдено под фильтр (сбросьте условия)" : "";
-    $("deep-filter-summary").textContent = txt + " · показано " + (v.rows || []).length + " из " + v.total + badTxt + empty;
-  }
-
-  async function fetchCases() {
-    var qs = new URLSearchParams();
-    qs.set("month", state.month);
-    qs.set("page", state.page);
-    qs.set("page_size", state.page_size);
-    qs.set("sort_by", state.sort_by);
-    qs.set("sort_dir", state.sort_dir);
-    Object.keys(state.filters).forEach(function (k) {
-      var val = state.filters[k];
-      if (val === true) qs.set(k, "true");
-      else if (val) qs.set(k, val);
-    });
-    try {
-      var res = await fetch("/api/methodist/mis-kz-quality/cases?" + qs.toString(), { headers: headers() });
-      if (res.status === 401 || res.status === 403) { showUnavail("Нужна авторизация методиста."); return; }
-      var v = await res.json();
-      if (!v.ok) {
-        $("deep-rows").innerHTML = "<tr><td colspan='10'>" + esc(v.hint_ru || v.error || ("Нет кейсов за " + monthLabel(state.month))) + "</td></tr>";
-        $("deep-pager").innerHTML = "";
-        return;
-      }
-      var unavailable = $("deep-unavail");
-      if (unavailable) unavailable.hidden = true;
-      var deepBody = $("deep-body");
-      if (deepBody) deepBody.hidden = false;
-      state.casesLoaded = true;
-      state.deepAvailable = !!v.deep_available;
-      state.mkbAvailable = !!v.mkb_available;
-      if (!state.filtersBuilt) buildFilters(v.facets || {});
-      renderTable(v);
-      renderPager(v);
-      filterSummary(v);
-    } catch (e) { $("deep-rows").innerHTML = "<tr><td colspan='10'>" + esc(String(e && e.message || e)) + "</td></tr>"; }
-  }
-
-  function showUnavail(msg) {
-    var el = $("deep-unavail");
-    el.hidden = false;
-    el.textContent = msg;
-    // Прячем тело только если совсем нет данных (даже динамики)
-    if (!(state.dyn && state.dyn.series && state.dyn.series.length)) $("deep-body").hidden = true;
-  }
-
-  /* --------------------------- Экран B: разбор --------------------------- */
-  async function openDetail(vid) {
-    if (!vid) return;
-    var box = $("deep-detail"), body = $("deep-detail-body");
-    box.style.display = "block";
-    body.innerHTML = "<div class='loading'>Загрузка разбора visit " + esc(vid) + "…</div>";
-    box.scrollIntoView({ behavior: "smooth", block: "nearest" });
-    try {
-      var res = await fetch("/api/methodist/mis-kz-quality/case-detail?month=" + encodeURIComponent(state.month) + "&visit_id=" + encodeURIComponent(vid), { headers: headers() });
-      var d = await res.json();
-      if (!d.ok) { body.innerHTML = "<div class='error'>" + esc(d.error || "Не найдено") + "</div>"; return; }
-      renderDetail(d);
-    } catch (e) { body.innerHTML = "<div class='error'>" + esc(String(e && e.message || e)) + "</div>"; }
-  }
-
-  var SEV_META = { P0: { c: "#c0392b", t: "Критично (риск вреда)" }, P1: { c: "#d8933a", t: "Клинич. дефект" }, P2: { c: "#5b8def", t: "Документирование" }, P3: { c: "#8a94a6", t: "Формальное" } };
-  function renderDetail(d) {
-    var r = d.record || {};
-    var ax = d.axes || {};
-    var findings = (d.findings || []).filter(function (f) { return !f.passed; });
-    var passed = (d.findings || []).filter(function (f) { return f.passed; });
-    window.__deepDetailVid = d.visit_id;
-
-    var head = "<div style='display:flex;flex-wrap:wrap;gap:8px;margin-bottom:10px'>" +
-      chip("Overall", d.deep_overall_pct != null ? d.deep_overall_pct + "%" : " - ", tone(d.deep_overall_pct)) +
-      chip("Статус", STATUS_RU[d.deep_status] || d.deep_status || " - ") +
-      chip("№55", r.axis_regulatory != null ? Math.round(r.axis_regulatory) + "%" : " - ") +
-      chip("P0", (d.n_by_severity || {}).P0 || 0, (d.n_by_severity || {}).P0 ? "low" : "good") +
-      "</div>" +
-      "<div style='font-size:14px'><strong>" + esc(r.doctor_fio) + "</strong> · " + esc(r.specialization) + " · " + esc(r.filial) + "</div>" +
-      "<div style='font-size:12px;color:var(--muted);margin-bottom:6px'>visit <code>" + esc(d.visit_id) + "</code> · пациент <code>" + esc(r.patient_id) + "</code> · " + esc(r.date) +
-      " · " + (r.mkb_code_main ? "<code>" + esc(r.mkb_code_main) + "</code> " : "") + esc(r.diagnosis_short || "") + "</div>";
-
-    var axesHtml = "<div style='display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin:10px 0'>" +
-      Object.keys(AXIS_RU).map(function (k) {
-        var m = { documentation: ax.documentation, clinical_concordance: ax.clinical_concordance, safety: ax.safety, regulatory: ax.regulatory }[k];
-        return "<div style='padding:.6rem .7rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)'>" +
-          "<div style='font-size:11px;text-transform:uppercase;color:var(--muted)'>" + esc(AXIS_RU[k]) + "</div>" +
-          "<div style='font-size:1.3rem;font-weight:650;color:" + (m >= 75 ? "var(--teal-deep)" : m >= 60 ? "#b45309" : "#b91c1c") + "'>" + (m != null ? Math.round(m) + "%" : " - ") + "</div></div>";
-      }).join("") + "</div>";
-
-    var findHtml = findings.length ? findings.map(function (f) {
-      var meta = SEV_META[f.severity] || { c: "#8a94a6", t: f.severity };
-      return "<div style='padding:.6rem .8rem;margin:.4rem 0;border-radius:10px;background:#fff;border-left:3px solid " + meta.c + ";border:1px solid rgba(15,107,92,.1)'>" +
-        "<div style='display:flex;gap:8px;align-items:baseline;flex-wrap:wrap'>" +
-        "<span style='font-weight:700;color:" + meta.c + "'>" + esc(f.severity) + "</span>" +
-        "<span style='font-size:11px;color:var(--muted)'>" + esc(f.axis || "") + " · " + esc(meta.t) + (f.needs_human ? " · needs_human" : "") + "</span></div>" +
-        "<div style='font-size:13.5px;margin-top:.2rem'>" + esc(f.title || f.code) + "</div>" +
-        (f.detail ? "<div style='font-size:12.5px;color:var(--muted);margin-top:.2rem'>" + esc(f.detail) + "</div>" : "") +
-        (f.evidence ? "<div style='font-size:12px;margin-top:.3rem;padding:.3rem .5rem;background:#f4f7f5;border-radius:6px'>«" + esc(f.evidence) + "»</div>" : "") +
-        (f.source_ref ? "<div style='font-size:11px;color:var(--teal);margin-top:.25rem'>→ " + esc(f.source_ref) + "</div>" : "") +
-        "</div>";
-    }).join("") : "<div class='sub'>Находок-нарушений нет.</div>";
-
-    var passedHtml = passed.length ? ("<details style='margin-top:.6rem'><summary style='cursor:pointer;font-size:12px;color:var(--muted)'>Пройденные проверки (" + passed.length + ")</summary>" +
-      "<div style='margin-top:.4rem'>" + passed.map(function (f) { return "<div style='font-size:12.5px;color:#4f7a6a;margin:.2rem 0'>✔ " + esc(f.title || f.code) + "</div>"; }).join("") + "</div></details>") : "";
-
-    $("deep-detail-body").innerHTML = head + axesHtml + explainHtml(d, ax) +
-      "<div style='font-size:12px;letter-spacing:.04em;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin:.8rem 0 .3rem'>Находки по severity</div>" +
-      findHtml + passedHtml +
-      "<div id='deep-detail-llm-out' style='margin-top:.8rem'></div>";
-  }
-  function explainHtml(d, ax) {
-    var n = d.n_by_severity || {};
-    var reason;
-    if (n.P0) reason = "Есть критическая находка <b>P0</b> (риск вреда) → risk-gate ограничивает overall до 40, статус «критично».";
-    else if (n.P1) reason = "Есть клинический дефект <b>P1</b> → risk-gate ограничивает overall до 60, статус «на разбор».";
-    else {
-      var vals = [["Оформление", ax.documentation], ["Согласованность", ax.clinical_concordance],
-        ["Безопасность", ax.safety], ["Регуляторика", ax.regulatory]].filter(function (x) { return x[1] != null; });
-      vals.sort(function (a, b) { return a[1] - b[1]; });
-      var low = vals[0];
-      reason = low
-        ? ("Критических находок нет. Самая слабая ось: <b>" + esc(low[0]) + "</b> " + Math.round(low[1]) +
-           "%. Overall = среднее доступных осей → статус «" + esc(STATUS_RU[d.deep_status] || d.deep_status || "-") + "».")
-        : "Overall = среднее доступных осей.";
-    }
-    return "<div class='legend-axis' style='background:#f4f7f5'><div class='lg-t'>Как получен статус</div>" +
-      "<div class='lg-d'>" + reason + "</div></div>";
-  }
-  function chip(label, val, toneCls) {
-    var color = toneCls === "low" ? "#b91c1c" : toneCls === "good" ? "var(--teal-deep)" : toneCls === "mid" ? "#b45309" : "var(--teal-deep)";
-    if (toneCls === "good" || toneCls === "mid" || toneCls === "low") color = toneCls === "good" ? "var(--teal-deep)" : toneCls === "mid" ? "#b45309" : "#b91c1c";
-    return "<span style='display:inline-flex;gap:6px;align-items:center;padding:5px 10px;border-radius:999px;background:rgba(15,107,92,.08);font-size:13px'>" +
-      "<span style='opacity:.7'>" + esc(label) + "</span><strong style='color:" + color + "'>" + esc(val) + "</strong></span>";
-  }
-
-  async function runDetailLlm() {
-    var vid = window.__deepDetailVid;
-    var out = $("deep-detail-llm-out");
-    if (!vid || !out) return;
-    if (!token()) { out.innerHTML = "<div class='error'>Нужен токен методиста.</div>"; return; }
-    out.innerHTML = "<div class='loading'>LLM-разбор по протоколам МЗ (L2 + LLM)…</div>";
-    try {
-      var res = await fetch("/api/methodist/mis-kz-quality/llm-review-one", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Accept": "application/json", "X-Methodist-Token": token() },
-        body: JSON.stringify({ month: state.month, visit_id: vid })
+      details.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
+        input.addEventListener("change", function () {
+          var index = state.selected[key].indexOf(input.value);
+          if (input.checked && index < 0) state.selected[key].push(input.value);
+          if (!input.checked && index >= 0) state.selected[key].splice(index, 1);
+          details.querySelector("summary b").textContent = state.selected[key].length || "Все";
+          filtersChanged();
+        });
       });
-      var d = await res.json();
-      var item = d.item || {};
-      var summary = String(item.executive_summary_ru || item.comment || "").trim();
-      out.innerHTML = "<div style='padding:.7rem .85rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.12)'>" +
-        "<div style='font-size:12px;text-transform:uppercase;color:var(--teal-deep);font-weight:600;margin-bottom:.3rem'>LLM-разбор" +
-        (item.overall_pct != null ? " · " + Number(item.overall_pct).toFixed(0) + "%" : "") + "</div>" +
-        "<div style='font-size:13.5px;line-height:1.55'>" + esc(summary || "Ответ без резюме.") + "</div>" +
-        ((item.recommendations_ru || []).length ? "<ul style='margin:.4rem 0 0;padding-left:1.15rem;font-size:13px'>" +
-          item.recommendations_ru.slice(0, 6).map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" : "") +
-        "</div>";
-    } catch (e) { out.innerHTML = "<div class='error'>" + esc(String(e && e.message || e)) + "</div>"; }
-  }
-
-  /* --------------------- Динамика: загрузка серий --------------------- */
-  async function fetchDynamics(initial) {
-    var url = "/api/methodist/mis-kz-quality/dynamics";
-    if (!initial && state.months.length) url += "?months=" + encodeURIComponent(state.months.join(","));
-    try {
-      var res = await fetch(url, { headers: headers() });
-      if (res.status === 401 || res.status === 403) { showUnavail("Нужна авторизация методиста."); return; }
-      if (!res.ok) return;
-      var d = await res.json();
-      var series = (d.series || []).filter(function (s) { return s.has_deep; });
-      var unavailable = $("deep-unavail");
-      if (unavailable) unavailable.hidden = true;
-      state.dyn = { series: series };
-      if (initial) {
-        var all = series.map(function (s) { return s.month; });
-        state.months = all.slice();
-        if (all.indexOf(state.month) < 0) state.month = all.length ? all[all.length - 1] : state.month;
-        buildMonthPills(all);
-        buildActiveMonthSelect();
-        if (all.length) $("deep-body").hidden = false;
+    }
+    function renderChips() {
+      var html = [];
+      Object.keys(state.selected).forEach(function (key) {
+        state.selected[key].forEach(function (value) {
+          html.push('<span class="chip">' + esc(FILTER_LABELS[key] + ": " + value) +
+            '<button type="button" data-remove="' + esc(key) + '" data-value="' + esc(value) + '" aria-label="Удалить фильтр">×</button></span>');
+        });
+      });
+      $("filter-chips").innerHTML = html.join("");
+      $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var key = button.getAttribute("data-remove"), value = button.getAttribute("data-value");
+          state.selected[key] = state.selected[key].filter(function (x) { return x !== value; });
+          var filter = document.querySelector('.filter-pop[data-filter="' + key + '"]');
+          if (filter) renderFilter(filter);
+          filtersChanged();
+        });
+      });
+    }
+    function syncUrl(replace) {
+      var q = query();
+      q.set("page", state.page);
+      var url = location.pathname + "?" + q.toString();
+      history[replace ? "replaceState" : "pushState"]({ page: state.page }, "", url);
+    }
+    function readUrl() {
+      var q = new URLSearchParams(location.search);
+      state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : "overview";
+      state.period = q.get("period") || "month"; state.compare = q.get("compare_period") || "previous";
+      state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
+      Object.keys(state.selected).forEach(function (key) {
+        state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(",").filter(Boolean);
+      });
+      $("period").value = state.period; $("compare").value = state.compare;
+      $("date-from").value = state.dateFrom; $("date-to").value = state.dateTo;
+      $("date-from-wrap").hidden = state.period !== "custom";
+      $("date-to-wrap").hidden = state.period !== "custom";
+    }
+    function filtersChanged() {
+      renderChips(); syncUrl(true); loadPage(state.page);
+    }
+    function switchPage(page, push) {
+      if (!PAGE_TITLES[page]) page = "overview";
+      state.page = page;
+      document.querySelectorAll(".page").forEach(function (section) { section.hidden = section.getAttribute("data-page") !== page; });
+      document.querySelectorAll(".nav-button").forEach(function (button) {
+        if (button.getAttribute("data-page") === page) button.setAttribute("aria-current", "page");
+        else button.removeAttribute("aria-current");
+      });
+      document.title = PAGE_TITLES[page] + " | МО Аналитика";
+      if (push !== false) syncUrl(false);
+      loadPage(page);
+      $("main").focus({ preventScroll: true });
+      window.scrollTo(0, 0);
+    }
+    function renderOverview(summary) {
+      state.data.summary = summary;
+      $("overview-kpis").innerHTML =
+        kpi("МО за период", summary.n.toLocaleString("ru-RU"), "записи из БД МИС") +
+        kpi("Оценено", summary.evaluated.toLocaleString("ru-RU"), "доля от допустимых к оценке") +
+        kpi("Итоговая оценка", score(summary.score), "по всем оценённым") +
+        kpi("Требует внимания", summary.attention || "0", (summary.attentionPct || 0) + "% выборки") +
+        kpi("Критические", summary.critical || "0", "приоритетный ручной разбор") +
+        kpi("Полнота проверки", score(summary.coverage), "доступность данных") +
+        kpi("Надёжность", score(summary.confidence), "устойчивость результата") +
+        kpi("Свежесть данных", summary.generated ? "Актуально" : "Не указана", summary.generated || "время не указано");
+      $("freshness").textContent = summary.generated ? "Данные обновлены " + summary.generated : "Свежесть не указана";
+      var specialties = summary.specialties.slice(0, 8);
+      var monthly = ((summary.raw.trends || {}).monthly || []).filter(function (x) {
+        return !state.selected.months.length || state.selected.months.indexOf(x.month) >= 0;
+      });
+      $("trend-chart").innerHTML = monthly.length ? monthly.map(function (x) {
+        return bar(x.month || "Месяц", x.avg_score != null ? x.avg_score : x.avg_overall);
+      }).join("") : specialties.length ? specialties.map(function (x) {
+        return bar(x.specialization || x.specialty || "Группа", x.avg_overall_pct != null ? x.avg_overall_pct : x.avg_overall);
+      }).join("") : bar("Итоговая оценка", summary.score || 0);
+      $("reason-chart").innerHTML = summary.findings.length ? summary.findings.slice(0, 7).map(function (x) {
+        var name = x.title || x.label || x.code || "Замечание", pct = x.pct == null ? x.count || x.n || 0 : x.pct;
+        return bar(name, Math.min(100, pct), x.pct == null ? String(pct) : Math.round(pct) + "%");
+      }).join("") : '<div class="empty">Причины появятся после обработки данных.</div>';
+      $("diagnosis-chart").innerHTML = summary.diagnoses.length ? summary.diagnoses.slice(0, 7).map(function (x) {
+        return bar(x.chapter || x.label || x.mkb_chapter || "Без кода", x.avg_overall || x.avg_overall_pct || 0);
+      }).join("") : '<div class="empty">Нет данных по главам МКБ.</div>';
+      $("attention-list").innerHTML =
+        notice("Критические", (summary.critical || 0) + " случаев требуют первоочередного решения", "critical") +
+        notice("На разбор", (summary.attention || 0) + " случаев в рабочей очереди", "review") +
+        notice("Качество данных", summary.generated ? "Последняя загрузка завершена" : "Проверьте свежесть загрузки", summary.generated ? "good" : "review");
+      buildFacets(summary, summary.raw.facets);
+    }
+    async function loadOverview() {
+      var suffix = "?" + query().toString();
+      var responses = await Promise.all([
+        request("/overview" + suffix, "__root__"),
+        request("/facets" + suffix, "/cases" + suffix),
+        request("/trends" + suffix, "/dynamics" + suffix)
+      ]);
+      var response = responses[0], facetsResponse = responses[1], trendsResponse = responses[2];
+      if (response.status === 401 || response.status === 403) { setAuth(true); return; }
+      if (!response.ok) throw new Error("Не удалось загрузить обзор.");
+      var raw = await response.json();
+      if (facetsResponse.ok) {
+        var facetPayload = await facetsResponse.json();
+        raw.facets = facetPayload.facets || facetPayload;
       }
-      renderCompare();
-      renderDynamics();
-      if (state.tab === "charts" && state.chart === "months") renderChart(state.ovAgg || {});
-    } catch (e) {}
-  }
-
-  async function init() {
-    await fetchDynamics(true);
-    await loadActiveAgg();
-    if (state.tab === "scoring") renderScoring();
-  }
-  window.__misKzDeepReload = init;
-
-  document.addEventListener("DOMContentLoaded", function () {
-    bindNav();
-    bindTopNav();
-    var closeBtn = $("deep-detail-close");
-    if (closeBtn) closeBtn.addEventListener("click", function () { $("deep-detail").style.display = "none"; });
-    var llmBtn = $("deep-detail-llm");
-    if (llmBtn) llmBtn.addEventListener("click", runDetailLlm);
-    var am = $("deep-active-month");
-    if (am) am.addEventListener("change", function () {
-      state.month = this.value; state.page = 1; state.filtersBuilt = false; state.casesLoaded = false;
-      loadActiveAgg();
-      if (state.tab === "cases") fetchCases();
-    });
-    var dref = $("deep-refresh");
-    if (dref) dref.addEventListener("click", function () { state.filtersBuilt = false; state.casesLoaded = false; init(); });
-    var refresh = $("btn-refresh");
-    if (refresh) refresh.addEventListener("click", function () { setTimeout(function () { state.filtersBuilt = false; state.casesLoaded = false; init(); }, 400); });
-  });
-
-  // Первичная загрузка (даём основному модулю время проверить авторизацию)
-  setTimeout(init, 600);
-})();
-</script>
+      if (trendsResponse.ok) raw.trends = await trendsResponse.json();
+      renderOverview(normalizeSummary(raw));
+    }
+    function rowRecord(row) {
+      var id = row.case_id || row.visit_id || row.id || "";
+      var doctor = row.doctor_fio || row.doctor || "Врач не указан";
+      var specialty = row.specialization || row.specialty || "";
+      var diagnosis = row.diagnosis_short || row.diagnosis || row.mkb_code_main || "Не указан";
+      var total = row.deep_overall_pct != null ? row.deep_overall_pct : (row.overall_pct != null ? row.overall_pct : row.l1_overall_pct);
+      var status = row.crm_status || ((row.crm || {}).status) || row.deep_status || row.status || (total < 60 ? "critical" : total < 75 ? "review" : "good");
+      return { raw: row, id: id, date: row.date || row.visit_date || "", doctor: doctor, specialty: specialty,
+        branch: row.filial || row.branch || "", diagnosis: diagnosis, total: total, status: status,
+        kind: row.document_kind_label || row.kz_kind_label || row.kz_kind || "Не указан",
+        coverage: row.coverage_pct || row.coverage, confidence: row.confidence_pct || row.confidence };
+    }
+    function statusLabel(value) {
+      var map = { new:"Новый", assigned:"Назначен", in_review:"На разборе", confirmed_issue:"Подтверждено",
+        false_positive:"Отклонено", needs_more_data:"Нужны данные", sent_to_doctor:"Передано врачу",
+        resolved:"Решено", closed:"Закрыто", critical:"Критично", review:"Требует внимания",
+        poor:"Требует внимания", good:"Хорошо", acceptable:"Приемлемо", needs_review:"Требует внимания" };
+      return map[value] || value || "Не указан";
+    }
+    function statusClass(value) { return /critical|confirmed/.test(value) ? "critical" : /good|resolved|closed|acceptable/.test(value) ? "good" : "review"; }
+    function documentRow(item) {
+      return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
+        '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
+        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(score(item.total)) + '</b></td><td>' + esc(score(item.coverage)) +
+        '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
+        esc(statusLabel(item.status)) + "</span></td></tr>";
+    }
+    function queueRow(item) {
+      var priority = Number(item.raw.p0 || 0) > 0 ? "P0" : Number(item.raw.p1 || 0) > 0 ? "P1" : "Низкий балл";
+      var crm = item.raw.crm || {};
+      return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
+        statusClass(item.status) + '">' + esc(priority) + '</span></td><td>' + esc(item.date) +
+        '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
+        '</small></td><td>' + esc(item.diagnosis) + '</td><td>' + esc(score(item.total)) + '</td><td>' +
+        esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
+        esc(item.raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(item.raw.due_date || crm.due_date || "Сегодня") +
+        '</td><td>' + esc(statusLabel(item.status)) + "</td></tr>";
+    }
+    function bindCaseRows(container) {
+      container.querySelectorAll("[data-case]").forEach(function (row) {
+        function open(event) {
+          if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+          if (event.target && event.target.matches('input[type="checkbox"]')) return;
+          event.preventDefault(); openCase(row.getAttribute("data-case"), row);
+        }
+        row.addEventListener("click", open); row.addEventListener("keydown", open);
+      });
+    }
+    async function loadCases(queue) {
+      var q = query(); q.set("page", state.pageNo); q.set("page_size", 50);
+      if (queue) q.set("queue_only", "1");
+      var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
+      if (!response.ok) throw new Error("Не удалось загрузить случаи.");
+      var data = await response.json();
+      var rows = (data.rows || data.cases || data.items || data.worst_visits || []).map(rowRecord);
+      var body = queue ? $("queue-rows") : $("document-rows");
+      body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
+        '<tr><td colspan="' + (queue ? 11 : 9) + '" class="empty">По выбранным фильтрам случаев нет.</td></tr>';
+      bindCaseRows(body);
+      if (!queue) $("pager").innerHTML = '<span>Показано ' + rows.length + " из " + esc(data.total || rows.length) +
+        '</span><button class="button secondary" id="next-page">Следующая страница</button>';
+      if (data.facets) buildFacets(state.data.summary || normalizeSummary({}), data.facets);
+    }
+    async function openCase(id, trigger) {
+      if (!id) return;
+      state.openCaseId = id;
+      state.trigger = trigger;
+      $("case-drawer").hidden = false; $("drawer-backdrop").hidden = false;
+      document.body.style.overflow = "hidden";
+      $("drawer-body").innerHTML = '<div class="skeleton"></div>';
+      $("drawer-close").focus();
+      var q = query(); q.set("month", q.get("month") || new Date().toISOString().slice(0,7)); q.set("visit_id", id);
+      try {
+        var response = await request("/cases/" + encodeURIComponent(id), "/case-detail?" + q.toString());
+        if (!response.ok) throw new Error("Случай не найден.");
+        renderCase(await response.json());
+      } catch (e) { $("drawer-body").innerHTML = '<div class="banner">' + esc(e.message) + "</div>"; }
+    }
+    function renderCase(data) {
+      var record = data.record || data.case || data;
+      var item = rowRecord(record);
+      var axes = data.axes || {};
+      var findings = data.findings || record.findings || [];
+      var crm = data.crm || record.crm || {};
+      var crmStatus = crm.status || "new";
+      var statusOptions = [
+        ["new","Новый"],["assigned","Назначен"],["in_review","На разборе"],
+        ["confirmed_issue","Подтверждено"],["false_positive","Отклонено"],
+        ["needs_more_data","Нужны данные"],["sent_to_doctor","Передано врачу"],
+        ["resolved","Решено"],["closed","Закрыто"]
+      ].map(function (option) {
+        return '<option value="' + option[0] + '"' + (option[0] === crmStatus ? " selected" : "") + ">" + option[1] + "</option>";
+      }).join("");
+      $("drawer-title").textContent = "Разбор случая";
+      $("drawer-subtitle").textContent = [item.date, item.doctor, item.specialty, item.branch].filter(Boolean).join(" · ");
+      $("drawer-body").innerHTML =
+        '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
+        kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
+        kpi("Полнота проверки", score(data.coverage_pct || item.coverage), "доступность исходных данных") +
+        kpi("Надёжность", score(data.confidence_pct || item.confidence), "устойчивость результата") + '</div>' +
+        '<div class="detail-block"><h3>Оси оценки</h3>' + ["documentation","clinical_concordance","safety","regulatory"].map(function (key) {
+          var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика" };
+          return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
+        }).join("") + '</div>' +
+        '<div class="detail-block"><h3>Клиническая цепочка</h3><p>' + esc(item.diagnosis) +
+        '</p><p class="card-sub">Жалобы и анамнез → статус → диагноз → МКБ → обследования → лечение → наблюдение</p></div>' +
+        '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
+          var title = [finding.code, finding.title_ru || finding.title].filter(Boolean).join(" · ");
+          return notice(finding.severity || "Проверить", title || finding.detail_ru || finding.detail || "Требуется ручная проверка",
+            finding.severity === "P0" ? "critical" : "review") +
+            ((finding.detail_ru || finding.detail) ? '<p>' + esc(finding.detail_ru || finding.detail) + '</p>' : "") +
+            (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
+            (finding.evidence_span ? '<p class="card-sub">Поле ' + esc(finding.evidence_span.field) +
+              ', символы ' + esc(finding.evidence_span.start) + '-' + esc(finding.evidence_span.end) + '</p>' : "") +
+            (finding.source_ref ? '<details><summary>Источник</summary><p>' + esc(finding.source_ref) + "</p></details>" : "");
+        }).join("") : '<p>Критических замечаний не найдено.</p>') + '</div>' +
+        '<div class="detail-block"><h3>Решение методиста</h3><label class="filter"><span>Статус</span><select class="control" id="drawer-status">' + statusOptions +
+        '</select></label><label class="filter" style="margin-top:10px"><span>Комментарий</span><input class="control" id="drawer-comment" maxlength="2000"></label>' +
+        '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> <a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a></p></div>';
+      $("drawer-save").addEventListener("click", saveCaseDecision);
+    }
+    async function postCaseChanges(caseIds, changes, comment) {
+      var response = await request("/cases/bulk-action", "/cases/bulk-action", {
+        method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ case_ids: caseIds, changes: changes, comment: comment || "" })
+      });
+      if (!response.ok) throw new Error("Не удалось сохранить изменения.");
+      return response.json();
+    }
+    async function saveCaseDecision() {
+      try {
+        await postCaseChanges([state.openCaseId], { status: $("drawer-status").value }, $("drawer-comment").value);
+        $("announcer").textContent = "Решение сохранено";
+        closeDrawer(); loadPage(state.page);
+      } catch (e) { showError(e.message); }
+    }
+    function selectedCaseIds() {
+      return Array.from(document.querySelectorAll('#queue-rows input[data-case-select]:checked')).map(function (input) {
+        return input.getAttribute("data-case-select");
+      });
+    }
+    async function bulkChange(changes) {
+      var ids = selectedCaseIds();
+      if (!ids.length) { showError("Выберите хотя бы один случай."); return; }
+      try {
+        await postCaseChanges(ids, changes, "");
+        $("announcer").textContent = "Обновлено случаев: " + ids.length;
+        loadCases(true);
+      } catch (e) { showError(e.message); }
+    }
+    function closeDrawer() {
+      $("case-drawer").hidden = true; $("drawer-backdrop").hidden = true; document.body.style.overflow = "";
+      if (state.trigger) state.trigger.focus();
+    }
+    async function loadYesterday() {
+      var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+      $("yesterday-date").textContent = "Итоги за " + new Date(yesterday + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
+      var response = await request("/daily-report?date=" + yesterday, "__root__");
+      if (!response.ok) throw new Error("Отчёт за вчера пока недоступен.");
+      var data = await response.json(), summary = normalizeSummary(data);
+      state.data.daily = data;
+      $("partial-banner").hidden = !(data.partial || data.quality_status === "blocked");
+      $("yesterday-kpis").innerHTML = kpi("Записей из БД", summary.n, "за полный день") + kpi("Оценено", summary.evaluated, "допущено к оценке") +
+        kpi("Итоговая оценка", score(summary.score), "среднее") + kpi("Критические", summary.critical, "нужен разбор");
+      $("yesterday-summary").innerHTML = notice("Обработано", summary.evaluated + " записей", "good") +
+        notice("Требует внимания", summary.attention + " записей", "review");
+      $("yesterday-risks").innerHTML = notice("Критические", summary.critical + " случаев", summary.critical ? "critical" : "good");
+      $("yesterday-compare").innerHTML = bar("Итоговая оценка", summary.score || 0) + bar("Полнота проверки", summary.coverage || 0);
+      $("yesterday-quality").innerHTML = notice(data.quality_status === "blocked" ? "Проверка не пройдена" : "Проверка пройдена",
+        data.quality_note || "Критических отклонений загрузки не обнаружено", data.quality_status === "blocked" ? "critical" : "good");
+    }
+    function renderEntityPages(summary) {
+      $("doctor-rows").innerHTML = summary.doctors.length ? summary.doctors.slice(0,100).map(function (x) {
+        return "<tr><td><b>" + esc(x.doctor_fio || x.doctor) + "</b></td><td>" + esc(x.specialization || x.specialty) +
+          "</td><td>" + esc(x.n || 0) + "</td><td>" + esc(score(x.avg_overall_pct || x.avg_overall)) +
+          "</td><td>" + esc(x.bad_pct || 0) + "%</td><td>" + esc(x.open_cases || 0) + "</td></tr>";
+      }).join("") : '<tr><td colspan="6" class="empty">Нет данных по врачам.</td></tr>';
+      var specialtyBars = summary.specialties.slice(0,20).map(function (x) {
+        return bar(x.specialization || x.specialty, x.avg_overall_pct || x.avg_overall || 0);
+      }).join("");
+      $("specialty-chart").innerHTML = specialtyBars || '<div class="empty">Нет данных.</div>';
+      $("specialty-attention").innerHTML = summary.specialties.slice(0,5).map(function (x) {
+        return notice(x.specialization || x.specialty, (x.n || 0) + " записей, итог " + score(x.avg_overall_pct || x.avg_overall), "review");
+      }).join("") || '<div class="empty">Нет групп внимания.</div>';
+      $("icd-chart").innerHTML = summary.diagnoses.slice(0,20).map(function (x) {
+        return bar(x.chapter || x.label || "Без кода", x.avg_overall || x.avg_overall_pct || 0);
+      }).join("") || '<div class="empty">Нет данных.</div>';
+      $("diagnosis-findings").innerHTML = summary.findings.slice(0,8).map(function (x) {
+        return notice(x.severity || "Проверить", x.title || x.label || "Требуется ручная проверка", x.severity === "P0" ? "critical" : "review");
+      }).join("") || '<div class="empty">Замечаний по выбранному срезу нет.</div>';
+      $("safety-kpis").innerHTML = kpi("Критические", summary.critical, "потенциальный вред") + kpi("На разбор", summary.attention, "ручная проверка") +
+        kpi("Надёжность", score(summary.confidence), "результата") + kpi("Полнота", score(summary.coverage), "проверки");
+      $("safety-list").innerHTML = $("diagnosis-findings").innerHTML;
+      $("quality-kpis").innerHTML = kpi("Свежесть", summary.generated ? "Актуально" : "Нет отметки", summary.generated) +
+        kpi("Записей", summary.n, "получено") + kpi("Оценено", summary.evaluated, "после проверки") + kpi("Пропуски", Math.max(0, summary.n-summary.evaluated), "не допущено");
+      $("quality-chart").innerHTML = bar("Обработано", summary.n ? summary.evaluated / summary.n * 100 : 0) +
+        bar("Полнота проверки", summary.coverage || 0) + bar("Надёжность", summary.confidence || 0);
+      $("quality-warnings").innerHTML = notice(summary.generated ? "Загрузка завершена" : "Нет времени обновления",
+        summary.generated || "Проверьте источник данных", summary.generated ? "good" : "review");
+      $("report-list").innerHTML = notice("Отчёт за вчера", "Готов к открытию и выгрузке", "good") +
+        notice("Отчёт за текущий месяц", "Формируется по текущему срезу", "review");
+    }
+    async function ensureSummary() {
+      if (!state.data.summary) await loadOverview();
+      renderEntityPages(state.data.summary);
+    }
+    async function loadDataQuality() {
+      var response = await request("/data-quality?" + query().toString(), "/cases?" + query().toString());
+      if (!response.ok) throw new Error("Не удалось загрузить качество данных.");
+      var data = await response.json();
+      $("quality-kpis").innerHTML =
+        kpi("Записей", data.n == null ? data.n_bucket : data.n, "в выбранном срезе") +
+        kpi("Распознано", score(data.parse_rate), "структура документа") +
+        kpi("Расхождение дат", score(data.date_mismatch_rate), "меньше - лучше") +
+        kpi("Без кода МКБ", data.missing_mkb, "требует проверки");
+      $("quality-chart").innerHTML =
+        bar("Распознано", data.parse_rate || 0) +
+        bar("Врач заполнен", data.n ? 100 * (data.n - data.missing_doctor) / data.n : 0) +
+        bar("Специальность заполнена", data.n ? 100 * (data.n - data.missing_specialty) / data.n : 0) +
+        bar("Филиал заполнен", data.n ? 100 * (data.n - data.missing_branch) / data.n : 0);
+      $("quality-warnings").innerHTML =
+        notice("Дубли", (data.duplicate_case_ids || 0) + " повторов идентификатора", data.duplicate_case_ids ? "critical" : "good") +
+        notice("Неопределённый тип", (data.unknown_document_kind || 0) + " записей", data.unknown_document_kind ? "review" : "good");
+    }
+    async function loadReports() {
+      var response = await request("/reports", "/dynamics");
+      if (!response.ok) throw new Error("Не удалось загрузить список отчётов.");
+      var data = await response.json(), items = data.items || [];
+      $("report-list").innerHTML = items.length ? items.map(function (item) {
+        return notice(item.date || item.month || "Отчёт", "Ревизия " + (item.revision || 1) + " · " + statusLabel(item.quality_status || "готов"), item.quality_status === "blocked" ? "critical" : "good");
+      }).join("") : '<div class="empty">Готовых отчётов пока нет.</div>';
+    }
+    async function loadScoringMethod() {
+      await ensureSummary();
+      var response = await request("/scoring-method", "/scoring-info");
+      if (!response.ok) throw new Error("Не удалось загрузить методику оценки.");
+      var data = await response.json();
+      var axes = (data.axes || []).map(function (axis) {
+        return notice(axis.label || axis.key, axis.desc || "", "good");
+      }).join("");
+      var gates = (data.risk_gate || []).map(function (rule) {
+        return "<li>" + esc(rule) + "</li>";
+      }).join("");
+      $("scoring-method").innerHTML =
+        '<p><b>Итог:</b> ' + esc(data.overall_rule || "") + '</p><div class="grid"><div class="span-6">' +
+        axes + '</div><div class="span-6"><h3>Правила клинического риска</h3><ol>' + gates +
+        '</ol><p class="card-sub">Пороговые значения: хорошо ' + esc((data.thresholds || {}).good) +
+        ', приемлемо ' + esc((data.thresholds || {}).acceptable) + '.</p></div></div>';
+    }
+    async function loadPage(page) {
+      $("global-error").hidden = true;
+      try {
+        if (page === "overview") await loadOverview();
+        else if (page === "yesterday") await loadYesterday();
+        else if (page === "queue") await loadCases(true);
+        else if (page === "documents") await loadCases(false);
+        else if (page === "data-quality") await loadDataQuality();
+        else if (page === "reports") await loadReports();
+        else if (page === "settings") await loadScoringMethod();
+        else await ensureSummary();
+      } catch (e) { showError(e.message || String(e)); }
+    }
+    function savedViews() {
+      if (state.data.views) return state.data.views;
+      try { return JSON.parse(localStorage.getItem(VIEWS_KEY) || "[]"); } catch (e) { return []; }
+    }
+    async function refreshSavedViews() {
+      try {
+        var response = await request("/saved-views", "/saved-views");
+        if (response.ok) state.data.views = (await response.json()).items || [];
+      } catch (e) {}
+      renderSavedViews();
+    }
+    function renderSavedViews() {
+      var views = savedViews();
+      $("saved-view").innerHTML = '<option value="">Текущий срез</option>' + views.map(function (v, i) {
+        return '<option value="' + i + '">' + esc(v.name) + "</option>";
+      }).join("");
+      $("view-manager").innerHTML = views.length ? views.map(function (v, i) {
+        return '<div style="display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)"><button class="button secondary" data-load-view="' +
+          i + '">' + esc(v.name) + '</button><button class="button secondary danger" data-delete-view="' + i + '">Удалить</button></div>';
+      }).join("") : '<p class="empty">Сохранённых представлений пока нет.</p>';
+    }
+    async function saveView() {
+      var name = prompt("Название представления");
+      if (!name) return;
+      var filters = {};
+      query().forEach(function (value, key) { filters[key] = value; });
+      try {
+        var response = await request("/saved-views", "/saved-views", {
+          method: "POST", headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ name: name, scope: "private", filters: filters, config: { page: state.page } })
+        });
+        if (!response.ok) throw new Error("Не удалось сохранить представление");
+        await refreshSavedViews();
+      } catch (e) {
+        var views = savedViews();
+        views.push({ name: name, url: location.search });
+        localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
+        state.data.views = null; renderSavedViews();
+      }
+      $("announcer").textContent = "Представление сохранено";
+    }
+    function loadView(index) {
+      var view = savedViews()[index]; if (!view) return;
+      var suffix = view.url;
+      if (!suffix) {
+        var params = new URLSearchParams(view.filters || {});
+        params.set("page", ((view.config || {}).page) || "overview");
+        suffix = "?" + params.toString();
+      }
+      history.pushState({}, "", location.pathname + suffix); readUrl(); renderChips(); switchPage(state.page, false);
+    }
+    async function deleteView(index) {
+      var view = savedViews()[index]; if (!view) return;
+      if (view.view_id) {
+        var response = await request("/saved-views/" + encodeURIComponent(view.view_id), "/saved-views/" + encodeURIComponent(view.view_id), { method: "DELETE" });
+        if (!response.ok) { showError("Не удалось удалить представление."); return; }
+        await refreshSavedViews();
+      } else {
+        var views = savedViews();
+        views.splice(index, 1);
+        localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
+        renderSavedViews();
+      }
+      $("announcer").textContent = "Представление удалено";
+    }
+    function bind() {
+      document.querySelectorAll(".nav-button").forEach(function (button) {
+        button.addEventListener("click", function () { switchPage(button.getAttribute("data-page")); });
+      });
+      document.querySelectorAll("[data-go]").forEach(function (button) {
+        button.addEventListener("click", function () { switchPage(button.getAttribute("data-go")); });
+      });
+      document.querySelectorAll('[data-action="export"]').forEach(function (button) {
+        button.addEventListener("click", function () {
+          exportCurrent("cases").catch(function (error) { showError(error.message); });
+        });
+      });
+      document.querySelectorAll('[data-action="export-aggregates"]').forEach(function (button) {
+        button.addEventListener("click", function () {
+          exportCurrent("aggregates").catch(function (error) { showError(error.message); });
+        });
+      });
+      document.querySelectorAll('[data-action="download"]').forEach(function (button) {
+        button.addEventListener("click", function () {
+          if (state.data.daily) downloadJson(state.data.daily, "mo-daily-" + (state.data.daily.date || "latest") + ".json");
+        });
+      });
+      $("period").addEventListener("change", function () {
+        state.period = this.value;
+        $("date-from-wrap").hidden = state.period !== "custom";
+        $("date-to-wrap").hidden = state.period !== "custom";
+        filtersChanged();
+      });
+      $("date-from").addEventListener("change", function () { state.dateFrom = this.value; filtersChanged(); });
+      $("date-to").addEventListener("change", function () { state.dateTo = this.value; filtersChanged(); });
+      $("compare").addEventListener("change", function () { state.compare = this.value; filtersChanged(); });
+      $("reset-filters").addEventListener("click", function () {
+        Object.keys(state.selected).forEach(function (key) { state.selected[key] = []; });
+        state.period = "month"; state.compare = "previous"; state.dateFrom = ""; state.dateTo = "";
+        $("period").value = state.period; $("compare").value = state.compare;
+        $("date-from").value = ""; $("date-to").value = "";
+        $("date-from-wrap").hidden = true; $("date-to-wrap").hidden = true;
+        document.querySelectorAll(".filter-pop").forEach(renderFilter); filtersChanged();
+      });
+      $("save-view").addEventListener("click", saveView);
+      $("bulk-assign").addEventListener("click", function () {
+        var assignee = prompt("Ответственный");
+        if (assignee) bulkChange({ status: "assigned", assignee: assignee });
+      });
+      $("bulk-status").addEventListener("click", function () {
+        var status = prompt("Статус: in_review, confirmed_issue, false_positive, needs_more_data, sent_to_doctor, resolved, closed", "in_review");
+        if (status) bulkChange({ status: status.trim() });
+      });
+      $("saved-view").addEventListener("change", function () { if (this.value !== "") loadView(Number(this.value)); });
+      $("view-manager").addEventListener("click", function (event) {
+        var loadButton = event.target.closest("[data-load-view]");
+        var deleteButton = event.target.closest("[data-delete-view]");
+        if (loadButton) loadView(Number(loadButton.getAttribute("data-load-view")));
+        if (deleteButton) deleteView(Number(deleteButton.getAttribute("data-delete-view")));
+      });
+      $("share-view").addEventListener("click", function () {
+        navigator.clipboard.writeText(location.href); $("announcer").textContent = "Ссылка скопирована";
+      });
+      $("share-yesterday").addEventListener("click", function () {
+        navigator.clipboard.writeText(location.href); $("announcer").textContent = "Ссылка скопирована";
+      });
+      $("drawer-close").addEventListener("click", closeDrawer); $("drawer-backdrop").addEventListener("click", closeDrawer);
+      document.addEventListener("keydown", function (event) {
+        if ($("case-drawer").hidden) return;
+        if (event.key === "Escape") closeDrawer();
+        if (event.key === "Tab") {
+          var focusable = $("case-drawer").querySelectorAll('button, a[href], select, input, [tabindex]:not([tabindex="-1"])');
+          if (!focusable.length) return;
+          var first = focusable[0], last = focusable[focusable.length - 1];
+          if (event.shiftKey && document.activeElement === first) { event.preventDefault(); last.focus(); }
+          else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
+        }
+      });
+      $("token-submit").addEventListener("click", function () {
+        var value = $("token-input").value.trim();
+        if (!value) { $("auth-error").textContent = "Введите токен."; return; }
+        try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
+        setAuth(false); loadPage(state.page);
+      });
+      window.addEventListener("popstate", function () { readUrl(); renderChips(); switchPage(state.page, false); });
+      renderSavedViews(); refreshSavedViews();
+    }
+    async function init() {
+      readUrl(); bind(); renderChips();
+      if (!token()) setAuth(true);
+      else { setAuth(false); switchPage(state.page, false); }
+    }
+    init();
+  })();
+  </script>
 </body>
 </html>

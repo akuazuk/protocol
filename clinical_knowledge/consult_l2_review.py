@@ -7,7 +7,7 @@ from typing import Any
 
 def template_summary_ru(structured_analysis: dict[str, Any] | None) -> str:
     if not isinstance(structured_analysis, dict):
-        return "Структурный разбор завершён. Детали — в карточках согласования и выдержках протокола."
+        return "Структурный разбор завершён. Детали - в карточках согласования и выдержках протокола."
     comp = structured_analysis.get("compliance") or {}
     issues = comp.get("critical_issues") or comp.get("issues") or []
     lines: list[str] = []
@@ -26,7 +26,7 @@ def template_summary_ru(structured_analysis: dict[str, Any] | None) -> str:
     status = comp.get("overall_status")
     if isinstance(score, (int, float)):
         st = f" ({status})" if status else ""
-        return f"Структурная оценка {int(round(score))}%{st}. Сверка с протоколом — в карточках и evidence pack."
+        return f"Структурная оценка {int(round(score))}%{st}. Сверка с протоколом - в карточках и evidence pack."
     return "Структурный разбор и сверка с протоколом выполнены без языковой модели."
 
 

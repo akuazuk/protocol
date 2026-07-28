@@ -9,10 +9,11 @@ alwaysApply: true
 
 ## VPN «Дядя Ваня» (обязательно перед SQL)
 
-БД доступна **только при выключенном** VanyaVPN (профиль «Нидерланды»). Перед любым запросом:
+БД доступна **только при выключенном** VanyaVPN. Имя профиля меняется вместе со
+страной; helper определяет его по `com.vanyavpn.macos.client`. Перед любым запросом:
 
 ```bash
-~/CURSOR/bin/vanya_vpn.sh ensure-off   # или: scutil --nc stop "Нидерланды"
+~/CURSOR/bin/vanya_vpn.sh ensure-off
 ```
 
 Статус: `~/CURSOR/bin/vanya_vpn.sh status`. После SQL, если нужна сильная модель (Opus и т.п.) или Gemini - `ensure-on`. Подробнее: user-правило `vanya-vpn.mdc`.

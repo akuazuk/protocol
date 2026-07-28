@@ -32,7 +32,7 @@ def _card_blob(card: dict[str, Any]) -> str:
 
 
 def is_administrative_protocol(card: dict[str, Any]) -> bool:
-    """Приказы об утверждении КП — не клинический эталон для сравнения."""
+    """Приказы об утверждении КП - не клинический эталон для сравнения."""
     blob = _card_blob(card)
     if any(m in blob for m in _ADMIN_TITLE_MARKERS):
         return True

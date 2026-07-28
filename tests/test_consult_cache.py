@@ -47,6 +47,7 @@ def test_cache_put_get_roundtrip() -> None:
 
 def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     import rag_server as rs
+    from clinical_knowledge import consult_tiering
 
     rs._consult_review_cache.clear()
     rs._consult_cache_order.clear()
@@ -56,6 +57,15 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     monkeypatch.setenv("RENDER", "0")
     monkeypatch.setenv("CONSULT_REVIEW_FAST", "0")
     monkeypatch.setenv("CONSULT_RENDER_L2_LITE", "0")
+    monkeypatch.setattr(
+        consult_tiering,
+        "run_consult_by_tier",
+        lambda **kwargs: {
+            "delegate_full_pipeline": True,
+            "text": kwargs.get("text") or "",
+            "review_tier": "L2",
+        },
+    )
 
     icd_analysis = {"codes_for_retrieval": [], "detected": [], "suggested": []}
     fake_rows = [
@@ -116,7 +126,7 @@ def test_same_pdf_returns_identical_result(client, monkeypatch) -> None:
     assert r2.status_code == 200, r2.text
     d2 = r2.json()
 
-    # Тяжёлый синтез вызван ровно один раз - второй ответ из кэша
+    # Тяжёлый синтез вызван ровно один раз - второй ответ из кэша.
     assert calls["n"] == 1
     assert d1["review"]["overall_compliance_pct"] == d2["review"]["overall_compliance_pct"]
     assert d1.get("cached_result") is False

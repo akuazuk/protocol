@@ -71,6 +71,6 @@ def meaningful_excerpt(
 def excerpt_or_empty(text: str | None, *, limit: int = 360) -> str:
     """Выдержка только если текст содержательный."""
     raw = normalize_text(text)
-    if not raw or raw.lower() in {"undefined", "нет", "не указано", "—", "-"}:
+    if not raw or raw.lower() in {"undefined", "нет", "не указано", " - ", "-"}:
         return ""
     return meaningful_excerpt(raw, limit=limit)

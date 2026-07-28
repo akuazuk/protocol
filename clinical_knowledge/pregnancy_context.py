@@ -1,4 +1,4 @@
-"""Детекция текущей беременности vs анамнез «беременности — N»."""
+"""Детекция текущей беременности vs анамнез «беременности - N»."""
 from __future__ import annotations
 
 import re
@@ -31,7 +31,7 @@ def is_active_pregnancy(
     if any(re.search(p, low) for p in current_markers):
         return True
 
-    # Анамнез: «беременности - 1, роды-1» — не текущая беременность
+    # Анамнез: «беременности - 1, роды-1» - не текущая беременность
     if re.search(r"беременност[ьи]\s*[-–:]\s*\d", low):
         return False
     if re.search(r"беременност[ьи]\s+в\s+анамнез", low):

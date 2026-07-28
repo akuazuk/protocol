@@ -75,7 +75,7 @@ def test_search_filters_are_clinically_separated_and_url_backed(index_html: str)
 def test_role_navigation_uses_clean_urls(index_html: str) -> None:
     assert 'href="/doctor/search"' in index_html
     assert ">Найти протокол<" in index_html
-    assert ">Проверить КЗ<" in index_html
+    assert ">Анализ документа<" in index_html
     assert ">Пациентам<" in index_html
     assert '"/methodist/overview"' in index_html
     assert '"/methodist/cases"' in index_html

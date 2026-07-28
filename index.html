@@ -12724,7 +12724,7 @@
         <div>
           <span class="methodist-mode-banner__title">Кабинет методиста</span>
           <span class="methodist-mode-banner__sub" id="methodist-mode-banner-sub">
-            Загрузите КЗ → этап 1 (оценка системы) → этап 2 (ИИ) → сохранить разметку для движка
+            Проверьте документ, уточните автоматические замечания и сохраните решение методиста
           </span>
         </div>
       </div>
@@ -12733,7 +12733,7 @@
     </div>
     <div class="app-chrome consult-hide-print" id="app-chrome">
       <div class="app-chrome__masthead">
-        <a class="app-chrome__brand" href="/doctor/search" aria-label="Protocol — найти клинический протокол">
+        <a class="app-chrome__brand" href="/doctor/search" aria-label="Protocol - найти клинический протокол">
           <img class="app-sticky-bar__logo" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
         </a>
       </div>
@@ -12742,8 +12742,8 @@
       <button type="button" role="tab" id="tab-main-search" aria-selected="false" aria-controls="panel-main-search" title="Поиск клинических протоколов">
         <span class="app-main-tab-title">Найти протокол</span>
       </button>
-      <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review" title="Проверка КЗ, медосмотра или консультации">
-        <span class="app-main-tab-title">Проверить КЗ</span>
+      <button type="button" role="tab" id="tab-consult-review" class="app-main-tab app-main-tab--primary" aria-selected="true" aria-controls="panel-consult-review" title="Анализ одного медицинского документа">
+        <span class="app-main-tab-title">Анализ документа</span>
       </button>
       <a href="/patient" class="app-main-tab app-main-tab--patient" id="tab-patient-b2c" title="Информация для пациента после приёма">
         <span class="app-main-tab-title">Пациентам</span>
@@ -12818,8 +12818,8 @@
           </svg>
         </span>
         <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Критические нарушения</span>
-          <span class="app-main-tab-sub">L1-срез выгрузки МИС по врачам и филиалам</span>
+          <span class="app-main-tab-title">МО Аналитика</span>
+          <span class="app-main-tab-sub">массовый анализ записей из БД МИС</span>
         </span>
       </button>
     </div>
@@ -13016,7 +13016,7 @@
         <ol>
           <li>Введите жалобу или код МКБ-10 и нажмите «Найти протоколы».</li>
           <li>При необходимости выберите код диагноза - по нему ищем в каталоге МЗ.</li>
-          <li>Откройте PDF или раздел протокола; оформление КЗ - на вкладке «Проверка КЗ».</li>
+          <li>Откройте PDF или раздел протокола; отдельный файл можно проверить во вкладке «Анализ документа».</li>
         </ol>
         <button type="button" class="search-onboarding__dismiss" id="search-onboarding-dismiss">Понятно, скрыть</button>
       </div>
@@ -13212,7 +13212,7 @@
             <div class="analytics-chart-card analytics-chart-card--wide">
               <h4>Протоколы по рубрикам каталога</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-rubrics" aria-label="Рубрики"></canvas></div>
-              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> число PDF в локальном index.csv по рубрикам каталога МЗ. <strong>Интерпретация:</strong> покрытие корпуса для RAG; не отражает частоту поисков.</p>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> число PDF по рубрикам каталога МЗ. <strong>Интерпретация:</strong> покрытие базы клинических протоколов; не отражает частоту поисков.</p>
             </div>
             <div class="analytics-chart-card">
               <h4>Годы в названиях PDF</h4>
@@ -13281,7 +13281,7 @@
             <div class="analytics-chart-card">
               <h4>Оценки методиста (1-5)</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-ratings" aria-label="Ratings"></canvas></div>
-              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> экспертная оценка качества разбора КЗ движком. <strong>Интерпретация:</strong> не оценка пациента; 4-5 - движок полезен, 1-2 - нужны правки правил или RAG.</p>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> экспертная оценка качества разбора КЗ системой. <strong>Интерпретация:</strong> не оценка пациента; 4-5 - разбор полезен, 1-2 - нужны правки правил или поиска по протоколам.</p>
             </div>
             <div class="analytics-chart-card">
               <h4>Сопоставление протокола в КЗ</h4>
@@ -13306,7 +13306,7 @@
             <div class="analytics-chart-card">
               <h4>Теги методиста</h4>
               <div class="analytics-chart-wrap"><canvas id="chart-an-tags" aria-label="Tags"></canvas></div>
-              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> частые метки ошибок (wrong_protocol, missed_protocol и др.). <strong>Интерпретация:</strong> куда направлять доработку RAG и правил.</p>
+              <p class="analytics-chart-desc"><strong>Что измеряет:</strong> частые метки ошибок поиска. <strong>Интерпретация:</strong> куда направлять доработку поиска по протоколам и правил.</p>
             </div>
             <div class="analytics-chart-card">
               <h4>Вердикты оценок</h4>
@@ -13348,14 +13348,14 @@
               </svg>
             </div>
             <div>
-              <h2>Проверка документа после приёма</h2>
+              <h2>Анализ документа</h2>
               <p class="consult-hint-small" style="margin: 0.35rem 0 0; color: var(--green-800); font-weight: 600">
-                КЗ, медицинский осмотр или консультация (PDF, TXT, DOCX…) → сверка с фрагментами протоколов Минздрава РБ
+                Один файл: КЗ, медицинский осмотр или другой документ - тип определится автоматически
               </p>
             </div>
           </div>
           <p class="consult-hint-small">
-            Выберите <strong>один</strong> файл после приёма: консультативное заключение, медицинский осмотр или консультацию
+            Выберите <strong>один</strong> медицинский документ: консультативное заключение, медицинский осмотр или другой тип
             (PDF, TXT, DOCX, RTF, ODT, HTML и др.). Тип бланка не важен - важны жалобы, диагноз и рекомендации.
             Для PDF нужен текстовый слой или читаемый скан (OCR). Сервис отберёт фрагменты протоколов и даст
             <strong>ориентировочную</strong> оценку (не МЭЭ и не юридическая экспертиза).
@@ -13373,8 +13373,8 @@
 
         <div class="consult-upload-card consult-hide-print">
           <p class="methodist-upload-lead" id="methodist-upload-lead">
-            <strong>Режим методиста.</strong> Система оценит КЗ (этап 1), затем ИИ проверит,
-            <em>насколько верна эта оценка</em>, и предложит правки для движка анализа - не список правок для врача.
+            <strong>Режим методиста.</strong> Система определит тип документа, выполнит машинную проверку
+            и предложит замечания для подтверждения специалистом - это не список правок для врача.
           </p>
           <div class="consult-file-row">
             <span class="consult-label" id="consult-pdf-label">Файл после приёма</span>
@@ -13437,7 +13437,7 @@
             </label>
           </div>
           <details class="consult-advanced-tier consult-hide-print" id="consult-advanced-tier">
-            <summary class="consult-advanced-tier__summary">Расширенные настройки анализа (уровни L0 / L1 / L2, для методиста)</summary>
+            <summary class="consult-advanced-tier__summary">Расширенные настройки анализа</summary>
           <div class="consult-tier-panel consult-hide-print" id="consult-tier-panel" role="group" aria-labelledby="consult-tier-title">
             <div class="consult-tier-panel__head">
               <h3 class="consult-tier-panel__title" id="consult-tier-title">Уровень проверки</h3>
@@ -13448,16 +13448,16 @@
                 <input type="radio" name="consult-tier" value="L1" checked data-user-tier="1" />
                 <span class="consult-tier-card__rec">рекомендуется</span>
                 <span class="consult-tier-card__top">
-                  <span class="consult-tier-card__badge">L1</span>
+                <span class="consult-tier-card__badge">Полная</span>
                   <span class="consult-tier-card__time">≈ 5-15 с</span>
                 </span>
                 <span class="consult-tier-card__name">Структурный разбор</span>
-                <span class="consult-tier-card__desc">Правила, карточки согласования и compliance без тяжёлого RAG</span>
+                <span class="consult-tier-card__desc">Правила, карточки согласования и проверка структуры документа</span>
               </label>
               <label class="consult-tier-card">
                 <input type="radio" name="consult-tier" value="L0" />
                 <span class="consult-tier-card__top">
-                  <span class="consult-tier-card__badge">L0</span>
+                <span class="consult-tier-card__badge">Быстрая</span>
                   <span class="consult-tier-card__time">≈ 5-15 с</span>
                 </span>
                 <span class="consult-tier-card__name">Быстрый скрининг</span>
@@ -13466,11 +13466,11 @@
               <label class="consult-tier-card">
                 <input type="radio" name="consult-tier" value="L2" />
                 <span class="consult-tier-card__top">
-                  <span class="consult-tier-card__badge">L2</span>
+                <span class="consult-tier-card__badge">Углублённая</span>
                   <span class="consult-tier-card__time">≈ 10-25 с</span>
                 </span>
                 <span class="consult-tier-card__name">Сверка с протоколом</span>
-                <span class="consult-tier-card__desc">Alignment, evidence pack и выдержки КП - без тяжёлой оценки модели</span>
+                <span class="consult-tier-card__desc">Согласованность, подтверждения и выдержки клинического протокола</span>
               </label>
             </div>
             <p class="consult-tier-hint" id="consult-tier-hint" aria-live="polite"></p>
@@ -13478,7 +13478,7 @@
           </details>
           <div class="consult-actions">
             <button type="button" class="btn-consult-primary" id="consult-btn-run">Проверить заключение</button>
-            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="L2: сверка с протоколом и evidence pack - быстрее полного RAG" hidden aria-hidden="true">Сверка L2</button>
+            <button type="button" class="btn-consult-outline" id="consult-btn-run-l2" title="Углублённая сверка с клиническим протоколом" hidden aria-hidden="true">Углублённая сверка</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-demo-text">Демо-текст КЗ (СКВ)</button>
             <button type="button" class="btn-consult-outline" id="consult-btn-reset">Сбросить раздел</button>
           </div>
@@ -13654,7 +13654,7 @@
             hidden
             title="Один абзац пояснения модели по выдержкам протокола"
           >
-            Пояснение методиста (L2+)
+            Пояснение для методиста
           </button>
           <details class="consult-spoiler consult-hide-print" id="consult-limit-spoiler" hidden open>
             <summary>Ограничения оценки</summary>
@@ -13772,7 +13772,7 @@
               </div>
               <div id="methodist-retrieval-fix-wrap" class="methodist-retrieval-fix-wrap" hidden>
                 <p class="consult-hint-small methodist-retrieval-hint" id="methodist-retrieval-hint" hidden style="margin:0 0 0.35rem;color:#8a4a14">
-                  При тегах «Неверный КП» / «Не нашли КП» укажите правильный протокол - это метка для обучения RAG.
+                  При тегах «Неверный КП» / «Не нашли КП» укажите правильный протокол - это метка для улучшения поиска.
                 </p>
                 <label for="methodist-rejected-path">Система ошибочно выбрала (из топ-5)</label>
                 <select id="methodist-rejected-path"></select>
@@ -13875,7 +13875,7 @@
           </details>
 
           <details class="consult-spoiler consult-hide-print" id="consult-protocols-spoiler" open>
-            <summary id="consult-protocols-summary">Протоколы для оценки (RAG по тексту КЗ)</summary>
+            <summary id="consult-protocols-summary">Клинические протоколы для оценки документа</summary>
             <div id="consult-protocols-footer" class="consult-protocols-footer-wrap" style="margin-top:0;border-top:none;padding-top:0">
               <div id="consult-out-paths"></div>
             </div>
@@ -13952,7 +13952,7 @@
             <div class="methodist-ml-chart-box"><canvas id="methodist-ml-chart-tags" aria-label="Теги проблем"></canvas></div>
           </section>
           <section class="methodist-ml-section">
-            <h3>Прогоны L1 по рубрикам</h3>
+            <h3>Полные проверки по рубрикам</h3>
             <div class="methodist-ml-chart-box"><canvas id="methodist-ml-chart-rubrics" aria-label="Рубрики"></canvas></div>
           </section>
         </div>
@@ -13964,7 +13964,7 @@
                 <tr>
                   <th>Рубрика / специальность</th>
                   <th>Уник. КЗ</th>
-                  <th>Прогонов L1</th>
+                  <th>Проверок</th>
                   <th>Reviews</th>
                   <th>Нужно reviews</th>
                   <th>% готовности</th>
@@ -14014,7 +14014,7 @@
           </div>
         </section>
         <section class="methodist-ml-section">
-          <h3>Опора A: подбор протокола (RAG)</h3>
+          <h3>Опора A: подбор клинического протокола</h3>
           <div id="methodist-ml-protocol-kpi" class="methodist-ml-kpi-grid methodist-ml-kpi-grid--compact"></div>
         </section>
         <section class="methodist-ml-section">
@@ -14055,7 +14055,7 @@
       <div id="methodist-search-dashboard-root" class="methodist-ml-dashboard consult-hide-print">
         <div class="methodist-ml-dashboard__hero">
           <div>
-            <h2>Поиск протоколов · оценки и улучшения RAG</h2>
+            <h2>Поиск протоколов · оценки и улучшения выдачи</h2>
             <p>
               ИИ оценивает каждую выдачу; методист подтверждает или правит. Здесь - накопленные метрики Hit@k,
               теги ошибок retrieval и приоритетные правки для движка поиска.
@@ -14071,7 +14071,7 @@
         <section id="search-methodist-panel" class="search-methodist-panel consult-hide-print" hidden aria-label="Разметка выдачи поиска">
           <h3>Оценка последней выдачи</h3>
           <p class="search-methodist-panel__lead">
-            После каждого поиска здесь (и под результатами на вкладке «Поиск протоколов») появляется ИИ-оценка. Методист <strong>одобряет</strong>, <strong>отклоняет</strong> или <strong>правит</strong> - данные идут в RAG и движок.
+            После каждого поиска здесь (и под результатами на вкладке «Поиск протоколов») появляется машинная оценка. Методист <strong>одобряет</strong>, <strong>отклоняет</strong> или <strong>правит</strong> - данные используются для улучшения поиска и правил.
           </p>
           <section id="search-methodist-ai-panel" class="search-methodist-ai-panel" hidden aria-live="polite">
             <h4 id="search-methodist-ai-title">ИИ оценивает выдачу…</h4>
@@ -14237,7 +14237,7 @@
           <div class="methodist-ml-dashboard__hero">
             <div>
               <h2>Protocol · после приёма (B2C)</h2>
-              <p>Ночной отчёт качества patient.html: флаги, рекомендации LLM, черновики snippet-паков.</p>
+              <p>Ночной отчёт качества пациентского раздела: предупреждения, рекомендации и черновики улучшений.</p>
               <p class="methodist-tier-hint" id="methodist-patient-quality-meta"></p>
             </div>
             <div class="methodist-ml-dashboard__hero-actions">
@@ -14332,7 +14332,7 @@
             <ul class="methodist-onco-integr-list">
               <li>
                 <span class="methodist-onco-integr-tag">B2B</span>
-                <span><code>POST /api/onco-risk</code> и блок <code>onco_risk</code> в ответе «Проверка КЗ» (флаг <code>CONSULT_ONCO_RISK_ADVISORY_ENABLED</code>). Триаж, риск по локализациям, полнота данных.</span>
+                <span>Триаж онкологического риска, риск по локализациям и оценка полноты данных в «Анализе документа».</span>
               </li>
               <li>
                 <span class="methodist-onco-integr-tag methodist-onco-integr-tag--b2c">B2C</span>
@@ -14407,11 +14407,11 @@
       <div id="methodist-mis-kz-root" class="methodist-mis-kz-panel consult-hide-print">
         <div class="methodist-ml-dashboard__hero">
           <div>
-            <h2>MIS · качество КЗ</h2>
+            <h2>МО Аналитика</h2>
             <p>
-              Быстрая сводка детерминированного среза выгрузки <code>mis_protocol</code> (L1, API cost ~$0).
-              Фильтры по всем столбцам, диаграммы, сравнение месяцев, топ слабых визитов, прогон через LLM
-              и разбор каждого КЗ - в полном дашборде.
+              Массовый анализ медицинских записей, полученных напрямую из БД МИС.
+              Единые фильтры, сравнение периодов, рабочая очередь и подробный разбор каждого случая
+              доступны в полном дашборде.
             </p>
             <p class="methodist-tier-hint" id="methodist-mis-kz-meta"></p>
           </div>
@@ -14438,8 +14438,8 @@
         <div id="methodist-mis-kz-compare" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9"></div>
         <div style="margin-top:1.25rem;padding:1.1rem 1.2rem;border:1px solid rgba(15,107,92,.18);border-radius:14px;background:linear-gradient(180deg,#f2f8f6 0%,#eaf3f0 100%);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
           <div>
-            <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Полный дашборд качества КЗ</h3>
-            <p class="methodist-tier-hint" style="margin:0">Фильтры по специальности, филиалу, статусу, скор-банду, главе МКБ и датам; диаграммы, сравнение месяцев, топ слабых визитов, прогон через LLM и разбор каждого КЗ.</p>
+            <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">CRM/BI-дашборд МО</h3>
+            <p class="methodist-tier-hint" style="margin:0">Глобальные фильтры, отчёт за вчера, сравнение периодов, очередь разбора, врачи, специальности, диагнозы, безопасность и качество данных.</p>
           </div>
           <a href="/methodist/mis-kz-quality.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open" style="white-space:nowrap">Открыть полный дашборд →</a>
         </div>
@@ -14477,12 +14477,12 @@
           </table>
         </div>
         <div class="methodist-ml-table-wrap" style="margin-top:1.25rem" hidden>
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Топ-50 слабых визитов (L1 + L2)</h3>
+          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Топ-50 случаев, требующих внимания</h3>
           <p class="methodist-tier-hint" id="methodist-mis-kz-worst-meta" style="margin-bottom:0.75rem"></p>
           <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.75rem">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-all">Выбрать все</button>
             <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-none">Снять</button>
-            <button type="button" class="btn-methodist-queue-open" id="methodist-mis-kz-gemini">Прогнать через LLM</button>
+            <button type="button" class="btn-methodist-queue-open" id="methodist-mis-kz-gemini">Запустить нейросетевой анализ</button>
           </div>
           <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-status" style="margin-bottom:0.5rem"></p>
           <div id="methodist-mis-kz-progress-wrap" hidden style="margin:0 0 0.85rem">
@@ -14503,18 +14503,18 @@
                 <th>Visit ID</th>
                 <th>Patient ID</th>
                 <th>Врач</th>
-                <th>L1 %</th>
+                <th>Полная проверка, %</th>
                 <th>№55</th>
-                <th>L1 комментарий</th>
-                <th>L2 %</th>
-                <th>L2 комментарий</th>
+                <th>Комментарий проверки</th>
+                <th>Углублённая проверка, %</th>
+                <th>Комментарий углублённой проверки</th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
         </div>
         <div class="methodist-ml-table-wrap" style="margin-top:1.25rem" hidden>
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">LLM-разбор</h3>
+          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Нейросетевой анализ</h3>
           <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-meta" style="margin-bottom:0.75rem"></p>
           <table class="methodist-ml-table" id="methodist-mis-kz-gemini-table">
             <thead>
@@ -14524,7 +14524,7 @@
                 <th>Visit ID</th>
                 <th>Patient ID</th>
                 <th>Врач</th>
-                <th>LLM %</th>
+                <th>Оценка, %</th>
                 <th>Кратко</th>
                 <th></th>
               </tr>
@@ -14554,8 +14554,8 @@
           <div>
             <h2>Очередь active learning</h2>
             <p>
-              Приоритетные КЗ из feedback: низкий rating, без оценки, подозрительные правила.
-              Откройте снимок в «Проверка КЗ» для разметки без повторного прогона.
+              Приоритетные КЗ из обратной связи: низкая оценка, отсутствие оценки или спорные правила.
+              Откройте снимок в «Анализе документа» для разметки без повторной проверки.
             </p>
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
@@ -16852,7 +16852,7 @@
     if (ai.summary_ru) noteParts.push(ai.summary_ru);
     if (ai.system_notes_ru) noteParts.push("Ошибки системы: " + ai.system_notes_ru);
     var imps = ai.engine_improvements_ru || [];
-    if (imps.length) noteParts.push("Правки RAG: " + imps.join("; "));
+    if (imps.length) noteParts.push("Правки поиска по протоколам: " + imps.join("; "));
     if (noteEl) noteEl.value = noteParts.join("\n\n").slice(0, 500);
     if (ai.retrieval_fix) {
       var rejSel = document.getElementById("search-methodist-rejected");
@@ -16937,7 +16937,7 @@
     if (title) {
       title.textContent =
         "ИИ-оценка · " +
-        (ai.model_used || window.__methodistAiReviewModel || "LLM") +
+        "нейросетевой анализ" +
         " · уверенность " +
         (ai.confidence || "medium");
     }
@@ -16960,7 +16960,7 @@
       if (ai.review_source === "deterministic_fallback") {
         noteTxt =
           (noteTxt ? noteTxt + " " : "") +
-          "Источник: детерминированная оценка (без LLM).";
+          "Источник: машинная проверка без нейросетевого анализа.";
       }
       notes.textContent = noteTxt;
     }
@@ -17024,7 +17024,7 @@
         renderSearchMethodistAiReviewUi(ai);
         if (payload.fallback) {
           setSearchMethodistStatus(
-            "Оценка без LLM (fallback): " +
+            "Резервная машинная оценка: " +
               (payload.fallback_reason || "модель недоступна") +
               " - проверьте и при необходимости правьте."
           );
@@ -18357,7 +18357,7 @@
     html += "</ul>";
     html +=
       '<p class="proto-kz-sop-hint__source">Источник: СОП № 2 Кравира, амбулаторная карта (doc_kravira). ' +
-      "Готовое заключение можно проверить на вкладке «Проверка КЗ».</p>";
+      "Готовое заключение можно проверить на вкладке «Анализ документа».</p>";
     html += "</div></details>";
     return html;
   }
@@ -19158,7 +19158,7 @@
     }
     if (ragN > 0 && !opts.steppedList && !opts.compactResults) {
       html +=
-        '<span class="assist-pct assist-pct-rag" title="Нормализованный скор отбора RAG (лексика, рубрики, эмбеддинг) по этому протоколу"> · фрагмент ' +
+        '<span class="assist-pct assist-pct-rag" title="Нормализованная оценка автоматического поиска по этому протоколу"> · фрагмент ' +
         pct01(ragN) +
         "%</span>";
     }
@@ -20746,7 +20746,7 @@
     html +=
       '<button type="button" class="btn-assist btn-practical-action btn-practical-draft-kz">Черновик КЗ</button>';
     html +=
-      '<button type="button" class="btn-assist btn-practical-action btn-practical-verify-kz">Проверить КЗ (PDF)</button>';
+      '<button type="button" class="btn-assist btn-practical-action btn-practical-verify-kz">Анализ документа (PDF)</button>';
     if (isLite && !panelOpts.upgradingToFull) {
       html +=
         '<button type="button" class="btn-assist btn-practical-action btn-practical-llm-full">Полный разбор с ИИ</button>';
@@ -22096,7 +22096,7 @@
             '<p class="assist-ai-eval-lead assist-ai-eval-lead--methodist">Оцените top-протоколы по выдержкам PDF. При ошибке укажите правильный КП в форме retrieval_fix ниже.</p>';
         } else if (doctorLite && !citationsOnly && !stepped) {
           html +=
-            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол. Для оформления КЗ - вкладка «Проверка КЗ».</p>';
+            '<p class="assist-ai-eval-lead assist-ai-eval-lead--doctor">Выберите протокол. Для отдельного файла откройте вкладку «Анализ документа».</p>';
         }
         var protoRank = 0;
         var listCls = stepped ? " assist-proto-list--compact" : "";
@@ -22365,10 +22365,10 @@
     if (/^\s*<!DOCTYPE/i.test(body) || /^\s*<html/i.test(body)) {
       if (status === 502 || status === 504) {
         return (
-          "Сервис на Render временно недоступен (HTTP " +
+          "Сервер временно недоступен (HTTP " +
           status +
           "). Обычно это таймаут прокси или перезапуск - подождите 1-2 минуты и повторите. " +
-          "Если не помогает, проверьте логи сервиса и готовность индекса RAG (/health)."
+          "Если не помогает, проверьте состояние сервера и готовность поиска по клиническим протоколам."
         );
       }
       return (
@@ -22624,7 +22624,7 @@
   var METHODIST_STORAGE_TOKEN = "protocol_methodist_token";
   var METHODIST_STORAGE_REVIEWER = "protocol_methodist_reviewer";
   var METHODIST_TAG_OPTIONS = [
-    { id: "wrong_protocol", label: "Неверный КП в RAG" },
+    { id: "wrong_protocol", label: "Неверно подобран клинический протокол" },
     { id: "missed_protocol", label: "Не нашли нужный КП" },
     { id: "false_positive_rule", label: "Ложное замечание правила" },
     { id: "missed_issue", label: "Пропущена ошибка в КЗ" },
@@ -22995,7 +22995,7 @@
       var pm = stats.protocol_match || {};
       if (pm.total_kz_runs != null) {
         kpis.push({
-          label: "RAG hit@3",
+          label: "Точность поиска в топ-3",
           value: pm.protocol_hit_at_3_pct != null ? pm.protocol_hit_at_3_pct + "%" : " - ",
           sub: "по " + (pm.labeled_retrieval_gold || 0) + " retrieval_fix",
           accent: true,
@@ -23075,7 +23075,7 @@
         {
           label: "Теги wrong/missed КП",
           value: pm2.protocol_tag_reviews || 0,
-          sub: "reviews с ошибкой RAG",
+          sub: "проверки с ошибкой поиска",
         },
       ];
       protoKpi.innerHTML = protoCards
@@ -23357,7 +23357,7 @@
           }),
           datasets: [
             {
-              label: "L1 прогонов",
+              label: "Полных проверок",
               data: rubrics.map(function (r) {
                 return r.count;
               }),
@@ -23434,7 +23434,7 @@
     var tb = document.querySelector("#methodist-queue-table tbody");
     if (!tb) return;
     if (!rows.length) {
-      tb.innerHTML = '<tr><td colspan="7">Очередь пуста - загрузите КЗ в «Проверка КЗ»</td></tr>';
+      tb.innerHTML = '<tr><td colspan="7">Очередь пуста - загрузите файл в «Анализе документа»</td></tr>';
       return;
     }
     tb.innerHTML = rows
@@ -23856,12 +23856,17 @@
       errEl.textContent = "";
     }
     if (root) root.classList.add("is-loading");
-    fetch("/api/methodist/mis-kz-quality?month=2026-07&compare_month=2026-01", {
+    var moSummaryOptions = {
       headers: {
         Accept: "application/json",
         "X-Methodist-Token": window.__methodistToken,
       },
-    })
+    };
+    fetch("/api/methodist/mo/overview?period=month&compare_period=previous", moSummaryOptions)
+      .then(function (response) {
+        if (response.status !== 404 && response.status !== 405 && response.status !== 501) return response;
+        return fetch("/api/methodist/mis-kz-quality?month=2026-07&compare_month=2026-01", moSummaryOptions);
+      })
       .then(function (r) {
         if (!r.ok) {
           return r.text().then(function (t) {
@@ -23874,9 +23879,9 @@
         if (!data || !data.available) {
           if (errEl) {
             errEl.hidden = false;
-            errEl.textContent = (data && data.hint_ru) || "Summary L1 ещё не готов";
+            errEl.textContent = (data && data.hint_ru) || "Сводка МО ещё не готова";
           }
-          if (metaEl) metaEl.textContent = "Нет kz_l1_*_summary.json";
+          if (metaEl) metaEl.textContent = "Нет готовой сводки за выбранный период";
           if (kpiEl) kpiEl.hidden = true;
           if (tbody) tbody.innerHTML = "";
           if (worstBody) worstBody.innerHTML = "";
@@ -23891,7 +23896,7 @@
             (data.specialties_n != null ? data.specialties_n : " - ") +
             " · avg " +
             (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
-            " · КЗ " +
+            " · МО " +
             (data.n_ok != null ? data.n_ok : " - ") +
             (data.n_excluded_nonclinical ? " (исключено неклинич. " + data.n_excluded_nonclinical + ")" : "") +
             (data.generated_at ? " · " + data.generated_at : "");
@@ -23899,10 +23904,10 @@
         if (kpiEl) {
           kpiEl.hidden = false;
           kpiEl.innerHTML =
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">КЗ (клинич.)</div><div class="analytics-kpi__value">' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">МО оценено</div><div class="analytics-kpi__value">' +
             (data.n_ok != null ? data.n_ok : " - ") +
             '</div></div>' +
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">Avg overall</div><div class="analytics-kpi__value">' +
+            '<div class="analytics-kpi"><div class="analytics-kpi__label">Итоговая оценка</div><div class="analytics-kpi__value">' +
             (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
             '</div></div>' +
             '<div class="analytics-kpi"><div class="analytics-kpi__label">Специальностей</div><div class="analytics-kpi__value">' +
@@ -23946,8 +23951,8 @@
           }).join("");
           document.getElementById("methodist-mis-kz-reg55-hint").textContent =
             "Оценено по №55: " + (data.reg55_scored_n != null ? data.reg55_scored_n : " - ") +
-            " КЗ. P0 (критич., риск вреда): " + (data.reg55_p0_defect_n || 0) +
-            ". P1 - клинич. дефект, P2 - документирование, P3 - формальный.";
+            " МО. Критические замечания: " + (data.reg55_p0_defect_n || 0) +
+            ". Остальные замечания разделены на клинические, документальные и формальные.";
         })();
         (function renderMisKzHygiene() {
           var card = document.getElementById("methodist-mis-kz-hygiene");
@@ -23955,8 +23960,8 @@
           var eb = data.excluded_breakdown || {};
           var byKind = eb.by_kind || {};
           var meta = {
-            kz: { label: "КЗ (оцениваем)", color: "#2f8f78", scored: true },
-            certificate: { label: "Справки / профосмотры", color: "#7bc4ad", scored: true },
+            kz: { label: "Консультации", color: "#2f8f78", scored: true },
+            certificate: { label: "Справки / медосмотры", color: "#7bc4ad", scored: true },
             diagnostic: { label: "Диагностика (УЗИ и пр.)", color: "#e0a04a", scored: false },
             non_clinical: { label: "Неклинические роли", color: "#9aa6b2", scored: false },
             empty: { label: "Пустые записи", color: "#cbd3da", scored: false }
@@ -24062,7 +24067,7 @@
               '<h3 style="margin:0 0 0.35rem;font-size:1.05rem;color:#0f6b5c">Динамика январь → июль</h3>' +
               '<p class="methodist-tier-hint" style="margin:0">' +
               ((cmp && cmp.hint_ru) ||
-                "Сравнение появится, когда будет готов L1-summary за январь 2026.") +
+                "Сравнение появится, когда будет готова сводка за январь 2026.") +
               (cmp && cmp.missing && cmp.missing.length
                 ? " Нет: " + cmp.missing.join(", ") + "."
                 : "") +
@@ -24142,7 +24147,7 @@
         if (worstMeta) {
           worstMeta.textContent =
             (data.worst_visits_meta && data.worst_visits_meta.rule_ru) ||
-            "50 визитов с самым низким L1 overall среди всех врачей";
+            "50 визитов с самой низкой итоговой оценкой среди всех врачей";
         }
         if (worstBody) {
           worstBody.innerHTML = worst.length
@@ -24184,7 +24189,7 @@
         var geminiBody = document.querySelector("#methodist-mis-kz-gemini-table tbody");
         var gmeta = data.gemini_meta || {};
         if (geminiMeta) {
-          geminiMeta.textContent = gmeta.note_ru || "Полный LLM-разбор с опорой на протоколы МЗ";
+          geminiMeta.textContent = gmeta.note_ru || "Нейросетевой анализ с опорой на клинические протоколы";
         }
         window.__methodistMisKzLlmReviews = data.gemini_reviews || [];
         var greviews = window.__methodistMisKzLlmReviews;
@@ -24213,7 +24218,7 @@
                   );
                 })
                 .join("")
-            : "<tr><td colspan='8'>Пока пусто - выберите визиты и нажмите LLM</td></tr>";
+            : "<tr><td colspan='8'>Пока пусто - выберите визиты и запустите нейросетевой анализ</td></tr>";
           geminiBody.querySelectorAll(".methodist-mis-kz-report-btn").forEach(function (btn) {
             btn.addEventListener("click", function () {
               if (typeof showMethodistMisKzFullReport === "function") {
@@ -24388,10 +24393,10 @@
         if (body) {
           var rows = data.top_queue || [];
           body.innerHTML = rows.length ? rows.map(function (item) {
-            return "<tr><td>" + escapeHtml(item.title || item.protocol_id || "—") +
-              "</td><td>" + escapeHtml(String(item.priority != null ? item.priority : "—")) +
-              "</td><td>" + escapeHtml(item.trust_level || "—") +
-              "</td><td>" + escapeHtml(String(item.penalty_ready_pct != null ? item.penalty_ready_pct + "%" : "—")) +
+            return "<tr><td>" + escapeHtml(item.title || item.protocol_id || " - ") +
+              "</td><td>" + escapeHtml(String(item.priority != null ? item.priority : " - ")) +
+              "</td><td>" + escapeHtml(item.trust_level || " - ") +
+              "</td><td>" + escapeHtml(String(item.penalty_ready_pct != null ? item.penalty_ready_pct + "%" : " - ")) +
               "</td></tr>";
           }).join("") : '<tr><td colspan="4">Очередь пуста или отчёт ещё не сформирован.</td></tr>';
         }
@@ -24744,7 +24749,7 @@
     } catch (e1) {}
     if (msg.indexOf("is not found") !== -1 || msg.indexOf("not supported for generateContent") !== -1) {
       return (
-        "Неверное имя модели в настройках сервера. Укажите поддерживаемую LLM " +
+        "Неверная настройка нейросетевого анализа на сервере. Укажите поддерживаемый вариант " +
         "для методиста и перезапустите сервис. " +
         msg.slice(0, 180)
       );
@@ -24800,7 +24805,7 @@
     if (meta) {
       meta.textContent =
         "Модель: " +
-        (ai.model_used || window.__methodistAiReviewModel || "LLM") +
+        "нейросетевой анализ" +
         " · уверенность: " +
         (ai.confidence || "medium");
     }
@@ -25290,7 +25295,7 @@
       protoEl.textContent = show.length
         ? "Протоколы для сверки: " + show.join(" · ")
         : tier === "L2"
-          ? "Протоколы RAG: не подобраны"
+          ? "Клинические протоколы не подобраны"
           : "";
     }
   }
@@ -29393,7 +29398,7 @@
               escapeHtmlAttr(path) +
               '">Матрица КЗ</button> · <button type="button" class="btn-assist btn-proto-explore-excerpt" data-proto-path="' +
               escapeHtmlAttr(path) +
-              '">Разобрать протокол (LLM)</button>'
+              '">Разобрать протокол</button>'
             : "") +
           "</p>";
         html +=
@@ -29692,13 +29697,13 @@
       : corpus.chunks_loaded != null
         ? corpus.chunks_loaded
         : " - ";
-    var ragFragmentsLabel = manifestMode ? "PDF в manifest (lazy)" : "фрагментов RAG";
+    var ragFragmentsLabel = manifestMode ? "PDF в каталоге" : "фрагментов протоколов";
     el.innerHTML =
       analyticsKpiCell(corpus.protocols_in_index || " - ", "PDF в каталоге", true) +
       analyticsKpiCell(postMz != null ? postMz : " - ", "постов МЗ") +
       analyticsKpiCell(corpus.rubrics_in_index || " - ", "рубрик") +
       analyticsKpiCell(ragFragments, ragFragmentsLabel, true) +
-      analyticsKpiCell(d.rag_ready ? "да" : "нет", "RAG готов") +
+      analyticsKpiCell(d.rag_ready ? "да" : "нет", "Поиск готов") +
       analyticsKpiCell(
         corpus.index_csv_updated_utc ? formatAnalyticsUpdatedAt(corpus.index_csv_updated_utc) : " - ",
         "обновление index.csv"
@@ -30325,7 +30330,7 @@
       title: "Два контура сервиса",
       html:
         "<p><strong>1. Поиск протоколов</strong> - по диагнозу, МКБ-10 и рубрикам каталога (24 раздела, как на сайте Минздрава).</p>" +
-        "<p><strong>2. Проверка КЗ (PDF)</strong> - ориентировочная сверка заключения с выдержками протоколов, таблица критериев и зоны риска для методслужбы.</p>" +
+        "<p><strong>2. Анализ документа</strong> - ориентировочная сверка КЗ, медицинского осмотра или другого документа с выдержками протоколов и зонами внимания.</p>" +
         "<p>Источник - только опубликованные протоколы Минздрава РБ.</p>",
     },
     {
@@ -31020,7 +31025,7 @@
     }
     if (sumEl) {
       sumEl.textContent =
-        (avg != null ? "Среднее по критериям LLM: " + avg + "%. " : "") +
+        (avg != null ? "Среднее по критериям нейросетевого анализа: " + avg + "%. " : "") +
         (low.length
           ? "Ниже 70%: " + low.map(function (r) { return r.name; }).join(", ") + "."
           : "Существенных зон риска по порогу 70% не выделено.");
@@ -31617,7 +31622,7 @@
     ht.className = "consult-hint-small";
     ht.style.margin = "0 0 0.45rem";
     ht.textContent =
-      "Для оценки соответствия используются PDF из автоматического отбора (RAG) ниже; ссылки открывают навигацию по протоколу.";
+      "Для оценки соответствия используются PDF из автоматического поиска ниже; ссылки открывают навигацию по протоколу.";
     pw.appendChild(ht);
 
     var catalog = data && data.clinical_rules && data.clinical_rules.matched_protocols;
@@ -32606,11 +32611,11 @@
   }
 
   var CONSULT_TIER_HINTS = {
-    L0: "L0: быстрая проверка готовности к подписи - без подбора протоколов и без оценки модели.",
-    L1: "L1: структура, правила и карточки согласования - оптимально для повседневной работы.",
-    L2: "L2: сверка КЗ с протоколом, alignment и evidence pack - без тяжёлой оценки модели (~10-25 с).",
-    L2_PLUS: "L2+: к L2 добавлено пояснение модели для методиста (ещё ~5-10 с).",
-    L2_RENDER: "L2 на Render: сверка с протоколом и evidence pack. Пояснение модели - по кнопке L2+.",
+    L0: "Быстрая проверка готовности к подписи без подбора протоколов.",
+    L1: "Полная проверка структуры, правил и карточек согласования для повседневной работы.",
+    L2: "Углублённая сверка документа с клиническим протоколом и подтверждающими выдержками (~10-25 с).",
+    L2_PLUS: "К углублённой сверке добавлено пояснение для методиста (ещё ~5-10 с).",
+    L2_RENDER: "Углублённая сверка с протоколом и подтверждающими выдержками.",
   };
 
   function initConsultTierCaps() {
@@ -32633,7 +32638,7 @@
           var timeEl = card && card.querySelector(".consult-tier-card__time");
           if (desc) {
             desc.textContent =
-              "Сверка с протоколом, alignment и evidence pack. Пояснение модели - кнопка L2+.";
+              "Сверка с протоколом, согласованность и подтверждающие выдержки. Пояснение доступно отдельной кнопкой.";
           }
           if (timeEl) timeEl.textContent = "≈ 10-25 с";
         } else if (l2input && h.consult_render_l2_skip_llm) {
@@ -32642,7 +32647,7 @@
           var timeEl2 = card2 && card2.querySelector(".consult-tier-card__time");
           if (desc2) {
             desc2.textContent =
-              "На Render: как L1, без LLM (лимит памяти). Полный L2 с моделью - локальный сервер.";
+              "На сервере доступна полная проверка без дополнительного нейросетевого анализа.";
           }
           if (timeEl2) timeEl2.textContent = "≈ 15-45 с";
         }
@@ -32835,7 +32840,7 @@
       .catch(function (err) {
         if (isConsultAbort(err, consultCtrl)) throw err;
         if (tier === "L2" && isConsultRetriable(err)) {
-          updateConsultProgressUI(48, "L2 недоступен - повтор на L1…", "надёжный режим");
+          updateConsultProgressUI(48, "Углублённая проверка недоступна - повторяем в полном режиме…", "надёжный режим");
           var l1Input = document.querySelector('input[name="consult-tier"][value="L1"]');
           if (l1Input) {
             l1Input.checked = true;
@@ -32901,7 +32906,7 @@
           consultCtrl.abort();
         }, timeoutRef.ms);
         if (!health.gemini_configured && !health.consult_l2_fast) {
-          throw new Error("На сервере не настроен ключ доступа к обработке запросов (LLM).");
+          throw new Error("На сервере не настроен доступ к нейросетевому анализу.");
         }
         return fetch(base + "/api/consult-review/stream", {
           method: "POST",
@@ -32991,7 +32996,7 @@
       return (
         "Превышено время ожидания разбора (" +
         Math.round((timeoutMs || 600000) / 1000) +
-        " с). Попробуйте меньший PDF или выберите уровень L1."
+        " с). Попробуйте меньший PDF или выберите полную проверку."
       );
     }
     var low = msg.toLowerCase();
@@ -33002,11 +33007,11 @@
       low.indexOf("the network connection was lost") >= 0
     ) {
       return (
-        "Соединение с сервером оборвалось (часто нехватка памяти на Render или перезапуск после деплоя). " +
+        "Соединение с сервером оборвалось из-за перезапуска или временной перегрузки. " +
         "Подождите 1-2 минуты и нажмите «Проанализировать» снова. " +
         (getConsultSelectedTier() === "L2"
-          ? "Для быстрой проверки выберите уровень L1."
-          : "Если ошибка повторяется, попробуйте меньший файл или уровень L0.")
+          ? "Для надёжной проверки выберите полный режим."
+          : "Если ошибка повторяется, попробуйте меньший файл или быстрый режим.")
       );
     }
     return "Ошибка: " + (msg || "неизвестная ошибка");
@@ -33295,7 +33300,7 @@
         var ok = 0,
           fail = 0;
         setProg(0, ids.length, "Старт 0 / " + ids.length);
-        if (st) st.textContent = "Полный LLM-разбор (протоколы МЗ): 0 / " + ids.length;
+        if (st) st.textContent = "Нейросетевой анализ по клиническим протоколам: 0 / " + ids.length;
         for (var i = 0; i < ids.length; i++) {
           var vid = ids[i];
           setProg(i, ids.length, "Визит " + (i + 1) + " / " + ids.length + " · " + vid);
@@ -33405,8 +33410,8 @@
       var l2 = v.l2_overall_pct;
       var head =
         '<div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.85rem">' +
-        pill("LLM", llm != null ? Number(llm).toFixed(1) + "%" : " - ", scoreTone(llm)) +
-        pill("L2", l2 != null ? Number(l2).toFixed(1) + "%" : " - ", scoreTone(l2)) +
+        pill("Нейросетевой анализ", llm != null ? Number(llm).toFixed(1) + "%" : " - ", scoreTone(llm)) +
+        pill("Углублённая проверка", l2 != null ? Number(l2).toFixed(1) + "%" : " - ", scoreTone(l2)) +
         pill("Статус", statusRu(v.status), scoreTone(llm)) +
         "</div>" +
         '<div style="font-size:14px;color:#334155;margin-bottom:0.35rem"><strong>' +
@@ -33874,13 +33879,13 @@
       btnL2Narrative.addEventListener("click", function () {
         var data = window.__consultReviewLastPayload;
         if (!data || !data.evidence_pack) {
-          alert("Сначала выполните L2 - нужен evidence pack.");
+          alert("Сначала выполните углублённую проверку - нужны подтверждающие выдержки.");
           return;
         }
         var baseEl = document.getElementById("rag-base");
         var base = normalizeRagBaseForRequest(baseEl ? baseEl.value : "");
         btnL2Narrative.disabled = true;
-        btnL2Narrative.textContent = "Генерация L2+…";
+        btnL2Narrative.textContent = "Формируем пояснение…";
         fetch(base + "/api/consult-review/l2-narrative", {
           method: "POST",
           headers: Object.assign({ "Content-Type": "application/json" }, methodistHeaders()),
@@ -33905,11 +33910,11 @@
             }
           })
           .catch(function (e) {
-            alert("L2+ не удалось: " + (e && e.message ? e.message : String(e)));
+            alert("Не удалось сформировать пояснение: " + (e && e.message ? e.message : String(e)));
           })
           .finally(function () {
             btnL2Narrative.disabled = false;
-            btnL2Narrative.textContent = "Пояснение методиста (L2+)";
+            btnL2Narrative.textContent = "Пояснение для методиста";
           });
       });
     }

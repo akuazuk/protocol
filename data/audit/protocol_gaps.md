@@ -8,9 +8,9 @@
 
 ## General / organizational protocols (sample)
 
-- `Реабилитация (широкий охват МКБ)` — `minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf`
-- `Реабилитация (широкий охват МКБ)` — `minzdrav_protocols/pulmonologiya-ftiziatriya/КП медицинской реабилитации пациентов, перенесших пневмонию 04.12.2009_№1133.pdf`
-- `Реабилитация (широкий охват МКБ)` — `minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf`
+- `Реабилитация (широкий охват МКБ)` - `minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf`
+- `Реабилитация (широкий охват МКБ)` - `minzdrav_protocols/pulmonologiya-ftiziatriya/КП медицинской реабилитации пациентов, перенесших пневмонию 04.12.2009_№1133.pdf`
+- `Реабилитация (широкий охват МКБ)` - `minzdrav_protocols/revmatologiya/Протоколы медицинской реабилитации детей с кардиоревматологической патологией 18.02.2011 №172.pdf`
 
 ## PDF without ICD and not general (gaps)
 

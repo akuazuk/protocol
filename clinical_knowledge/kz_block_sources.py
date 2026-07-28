@@ -47,5 +47,5 @@ SOURCE_KIND_LABELS: dict[str, str] = {
     "kp": "КП",
     "completeness": "Полнота КЗ",
     "regulation": "НПА",
-    "limitations": "—",
+    "limitations": " - ",
 }

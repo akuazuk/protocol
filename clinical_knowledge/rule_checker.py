@@ -92,6 +92,23 @@ def _has_pregnancy_context(consult_facts: dict[str, Any]) -> bool:
     return is_active_pregnancy(raw, icd_list, age_years=ctx.get("age_years"))
 
 
+def _is_pregnancy_specific_rule(rule: dict[str, Any]) -> bool:
+    source = rule.get("source") or {}
+    blob = " ".join(
+        str(value or "")
+        for value in (
+            rule.get("rule_id"),
+            rule.get("condition_id"),
+            rule.get("condition_name"),
+            rule.get("protocol_id"),
+            source.get("source_path") if isinstance(source, dict) else "",
+            source.get("local_path") if isinstance(source, dict) else "",
+            source.get("title") if isinstance(source, dict) else "",
+        )
+    ).lower()
+    return "pregnancy" in blob or "беремен" in blob
+
+
 _VENOUS_ICD_PREFIXES = ("I80", "I81", "I82", "I83", "I86", "I87")
 _ARTERIAL_ICD_PREFIXES = ("I70", "I71", "I72", "I73", "I74", "I75", "I76", "I77", "I78", "I79")
 _ARTERIAL_ONLY_CONDITIONS = frozenset({
@@ -735,6 +752,23 @@ def run_rule_checker(
                 continue
         for rule in filter_rules_for_matched_protocols(rules, matched_protocols):
             if str(rule.get("rule_id") or "") in skip_rule_ids:
+                continue
+            if _is_pregnancy_specific_rule(rule) and not _has_pregnancy_context(consult_facts):
+                all_findings.append(
+                    {
+                        "rule_id": rule.get("rule_id"),
+                        "rule_type": rule.get("rule_type"),
+                        "severity": "info",
+                        "passed": True,
+                        "skipped": True,
+                        "not_applicable": True,
+                        "message_ru": (
+                            "Правило для беременности неприменимо: текущая беременность "
+                            "в документе не подтверждена."
+                        ),
+                        "source": rule.get("source"),
+                    },
+                )
                 continue
             proto = legacy_rule_to_protocol_rule(rule)
             if not rule_applicable_to_patient(proto, ctx):

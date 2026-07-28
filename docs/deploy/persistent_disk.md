@@ -1,6 +1,6 @@
 # Persistent Disk на Render для корпуса RAG
 
-Без диска каждый деплой перечитывает `corpus_chunks_parts/` из образа: cold start 1–3 мин и пик RAM.
+Без диска каждый деплой перечитывает `corpus_chunks_parts/` из образа: cold start 1-3 мин и пик RAM.
 
 ## Шаги
 
@@ -27,7 +27,7 @@
    ```
    Затем `RAG_PRECOMPUTED_CHUNK_EMBED=1` (в `render.yaml`).
 
-5. **Blueprint sync** — после создания диска в UI синхронизируйте Blueprint или проверьте `disk:` в `render.yaml`.
+5. **Blueprint sync** - после создания диска в UI синхронизируйте Blueprint или проверьте `disk:` в `render.yaml`.
 
 ## Проверка
 
@@ -37,4 +37,4 @@ curl -s https://protocol-bimy.onrender.com/health | jq '{chunks, rag_ready, memo
 
 После заливки `chunks` должен совпадать с локальным корпусом (~55k+).
 
-**Деплой:** корпус грузится в фоне после bind порта (`lifespan` + `RAG_STARTUP_LOAD_DELAY_SEC`). Сразу после деплоя `rag_ready` может быть `false` 1–2 минуты — это нормально; `/health` отвечает сразу.
+**Деплой:** корпус грузится в фоне после bind порта (`lifespan` + `RAG_STARTUP_LOAD_DELAY_SEC`). Сразу после деплоя `rag_ready` может быть `false` 1-2 минуты - это нормально; `/health` отвечает сразу.

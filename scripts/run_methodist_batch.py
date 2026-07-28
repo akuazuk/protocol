@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Batch L1 (+ optional AI-review) для папки КЗ — методистский Tier T1.
+"""Batch L1 (+ optional AI-review) для папки КЗ - методистский Tier T1.
 
 Примеры:
   python3 scripts/run_methodist_batch.py --folder tests/fixtures/consultations

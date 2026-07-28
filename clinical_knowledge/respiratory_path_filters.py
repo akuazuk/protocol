@@ -71,7 +71,7 @@ def path_has_respiratory_wrong_markers(path: str, title: str = "") -> bool:
 
 
 def urti_path_rank(path: str, title: str = "") -> float:
-    """Выше — лучше для ОРВИ/кашель+лихорадка."""
+    """Выше - лучше для ОРВИ/кашель+лихорадка."""
     b = _blob(path, title)
     if path_has_respiratory_wrong_markers(path, title):
         return -100.0

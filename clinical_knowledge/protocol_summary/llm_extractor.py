@@ -18,6 +18,12 @@ from .source_text import section_text_blob
 from .structured_fallback import build_structured_summary
 
 
+def _strict_enabled() -> bool:
+    return os.environ.get("PROTOCOL_LLM_STRICT", "").strip().lower() in {
+        "1", "true", "yes", "on",
+    }
+
+
 def _gemini_available() -> bool:
     try:
         from clinical_knowledge.gemini_lite import gemini_available
@@ -47,10 +53,14 @@ def _call_llm(
             )
 
             if not gemini_available():
+                if _strict_enabled():
+                    raise RuntimeError("Нейросетевая модель недоступна в strict-режиме")
                 return None
             model = model or get_lite_gemini_model()
             text = generate_lite_json(model, prompt)
     except Exception:
+        if _strict_enabled():
+            raise
         return None
     data = parse_json_loose(text or "")
     return data if isinstance(data, (dict, list)) else None
@@ -78,6 +88,10 @@ def extract_protocol_summary_llm(
         model=model,
     )
     if not isinstance(skeleton_data, dict) or not skeleton_data.get("conditions"):
+        if _strict_enabled():
+            raise RuntimeError(
+                f"Не получена структура протокола {protocol_id or '<unknown>'}",
+            )
         fb = build_structured_summary(doc)
         fb.extraction_metadata.notes.append("llm_skeleton_failed_fallback")
         return fb
@@ -109,7 +123,7 @@ def extract_protocol_summary_llm(
         skeleton_data,
         condition_blocks,
         extractor="llm_extractor",
-        extractor_version="1.0",
+        extractor_version="1.1-regimen",
         extraction_status="llm_extracted",
     )
     summary.extraction_metadata.notes.append(f"conditions={len(summary.conditions)}")

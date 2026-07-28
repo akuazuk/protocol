@@ -62,7 +62,7 @@ def match_kp_item_to_kz(
                     if best is None or float(row["confidence"]) > float(best.get("confidence") or 0):
                         best = row
 
-        head = text.split("—")[0].split("-")[0].strip()
+        head = text.split(" - ")[0].split("-")[0].strip()
         if len(head) >= 8:
             ok2, conf2, matched2 = fuzzy_term_in_text(blob, head)
             if ok2:

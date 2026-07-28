@@ -28,12 +28,20 @@ def _applicability_from_summary(appl: ProtocolApplicability | None) -> RuleAppli
     age_groups = [p for p in appl.population if p not in ("unknown", "pregnant", "adult_and_child")]
     if "adult_and_child" in appl.population:
         age_groups.extend(["adult", "child"])
+    pregnancy = appl.pregnancy
+    sex = appl.sex
+    if "pregnant" in appl.population:
+        pregnancy = "required"
+        if sex == "unknown":
+            sex = "female"
+        if "adult" not in age_groups:
+            age_groups.append("adult")
     return RuleApplicability(
         age_groups=age_groups,
         age_min_years=appl.age_min_years,
         age_max_years=appl.age_max_years,
-        sex=appl.sex,
-        pregnancy=appl.pregnancy,
+        sex=sex,
+        pregnancy=pregnancy,
         care_setting=[c for c in appl.care_setting if c != "unknown"],
     )
 

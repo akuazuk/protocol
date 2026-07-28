@@ -255,7 +255,7 @@ def _diagnosis_card(doc: ConsultationDocument, icd_codes: list[str]) -> dict[str
             for code in icd_codes[:3]:
                 if icd_mkb.is_code_in_ru_reference(code):
                     title = icd_mkb.ru_title(code)
-                    mkb_excerpts.append(_mkb_reference_line(code, title or "—"))
+                    mkb_excerpts.append(_mkb_reference_line(code, title or " - "))
             scores.append(60)
             comments.append("Диагнозы структурно не разобраны; коды извлечены из текста.")
         else:
@@ -746,7 +746,7 @@ def _limitations_card(
         if title:
             parts.append(f"Подобран КП «{title}» (соответствие {sc:.0f}%).")
     elif not (ctx.get("icd_codes") or []):
-        parts.append("Код МКБ-10 не указан — сравнение с КП невозможно.")
+        parts.append("Код МКБ-10 не указан - сравнение с КП невозможно.")
     elif not profile.get("paths"):
         parts.append("Клинический протокол по данным КЗ не найден.")
     if not parts:

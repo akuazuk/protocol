@@ -9,7 +9,7 @@
 
 ## 0. North Star: две опоры качества КЗ
 
-Конечная цель — не «накопить N events в JSONL», а **максимально точный end-to-end анализ КЗ**:
+Конечная цель - не «накопить N events в JSONL», а **максимально точный end-to-end анализ КЗ**:
 
 | Опора | Вопрос системы | Компоненты | Главная метрика |
 |-------|----------------|------------|-----------------|
@@ -28,14 +28,14 @@ flowchart LR
   FB --> RULES
 ```
 
-**Правило v1.1:** пока в `kz_analysis` часто **пустой** `matched_protocol_paths` / `retrieval_top_paths` — приоритет **A не ниже B**. LoRA embedder без меток `retrieval_fix` не даст end-to-end эффекта (урок embedder exp_001).
+**Правило v1.1:** пока в `kz_analysis` часто **пустой** `matched_protocol_paths` / `retrieval_top_paths` - приоритет **A не ниже B**. LoRA embedder без меток `retrieval_fix` не даст end-to-end эффекта (урок embedder exp_001).
 
 ### 0.1 Что план уже дал (июнь 2026)
 
 | Сделано | Эффект |
 |---------|--------|
 | Кабинет методиста + AI-review | Сбор меток без Label Studio |
-| r109–r111 engine fixes | Реальный прирост качества B (neoplasm, NSAID, context gates) |
+| r109-r111 engine fixes | Реальный прирост качества B (neoplasm, NSAID, context gates) |
 | Export + pull + дашборд r112 | Видимость прогресса, readiness ~32%, triage для агента |
 | `engine_release_log.json` | Доказуемый «до/после» на re-analyze |
 
@@ -47,7 +47,7 @@ flowchart LR
 | **5× diagnosis_formula** на один КЗ (pl_1_f) | Шум → методист не доверяет B |
 | Нет **очереди** в UI | Active learning не масштабируется |
 | Нет **batch** + nightly sync | Медленный цикл «fix → verify» |
-| ML deploy отложен | OK — engine даёт больший ROI при <60% readiness |
+| ML deploy отложен | OK - engine даёт больший ROI при <60% readiness |
 
 ---
 
@@ -69,7 +69,7 @@ flowchart LR
 
 ### 1.1 Проблема
 
-- Поток ~25 000 КЗ/мес; ручной аудит 2–5%.
+- Поток ~25 000 КЗ/мес; ручной аудит 2-5%.
 - Детерминированное ядро (правила 482+, compliance, send_gate) работает в production, но **ошибки на реальных КЗ** выявляются только при разметке методистом.
 - ML-каркас (`ml/`, `export_training_feedback.py`) собирает события, но **fine-tune и деплой моделей** ещё не замкнуты на production.
 - Embedder exp_001 улучшил офлайн-MRR, но **end-to-end анализ КЗ** на эталоне не изменился без меток на реальных ошибках.
@@ -98,7 +98,7 @@ flowchart LR
 | Вкладка «Очередь» | ✅ r114 | Клик → снимок в «Проверка КЗ» |
 | `run_methodist_batch.py` | ❌ | Только smoke на 2 кейса |
 | `ml/train/*` deploy | ❌ | `--dry-run`, offline exp |
-| Engine fixes из feedback | ✅ r109–r111 | neoplasm, NSAID, context gates |
+| Engine fixes из feedback | ✅ r109-r111 | neoplasm, NSAID, context gates |
 
 **Baseline пилота (июнь 2026):** ~39 событий feedback, ~10 уникальных КЗ, 13 analysis_review, 9 priority_cases.
 
@@ -106,7 +106,7 @@ flowchart LR
 
 ## 3. Приоритетный план по фазам
 
-### P0 — Инфраструктура данных (1–2 недели)
+### P0 - Инфраструктура данных (1-2 недели)
 
 | # | Задача | Результат | Effort | Impact | Статус |
 |---|--------|-----------|--------|--------|--------|
@@ -120,7 +120,7 @@ flowchart LR
 
 ---
 
-### P1 — Очередь, шум правил, retrieval (2–3 недели)
+### P1 - Очередь, шум правил, retrieval (2-3 недели)
 
 **Трек B (compliance):**
 
@@ -135,7 +135,7 @@ flowchart LR
 
 | # | Задача | Результат | Effort | Impact |
 |---|--------|-----------|--------|--------|
-| P1.8 | **UI: «Правильный протокол» обязательнее** | При tag `wrong_protocol` / `missed_protocol` — форма retrieval_fix | 1 д | Метки для LoRA |
+| P1.8 | **UI: «Правильный протокол» обязательнее** | При tag `wrong_protocol` / `missed_protocol` - форма retrieval_fix | 1 д | Метки для LoRA |
 | P1.9 | **Rubric+ICD pre-filter** | Сузить RAG до рубрики до embed search | 2 д | Меньше miss | ✅ r115 |
 | P1.10 | **Golden protocol pairs** | 20 пар diagnosis→path из размеченных кейсов | 2 д | Eval опоры A | 🟡 seed 2 |
 
@@ -151,7 +151,7 @@ flowchart LR
 
 ---
 
-### P2 — Замыкание ML-цикла (1–2 месяца)
+### P2 - Замыкание ML-цикла (1-2 месяца)
 
 | # | Задача | Результат | Effort | Impact |
 |---|--------|-----------|--------|--------|
@@ -165,7 +165,7 @@ flowchart LR
 
 ---
 
-### P3 — Масштаб пилота (квартал)
+### P3 - Масштаб пилота (квартал)
 
 | # | Задача | Результат |
 |---|--------|-----------|
@@ -202,7 +202,7 @@ flowchart TB
   C --> PROD
 ```
 
-### 4.1 Дорожка A — Engine (80% усилий сейчас)
+### 4.1 Дорожка A - Engine (80% усилий сейчас)
 
 **Вход:** `analysis_review` rating≤2, tags `false_positive_rule`, `overrides[]`.
 
@@ -213,7 +213,7 @@ flowchart TB
 4. Regression fixtures + re-analyze на Render
 5. Запись в `data/ml/engine_release_log.json`
 
-**Примеры уже сделанных fixes (r109–r110):**
+**Примеры уже сделанных fixes (r109-r110):**
 
 | Кейс | До | После | Fix |
 |------|-----|-------|-----|
@@ -223,13 +223,13 @@ flowchart TB
 
 ---
 
-### 4.2 Дорожка B — RAG embedder (15%)
+### 4.2 Дорожка B - RAG embedder (15%)
 
 **Вход:** `retrieval_fix` (query, rejected_path, chosen_path).
 
 **Порог старта:** ≥50 пар из **реального feedback** (не bootstrap из structured_index).
 
-**Сейчас:** 1 retrieval_fix, 300 bootstrap pairs — **недостаточно для production fine-tune**.
+**Сейчас:** 1 retrieval_fix, 300 bootstrap pairs - **недостаточно для production fine-tune**.
 
 **Pipeline:**
 ```bash
@@ -240,19 +240,19 @@ python3 scripts/run_ab_embedder_kz.py
 
 ---
 
-### 4.3 Дорожка C — Entailment (5%)
+### 4.3 Дорожка C - Entailment (5%)
 
 **Вход:** `methodist_override`, `overrides` в analysis_review → `entailment_pairs.jsonl`.
 
 **Порог:** ≥100 пар.
 
-**Сейчас:** ~29 пар — ранняя стадия, продолжать сбор.
+**Сейчас:** ~29 пар - ранняя стадия, продолжать сбор.
 
 ---
 
-### 4.4 Дорожка D — AI-review как pre-label
+### 4.4 Дорожка D - AI-review как pre-label
 
-Этап 2 Gemini генерирует `engine_improvements_ru`, overrides. При `methodist_approved: true` — сильная метка для backlog и будущего critic-model.
+Этап 2 Gemini генерирует `engine_improvements_ru`, overrides. При `methodist_approved: true` - сильная метка для backlog и будущего critic-model.
 
 **Не заменяет** human gold для обучения compliance-скoring.
 
@@ -262,7 +262,7 @@ python3 scripts/run_ab_embedder_kz.py
 
 ### 5.1 Зачем
 
-Ручной UI на 25k КЗ/мес не масштабируется. Batch L1 + фильтр «на разметку только спорные» — целевая модель.
+Ручной UI на 25k КЗ/мес не масштабируется. Batch L1 + фильтр «на разметку только спорные» - целевая модель.
 
 ### 5.2 Трёхуровневая стратегия
 
@@ -350,13 +350,13 @@ sequenceDiagram
 | Reviews на рубрику | 8 | Покрытие специальностей |
 | AI-approved reviews | 20 | Pre-label quality |
 
-**Правило:** пока `readiness_overall_pct` < 60% — приоритет **engine fixes**, не ML deploy.
+**Правило:** пока `readiness_overall_pct` < 60% - приоритет **engine fixes**, не ML deploy.
 
 ---
 
-## 8. Метрики успеха пилота (v1.1 — две опоры)
+## 8. Метрики успеха пилота (v1.1 - две опоры)
 
-### Опора A — подбор протокола
+### Опора A - подбор протокола
 
 | Метрика | Baseline | Цель 3 мес |
 |---------|----------|------------|
@@ -365,7 +365,7 @@ sequenceDiagram
 | КЗ с непустым `matched_protocol_paths` | низкий % | ≥80% прогонов L1 |
 | Tag `missed_protocol` / `wrong_protocol` в reviews | есть | −50% |
 
-### Опора B — соответствие протоколу
+### Опора B - соответствие протоколу
 
 | Метрика | Baseline | Цель 3 мес |
 |---------|----------|------------|
@@ -381,7 +381,7 @@ sequenceDiagram
 | readiness_overall_pct | Действие |
 |----------------------|----------|
 | < 40% | Только engine + сбор меток, batch T1 |
-| 40–60% | + очередь, retrieval_fix, rule family gates |
+| 40-60% | + очередь, retrieval_fix, rule family gates |
 | > 60% | + LoRA embedder A/B, entailment pilot |
 
 ---
@@ -400,10 +400,10 @@ sequenceDiagram
 
 ## Приложение A: порядок работ (актуальный спринт)
 
-**Неделя 1 — закрыть P0 + быстрые wins B**
+**Неделя 1 - закрыть P0 + быстрые wins B**
 
 1. ✅ Дашборд ML (r112)
-2. ✅ `run_methodist_batch.py` — batch L1 (fixtures 16/16)
+2. ✅ `run_methodist_batch.py` - batch L1 (fixtures 16/16)
 3. ✅ GitHub Action `methodist-feedback-sync.yml`
 4. ✅ Venous I80.x gate + tests `test_venous_rule_gates.py`
 5. ✅ Dedup diagnosis_formula (engine + UI)
@@ -413,14 +413,14 @@ sequenceDiagram
 9. ✅ Rule family gates + RAG pre-filter (r115)
 10. ⬜ Re-analyze obgyn + pull → verify в дашборде
 
-**Неделя 2 — очередь + опора A**
+**Неделя 2 - очередь + опора A**
 
 6. ⬜ `GET /api/methodist/queue` + UI вкладка
 7. ⬜ Усилить форму retrieval_fix при tags wrong/missed protocol
 8. ⬜ Re-analyze obgyn + pull → verify в дашборде
 9. ⬜ `analyze_priority_cases.py` → weekly triage для Cursor
 
-**Неделя 3–4 — системные gates**
+**Неделя 3-4 - системные gates**
 
 10. ⬜ Rule family gates для top override rule_id
 11. ⬜ consult_gold_candidate + 3 новых эталона из priority
@@ -432,12 +432,12 @@ sequenceDiagram
 
 | Вопрос | Ответ |
 |--------|-------|
-| Готов выполнять план? | **Да** — инфраструктура feedback и дашборд есть; следующий шаг P0.2–P0.4 + P1.3–P1.4 |
-| Что нужно от методиста | 5–10 КЗ/нед с «Правильный протокол» при ошибке RAG; approve AI-review |
+| Готов выполнять план? | **Да** - инфраструктура feedback и дашборд есть; следующий шаг P0.2-P0.4 + P1.3-P1.4 |
+| Что нужно от методиста | 5-10 КЗ/нед с «Правильный протокол» при ошибке RAG; approve AI-review |
 | Что нужно от DevOps | Render persistent disk для feedback; secrets в GitHub Actions |
 | Риск «ML ради ML» | Отложен до readiness >60% и ≥20 retrieval_fix |
 
-**Еженедельный ритуал (30 мин):** pull feedback → export → priority report → 1–2 engine PR → re-analyze на Render → проверка дашборда Δ.
+**Еженедельный ритуал (30 мин):** pull feedback → export → priority report → 1-2 engine PR → re-analyze на Render → проверка дашборда Δ.
 
 ---
 

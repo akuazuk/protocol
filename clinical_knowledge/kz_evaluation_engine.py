@@ -26,6 +26,7 @@ from .kz_evaluation_schema import (
     AxisScores,
     ConfidenceInfo,
     CoverageInfo,
+    EvidenceSpan,
     EvaluationFinding,
     EvaluationMode,
     KzEvaluationResultV3,
@@ -75,6 +76,42 @@ def _txt(case: dict, *keys: str) -> str:
 
 def _present(case: dict, *keys: str, minlen: int = 3) -> bool:
     return len(_txt(case, *keys)) >= minlen
+
+
+_EVIDENCE_FIELDS = (
+    "complaints",
+    "anamnesis_doctor",
+    "anamnesis_auto",
+    "objective_status",
+    "clinical_diagnosis",
+    "diagnosis_main_text",
+    "mkb_code_main",
+    "exam_data",
+    "exam_recommendations",
+    "treatment_recommendations",
+    "dispensary_info",
+)
+
+
+def _attach_evidence_spans(case: dict, findings: list[EvaluationFinding]) -> None:
+    """Связать точную цитату finding с полем и смещениями исходного документа."""
+    for finding in findings:
+        needle = str(finding.evidence or "").strip()
+        if not needle or finding.evidence_span is not None:
+            continue
+        needle_folded = needle.casefold()
+        for field in _EVIDENCE_FIELDS:
+            value = str(case.get(field) or "")
+            start = value.casefold().find(needle_folded)
+            if start < 0:
+                continue
+            finding.evidence_span = EvidenceSpan(
+                field=field,
+                start=start,
+                end=start + len(needle),
+                text=value[start : start + len(needle)],
+            )
+            break
 
 
 def _is_primary_visit(case: dict) -> bool:
@@ -506,6 +543,7 @@ def evaluate_kz_v3(
     d_score, d_cov, d_find = score_regulatory(case)
 
     findings = a_find + b_find + c_find + d_find
+    _attach_evidence_spans(case, findings)
 
     axis_vals = {
         "documentation": a_score,

@@ -49,9 +49,9 @@ def _normalize_funnel_feedback_fields(out: dict[str, Any]) -> None:
         try:
             fs_i = int(fs)
         except (TypeError, ValueError) as exc:
-            raise ValueError("funnel_step должен быть целым 0–7") from exc
+            raise ValueError("funnel_step должен быть целым 0-7") from exc
         if fs_i < 0 or fs_i > 7:
-            raise ValueError("funnel_step должен быть 0–7")
+            raise ValueError("funnel_step должен быть 0-7")
         out["funnel_step"] = fs_i
     fc = out.get("funnel_context")
     if fc is not None and fc != "":
@@ -92,10 +92,9 @@ def _probe_writable_dir(path: Path) -> bool:
 
 
 def feedback_dir() -> Path:
-    """Каталог JSONL feedback. ML_FEEDBACK_DIR — только если путь реально доступен для записи.
+    """Каталог JSONL feedback. ML_FEEDBACK_DIR - только если путь реально доступен для записи.
 
-    На Render без Persistent Disk ``/var/data/...`` недоступен (Permission denied) —
-    откат на ``data/ml/feedback`` внутри проекта, чтобы consult-review не падал с 500.
+    На Render без Persistent Disk ``/var/data/...`` недоступен (Permission denied) -     откат на ``data/ml/feedback`` внутри проекта, чтобы consult-review не падал с 500.
     """
     raw = (os.environ.get("ML_FEEDBACK_DIR") or "").strip()
     if raw:

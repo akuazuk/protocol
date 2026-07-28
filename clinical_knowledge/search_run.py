@@ -1,4 +1,4 @@
-"""POST /api/search/run — единая точка входа для воронки и tier S0/S1/S2."""
+"""POST /api/search/run - единая точка входа для воронки и tier S0/S1/S2."""
 from __future__ import annotations
 
 from typing import Any, Callable

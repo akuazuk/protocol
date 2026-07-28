@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -13,7 +14,10 @@ sys.path.insert(0, str(ROOT))
 
 from clinical_knowledge.protocol_summary.builder import publish_summaries  # noqa: E402
 from clinical_knowledge.protocol_summary.llm_extractor import extract_protocol_summary_llm  # noqa: E402
-from clinical_knowledge.protocol_summary.loader import clear_protocol_summary_cache  # noqa: E402
+from clinical_knowledge.protocol_summary.loader import (  # noqa: E402
+    clear_protocol_summary_cache,
+    load_protocol_summaries,
+)
 from clinical_knowledge.protocol_summary.source_text import (  # noqa: E402
     SOURCE_DIR,
     build_source_text_document,
@@ -23,7 +27,10 @@ from clinical_knowledge.protocol_summary.source_text import (  # noqa: E402
 from clinical_knowledge.protocol_summary.summary_to_rag import write_summary_rag_jsonl  # noqa: E402
 from clinical_knowledge.protocol_summary.validator import validate_protocol_summary, write_validation_report  # noqa: E402
 
-STATE = ROOT / "data" / "protocol_summaries" / "llm_batch_state.jsonl"
+STATE = Path(
+    os.environ.get("REEXTRACT_STATE")
+    or ROOT / "data" / "protocol_summaries" / "llm_batch_state.jsonl",
+)
 CATALOG = ROOT / "data" / "protocol_catalog.jsonl"
 
 
@@ -77,33 +84,39 @@ def _catalog_rows(limit: int | None = None) -> list[dict]:
 
 
 def main() -> int:
+    global STATE
     ap = argparse.ArgumentParser()
     ap.add_argument("--limit", type=int, default=None)
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--force", action="store_true", help="повторно обработать записи со status=ok")
+    ap.add_argument("--state", type=Path, default=STATE)
     ap.add_argument("--no-llm", action="store_true")
     ap.add_argument("--sleep", type=float, default=0.0, help="pause between LLM calls")
     args = ap.parse_args()
+    STATE = args.state.expanduser().resolve()
 
-    done_state = _load_state() if args.resume else {}
+    done_state = _load_state() if args.resume and not args.force else {}
     summaries = []
     invalid = 0
     skipped = 0
+    source_by_path: dict[str, tuple[dict, Path]] = {}
+    for source_path in SOURCE_DIR.glob("*.json"):
+        try:
+            source_doc = json.loads(source_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        source_key = str(source_doc.get("path") or "").replace("\\", "/")
+        if source_key:
+            source_by_path[source_key] = (source_doc, source_path)
 
     for row in _catalog_rows(args.limit):
         path = str(row.get("path") or "").replace("\\", "/")
         pid = None
         doc = None
-        src_path = None
-        for p in SOURCE_DIR.glob("*.json"):
-            try:
-                d = json.loads(p.read_text(encoding="utf-8"))
-            except (OSError, json.JSONDecodeError):
-                continue
-            if str(d.get("path") or "").replace("\\", "/") == path:
-                doc = d
-                pid = str(d.get("protocol_id") or p.stem)
-                src_path = p
-                break
+        source_match = source_by_path.get(path)
+        if source_match:
+            doc, source_file = source_match
+            pid = str(doc.get("protocol_id") or source_file.stem)
         if doc is None:
             doc = build_source_text_document(path)
             save_source_text(doc)
@@ -131,8 +144,10 @@ def main() -> int:
 
     if summaries:
         stats = publish_summaries(summaries)
-        write_summary_rag_jsonl(summaries)
         clear_protocol_summary_cache()
+        # При resume в текущем запуске summaries содержит только хвост. Индекс должен
+        # включать весь корпус, иначе частичный restart незаметно обрезает поиск.
+        write_summary_rag_jsonl(load_protocol_summaries())
         print(f"Published: {stats}")
     print(f"Batch done: {len(summaries)} processed, {skipped} skipped, {invalid} invalid")
     return 1 if invalid and not summaries else 0

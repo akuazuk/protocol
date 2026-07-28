@@ -112,8 +112,8 @@ def _write_pilot_report(out: Path, *, folder: Path, tiers: list[str], n_files: i
     for r in reports:
         aid = str(r.get("analysis_id") or "")
         lines.append(
-            f"| {r.get('case_id', '')} | {r.get('overall_pct', '—')}% | "
-            f"{r.get('rules_pct', '—')}% | {r.get('failed_rules_count', 0)} | "
+            f"| {r.get('case_id', '')} | {r.get('overall_pct', ' - ')}% | "
+            f"{r.get('rules_pct', ' - ')}% | {r.get('failed_rules_count', 0)} | "
             f"`{aid[:8]}…` |"
         )
     lines.extend(
@@ -122,7 +122,7 @@ def _write_pilot_report(out: Path, *, folder: Path, tiers: list[str], n_files: i
             "## Дальше",
             "",
             "1. UI: **Кабинет методиста** → **Очередь** → **Открыть** по `analysis_id`.",
-            "2. Проверьте overrides → **Одобрить — сохранить для обучения движка**.",
+            "2. Проверьте overrides → **Одобрить - сохранить для обучения движка**.",
             "3. `python3 scripts/export_training_feedback.py` → `ml/datasets/priority_cases.jsonl`.",
             "",
             f"Подробнее: `{out.name}/REVIEW_QUEUE.md`",
@@ -177,7 +177,7 @@ def main() -> int:
             f"  python3 scripts/run_kz_pilot_batch.py --import-from ~/Downloads/КЗ"
         )
     if args.expected and len(paths) != args.expected:
-        print(f"⚠ Ожидалось {args.expected} файлов, найдено {len(paths)} — продолжаем.", file=sys.stderr)
+        print(f"⚠ Ожидалось {args.expected} файлов, найдено {len(paths)} - продолжаем.", file=sys.stderr)
 
     stamp = time.strftime("%Y-%m-%d")
     out = args.out or (ROOT / "ml" / "experiments" / f"kz_pilot_{stamp}")

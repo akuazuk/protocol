@@ -461,10 +461,10 @@ def kz_kind_of(row: dict) -> str:
 
 
 def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
-    """Разделить строки на оцениваемые КЗ (kz/certificate) и исключённые.
+    """Разделить строки на оцениваемые медицинские документы и исключённые.
 
-    Возвращает (scored_rows, excluded_breakdown) - breakdown идёт в summary для
-    панели «Гигиена данных»: сколько КЗ / справок / диагностики / пустых и почему.
+    Для нового МО-контура приоритетен ``mo_score_eligible``. В старых выгрузках
+    сохраняется совместимое правило ``kz_kind``.
     """
     scored: list[dict] = []
     by_kind: Counter = Counter()
@@ -472,6 +472,7 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
     n_corrupt = 0
     for row in rows:
         kind = kz_kind_of(row)
+        document_kind = str(row.get("document_kind") or "").strip()
         by_kind[kind] += 1
         # Битая ::-строка (обрезана - слотов меньше схемы) в оценку не идёт: parse_ok=='0'.
         # Это не «плохой КЗ», а некорректно выгруженная строка. При отсутствии столбца
@@ -479,7 +480,16 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
         if str(row.get("parse_ok", "1")).strip() == "0":
             n_corrupt += 1
             continue
-        if kind in KZ_SCORED_KINDS:
+        mo_eligible_raw = str(row.get("mo_score_eligible") or "").strip().lower()
+        if mo_eligible_raw:
+            mo_eligible = mo_eligible_raw in {"1", "true", "yes", "on"}
+            if mo_eligible:
+                scored.append(row)
+                continue
+            excluded_kind = document_kind or kind
+            spec = (row.get("doctor_specialization") or "").strip() or " - "
+            by_spec[excluded_kind][spec] += 1
+        elif kind in KZ_SCORED_KINDS:
             scored.append(row)
         else:
             spec = (row.get("doctor_specialization") or "").strip() or " - "
@@ -495,10 +505,10 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
             for kind, spec in by_spec.items()
         },
         "rule_ru": (
-            "В оценку идут только kz и certificate с parse_ok. diagnostic (УЗИ/рентген/"
-            "функц./эндоскопия/лаборатория), non_clinical, empty и битые ::-строки "
-            "(parse_ok=0) исключены. Пустой/неполный клинический КЗ НЕ исключается - "
-            "оценивается низко (это дефект качества, а не мусор)."
+            "В МО-контуре применяется явный признак mo_score_eligible; для старых "
+            "выгрузок совместимо используются kz/certificate. Диагностические, "
+            "неклинические, пустые и битые ::-строки исключаются. Неполный клинический "
+            "документ не считается мусором и получает соответствующую низкую оценку."
         ),
     }
     return scored, breakdown

@@ -1,4 +1,4 @@
-"""Tests for B2C waves A–D modules."""
+"""Tests for B2C waves A-D modules."""
 from __future__ import annotations
 
 from clinical_knowledge.patient_analytics import record_patient_event

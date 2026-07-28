@@ -100,7 +100,7 @@ def test_filter_protocols_by_funnel_audience_hard_drop():
 
 
 def test_retrieve_only_rerank_survives_dedupe():
-    """dedupe_protocols_list сортирует по confidence — rerank должен быть после dedupe."""
+    """dedupe_protocols_list сортирует по confidence - rerank должен быть после dedupe."""
     protos = [
         {
             "path": "a/adult_bronchitis.pdf",

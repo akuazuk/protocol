@@ -1,4 +1,4 @@
-"""Заглушка оплаты B2C (ERIP / bePaid — интеграция на проде)."""
+"""Заглушка оплаты B2C (ERIP / bePaid - интеграция на проде)."""
 from __future__ import annotations
 
 import hashlib

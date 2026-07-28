@@ -1,4 +1,4 @@
-"""S1–S5: быстрый поиск — ICD auto fast path, retrieve_only без Gemini, search_timing."""
+"""S1-S5: быстрый поиск - ICD auto fast path, retrieve_only без Gemini, search_timing."""
 from __future__ import annotations
 
 import pytest

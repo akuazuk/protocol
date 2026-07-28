@@ -27,7 +27,7 @@ def nsaid_labels_in_text(text: str) -> list[str]:
 
 
 def detect_concurrent_nsaids(doc: ConsultationDocument) -> SafetyAssessment | None:
-    """Два и более НПВП в одном КЗ — критическая ошибка назначения."""
+    """Два и более НПВП в одном КЗ - критическая ошибка назначения."""
     found: set[str] = set()
     for m in doc.medications:
         if not looks_like_medication_item(m):
@@ -43,7 +43,7 @@ def detect_concurrent_nsaids(doc: ConsultationDocument) -> SafetyAssessment | No
         issue_type="drug_safety",
         severity="critical",
         finding_text=(
-            f"Одновременно назначены два и более НПВП ({names}) — "
+            f"Одновременно назначены два и более НПВП ({names}) - "
             "повышенный риск побочных эффектов (ЖКТ, почки)."
         ),
         expected_action="Исключить дублирование НПВП; оставить один препарат с контролем переносимости.",

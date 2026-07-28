@@ -7,7 +7,7 @@ from .image_ocr import is_image_filename, ocr_image_bytes, sniff_image_payload
 
 
 def extract_lab_text_from_bytes(data: bytes, filename: str = "") -> tuple[str, list[str]]:
-    """PDF/DOCX через стандартный extractor; для фото — OCR."""
+    """PDF/DOCX через стандартный extractor; для фото - OCR."""
     from rag_server import extract_consult_text_from_bytes
 
     if is_image_filename(filename) or sniff_image_payload(data):

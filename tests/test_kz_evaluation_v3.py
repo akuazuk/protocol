@@ -8,12 +8,17 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from clinical_knowledge.kz_evaluation_engine import evaluate_kz_v3, resolve_mode
+from clinical_knowledge.kz_evaluation_engine import (
+    _attach_evidence_spans,
+    evaluate_kz_v3,
+    resolve_mode,
+)
 from clinical_knowledge.kz_evaluation_schema import (
     SCHEMA_VERSION,
     AxisScores,
     ConfidenceInfo,
     CoverageInfo,
+    EvaluationFinding,
     KzEvaluationResultV3,
 )
 
@@ -80,6 +85,20 @@ def test_provenance_and_versions():
     assert r.scorer_version
     # provenance не роняет NaN и присутствует
     assert r.provenance.scorer_version == r.scorer_version
+
+
+def test_finding_evidence_gets_exact_document_span():
+    finding = EvaluationFinding(
+        code="B_diagnosis",
+        axis="clinical_concordance",
+        evidence="Острый фарингит",
+    )
+    _attach_evidence_spans(_CASE, [finding])
+    assert finding.evidence_span is not None
+    assert finding.evidence_span.field == "clinical_diagnosis"
+    assert _CASE["clinical_diagnosis"][
+        finding.evidence_span.start : finding.evidence_span.end
+    ] == "Острый фарингит"
 
 
 def test_mode_defaults_shadow():

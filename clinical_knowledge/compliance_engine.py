@@ -158,7 +158,7 @@ def _diagnosis_assessments(
                     )
                 )
             elif mkb_title:
-                found.append(f"Код {d.icd10_code} — {mkb_title[:80]}.")
+                found.append(f"Код {d.icd10_code} - {mkb_title[:80]}.")
             if has_proto:
                 status = "supported"
                 if not any("Код" in x for x in found):

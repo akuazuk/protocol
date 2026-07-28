@@ -68,7 +68,7 @@ def _month_bounds(ym: str) -> tuple[str, str]:
 
 def main() -> int:
     import pandas as pd
-    from sqlalchemy import text
+    from sqlalchemy import bindparam, text
 
     parse_mod = _load_parse_module()
     parse_result = parse_mod.parse_result
@@ -105,6 +105,7 @@ def main() -> int:
     with engine.connect() as conn:
         df = pd.read_sql(q, conn, params={"d0": d0, "d1": d1})
     engine.dispose()
+    source_rows = int(len(df))
     print(f"rows: {len(df)}", flush=True)
     df["doc_type"] = pd.NA
     type_counts: dict = {"<absent_in_db>": int(len(df))}
@@ -135,9 +136,8 @@ def main() -> int:
     with engine.connect() as conn:
         for i in range(0, len(vids), 800):
             batch = vids[i : i + 800]
-            ph = ",".join(str(int(x)) for x in batch)
             q_doc = text(
-                f"""
+                """
                 SELECT visit_id,
                        MIN(specialist_id) AS specialist_id_from_visit,
                        MIN(specialist_name) AS doctor_fio,
@@ -155,11 +155,11 @@ def main() -> int:
                                     ORDER BY serv_name SEPARATOR ' | ') AS service_names,
                        COUNT(*) AS service_row_count
                 FROM mis_data
-                WHERE visit_id IN ({ph})
+                WHERE visit_id IN :visit_ids
                 GROUP BY visit_id
                 """
-            )
-            chunks.append(pd.read_sql(q_doc, conn))
+            ).bindparams(bindparam("visit_ids", expanding=True))
+            chunks.append(pd.read_sql(q_doc, conn, params={"visit_ids": [int(x) for x in batch]}))
     engine.dispose()
     if chunks:
         doc = pd.concat(chunks, ignore_index=True)
@@ -217,16 +217,15 @@ def main() -> int:
         with engine.connect() as conn:
             for i in range(0, len(vids), 800):
                 batch = vids[i : i + 800]
-                ph = ",".join(str(int(x)) for x in batch)
                 q_sp = text(
-                    f"""
+                    """
                     SELECT visit_id, specialist_id, MIN(specialization) AS specialization
                     FROM mis_data
-                    WHERE visit_id IN ({ph}) AND specialist_id IS NOT NULL
+                    WHERE visit_id IN :visit_ids AND specialist_id IS NOT NULL
                     GROUP BY visit_id, specialist_id
                     """
-                )
-                sp = pd.read_sql(q_sp, conn)
+                ).bindparams(bindparam("visit_ids", expanding=True))
+                sp = pd.read_sql(q_sp, conn, params={"visit_ids": [int(x) for x in batch]})
                 for _, r in sp.iterrows():
                     spv = str(r.get("specialization") or "").strip()
                     if not spv:
@@ -387,7 +386,9 @@ def main() -> int:
     meta = {
         "date_from": d0,
         "date_to_exclusive": d1,
+        "source_rows": source_rows,
         "rows": int(len(out)),
+        "row_parity": source_rows == int(len(out)),
         "columns": list(out.columns),
         "date_validation": {
             "canonical_column": "visit_date (ISO)",

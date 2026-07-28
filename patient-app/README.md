@@ -12,6 +12,6 @@ npx cap sync
 npx cap open ios
 ```
 
-`webDir` указывает на корень репозитория; в проде `server.url` — deployed `patient.html`.
+`webDir` указывает на корень репозитория; в проде `server.url` - deployed `patient.html`.
 
-Push-напоминания «обсудить с врачом» — через `@capacitor/push-notifications` (Wave C stub).
+Push-напоминания «обсудить с врачом» - через `@capacitor/push-notifications` (Wave C stub).

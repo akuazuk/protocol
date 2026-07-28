@@ -1,6 +1,6 @@
 # B2C: «Проверь своё заключение»
 
-Отдельный продукт поверх **Protocol** (B2B: врачи, МИС, методслужба). Пациент получает понятный ответ: насколько заключение согласовано с **клиническими протоколами Минздрава РБ**, что заполнено и что стоит уточнить у врачу — **без** диагноза и **без** силы МЭЭ.
+Отдельный продукт поверх **Protocol** (B2B: врачи, МИС, методслужба). Пациент получает понятный ответ: насколько заключение согласовано с **клиническими протоколами Минздрава РБ**, что заполнено и что стоит уточнить у врачу - **без** диагноза и **без** силы МЭЭ.
 
 **Статус репозитория:** MVP backend + PWA · июнь 2026 · ветка `main` @ `2aff054`  
 **Tier API:** `P1` = L1 structured + deterministic alignment (протоколы через chunk/RAG), **без** ЦИСЗ, send_gate и LLM-критериев  
@@ -20,12 +20,12 @@
 
 | Когда… | Пациент хочет… | Продукт даёт… |
 |--------|----------------|---------------|
-| Только что получил КЗ на руки | Понять «всё ли учли», не читая 5 страниц медицинского текста | Светофор + 2–3 приоритетных темы + «что мы поняли из вашего документа» |
+| Только что получил КЗ на руки | Понять «всё ли учли», не читая 5 страниц медицинского текста | Светофор + 2-3 приоритетных темы + «что мы поняли из вашего документа» |
 | Есть бланки анализов дома | Убедиться, что врач их учёл в заключении | Сверка маркеров «в анализах / в тексте КЗ» |
 | Идёт на повторный приём | Не забыть спросить важное | Чек-лист вопросов + «Поделиться» / печать |
 | Сомневается в качестве клиники | Опора на стандарт Минздрава, а не на мнение из чата | Цитаты из клинических протоколов простым языком |
 
-**Главный outcome пилота:** не «оценка в %», а **«я знаю, о чём поговорить с врачом и чувствую контроль»**. Процент — вторичная метрика для прозрачности, не для диагностики.
+**Главный outcome пилота:** не «оценка в %», а **«я знаю, о чём поговорить с врачом и чувствую контроль»**. Процент - вторичная метрика для прозрачности, не для диагностики.
 
 ---
 
@@ -34,12 +34,12 @@
 | Область | Реализовано | Пробел для пользователя |
 |---------|-------------|-------------------------|
 | Загрузка КЗ + consent | `patient.html`, multipart API | Нет подсказки «сфотографируйте все страницы» / превью страниц |
-| Отчёт P1 | `patient_report.py` — светофор, 8 блоков, вопросы | Нет «почему такой статус» (explainability) у каждого блока |
+| Отчёт P1 | `patient_report.py` - светофор, 8 блоков, вопросы | Нет «почему такой статус» (explainability) у каждого блока |
 | Анализы | parser + crosscheck + UI panel | OCR фото бланков слабый; мало форматов лабораторий РБ |
 | Протокол | `patient_protocol_crosscheck.py` | Показывается только при gap; нет «что протокол рекомендует в целом» |
 | Удержание | localStorage: история (5), чек-лист | Нет восстановления полного отчёта после закрытия вкладки |
 | Дистрибуция | PWA + SW + manifest | Нет push, нет «Добавить на экран» onboarding на iOS |
-| Монетизация | Тарифы в `scripts/konkurs_b2c_ux.py` | Оплата, tier, white-label clinic — не в коде |
+| Монетизация | Тарифы в `scripts/konkurs_b2c_ux.py` | Оплата, tier, white-label clinic - не в коде |
 
 ---
 
@@ -47,10 +47,10 @@
 
 Ориентиры: **Apple HIG** (ясность, deference, depth), **Material Design 3** (роли, motion), **NHS Digital Service Manual**, **WCAG 2.2 AA**, паттерны **Ada / K Health / Apple Health** (образование, не диагностика).
 
-### 1. Progressive disclosure — «30 секунд → детали»
+### 1. Progressive disclosure - «30 секунд → детали»
 
 ```
-[Итог одной фразой] → [3 шага что делать] → [Чек-лист врачу] → [Блоки / анализы / протокол — по раскрытию]
+[Итог одной фразой] → [3 шага что делать] → [Чек-лист врачу] → [Блоки / анализы / протокол - по раскрытию]
 ```
 
 Первый экран результата **не** таблица из 8 строк. Сначала: статус + plain summary + next steps + CTA «Вопросы на приём».
@@ -58,20 +58,20 @@
 ### 2. Plain language first
 
 - Заголовок блока: «Обследования», не `required_exams`.
-- Статус: «Стоит уточнить», «В порядке», «Обратите внимание» — без процентов в заголовке карточки (процент — внутри, по tap).
+- Статус: «Стоит уточнить», «В порядке», «Обратите внимание» - без процентов в заголовке карточки (процент - внутри, по tap).
 - Дисклеймер всегда виден, но не пугающий: «Помощник для разговора с врачом».
 
 ### 3. Trust & transparency
 
-- «Мы прочитали из вашего документа: …» (`document_read_back_ru`) — выше fold.
-- «Сверка с N протоколами Минздрава» + ссылка «Что такое клинический протокол?» (FAQ уже есть — усилить).
-- При низком `document_quality` — жёлтый баннер **до** оценки блоков (уже частично есть).
+- «Мы прочитали из вашего документа: …» (`document_read_back_ru`) - выше fold.
+- «Сверка с N протоколами Минздрава» + ссылка «Что такое клинический протокол?» (FAQ уже есть - усилить).
+- При низком `document_quality` - жёлтый баннер **до** оценки блоков (уже частично есть).
 
 ### 4. Accessibility & inclusive design
 
 - [ ] Конtrast ≥ 4.5:1 для текста (проверить `--muted` на `--bg`).
 - [ ] Focus ring на drop-zone и кнопках; keyboard-only path.
-- [ ] `prefers-reduced-motion` — отключить spin loader / score ring animation.
+- [ ] `prefers-reduced-motion` - отключить spin loader / score ring animation.
 - [ ] Touch targets ≥ 44×44 px; labels для screen readers на file input.
 - [ ] Не полагаться только на цвет (светофор + иконка + текст).
 
@@ -85,8 +85,8 @@
 ### 6. Privacy by design
 
 - Данные не сохраняются на сервере после ответа (явно в UI и privacy notice).
-- История только localStorage — объяснить пользователю и предложить «Удалить всё».
-- Rate limit + consent checkbox — уже есть; добавить ссылку на политику обработки.
+- История только localStorage - объяснить пользователю и предложить «Удалить всё».
+- Rate limit + consent checkbox - уже есть; добавить ссылку на политику обработки.
 
 ---
 
@@ -97,7 +97,7 @@
 ```
 patient.html (view)
     ↓
-/api/patient/*  (rag_server.py — thin controller)
+/api/patient/*  (rag_server.py - thin controller)
     ↓
 clinical_knowledge/patient_review.py  (orchestrator P1)
     ├── consult_tiering.run_l1_structured_review
@@ -114,9 +114,9 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 | **Contract-first API** | ad-hoc JSON | OpenAPI `/api/patient/openapi.yaml` + JSON Schema `patient_report` v1 |
 | **Schema versioning** | неявно | `report_schema_version: 1` в каждом ответе; миграции view |
 | **Feature flags** | env vars | `PATIENT_*` + per-clinic flags (`?clinic=`) для white-label |
-| **Observability** | логи сервера | structured logs: `patient_review_id`, duration_ms, light, lab_count — **без ПДн** |
+| **Observability** | логи сервера | structured logs: `patient_review_id`, duration_ms, light, lab_count - **без ПДн** |
 | **Idempotency** | нет | `Idempotency-Key` для повторных upload после обрыва сети |
-| **SSE progress** | нет | `GET /api/patient/review/stream` — этапы: parse → align → report |
+| **SSE progress** | нет | `GET /api/patient/review/stream` - этапы: parse → align → report |
 | **Sanitization boundary** | `sanitize_patient_api_payload` | единственная точка; unit-test «B2B fields never leak» |
 
 ### Tier-модель (продукт ↔ техника)
@@ -133,24 +133,24 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 
 Легенда: `[x]` сделано · `[ ]` запланировано · `[-]` частично
 
-### Волна A — «Полезно с первого дня» (2–3 недели, только PWA)
+### Волна A - «Полезно с первого дня» (2-3 недели, только PWA)
 
 Фокус: **ценность без App Store и оплаты**.
 
 - [x] Backend P1 + patient_report + crosschecks
 - [x] PWA: onboarding, FAQ, чек-лист, share, history
-- [x] **Results IA v2:** reorder экрана — summary → next steps → checklist → collapsible blocks/labs/protocol
-- [x] **Explainability:** у каждого блока «Почему так» — `why_ru` + excerpt протокола
-- [x] **Document quality first:** если confidence < 55% — cap traffic light
+- [x] **Results IA v2:** reorder экрана - summary → next steps → checklist → collapsible blocks/labs/protocol
+- [x] **Explainability:** у каждого блока «Почему так» - `why_ru` + excerpt протокола
+- [x] **Document quality first:** если confidence < 55% - cap traffic light
 - [x] **Restore report:** sessionStorage (`patient-ui.js`)
 - [x] **a11y pass:** reduced-motion, focus-visible, aria-live (`patient-tokens.css`)
 - [x] **Analytics (privacy-safe):** `POST /api/patient/analytics`
 
-**Критерий готовности:** 5 пользовательских тестов (think-aloud) — все понимают «что делать дальше» без объяснения.
+**Критерий готовности:** 5 пользовательских тестов (think-aloud) - все понимают «что делать дальше» без объяснения.
 
 ---
 
-### Волна B — «Доверие и дистрибуция» (4–6 недель)
+### Волна B - «Доверие и дистрибуция» (4-6 недель)
 
 - [x] Privacy notice stub (`docs/patient-privacy-stub.html`)
 - [ ] PRD + юридическое заключение (фаза 0)
@@ -158,14 +158,14 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 - [x] Design tokens: `patient-tokens.css`
 - [x] SSE-прогресс: `POST /api/patient/review/stream`
 - [x] Оплата stub: `POST /api/patient/payment/session`, `PATIENT_PAYMENT_REQUIRED`
-- [x] Query params: `?clinic=&tier=` — white-label + tier bar
+- [x] Query params: `?clinic=&tier=` - white-label + tier bar
 - [ ] Soft launch: QR на выдаче КЗ в пилотной клинике
 
 **Критерий:** конверсия QR → завершённая проверка ≥ 15%.
 
 ---
 
-### Волна C — «Глубина данных» (6–8 недель)
+### Волна C - «Глубина данных» (6-8 недель)
 
 #### Анализы и обследования
 
@@ -186,7 +186,7 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 
 ---
 
-### Волна D — «Масштаб B2B2C» (ongoing)
+### Волна D - «Масштаб B2B2C» (ongoing)
 
 - [x] Партнёрские клиники: white-label config (`patient_clinic_config.py`)
 - [ ] SMS/email deep link + rev-share 30/70 (см. `scripts/konkurs_b2c_ux.py`)
@@ -197,11 +197,11 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 
 ---
 
-## Native vs PWA — решение
+## Native vs PWA - решение
 
 | Критерий | PWA (сейчас) | Capacitor | React Native |
 |----------|--------------|-----------|--------------|
-| Time to market | ✅ готово | +2–3 нед | +8–12 нед |
+| Time to market | ✅ готово | +2-3 нед | +8-12 нед |
 | Camera / OCR | ограничено | ✅ plugins | ✅ |
 | IAP / ERIP | сложнее | ✅ | ✅ |
 | Offline | SW базовый | ✅ | ✅ |
@@ -221,18 +221,18 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 | Сверка анализов | `clinical_knowledge/patient_lab_crosscheck.py` |
 | Блок обследований | `clinical_knowledge/patient_exams_enrich.py` |
 | Сверка протокола | `clinical_knowledge/patient_protocol_crosscheck.py` |
-| API | `rag_server.py` — `/api/patient/*` |
+| API | `rag_server.py` - `/api/patient/*` |
 | PWA | `patient.html`, `patient-manifest.webmanifest`, `patient-sw.js` |
 | B2B вход | `index.html` → «Проверь своё заключение» |
 | Тесты | `tests/test_patient_report.py`, `test_lab_result_parser.py`, `test_patient_exams_enrich.py`, `test_patient_protocol_crosscheck.py` |
 | Экономика B2C | `scripts/konkurs_b2c_ux.py` |
 
-### Tier P1 — pipeline
+### Tier P1 - pipeline
 
-1. `run_l1_structured_review` — structured 8 блоков + alignment (chunk/RAG по протоколам), без CISZ/LLM criteria.
+1. `run_l1_structured_review` - structured 8 блоков + alignment (chunk/RAG по протоколам), без CISZ/LLM criteria.
 2. Опционально: lab crosscheck, exams enrich, protocol crosscheck.
-3. `build_patient_report` — patient-safe JSON.
-4. `sanitize_patient_api_payload` — B2B-поля не отдаются клиенту.
+3. `build_patient_report` - patient-safe JSON.
+4. `sanitize_patient_api_payload` - B2B-поля не отдаются клиенту.
 
 ### Переменные окружения
 
@@ -253,7 +253,7 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 | Базовая L1 | 4,99 BYN | Полный P1 отчёт |
 | L1+ (анализы) | 6,99 BYN | P1 + lab + protocol crosscheck |
 | L2 подробная | 9,99 BYN | P2 narrative + evidence |
-| Онко / pre-op | 12,99–14,99 BYN | Приоритет treatment/safety блоков |
+| Онко / pre-op | 12,99-14,99 BYN | Приоритет treatment/safety блоков |
 
 Каналы: QR после визита · SMS rev-share · SEO national (`scripts/konkurs_b2c_ux.py`).
 
@@ -322,8 +322,8 @@ pytest tests/test_patient*.py tests/test_lab_result_parser.py -q
 
 ## Следующий приоритет (июнь 2026)
 
-1. **Волна A** — Results IA v2 + explainability + sessionStorage restore + a11y (максимум пользы без оплаты).
-2. **Волна B** — Figma + ERIP + QR пилот в клинике.
-3. **Capacitor** — только после стабилизации PWA и конверсии пилота.
+1. **Волна A** - Results IA v2 + explainability + sessionStorage restore + a11y (максимум пользы без оплаты).
+2. **Волна B** - Figma + ERIP + QR пилот в клинике.
+3. **Capacitor** - только после стабилизации PWA и конверсии пилота.
 
-*Предыдущая версия roadmap (фазы 0–3) сохранена в истории git; v2 переформулирована в outcome-driven волны A–D.*
+*Предыдущая версия roadmap (фазы 0-3) сохранена в истории git; v2 переформулирована в outcome-driven волны A-D.*

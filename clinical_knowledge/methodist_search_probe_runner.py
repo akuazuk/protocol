@@ -1,4 +1,4 @@
-"""Batch probe поиска протоколов (режим методиста) — общая логика для CLI и API."""
+"""Batch probe поиска протоколов (режим методиста) - общая логика для CLI и API."""
 from __future__ import annotations
 
 import json

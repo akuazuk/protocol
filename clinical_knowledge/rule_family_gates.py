@@ -153,7 +153,7 @@ def _has_icd_prefix(icd_list: list[str], prefixes: tuple[str, ...]) -> bool:
 
 
 def condition_family_applies(condition_id: str, consult_facts: dict[str, Any]) -> bool | None:
-    """None — использовать стандартную логику rule_checker."""
+    """None - использовать стандартную логику rule_checker."""
     cons = consult_facts.get("consultation") or {}
     icd_list = [str(x).upper() for x in (cons.get("icd10") or []) if x]
     diag = _norm(str(cons.get("diagnosis_text") or ""))

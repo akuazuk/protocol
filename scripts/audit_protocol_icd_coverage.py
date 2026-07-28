@@ -87,7 +87,7 @@ def run_audit(*, strict: bool = False) -> dict:
         "",
     ]
     for item in report.get("general_scope_sample") or []:
-        lines.append(f"- `{item.get('label')}` — `{item.get('path')}`")
+        lines.append(f"- `{item.get('label')}` - `{item.get('path')}`")
     lines.extend(["", "## PDF without ICD and not general (gaps)", ""])
     for p in gaps_icd[:30]:
         lines.append(f"- `{p}`")

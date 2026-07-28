@@ -69,7 +69,7 @@ def build_report(*, priority_path: Path | None = None) -> str:
     if tag_counts.get("score_misleading"):
         lines.append("- Compliance: caps sparse KZ, hybrid weights")
     if not cases:
-        lines.append("- Нет priority_cases — продолжайте batch + разметку")
+        lines.append("- Нет priority_cases - продолжайте batch + разметку")
     return "\n".join(lines) + "\n"
 
 

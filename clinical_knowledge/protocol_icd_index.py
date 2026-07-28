@@ -643,7 +643,7 @@ def icd_fast_lookup_trusted(
     *,
     icd_codes: list[str] | None = None,
 ) -> bool:
-    """False — top-1 явно не подходит; нужен RAG fallback."""
+    """False - top-1 явно не подходит; нужен RAG fallback."""
     protos = lookup_result.get("protocols") or []
     if not protos:
         return False

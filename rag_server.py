@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-27-r20-mis-kz-route"
+BUILD_VERSION = "2026-07-28-r2-mo-daily-crm-bi"
 
 
 def _app_version() -> str:
@@ -10763,11 +10763,14 @@ def api_methodist_mis_kz_quality(
     """
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import build_mis_kz_quality_view
+    from clinical_knowledge.mo_backend import compatibility_metadata
 
-    return build_mis_kz_quality_view(
+    result = build_mis_kz_quality_view(
         month=month,
         compare_month=(compare_month or "").strip() or None,
     )
+    result["deprecation"] = compatibility_metadata()
+    return result
 
 
 class MisKzGeminiReviewIn(BaseModel):
@@ -10833,8 +10836,9 @@ def api_methodist_mis_kz_cases(
     """Таблица КЗ с deep-скором: фильтры по всем столбцам, facets, агрегат под фильтр (§7Б)."""
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import build_kz_cases_view
+    from clinical_knowledge.mo_backend import compatibility_metadata
 
-    return build_kz_cases_view(
+    result = build_kz_cases_view(
         month=month,
         page=page,
         page_size=page_size,
@@ -10859,6 +10863,8 @@ def api_methodist_mis_kz_cases(
         preset=preset,
         q=q,
     )
+    result["deprecation"] = compatibility_metadata()
+    return result
 
 
 @app.get("/api/methodist/mis-kz-quality/dynamics")
@@ -10872,9 +10878,12 @@ def api_methodist_mis_kz_dynamics(
     """
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import build_kz_dynamics
+    from clinical_knowledge.mo_backend import compatibility_metadata
 
     sel = [m.strip() for m in (months or "").split(",") if m.strip()]
-    return build_kz_dynamics(months=sel or None)
+    result = build_kz_dynamics(months=sel or None)
+    result["deprecation"] = compatibility_metadata()
+    return result
 
 
 @app.get("/api/methodist/mis-kz-quality/scoring-info")
@@ -10895,8 +10904,318 @@ def api_methodist_mis_kz_case_detail(
     """Разбор одного КЗ (§7Б.4): оси, находки по severity, block_scores, reg55."""
     _require_methodist_auth(request)
     from clinical_knowledge.mis_kz_quality import build_kz_case_detail
+    from clinical_knowledge.mo_backend import compatibility_metadata
 
-    return build_kz_case_detail(month=month, visit_id=visit_id)
+    result = build_kz_case_detail(month=month, visit_id=visit_id)
+    result["deprecation"] = compatibility_metadata()
+    return result
+
+
+def _mo_actor(request: "Request") -> str:
+    from clinical_knowledge.feedback_store import methodist_default_reviewer
+
+    return (
+        (request.headers.get("x-methodist-reviewer") or "").strip()
+        or methodist_default_reviewer()
+        or "methodist"
+    )[:120]
+
+
+def _mo_role(request: "Request") -> str:
+    role = (request.headers.get("x-methodist-role") or "methodist").strip().lower()
+    return role if role in {"viewer", "methodist", "lead", "admin"} else "viewer"
+
+
+def _mo_params(**kwargs: Any) -> dict[str, Any]:
+    return {
+        key: value
+        for key, value in kwargs.items()
+        if key not in {"request", "response"}
+        and value not in (None, "")
+        and not callable(value)
+    }
+
+
+@app.get("/api/methodist/mo/overview")
+def api_methodist_mo_overview(
+    request: "Request",
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_overview
+
+    return build_overview(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/daily-report")
+def api_methodist_mo_daily_report(
+    request: "Request",
+    report_date: str = Query(..., alias="date", min_length=10, max_length=10),
+    response: "Response" = None,
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_daily_report
+
+    if response is not None:
+        response.headers["Cache-Control"] = "private, no-store"
+    result = build_daily_report(report_date)
+    if result.get("error") == "invalid_date":
+        raise HTTPException(status_code=422, detail="Некорректная дата отчёта.")
+    return result
+
+
+@app.get("/api/methodist/mo/trends")
+def api_methodist_mo_trends(
+    request: "Request",
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_trends
+
+    return build_trends(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/facets")
+def api_methodist_mo_facets(
+    request: "Request",
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+    crm_statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_facets
+
+    return build_facets(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/cases")
+def api_methodist_mo_cases(
+    request: "Request",
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    kz_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+    mkb_chapters: str = Query("", max_length=1000),
+    crm_statuses: str = Query("", max_length=500),
+    assignees: str = Query("", max_length=2000),
+    exclude_specializations: str = Query("", max_length=2000),
+    exclude_filials: str = Query("", max_length=2000),
+    exclude_document_kinds: str = Query("", max_length=500),
+    q: str = Query("", max_length=200),
+    queue_only: bool = Query(False),
+    page: int = Query(1, ge=1),
+    page_size: int = Query(50, ge=1, le=200),
+    sort_by: str = Query("date"),
+    sort_dir: str = Query("desc"),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_cases
+
+    return build_cases(_mo_params(**locals()))
+
+
+@app.post("/api/methodist/mo/cases/bulk-action")
+def api_methodist_mo_cases_bulk_action(request: "Request", body: dict[str, Any]) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import apply_bulk_action
+
+    try:
+        return apply_bulk_action(
+            actor=_mo_actor(request),
+            role=_mo_role(request),
+            payload=body,
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/api/methodist/mo/cases/{case_id}/events")
+def api_methodist_mo_case_event(
+    case_id: str,
+    request: "Request",
+    body: dict[str, Any],
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import apply_bulk_action
+
+    payload = {
+        "case_ids": [case_id],
+        "changes": body.get("changes") or {},
+        "comment": body.get("comment") or "",
+    }
+    try:
+        return apply_bulk_action(actor=_mo_actor(request), role=_mo_role(request), payload=payload)
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/cases/{case_id}")
+def api_methodist_mo_case_detail(
+    case_id: str,
+    request: "Request",
+    response: "Response",
+    month: str = Query("", min_length=0, max_length=7),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_case_detail
+
+    response.headers["Cache-Control"] = "private, no-store"
+    result = build_case_detail(case_id, month=month or None)
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail=result.get("error") or "case_not_found")
+    return result
+
+
+@app.get("/api/methodist/mo/entities/{entity_kind}/{entity_id}")
+def api_methodist_mo_entity(
+    entity_kind: str,
+    entity_id: str,
+    request: "Request",
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_entity
+
+    result = build_entity(entity_kind, entity_id, _mo_params(**locals()))
+    if result.get("error") == "unknown_entity_kind":
+        raise HTTPException(status_code=404, detail="Неизвестный тип сущности.")
+    return result
+
+
+@app.get("/api/methodist/mo/data-quality")
+def api_methodist_mo_data_quality(
+    request: "Request",
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_data_quality
+
+    return build_data_quality(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/scoring-method")
+def api_methodist_mo_scoring_method(request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mis_kz_quality import build_scoring_info
+
+    return build_scoring_info()
+
+
+@app.get("/api/methodist/mo/reports")
+def api_methodist_mo_reports(request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_reports
+
+    return build_reports()
+
+
+@app.get("/api/methodist/mo/saved-views")
+def api_methodist_mo_saved_views(request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import list_views
+
+    return list_views(_mo_actor(request))
+
+
+@app.post("/api/methodist/mo/saved-views")
+def api_methodist_mo_saved_views_save(request: "Request", body: dict[str, Any]) -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) == "viewer":
+        raise HTTPException(status_code=403, detail="Роль viewer не может изменять представления.")
+    from clinical_knowledge.mo_backend import save_view
+
+    try:
+        return save_view(actor=_mo_actor(request), payload=body)
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.delete("/api/methodist/mo/saved-views/{view_id}")
+def api_methodist_mo_saved_views_delete(view_id: str, request: "Request") -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) == "viewer":
+        raise HTTPException(status_code=403, detail="Роль viewer не может удалять представления.")
+    from clinical_knowledge.mo_backend import delete_view
+
+    try:
+        result = delete_view(actor=_mo_actor(request), view_id=view_id)
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail="Представление не найдено.")
+    return result
+
+
+@app.post("/api/methodist/mo/exports")
+def api_methodist_mo_export(request: "Request", body: dict[str, Any]) -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) == "viewer":
+        raise HTTPException(status_code=403, detail="Роль viewer не может создавать выгрузки.")
+    from clinical_knowledge.mo_backend import create_export
+
+    try:
+        return create_export(actor=_mo_actor(request), payload=body)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/exports/{job_id}")
+def api_methodist_mo_export_download(job_id: str, request: "Request") -> FileResponse:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import get_export
+
+    try:
+        path = get_export(actor=_mo_actor(request), job_id=job_id)
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=404, detail=str(exc)) from exc
+    return FileResponse(
+        path,
+        media_type="application/json",
+        filename=f"mo-export-{job_id}.json",
+        headers={"Cache-Control": "private, no-store"},
+    )
 
 
 @app.post("/api/methodist/patient-quality/refresh")

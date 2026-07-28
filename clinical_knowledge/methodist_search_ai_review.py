@@ -37,7 +37,7 @@ def suggested_funnel_step_from_tags(tags: list[str]) -> int | None:
 
 SYSTEM_METHODIST_SEARCH_AI_REVIEW = """Ты методист-врач методслужбы и аудитор качества поиска клинических протоколов Минздрава РБ в ПО «Protocol».
 
-Главная задача — МЕТА-ОЦЕНКА: насколько ВЕРНО система подобрала и ранжировала PDF-протоколы по запросу врача.
+Главная задача - МЕТА-ОЦЕНКА: насколько ВЕРНО система подобрала и ранжировала PDF-протоколы по запросу врача.
 Это НЕ установление диагноза и НЕ клиническая консультация.
 
 Вход:
@@ -46,13 +46,13 @@ SYSTEM_METHODIST_SEARCH_AI_REVIEW = """Ты методист-врач метод
 3) список retrieval (BM25 + rerank).
 
 Что нужно сделать (в порядке приоритета):
-1) ranking_verdict и ranking_rating (1-5) — насколько верен top-1 и порядок выдачи.
-2) engine_improvements_ru — 3-7 конкретных правок для ДВИЖКА поиска в проекте (RAG, embed rerank, routing, dedup, ICD pipeline).
+1) ranking_verdict и ranking_rating (1-5) - насколько верен top-1 и порядок выдачи.
+2) engine_improvements_ru - 3-7 конкретных правок для ДВИЖКА поиска в проекте (RAG, embed rerank, routing, dedup, ICD pipeline).
    Примеры: «при I10 поднимать кардиологический КП», «отфильтровать детский протокол», «усилить match по коду K64».
-3) retrieval_fix — если top-1 неверен или нужный КП не в top-3: rejected_path (ошибочный top) и chosen_path (правильный PDF из каталога или пусто если неизвестен).
-4) tags — wrong_protocol, missed_protocol, wrong_population, query_too_vague, wrong_rubric, wrong_condition, wrong_section, wrong_icd_suggestion, other.
-5) top1_relevant — true если первый протокол клинически уместен для запроса (даже если порядок остальных неверен).
-6) suggested_funnel_step — 0–7, на каком шаге воронки вероятнее всего ошибка (если есть).
+3) retrieval_fix - если top-1 неверен или нужный КП не в top-3: rejected_path (ошибочный top) и chosen_path (правильный PDF из каталога или пусто если неизвестен).
+4) tags - wrong_protocol, missed_protocol, wrong_population, query_too_vague, wrong_rubric, wrong_condition, wrong_section, wrong_icd_suggestion, other.
+5) top1_relevant - true если первый протокол клинически уместен для запроса (даже если порядок остальных неверен).
+6) suggested_funnel_step - 0-7, на каком шаге воронки вероятнее всего ошибка (если есть).
 
 Если выдача полностью верна (top-1 релевантен, порядок разумный): ranking_verdict=correct, retrieval_fix=null, tags=[].
 
@@ -309,7 +309,7 @@ def _query_has_icd_hint(query: str, icd_codes: list[str] | None) -> bool:
 
 
 def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict[str, Any]:
-    """Оценка выдачи без LLM — для retrieve_only и при сбое Gemini."""
+    """Оценка выдачи без LLM - для retrieve_only и при сбое Gemini."""
     query = (assist_payload.get("query") or "").strip()
     ql = query.lower()
     protos = (assist_payload.get("llm_json") or {}).get("protocols") or []
@@ -424,7 +424,7 @@ def build_deterministic_search_ai_review(assist_payload: dict[str, Any]) -> dict
     ]
     if symptom_only:
         summary_parts.append(
-            "Запрос без явного МКБ/диагноза — релевантность top-1 ограничена."
+            "Запрос без явного МКБ/диагноза - релевантность top-1 ограничена."
         )
     if top_path:
         summary_parts.append(f"Top-1: {_basename(top_path)}.")

@@ -35,7 +35,7 @@ def main() -> int:
         type=Path,
         default=ROOT / "ml" / "experiments" / "batch_clients_consult_2026-06-01" / "report.json",
     )
-    ap.add_argument("--cases", nargs="*", default=None, help="case_id из report; по умолчанию — приоритетный список")
+    ap.add_argument("--cases", nargs="*", default=None, help="case_id из report; по умолчанию - приоритетный список")
     ap.add_argument(
         "--all",
         action="store_true",
@@ -112,7 +112,7 @@ def main() -> int:
         results.append(row)
         ok = "✅" if ai and not err else "❌"
         queue_lines.append(
-            f"| {case_id} | `{aid[:8]}…` | {rep.get('overall_pct', '—')}% | {ok} |"
+            f"| {case_id} | `{aid[:8]}…` | {rep.get('overall_pct', ' - ')}% | {ok} |"
         )
         print(f"{'OK' if ai else 'ERR'} {case_id} ({ms} ms)")
 

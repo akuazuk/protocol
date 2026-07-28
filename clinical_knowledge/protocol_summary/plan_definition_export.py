@@ -161,7 +161,7 @@ def summary_to_plan_definition(
         "publisher": publisher,
         "description": (
             f"Автоэкспорт из Protocol Summary Card ({summary.extraction_status}). "
-            f"МКБ-10: {icd or '—'}."
+            f"МКБ-10: {icd or ' - '}."
         ),
         "type": {
             "coding": [
