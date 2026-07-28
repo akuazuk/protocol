@@ -63,6 +63,9 @@ scripts/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https:/
 
 # one-shot wrapper: push main + guard
 scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
+
+# one-shot wrapper: push + guard + ожидание целевой версии на Render
+scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
 ```
 
 Подробный runbook: `docs/deploy/multi-machine-git-deploy-runbook.md`.

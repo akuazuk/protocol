@@ -10,19 +10,25 @@ REMOTE_NAME="${REMOTE_NAME:-origin}"
 RENDER_DEPLOY_BRANCH="${RENDER_DEPLOY_BRANCH:-main}"
 PROD_URL="${PROTOCOL_PROD_URL:-https://protocol-bimy.onrender.com}"
 PUSH_BRANCH="${PUSH_BRANCH:-}"
+WAIT_RENDER_VERSION="${WAIT_RENDER_VERSION:-0}"
+WAIT_TIMEOUT_SEC="${WAIT_TIMEOUT_SEC:-900}"
+WAIT_INTERVAL_SEC="${WAIT_INTERVAL_SEC:-20}"
 
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/deploy_after_push.sh [--branch main] [--remote origin] [--prod-url URL]
+  scripts/deploy_after_push.sh [--branch main] [--remote origin] [--prod-url URL] [--wait-version]
 
 Env:
   REMOTE_NAME=origin
   RENDER_DEPLOY_BRANCH=main
   PROTOCOL_PROD_URL=https://protocol-bimy.onrender.com
+  WAIT_RENDER_VERSION=1
+  WAIT_TIMEOUT_SEC=900
+  WAIT_INTERVAL_SEC=20
 
 Example:
-  scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
+  scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
 EOF
 }
 
@@ -31,6 +37,9 @@ for arg in "$@"; do
     --branch=*) PUSH_BRANCH="${arg#*=}" ;;
     --remote=*) REMOTE_NAME="${arg#*=}" ;;
     --prod-url=*) PROD_URL="${arg#*=}" ;;
+    --wait-version) WAIT_RENDER_VERSION=1 ;;
+    --timeout-sec=*) WAIT_TIMEOUT_SEC="${arg#*=}" ;;
+    --interval-sec=*) WAIT_INTERVAL_SEC="${arg#*=}" ;;
     -h|--help) usage; exit 0 ;;
     *) echo "Unknown arg: $arg" >&2; usage; exit 2 ;;
   esac
@@ -75,4 +84,13 @@ scripts/git_deploy_guard.sh \
 
 echo
 echo "OK: push + pre-deploy guard passed."
-echo "Next: trigger/verify Render deploy for branch '$RENDER_DEPLOY_BRANCH'."
+if [[ "$WAIT_RENDER_VERSION" == "1" ]]; then
+  echo "Waiting for Render to apply expected BUILD_VERSION..."
+  scripts/render_wait_version.sh \
+    --prod-url="$PROD_URL" \
+    --timeout-sec="$WAIT_TIMEOUT_SEC" \
+    --interval-sec="$WAIT_INTERVAL_SEC"
+else
+  echo "Next: trigger/verify Render deploy for branch '$RENDER_DEPLOY_BRANCH'."
+  echo "Tip: add --wait-version to wait until /api/version matches local BUILD_VERSION."
+fi

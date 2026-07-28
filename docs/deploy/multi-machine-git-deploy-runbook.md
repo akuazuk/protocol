@@ -103,6 +103,18 @@ scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onre
 
 Он делает `git push` и сразу запускает строгий guard для Render Git-ветки.
 
+Чтобы дождаться фактического обновления версии в проде, используйте:
+
+```bash
+scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
+```
+
+Или отдельной командой:
+
+```bash
+scripts/render_wait_version.sh --prod-url=https://protocol-bimy.onrender.com
+```
+
 ## 6) Минимальный handoff между ПК
 
 После каждой сессии фиксируем:
@@ -146,4 +158,5 @@ scripts/git_task_start.sh <task-slug> --pc=pc1
 scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 scripts/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
 scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
+scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
 ```

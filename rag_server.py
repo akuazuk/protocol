@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-28-r7-render-push-wrapper"
+BUILD_VERSION = "2026-07-28-r8-render-wait-version"
 
 
 def _app_version() -> str:
