@@ -43,6 +43,24 @@ python3 scripts/update_quality_benchmark.py # полный корпус
 python3 scripts/update_quality_benchmark.py --mini # smoke
 ```
 
+## Работа с двух компьютеров (3 команды)
+
+Чтобы не запутаться с ветками, pull и deploy, используйте только этот сценарий:
+
+```bash
+# 1) старт сессии + подсказки по состоянию репо
+scripts/git_safe_start.sh
+
+# 2) новая задача: авто-ветка + clean worktree (подставьте slug и pc1/pc2)
+scripts/git_task_start.sh <task-slug> --pc=pc1
+
+# 3) перед pull и deploy - обязательные guard-проверки
+scripts/git_safe_pull.sh
+scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
+```
+
+Подробный runbook: `docs/deploy/multi-machine-git-deploy-runbook.md`.
+
 ## Основные разделы UI
 
 - **Анализ документа** - `#consult-review`; одиночная загрузка КЗ или медосмотра, автоматическое определение типа и проверка по клиническим протоколам.
