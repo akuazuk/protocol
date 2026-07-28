@@ -149,6 +149,10 @@
     th { position: sticky; top: 0; z-index: 2; background: #f3f7f5; color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .035em; }
     tbody tr { cursor: pointer; }
     tbody tr:hover td, tbody tr:focus-within td { background: #f4faf7; }
+    #page-documents table.compact-columns th:nth-child(7),
+    #page-documents table.compact-columns td:nth-child(7),
+    #page-documents table.compact-columns th:nth-child(8),
+    #page-documents table.compact-columns td:nth-child(8) { display: none; }
     .status { display: inline-flex; padding: 4px 7px; border-radius: 99px; background: #eef2f1; font-size: 11px; font-weight: 800; }
     .status.critical { background: #fbe7ea; color: var(--danger); }
     .status.review { background: #fff1d8; color: var(--warning); }
@@ -314,13 +318,13 @@
 
         <section class="page" id="page-queue" data-page="queue" hidden aria-labelledby="title-queue">
           <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Назначение ответственных, контроль срока и фиксация решения по каждому случаю.</p></div></div>
-          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><button class="button secondary" id="bulk-status">Изменить статус</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
+          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
           <div class="card"><div class="table-wrap"><table><thead><tr><th><span class="sr-only">Выбрать</span></th><th>Приоритет</th><th>Дата</th><th>Филиал</th><th>Врач / специальность</th><th>Диагноз</th><th>Итог</th><th>Причина</th><th>Ответственный</th><th>Срок</th><th>Статус</th></tr></thead><tbody id="queue-rows"></tbody></table></div></div>
         </section>
 
         <section class="page" id="page-documents" data-page="documents" hidden aria-labelledby="title-documents">
           <div class="page-head"><div><h1 id="title-documents">Все случаи</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
-          <div class="section-actions"><button class="button secondary" id="columns-button">Настроить колонки</button><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
+          <div class="section-actions"><button class="button secondary" id="columns-button" aria-pressed="false">Скрыть служебные колонки</button><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
           <div class="card"><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Тип документа</th><th>Итог</th><th>Полнота</th><th>Надёжность</th><th>Статус</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
         </section>
 
@@ -581,12 +585,16 @@
     function syncUrl(replace) {
       var q = query();
       q.set("page", state.page);
-      var url = location.pathname + "?" + q.toString();
+      var path = state.page === "yesterday" ? "/methodist/mo/yesterday" :
+        (state.page === "queue" || state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
+      var url = path + "?" + q.toString();
       history[replace ? "replaceState" : "pushState"]({ page: state.page }, "", url);
     }
     function readUrl() {
       var q = new URLSearchParams(location.search);
-      state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : "overview";
+      var pathPage = location.pathname.endsWith("/yesterday") ? "yesterday" :
+        (location.pathname.endsWith("/cases") ? "documents" : "overview");
+      state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : pathPage;
       state.period = q.get("period") || "month"; state.compare = q.get("compare_period") || "previous";
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
       Object.keys(state.selected).forEach(function (key) {
@@ -598,6 +606,7 @@
       $("date-to-wrap").hidden = state.period !== "custom";
     }
     function filtersChanged() {
+      state.pageNo = 1;
       renderChips(); syncUrl(true); loadPage(state.page);
     }
     function switchPage(page, push) {
@@ -682,7 +691,8 @@
       var map = { new:"Новый", assigned:"Назначен", in_review:"На разборе", confirmed_issue:"Подтверждено",
         false_positive:"Отклонено", needs_more_data:"Нужны данные", sent_to_doctor:"Передано врачу",
         resolved:"Решено", closed:"Закрыто", critical:"Критично", review:"Требует внимания",
-        poor:"Требует внимания", good:"Хорошо", acceptable:"Приемлемо", needs_review:"Требует внимания" };
+        poor:"Требует внимания", good:"Хорошо", acceptable:"Приемлемо", needs_review:"Требует внимания",
+        case_action:"Решение по случаю", bulk_action:"Групповое изменение" };
       return map[value] || value || "Не указан";
     }
     function statusClass(value) { return /critical|confirmed/.test(value) ? "critical" : /good|resolved|closed|acceptable/.test(value) ? "good" : "review"; }
@@ -725,8 +735,19 @@
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
         '<tr><td colspan="' + (queue ? 11 : 9) + '" class="empty">По выбранным фильтрам случаев нет.</td></tr>';
       bindCaseRows(body);
-      if (!queue) $("pager").innerHTML = '<span>Показано ' + rows.length + " из " + esc(data.total || rows.length) +
-        '</span><button class="button secondary" id="next-page">Следующая страница</button>';
+      if (!queue) {
+        var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / 50));
+        $("pager").innerHTML = '<span>Страница ' + state.pageNo + " из " + pages + " · всего " + esc(total) +
+          '</span><button class="button secondary" id="previous-page"' + (state.pageNo <= 1 ? " disabled" : "") +
+          '>Предыдущая</button><button class="button secondary" id="next-page"' +
+          (state.pageNo >= pages ? " disabled" : "") + '>Следующая</button>';
+        $("previous-page").addEventListener("click", function () {
+          if (state.pageNo > 1) { state.pageNo -= 1; loadCases(false); }
+        });
+        $("next-page").addEventListener("click", function () {
+          if (state.pageNo < pages) { state.pageNo += 1; loadCases(false); }
+        });
+      }
       if (data.facets) buildFacets(state.data.summary || normalizeSummary({}), data.facets);
     }
     async function openCase(id, trigger) {
@@ -750,6 +771,7 @@
       var axes = data.axes || {};
       var findings = data.findings || record.findings || [];
       var crm = data.crm || record.crm || {};
+      var events = data.events || [];
       var crmStatus = crm.status || "new";
       var statusOptions = [
         ["new","Новый"],["assigned","Назначен"],["in_review","На разборе"],
@@ -774,17 +796,30 @@
         '</p><p class="card-sub">Жалобы и анамнез → статус → диагноз → МКБ → обследования → лечение → наблюдение</p></div>' +
         '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
           var title = [finding.code, finding.title_ru || finding.title].filter(Boolean).join(" · ");
+          var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
           return notice(finding.severity || "Проверить", title || finding.detail_ru || finding.detail || "Требуется ручная проверка",
             finding.severity === "P0" ? "critical" : "review") +
             ((finding.detail_ru || finding.detail) ? '<p>' + esc(finding.detail_ru || finding.detail) + '</p>' : "") +
             (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
             (finding.evidence_span ? '<p class="card-sub">Поле ' + esc(finding.evidence_span.field) +
               ', символы ' + esc(finding.evidence_span.start) + '-' + esc(finding.evidence_span.end) + '</p>' : "") +
-            (finding.source_ref ? '<details><summary>Источник</summary><p>' + esc(finding.source_ref) + "</p></details>" : "");
+            (finding.source_ref ? '<details><summary>Источник</summary><p>' + esc(finding.source_ref) + "</p></details>" : "") +
+            (finding.code ? '<label class="filter"><span>Решение по замечанию</span><select class="control" data-finding-code="' +
+              esc(finding.code) + '"><option value="unreviewed"' + (decision === "unreviewed" ? " selected" : "") +
+              '>Не проверено</option><option value="confirmed"' + (decision === "confirmed" ? " selected" : "") +
+              '>Подтверждено</option><option value="false_positive"' + (decision === "false_positive" ? " selected" : "") +
+              '>Отклонено</option><option value="needs_more_data"' + (decision === "needs_more_data" ? " selected" : "") +
+              '>Нужны данные</option></select></label>' : "");
         }).join("") : '<p>Критических замечаний не найдено.</p>') + '</div>' +
         '<div class="detail-block"><h3>Решение методиста</h3><label class="filter"><span>Статус</span><select class="control" id="drawer-status">' + statusOptions +
-        '</select></label><label class="filter" style="margin-top:10px"><span>Комментарий</span><input class="control" id="drawer-comment" maxlength="2000"></label>' +
-        '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> <a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a></p></div>';
+        '</select></label><label class="filter"><span>Ответственный</span><input class="control" id="drawer-assignee" maxlength="120" value="' +
+        esc(crm.assignee || "") + '"></label><label class="filter"><span>Срок</span><input class="control" id="drawer-due" type="date" value="' +
+        esc(crm.due_date || "") + '"></label><label class="filter"><span>Метки через запятую</span><input class="control" id="drawer-tags" maxlength="500" value="' +
+        esc((crm.tags || []).join(", ")) + '"></label><label class="filter" style="margin-top:10px"><span>Комментарий</span><input class="control" id="drawer-comment" maxlength="2000"></label>' +
+        '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> <a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a></p></div>' +
+        '<div class="detail-block"><h3>История решений</h3>' + (events.length ? events.map(function (event) {
+          return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
+        }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
     }
     async function postCaseChanges(caseIds, changes, comment) {
@@ -797,7 +832,17 @@
     }
     async function saveCaseDecision() {
       try {
-        await postCaseChanges([state.openCaseId], { status: $("drawer-status").value }, $("drawer-comment").value);
+        var findingDecisions = {};
+        document.querySelectorAll("[data-finding-code]").forEach(function (select) {
+          findingDecisions[select.getAttribute("data-finding-code")] = select.value;
+        });
+        await postCaseChanges([state.openCaseId], {
+          status: $("drawer-status").value,
+          assignee: $("drawer-assignee").value.trim(),
+          due_date: $("drawer-due").value,
+          tags: $("drawer-tags").value.split(",").map(function (tag) { return tag.trim(); }).filter(Boolean),
+          finding_decisions: findingDecisions
+        }, $("drawer-comment").value);
         $("announcer").textContent = "Решение сохранено";
         closeDrawer(); loadPage(state.page);
       } catch (e) { showError(e.message); }
@@ -942,11 +987,12 @@
     function renderSavedViews() {
       var views = savedViews();
       $("saved-view").innerHTML = '<option value="">Текущий срез</option>' + views.map(function (v, i) {
-        return '<option value="' + i + '">' + esc(v.name) + "</option>";
+        return '<option value="' + esc(v.view_id || ("local:" + i)) + '">' + esc(v.name) + "</option>";
       }).join("");
       $("view-manager").innerHTML = views.length ? views.map(function (v, i) {
+        var key = v.view_id || ("local:" + i);
         return '<div style="display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)"><button class="button secondary" data-load-view="' +
-          i + '">' + esc(v.name) + '</button><button class="button secondary danger" data-delete-view="' + i + '">Удалить</button></div>';
+          esc(key) + '">' + esc(v.name) + '</button><button class="button secondary danger" data-delete-view="' + esc(key) + '">Удалить</button></div>';
       }).join("") : '<p class="empty">Сохранённых представлений пока нет.</p>';
     }
     async function saveView() {
@@ -969,8 +1015,12 @@
       }
       $("announcer").textContent = "Представление сохранено";
     }
-    function loadView(index) {
-      var view = savedViews()[index]; if (!view) return;
+    function viewByKey(key) {
+      if (String(key).indexOf("local:") === 0) return savedViews()[Number(String(key).slice(6))];
+      return savedViews().find(function (view) { return view.view_id === key; });
+    }
+    function loadView(key) {
+      var view = viewByKey(key); if (!view) return;
       var suffix = view.url;
       if (!suffix) {
         var params = new URLSearchParams(view.filters || {});
@@ -979,14 +1029,15 @@
       }
       history.pushState({}, "", location.pathname + suffix); readUrl(); renderChips(); switchPage(state.page, false);
     }
-    async function deleteView(index) {
-      var view = savedViews()[index]; if (!view) return;
+    async function deleteView(key) {
+      var view = viewByKey(key); if (!view) return;
       if (view.view_id) {
         var response = await request("/saved-views/" + encodeURIComponent(view.view_id), "/saved-views/" + encodeURIComponent(view.view_id), { method: "DELETE" });
         if (!response.ok) { showError("Не удалось удалить представление."); return; }
         await refreshSavedViews();
       } else {
         var views = savedViews();
+        var index = Number(String(key).slice(6));
         views.splice(index, 1);
         localStorage.setItem(VIEWS_KEY, JSON.stringify(views));
         renderSavedViews();
@@ -1015,6 +1066,12 @@
           if (state.data.daily) downloadJson(state.data.daily, "mo-daily-" + (state.data.daily.date || "latest") + ".json");
         });
       });
+      $("columns-button").addEventListener("click", function () {
+        var table = document.querySelector("#page-documents table");
+        var compact = table.classList.toggle("compact-columns");
+        this.setAttribute("aria-pressed", compact ? "true" : "false");
+        this.textContent = compact ? "Показать все колонки" : "Скрыть служебные колонки";
+      });
       $("period").addEventListener("change", function () {
         state.period = this.value;
         $("date-from-wrap").hidden = state.period !== "custom";
@@ -1038,15 +1095,14 @@
         if (assignee) bulkChange({ status: "assigned", assignee: assignee });
       });
       $("bulk-status").addEventListener("click", function () {
-        var status = prompt("Статус: in_review, confirmed_issue, false_positive, needs_more_data, sent_to_doctor, resolved, closed", "in_review");
-        if (status) bulkChange({ status: status.trim() });
+        bulkChange({ status: $("bulk-status-value").value });
       });
-      $("saved-view").addEventListener("change", function () { if (this.value !== "") loadView(Number(this.value)); });
+      $("saved-view").addEventListener("change", function () { if (this.value !== "") loadView(this.value); });
       $("view-manager").addEventListener("click", function (event) {
         var loadButton = event.target.closest("[data-load-view]");
         var deleteButton = event.target.closest("[data-delete-view]");
-        if (loadButton) loadView(Number(loadButton.getAttribute("data-load-view")));
-        if (deleteButton) deleteView(Number(deleteButton.getAttribute("data-delete-view")));
+        if (loadButton) loadView(loadButton.getAttribute("data-load-view"));
+        if (deleteButton) deleteView(deleteButton.getAttribute("data-delete-view"));
       });
       $("share-view").addEventListener("click", function () {
         navigator.clipboard.writeText(location.href); $("announcer").textContent = "Ссылка скопирована";

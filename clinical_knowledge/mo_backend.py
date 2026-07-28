@@ -725,7 +725,15 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
             "WHERE case_id=? ORDER BY created_at DESC LIMIT 200",
             (case_id,),
         ).fetchall()
-    detail["crm"] = dict(state) if state else {"case_id": case_id, "status": "new", "tags_json": "[]"}
+    crm = dict(state) if state else {
+        "case_id": case_id,
+        "status": "new",
+        "tags_json": "[]",
+        "finding_decisions_json": "{}",
+    }
+    crm["tags"] = json.loads(crm.pop("tags_json") or "[]")
+    crm["finding_decisions"] = json.loads(crm.pop("finding_decisions_json") or "{}")
+    detail["crm"] = crm
     detail["events"] = [
         {**dict(row), "payload": json.loads(row["payload_json"] or "{}")} for row in events
     ]

@@ -97,3 +97,15 @@ def test_mo_dashboard_javascript_has_valid_syntax() -> None:
         check=False,
     )
     assert result.returncode == 0, result.stderr
+
+
+def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
+    assert '$("next-page").addEventListener("click"' in HTML
+    assert '$("previous-page").addEventListener("click"' in HTML
+    assert '$("columns-button").addEventListener("click"' in HTML
+    assert 'id="bulk-status-value"' in HTML
+    assert 'prompt("Статус:' not in HTML
+    assert 'id="drawer-assignee"' in HTML
+    assert 'id="drawer-due"' in HTML
+    assert 'data-finding-code="' in HTML
+    assert "История решений" in HTML

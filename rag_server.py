@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-28-r2-mo-daily-crm-bi"
+BUILD_VERSION = "2026-07-28-r3-mo-ui-followup"
 
 
 def _app_version() -> str:
@@ -12765,18 +12765,25 @@ if (ROOT / "index.html").is_file():
         """Прямые URL рабочих пространств; состояние вкладки выбирает клиент."""
         return _index_html_response()
 
-    @app.get("/methodist/mis-kz-quality", include_in_schema=False)
-    @app.get("/methodist/mis-kz-quality.html", include_in_schema=False)
-    def _serve_methodist_mis_kz_quality() -> FileResponse:
-        """Standalone MIS-КЗ dashboard по стабильному публичному URL."""
+    @app.get("/methodist/mo", include_in_schema=False)
+    @app.get("/methodist/mo/yesterday", include_in_schema=False)
+    @app.get("/methodist/mo/cases", include_in_schema=False)
+    def _serve_methodist_mo() -> FileResponse:
+        """Канонический CRM/BI workspace массового анализа МО."""
         p = ROOT / "mis-kz-quality.html"
         if not p.is_file():
-            raise HTTPException(status_code=404, detail="Страница MIS-КЗ не найдена")
+            raise HTTPException(status_code=404, detail="Страница МО не найдена")
         return FileResponse(
             path=str(p),
             media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache, must-revalidate"},
         )
+
+    @app.get("/methodist/mis-kz-quality", include_in_schema=False)
+    @app.get("/methodist/mis-kz-quality.html", include_in_schema=False)
+    def _redirect_methodist_mis_kz_quality() -> RedirectResponse:
+        """Совместимый legacy URL без дублирования второго UI."""
+        return RedirectResponse(url="/methodist/mo", status_code=302)
 
     @app.get("/methodist", include_in_schema=False)
     def _redirect_methodist() -> RedirectResponse:

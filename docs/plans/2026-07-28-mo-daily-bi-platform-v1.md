@@ -1293,7 +1293,7 @@ pipeline публикует только локальный обезличенн
 - [ ] 7 дней ежедневных успешных runs.
 - [x] Итоговый отчёт «до/после»:
       `docs/reports/2026-07-28-mo-daily-bi-result-v1.md`.
-- [x] Обновить BUILD_VERSION: `2026-07-28-r2-mo-daily-crm-bi`.
+- [x] Обновить BUILD_VERSION: `2026-07-28-r3-mo-ui-followup`.
 - [ ] Commit.
 - [ ] Push.
 - [ ] Deploy smoke.

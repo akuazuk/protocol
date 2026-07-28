@@ -34,15 +34,23 @@ def test_legacy_methodist_route_redirects_to_workspace() -> None:
     assert response.headers["location"] == "/methodist/overview"
 
 
-def test_methodist_mis_kz_dashboard_has_stable_nested_url() -> None:
+def test_methodist_mo_dashboard_has_canonical_routes() -> None:
     client = TestClient(rag_server.app)
-    for path in ("/methodist/mis-kz-quality", "/methodist/mis-kz-quality.html"):
+    for path in ("/methodist/mo", "/methodist/mo/yesterday", "/methodist/mo/cases"):
         response = client.get(path)
         assert response.status_code == 200
-        assert "MIS · качество КЗ" in response.text
+        assert "МО Аналитика" in response.text
         assert response.headers["cache-control"] == "no-cache, must-revalidate"
         assert 'href="/methodist/mis-kz"' in response.text
-        assert 'fetch("/api/methodist/mis-kz-quality' in response.text
+        assert '"/api/methodist/mo"' in response.text
+
+
+def test_legacy_methodist_quality_routes_redirect_to_mo() -> None:
+    client = TestClient(rag_server.app)
+    for path in ("/methodist/mis-kz-quality", "/methodist/mis-kz-quality.html"):
+        response = client.get(path, follow_redirects=False)
+        assert response.status_code == 302
+        assert response.headers["location"] == "/methodist/mo"
 
 
 def test_source_quality_requires_methodist_auth(monkeypatch) -> None:
