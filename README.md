@@ -60,6 +60,9 @@ scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 
 # если deploy идёт в Render напрямую из Git (ветка подключения, обычно main)
 scripts/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
+
+# one-shot wrapper: push main + guard
+scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
 ```
 
 Подробный runbook: `docs/deploy/multi-machine-git-deploy-runbook.md`.

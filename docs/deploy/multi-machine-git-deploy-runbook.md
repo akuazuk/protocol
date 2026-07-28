@@ -95,6 +95,14 @@ scripts/git_deploy_guard.sh --render-git --render-branch=main \
 Этот режим дополнительно блокирует deploy, если текущая ветка не совпадает с веткой,
 связанной с Render.
 
+Для максимальной простоты можно запускать wrapper:
+
+```bash
+scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
+```
+
+Он делает `git push` и сразу запускает строгий guard для Render Git-ветки.
+
 ## 6) Минимальный handoff между ПК
 
 После каждой сессии фиксируем:
@@ -137,4 +145,5 @@ scripts/git_task_start.sh <task-slug> --pc=pc1
 # before deploy
 scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 scripts/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
+scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
 ```
