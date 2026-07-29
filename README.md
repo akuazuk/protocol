@@ -43,6 +43,18 @@ python3 scripts/update_quality_benchmark.py # полный корпус
 python3 scripts/update_quality_benchmark.py --mini # smoke
 ```
 
+## Структура репозитория (канонично)
+
+- `backend/` - backend entrypoint и серверный контур.
+- `frontend/` - целевой дом для web/patient интерфейсов (миграция по фазам).
+- `clinical_knowledge/` - доменная и клиническая логика.
+- `scripts/` - утилиты сборки, batch, deploy, ops.
+- `docs/` - архитектура, планы, отчёты, runbook.
+- `data/`, `output/`, `ml/` - данные/артефакты/эксперименты.
+- `tests/` - unit/integration/regression тесты.
+
+План cleanup структуры: `docs/plans/2026-07-29-repo-structure-cleanup-v1.md`.
+
 ## Работа с двух компьютеров (3 команды)
 
 Чтобы не запутаться с ветками, pull и deploy, используйте только этот сценарий:
@@ -69,6 +81,8 @@ scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onre
 ```
 
 Подробный runbook: `docs/deploy/multi-machine-git-deploy-runbook.md`.
+
+Hygiene-audit рабочей копии (read-only): `scripts/check_repo_hygiene.sh`.
 
 ## Основные разделы UI
 

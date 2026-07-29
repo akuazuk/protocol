@@ -1,0 +1,70 @@
+# План: cleanup структуры репозитория (frontend/backend/ops) без регрессий
+
+**Дата:** 2026-07-29  
+**Статус:** active  
+**Цель:** привести структуру проекта к более чистой и предсказуемой (в стиле инженерных
+команд уровня Big Tech), не ломая production-пути, Render deploy и текущий workflow двух ПК.
+
+---
+
+## Контекст
+
+Сейчас в корне смешаны:
+- backend entrypoint (`rag_server.py`);
+- frontend assets (`index.html`, `patient.html`, CSS/JS);
+- batch/ops scripts;
+- data/corpus artifacts.
+
+Это усложняет навигацию, код-ревью, поддержку несколькими компьютерами и безопасный деплой.
+
+---
+
+## Принципы миграции
+
+1. **Совместимость first**: ни один прод URL не ломаем.
+2. **Малые шаги**: сначала канонические entrypoints и документация, затем фактический перенос.
+3. **Один смысл - один каталог**: frontend / backend / scripts / deploy / docs / data / tests.
+4. **Никаких “big-bang move”** в одном коммите.
+
+---
+
+## Фазы
+
+### Phase 1 (сделано в этой итерации)
+
+- [x] Добавлен канонический backend entrypoint `backend/server.py`.
+- [x] Обновлён `Procfile` на `uvicorn backend.server:app`.
+- [x] Добавлены `backend/README.md` и `frontend/README.md`.
+- [x] Добавлен placeholder `frontend/web/`.
+
+### Phase 2 (выполнено частично в этой итерации)
+
+- [x] Добавить backend-совместимость путей frontend (`backend/frontend_paths.py`) с приоритетом
+  `frontend/web/*` и fallback в root (без поломки legacy URL).
+- [ ] Перенести frontend-статику в `frontend/web/` по группам:
+  - doctor/methodist/patient/shared;
+  - сохранить legacy URL через явные маршруты и fallback.
+- [ ] Вынести frontend route-конфиг в отдельный backend-модуль.
+
+### Phase 3 (частично)
+
+- [x] Добавить hygiene-аудит: `scripts/check_repo_hygiene.sh`.
+- [x] Ужесточить `.gitignore` для локальных heavy/generated/log артефактов.
+- [ ] Упорядочить scripts по доменам:
+  - `scripts/dev/`, `scripts/data/`, `scripts/deploy/`, `scripts/ops/`.
+- [ ] Оставить совместимые shim-скрипты для старых путей.
+
+### Phase 4
+
+- [ ] Финальный audit root (минимум файлов на верхнем уровне).
+- [ ] Обновить runbook, CI и smoke-checks.
+
+---
+
+## Критерии приёмки
+
+1. `uvicorn backend.server:app` поднимает API без изменений поведения.
+2. Render deploy работает через git-connected branch как раньше.
+3. Все ключевые UI URL (`/`, `/methodist/mo`, `/patient.html`) продолжают открываться.
+4. Структура проекта документирована и понятна новому разработчику за 3-5 минут.
+

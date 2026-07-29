@@ -81,3 +81,21 @@ ml/experiments/**/batch_summary.csv
 # Локальные расширенные фрагменты и метаданные корпуса.
 output/rich_chunks/
 output/rich_meta/
+
+# Локальные индексы/кэши корпуса (крупные, регенерируемые)
+corpus_vector_index/
+output/embed_build_state.json
+output/embed_build_state.json.bak_stuck
+scripts/.cache/
+
+# Временные артефакты chunk QA / batch run
+data/ml/chunk_qa_cache/
+data/ml/chunk_qa_shards/
+data/ml/reports/*.log
+data/ml/reports/*.done
+data/ml/reports/*_state.json
+data/reports/*.log
+
+# Локальные batch-выгрузки с чувствительными данными
+ml/experiments/batch_clients_consult_*/
+ml/experiments/batch_new_report_*/

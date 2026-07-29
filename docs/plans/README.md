@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-07-29-repo-structure-cleanup-v1.md](2026-07-29-repo-structure-cleanup-v1.md) | Cleanup структуры репозитория: frontend/backend/ops без регрессий прода | active |
 | [2026-07-28-multi-machine-git-deploy-workflow-v1.md](2026-07-28-multi-machine-git-deploy-workflow-v1.md) | Workflow для 2 ПК: safe-start, safe-pull, deploy-guard и единый runbook | active |
 | [2026-07-28-mo-daily-bi-platform-v1.md](2026-07-28-mo-daily-bi-platform-v1.md) | МО из БД: ежедневная загрузка «вчера», объективная оценка, CRM/BI, отчёты, терминология КЗ/МО и полный перенесённый backlog | active |
 | [2026-07-27-product-ux-search-navigation-redesign-v1.md](2026-07-27-product-ux-search-navigation-redesign-v1.md) | UX, applicability-gate, роли, фильтры и навигация | archived (реализовано до r20; незавершённое перенесено в mo-daily-bi-platform-v1) |

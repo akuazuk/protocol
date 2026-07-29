@@ -75,6 +75,7 @@ from icd_mkb import (
 )
 
 from retrieval_bm25 import build_bm25_index
+from backend.frontend_paths import frontend_file, has_frontend_file
 
 load_project_env(ROOT)
 
@@ -8460,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-29-r1-mo-schedule-6am"
+BUILD_VERSION = "2026-07-29-r2-repo-structure-phase1"
 
 
 def _app_version() -> str:
@@ -12256,7 +12257,7 @@ def _patient_review_enabled() -> bool:
 
 def _patient_html_response() -> "Response":
     """patient.html с подставленной BUILD_VERSION (без устаревшего SW-кэша)."""
-    p = ROOT / "patient.html"
+    p = frontend_file("patient.html")
     if not p.is_file():
         raise HTTPException(status_code=404, detail="Страница patient.html не найдена")
     html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
@@ -12740,12 +12741,12 @@ async def api_patient_review_stream(
 
 # Статика (index.html, protocols.json, PDF) - регистрировать после API-маршрутов.
 # Иначе GET / даёт 404 «Not Found» на Render при открытии корня в браузере.
-if (ROOT / "index.html").is_file():
+if has_frontend_file("index.html"):
 
     def _index_html_response() -> FileResponse:
         """Без долгого кэша HTML: после деплоя сразу подхватывается новый JS/разметка."""
         return FileResponse(
-            path=str(ROOT / "index.html"),
+            path=str(frontend_file("index.html")),
             media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache"},
         )
@@ -12770,7 +12771,7 @@ if (ROOT / "index.html").is_file():
     @app.get("/methodist/mo/cases", include_in_schema=False)
     def _serve_methodist_mo() -> FileResponse:
         """Канонический CRM/BI workspace массового анализа МО."""
-        p = ROOT / "mis-kz-quality.html"
+        p = frontend_file("mis-kz-quality.html")
         if not p.is_file():
             raise HTTPException(status_code=404, detail="Страница МО не найдена")
         return FileResponse(
@@ -12791,7 +12792,7 @@ if (ROOT / "index.html").is_file():
 
     @app.get("/consult_review.html", include_in_schema=False)
     def _serve_consult_review_html() -> FileResponse:
-        p = ROOT / "consult_review.html"
+        p = frontend_file("consult_review.html")
         if not p.is_file():
             raise HTTPException(status_code=404, detail="Страница consult_review.html не найдена")
         return FileResponse(
@@ -12810,14 +12811,14 @@ if (ROOT / "index.html").is_file():
 
     @app.get("/patient-check.html", include_in_schema=False)
     def _serve_patient_check_html() -> FileResponse:
-        p = ROOT / "patient-check.html"
+        p = frontend_file("patient-check.html")
         if not p.is_file():
             raise HTTPException(status_code=404)
         return FileResponse(path=str(p), media_type="text/html; charset=utf-8", headers={"Cache-Control": "no-cache"})
 
     @app.get("/patient-tokens.css", include_in_schema=False)
     def _serve_patient_tokens_css() -> FileResponse:
-        p = ROOT / "patient-tokens.css"
+        p = frontend_file("patient-tokens.css")
         if not p.is_file():
             raise HTTPException(status_code=404)
         return FileResponse(
@@ -12828,7 +12829,7 @@ if (ROOT / "index.html").is_file():
 
     @app.get("/patient-ui.js", include_in_schema=False)
     def _serve_patient_ui_js() -> FileResponse:
-        p = ROOT / "patient-ui.js"
+        p = frontend_file("patient-ui.js")
         if not p.is_file():
             raise HTTPException(status_code=404)
         return FileResponse(
@@ -12839,7 +12840,7 @@ if (ROOT / "index.html").is_file():
 
     @app.get("/proto-viewer.html", include_in_schema=False)
     def _serve_proto_viewer_html() -> Response:
-        p = ROOT / "proto-viewer.html"
+        p = frontend_file("proto-viewer.html")
         if not p.is_file():
             raise HTTPException(status_code=404, detail="Страница proto-viewer.html не найдена")
         html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
@@ -12855,14 +12856,14 @@ if (ROOT / "index.html").is_file():
 
     @app.get("/patient-manifest.webmanifest", include_in_schema=False)
     def _serve_patient_manifest() -> FileResponse:
-        p = ROOT / "patient-manifest.webmanifest"
+        p = frontend_file("patient-manifest.webmanifest")
         if not p.is_file():
             raise HTTPException(status_code=404)
         return FileResponse(path=str(p), media_type="application/manifest+json")
 
     @app.get("/patient-sw.js", include_in_schema=False)
     def _serve_patient_sw() -> FileResponse:
-        p = ROOT / "patient-sw.js"
+        p = frontend_file("patient-sw.js")
         if not p.is_file():
             raise HTTPException(status_code=404)
         return FileResponse(
@@ -12873,7 +12874,7 @@ if (ROOT / "index.html").is_file():
 
     @app.get("/onco-risk.html", include_in_schema=False)
     def _serve_onco_risk_html() -> Response:
-        p = ROOT / "onco-risk.html"
+        p = frontend_file("onco-risk.html")
         if not p.is_file():
             raise HTTPException(status_code=404, detail="Страница onco-risk.html не найдена")
         html = p.read_text(encoding="utf-8").replace("__BUILD_VERSION__", BUILD_VERSION)
