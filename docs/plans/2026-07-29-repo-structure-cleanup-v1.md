@@ -41,10 +41,10 @@
 
 - [x] Добавить backend-совместимость путей frontend (`backend/frontend_paths.py`) с приоритетом
   `frontend/web/*` и fallback в root (без поломки legacy URL).
-- [ ] Перенести frontend-статику в `frontend/web/` по группам:
+- [x] Перенести frontend-статику в `frontend/web/` по группам:
   - doctor/methodist/patient/shared;
   - сохранить legacy URL через явные маршруты и fallback.
-- [ ] Вынести frontend route-конфиг в отдельный backend-модуль.
+- [ ] Вынести frontend route-конфиг в отдельный backend-модуль (остаток Phase 2).
 
 ### Phase 3 (частично)
 
