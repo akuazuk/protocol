@@ -163,3 +163,11 @@ scripts/ops/git_deploy_guard.sh --render-git --render-branch=main --prod-url=htt
 scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
 scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
 ```
+
+## 9) Smoke-check структуры скриптов
+
+После `pull` на любом ПК можно быстро проверить, что wrapper-структура не сломана:
+
+```bash
+bash scripts/ops/smoke_repo_layout.sh
+```

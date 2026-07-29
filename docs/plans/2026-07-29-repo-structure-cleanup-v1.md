@@ -61,8 +61,12 @@
 
 ### Phase 4
 
-- [ ] Финальный audit root (минимум файлов на верхнем уровне).
-- [ ] Обновить runbook, CI и smoke-checks.
+- [x] Финальный audit root (минимум файлов на верхнем уровне):
+  - зафиксирован инвентарь top-level и зоны следующего переноса.
+- [x] Обновить runbook, CI и smoke-checks:
+  - добавлен `scripts/ops/smoke_repo_layout.sh`;
+  - добавлен CI step для smoke-check wrapper-структуры;
+  - runbook дополнен отдельной командой smoke-проверки.
 
 ---
 

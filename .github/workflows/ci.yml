@@ -44,6 +44,9 @@ jobs:
           RAG_CHUNKS_JSONL: tests/fixtures/chunks.mini.jsonl
         run: pytest tests/test_search_golden.py tests/test_search_retrieval.py -q
 
+      - name: Repo layout smoke (scripts wrappers)
+        run: bash scripts/ops/smoke_repo_layout.sh
+
   manifest-mode:
     runs-on: ubuntu-latest
     timeout-minutes: 12

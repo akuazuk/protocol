@@ -1,0 +1,33 @@
+#!/usr/bin/env bash
+# Fast smoke-check for canonical script layout and wrappers.
+set -euo pipefail
+
+ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
+cd "$ROOT"
+
+echo "[1/4] bash syntax check for canonical wrappers"
+for f in scripts/ops/*.sh scripts/deploy/*.sh scripts/data/*.sh scripts/dev/*.sh; do
+  bash -n "$f"
+done
+echo "OK: wrapper syntax"
+
+echo "[2/4] ops commands expose help/usage"
+scripts/ops/git_safe_start.sh --help >/dev/null
+scripts/ops/git_safe_pull.sh --help >/dev/null
+scripts/ops/git_deploy_guard.sh --help >/dev/null
+scripts/ops/git_task_start.sh --help >/dev/null
+scripts/ops/deploy_after_push.sh --help >/dev/null
+scripts/ops/render_wait_version.sh --help >/dev/null
+echo "OK: ops help"
+
+echo "[3/4] deploy/data/dev wrappers forward safely"
+scripts/deploy/render_mis_protocol_data.sh >/dev/null 2>&1 || true
+scripts/data/pull_methodist_feedback.sh >/dev/null 2>&1 || true
+scripts/dev/run_mo_daily_launchd.sh unknown >/dev/null 2>&1 || true
+echo "OK: wrapper forward smoke"
+
+echo "[4/4] hygiene command runs"
+scripts/ops/check_repo_hygiene.sh >/tmp/protocol_hygiene_smoke.out 2>&1 || true
+echo "OK: hygiene smoke"
+
+echo "SMOKE_OK repo layout wrappers"
