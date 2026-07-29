@@ -84,6 +84,10 @@ scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.
 
 # one-shot wrapper: push + guard + ожидание целевой версии на Render
 scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
+
+# если работали в ветке != main, но Render деплоит из main:
+# безопасно продвинуть текущий HEAD в origin/main и дождаться версии
+scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
 ```
 
 Подробный runbook: `docs/deploy/multi-machine-git-deploy-runbook.md`.

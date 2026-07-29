@@ -22,6 +22,7 @@ scripts/ops/git_deploy_guard.sh --help >/dev/null
 scripts/ops/git_task_start.sh --help >/dev/null
 scripts/ops/deploy_after_push.sh --help >/dev/null
 scripts/ops/render_wait_version.sh --help >/dev/null
+scripts/ops/render_promote_main.sh --help >/dev/null
 echo "OK: ops help"
 
 echo "[4/5] deploy/data/dev wrappers forward safely"

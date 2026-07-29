@@ -98,6 +98,16 @@ scripts/ops/git_deploy_guard.sh --render-git --render-branch=main \
 Этот режим дополнительно блокирует deploy, если текущая ветка не совпадает с веткой,
 связанной с Render.
 
+Если работа велась не в `main` (например `codex/main-sync`), перед ожиданием деплоя
+нужно продвинуть текущий `HEAD` в `origin/main`:
+
+```bash
+scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
+```
+
+Скрипт делает только fast-forward promote (`HEAD -> origin/main`) и проверяет, что remote
+ветка действительно получила ваш SHA.
+
 Для максимальной простоты можно запускать wrapper:
 
 ```bash
@@ -162,6 +172,8 @@ scripts/ops/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 scripts/ops/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
 scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
 scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
+# if current branch is not main but Render deploys from main
+scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
 ```
 
 ## 9) Smoke-check структуры скриптов

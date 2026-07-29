@@ -77,6 +77,15 @@
 - [x] Расширить smoke-check структуры:
   - `py_compile` для `scripts/data/py/*.py` и `scripts/dev/py/*.py`.
 
+### Phase 6
+
+- [x] Добавить явное правило для Render main-ветки:
+  - если работа велась не в `main`, перед deploy продвигать `HEAD` в `origin/main`;
+  - проверять совпадение прод-версии с локальным `BUILD_VERSION`.
+- [x] Добавить инструмент и документацию:
+  - `scripts/ops/render_promote_main.sh`;
+  - обновить runbook/README и постоянное правило в `.cursor/rules/git-push.mdc`.
+
 ---
 
 ## Критерии приёмки
