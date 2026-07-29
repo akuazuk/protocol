@@ -49,6 +49,10 @@ python3 scripts/update_quality_benchmark.py --mini # smoke
 - `frontend/` - целевой дом для web/patient интерфейсов (миграция по фазам).
 - `clinical_knowledge/` - доменная и клиническая логика.
 - `scripts/` - утилиты сборки, batch, deploy, ops.
+  - `scripts/ops/` - git-safe workflow, deploy guard, version wait, hygiene.
+  - `scripts/deploy/` - Render upload/sync entrypoints.
+  - `scripts/data/` - data/QA batch pipelines entrypoints.
+  - `scripts/dev/` - local dev helper loops/automation entrypoints.
 - `docs/` - архитектура, планы, отчёты, runbook.
 - `data/`, `output/`, `ml/` - данные/артефакты/эксперименты.
 - `tests/` - unit/integration/regression тесты.

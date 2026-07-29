@@ -46,7 +46,7 @@
   - сохранить legacy URL через явные маршруты и fallback.
 - [ ] Вынести frontend route-конфиг в отдельный backend-модуль (остаток Phase 2).
 
-### Phase 3 (частично)
+### Phase 3 (выполнено)
 
 - [x] Добавить hygiene-аудит: `scripts/check_repo_hygiene.sh`.
 - [x] Ужесточить `.gitignore` для локальных heavy/generated/log артефактов.
@@ -55,8 +55,9 @@
 - [x] Оставить совместимые shim-скрипты для старых путей:
   - существующие root-path команды `scripts/*.sh` сохранены;
   - добавлены совместимые entrypoints `scripts/ops/*.sh`.
-- [ ] Допривести остальные домены:
-  - `scripts/dev/`, `scripts/data/`, `scripts/deploy/` (следующий шаг).
+- [x] Допривести остальные домены (этап 3.2):
+  - добавлены канонические entrypoints в `scripts/dev/`, `scripts/data/`, `scripts/deploy/`;
+  - совместимость root-path `scripts/*.sh` сохранена.
 
 ### Phase 4
 
