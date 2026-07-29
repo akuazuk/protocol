@@ -32,6 +32,8 @@
 - [x] Добавить `scripts/deploy_after_push.sh` и `scripts/render_wait_version.sh` (push + guard + ожидание версии Render).
 - [x] Добавить `scripts/deploy_promote_main_after_push.sh` (+ `scripts/ops/*` wrapper) как
       одношаговый деплой из любой рабочей ветки: push -> promote HEAD в main -> wait version.
+- [x] Исправить путь вызова promote-скрипта внутри `deploy_promote_main_after_push.sh`
+      (`scripts/ops/render_promote_main.sh`) и проверить smoke.
 - [x] Добавить runbook `docs/deploy/multi-machine-git-deploy-runbook.md`.
 - [x] Добавить короткий ежедневный чеклист `docs/deploy/two-computers-daily-checklist.md`
       и связать его с runbook, чтобы оба ПК работали по одному сценарию.

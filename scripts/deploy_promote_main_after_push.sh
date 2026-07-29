@@ -69,4 +69,4 @@ args=(
 if [[ "$WAIT_RENDER_VERSION" != "1" ]]; then
   args+=("--no-wait-version")
 fi
-scripts/render_promote_main.sh "${args[@]}"
+scripts/ops/render_promote_main.sh "${args[@]}"
