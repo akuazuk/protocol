@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-29-r8-render-main-branch-rule"
+BUILD_VERSION = "2026-07-29-r9-mo-analytics-phases"
 
 
 def _app_version() -> str:
@@ -11130,6 +11130,24 @@ def api_methodist_mo_data_quality(
     from clinical_knowledge.mo_backend import build_data_quality
 
     return build_data_quality(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/freshness")
+def api_methodist_mo_freshness(
+    request: "Request",
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_freshness
+
+    return build_freshness(_mo_params(**locals()))
 
 
 @app.get("/api/methodist/mo/scoring-method")

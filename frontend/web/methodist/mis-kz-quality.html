@@ -114,8 +114,13 @@
       display: inline-flex; align-items: center; gap: 7px; padding: 7px 10px; border-radius: 999px;
       background: #e8f5ee; color: var(--good); font-size: 12px; font-weight: 800; white-space: nowrap;
     }
+    .freshness.stale { background: #fff4df; color: var(--warning); }
+    .freshness.critical { background: #fbe7ea; color: var(--danger); }
     .freshness::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: currentColor; }
     .banner { margin-bottom: 16px; padding: 12px 14px; border: 1px solid #e0c48d; border-radius: 10px; background: #fff8e8; color: #6e4600; }
+    .banner.critical { border-color: #e3a9b3; background: #fdeef1; color: #7e1f31; }
+    .toolbar-inline { display: inline-flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+    .inline-note { margin-top: 8px; color: var(--muted); font-size: 12px; }
     .kpis { display: grid; grid-template-columns: repeat(4, minmax(150px, 1fr)); gap: 12px; margin-bottom: 16px; }
     .kpi, .card {
       border: 1px solid var(--line); border-radius: var(--radius); background: var(--surface); box-shadow: 0 4px 15px rgba(20,48,42,.035);
@@ -274,6 +279,11 @@
               <option value="none">Без сравнения</option>
             </select>
           </label>
+          <div class="toolbar-inline" aria-label="Быстрый выбор периода">
+            <button class="button secondary" type="button" data-quick-period="yesterday">Вчера</button>
+            <button class="button secondary" type="button" data-quick-period="7d">7 дней</button>
+            <button class="button secondary" type="button" data-quick-period="month">Месяц</button>
+          </div>
           <details class="filter-pop" data-filter="months"><summary>Месяцы <b>Все</b></summary><div class="filter-menu"></div></details>
           <details class="filter-pop" data-filter="branches"><summary>Филиалы <b>Все</b></summary><div class="filter-menu"></div></details>
           <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
@@ -281,6 +291,7 @@
           <details class="filter-pop" data-filter="document_types"><summary>Тип документа <b>Все</b></summary><div class="filter-menu"></div></details>
           <details class="filter-pop" data-filter="statuses"><summary>Статусы <b>Все</b></summary><div class="filter-menu"></div></details>
           <div class="actions">
+            <label class="filter"><span>Поиск по случаям</span><input class="control" id="case-search" type="search" placeholder="Врач, диагноз, МКБ"></label>
             <label class="filter"><span>Представление</span><select class="control" id="saved-view"><option value="">Текущий срез</option></select></label>
             <button class="button secondary" id="save-view">Сохранить</button>
             <button class="button secondary" id="share-view">Скопировать ссылку</button>
@@ -324,7 +335,7 @@
 
         <section class="page" id="page-documents" data-page="documents" hidden aria-labelledby="title-documents">
           <div class="page-head"><div><h1 id="title-documents">Все случаи</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
-          <div class="section-actions"><button class="button secondary" id="columns-button" aria-pressed="false">Скрыть служебные колонки</button><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
+          <div class="section-actions"><button class="button secondary" id="columns-button" aria-pressed="false">Скрыть служебные колонки</button><label class="filter"><span>Сортировка</span><select class="control" id="sort-by"><option value="date">По дате</option><option value="overall">По баллу</option><option value="priority">По приоритету</option></select></label><label class="filter"><span>Порядок</span><select class="control" id="sort-dir"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select></label><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
           <div class="card"><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Тип документа</th><th>Итог</th><th>Полнота</th><th>Надёжность</th><th>Статус</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
         </section>
 
@@ -364,7 +375,8 @@
     var LEGACY_ROOT = "/api/methodist/mis-kz-quality";
     var API_ROOT = "/api/methodist/mo";
     var state = {
-      page: "overview", period: "month", compare: "previous", pageNo: 1, dateFrom: "", dateTo: "",
+      page: "overview", period: "month", compare: "previous", pageNo: 1, dateFrom: "", dateTo: "", search: "",
+      sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
       data: {}, facets: {}, trigger: null, openCaseId: ""
     };
@@ -452,6 +464,9 @@
           q.set("date_from", state.dateFrom); q.set("date_to", state.dateTo);
         }
       }
+      if (state.search) q.set("q", state.search);
+      q.set("sort_by", state.sortBy);
+      q.set("sort_dir", state.sortDir);
       Object.keys(state.selected).forEach(function (key) {
         if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join(","));
       });
@@ -597,11 +612,17 @@
       state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : pathPage;
       state.period = q.get("period") || "month"; state.compare = q.get("compare_period") || "previous";
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
+      state.search = q.get("q") || "";
+      state.sortBy = q.get("sort_by") || "date";
+      state.sortDir = q.get("sort_dir") || "desc";
       Object.keys(state.selected).forEach(function (key) {
         state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(",").filter(Boolean);
       });
       $("period").value = state.period; $("compare").value = state.compare;
       $("date-from").value = state.dateFrom; $("date-to").value = state.dateTo;
+      $("case-search").value = state.search;
+      $("sort-by").value = state.sortBy;
+      $("sort-dir").value = state.sortDir;
       $("date-from-wrap").hidden = state.period !== "custom";
       $("date-to-wrap").hidden = state.period !== "custom";
     }
@@ -634,7 +655,21 @@
         kpi("Полнота проверки", score(summary.coverage), "доступность данных") +
         kpi("Надёжность", score(summary.confidence), "устойчивость результата") +
         kpi("Свежесть данных", summary.generated ? "Актуально" : "Не указана", summary.generated || "время не указано");
-      $("freshness").textContent = summary.generated ? "Данные обновлены " + summary.generated : "Свежесть не указана";
+      var freshness = summary.raw.data_freshness || {};
+      var freshnessBadge = $("freshness");
+      freshnessBadge.classList.remove("stale", "critical");
+      if (freshness.status === "critical") freshnessBadge.classList.add("critical");
+      else if (freshness.status === "stale") freshnessBadge.classList.add("stale");
+      var lagText = freshness.lag_days == null ? "без даты" : (freshness.lag_days + " дн.");
+      freshnessBadge.textContent = summary.generated
+        ? "Данные обновлены " + summary.generated + " (" + lagText + ")"
+        : "Свежесть не указана";
+      var empty = freshness.empty_state || {};
+      if (empty.reason_code && empty.reason_code !== "ok") {
+        var critical = empty.reason_code === "no_source_data" || freshness.status === "critical";
+        $("global-error").className = critical ? "banner critical" : "banner";
+        showError(empty.title + ". " + (empty.hint || ""));
+      }
       var specialties = summary.specialties.slice(0, 8);
       var monthly = ((summary.raw.trends || {}).monthly || []).filter(function (x) {
         return !state.selected.months.length || state.selected.months.indexOf(x.month) >= 0;
@@ -732,8 +767,11 @@
       var data = await response.json();
       var rows = (data.rows || data.cases || data.items || data.worst_visits || []).map(rowRecord);
       var body = queue ? $("queue-rows") : $("document-rows");
+      var emptyState = data.empty_state || {};
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
-        '<tr><td colspan="' + (queue ? 11 : 9) + '" class="empty">По выбранным фильтрам случаев нет.</td></tr>';
+        '<tr><td colspan="' + (queue ? 11 : 9) + '" class="empty"><b>' +
+        esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
+        esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
       bindCaseRows(body);
       if (!queue) {
         var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / 50));
@@ -933,15 +971,30 @@
         bar("Филиал заполнен", data.n ? 100 * (data.n - data.missing_branch) / data.n : 0);
       $("quality-warnings").innerHTML =
         notice("Дубли", (data.duplicate_case_ids || 0) + " повторов идентификатора", data.duplicate_case_ids ? "critical" : "good") +
-        notice("Неопределённый тип", (data.unknown_document_kind || 0) + " записей", data.unknown_document_kind ? "review" : "good");
+        notice("Неопределённый тип", (data.unknown_document_kind || 0) + " записей", data.unknown_document_kind ? "review" : "good") +
+        ((data.empty_state || {}).reason_code && (data.empty_state || {}).reason_code !== "ok"
+          ? notice("Пояснение", (data.empty_state || {}).title + ". " + ((data.empty_state || {}).hint || ""), "review")
+          : "");
     }
     async function loadReports() {
-      var response = await request("/reports", "/dynamics");
+      var responses = await Promise.all([request("/reports", "/dynamics"), request("/freshness?" + query().toString(), "/dynamics")]);
+      var response = responses[0], freshnessResponse = responses[1];
       if (!response.ok) throw new Error("Не удалось загрузить список отчётов.");
       var data = await response.json(), items = data.items || [];
-      $("report-list").innerHTML = items.length ? items.map(function (item) {
+      var freshness = freshnessResponse.ok ? await freshnessResponse.json() : (data.freshness || {});
+      var health = "";
+      if (freshness && freshness.status) {
+        var statusText = freshness.status === "fresh" ? "Актуально" : freshness.status === "stale" ? "Требует обновления" : "Нет свежих данных";
+        health = notice(
+          "Состояние загрузки",
+          statusText + " · лаг " + (freshness.lag_days == null ? "не определён" : freshness.lag_days + " дн.") +
+            " · данные до " + (freshness.data_through || "не определено"),
+          freshness.status === "critical" ? "critical" : freshness.status === "stale" ? "review" : "good"
+        );
+      }
+      $("report-list").innerHTML = health + (items.length ? items.map(function (item) {
         return notice(item.date || item.month || "Отчёт", "Ревизия " + (item.revision || 1) + " · " + statusLabel(item.quality_status || "готов"), item.quality_status === "blocked" ? "critical" : "good");
-      }).join("") : '<div class="empty">Готовых отчётов пока нет.</div>';
+      }).join("") : '<div class="empty">Готовых отчётов пока нет.</div>');
     }
     async function loadScoringMethod() {
       await ensureSummary();
@@ -1081,10 +1134,28 @@
       $("date-from").addEventListener("change", function () { state.dateFrom = this.value; filtersChanged(); });
       $("date-to").addEventListener("change", function () { state.dateTo = this.value; filtersChanged(); });
       $("compare").addEventListener("change", function () { state.compare = this.value; filtersChanged(); });
+      $("case-search").addEventListener("change", function () { state.search = this.value.trim(); filtersChanged(); });
+      $("sort-by").addEventListener("change", function () { state.sortBy = this.value; filtersChanged(); });
+      $("sort-dir").addEventListener("change", function () { state.sortDir = this.value; filtersChanged(); });
+      document.querySelectorAll("[data-quick-period]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          state.period = button.getAttribute("data-quick-period") || "month";
+          $("period").value = state.period;
+          $("date-from-wrap").hidden = state.period !== "custom";
+          $("date-to-wrap").hidden = state.period !== "custom";
+          filtersChanged();
+        });
+      });
       $("reset-filters").addEventListener("click", function () {
         Object.keys(state.selected).forEach(function (key) { state.selected[key] = []; });
         state.period = "month"; state.compare = "previous"; state.dateFrom = ""; state.dateTo = "";
+        state.search = "";
+        state.sortBy = "date";
+        state.sortDir = "desc";
         $("period").value = state.period; $("compare").value = state.compare;
+        $("case-search").value = "";
+        $("sort-by").value = "date";
+        $("sort-dir").value = "desc";
         $("date-from").value = ""; $("date-to").value = "";
         $("date-from-wrap").hidden = true; $("date-to-wrap").hidden = true;
         document.querySelectorAll(".filter-pop").forEach(renderFilter); filtersChanged();

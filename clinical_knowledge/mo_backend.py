@@ -13,6 +13,7 @@ from datetime import date, datetime, timedelta, timezone
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable
+from zoneinfo import ZoneInfo
 
 from .mis_kz_quality import (
     _facets,
@@ -184,6 +185,127 @@ def _medical_exam_roots() -> list[Path]:
         else [Path("/var/data/medical_exams"), ROOT / "data" / "medical_exams"]
     )
     return list(dict.fromkeys(path.resolve() for path in candidates))
+
+
+def _latest_pipeline_report() -> tuple[dict[str, Any] | None, Path | None]:
+    latest: tuple[str, dict[str, Any], Path] | None = None
+    for root in _medical_exam_roots():
+        base = root / "reports"
+        if not base.is_dir():
+            continue
+        for path in base.glob("*/*/*/report.json"):
+            try:
+                payload = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError):
+                continue
+            report_date = str(payload.get("date") or "")
+            if not report_date:
+                continue
+            if latest is None or report_date > latest[0]:
+                latest = (report_date, payload, path)
+    if latest is None:
+        return None, None
+    return latest[1], latest[2]
+
+
+def _pipeline_state_snapshot() -> dict[str, Any]:
+    for root in _medical_exam_roots():
+        state_path = root / "state" / "pipeline.json"
+        if not state_path.is_file():
+            continue
+        try:
+            payload = json.loads(state_path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return {"status": "invalid", "path": str(state_path)}
+        dates = payload.get("dates") if isinstance(payload.get("dates"), dict) else {}
+        last_date = max(dates.keys(), default="")
+        last_entry = dates.get(last_date) if last_date else {}
+        return {
+            "status": "present",
+            "path": str(state_path),
+            "last_date": last_date or None,
+            "last_stage": (last_entry or {}).get("status"),
+            "last_heartbeat": (last_entry or {}).get("heartbeat"),
+            "runs_total": len(payload.get("runs") or []),
+        }
+    return {"status": "missing"}
+
+
+def _describe_empty_state(*, total_records: int, filtered_records: int, params: dict[str, Any]) -> dict[str, Any]:
+    if total_records == 0:
+        return {
+            "reason_code": "no_source_data",
+            "title": "Нет загруженных данных за выбранный период",
+            "hint": "Проверьте ежедневный запуск и свежесть последнего отчёта.",
+        }
+    if filtered_records == 0:
+        applied = [k for k, v in params.items() if v not in (None, "", [], False)]
+        return {
+            "reason_code": "filters_excluded_all",
+            "title": "Фильтры исключили все записи",
+            "hint": "Сбросьте часть фильтров или расширьте диапазон дат.",
+            "applied_keys": applied,
+        }
+    return {"reason_code": "ok", "title": "", "hint": ""}
+
+
+def build_freshness(params: dict[str, Any] | None = None) -> dict[str, Any]:
+    params = params or {}
+    records = _records(params)
+    filtered = _filter_records(records, params)
+    now_minsk = datetime.now(ZoneInfo("Europe/Minsk"))
+    report_payload, report_path = _latest_pipeline_report()
+    state_info = _pipeline_state_snapshot()
+    latest_case_date = max((str(r.get("date") or "") for r in filtered), default="")
+    latest_any_case_date = max((str(r.get("date") or "") for r in records), default="")
+    report_date = str((report_payload or {}).get("date") or "")
+    data_through = max([d for d in (report_date, latest_case_date, latest_any_case_date) if d], default="")
+    lag_days: int | None = None
+    if data_through:
+        try:
+            lag_days = (now_minsk.date() - date.fromisoformat(data_through[:10])).days
+        except ValueError:
+            lag_days = None
+    status = "unknown"
+    if lag_days is None:
+        status = "missing"
+    elif lag_days <= 1:
+        status = "fresh"
+    elif lag_days <= 3:
+        status = "stale"
+    else:
+        status = "critical"
+    empty_state = _describe_empty_state(
+        total_records=len(records),
+        filtered_records=len(filtered),
+        params=params,
+    )
+    return {
+        "ok": True,
+        "status": status,
+        "lag_days": lag_days,
+        "data_through": data_through or None,
+        "latest_report": {
+            "date": report_date or None,
+            "generated_at": (report_payload or {}).get("generated_at"),
+            "revision": (report_payload or {}).get("revision"),
+            "path": str(report_path) if report_path else None,
+        },
+        "state": state_info,
+        "roots": [
+            {
+                "path": str(root),
+                "exists": root.is_dir(),
+                "has_reports": (root / "reports").is_dir(),
+                "has_secure_cases": (root / "secure_cases").is_dir(),
+            }
+            for root in _medical_exam_roots()
+        ],
+        "filtered_records": len(filtered),
+        "total_records": len(records),
+        "empty_state": empty_state,
+        "checked_at": now_minsk.replace(microsecond=0).isoformat(),
+    }
 
 
 @lru_cache(maxsize=24)
@@ -494,6 +616,11 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         "aggregate": agg,
         "suppression_n": SUPPRESSION_N,
         "applied_filters": {k: v for k, v in params.items() if v not in (None, "", [], False)},
+        "empty_state": _describe_empty_state(
+            total_records=len(all_records),
+            filtered_records=len(filtered),
+            params=params,
+        ),
     }
 
 
@@ -528,7 +655,8 @@ def build_facets(params: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_overview(params: dict[str, Any]) -> dict[str, Any]:
-    filtered = _filter_records(_records(params), params)
+    all_records = _records(params)
+    filtered = _filter_records(all_records, params)
     states = _crm_states([r["case_id"] for r in filtered])
     agg = _filtered_agg(filtered)
     kinds = Counter(r.get("document_kind") or "unknown" for r in filtered)
@@ -559,6 +687,12 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
         "by_doctor": _organization_groups(filtered, "doctor_fio", states),
         "by_branch": _organization_groups(filtered, "filial"),
         "suppression_n": SUPPRESSION_N,
+        "data_freshness": build_freshness(params),
+        "empty_state": _describe_empty_state(
+            total_records=len(all_records),
+            filtered_records=len(filtered),
+            params=params,
+        ),
     }
 
 
@@ -665,7 +799,8 @@ def build_trends(params: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_data_quality(params: dict[str, Any]) -> dict[str, Any]:
-    rows = _filter_records(_records(params), params)
+    all_records = _records(params)
+    rows = _filter_records(all_records, params)
     n = len(rows)
     count = lambda pred: sum(1 for row in rows if pred(row))
     parse_fail = count(lambda r: str(r.get("parse_ok") or "").lower() not in {"1", "true"})
@@ -684,6 +819,11 @@ def build_data_quality(params: dict[str, Any]) -> dict[str, Any]:
         "missing_mkb": None if small else count(lambda r: not r.get("mkb_code_main")),
         "duplicate_case_ids": None if small else n - len({r["case_id"] for r in rows}),
         "unknown_document_kind": None if small else count(lambda r: r.get("document_kind") == "unknown"),
+        "empty_state": _describe_empty_state(
+            total_records=len(all_records),
+            filtered_records=n,
+            params=params,
+        ),
     }
 
 
@@ -870,7 +1010,7 @@ def build_reports() -> dict[str, Any]:
             )
     if not reports:
         reports = [{"month": month, "kind": "legacy_monthly"} for month in reversed(build_kz_dynamics().get("months") or [])]
-    return {"ok": True, "items": reports}
+    return {"ok": True, "items": reports, "freshness": build_freshness({})}
 
 
 def build_entity(kind: str, entity_id: str, params: dict[str, Any]) -> dict[str, Any]:

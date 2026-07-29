@@ -8,7 +8,7 @@ import pytest
 
 
 ROOT = Path(__file__).resolve().parents[1]
-HTML = (ROOT / "mis-kz-quality.html").read_text(encoding="utf-8")
+HTML = (ROOT / "frontend" / "web" / "methodist" / "mis-kz-quality.html").read_text(encoding="utf-8")
 
 
 class _VisibleText(HTMLParser):
@@ -59,6 +59,8 @@ def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     for api_key in ("periods", "filials", "specializations", "doctors", "document_kinds", "statuses"):
         assert f'"{api_key}"' in HTML
     assert "state.selected[key].join" in HTML
+    assert 'id="case-search"' in HTML
+    assert 'data-quick-period=' in HTML
 
 
 def test_mo_dashboard_prefers_new_api_with_legacy_fallback() -> None:
@@ -66,6 +68,7 @@ def test_mo_dashboard_prefers_new_api_with_legacy_fallback() -> None:
     assert 'var LEGACY_ROOT = "/api/methodist/mis-kz-quality"' in HTML
     assert 'request("/overview"' in HTML
     assert 'request("/facets"' in HTML
+    assert '"/freshness?"' in HTML
 
 
 def test_mo_dashboard_accessibility_and_responsive_invariants() -> None:
@@ -109,3 +112,5 @@ def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
     assert 'id="drawer-due"' in HTML
     assert 'data-finding-code="' in HTML
     assert "История решений" in HTML
+    assert '$("sort-by").addEventListener("change"' in HTML
+    assert '$("sort-dir").addEventListener("change"' in HTML

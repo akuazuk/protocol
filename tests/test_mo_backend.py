@@ -179,6 +179,28 @@ def test_daily_pipeline_cases_extend_monthly_analytics(monkeypatch, tmp_path: Pa
     assert "_source" not in detail["record"]
 
 
+def test_freshness_reports_lag_and_empty_reason(monkeypatch, tmp_path: Path) -> None:
+    monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path))
+    report_dir = tmp_path / "reports" / "2026" / "07" / "27"
+    report_dir.mkdir(parents=True)
+    (report_dir / "report.json").write_text(
+        json.dumps({"date": "2026-07-27", "generated_at": "2026-07-28T05:00:00Z", "revision": 1}, ensure_ascii=False),
+        encoding="utf-8",
+    )
+    state_dir = tmp_path / "state"
+    state_dir.mkdir(parents=True)
+    (state_dir / "pipeline.json").write_text(
+        json.dumps({"dates": {"2026-07-27": {"status": "success", "heartbeat": "2026-07-28T05:00:00Z"}}, "runs": [1]}),
+        encoding="utf-8",
+    )
+    monkeypatch.setattr(mo_backend, "_records", lambda params: [])
+    payload = mo_backend.build_freshness({})
+    assert payload["ok"] is True
+    assert payload["latest_report"]["date"] == "2026-07-27"
+    assert payload["state"]["status"] == "present"
+    assert payload["empty_state"]["reason_code"] == "no_source_data"
+
+
 def test_queue_only_keeps_risky_cases(monkeypatch, tmp_path) -> None:
     monkeypatch.setenv("MO_ANALYTICS_DB", str(tmp_path / "mo.sqlite"))
     good = _record("1")
@@ -239,6 +261,12 @@ def test_mo_api_uses_methodist_auth_and_no_store(monkeypatch, tmp_path) -> None:
     )
     assert cases.status_code == 200
     assert cases.json()["applied_filters"] == {"queue_only": True, "page": 1, "page_size": 50, "sort_by": "date", "sort_dir": "desc"}
+    freshness = client.get(
+        "/api/methodist/mo/freshness",
+        headers={"X-Methodist-Token": "mo-test-token"},
+    )
+    assert freshness.status_code == 200
+    assert freshness.json()["ok"] is True
 
 
 def test_mo_mutations_reject_viewer_role(monkeypatch, tmp_path) -> None:

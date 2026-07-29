@@ -1302,6 +1302,20 @@ pipeline публикует только локальный обезличенн
 - [x] Проверить Telegram и VPN final state: Telegram enabled/доставка успешна,
       VanyaVPN восстановлен в `Connected`, три launchd job загружены.
 
+### Фаза 9. Follow-up MO P0-P3 (обновления 2026-07-29)
+
+- [x] P0: Добавлен API `/api/methodist/mo/freshness` и backend-диагностика источников
+      (roots, latest report, pipeline state, lag_days, причины пустого среза).
+- [x] P0: В `overview/cases/data-quality/reports` добавлены явные `empty_state` причины
+      вместо «тихой пустоты».
+- [x] P1: В глобальный toolbar добавлены быстрые периоды (вчера/7 дней/месяц),
+      поиск по случаям, явная сортировка таблицы и синхронизация этих параметров в URL.
+- [x] P1: Усилен визуальный индикатор свежести (fresh/stale/critical) и предупреждения
+      для stale/critical данных.
+- [x] P2: Раздел «Отчёты» расширен карточкой состояния загрузки с лагом и `data_through`.
+- [x] P3: Обновлены тесты структуры frontend и backend/API тесты свежести.
+- [x] BUILD_VERSION обновлён до `2026-07-29-r9-mo-analytics-phases`.
+
 ---
 
 ## 15. Перенесённый backlog из старых планов
