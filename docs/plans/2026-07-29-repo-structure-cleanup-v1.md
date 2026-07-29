@@ -50,9 +50,13 @@
 
 - [x] Добавить hygiene-аудит: `scripts/check_repo_hygiene.sh`.
 - [x] Ужесточить `.gitignore` для локальных heavy/generated/log артефактов.
-- [ ] Упорядочить scripts по доменам:
-  - `scripts/dev/`, `scripts/data/`, `scripts/deploy/`, `scripts/ops/`.
-- [ ] Оставить совместимые shim-скрипты для старых путей.
+- [x] Упорядочить scripts по доменам (этап 3.1):
+  - добавлен канонический домен `scripts/ops/` для git/deploy/hygiene команд.
+- [x] Оставить совместимые shim-скрипты для старых путей:
+  - существующие root-path команды `scripts/*.sh` сохранены;
+  - добавлены совместимые entrypoints `scripts/ops/*.sh`.
+- [ ] Допривести остальные домены:
+  - `scripts/dev/`, `scripts/data/`, `scripts/deploy/` (следующий шаг).
 
 ### Phase 4
 

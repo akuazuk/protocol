@@ -9,31 +9,34 @@
 - деплоить только из нужных веток;
 - исключить рассинхрон и случайные конфликты.
 
+Примечание: старые команды `scripts/*.sh` сохранены для совместимости, но каноничный путь -
+`scripts/ops/*.sh`.
+
 ## 1) Единый принцип
 
 1. Не работаем в грязном `main`.
 2. Для активной разработки используем отдельные ветки и clean worktree.
-3. Перед pull всегда запускаем проверку `scripts/git_safe_pull.sh`.
-4. Перед deploy всегда запускаем `scripts/git_deploy_guard.sh`.
+3. Перед pull всегда запускаем проверку `scripts/ops/git_safe_pull.sh`.
+4. Перед deploy всегда запускаем `scripts/ops/git_deploy_guard.sh`.
 
 ## 2) Старт сессии на любом компьютере
 
 ```bash
 cd /path/to/Protocol
-scripts/git_safe_start.sh
+scripts/ops/git_safe_start.sh
 ```
 
 Если `main` грязный или расходится:
 
 ```bash
-AUTO_WORKTREE=1 scripts/git_safe_start.sh --auto-worktree
+AUTO_WORKTREE=1 scripts/ops/git_safe_start.sh --auto-worktree
 cd /private/tmp/protocol-main-sync
 ```
 
 ### 2.1. Автостарт новой задачи (рекомендуется)
 
 ```bash
-scripts/git_task_start.sh mo-daily-fix --pc=pc1
+scripts/ops/git_task_start.sh mo-daily-fix --pc=pc1
 ```
 
 Что делает:
@@ -47,7 +50,7 @@ scripts/git_task_start.sh mo-daily-fix --pc=pc1
 В текущей рабочей ветке:
 
 ```bash
-scripts/git_safe_pull.sh
+scripts/ops/git_safe_pull.sh
 ```
 
 Скрипт:
@@ -71,7 +74,7 @@ scripts/git_safe_pull.sh
 Перед deploy на любом ПК:
 
 ```bash
-scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 ```
 
 Проверяется:
@@ -88,7 +91,7 @@ scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 Если в Render сервис подключён к git-ветке (обычно `main`), используйте строгий режим:
 
 ```bash
-scripts/git_deploy_guard.sh --render-git --render-branch=main \
+scripts/ops/git_deploy_guard.sh --render-git --render-branch=main \
   --prod-url=https://protocol-bimy.onrender.com
 ```
 
@@ -98,7 +101,7 @@ scripts/git_deploy_guard.sh --render-git --render-branch=main \
 Для максимальной простоты можно запускать wrapper:
 
 ```bash
-scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
 ```
 
 Он делает `git push` и сразу запускает строгий guard для Render Git-ветки.
@@ -106,13 +109,13 @@ scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onre
 Чтобы дождаться фактического обновления версии в проде, используйте:
 
 ```bash
-scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
+scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
 ```
 
 Или отдельной командой:
 
 ```bash
-scripts/render_wait_version.sh --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/render_wait_version.sh --prod-url=https://protocol-bimy.onrender.com
 ```
 
 ## 6) Минимальный handoff между ПК
@@ -140,23 +143,23 @@ scripts/render_wait_version.sh --prod-url=https://protocol-bimy.onrender.com
 
 ```bash
 # start
-scripts/git_safe_start.sh
+scripts/ops/git_safe_start.sh
 
 # if needed
-AUTO_WORKTREE=1 scripts/git_safe_start.sh --auto-worktree
+AUTO_WORKTREE=1 scripts/ops/git_safe_start.sh --auto-worktree
 cd /private/tmp/protocol-main-sync
 
 # sync branch
-scripts/git_safe_pull.sh
+scripts/ops/git_safe_pull.sh
 
 # start new task
-scripts/git_task_start.sh <task-slug> --pc=pc1
+scripts/ops/git_task_start.sh <task-slug> --pc=pc1
 
 # work, test, commit, push
 
 # before deploy
-scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
-scripts/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
-scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
-scripts/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
+scripts/ops/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
 ```
