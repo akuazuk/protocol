@@ -30,6 +30,8 @@
 - [x] Добавить `scripts/git_deploy_guard.sh`.
 - [x] Добавить `scripts/git_task_start.sh` (авто-ветка + clean worktree для новой задачи).
 - [x] Добавить `scripts/deploy_after_push.sh` и `scripts/render_wait_version.sh` (push + guard + ожидание версии Render).
+- [x] Добавить `scripts/deploy_promote_main_after_push.sh` (+ `scripts/ops/*` wrapper) как
+      одношаговый деплой из любой рабочей ветки: push -> promote HEAD в main -> wait version.
 - [x] Добавить runbook `docs/deploy/multi-machine-git-deploy-runbook.md`.
 - [x] Добавить короткий ежедневный чеклист `docs/deploy/two-computers-daily-checklist.md`
       и связать его с runbook, чтобы оба ПК работали по одному сценарию.

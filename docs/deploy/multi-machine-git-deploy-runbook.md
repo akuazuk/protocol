@@ -131,6 +131,15 @@ scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.
 scripts/ops/render_wait_version.sh --prod-url=https://protocol-bimy.onrender.com
 ```
 
+Для режима «одна команда и без ручной путаницы» используйте:
+
+```bash
+scripts/ops/deploy_promote_main_after_push.sh --prod-url=https://protocol-bimy.onrender.com
+```
+
+Команда рассчитана на работу из любой ветки задачи: сначала `push` текущей ветки, затем
+безопасный fast-forward promote в `origin/main` и ожидание новой версии в проде.
+
 Важно: параметры в ops-скриптах передавать как `--key=value` (например
 `--prod-url=https://protocol-bimy.onrender.com`), а не через пробел.
 

@@ -27,6 +27,17 @@ git push origin codex/main-sync
 
 ## 4) Промо в прод-ветку Render
 
+Рекомендуемая единая команда (из любой рабочей ветки):
+
+```bash
+scripts/ops/deploy_promote_main_after_push.sh --prod-url=https://protocol-bimy.onrender.com
+```
+
+Она сама:
+- пушит текущую ветку в origin;
+- fast-forward продвигает текущий `HEAD` в `origin/main`;
+- ждёт обновления `/api/version` на Render.
+
 ```bash
 scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
 ```
