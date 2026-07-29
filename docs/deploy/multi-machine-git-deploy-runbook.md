@@ -9,6 +9,9 @@
 - деплоить только из нужных веток;
 - исключить рассинхрон и случайные конфликты.
 
+Краткая ежедневная версия в 5 шагов:
+`docs/deploy/two-computers-daily-checklist.md`
+
 Примечание: старые команды `scripts/*.sh` сохранены для совместимости, но каноничный путь -
 `scripts/ops/*.sh`.
 
@@ -127,6 +130,9 @@ scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.
 ```bash
 scripts/ops/render_wait_version.sh --prod-url=https://protocol-bimy.onrender.com
 ```
+
+Важно: параметры в ops-скриптах передавать как `--key=value` (например
+`--prod-url=https://protocol-bimy.onrender.com`), а не через пробел.
 
 ## 6) Минимальный handoff между ПК
 

@@ -31,6 +31,8 @@
 - [x] Добавить `scripts/git_task_start.sh` (авто-ветка + clean worktree для новой задачи).
 - [x] Добавить `scripts/deploy_after_push.sh` и `scripts/render_wait_version.sh` (push + guard + ожидание версии Render).
 - [x] Добавить runbook `docs/deploy/multi-machine-git-deploy-runbook.md`.
+- [x] Добавить короткий ежедневный чеклист `docs/deploy/two-computers-daily-checklist.md`
+      и связать его с runbook, чтобы оба ПК работали по одному сценарию.
 - [x] Проверить синтаксис скриптов (`bash -n`) и исполняемость.
 - [ ] После user-аппрува: прогнать сценарии на обоих ПК и при необходимости уточнить allowlist веток.
 
@@ -44,7 +46,7 @@
 ## Команды продолжения
 
 ```bash
-scripts/git_safe_start.sh
-scripts/git_safe_pull.sh
-scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/git_safe_start.sh
+scripts/ops/git_safe_pull.sh
+scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
 ```

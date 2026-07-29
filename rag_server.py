@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-29-r9-mo-analytics-phases"
+BUILD_VERSION = "2026-07-29-r10-deploy-checklist-sync"
 
 
 def _app_version() -> str:
