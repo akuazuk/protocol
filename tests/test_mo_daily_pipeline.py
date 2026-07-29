@@ -17,7 +17,9 @@ from clinical_knowledge.mo_daily import (
     catch_up_dates,
     initialize_warehouse,
     merge_daily_partitions,
+    previous_week_dates,
     resolve_run_date,
+    this_week_dates,
     validate_export,
     write_daily_report,
 )
@@ -242,6 +244,21 @@ def test_catch_up_is_bounded_and_skips_successes() -> None:
     assert dates == [date(2026, 7, 25), date(2026, 7, 27)]
 
 
+def test_previous_and_this_week_windows_in_minsk() -> None:
+    # Среда 2026-07-29: this week = Пн 27 - Вт 28; previous = Пн 20 - Вс 26.
+    now = datetime.fromisoformat("2026-07-29T07:00:00+03:00")
+    assert this_week_dates(now=now) == [date(2026, 7, 27), date(2026, 7, 28)]
+    assert previous_week_dates(now=now) == [
+        date(2026, 7, 20),
+        date(2026, 7, 21),
+        date(2026, 7, 22),
+        date(2026, 7, 23),
+        date(2026, 7, 24),
+        date(2026, 7, 25),
+        date(2026, 7, 26),
+    ]
+
+
 def test_stale_run_is_failed_for_recovery(tmp_path: Path) -> None:
     state_path = tmp_path / "pipeline.json"
     state_path.write_text(
@@ -417,12 +434,22 @@ def test_orchestrator_runs_with_injected_exporter_and_batch(tmp_path: Path) -> N
 
 def test_launchd_templates_are_valid_plists() -> None:
     root = Path(__file__).resolve().parents[1]
+    by_label = {}
     for path in (root / "deploy" / "launchd").glob("*.plist.in"):
         rendered = (
             path.read_text()
             .replace("__ROOT__", str(root))
             .replace("__WRAPPER__", str(root / "scripts" / "run_mo_daily_launchd.sh"))
             .replace("__LOG_DIR__", "/tmp")
+            .replace("__PYTHON__", "python3")
         )
         payload = plistlib.loads(rendered.encode())
         assert payload["Label"].startswith("by.protocol.mo-daily")
+        by_label[payload["Label"]] = payload
+    assert by_label["by.protocol.mo-daily"]["StartCalendarInterval"]["Hour"] == 6
+    weekly = by_label["by.protocol.mo-daily-weekly"]["StartCalendarInterval"]
+    assert weekly["Weekday"] == 1
+    assert weekly["Hour"] == 11
+    wrapper = (root / "scripts" / "run_mo_daily_launchd.sh").read_text(encoding="utf-8")
+    assert "--previous-week" in wrapper
+    assert 'weekly)' in wrapper

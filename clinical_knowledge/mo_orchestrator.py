@@ -27,8 +27,10 @@ from clinical_knowledge.mo_daily import (
     load_jsonl,
     merge_daily_partitions,
     minsk_today,
+    previous_week_dates,
     resolve_run_date,
     sha256_file,
+    this_week_dates,
     upsert_warehouse,
     utc_now,
     validate_export,
@@ -302,9 +304,14 @@ class MoDailyPipeline:
         )
         return [export, batch]
 
-    def run_day(self, day: date) -> dict[str, Any]:
+    def run_day(self, day: date, *, force: bool = False) -> dict[str, Any]:
         if self.dry_run:
-            return {"date": day.isoformat(), "dry_run": True, "commands": [list(c) for c in self.plan_commands(day)]}
+            return {
+                "date": day.isoformat(),
+                "dry_run": True,
+                "force": force,
+                "commands": [list(c) for c in self.plan_commands(day)],
+            }
 
         import pandas as pd
 
@@ -369,7 +376,7 @@ class MoDailyPipeline:
                 frame.drop(columns=["result_raw"], errors="ignore").to_csv(index=False),
             )
             content_hash = sha256_file(partition)
-            if previous_content_hash and previous_content_hash != content_hash:
+            if force or (previous_content_hash and previous_content_hash != content_hash):
                 for suffix in ("cases.jsonl", "state.jsonl", "summary.json", "llm_queue.json"):
                     (secure_dir / f"kz_l1_{day.isoformat()}_{suffix}").unlink(missing_ok=True)
             batch_command = list(self.plan_commands(day)[1])
@@ -438,27 +445,38 @@ class MoDailyPipeline:
         reconcile_days: int = 0,
         catch_up_limit: int = 31,
         first_date: date | None = None,
+        previous_week: bool = False,
+        this_week: bool = False,
+        force: bool = False,
         now: datetime | None = None,
     ) -> list[dict[str, Any]]:
         yesterday = minsk_today(now) - timedelta(days=1)
         state = PipelineState(self.paths.state) if not self.dry_run else None
+        days: list[date] = []
+        if previous_week:
+            days.extend(previous_week_dates(now=now))
+        if this_week:
+            days.extend(this_week_dates(now=now))
         if catch_up:
-            days = catch_up_dates(
-                successful_dates=state.successful_dates if state else (),
-                yesterday=yesterday,
-                first_date=first_date,
-                limit=catch_up_limit,
+            days.extend(
+                catch_up_dates(
+                    successful_dates=state.successful_dates if state else (),
+                    yesterday=yesterday,
+                    first_date=first_date,
+                    limit=catch_up_limit,
+                )
             )
             if reconcile_days:
                 reconcile = [yesterday - timedelta(days=offset) for offset in reversed(range(max(1, reconcile_days)))]
-                days = sorted(set(days + reconcile))
+                days.extend(reconcile)
         elif reconcile_days:
             count = max(1, reconcile_days)
-            days = [yesterday - timedelta(days=offset) for offset in reversed(range(count))]
-        else:
-            days = [resolve_run_date(date_value, now=now)]
+            days.extend(yesterday - timedelta(days=offset) for offset in reversed(range(count)))
+        elif not previous_week and not this_week:
+            days.append(resolve_run_date(date_value, now=now))
+        days = sorted(set(days))
         with exclusive_lock(self.paths.lock) if not self.dry_run else _null_context():
-            return [self.run_day(day) for day in days]
+            return [self.run_day(day, force=force or previous_week or this_week) for day in days]
 
     def _same_weekday_counts(self, day: date) -> list[int]:
         counts = []

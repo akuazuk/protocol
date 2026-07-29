@@ -22,6 +22,21 @@ def build_parser() -> argparse.ArgumentParser:
     parser.add_argument("--catch-up-limit", type=int, default=31)
     parser.add_argument("--first-date", type=date.fromisoformat)
     parser.add_argument("--reconcile-days", type=int, default=0)
+    parser.add_argument(
+        "--previous-week",
+        action="store_true",
+        help="перезаписать прошлую календарную неделю Пн-Вс (Europe/Minsk)",
+    )
+    parser.add_argument(
+        "--this-week",
+        action="store_true",
+        help="перезаписать текущую неделю с понедельника по вчера",
+    )
+    parser.add_argument(
+        "--force",
+        action="store_true",
+        help="сбросить scoring-артефакты дня даже при том же content_hash",
+    )
     parser.add_argument("--dry-run", action="store_true", help="показать команды без файлов, SQL и VPN")
     parser.add_argument(
         "--data-root",
@@ -51,6 +66,9 @@ def main(argv: list[str] | None = None) -> int:
         catch_up_limit=max(1, args.catch_up_limit),
         first_date=args.first_date,
         reconcile_days=max(0, args.reconcile_days),
+        previous_week=args.previous_week,
+        this_week=args.this_week,
+        force=args.force,
     )
     print(json.dumps(results, ensure_ascii=False, indent=2))
     return 0

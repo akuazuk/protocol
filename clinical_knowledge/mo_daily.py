@@ -841,3 +841,30 @@ def catch_up_dates(
             output.append(cursor)
         cursor += timedelta(days=1)
     return output
+
+
+def week_monday(day: date) -> date:
+    """Понедельник календарной недели (Пн=0) для даты Europe/Minsk."""
+    return day - timedelta(days=day.weekday())
+
+
+def previous_week_dates(*, now: datetime | None = None) -> list[date]:
+    """Прошлая полная неделя Пн-Вс относительно сегодня в Europe/Minsk."""
+    this_monday = week_monday(minsk_today(now))
+    prev_monday = this_monday - timedelta(days=7)
+    return [prev_monday + timedelta(days=offset) for offset in range(7)]
+
+
+def this_week_dates(*, now: datetime | None = None) -> list[date]:
+    """Текущая неделя с понедельника по вчера (сегодня ещё не принимаем)."""
+    today = minsk_today(now)
+    yesterday = today - timedelta(days=1)
+    monday = week_monday(today)
+    if yesterday < monday:
+        return []
+    days: list[date] = []
+    cursor = monday
+    while cursor <= yesterday:
+        days.append(cursor)
+        cursor += timedelta(days=1)
+    return days

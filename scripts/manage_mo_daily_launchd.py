@@ -11,7 +11,12 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 TEMPLATE_DIR = ROOT / "deploy" / "launchd"
-LABELS = ("by.protocol.mo-daily", "by.protocol.mo-daily-retry", "by.protocol.mo-daily-hourly")
+LABELS = (
+    "by.protocol.mo-daily",
+    "by.protocol.mo-daily-retry",
+    "by.protocol.mo-daily-hourly",
+    "by.protocol.mo-daily-weekly",
+)
 
 
 def launch_agents() -> Path:
@@ -47,7 +52,10 @@ def install() -> int:
         _launchctl("bootstrap", domain, str(path), check=True)
         _launchctl("enable", f"{domain}/{label}", check=True)
         print(f"installed {path}")
-    print("Важно: launchd calendar использует системный timezone; Mac должен быть Europe/Minsk для точного 07:00.")
+    print(
+        "Важно: launchd calendar использует системный timezone; "
+        "Mac должен быть Europe/Minsk для точного 06:00 daily и понедельничного weekly."
+    )
     return 0
 
 

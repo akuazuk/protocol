@@ -269,7 +269,9 @@ python3 scripts/run_mo_daily_pipeline.py --dry-run
 
 Настройки:
 
-- основной `StartCalendarInterval`: 07:00 Europe/Minsk, после `sql_epam` 06:30;
+- основной `StartCalendarInterval`: 06:00 Europe/Minsk (не в начале суток: ночной экспорт неполный);
+- в понедельник утренний main дополнительно перезаписывает прошлую неделю Пн-Вс;
+- отдельный weekly retry: понедельник 11:00 Europe/Minsk (`--previous-week`);
 - отдельный retry: 10:00 Europe/Minsk, если daily status не `success`;
 - `RunAtLoad=true`;
 - дополнительная проверка раз в час до успешного отчёта;

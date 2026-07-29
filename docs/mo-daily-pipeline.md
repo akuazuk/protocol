@@ -21,6 +21,8 @@ python3 scripts/run_mo_daily_report.py --date yesterday
 python3 scripts/run_mo_daily_report.py --date 2026-07-27
 python3 scripts/run_mo_daily_report.py --catch-up --first-date 2026-01-01
 python3 scripts/run_mo_daily_report.py --reconcile-days 3
+python3 scripts/run_mo_daily_report.py --this-week --force
+python3 scripts/run_mo_daily_report.py --previous-week
 ```
 
 Pipeline использует `Europe/Minsk`, блокирует параллельный запуск через `fcntl`, хранит
@@ -57,9 +59,16 @@ python3 scripts/manage_mo_daily_launchd.py status
 python3 scripts/manage_mo_daily_launchd.py uninstall
 ```
 
-Устанавливаются основной запуск 07:00, retry 10:00 и hourly catch-up. `launchd` использует
-системный timezone macOS, поэтому для точного расписания он должен быть `Europe/Minsk`.
-Installer не меняет `pmset`. Wrapper держит `caffeinate` только на время pipeline.
+Устанавливаются:
 
-Перед первым production-запуском проверить Telegram env, доступ к exporter dependencies,
-системный timezone и отсутствие другого тяжёлого SQL-задания в 07:00.
+- основной приём **06:00** Europe/Minsk (вчера + catch-up + reconcile 3 дней; в понедельник ещё `--previous-week`);
+- retry **10:00**, если daily status не `success`;
+- hourly catch-up;
+- понедельничный weekly **11:00** как страховка перезаписи прошлой недели Пн-Вс.
+
+`launchd` использует системный timezone macOS, поэтому для точного расписания он должен быть
+`Europe/Minsk`. Installer не меняет `pmset`. Wrapper держит `caffeinate` только на время pipeline.
+
+Приём именно утром (~06:00), а не в начале календарных суток: ночной экспорт «вчера»
+часто неполный (мало строк, пустой doctor join). Не запускать параллельно другой тяжёлый
+SQL-job в том же окне без необходимости.
