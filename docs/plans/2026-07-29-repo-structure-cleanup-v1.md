@@ -68,6 +68,15 @@
   - добавлен CI step для smoke-check wrapper-структуры;
   - runbook дополнен отдельной командой smoke-проверки.
 
+### Phase 5
+
+- [x] Добавить каноничные Python-entrypoints по доменам без риска регрессий:
+  - `scripts/data/py/*` для data/corpus legacy top-level scripts;
+  - `scripts/dev/py/*` для diagnostic/dev legacy top-level scripts;
+  - запуск через `runpy` с сохранением старых путей.
+- [x] Расширить smoke-check структуры:
+  - `py_compile` для `scripts/data/py/*.py` и `scripts/dev/py/*.py`.
+
 ---
 
 ## Критерии приёмки

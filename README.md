@@ -52,7 +52,9 @@ python3 scripts/update_quality_benchmark.py --mini # smoke
   - `scripts/ops/` - git-safe workflow, deploy guard, version wait, hygiene.
   - `scripts/deploy/` - Render upload/sync entrypoints.
   - `scripts/data/` - data/QA batch pipelines entrypoints.
+    - `scripts/data/py/` - каноничные Python entrypoints для legacy top-level data scripts.
   - `scripts/dev/` - local dev helper loops/automation entrypoints.
+    - `scripts/dev/py/` - каноничные Python entrypoints для dev/diagnostic scripts.
 - `docs/` - архитектура, планы, отчёты, runbook.
 - `data/`, `output/`, `ml/` - данные/артефакты/эксперименты.
 - `tests/` - unit/integration/regression тесты.
