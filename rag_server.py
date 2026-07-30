@@ -13,6 +13,7 @@ import asyncio
 import copy
 import gc
 import hashlib
+import hmac
 import io
 import json
 import logging
@@ -8461,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r24-mo-month-mtd"
+BUILD_VERSION = "2026-07-30-r25-mo-doctor-analytics"
 
 
 def _app_version() -> str:
@@ -8662,6 +8663,16 @@ def _require_methodist_auth(request: "Request") -> None:
         raise HTTPException(status_code=503, detail="METHODIST_TOKEN не настроен на сервере.")
     if not is_methodist_authenticated(request.headers):
         raise HTTPException(status_code=403, detail="Требуется корректный X-Methodist-Token.")
+    if (request.headers.get("x-methodist-role") or "").strip().lower() == "doctor":
+        path = request.url.path
+        allowed = path.startswith("/api/methodist/mo/doctor-cabinet") or (
+            path.startswith("/api/methodist/mo/exports/") and request.method == "GET"
+        )
+        if not allowed:
+            raise HTTPException(
+                status_code=403,
+                detail="Роль врача имеет доступ только к собственному кабинету.",
+            )
 
 
 def _methodist_request_active(request: "Request", body_flag: bool = False) -> bool:
@@ -10915,6 +10926,8 @@ def api_methodist_mis_kz_case_detail(
 def _mo_actor(request: "Request") -> str:
     from clinical_knowledge.feedback_store import methodist_default_reviewer
 
+    if (request.headers.get("x-methodist-role") or "").strip().lower() == "doctor":
+        return _mo_trusted_doctor_identity(request)
     return (
         (request.headers.get("x-methodist-reviewer") or "").strip()
         or methodist_default_reviewer()
@@ -10924,7 +10937,52 @@ def _mo_actor(request: "Request") -> str:
 
 def _mo_role(request: "Request") -> str:
     role = (request.headers.get("x-methodist-role") or "methodist").strip().lower()
-    return role if role in {"viewer", "methodist", "lead", "admin"} else "viewer"
+    if role == "admin":
+        expected = (os.environ.get("MO_ADMIN_TOKEN") or "").strip()
+        provided = (request.headers.get("x-methodist-admin-token") or "").strip()
+        if not expected or not hmac.compare_digest(provided, expected):
+            raise HTTPException(status_code=403, detail="Роль администратора не подтверждена.")
+    return role if role in {"viewer", "doctor", "methodist", "lead", "admin"} else "viewer"
+
+
+def _mo_trusted_doctor_identity(request: "Request") -> str:
+    """Идентичность врача только от настроенного доверенного reverse proxy."""
+    enabled = (os.environ.get("MO_TRUST_DOCTOR_IDENTITY_HEADER") or "").strip().lower()
+    if enabled not in {"1", "true", "yes"}:
+        raise HTTPException(
+            status_code=403,
+            detail="Кабинет врача недоступен: доверенная идентификация не настроена.",
+        )
+    shared_secret = (os.environ.get("MO_DOCTOR_IDENTITY_SHARED_SECRET") or "").strip()
+    secret_header = (
+        os.environ.get("MO_DOCTOR_IDENTITY_SECRET_HEADER")
+        or "x-mo-identity-secret"
+    ).strip().lower()
+    provided_secret = (request.headers.get(secret_header) or "").strip()
+    if not shared_secret or not hmac.compare_digest(provided_secret, shared_secret):
+        raise HTTPException(
+            status_code=403,
+            detail="Доверенная идентификация врача не подтверждена.",
+        )
+    header_name = (
+        os.environ.get("MO_DOCTOR_IDENTITY_HEADER") or "x-trusted-doctor-key"
+    ).strip().lower()
+    doctor_key = (request.headers.get(header_name) or "").strip()
+    if not doctor_key:
+        raise HTTPException(status_code=403, detail="Не передана доверенная идентичность врача.")
+    return doctor_key[:120]
+
+
+def _mo_cabinet_doctor_key(request: "Request", requested: str = "") -> str:
+    role = _mo_role(request)
+    if role == "doctor":
+        return _mo_trusted_doctor_identity(request)
+    if role not in {"methodist", "lead", "admin"}:
+        raise HTTPException(status_code=403, detail="Недостаточно прав для кабинета врача.")
+    doctor_key = requested.strip()
+    if not doctor_key:
+        raise HTTPException(status_code=422, detail="doctor_key_required")
+    return doctor_key
 
 
 def _mo_params(**kwargs: Any) -> dict[str, Any]:
@@ -10935,6 +10993,133 @@ def _mo_params(**kwargs: Any) -> dict[str, Any]:
         and value not in (None, "")
         and not callable(value)
     }
+
+
+@app.get("/api/methodist/mo/dimensions/{dimension}")
+def api_methodist_mo_dimension(
+    dimension: str,
+    request: "Request",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) == "doctor":
+        raise HTTPException(status_code=403, detail="Роль врача не имеет доступа к общим разрезам.")
+    from clinical_knowledge.mo_backend import build_dimension
+
+    try:
+        return build_dimension(dimension, _mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/drilldown/{level}/{entity_id}")
+def api_methodist_mo_drilldown(
+    level: str,
+    entity_id: str,
+    request: "Request",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) == "doctor":
+        raise HTTPException(status_code=403, detail="Роль врача использует только свой кабинет.")
+    from clinical_knowledge.mo_backend import build_drilldown
+
+    try:
+        return build_drilldown(level, entity_id, _mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/doctor-cabinet")
+def api_methodist_mo_doctor_cabinet(
+    request: "Request",
+    response: "Response",
+    doctor_key: str = Query("", max_length=120),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_doctor_cabinet
+
+    resolved = _mo_cabinet_doctor_key(request, doctor_key)
+    response.headers["Cache-Control"] = "private, no-store"
+    result = build_doctor_cabinet(
+        doctor_key=resolved,
+        actor=_mo_actor(request),
+        role=_mo_role(request),
+    )
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail=result.get("error") or "doctor_not_found")
+    return result
+
+
+@app.post("/api/methodist/mo/doctor-cabinet/export")
+def api_methodist_mo_doctor_export(
+    request: "Request",
+    doctor_key: str = Query("", max_length=120),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import create_doctor_export
+
+    resolved = _mo_cabinet_doctor_key(request, doctor_key)
+    return create_doctor_export(
+        doctor_key=resolved,
+        actor=_mo_actor(request),
+        role=_mo_role(request),
+    )
+
+
+@app.post("/api/methodist/mo/doctor-cabinet/disputes")
+def api_methodist_mo_doctor_dispute(
+    request: "Request",
+    body: dict[str, Any],
+    doctor_key: str = Query("", max_length=120),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import create_dispute
+
+    resolved = _mo_cabinet_doctor_key(request, doctor_key)
+    try:
+        return create_dispute(
+            actor=_mo_actor(request),
+            role=_mo_role(request),
+            doctor_key=resolved,
+            case_id=str(body.get("case_id") or ""),
+            finding_code=str(body.get("finding_code") or ""),
+            reason=str(body.get("reason") or ""),
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/access-log")
+def api_methodist_mo_access_log(
+    request: "Request",
+    limit: int = Query(200, ge=1, le=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import list_access_log
+
+    try:
+        return list_access_log(role=_mo_role(request), limit=limit)
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/month-report")

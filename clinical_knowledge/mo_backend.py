@@ -2293,6 +2293,480 @@ def build_entity(kind: str, entity_id: str, params: dict[str, Any]) -> dict[str,
     return {"ok": True, "entity_id": entity_id, "entity_kind": kind, "n": len(rows), "aggregate": agg}
 
 
+def _percentile(values: list[float], fraction: float) -> float | None:
+    if not values:
+        return None
+    ordered = sorted(values)
+    position = (len(ordered) - 1) * fraction
+    lower = int(position)
+    upper = min(lower + 1, len(ordered) - 1)
+    value = ordered[lower] + (ordered[upper] - ordered[lower]) * (position - lower)
+    return round(value, 2)
+
+
+def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
+    """Ограниченные SQL-контракты четырёх интерактивных экранов."""
+    if dimension not in {"doctors", "specialties", "diagnoses", "safety"}:
+        raise ValueError("unknown_dimension")
+    resolved = _resolve_request_period(params)
+    if _source_for_period(resolved.current) != "warehouse":
+        raise RuntimeError("Интерактивные разрезы требуют SQL-витрину МО")
+    where, values = _sql_case_filter(resolved.current, params)
+    result: dict[str, Any] = {
+        "ok": True,
+        "source": "warehouse",
+        "dimension": dimension,
+        "periods": resolved.to_dict(),
+        "suppression_n": SUPPRESSION_N,
+    }
+    if dimension == "doctors":
+        items = _doctor_breakdown(resolved.current, max(20, SUPPRESSION_N), params)
+        with closing(_read_connection()) as conn:
+            p0_rows = conn.execute(
+                """SELECT c.doctor_key, COUNT(DISTINCT c.mis_id) p0_cases
+                   FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+                   WHERE """ + where + """ AND f.severity='P0'
+                   GROUP BY c.doctor_key""",
+                values,
+            ).fetchall()
+        p0 = {str(row["doctor_key"]): int(row["p0_cases"]) for row in p0_rows}
+        for item in items:
+            item["p0_cases"] = p0.get(str(item["key"]), 0) if not item.get("suppressed") else None
+            item["drilldown"] = {"level": "doctor", "id": item["key"]}
+        ranked = [item for item in items if item.get("enough_data") and not item.get("suppressed")]
+        ranked.sort(key=lambda item: float(item["delta"]))
+        result.update(
+            {
+                "items": items[:250],
+                "ranking": ranked,
+                "ranking_metric": "expected_delta",
+                "sample_gate": max(20, SUPPRESSION_N),
+                "no_raw_score_ranking": True,
+            }
+        )
+        return result
+    with closing(_read_connection()) as conn:
+        if dimension == "specialties":
+            rows = conn.execute(
+                """SELECT c.specialty, c.overall_pct
+                   FROM fact_mo_case c WHERE """ + where + """
+                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND c.overall_pct IS NOT NULL
+                   ORDER BY c.specialty LIMIT 20000""",
+                values,
+            ).fetchall()
+            grouped: dict[str, list[float]] = {}
+            for row in rows:
+                grouped.setdefault(str(row["specialty"] or "Не указано"), []).append(float(row["overall_pct"]))
+            items = []
+            for specialty, scores in grouped.items():
+                if len(scores) < SUPPRESSION_N:
+                    continue
+                items.append(
+                    {
+                        "key": specialty,
+                        "label": specialty,
+                        "n": len(scores),
+                        "boxplot": [
+                            _percentile(scores, 0),
+                            _percentile(scores, 0.25),
+                            _percentile(scores, 0.5),
+                            _percentile(scores, 0.75),
+                            _percentile(scores, 1),
+                        ],
+                        "drilldown": {"level": "specialty", "id": specialty},
+                    }
+                )
+            items.sort(key=lambda item: (-item["n"], item["label"]))
+            result["items"] = items[:100]
+        elif dimension == "diagnoses":
+            rows = conn.execute(
+                """SELECT c.icd_chapter, c.diagnosis_code, COUNT(*) n,
+                          ROUND(AVG(c.overall_pct),2) avg_score
+                   FROM fact_mo_case c WHERE """ + where + """
+                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND c.icd_chapter <> '' AND c.overall_pct IS NOT NULL
+                   GROUP BY c.icd_chapter,c.diagnosis_code
+                   ORDER BY n DESC LIMIT 500""",
+                values,
+            ).fetchall()
+            chapters: dict[str, dict[str, Any]] = {}
+            for row in rows:
+                n = int(row["n"])
+                if n < SUPPRESSION_N:
+                    continue
+                chapter = str(row["icd_chapter"])
+                target = chapters.setdefault(
+                    chapter, {"name": chapter, "value": 0, "_weighted": 0.0, "children": []}
+                )
+                target["value"] += n
+                target["_weighted"] += n * float(row["avg_score"])
+                target["children"].append(
+                    {
+                        "name": str(row["diagnosis_code"] or "Без кода"),
+                        "value": n,
+                        "score": float(row["avg_score"]),
+                        "drilldown": {
+                            "level": "diagnosis",
+                            "id": str(row["diagnosis_code"] or ""),
+                            "parent": chapter,
+                        },
+                    }
+                )
+            items = []
+            for chapter in chapters.values():
+                if chapter["value"] < SUPPRESSION_N:
+                    continue
+                chapter["score"] = round(chapter.pop("_weighted") / chapter["value"], 2)
+                chapter["drilldown"] = {"level": "icd_chapter", "id": chapter["name"]}
+                items.append(chapter)
+            result["items"] = sorted(items, key=lambda item: -item["value"])[:50]
+            result["encoding"] = {"size": "volume", "color": "avg_score"}
+        else:
+            rows = conn.execute(
+                """SELECT c.visit_date, f.severity, COUNT(DISTINCT c.mis_id) cases
+                   FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+                   WHERE """ + where + """
+                     AND f.severity IN ('P0','P1','P2','P3')
+                   GROUP BY c.visit_date,f.severity ORDER BY c.visit_date""",
+                values,
+            ).fetchall()
+            by_day: dict[str, dict[str, Any]] = {}
+            for row in rows:
+                day = str(row["visit_date"])
+                target = by_day.setdefault(day, {"date": day, "P0": 0, "P1": 0, "P2": 0, "P3": 0})
+                target[str(row["severity"])] = int(row["cases"])
+            incidents = [
+                {
+                    "date": str(row["visit_date"]),
+                    "case_id": str(row["mis_id"]),
+                    "finding_code": str(row["finding_code"]),
+                    "source_ref": str(row["source_ref"] or ""),
+                }
+                for row in conn.execute(
+                    """SELECT c.visit_date,c.mis_id,f.finding_code,f.source_ref
+                       FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+                       WHERE """ + where + """ AND f.severity='P0'
+                       ORDER BY c.visit_date DESC LIMIT 200""",
+                    values,
+                ).fetchall()
+            ]
+            result.update({"items": list(by_day.values()), "incidents": incidents})
+    return result
+
+
+def build_drilldown(level: str, entity_id: str, params: dict[str, Any]) -> dict[str, Any]:
+    """Путь специальность -> врач -> случай -> замечание -> источник."""
+    resolved = _resolve_request_period(params)
+    if _source_for_period(resolved.current) != "warehouse":
+        raise RuntimeError("Drill-down требует SQL-витрину МО")
+    where, values = _sql_case_filter(resolved.current, params)
+    with closing(_read_connection()) as conn:
+        if level == "specialty":
+            rows = conn.execute(
+                """SELECT c.doctor_key,COALESCE(d.doctor_fio,c.doctor_key) label,COUNT(*) n
+                   FROM fact_mo_case c LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
+                   WHERE """ + where + """ AND c.specialty=? GROUP BY c.doctor_key,label
+                   HAVING COUNT(*)>=? ORDER BY n DESC LIMIT 200""",
+                (*values, entity_id, SUPPRESSION_N),
+            ).fetchall()
+            items = [
+                {"level": "doctor", "id": str(row["doctor_key"]), "label": str(row["label"]), "n": int(row["n"])}
+                for row in rows
+            ]
+        elif level == "doctor":
+            rows = conn.execute(
+                """SELECT c.mis_id,c.visit_id,c.visit_date,c.overall_pct,c.diagnosis_code
+                   FROM fact_mo_case c WHERE """ + where + """
+                     AND c.doctor_key=? ORDER BY c.visit_date DESC LIMIT 500""",
+                (*values, entity_id),
+            ).fetchall()
+            items = [
+                {
+                    "level": "case",
+                    "id": str(row["visit_id"] or row["mis_id"]),
+                    "mis_id": str(row["mis_id"]),
+                    "date": str(row["visit_date"]),
+                    "score": row["overall_pct"],
+                    "diagnosis_code": str(row["diagnosis_code"] or ""),
+                }
+                for row in rows
+            ]
+        elif level == "case":
+            rows = conn.execute(
+                """SELECT f.finding_code,f.severity,f.source_ref
+                   FROM fact_mo_finding f JOIN fact_mo_case c ON c.mis_id=f.mis_id
+                   WHERE (c.mis_id=? OR c.visit_id=?) ORDER BY f.severity,f.finding_code LIMIT 200""",
+                (entity_id, entity_id),
+            ).fetchall()
+            items = [
+                {
+                    "level": "finding",
+                    "id": str(row["finding_code"]),
+                    "severity": str(row["severity"] or ""),
+                    "source_ref": str(row["source_ref"] or ""),
+                }
+                for row in rows
+            ]
+        else:
+            raise ValueError("unknown_drilldown_level")
+    return {"ok": True, "level": level, "entity_id": entity_id, "items": items}
+
+
+def record_access(
+    *,
+    actor: str,
+    role: str,
+    action: str,
+    doctor_key: str | None = None,
+    case_id: str | None = None,
+    metadata: dict[str, Any] | None = None,
+) -> str:
+    access_id = str(uuid.uuid4())
+    safe_metadata = {
+        str(key)[:80]: value
+        for key, value in (metadata or {}).items()
+        if key not in {"token", "text", "patient_text", "evidence"}
+        and isinstance(value, (str, int, float, bool, type(None)))
+    }
+    with closing(_connect()) as conn:
+        conn.execute(
+            """INSERT INTO access_log
+               (access_id,actor,role,action,doctor_key,case_id,metadata_json,created_at)
+               VALUES(?,?,?,?,?,?,?,?)""",
+            (
+                access_id,
+                actor[:120],
+                role[:30],
+                action[:80],
+                doctor_key,
+                case_id,
+                json.dumps(safe_metadata, ensure_ascii=False),
+                _utc(),
+            ),
+        )
+        conn.commit()
+    return access_id
+
+
+def list_access_log(*, role: str, limit: int = 200) -> dict[str, Any]:
+    if role != "admin":
+        raise PermissionError("admin_role_required")
+    with closing(_connect()) as conn:
+        rows = conn.execute(
+            """SELECT access_id,actor,role,action,doctor_key,case_id,metadata_json,created_at
+               FROM access_log ORDER BY created_at DESC LIMIT ?""",
+            (min(max(limit, 1), 500),),
+        ).fetchall()
+    items = []
+    for row in rows:
+        item = dict(row)
+        item["metadata"] = json.loads(item.pop("metadata_json") or "{}")
+        items.append(item)
+    return {"ok": True, "items": items}
+
+
+def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str) -> dict[str, Any]:
+    if not doctor_key:
+        raise PermissionError("trusted_doctor_identity_required")
+    record_access(actor=actor, role=role, action="doctor_cabinet_open", doctor_key=doctor_key)
+    with closing(_read_connection()) as conn:
+        doctor = conn.execute(
+            "SELECT doctor_key,doctor_fio,specialty,filial FROM dim_doctor WHERE doctor_key=?",
+            (doctor_key,),
+        ).fetchone()
+        if not doctor:
+            return {"ok": False, "error": "doctor_not_found"}
+        cases = conn.execute(
+            """SELECT mis_id,visit_id,visit_date,overall_pct,status,diagnosis_code
+               FROM fact_mo_case WHERE doctor_key=?
+               ORDER BY visit_date DESC LIMIT 500""",
+            (doctor_key,),
+        ).fetchall()
+        findings = conn.execute(
+            """SELECT f.mis_id,f.finding_code,f.severity,f.source_ref
+               FROM fact_mo_finding f JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               WHERE c.doctor_key=? ORDER BY c.visit_date DESC,f.severity LIMIT 1000""",
+            (doctor_key,),
+        ).fetchall()
+        pairs = conn.execute(
+            """SELECT pair_id,case_id_a,case_id_b,similarity,algorithm,threshold,
+                      provenance_json,detected_at
+               FROM fact_mo_template_pair WHERE doctor_key=?
+               ORDER BY similarity DESC LIMIT 200""",
+            (doctor_key,),
+        ).fetchall()
+        actions = conn.execute(
+            """SELECT e.event_id,e.case_id,e.event_type,e.actor,e.payload_json,e.created_at
+               FROM crm_case_event e
+               WHERE e.case_id IN (
+                 SELECT COALESCE(NULLIF(visit_id,''),mis_id)
+                 FROM fact_mo_case WHERE doctor_key=?
+               )
+               ORDER BY e.created_at DESC LIMIT 500""",
+            (doctor_key,),
+        ).fetchall()
+        dispute_rows = conn.execute(
+            """SELECT COUNT(*) total,
+                      SUM(status='submitted') submitted,
+                      SUM(status='resolved_false_positive') false_positive
+               FROM crm_dispute_state WHERE case_id IN (
+                   SELECT COALESCE(NULLIF(visit_id,''),mis_id)
+                   FROM fact_mo_case WHERE doctor_key=?
+                 )""",
+            (doctor_key,),
+        ).fetchone()
+    pair_items = []
+    for row in pairs:
+        item = dict(row)
+        item["provenance"] = json.loads(item.pop("provenance_json") or "{}")
+        pair_items.append(item)
+    action_items = []
+    for row in actions:
+        item = dict(row)
+        item["payload"] = json.loads(item.pop("payload_json") or "{}")
+        action_items.append(item)
+    finding_items = []
+    for row in findings:
+        item = dict(row)
+        item["citation"] = item.get("source_ref") or None
+        finding_items.append(item)
+    return {
+        "ok": True,
+        "doctor": dict(doctor),
+        "cases": [dict(row) for row in cases],
+        "findings": finding_items,
+        "actions": action_items,
+        "template_pairs": pair_items,
+        "dispute_stats": {
+            "total": int(dispute_rows["total"] or 0),
+            "submitted": int(dispute_rows["submitted"] or 0),
+            "false_positive": int(dispute_rows["false_positive"] or 0),
+        },
+        "what_to_fix": sorted({str(row["finding_code"]) for row in findings})[:50],
+    }
+
+
+def create_dispute(
+    *,
+    actor: str,
+    role: str,
+    doctor_key: str,
+    case_id: str,
+    finding_code: str,
+    reason: str,
+) -> dict[str, Any]:
+    reason = reason.strip()
+    if not reason:
+        raise ValueError("dispute_reason_required")
+    with closing(_connect()) as conn:
+        owned = conn.execute(
+            """SELECT 1 FROM fact_mo_case
+               WHERE doctor_key=? AND (mis_id=? OR visit_id=?) LIMIT 1""",
+            (doctor_key, case_id, case_id),
+        ).fetchone()
+        if not owned:
+            raise PermissionError("case_not_owned_by_doctor")
+        if finding_code:
+            finding_exists = conn.execute(
+                """SELECT 1 FROM fact_mo_finding f
+                   JOIN fact_mo_case c ON c.mis_id=f.mis_id
+                   WHERE c.doctor_key=? AND (c.mis_id=? OR c.visit_id=?)
+                     AND f.finding_code=? LIMIT 1""",
+                (doctor_key, case_id, case_id, finding_code),
+            ).fetchone()
+            if not finding_exists:
+                raise ValueError("finding_not_found_for_case")
+        now = _utc()
+        event_id = str(uuid.uuid4())
+        dispute_id = str(uuid.uuid4())
+        payload = {
+            "finding_code": finding_code[:120],
+            "reason": reason[:2000],
+            "status": "submitted",
+        }
+        conn.execute(
+            """INSERT INTO crm_case_event
+               (event_id,case_id,event_type,actor,payload_json,created_at)
+               VALUES(?,?,?,?,?,?)""",
+            (event_id, case_id, "doctor_dispute", actor[:120], json.dumps(payload, ensure_ascii=False), now),
+        )
+        conn.execute(
+            """INSERT INTO crm_dispute_state
+               (dispute_id,event_id,case_id,finding_code,status,reason,actor,
+                created_at,updated_at,resolved_by)
+               VALUES(?,?,?,?,?,?,?,?,?,?)""",
+            (
+                dispute_id,
+                event_id,
+                case_id,
+                finding_code[:120] or None,
+                "submitted",
+                reason[:2000],
+                actor[:120],
+                now,
+                now,
+                None,
+            ),
+        )
+        conn.commit()
+    return {
+        "ok": True,
+        "dispute_id": dispute_id,
+        "event_id": event_id,
+        "status": "submitted",
+        "created_at": now,
+    }
+
+
+def create_doctor_export(*, doctor_key: str, actor: str, role: str) -> dict[str, Any]:
+    cabinet = build_doctor_cabinet(doctor_key=doctor_key, actor=actor, role=role)
+    if not cabinet.get("ok"):
+        return cabinet
+    job_id = str(uuid.uuid4())
+    export_dir = _db_path().parent / "exports"
+    export_dir.mkdir(parents=True, exist_ok=True)
+    target = export_dir / f"{job_id}.json"
+    target.write_text(json.dumps(cabinet, ensure_ascii=False, indent=2), encoding="utf-8")
+    try:
+        os.chmod(target, 0o600)
+    except OSError:
+        pass
+    now = datetime.now(timezone.utc)
+    expires = (now + timedelta(hours=24)).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+    with closing(_connect()) as conn:
+        conn.execute(
+            """INSERT INTO export_job
+               (job_id,owner,status,kind,filters_json,result_path,created_at,expires_at)
+               VALUES(?,?,?,?,?,?,?,?)""",
+            (
+                job_id,
+                actor,
+                "ready",
+                "doctor_cabinet",
+                json.dumps({"doctor_key": doctor_key}),
+                str(target),
+                _utc(),
+                expires,
+            ),
+        )
+        conn.commit()
+    record_access(
+        actor=actor,
+        role=role,
+        action="doctor_personal_export",
+        doctor_key=doctor_key,
+        metadata={"job_id": job_id},
+    )
+    return {
+        "ok": True,
+        "job_id": job_id,
+        "status": "ready",
+        "expires_at": expires,
+        "download_url": f"/api/methodist/mo/exports/{job_id}",
+    }
+
+
 def create_export(*, actor: str, payload: dict[str, Any]) -> dict[str, Any]:
     kind = str(payload.get("kind") or "aggregates")
     if kind not in {"aggregates", "cases"}:

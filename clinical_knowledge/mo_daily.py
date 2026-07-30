@@ -13,6 +13,7 @@ import html
 import json
 import math
 import os
+import re
 import sqlite3
 import statistics
 import tempfile
@@ -923,12 +924,33 @@ CREATE TABLE IF NOT EXISTS export_job (
   kind TEXT NOT NULL, filters_json TEXT NOT NULL, result_path TEXT,
   created_at TEXT NOT NULL, expires_at TEXT NOT NULL
 );
+CREATE TABLE IF NOT EXISTS access_log (
+  access_id TEXT PRIMARY KEY, actor TEXT NOT NULL, role TEXT NOT NULL,
+  action TEXT NOT NULL, doctor_key TEXT, case_id TEXT,
+  metadata_json TEXT NOT NULL DEFAULT '{}', created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS crm_dispute_state (
+  dispute_id TEXT PRIMARY KEY, event_id TEXT NOT NULL, case_id TEXT NOT NULL,
+  finding_code TEXT, status TEXT NOT NULL, reason TEXT NOT NULL,
+  actor TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
+  resolved_by TEXT
+);
 CREATE INDEX IF NOT EXISTS idx_crm_state_status ON crm_case_state(status);
 CREATE INDEX IF NOT EXISTS idx_crm_state_assignee ON crm_case_state(assignee);
 CREATE INDEX IF NOT EXISTS idx_crm_event_case_time ON crm_case_event(case_id, created_at);
 CREATE INDEX IF NOT EXISTS idx_saved_view_owner ON saved_view(owner, scope);
+CREATE INDEX IF NOT EXISTS idx_access_log_time ON access_log(created_at);
+CREATE INDEX IF NOT EXISTS idx_access_log_doctor ON access_log(doctor_key, created_at);
+CREATE INDEX IF NOT EXISTS idx_dispute_case_status ON crm_dispute_state(case_id, status);
 """
-CRM_TABLES = ("crm_case_state", "crm_case_event", "saved_view", "export_job")
+CRM_TABLES = (
+    "crm_case_state",
+    "crm_case_event",
+    "saved_view",
+    "export_job",
+    "access_log",
+    "crm_dispute_state",
+)
 
 # Главы МКБ-10: нужны для группировки диагнозов без внешнего справочника.
 _ICD_CHAPTERS: tuple[tuple[str, str, str], ...] = (
@@ -1036,6 +1058,13 @@ def initialize_warehouse(path: Path) -> None:
               critical INTEGER, updated_at TEXT NOT NULL,
               PRIMARY KEY (visit_date, doctor_key)
             );
+            CREATE TABLE IF NOT EXISTS fact_mo_template_pair (
+              pair_id TEXT PRIMARY KEY, doctor_key TEXT NOT NULL,
+              case_id_a TEXT NOT NULL, case_id_b TEXT NOT NULL,
+              similarity REAL NOT NULL, algorithm TEXT NOT NULL,
+              threshold REAL NOT NULL, provenance_json TEXT NOT NULL,
+              detected_at TEXT NOT NULL
+            );
             CREATE TABLE IF NOT EXISTS dim_date (date_key TEXT PRIMARY KEY, year INTEGER, month INTEGER, weekday INTEGER);
             CREATE TABLE IF NOT EXISTS dim_doctor (doctor_key TEXT PRIMARY KEY, doctor_fio TEXT, specialty TEXT, filial TEXT);
             CREATE TABLE IF NOT EXISTS dim_specialty (specialty TEXT PRIMARY KEY);
@@ -1054,6 +1083,8 @@ def initialize_warehouse(path: Path) -> None:
             CREATE INDEX IF NOT EXISTS idx_finding_severity_case ON fact_mo_finding(severity, mis_id);
             CREATE INDEX IF NOT EXISTS idx_axis_axis ON fact_mo_score_axis(axis);
             CREATE INDEX IF NOT EXISTS idx_doctor_daily_date ON fact_mo_doctor_daily(visit_date);
+            CREATE INDEX IF NOT EXISTS idx_template_pair_doctor
+              ON fact_mo_template_pair(doctor_key, detected_at);
             CREATE INDEX IF NOT EXISTS idx_daily_date_quality ON fact_mo_daily(visit_date, quality_status);
             """
         )
@@ -1113,6 +1144,84 @@ def doctor_key_for(doctor_fio: Any) -> str:
     """
     normalized = str(doctor_fio or "").strip()
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20] if normalized else ""
+
+
+_TEMPLATE_TEXT_FIELDS = (
+    "complaints",
+    "anamnesis_doctor",
+    "objective_status",
+    "exam_data",
+    "clinical_diagnosis",
+    "exam_recommendations",
+    "treatment_recommendations",
+)
+
+
+def _template_shingles(row: Mapping[str, Any], size: int = 5) -> frozenset[str]:
+    """Нормализованные точные шинглы без сохранения клинического текста."""
+    text = " ".join(str(row.get(field) or "") for field in _TEMPLATE_TEXT_FIELDS).lower()
+    tokens = re.findall(r"[a-zа-яё0-9]+", text)
+    if len(tokens) < size:
+        return frozenset(tokens)
+    return frozenset(" ".join(tokens[index : index + size]) for index in range(len(tokens) - size + 1))
+
+
+def detect_template_copies(
+    rows: Sequence[Mapping[str, Any]],
+    *,
+    threshold: float = 0.85,
+    max_cases_per_doctor: int = 200,
+) -> list[dict[str, Any]]:
+    """Точный Jaccard по 5-шинглам, ограниченный врачом и числом случаев.
+
+    Сравниваются только разные случаи разных пациентов. Результат содержит
+    идентификаторы, сходство и хеши провенанса, но не клинический текст.
+    """
+    if not 0.0 <= threshold <= 1.0:
+        raise ValueError("template_threshold_out_of_range")
+    grouped: dict[str, list[tuple[str, str, frozenset[str], str]]] = defaultdict(list)
+    for row in rows:
+        doctor_key = doctor_key_for(row.get("doctor_fio"))
+        case_id = str(row.get("id") or row.get("mis_id") or "").strip()
+        patient_id = str(row.get("patient_id") or "").strip()
+        shingles = _template_shingles(row)
+        # Короткие клише вроде «без особенностей» не являются надёжным сигналом
+        # копирования целой записи и дают слишком много ложных совпадений.
+        if not doctor_key or not case_id or not patient_id or len(shingles) < 25:
+            continue
+        digest = hashlib.sha256("\n".join(sorted(shingles)).encode("utf-8")).hexdigest()
+        grouped[doctor_key].append((case_id, patient_id, shingles, digest))
+    pairs: list[dict[str, Any]] = []
+    for doctor_key, documents in grouped.items():
+        documents = documents[:max_cases_per_doctor]
+        for index, left in enumerate(documents):
+            for right in documents[index + 1 :]:
+                if left[0] == right[0] or left[1] == right[1]:
+                    continue
+                union = left[2] | right[2]
+                similarity = len(left[2] & right[2]) / len(union) if union else 0.0
+                if similarity < threshold:
+                    continue
+                case_a, case_b = sorted((left[0], right[0]))
+                pairs.append(
+                    {
+                        "pair_id": hashlib.sha256(
+                            f"{doctor_key}:{case_a}:{case_b}".encode("utf-8")
+                        ).hexdigest()[:32],
+                        "doctor_key": doctor_key,
+                        "case_id_a": case_a,
+                        "case_id_b": case_b,
+                        "similarity": round(similarity, 6),
+                        "algorithm": "exact_jaccard_5_shingles_v1",
+                        "threshold": threshold,
+                        "provenance": {
+                            "shingle_hash_a": left[3],
+                            "shingle_hash_b": right[3],
+                            "different_patient_gate": True,
+                        },
+                    }
+                )
+    return pairs
 
 
 def upsert_warehouse(
@@ -1321,6 +1430,58 @@ def upsert_warehouse(
             bucket = doctor_daily.get(doctor_key_for(case.get("doctor_fio")))
             if bucket is not None and severe:
                 bucket["critical"] += 1
+
+        template_pairs = detect_template_copies(raw_rows)
+        if seen_ids:
+            placeholders = ",".join("?" for _ in seen_ids)
+            db.execute(
+                f"""DELETE FROM fact_mo_finding
+                    WHERE finding_code='E_template_copy'
+                      AND mis_id IN ({placeholders})""",
+                seen_ids,
+            )
+            db.execute(
+                f"DELETE FROM fact_mo_template_pair WHERE case_id_a IN ({placeholders}) "
+                f"OR case_id_b IN ({placeholders})",
+                (*seen_ids, *seen_ids),
+            )
+        for pair in template_pairs:
+            db.execute(
+                """INSERT OR REPLACE INTO fact_mo_template_pair
+                   (pair_id,doctor_key,case_id_a,case_id_b,similarity,algorithm,
+                    threshold,provenance_json,detected_at)
+                   VALUES(?,?,?,?,?,?,?,?,?)""",
+                (
+                    pair["pair_id"],
+                    pair["doctor_key"],
+                    pair["case_id_a"],
+                    pair["case_id_b"],
+                    pair["similarity"],
+                    pair["algorithm"],
+                    pair["threshold"],
+                    json.dumps(pair["provenance"], ensure_ascii=False),
+                    now,
+                ),
+            )
+            written["fact_mo_template_pair"] += 1
+            for case_id, other_id in (
+                (pair["case_id_a"], pair["case_id_b"]),
+                (pair["case_id_b"], pair["case_id_a"]),
+            ):
+                db.execute(
+                    """INSERT OR REPLACE INTO fact_mo_finding
+                       (mis_id,finding_code,severity,passed,evidence,source_ref)
+                       VALUES(?,?,?,?,?,?)""",
+                    (
+                        case_id,
+                        "E_template_copy",
+                        "P2",
+                        0,
+                        "",
+                        f"template_pair:{pair['pair_id']}:{other_id}",
+                    ),
+                )
+                written["fact_mo_finding"] += 1
 
         if day_key:
             db.execute("DELETE FROM fact_mo_doctor_daily WHERE visit_date = ?", (day_key,))

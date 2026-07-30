@@ -14,12 +14,13 @@
       page: "overview", period: "month", compare: "previous", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "",
       sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
-      data: {}, facets: {}, trigger: null, openCaseId: ""
+      data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: ""
     };
     var PAGE_TITLES = {
       overview: "Обзор МО", yesterday: "Отчёт за вчера", queue: "Очередь разбора",
       documents: "Все случаи", doctors: "Врачи", specialties: "Специальности",
       diagnoses: "Диагнозы и МКБ", safety: "Безопасность", "data-quality": "Качество данных",
+      "doctor-cabinet": "Кабинет врача", "access-log": "Журнал доступа",
       reports: "Отчёты", settings: "Настройки"
     };
     var FILTER_LABELS = {
@@ -865,27 +866,9 @@
       renderYesterday(data);
     }
     function renderEntityPages(summary) {
-      $("doctor-rows").innerHTML = summary.doctors.length ? summary.doctors.slice(0,100).map(function (x) {
-        return "<tr><td><b>" + esc(x.doctor_fio || x.doctor) + "</b></td><td>" + esc(x.specialization || x.specialty) +
-          "</td><td>" + esc(x.n || 0) + "</td><td>" + esc(score(x.avg_overall_pct || x.avg_overall)) +
-          "</td><td>" + esc(x.bad_pct || 0) + "%</td><td>" + esc(x.open_cases || 0) + "</td></tr>";
-      }).join("") : '<tr><td colspan="6" class="empty">Нет данных по врачам.</td></tr>';
-      var specialtyBars = summary.specialties.slice(0,20).map(function (x) {
-        return bar(x.specialization || x.specialty, x.avg_overall_pct || x.avg_overall || 0);
-      }).join("");
-      $("specialty-chart").innerHTML = specialtyBars || '<div class="empty">Нет данных.</div>';
-      $("specialty-attention").innerHTML = summary.specialties.slice(0,5).map(function (x) {
-        return notice(x.specialization || x.specialty, (x.n || 0) + " записей, итог " + score(x.avg_overall_pct || x.avg_overall), "review");
-      }).join("") || '<div class="empty">Нет групп внимания.</div>';
-      $("icd-chart").innerHTML = summary.diagnoses.slice(0,20).map(function (x) {
-        return bar(x.chapter || x.label || "Без кода", x.avg_overall || x.avg_overall_pct || 0);
-      }).join("") || '<div class="empty">Нет данных.</div>';
-      $("diagnosis-findings").innerHTML = summary.findings.slice(0,8).map(function (x) {
+      $("diagnosis-findings").innerHTML = (summary.findings || []).slice(0,8).map(function (x) {
         return notice(x.severity || "Проверить", x.title || x.label || "Требуется ручная проверка", x.severity === "P0" ? "critical" : "review");
       }).join("") || '<div class="empty">Замечаний по выбранному срезу нет.</div>';
-      $("safety-kpis").innerHTML = kpi("Критические", summary.critical, "потенциальный вред") + kpi("На разбор", summary.attention, "ручная проверка") +
-        kpi("Надёжность", score(summary.confidence), "результата") + kpi("Полнота", score(summary.coverage), "проверки");
-      $("safety-list").innerHTML = $("diagnosis-findings").innerHTML;
       $("quality-kpis").innerHTML = kpi("Свежесть", summary.generated ? "Актуально" : "Нет отметки", summary.generated) +
         kpi("Записей", summary.n, "получено") + kpi("Оценено", summary.evaluated, "после проверки") + kpi("Пропуски", Math.max(0, summary.n-summary.evaluated), "не допущено");
       $("quality-chart").innerHTML = bar("Обработано", summary.n ? summary.evaluated / summary.n * 100 : 0) +
@@ -894,6 +877,166 @@
         summary.generated || "Проверьте источник данных", summary.generated ? "good" : "review");
       $("report-list").innerHTML = notice("Отчёт за вчера", "Готов к открытию и выгрузке", "good") +
         notice("Отчёт за текущий месяц", "Формируется по текущему срезу", "review");
+    }
+    async function dimensionData(name) {
+      var response = await request("/dimensions/" + name + "?" + query().toString(), "/dimensions/" + name);
+      if (!response.ok) throw new Error("Не удалось загрузить интерактивный разрез.");
+      return response.json();
+    }
+    async function loadDoctorsDimension() {
+      var data = await dimensionData("doctors"), items = data.items || [];
+      $("doctor-rows").innerHTML = items.length ? items.map(function (x) {
+        var ci = x.delta_ci95 || {};
+        return '<tr data-doctor-key="' + esc(x.key) + '"><td><button class="link-button" data-open-doctor="' +
+          esc(x.key) + '"><b>' + esc(x.label) + "</b></button></td><td>" + esc(x.specialty) +
+          "</td><td>" + esc(x.n == null ? x.n_bucket : x.n) + "</td><td>" +
+          esc(x.enough_data ? signed(x.delta) : "Мало данных") + "</td><td>" +
+          esc(x.enough_data ? signed(ci.low) + " - " + signed(ci.high) : "Недоступно") +
+          "</td><td>" + esc(x.p0_cases == null ? "Скрыто" : x.p0_cases) + "</td></tr>";
+      }).join("") : '<tr><td colspan="6" class="empty">Нет данных по врачам.</td></tr>';
+      var plotted = items.filter(function (x) { return x.enough_data && !x.suppressed && x.delta != null; });
+      var chart = MO.moChart($("doctor-scatter-chart"), {
+        tooltip:{ formatter:function (p) { var x=plotted[p.dataIndex], ci=x.delta_ci95 || {};
+          return esc(x.label)+"<br>Объём: "+x.n+"<br>Дельта: "+signed(x.delta)+
+            "<br>95% ДИ: "+signed(ci.low)+" - "+signed(ci.high)+"<br>P0: "+(x.p0_cases || 0); } },
+        toolbox:{ feature:{ brush:{ type:["rect","clear"] }, dataZoom:{}, saveAsImage:{} } },
+        brush:{ toolbox:["rect","clear"], xAxisIndex:"all", yAxisIndex:"all" },
+        grid:{ left:58,right:30,top:55,bottom:55 },
+        xAxis:{ type:"value", name:"Число записей" },
+        yAxis:{ type:"value", name:"Дельта к ожидаемой, п.п.", axisLine:{ onZero:true } },
+        series:[{ type:"scatter", data:plotted.map(function (x) {
+          return { value:[x.n,x.delta,Math.max(8,Math.min(42,8+(x.p0_cases || 0)*4))], doctor:x };
+        }), symbolSize:function (value) { return value[2]; } }]
+      }, { label:"Врачи: объём и дельта к ожидаемой оценке",
+        description:"Каждая точка - врач с выборкой не меньше двадцати записей. Размер означает число P0." });
+      function openDoctor(key) { state.cabinetDoctorKey=key; switchPage("doctor-cabinet"); }
+      $("doctor-rows").querySelectorAll("[data-open-doctor]").forEach(function (button) {
+        button.addEventListener("click",function () { openDoctor(button.getAttribute("data-open-doctor")); });
+      });
+      if (chart) {
+        chart.on("click",function (params) { if (plotted[params.dataIndex]) openDoctor(plotted[params.dataIndex].key); });
+        chart.on("brushSelected",function (params) {
+          var selected=[], batches=(params.batch && params.batch[0] && params.batch[0].selected) || [];
+          batches.forEach(function (batch) { (batch.dataIndex || []).forEach(function (index) {
+            if (plotted[index] && selected.indexOf(plotted[index]) < 0) selected.push(plotted[index]);
+          }); });
+          $("doctor-selection-flow").innerHTML=selected.length ?
+            "<p><b>Выбрано врачей: "+selected.length+"</b></p><p>"+selected.map(function (x) { return esc(x.label); }).join(", ")+
+            '</p><button class="button" id="open-selected-doctors">Открыть их случаи</button>' :
+            "Выделите точки рамкой. Действие не выполняется автоматически.";
+          var action=$("open-selected-doctors");
+          if (action) action.addEventListener("click",function () {
+            state.selected.doctors=selected.map(function (x) { return x.label; }); renderChips(); switchPage("documents");
+          });
+        });
+      }
+    }
+    async function loadSpecialtiesDimension() {
+      var data=await dimensionData("specialties"), items=data.items || [];
+      var chart=MO.moChart($("specialty-boxplot-chart"),{
+        tooltip:{ trigger:"item",formatter:function (p) { var x=items[p.dataIndex];
+          return esc(x.label)+"<br>Мин / Q1 / медиана / Q3 / макс<br>"+x.boxplot.join(" / ")+"<br>n = "+x.n; } },
+        grid:{ left:175,right:30,top:25,bottom:45 }, xAxis:{ type:"value",name:"Оценка, %",min:0,max:100 },
+        yAxis:{ type:"category",data:items.map(function (x) { return x.label; }) },
+        series:[{ type:"boxplot",data:items.map(function (x) { return x.boxplot; }) }]
+      },{ label:"Распределение оценок по специальностям",description:"Коробчатые диаграммы показывают квартили и диапазон." });
+      $("specialty-attention").innerHTML=items.length ? '<p class="card-sub">Показано групп: '+items.length+". Малые группы скрыты.</p>" : '<div class="empty">Нет групп выше порога публикации.</div>';
+      if (chart) chart.on("click",function (params) {
+        var item=items[params.dataIndex]; if (!item) return;
+        state.selected.specialties=[item.key]; renderChips(); switchPage("doctors");
+      });
+    }
+    async function loadDiagnosesDimension() {
+      var data=await dimensionData("diagnoses"), items=data.items || [];
+      var chart=MO.moChart($("icd-treemap-chart"),{
+        tooltip:{ formatter:function (p) { return esc(p.name)+"<br>Объём: "+p.value+
+          (p.data.score == null ? "" : "<br>Средняя оценка: "+p.data.score+"%"); } },
+        visualMap:{ min:50,max:100,dimension:2,calculable:true,orient:"horizontal",left:"center",bottom:4 },
+        series:[{ type:"treemap",roam:true,nodeClick:"zoomToNode",data:items.map(function (chapter) {
+          return Object.assign({},chapter,{ children:(chapter.children || []).map(function (child) {
+            return Object.assign({},child,{ value:[child.value,child.value,child.score] });
+          }) });
+        }), levels:[{}, { itemStyle:{ borderWidth:3,gapWidth:3 } }, { itemStyle:{ borderWidth:1,gapWidth:1 } }] }]
+      },{ label:"Дерево глав и кодов МКБ",description:"Площадь означает объём, цвет среднюю оценку." });
+      if (chart) chart.on("click",function (params) {
+        var drill=params.data && params.data.drilldown;
+        if (drill && drill.level === "diagnosis") { state.search=drill.id; $("case-search").value=drill.id; switchPage("documents"); }
+      });
+    }
+    async function loadSafetyDimension() {
+      var data=await dimensionData("safety"), items=data.items || [], levels=["P0","P1","P2","P3"];
+      $("safety-kpis").innerHTML=levels.map(function (level) {
+        return kpi(level,items.reduce(function (sum,row) { return sum+(row[level] || 0); },0),"случаев с замечанием");
+      }).join("");
+      var incidents=data.incidents || [];
+      MO.moChart($("safety-severity-chart"),{
+        tooltip:{ trigger:"axis" },legend:{ data:levels },grid:{ left:50,right:25,top:50,bottom:55 },
+        xAxis:{ type:"category",data:items.map(function (x) { return x.date; }) },yAxis:{ type:"value",name:"Случаи" },
+        series:levels.map(function (level) { return { name:level,type:"bar",stack:"severity",
+          data:items.map(function (x) { return x[level] || 0; }),
+          markPoint:level==="P0" ? { data:incidents.map(function (x) {
+            return { name:x.finding_code,coord:[x.date,0],value:"!" };
+          }) } : undefined }; })
+      },{ label:"Замечания по приоритету по дням",description:"Столбцы сложены по приоритету, маркеры обозначают P0." });
+      $("safety-list").innerHTML=incidents.slice(0,30).map(function (x) {
+        return notice("P0 · "+x.finding_code,x.date+" · источник: "+(x.source_ref || "не указан"),"critical");
+      }).join("") || '<div class="empty">Инцидентов P0 в выбранном периоде нет.</div>';
+    }
+    async function loadDoctorCabinet() {
+      if (!state.cabinetDoctorKey) {
+        $("doctor-cabinet-unavailable").hidden=false; $("doctor-cabinet-content").hidden=true; return;
+      }
+      var response=await request("/doctor-cabinet?doctor_key="+encodeURIComponent(state.cabinetDoctorKey),"/doctor-cabinet");
+      if (!response.ok) {
+        $("doctor-cabinet-unavailable").hidden=false; $("doctor-cabinet-content").hidden=true;
+        $("doctor-cabinet-unavailable").textContent="Кабинет недоступен для текущей роли или доверенная идентификация не настроена.";
+        return;
+      }
+      var data=await response.json(), findings=data.findings || [], byCase={};
+      findings.forEach(function (finding) { (byCase[finding.mis_id]||(byCase[finding.mis_id]=[])).push(finding); });
+      $("doctor-cabinet-unavailable").hidden=true; $("doctor-cabinet-content").hidden=false;
+      $("doctor-cabinet-kpis").innerHTML=kpi("Врач",data.doctor.doctor_fio,data.doctor.specialty)+
+        kpi("Записей",(data.cases || []).length,"доступный период")+
+        kpi("Замечаний",findings.length,"с цитатами и источниками")+
+        kpi("Споров",(data.dispute_stats || {}).total || 0,"передано методисту");
+      $("doctor-cabinet-records").innerHTML=(data.cases || []).map(function (item) {
+        var caseFindings=byCase[item.mis_id] || [];
+        return '<div class="case-card"><b>'+esc(item.visit_date+" · "+(item.diagnosis_code || "Без кода"))+
+          "</b><p>Оценка: "+esc(score(item.overall_pct))+"</p>"+caseFindings.map(function (finding) {
+            return '<div class="finding"><b>'+esc(finding.severity+" · "+finding.finding_code)+
+              "</b><p>Источник: "+esc(finding.source_ref || "не указан")+
+              '</p><button class="button secondary" data-dispute-case="'+esc(item.visit_id || item.mis_id)+
+              '" data-dispute-finding="'+esc(finding.finding_code)+'">Оспорить</button></div>';
+          }).join("")+"</div>";
+      }).join("") || '<div class="empty">Записей нет.</div>';
+      $("doctor-cabinet-actions").innerHTML=(data.what_to_fix || []).map(function (code) {
+        return notice(code,"Откройте запись и сверите замечание с указанным источником.","review");
+      }).join("") || '<div class="empty">Активных рекомендаций нет.</div>';
+      $("doctor-template-pairs").innerHTML=(data.template_pairs || []).map(function (pair) {
+        return notice("Сходство "+Math.round(pair.similarity*100)+"%",
+          "Случаи "+pair.case_id_a+" и "+pair.case_id_b+" · "+pair.algorithm+" · порог "+pair.threshold,"review");
+      }).join("") || '<div class="empty">Шаблонных пар не найдено.</div>';
+      $("doctor-cabinet-records").querySelectorAll("[data-dispute-case]").forEach(function (button) {
+        button.addEventListener("click",async function () {
+          var reason=prompt("Причина оспаривания для методиста"); if (!reason) return;
+          var result=await request("/doctor-cabinet/disputes?doctor_key="+encodeURIComponent(state.cabinetDoctorKey),
+            "/doctor-cabinet/disputes",{ method:"POST",headers:{ "Content-Type":"application/json" },
+              body:JSON.stringify({ case_id:button.getAttribute("data-dispute-case"),
+                finding_code:button.getAttribute("data-dispute-finding"),reason:reason }) });
+          if (!result.ok) { showError("Не удалось передать спор методисту."); return; }
+          showToast("Спор передан методисту"); loadDoctorCabinet();
+        });
+      });
+    }
+    async function loadAccessLog() {
+      var response=await request("/access-log","/access-log");
+      if (response.status===403) { $("access-log-content").innerHTML='<div class="empty">Журнал доступен только администратору.</div>'; return; }
+      if (!response.ok) throw new Error("Не удалось загрузить журнал доступа.");
+      var data=await response.json();
+      $("access-log-content").innerHTML=(data.items || []).map(function (item) {
+        return notice(item.action,item.created_at+" · "+item.actor+" · роль "+item.role+
+          (item.doctor_key ? " · врач "+item.doctor_key : ""),"good");
+      }).join("") || '<div class="empty">Событий доступа пока нет.</div>';
     }
     async function ensureSummary() {
       if (!state.data.summary) await loadOverview();
@@ -964,6 +1107,12 @@
         else if (page === "yesterday") await loadYesterday();
         else if (page === "queue") await loadCases(true);
         else if (page === "documents") await loadCases(false);
+        else if (page === "doctors") await loadDoctorsDimension();
+        else if (page === "specialties") await loadSpecialtiesDimension();
+        else if (page === "diagnoses") await loadDiagnosesDimension();
+        else if (page === "safety") await loadSafetyDimension();
+        else if (page === "doctor-cabinet") await loadDoctorCabinet();
+        else if (page === "access-log") await loadAccessLog();
         else if (page === "data-quality") await loadDataQuality();
         else if (page === "reports") await loadReports();
         else if (page === "settings") await loadScoringMethod();
@@ -1234,6 +1383,22 @@
         try { localStorage.setItem(DENSITY_KEY, this.value); } catch (error) {}
         applyPreferences();
         showToast(this.value === "compact" ? "Компактная плотность включена" : "Комфортная плотность включена");
+      });
+      $("admin-token-save").addEventListener("click", function () {
+        var value = $("admin-token-input").value.trim();
+        if (!value) {
+          showToast("Введите админ-токен");
+          return;
+        }
+        try {
+          sessionStorage.setItem(MO.api.ROLE_KEY, "admin");
+          sessionStorage.setItem(MO.api.ADMIN_TOKEN_KEY, value);
+        } catch (error) {
+          showError("Не удалось сохранить админ-токен для сессии.");
+          return;
+        }
+        $("admin-token-input").value = "";
+        showToast("Роль администратора включена до закрытия вкладки");
       });
       $("command-open").addEventListener("click", function () { openCommandPalette(this); });
       $("command-backdrop").addEventListener("click", closeCommandPalette);
