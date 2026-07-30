@@ -143,6 +143,35 @@ scripts/ops/deploy_promote_main_after_push.sh --prod-url=https://protocol-bimy.o
 Важно: параметры в ops-скриптах передавать как `--key=value` (например
 `--prod-url=https://protocol-bimy.onrender.com`), а не через пробел.
 
+### 5.2. Управление сервисом Render через API
+
+Все команды выше умеют только «запушить и подождать версию». Если прод не обновился,
+причина не видна: настройка Auto-Deploy и логи сборки живут в дашборде. Для этого есть
+`scripts/ops/render_deploy.sh`, работающий через публичный Render API.
+
+Требуется `RENDER_API_KEY` в `.env` (файл в `.gitignore`, ключ не коммитить).
+Создать ключ: https://dashboard.render.com/u/settings?add-api-key
+
+```bash
+# почему прод не обновился: autoDeploy, ветка, suspended, последние деплои, версия
+scripts/ops/render_deploy.sh status
+
+# логи сборки и рантайма (единственный способ увидеть причину упавшего деплоя)
+scripts/ops/render_deploy.sh logs --limit=200
+
+# редеплой без нового коммита, с ожиданием статуса live
+scripts/ops/render_deploy.sh deploy --wait
+
+# редеплой с чисткой build cache, если сборка падает на зависимостях
+scripts/ops/render_deploy.sh deploy --clear-cache --wait
+
+# перезапуск без пересборки: нужен после заливки данных на /var/data по SSH
+scripts/ops/render_deploy.sh restart --wait
+```
+
+`status` явно предупреждает, если `autoDeploy: no` - в этом случае push в `main` деплой
+не запустит, и нужен `deploy` вручную.
+
 ## 6) Минимальный handoff между ПК
 
 После каждой сессии фиксируем:
@@ -189,6 +218,10 @@ scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.
 scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
 # if current branch is not main but Render deploys from main
 scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
+
+# if prod did not update: check the service and read build logs
+scripts/ops/render_deploy.sh status
+scripts/ops/render_deploy.sh logs --limit=200
 ```
 
 ## 9) Smoke-check структуры скриптов
