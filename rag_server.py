@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r23-mo-yesterday-detail"
+BUILD_VERSION = "2026-07-30-r24-mo-month-mtd"
 
 
 def _app_version() -> str:
@@ -10935,6 +10935,30 @@ def _mo_params(**kwargs: Any) -> dict[str, Any]:
         and value not in (None, "")
         and not callable(value)
     }
+
+
+@app.get("/api/methodist/mo/month-report")
+def api_methodist_mo_month_report(
+    request: "Request",
+    response: "Response",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_month_report
+
+    response.headers["Cache-Control"] = "private, no-store"
+    try:
+        return build_month_report(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/summary")

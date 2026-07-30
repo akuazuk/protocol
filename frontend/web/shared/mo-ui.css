@@ -143,6 +143,9 @@
     .daily-split > div { display: grid; grid-template-columns: repeat(2, minmax(120px,1fr)); gap: 10px; align-content: start; }
     .daily-split .kpi { box-shadow: none; }
     .index-kpis { margin-top: 12px; }
+    .month-compare { display: grid; grid-template-columns: repeat(3, minmax(150px, 1fr)); gap: 10px; margin-bottom: 12px; }
+    #month-trend-chart, #month-heatmap-chart, #month-doctor-chart,
+    #month-pareto-chart, #month-funnel-chart, #month-crm-chart { min-height: 360px; }
     .compact-table { max-height: 300px; }
     .finding-link {
       width: 100%; padding: 8px 4px; border: 0; border-bottom: 1px solid var(--line);
@@ -229,6 +232,7 @@
       .grid { display: block; }
       .card { margin-bottom: 12px; }
       .daily-split, .daily-split > div { grid-template-columns: 1fr; }
+      .month-compare { grid-template-columns: 1fr; }
       .drawer-grid { grid-template-columns: 1fr; }
     }
     @media (max-width: 390px) {

@@ -164,6 +164,48 @@ def propagate_visit_scores(warehouse: Path) -> int:
     return changed
 
 
+def refresh_daily_case_aggregates(warehouse: Path) -> int:
+    """Синхронизировать дневные знаменатели после переноса оценок визита."""
+    with sqlite3.connect(warehouse) as db:
+        before = db.total_changes
+        db.execute(
+            """UPDATE fact_mo_daily
+               SET eligible_rows = (
+                     SELECT COUNT(*) FROM fact_mo_case c
+                     WHERE c.visit_date=fact_mo_daily.visit_date
+                       AND c.document_kind IN ('medical_exam','consultation')
+                   ),
+                   scored_rows = (
+                     SELECT COUNT(*) FROM fact_mo_case c
+                     WHERE c.visit_date=fact_mo_daily.visit_date
+                       AND c.document_kind IN ('medical_exam','consultation')
+                       AND c.overall_pct IS NOT NULL
+                   ),
+                   avg_score = (
+                     SELECT ROUND(AVG(c.overall_pct), 1) FROM fact_mo_case c
+                     WHERE c.visit_date=fact_mo_daily.visit_date
+                       AND c.document_kind IN ('medical_exam','consultation')
+                   ),
+                   needs_attention = (
+                     SELECT COUNT(*) FROM fact_mo_case c
+                     WHERE c.visit_date=fact_mo_daily.visit_date
+                       AND c.document_kind IN ('medical_exam','consultation')
+                       AND c.overall_pct < 70
+                   ),
+                   coverage_pct = (
+                     SELECT CASE WHEN COUNT(*)=0 THEN NULL
+                       ELSE ROUND(100.0 * SUM(c.overall_pct IS NOT NULL) / COUNT(*), 1)
+                     END
+                     FROM fact_mo_case c
+                     WHERE c.visit_date=fact_mo_daily.visit_date
+                       AND c.document_kind IN ('medical_exam','consultation')
+                   )"""
+        )
+        changed = db.total_changes - before
+        db.commit()
+    return changed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--first-month", default="2026-01")
@@ -214,6 +256,8 @@ def main() -> int:
         propagated = propagate_visit_scores(warehouse)
         if propagated:
             print(f"Заполнено дублей документов оценкой визита: {propagated}", file=sys.stderr)
+        refreshed = refresh_daily_case_aggregates(warehouse)
+        print(f"Синхронизировано дневных агрегатов: {refreshed}", file=sys.stderr)
     print(json.dumps(results, ensure_ascii=False, indent=2))
     return 0 if all(item["status"] in {"success", "dry_run"} for item in results) else 1
 

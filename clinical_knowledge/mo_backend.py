@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import csv
+import calendar
 import json
 import os
 import sqlite3
@@ -1432,6 +1433,281 @@ def build_summary(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _shift_year(value: date, years: int) -> date:
+    """Shift a date while keeping leap-day comparisons valid."""
+    try:
+        return value.replace(year=value.year + years)
+    except ValueError:
+        return value.replace(year=value.year + years, day=28)
+
+
+def _previous_month_period(period: DateRange) -> DateRange:
+    previous_end = period.date_from - timedelta(days=1)
+    previous_start = previous_end.replace(day=1)
+    wanted_end = previous_start + timedelta(days=period.days - 1)
+    return DateRange(previous_start, min(previous_end, wanted_end))
+
+
+def _comparison_payload(
+    current: dict[str, Any],
+    period: DateRange,
+    params: dict[str, Any],
+) -> dict[str, Any]:
+    metrics = (
+        "source_records",
+        "eligible",
+        "evaluated",
+        "avg_score",
+        "needs_attention_pct",
+        "critical",
+        "coverage_pct",
+    )
+
+    def one(label: str, comparison_period: DateRange) -> dict[str, Any]:
+        values = _sql_summary(comparison_period, params)
+        if values["source_records"] == 0:
+            return _unavailable(
+                f"Нет данных для сравнения: {label}",
+                period=comparison_period.to_dict(),
+                kpi=None,
+                deltas={key: None for key in metrics},
+            )
+        return {
+            "available": True,
+            "label": label,
+            "period": comparison_period.to_dict(),
+            "kpi": values,
+            "deltas": {
+                key: (
+                    round(float(current[key]) - float(values[key]), 2)
+                    if current.get(key) is not None and values.get(key) is not None
+                    else None
+                )
+                for key in metrics
+            },
+        }
+
+    previous = _previous_month_period(period)
+    year_period = DateRange(_shift_year(period.date_from, -1), _shift_year(period.date_to, -1))
+    return {
+        "previous_month_equal_length": one("Равный период прошлого месяца", previous),
+        "previous_year_same_period": one("Тот же период прошлого года", year_period),
+    }
+
+
+def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
+    """Build the bounded, privacy-safe Month/MTD BI contract from warehouse SQL."""
+    requested = _resolve_request_period(params)
+    if _source_for_period(requested.current) != "warehouse":
+        raise RuntimeError("Экран месяца требует SQL-витрину МО")
+    requested_end = requested.current.date_to
+    with closing(_read_connection()) as conn:
+        latest_raw = conn.execute(
+            """SELECT MAX(visit_date) FROM fact_mo_case
+               WHERE visit_date BETWEEN ? AND ?""",
+            (requested.current.date_from.isoformat(), requested_end.isoformat()),
+        ).fetchone()[0]
+    if not latest_raw:
+        period = requested.current
+        return {
+            "ok": True,
+            "source": "warehouse",
+            "schema_version": SCHEMA_VERSION,
+            "timezone": "Europe/Minsk",
+            "period_mode": requested.period,
+            "period": period.to_dict(),
+            "data_through": None,
+            "days_elapsed": 0,
+            "days_in_month": calendar.monthrange(period.date_from.year, period.date_from.month)[1],
+            "suppression_n": SUPPRESSION_N,
+            "available": False,
+            "reason": "Нет данных в витрине за выбранный период",
+        }
+
+    data_through = min(date.fromisoformat(str(latest_raw)), requested_end)
+    period = DateRange(requested.current.date_from, data_through)
+    bounded_params = {
+        **params,
+        "period": "custom",
+        "date_from": period.date_from.isoformat(),
+        "date_to": period.date_to.isoformat(),
+        "compare": "none",
+        "compare_period": "none",
+    }
+    current = _sql_summary(period, bounded_params)
+    timeseries = build_timeseries(
+        {
+            **bounded_params,
+            "metrics": "overall,documentation,clinical_concordance,safety,regulatory,volume",
+            "granularity": "day",
+        }
+    )
+    daily = timeseries["series"]
+    volumes = [int(row.get("volume") or 0) for row in daily]
+    volume_median = statistics.median(volumes) if volumes else 0
+    for row in daily:
+        volume = int(row.get("volume") or 0)
+        deviation = (
+            round(100 * (volume - volume_median) / volume_median, 1)
+            if volume_median
+            else None
+        )
+        row["anomaly"] = bool(deviation is not None and abs(deviation) >= 40)
+        row["anomaly_reason"] = (
+            f"Объём отличается от медианы периода на {deviation:+.1f}%"
+            if row["anomaly"]
+            else None
+        )
+
+    days_elapsed = period.days
+    days_in_month = calendar.monthrange(period.date_from.year, period.date_from.month)[1]
+    is_month = requested.period == "month"
+    pace = days_in_month / days_elapsed if is_month and days_elapsed else None
+    forecast = {
+        "available": bool(is_month and days_elapsed and current["source_records"]),
+        "reason": None if is_month else "Прогноз до конца месяца доступен только для периода Месяц",
+        "method": "Линейный темп по календарным дням" if is_month else None,
+        "assumptions": [
+            "Средний суточный объём MTD сохранится до конца месяца",
+            "Прогноз не корректируется на выходные, праздники и изменения расписания",
+            "Средняя оценка и покрытие считаются неизменными",
+        ],
+        "projected_source": round(current["source_records"] * pace) if pace else None,
+        "projected_evaluated": round(current["evaluated"] * pace) if pace else None,
+        "projected_findings_cases": None,
+        "projected_avg_score": current["avg_score"],
+    }
+    comparison = _comparison_payload(current, period, bounded_params)
+    heatmap = build_heatmap({**bounded_params, "rows": "specialty", "cols": "icd_chapter"})
+    doctors = _doctor_breakdown(period, max(20, SUPPRESSION_N), bounded_params)
+
+    where, values = _sql_case_filter(period, bounded_params)
+    with closing(_read_connection()) as conn:
+        finding_rows = conn.execute(
+            """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) cases
+               FROM fact_mo_finding f JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               WHERE """ + where + """
+                 AND c.document_kind IN ('medical_exam','consultation')
+               GROUP BY f.finding_code, f.severity
+               ORDER BY cases DESC, f.finding_code
+               LIMIT 200""",
+            values,
+        ).fetchall()
+        finding_cases = int(
+            conn.execute(
+                """SELECT COUNT(DISTINCT c.mis_id)
+                   FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+                   WHERE """ + where + """
+                     AND c.document_kind IN ('medical_exam','consultation')""",
+                values,
+            ).fetchone()[0]
+        )
+        crm_rows = conn.execute(
+            """SELECT COALESCE(s.status, 'new') status, COUNT(*) cases
+               FROM fact_mo_case c
+               LEFT JOIN crm_case_state s
+                 ON s.case_id=COALESCE(NULLIF(c.visit_id,''), c.mis_id)
+               WHERE """ + where + """
+                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.overall_pct IS NOT NULL
+               GROUP BY COALESCE(s.status, 'new')""",
+            values,
+        ).fetchall()
+
+    published_findings = [
+        {
+            "finding_code": str(row["finding_code"]),
+            "label": f"Замечание: {row['finding_code']}",
+            "severity": str(row["severity"] or ""),
+            "cases": int(row["cases"]),
+        }
+        for row in finding_rows
+        if int(row["cases"]) >= SUPPRESSION_N
+    ]
+    finding_total = sum(item["cases"] for item in published_findings)
+    running = 0
+    for item in published_findings:
+        running += item["cases"]
+        item["share_pct"] = round(100 * item["cases"] / finding_total, 2) if finding_total else None
+        item["cumulative_share_pct"] = round(100 * running / finding_total, 2) if finding_total else None
+    statuses = {str(row["status"]): int(row["cases"]) for row in crm_rows}
+    in_work_statuses = {
+        "assigned", "in_review", "confirmed_issue", "needs_more_data", "sent_to_doctor"
+    }
+    closed_statuses = {"resolved", "closed", "false_positive"}
+    in_work = sum(statuses.get(status, 0) for status in in_work_statuses)
+    closed = sum(statuses.get(status, 0) for status in closed_statuses)
+
+    daily_source = sum(int(row.get("volume") or 0) for row in daily)
+    daily_evaluated = sum(int(row.get("evaluated") or 0) for row in daily)
+    reconciliation = {
+        "status": (
+            "ok"
+            if daily_source == current["source_records"] and daily_evaluated == current["evaluated"]
+            else "diverged"
+        ),
+        "daily_source_sum": daily_source,
+        "mtd_source": current["source_records"],
+        "source_delta": daily_source - current["source_records"],
+        "daily_evaluated_sum": daily_evaluated,
+        "mtd_evaluated": current["evaluated"],
+        "evaluated_delta": daily_evaluated - current["evaluated"],
+    }
+    return {
+        "ok": True,
+        "available": True,
+        "source": "warehouse",
+        "schema_version": SCHEMA_VERSION,
+        "timezone": "Europe/Minsk",
+        "period_mode": requested.period,
+        "period": period.to_dict(),
+        "period_label": "MTD" if requested.period == "month" else "Выбранный период",
+        "data_through": data_through.isoformat(),
+        "days_elapsed": days_elapsed,
+        "days_in_month": days_in_month,
+        "suppression_n": SUPPRESSION_N,
+        "kpi": current,
+        "forecast": forecast,
+        "comparison": comparison,
+        "timeseries": {
+            "items": daily,
+            "metrics": metric_catalog(),
+            "anomaly_rule": "Отклонение объёма на 40% и более от медианы выбранного периода",
+        },
+        "reconciliation": reconciliation,
+        "heatmap": heatmap,
+        "doctor_case_mix": {
+            "available": any(item.get("enough_data") and not item.get("suppressed") for item in doctors),
+            "items": doctors[:100],
+            "sample_gate": max(20, SUPPRESSION_N),
+            "rule": "Дельта к средней оценке специальности; 95% ДИ; рейтинг только при n не меньше 20",
+        },
+        "pareto": {
+            "available": bool(published_findings),
+            "items": published_findings,
+            "suppression_n": SUPPRESSION_N,
+            "reason": None if published_findings else "Нет замечаний выше порога публикации",
+        },
+        "funnel": {
+            "source": current["source_records"],
+            "eligible": current["eligible"],
+            "evaluated": current["evaluated"],
+            "with_findings": finding_cases,
+            "in_crm_work": in_work,
+            "closed": closed,
+        },
+        "crm_progress": {
+            "available": bool(statuses),
+            "statuses": statuses,
+            "in_work": in_work,
+            "closed": closed,
+        },
+        "reg55": _unavailable(
+            "В текущей витрине нет отдельной проверенной метрики соответствия постановлению №55"
+        ),
+    }
+
+
 def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
     resolved = _resolve_request_period(params)
     requested = set(_values(params.get("metrics"))) or {
@@ -1528,7 +1804,14 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
                     (resolved.current.date_from.isoformat(), resolved.current.date_to.isoformat()),
                 )
             ]
-    series = [{key: value for key, value in row.items() if key == "date" or key in requested} for row in rows]
+    series = [
+        {
+            key: value
+            for key, value in row.items()
+            if key in {"date", "evaluated"} or key in requested
+        }
+        for row in rows
+    ]
     return {
         "ok": True,
         "source": source,

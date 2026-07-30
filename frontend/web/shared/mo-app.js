@@ -99,7 +99,7 @@
           q.set("date_from", minskDateKey(-1)); q.set("date_to", minskDateKey(-1));
         }
         if (state.period === "7d") {
-          q.set("date_from", minskDateKey(-6)); q.set("date_to", today);
+          q.set("date_from", minskDateKey(-7)); q.set("date_to", minskDateKey(-1));
         }
         if (state.period === "custom" && state.dateFrom && state.dateTo) {
           q.set("date_from", state.dateFrom); q.set("date_to", state.dateTo);
@@ -112,6 +112,7 @@
       Object.keys(state.selected).forEach(function (key) {
         if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join(","));
       });
+      if (state.selected.months.length) q.set("month", state.selected.months[0]);
       return q;
     }
     function normalizeSummary(raw) {
@@ -297,91 +298,154 @@
       $("main").focus({ preventScroll: true });
       window.scrollTo(0, 0);
     }
-    function renderTrendChart(summary, monthly, specialties) {
-      var points = monthly.length ? monthly.map(function (item) {
-        return { label: item.month || "Месяц", value: item.avg_score != null ? item.avg_score : item.avg_overall };
-      }) : specialties.length ? specialties.map(function (item) {
-        return { label: item.specialization || item.specialty || "Группа", value: item.avg_overall_pct != null ? item.avg_overall_pct : item.avg_overall };
-      }) : [{ label: "Итоговая оценка", value: summary.score || 0 }];
-      var element = $("trend-chart");
-      var option = {
-        tooltip: { trigger: "axis", valueFormatter: function (value) { return Math.round(Number(value) || 0) + "%"; } },
-        grid: { left: 45, right: 18, top: 18, bottom: 45 },
-        xAxis: { type: "category", name: "Период", data: points.map(function (item) { return item.label; }) },
-        yAxis: { type: "value", name: "Оценка, %", min: 0, max: 100 },
-        series: [{ name: "Итоговая оценка", type: "line", smooth: true, areaStyle: { opacity: .16 },
-          symbolSize: 8, data: points.map(function (item) { return item.value; }) }]
-      };
-      var chart = MO.moChart(element, option, {
-        label: "Динамика оценки МО по выбранному периоду",
-        description: "Линейный график итоговой оценки в процентах.",
-        fallback: function (target) {
-          target.innerHTML = points.map(function (item) { return bar(item.label, item.value); }).join("");
-        }
-      });
-      if (chart) chart.on("click", function () { switchPage("documents"); });
+    function renderTrendChart(element, option, config) {
+      return MO.moChart(element, option, config);
     }
-    function renderOverview(summary) {
-      state.data.summary = summary;
-      $("overview-kpis").innerHTML =
-        kpi("МО за период", summary.n.toLocaleString("ru-RU"), "записи из БД МИС") +
-        kpi("Оценено", summary.evaluated.toLocaleString("ru-RU"), "доля от допустимых к оценке") +
-        kpi("Итоговая оценка", score(summary.score), "по всем оценённым") +
-        kpi("Требует внимания", summary.attention || "0", (summary.attentionPct || 0) + "% выборки") +
-        kpi("Критические", summary.critical || "0", "приоритетный ручной разбор") +
-        kpi("Полнота проверки", score(summary.coverage), "доступность данных") +
-        kpi("Надёжность", score(summary.confidence), "устойчивость результата") +
-        kpi("Свежесть данных", summary.generated ? "Актуально" : "Не указана", summary.generated || "время не указано");
-      var freshness = summary.raw.data_freshness || {};
-      var freshnessBadge = $("freshness");
-      freshnessBadge.classList.remove("stale", "critical");
-      if (freshness.status === "critical") freshnessBadge.classList.add("critical");
-      else if (freshness.status === "stale") freshnessBadge.classList.add("stale");
-      var lagText = freshness.lag_days == null ? "без даты" : (freshness.lag_days + " дн.");
-      freshnessBadge.textContent = summary.generated
-        ? "Данные обновлены " + summary.generated + " (" + lagText + ")"
-        : "Свежесть не указана";
-      var empty = freshness.empty_state || {};
-      if (empty.reason_code && empty.reason_code !== "ok") {
-        var critical = empty.reason_code === "no_source_data" || freshness.status === "critical";
-        $("global-error").className = critical ? "banner critical" : "banner";
-        showError(empty.title + ". " + (empty.hint || ""));
-      }
-      var specialties = summary.specialties.slice(0, 8);
-      var monthly = ((summary.raw.trends || {}).monthly || []).filter(function (x) {
-        return !state.selected.months.length || state.selected.months.indexOf(x.month) >= 0;
+    async function loadLegacyOverview(suffix) {
+      return request("/overview" + suffix, "__root__");
+    }
+    function renderMonthTrend(data) {
+      var items = (data.timeseries || {}).items || [], dates = items.map(function (item) { return item.date; });
+      var names = {
+        overall:"Итог", documentation:"Оформление", clinical_concordance:"Клиническая согласованность",
+        safety:"Безопасность", regulatory:"Регуляторика"
+      };
+      var series = Object.keys(names).map(function (key) {
+        return { name:names[key], type:"line", connectNulls:true, symbolSize:6,
+          data:items.map(function (item) { return item[key]; }) };
       });
-      renderTrendChart(summary, monthly, specialties);
-      $("reason-chart").innerHTML = summary.findings.length ? summary.findings.slice(0, 7).map(function (x) {
-        var name = x.title || x.label || x.code || "Замечание", pct = x.pct == null ? x.count || x.n || 0 : x.pct;
-        return bar(name, Math.min(100, pct), x.pct == null ? String(pct) : Math.round(pct) + "%");
-      }).join("") : '<div class="empty">Причины появятся после обработки данных.</div>';
-      $("diagnosis-chart").innerHTML = summary.diagnoses.length ? summary.diagnoses.slice(0, 7).map(function (x) {
-        return bar(x.chapter || x.label || x.mkb_chapter || "Без кода", x.avg_overall || x.avg_overall_pct || 0);
-      }).join("") : '<div class="empty">Нет данных по главам МКБ.</div>';
-      $("attention-list").innerHTML =
-        notice("Критические", (summary.critical || 0) + " случаев требуют первоочередного решения", "critical") +
-        notice("На разбор", (summary.attention || 0) + " случаев в рабочей очереди", "review") +
-        notice("Качество данных", summary.generated ? "Последняя загрузка завершена" : "Проверьте свежесть загрузки", summary.generated ? "good" : "review");
-      buildFacets(summary, summary.raw.facets);
+      series.push({ name:"Объём", type:"bar", yAxisIndex:1, opacity:.28,
+        data:items.map(function (item) {
+          return { value:item.volume, itemStyle:item.anomaly ? { color:"#c63d53" } : null };
+        }), markPoint:{ data:items.map(function (item, index) {
+          return item.anomaly ? { name:"Аномалия", coord:[index,item.volume], value:"!" } : null;
+        }).filter(Boolean) } });
+      var chart = MO.moChart($("month-trend-chart"), {
+        tooltip:{ trigger:"axis" }, legend:{ type:"scroll" }, grid:{ left:48,right:54,top:58,bottom:68 },
+        dataZoom:[{ type:"inside" },{ type:"slider", bottom:10 }],
+        xAxis:{ type:"category", name:"Дата", data:dates },
+        yAxis:[{ type:"value", name:"Индекс, %", min:0, max:100 },{ type:"value", name:"Записи" }],
+        series:series
+      }, { label:"Динамика четырёх индексов и объёма за месяц",
+        description:"Линии показывают индексы, столбцы объём, красные маркеры аномальные дни.",
+        fallback:function (target) { target.innerHTML=items.map(function (item) { return bar(item.date,item.overall); }).join(""); } });
+      if (chart) chart.on("click", function (params) {
+        var day = items[params.dataIndex] && items[params.dataIndex].date;
+        if (day) { state.period="custom"; state.dateFrom=day; state.dateTo=day; switchPage("documents"); }
+      });
+    }
+    function renderMonthHeatmap(data) {
+      var cells=((data.heatmap || {}).cells || []), rows=Array.from(new Set(cells.map(function (x) { return x.row; }))),
+        cols=Array.from(new Set(cells.map(function (x) { return x.col; })));
+      if (!cells.length) { $("month-heatmap-chart").innerHTML=unavailableBlock(data.heatmap); return; }
+      var chart=MO.moChart($("month-heatmap-chart"), {
+        tooltip:{ formatter:function (p) { var x=cells[p.dataIndex]; return esc(x.row)+"<br>"+esc(x.col)+"<br>Оценка: "+x.avg_score+"%<br>n = "+x.n; } },
+        grid:{ left:135,right:22,top:18,bottom:70 }, dataZoom:[{ type:"inside" }],
+        xAxis:{ type:"category", name:"Глава МКБ", data:cols }, yAxis:{ type:"category", name:"Специальность", data:rows },
+        visualMap:{ min:50,max:100,calculable:true,orient:"horizontal",left:"center",bottom:4 },
+        series:[{ type:"heatmap", data:cells.map(function (x) { return [cols.indexOf(x.col),rows.indexOf(x.row),x.avg_score,x.n]; }), label:{ show:true,formatter:function (p) { return p.data[3]; } } }]
+      }, { label:"Тепловая карта специальностей и глав МКБ", description:"Цвет означает среднюю оценку, подпись число случаев.",
+        fallback:function (target) { target.innerHTML=cells.slice(0,12).map(function (x) { return bar(x.row+" / "+x.col,x.avg_score,x.n); }).join(""); } });
+      if (chart) chart.on("click", function (params) {
+        var cell=cells[params.dataIndex]; state.selected.specialties=[cell.row]; renderChips(); switchPage("documents");
+      });
+    }
+    function renderMonthDoctors(data) {
+      var section=data.doctor_case_mix || {}, items=(section.items || []).filter(function (x) {
+        return x.enough_data && !x.suppressed && x.delta != null;
+      }).slice(0,15);
+      if (!items.length) { $("month-doctor-chart").innerHTML=unavailableBlock(section,"Нет врачей, прошедших порог n."); }
+      else {
+        var chart=MO.moChart($("month-doctor-chart"), {
+          tooltip:{ formatter:function (p) { var x=items[p.dataIndex], ci=x.delta_ci95 || {}; return esc(x.label)+"<br>Дельта: "+signed(x.delta)+"<br>95% ДИ: "+signed(ci.low)+" ... "+signed(ci.high)+"<br>n = "+x.n; } },
+          grid:{ left:145,right:24,top:18,bottom:42 }, xAxis:{ type:"value",name:"Дельта, п.п." },
+          yAxis:{ type:"category",data:items.map(function (x) { return x.label; }) },
+          series:[{ type:"bar",data:items.map(function (x) { return x.delta; }),markLine:{ symbol:"none",data:[{ xAxis:0 }] } }]
+        }, { label:"Рейтинг врачей по case-mix дельте",description:"Показаны врачи с достаточной выборкой и доверительным интервалом.",
+          fallback:function (target) { target.innerHTML=items.map(function (x) { return notice(x.label,signed(x.delta)+", n="+x.n,"review"); }).join(""); } });
+        if (chart) chart.on("click",function (p) { state.selected.doctors=[items[p.dataIndex].label];renderChips();switchPage("documents"); });
+      }
+      $("month-doctor-note").innerHTML='<p class="inline-note">'+esc(section.rule || "")+"</p>";
+    }
+    function renderMonthPareto(data) {
+      var section=data.pareto || {}, items=section.items || [];
+      if (!items.length) { $("month-pareto-chart").innerHTML=unavailableBlock(section); return; }
+      var chart=MO.moChart($("month-pareto-chart"), {
+        tooltip:{ trigger:"axis" }, grid:{ left:48,right:48,top:28,bottom:95 },
+        xAxis:{ type:"category",axisLabel:{ rotate:35 },data:items.map(function (x) { return x.finding_code; }) },
+        yAxis:[{ type:"value",name:"Случаи" },{ type:"value",name:"Накоплено, %",min:0,max:100 }],
+        series:[{ type:"bar",name:"Случаи",data:items.map(function (x) { return x.cases; }) },
+          { type:"line",name:"Накопленная доля",yAxisIndex:1,data:items.map(function (x) { return x.cumulative_share_pct; }) }]
+      }, { label:"Парето замечаний месяца",description:"Столбцы число затронутых случаев, линия накопленная доля.",
+        fallback:function (target) { target.innerHTML=items.map(function (x) { return bar(x.finding_code,x.cumulative_share_pct,x.cases); }).join(""); } });
+      if (chart) chart.on("click",function (p) { navigateFinding(items[p.dataIndex].finding_code); });
+    }
+    function renderMonthFunnel(data) {
+      var funnel=data.funnel || {}, stages=[
+        ["Источник",funnel.source],["Допущено",funnel.eligible],["Оценено",funnel.evaluated],
+        ["С замечаниями",funnel.with_findings],["В работе CRM",funnel.in_crm_work],["Закрыто",funnel.closed]
+      ];
+      MO.moChart($("month-funnel-chart"), { tooltip:{ trigger:"item" },
+        series:[{ type:"funnel",left:"8%",width:"84%",label:{ formatter:"{b}: {c}" },
+          data:stages.map(function (x) { return { name:x[0],value:x[1] || 0 }; }) }] },
+      { label:"Воронка месяца",description:"Путь записей от источника до закрытия в CRM.",
+        fallback:function (target) { target.innerHTML=stages.map(function (x) { return bar(x[0],funnel.source ? 100*x[1]/funnel.source : 0,x[1]); }).join(""); } });
+      var statuses=(data.crm_progress || {}).statuses || {}, keys=Object.keys(statuses);
+      if (!keys.length) $("month-crm-chart").innerHTML=unavailableBlock(data.crm_progress);
+      else MO.moChart($("month-crm-chart"), { tooltip:{ trigger:"axis" },grid:{ left:105,right:18,top:18,bottom:40 },
+        xAxis:{ type:"value",name:"Случаи" },yAxis:{ type:"category",data:keys.map(statusLabel) },
+        series:[{ type:"bar",data:keys.map(function (key) { return statuses[key]; }) }] },
+      { label:"Прогресс CRM по статусам",description:"Количество оценённых случаев в каждом рабочем статусе.",
+        fallback:function (target) { target.innerHTML=keys.map(function (key) { return notice(statusLabel(key),statuses[key]+" случаев","good"); }).join(""); } });
+    }
+    function renderOverview(data) {
+      if (!data.available) { showError(data.reason || "Данные месяца недоступны."); return; }
+      var summary=normalizeSummary(data), k=data.kpi || {}, forecast=data.forecast || {};
+      state.data.summary=summary;
+      $("month-period-label").textContent=(data.period_label || "MTD")+" с "+data.period.date_from+" по "+data.data_through+
+        ". Дней: "+data.days_elapsed+" из "+data.days_in_month+". Europe/Minsk.";
+      $("freshness").textContent="Данные по "+data.data_through;
+      $("month-kpis").innerHTML=kpi("Записи MTD",k.source_records,"из БД МИС")+
+        kpi("Оценено",k.evaluated,score(k.coverage_pct)+" от допущенных")+
+        kpi("Итоговая оценка",score(k.avg_score),"по оценённым")+
+        kpi("Требует внимания",k.needs_attention,(k.needs_attention_pct || 0)+"% оценённых")+
+        kpi("Критические",k.critical,"P0 случаи")+
+        kpi("Прогноз объёма",forecast.projected_source,"к концу месяца");
+      $("month-forecast").innerHTML=kpi("Прогноз записей",forecast.projected_source,forecast.method)+
+        kpi("Прогноз оценённых",forecast.projected_evaluated,"при текущем темпе")+
+        kpi("Прогноз оценки",score(forecast.projected_avg_score),"без изменения среднего");
+      var comparisons=data.comparison || {};
+      $("month-compare").innerHTML=Object.keys(comparisons).map(function (key) {
+        var item=comparisons[key];
+        return item.available ? notice(item.label,
+          "Записи "+signed(item.deltas.source_records,"")+"; оценка "+signed(item.deltas.avg_score),"good") :
+          notice("Сравнение недоступно",item.reason,"review");
+      }).join("")+"<p class=\"inline-note\">"+esc((forecast.assumptions || []).join(". "))+"</p>";
+      var reconciliation=data.reconciliation || {}, banner=$("month-reconciliation");
+      banner.hidden=reconciliation.status === "ok";
+      banner.className="banner critical";
+      banner.textContent="Расхождение дневных и MTD итогов: источник "+reconciliation.source_delta+
+        ", оценено "+reconciliation.evaluated_delta+". Данные не замаскированы.";
+      renderMonthTrend(data);renderMonthHeatmap(data);renderMonthDoctors(data);renderMonthPareto(data);renderMonthFunnel(data);
+      $("month-reg55").innerHTML=(data.reg55 || {}).available ?
+        kpi("Соответствие №55",score(data.reg55.value),"проверенная метрика") : unavailableBlock(data.reg55);
     }
     async function loadOverview() {
       var suffix = "?" + query().toString();
       var responses = await Promise.all([
-        request("/overview" + suffix, "__root__"),
-        request("/facets" + suffix, "/cases" + suffix),
-        request("/trends" + suffix, "/dynamics" + suffix)
+        request("/month-report" + suffix, "__root__"),
+        request("/facets" + suffix, "/cases" + suffix)
       ]);
-      var response = responses[0], facetsResponse = responses[1], trendsResponse = responses[2];
+      var response = responses[0], facetsResponse = responses[1];
       if (response.status === 401 || response.status === 403) { setAuth(true); return; }
-      if (!response.ok) throw new Error("Не удалось загрузить обзор.");
+      if (!response.ok) throw new Error("Не удалось загрузить отчёт месяца.");
       var raw = await response.json();
       if (facetsResponse.ok) {
         var facetPayload = await facetsResponse.json();
         raw.facets = facetPayload.facets || facetPayload;
       }
-      if (trendsResponse.ok) raw.trends = await trendsResponse.json();
-      renderOverview(normalizeSummary(raw));
+      renderOverview(raw);
+      buildFacets(normalizeSummary(raw), raw.facets);
     }
     function rowRecord(row) {
       var id = row.case_id || row.visit_id || row.id || "";

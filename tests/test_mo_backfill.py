@@ -2,7 +2,12 @@ import sqlite3
 from datetime import date
 
 from clinical_knowledge.mo_daily import initialize_warehouse
-from scripts.backfill_mo_warehouse import _months, propagate_visit_scores, prune_after
+from scripts.backfill_mo_warehouse import (
+    _months,
+    propagate_visit_scores,
+    prune_after,
+    refresh_daily_case_aggregates,
+)
 
 
 def test_month_range_is_inclusive() -> None:
@@ -71,3 +76,31 @@ def test_propagate_visit_scores_only_when_visit_score_is_unambiguous(tmp_path) -
         assert db.execute(
             "SELECT overall_pct FROM fact_mo_case WHERE mis_id = '6'"
         ).fetchone() == (None,)
+
+
+def test_refresh_daily_case_aggregates_uses_only_eligible_documents(tmp_path) -> None:
+    warehouse = tmp_path / "warehouse.sqlite"
+    initialize_warehouse(warehouse)
+    with sqlite3.connect(warehouse) as db:
+        db.executemany(
+            """INSERT INTO fact_mo_case
+               (mis_id, visit_id, visit_date, document_kind, overall_pct, status,
+                doctor_key, specialty, filial, content_hash, updated_at)
+               VALUES (?, ?, '2026-07-01', ?, ?, 'good', '', '', '', ?, 'now')""",
+            [
+                ("1", "1", "consultation", 80.0, "h1"),
+                ("2", "2", "medical_exam", 60.0, "h2"),
+                ("3", "3", "diagnostic", 100.0, "h3"),
+            ],
+        )
+        db.execute(
+            """INSERT INTO fact_mo_daily
+               (visit_date,source_rows,scored_rows,avg_score,revision,quality_status,updated_at)
+               VALUES ('2026-07-01',3,3,80,1,'passed','now')"""
+        )
+    assert refresh_daily_case_aggregates(warehouse) == 1
+    with sqlite3.connect(warehouse) as db:
+        assert db.execute(
+            """SELECT eligible_rows,scored_rows,avg_score,needs_attention,coverage_pct
+               FROM fact_mo_daily WHERE visit_date='2026-07-01'"""
+        ).fetchone() == (2, 2, 70.0, 1, 100.0)

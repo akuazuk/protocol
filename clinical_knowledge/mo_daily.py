@@ -1140,6 +1140,11 @@ def upsert_warehouse(
     now = utc_now()
     written: Counter[str] = Counter()
     doctor_daily: dict[str, dict[str, Any]] = {}
+    eligible_rows_count = 0
+    eligible_scores: list[float] = []
+    eligible_case_ids: set[str] = set()
+    eligible_critical_ids: set[str] = set()
+    eligible_axis_scores: dict[str, list[float]] = defaultdict(list)
     with sqlite3.connect(path) as db:
         seen_ids: list[str] = []
         for raw in raw_rows:
@@ -1159,6 +1164,21 @@ def upsert_warehouse(
             )
             diagnosis_code = diagnosis_codes[0] if diagnosis_codes else ""
             diagnosis_chapter = icd_chapter(diagnosis_code)
+            eligible_document = str(raw.get("document_kind") or "") in SCORED_DOCUMENT_KINDS
+            if eligible_document:
+                eligible_rows_count += 1
+                if score is not None:
+                    eligible_scores.append(score)
+                selected_case_id = str(case.get("mis_id") or "")
+                if selected_case_id:
+                    eligible_case_ids.add(selected_case_id)
+                deep_case = case.get("deep") if isinstance(case.get("deep"), Mapping) else {}
+                if any(
+                    str(finding.get("severity") or "") == "P0"
+                    for finding in deep_case.get("findings") or []
+                    if isinstance(finding, Mapping)
+                ):
+                    eligible_critical_ids.add(selected_case_id or mis_id)
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             db.execute(
                 """INSERT INTO fact_mo_case
@@ -1198,13 +1218,20 @@ def upsert_warehouse(
                     (doctor_key, doctor_fio, specialty, filial),
                 )
                 written["dim_doctor"] += 1
-                bucket = doctor_daily.setdefault(
-                    doctor_key,
-                    {"specialty": specialty, "filial": filial, "cases": 0, "scores": [], "critical": 0},
-                )
-                bucket["cases"] += 1
-                if score is not None:
-                    bucket["scores"].append(score)
+                if eligible_document:
+                    bucket = doctor_daily.setdefault(
+                        doctor_key,
+                        {
+                            "specialty": specialty,
+                            "filial": filial,
+                            "cases": 0,
+                            "scores": [],
+                            "critical": 0,
+                        },
+                    )
+                    bucket["cases"] += 1
+                    if score is not None:
+                        bucket["scores"].append(score)
             if specialty:
                 db.execute("INSERT OR IGNORE INTO dim_specialty VALUES (?)", (specialty,))
                 written["dim_specialty"] += 1
@@ -1267,6 +1294,8 @@ def upsert_warehouse(
                     (mis_id, str(axis), axis_score),
                 )
                 written["fact_mo_score_axis"] += 1
+                if mis_id in eligible_case_ids:
+                    eligible_axis_scores[str(axis)].append(axis_score)
             for finding in deep.get("findings") or []:
                 if not isinstance(finding, Mapping):
                     continue
@@ -1316,7 +1345,22 @@ def upsert_warehouse(
 
         summary = report.get("summary") or {}
         axes = report.get("axes") or {}
-        completeness = report.get("completeness") or {}
+        eligible_rows = eligible_rows_count
+        scored_rows = len(eligible_scores)
+        avg_score = (
+            round(statistics.fmean(eligible_scores), 1) if eligible_scores else None
+        )
+        needs_attention = sum(1 for score in eligible_scores if score < 70)
+        daily_axes = {
+            axis: round(statistics.fmean(values), 1)
+            for axis, values in eligible_axis_scores.items()
+            if values
+        }
+        critical = len(eligible_critical_ids)
+        def resolved_axis(key: str) -> float | None:
+            value = daily_axes.get(key)
+            return _safe_number(value if value is not None else axes.get(key))
+
         db.execute(
             """INSERT INTO fact_mo_daily (
                  visit_date, source_rows, scored_rows, avg_score, revision, quality_status, updated_at,
@@ -1335,20 +1379,20 @@ def upsert_warehouse(
             (
                 day_key,
                 summary.get("source_rows"),
-                summary.get("scored"),
-                summary.get("avg_score"),
+                scored_rows,
+                avg_score,
                 report.get("revision"),
                 day_status(report),
                 now,
-                summary.get("eligible_rows"),
+                eligible_rows,
                 1 if report.get("partial") else 0,
-                completeness.get("coverage_pct"),
-                _safe_number(axes.get("documentation")),
-                _safe_number(axes.get("clinical_concordance")),
-                _safe_number(axes.get("safety")),
-                _safe_number(axes.get("regulatory")),
-                summary.get("needs_attention"),
-                summary.get("critical"),
+                round(100 * scored_rows / eligible_rows, 1) if eligible_rows else None,
+                resolved_axis("documentation"),
+                resolved_axis("clinical_concordance"),
+                resolved_axis("safety"),
+                resolved_axis("regulatory"),
+                needs_attention,
+                critical,
             ),
         )
         written["fact_mo_daily"] += 1

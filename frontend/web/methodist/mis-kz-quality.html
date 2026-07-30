@@ -85,13 +85,18 @@
       <main id="main" class="content" tabindex="-1">
         <div id="global-error" class="banner" role="alert" hidden></div>
         <section class="page" id="page-overview" data-page="overview" aria-labelledby="title-overview">
-          <div class="page-head"><div><h1 id="title-overview">Обзор МО</h1><p>Массовый анализ медицинских записей, полученных напрямую из БД МИС.</p></div><span class="freshness" id="freshness">Проверяем свежесть</span></div>
-          <div class="kpis" id="overview-kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+          <div class="page-head"><div><h1 id="title-overview">Месяц</h1><p id="month-period-label">С начала месяца по последний доступный день, часовой пояс Europe/Minsk.</p></div><span class="freshness" id="freshness">Проверяем свежесть</span></div>
+          <div id="month-reconciliation" class="banner" hidden></div>
+          <div class="kpis" id="month-kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
           <div class="grid">
-            <article class="card span-7"><h2>Объём и качество</h2><p class="card-sub">Динамика выбранного периода и сравнение с предыдущим</p><div class="bars" id="trend-chart"></div></article>
-            <article class="card span-5"><h2>Что требует внимания сегодня</h2><p class="card-sub">Приоритетные причины для ручного разбора</p><div id="attention-list"></div></article>
-            <article class="card span-6"><h2>Причины замечаний</h2><p class="card-sub">Наиболее частые причины по всей выборке</p><div class="bars" id="reason-chart"></div></article>
-            <article class="card span-6"><h2>Диагнозы и МКБ</h2><p class="card-sub">Группы с наибольшей долей записей, требующих внимания</p><div class="bars" id="diagnosis-chart"></div></article>
+            <article class="card span-12"><h2>Прогноз и сравнение</h2><p class="card-sub">Линейный темп до конца месяца, равный период прошлого месяца и тот же период прошлого года</p><div class="month-compare" id="month-forecast"></div><div id="month-compare"></div></article>
+            <article class="card span-12"><h2>Четыре индекса и объём</h2><p class="card-sub">Динамика по дням, масштабирование и маркеры аномального объёма</p><div id="month-trend-chart"></div></article>
+            <article class="card span-7"><h2>Специальность × глава МКБ</h2><p class="card-sub">Цвет - средняя оценка, значение - объём; клик фильтрует случаи</p><div id="month-heatmap-chart"></div></article>
+            <article class="card span-5"><h2>Врачи с поправкой на состав случаев</h2><p class="card-sub">Дельта к специальности, 95% ДИ и порог выборки</p><div id="month-doctor-chart"></div><div id="month-doctor-note"></div></article>
+            <article class="card span-7"><h2>Парето замечаний</h2><p class="card-sub">Число случаев и накопленная доля; клик открывает связанные случаи</p><div id="month-pareto-chart"></div></article>
+            <article class="card span-5"><h2>Воронка месяца</h2><p class="card-sub">От источника до закрытия работы методиста</p><div id="month-funnel-chart"></div></article>
+            <article class="card span-6"><h2>Прогресс CRM</h2><p class="card-sub">Рабочие статусы случаев с рассчитанной оценкой</p><div id="month-crm-chart"></div></article>
+            <article class="card span-6"><h2>Соответствие постановлению №55</h2><p class="card-sub">Показывается только при наличии проверенной метрики</p><div id="month-reg55"></div></article>
           </div>
         </section>
 
