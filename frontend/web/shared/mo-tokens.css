@@ -1,0 +1,88 @@
+:root {
+  color-scheme: light;
+  --font-display: Inter, "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-ui: Inter, "DM Sans", system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-6: 24px;
+  --space-8: 32px;
+  --bg: #f4f7f6;
+  --surface: #ffffff;
+  --surface-2: #f8faf9;
+  --surface-raised: #ffffff;
+  --ink: #18312c;
+  --muted: #5f716d;
+  --line: #dbe5e1;
+  --control-line: #bdccc7;
+  --accent: #11715e;
+  --accent-dark: #0a5143;
+  --accent-soft: #e4f2ed;
+  --focus: #1769aa;
+  --sev-p0: #b4233c;
+  --sev-p1: #a15c00;
+  --sev-p2: #7c5a14;
+  --good: #147a57;
+  --warn: #a15c00;
+  --bad: #b4233c;
+  --neutral: #5f716d;
+  --danger: var(--bad);
+  --warning: var(--warn);
+  --radius-sm: 8px;
+  --radius: 14px;
+  --radius-lg: 18px;
+  --shadow: 0 10px 30px rgba(20, 48, 42, .08);
+  --control-height: 44px;
+  --table-pad-block: 10px;
+  --chart-height: 280px;
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --bg: #0d1715;
+  --surface: #14221f;
+  --surface-2: #192a26;
+  --surface-raised: #1d302b;
+  --ink: #e7f2ef;
+  --muted: #a9bdb7;
+  --line: #30453f;
+  --control-line: #456159;
+  --accent: #43b89f;
+  --accent-dark: #8ad8c6;
+  --accent-soft: #203f38;
+  --focus: #77bdf2;
+  --good: #65c99e;
+  --warn: #f1bc61;
+  --bad: #f28191;
+  --neutral: #a9bdb7;
+  --shadow: 0 12px 34px rgba(0, 0, 0, .32);
+}
+
+:root[data-density="compact"] {
+  --control-height: 44px;
+  --table-pad-block: 7px;
+  --chart-height: 230px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme]) {
+    color-scheme: dark;
+    --bg: #0d1715;
+    --surface: #14221f;
+    --surface-2: #192a26;
+    --surface-raised: #1d302b;
+    --ink: #e7f2ef;
+    --muted: #a9bdb7;
+    --line: #30453f;
+    --control-line: #456159;
+    --accent: #43b89f;
+    --accent-dark: #8ad8c6;
+    --accent-soft: #203f38;
+    --focus: #77bdf2;
+    --good: #65c99e;
+    --warn: #f1bc61;
+    --bad: #f28191;
+    --neutral: #a9bdb7;
+  }
+}

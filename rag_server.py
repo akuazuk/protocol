@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r21-mo-sql-semantic-api"
+BUILD_VERSION = "2026-07-30-r22-mo-ui-foundation"
 
 
 def _app_version() -> str:
@@ -12932,6 +12932,36 @@ if has_frontend_file("index.html"):
         return FileResponse(
             path=str(p),
             media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
+
+    _MO_STATIC_ASSETS = {
+        "mo-tokens.css": ("shared/mo-tokens.css", "text/css; charset=utf-8"),
+        "mo-ui.css": ("shared/mo-ui.css", "text/css; charset=utf-8"),
+        "mo-api.js": ("shared/mo-api.js", "application/javascript; charset=utf-8"),
+        "mo-charts.js": ("shared/mo-charts.js", "application/javascript; charset=utf-8"),
+        "mo-app.js": ("shared/mo-app.js", "application/javascript; charset=utf-8"),
+        "vendor/echarts.min.js": ("shared/vendor/echarts.min.js", "application/javascript; charset=utf-8"),
+        "vendor/ECHARTS-LICENSE.txt": ("shared/vendor/ECHARTS-LICENSE.txt", "text/plain; charset=utf-8"),
+    }
+
+    @app.get("/mo-tokens.css", include_in_schema=False)
+    @app.get("/mo-ui.css", include_in_schema=False)
+    @app.get("/mo-api.js", include_in_schema=False)
+    @app.get("/mo-charts.js", include_in_schema=False)
+    @app.get("/mo-app.js", include_in_schema=False)
+    @app.get("/vendor/echarts.min.js", include_in_schema=False)
+    @app.get("/vendor/ECHARTS-LICENSE.txt", include_in_schema=False)
+    def _serve_methodist_mo_asset(request: Request) -> FileResponse:
+        """Стабильные self-hosted ресурсы МО без устаревшего кэша."""
+        key = request.url.path.lstrip("/")
+        relative_path, media_type = _MO_STATIC_ASSETS[key]
+        path = ROOT / "frontend" / "web" / relative_path
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="Ресурс МО не найден")
+        return FileResponse(
+            path=str(path),
+            media_type=media_type,
             headers={"Cache-Control": "no-cache, must-revalidate"},
         )
 

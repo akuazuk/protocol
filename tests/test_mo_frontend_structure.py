@@ -9,6 +9,12 @@ import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / "frontend" / "web" / "methodist" / "mis-kz-quality.html").read_text(encoding="utf-8")
+SHARED = ROOT / "frontend" / "web" / "shared"
+CSS = "\n".join((SHARED / name).read_text(encoding="utf-8") for name in ("mo-tokens.css", "mo-ui.css"))
+APP_JS_FILES = tuple(SHARED / name for name in ("mo-api.js", "mo-charts.js", "mo-app.js"))
+JS_FILES = APP_JS_FILES + (SHARED / "vendor" / "echarts.min.js",)
+JS = "\n".join(path.read_text(encoding="utf-8") for path in APP_JS_FILES)
+SOURCE = "\n".join((HTML, CSS, JS))
 
 
 class _VisibleText(HTMLParser):
@@ -50,33 +56,33 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "reports",
         "settings",
     ):
-        assert f'data-page="{page}"' in HTML
+        assert f'data-page="{page}"' in SOURCE
 
 
 def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     for key in ("months", "branches", "specialties", "doctors", "document_types", "statuses"):
-        assert f'data-filter="{key}"' in HTML
+        assert f'data-filter="{key}"' in SOURCE
     for api_key in ("periods", "filials", "specializations", "doctors", "document_kinds", "statuses"):
-        assert f'"{api_key}"' in HTML
-    assert "state.selected[key].join" in HTML
-    assert 'id="case-search"' in HTML
-    assert 'data-quick-period=' in HTML
+        assert f'"{api_key}"' in SOURCE
+    assert "state.selected[key].join" in SOURCE
+    assert 'id="case-search"' in SOURCE
+    assert 'data-quick-period=' in SOURCE
 
 
 def test_mo_dashboard_prefers_new_api_with_legacy_fallback() -> None:
-    assert 'var API_ROOT = "/api/methodist/mo"' in HTML
-    assert 'var LEGACY_ROOT = "/api/methodist/mis-kz-quality"' in HTML
-    assert 'request("/overview"' in HTML
-    assert 'request("/facets"' in HTML
-    assert '"/freshness?"' in HTML
+    assert 'var API_ROOT = "/api/methodist/mo"' in SOURCE
+    assert 'var LEGACY_ROOT = "/api/methodist/mis-kz-quality"' in SOURCE
+    assert 'request("/overview"' in SOURCE
+    assert 'request("/facets"' in SOURCE
+    assert '"/freshness?"' in SOURCE
 
 
 def test_mo_dashboard_accessibility_and_responsive_invariants() -> None:
     assert 'class="skip-link"' in HTML
     assert 'aria-live="polite"' in HTML
     assert 'role="dialog"' in HTML
-    assert "@media (max-width: 720px)" in HTML
-    assert "@media (prefers-reduced-motion: reduce)" in HTML
+    assert "@media (max-width: 720px)" in CSS
+    assert "@media (prefers-reduced-motion: reduce)" in CSS
 
 
 def test_user_facing_terminology_has_no_provider_or_internal_jargon() -> None:
@@ -91,26 +97,27 @@ def test_mo_dashboard_javascript_has_valid_syntax() -> None:
     node = shutil.which("node")
     if not node:
         pytest.skip("node is not installed")
-    scripts = re.findall(r"<script[^>]*>(.*?)</script>", HTML, flags=re.DOTALL)
-    result = subprocess.run(
-        [node, "--check", "-"],
-        input="\n".join(scripts),
-        text=True,
-        capture_output=True,
-        check=False,
-    )
-    assert result.returncode == 0, result.stderr
+    inline_scripts = re.findall(r"<script[^>]*>(.*?)</script>", HTML, flags=re.DOTALL)
+    assert not any(script.strip() for script in inline_scripts)
+    for path in JS_FILES:
+        result = subprocess.run(
+            [node, "--check", str(path)],
+            text=True,
+            capture_output=True,
+            check=False,
+        )
+        assert result.returncode == 0, f"{path.name}: {result.stderr}"
 
 
 def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
-    assert '$("next-page").addEventListener("click"' in HTML
-    assert '$("previous-page").addEventListener("click"' in HTML
-    assert '$("columns-button").addEventListener("click"' in HTML
+    assert '$("next-page").addEventListener("click"' in JS
+    assert '$("previous-page").addEventListener("click"' in JS
+    assert '$("columns-button").addEventListener("click"' in JS
     assert 'id="bulk-status-value"' in HTML
-    assert 'prompt("Статус:' not in HTML
-    assert 'id="drawer-assignee"' in HTML
-    assert 'id="drawer-due"' in HTML
-    assert 'data-finding-code="' in HTML
-    assert "История решений" in HTML
-    assert '$("sort-by").addEventListener("change"' in HTML
-    assert '$("sort-dir").addEventListener("change"' in HTML
+    assert 'prompt("Статус:' not in SOURCE
+    assert 'id="drawer-assignee"' in JS
+    assert 'id="drawer-due"' in JS
+    assert 'data-finding-code="' in JS
+    assert "История решений" in JS
+    assert '$("sort-by").addEventListener("change"' in JS
+    assert '$("sort-dir").addEventListener("change"' in JS

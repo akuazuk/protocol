@@ -1,0 +1,56 @@
+# МО Аналитика: дизайн-система и UI-контракт
+
+Источник интерфейса - `frontend/web/methodist/mis-kz-quality.html`. HTML содержит
+только семантическую разметку; стили и логика живут в `frontend/web/shared/`.
+
+## Модули
+
+- `mo-tokens.css` - цвета, типографика, размеры, темы и плотность;
+- `mo-ui.css` - layout и компоненты;
+- `mo-api.js` - запросы, параметры периода и legacy fallback;
+- `mo-charts.js` - обёртка self-hosted ECharts;
+- `mo-app.js` - состояние, навигация и взаимодействия.
+
+Скрипты загружаются в указанном порядке и используют единый namespace
+`window.MO`. Внешние CDN не допускаются.
+
+## Компоненты
+
+- sidebar и sticky context bar;
+- 12-колоночная адаптивная сетка;
+- глобальные фильтры и активные чипы;
+- KPI, card, таблица, freshness и banner;
+- skeleton и видимый toast;
+- case drawer с focus trap;
+- командная палитра `Ctrl/Cmd+K`;
+- график `MO.moChart()` с ARIA, reduced-motion и PNG export.
+
+## Темы и плотность
+
+Тема хранится в `protocol_mo_theme`, плотность - в
+`protocol_mo_density`. Без сохранённого выбора тема следует системной настройке.
+Компактная плотность уменьшает только внутренние отступы: интерактивная зона
+основных контролов остаётся не меньше 44 px.
+
+## Ручной визуальный чеклист
+
+1. Ширина 1440, 1024, 720 и 390 px: контент не перекрывается.
+2. Светлая и тёмная темы: текст, фокус и severity различимы.
+3. `Tab` проходит sidebar, фильтры, таблицу и drawer без ловушек.
+4. `Ctrl/Cmd+K`, стрелки, `Enter`, `Escape` работают без мыши.
+5. Drawer возвращает фокус на элемент, который его открыл.
+6. При `prefers-reduced-motion` skeleton и графики не анимируются.
+7. При недоступном ECharts остаётся читаемый fallback.
+
+## Автопроверка
+
+```bash
+python3 -m pytest \
+  tests/test_mo_frontend_structure.py \
+  tests/test_mo_ui_phase2.py \
+  tests/test_workspace_routes.py -q
+
+node --check frontend/web/shared/mo-api.js
+node --check frontend/web/shared/mo-charts.js
+node --check frontend/web/shared/mo-app.js
+```
