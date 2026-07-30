@@ -18,6 +18,7 @@ from clinical_knowledge.mo_daily import (
     MINSK,
     PII_FIELDS,
     add_document_taxonomy,
+    assess_completeness,
     atomic_write_text,
     atomic_write_json,
     build_daily_report,
@@ -38,6 +39,9 @@ from clinical_knowledge.mo_daily import (
 )
 
 CommandRunner = Callable[[Sequence[str]], subprocess.CompletedProcess[str]]
+
+# Сколько раз catch-up пытается доделать `partial` день, прежде чем оставить его как есть.
+PARTIAL_MAX_ATTEMPTS = 4
 
 
 def read_sql_epam_health(path: Path | None) -> dict[str, Any]:
@@ -167,11 +171,33 @@ class PipelineState:
     def successful_dates(self) -> list[str]:
         return sorted(key for key, value in self.data["dates"].items() if value.get("status") == "success")
 
+    def rework_dates(self, *, partial_max_attempts: int = PARTIAL_MAX_ATTEMPTS) -> list[str]:
+        """Дни `partial`, которые ещё имеет смысл доделать: их доберут retry и hourly."""
+        return sorted(
+            key
+            for key, value in self.data["dates"].items()
+            if value.get("status") == "partial" and int(value.get("attempts") or 0) < partial_max_attempts
+        )
+
+    def settled_dates(self, *, partial_max_attempts: int = PARTIAL_MAX_ATTEMPTS) -> list[str]:
+        """Дни, которые не надо перезабирать: успешные плюс partial с исчерпанными попытками.
+
+        Так catch-up доделывает недооценённый день, но не крутит его вечно.
+        """
+        settled = []
+        for key, value in self.data["dates"].items():
+            status = value.get("status")
+            if status == "success":
+                settled.append(key)
+            elif status == "partial" and int(value.get("attempts") or 0) >= partial_max_attempts:
+                settled.append(key)
+        return sorted(settled)
+
     def mark_stale_runs(self, *, max_age_hours: float = 2.0) -> list[str]:
         stale: list[str] = []
         now = datetime.now().astimezone()
         for day, record in self.data["dates"].items():
-            if record.get("status") in {"success", "failed"}:
+            if record.get("status") in {"success", "failed", "partial"}:
                 continue
             raw = str(record.get("heartbeat") or record.get("started_at") or "")
             try:
@@ -402,6 +428,11 @@ class MoDailyPipeline:
                 "scored": len(month_scores),
                 "avg_score": round(sum(month_scores) / len(month_scores), 1) if month_scores else None,
             }
+            completeness = assess_completeness(
+                raw_rows,
+                cases,
+                llm_queue_pending=self._llm_queue_pending(secure_dir, day),
+            )
             report, public = build_daily_report(
                 raw_rows,
                 cases,
@@ -411,31 +442,96 @@ class MoDailyPipeline:
                 quality=quality_payload,
                 month_to_date=mtd,
                 comparisons=self._comparisons(day),
+                completeness=completeness,
             )
             write_daily_report(report, public, day=day, root=self.paths.data_root)
             upsert_warehouse(self.paths.warehouse, raw_rows, cases, report)
 
             state.stage(day, "publishing")
             self._public_smoke(public)
-            state.success(
+            status = "partial" if completeness["partial"] else "success"
+            state.stage(
                 day,
+                status,
+                finished_at=utc_now(),
+                error=None,
                 rows=len(frame),
                 scored=len(cases),
                 revision=revision,
                 partition=str(partition),
                 meta=str(meta_path),
+                completeness=completeness,
             )
-            self.notify(
-                f"МО {day.isoformat()}: готово, строк {len(frame)}, оценено {len(cases)}, "
-                f"предупреждений качества {len(quality.warnings)}, revision {revision}"
-            )
-            return {"date": day.isoformat(), "status": "success", "rows": len(frame), "scored": len(cases), "revision": revision}
+            if status == "partial":
+                self.notify(
+                    f"МО {day.isoformat()}: день доделывается, покрытие оценки "
+                    f"{completeness['coverage_pct']}% ({', '.join(completeness['reasons'])}), "
+                    f"строк {len(frame)}, revision {revision}"
+                )
+            else:
+                self.notify(
+                    f"МО {day.isoformat()}: готово, строк {len(frame)}, оценено {len(cases)}, "
+                    f"предупреждений качества {len(quality.warnings)}, revision {revision}"
+                )
+            return {
+                "date": day.isoformat(),
+                "status": status,
+                "rows": len(frame),
+                "scored": len(cases),
+                "revision": revision,
+                "coverage_pct": completeness["coverage_pct"],
+            }
         except BaseException as exc:
             state.fail(day, exc)
             self.notify(f"МО {day.isoformat()}: ошибка этапа {state.data['dates'][day.isoformat()].get('stage')}: {type(exc).__name__}")
             raise
         finally:
             shutil.rmtree(staging, ignore_errors=True)
+
+    def select_days(
+        self,
+        *,
+        date_value: str = "yesterday",
+        catch_up: bool = False,
+        reconcile_days: int = 0,
+        catch_up_limit: int = 31,
+        first_date: date | None = None,
+        previous_week: bool = False,
+        this_week: bool = False,
+        state: PipelineState | None = None,
+        now: datetime | None = None,
+    ) -> list[date]:
+        yesterday = minsk_today(now) - timedelta(days=1)
+        days: list[date] = []
+        if previous_week:
+            days.extend(previous_week_dates(now=now))
+        if this_week:
+            days.extend(this_week_dates(now=now))
+        if catch_up:
+            days.extend(
+                catch_up_dates(
+                    successful_dates=state.settled_dates() if state else (),
+                    yesterday=yesterday,
+                    first_date=first_date,
+                    limit=catch_up_limit,
+                )
+            )
+            # Недоделанные дни лежат до последнего успешного, поэтому окно catch-up их не видит.
+            if state:
+                days.extend(
+                    day
+                    for raw in state.rework_dates()
+                    if (day := date.fromisoformat(raw)) <= yesterday
+                )
+            if reconcile_days:
+                reconcile = [yesterday - timedelta(days=offset) for offset in reversed(range(max(1, reconcile_days)))]
+                days.extend(reconcile)
+        elif reconcile_days:
+            count = max(1, reconcile_days)
+            days.extend(yesterday - timedelta(days=offset) for offset in reversed(range(count)))
+        elif not previous_week and not this_week:
+            days.append(resolve_run_date(date_value, now=now))
+        return sorted(set(days))
 
     def run(
         self,
@@ -450,33 +546,40 @@ class MoDailyPipeline:
         force: bool = False,
         now: datetime | None = None,
     ) -> list[dict[str, Any]]:
-        yesterday = minsk_today(now) - timedelta(days=1)
         state = PipelineState(self.paths.state) if not self.dry_run else None
-        days: list[date] = []
-        if previous_week:
-            days.extend(previous_week_dates(now=now))
-        if this_week:
-            days.extend(this_week_dates(now=now))
-        if catch_up:
-            days.extend(
-                catch_up_dates(
-                    successful_dates=state.successful_dates if state else (),
-                    yesterday=yesterday,
-                    first_date=first_date,
-                    limit=catch_up_limit,
-                )
-            )
-            if reconcile_days:
-                reconcile = [yesterday - timedelta(days=offset) for offset in reversed(range(max(1, reconcile_days)))]
-                days.extend(reconcile)
-        elif reconcile_days:
-            count = max(1, reconcile_days)
-            days.extend(yesterday - timedelta(days=offset) for offset in reversed(range(count)))
-        elif not previous_week and not this_week:
-            days.append(resolve_run_date(date_value, now=now))
-        days = sorted(set(days))
+        days = self.select_days(
+            date_value=date_value,
+            catch_up=catch_up,
+            reconcile_days=reconcile_days,
+            catch_up_limit=catch_up_limit,
+            first_date=first_date,
+            previous_week=previous_week,
+            this_week=this_week,
+            state=state,
+            now=now,
+        )
         with exclusive_lock(self.paths.lock) if not self.dry_run else _null_context():
             return [self.run_day(day, force=force or previous_week or this_week) for day in days]
+
+    @staticmethod
+    def _llm_queue_pending(secure_dir: Path, day: date) -> int:
+        path = secure_dir / f"kz_l1_{day.isoformat()}_llm_queue.json"
+        if not path.is_file():
+            return 0
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            return 0
+        if isinstance(payload, list):
+            return len(payload)
+        if isinstance(payload, Mapping):
+            for key in ("pending", "queue", "items", "cases"):
+                value = payload.get(key)
+                if isinstance(value, list):
+                    return len(value)
+                if isinstance(value, int):
+                    return value
+        return 0
 
     def _same_weekday_counts(self, day: date) -> list[int]:
         counts = []

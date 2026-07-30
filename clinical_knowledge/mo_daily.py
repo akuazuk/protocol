@@ -48,6 +48,18 @@ PII_FIELDS = frozenset(
     }
 )
 
+# Обвал объёма: ночной экспорт «вчера» иногда отдаёт десятки строк вместо сотен,
+# и такой день нельзя пускать в raw/ и в оценку. Порог сравнивается с медианой
+# того же дня недели; для праздников и разовых перезаборов допустим override
+# MO_VOLUME_COLLAPSE_RATIO=0 (гейт выключается).
+VOLUME_COLLAPSE_RATIO = 0.35
+VOLUME_COLLAPSE_MIN_SAMPLES = 3
+# Пустой join врача означает, что mis_data не доехала: оценивать день бессмысленно.
+DOCTOR_JOIN_BLOCK_PCT = 50.0
+DOCTOR_JOIN_MIN_ROWS = 20
+# Доля допущенных к оценке записей, ниже которой день считается недоделанным.
+SCORING_COVERAGE_TARGET_PCT = 99.0
+
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
@@ -232,6 +244,16 @@ class QualityResult:
         }
 
 
+def _env_float(name: str, default: float) -> float:
+    raw = os.environ.get(name, "").strip()
+    if not raw:
+        return default
+    try:
+        return float(raw)
+    except ValueError:
+        return default
+
+
 def _filled_pct(frame: Any, column: str) -> float:
     if column not in frame.columns or len(frame) == 0:
         return 100.0 if len(frame) == 0 else 0.0
@@ -301,17 +323,43 @@ def validate_export(
     fill_columns = ("doctor_fio", "doctor_specialization", "filial", "patient_age_years", "mkb_code_main")
     for column in fill_columns:
         metrics[f"{column}_filled_pct"] = _filled_pct(frame, column)
-    if metrics["doctor_fio_filled_pct"] < 98:
+    doctor_filled = metrics["doctor_fio_filled_pct"]
+    if doctor_filled < 98:
         result.warnings.append(
-            QualityIssue("doctor_missing", "warning", "заполненность врача ниже порога", metrics["doctor_fio_filled_pct"], 98)
+            QualityIssue("doctor_missing", "warning", "заполненность врача ниже порога", doctor_filled, 98)
+        )
+    if len(frame) >= DOCTOR_JOIN_MIN_ROWS and doctor_filled < DOCTOR_JOIN_BLOCK_PCT:
+        result.blocking.append(
+            QualityIssue(
+                "doctor_join_broken",
+                "blocking",
+                "join с mis_data не дал врача у большинства строк",
+                doctor_filled,
+                DOCTOR_JOIN_BLOCK_PCT,
+            )
         )
 
     if historical_same_weekday_counts and len(frame) > 0:
         baseline = statistics.median(historical_same_weekday_counts)
         metrics["same_weekday_median_rows"] = baseline
+        metrics["same_weekday_samples"] = len(historical_same_weekday_counts)
         delta = abs(len(frame) - baseline) / baseline if baseline else 0.0
         metrics["volume_delta_pct"] = round(delta * 100, 2)
-        if baseline and delta > 0.5:
+        ratio = len(frame) / baseline if baseline else 1.0
+        metrics["volume_ratio_pct"] = round(ratio * 100, 2)
+        collapse_ratio = _env_float("MO_VOLUME_COLLAPSE_RATIO", VOLUME_COLLAPSE_RATIO)
+        enough_history = len(historical_same_weekday_counts) >= VOLUME_COLLAPSE_MIN_SAMPLES
+        if baseline and collapse_ratio > 0 and enough_history and ratio < collapse_ratio:
+            result.blocking.append(
+                QualityIssue(
+                    "volume_collapse",
+                    "blocking",
+                    "объём резко ниже медианы того же дня недели: похоже на неполный экспорт",
+                    metrics["volume_ratio_pct"],
+                    round(collapse_ratio * 100, 2),
+                )
+            )
+        elif baseline and delta > 0.5:
             result.warnings.append(
                 QualityIssue("volume_anomaly", "warning", "объём отличается от медианы более чем на 50%", metrics["volume_delta_pct"], 50)
             )
@@ -456,6 +504,39 @@ def _aggregate_group(rows: Sequence[Mapping[str, Any]], key: str, *, suppress_be
         )
     return output
 
+def assess_completeness(
+    raw_rows: Sequence[Mapping[str, Any]],
+    scored_cases: Sequence[Mapping[str, Any]],
+    *,
+    llm_queue_pending: int = 0,
+) -> dict[str, Any]:
+    """День `partial`, если оценка не покрыла все допущенные к оценке записи.
+
+    Такой день не считается успешным: retry и hourly обязаны его доделать.
+    """
+    eligible = [row for row in raw_rows if row.get("document_kind") in SCORED_DOCUMENT_KINDS]
+    failures = [row for row in scored_cases if row.get("error")]
+    scored_ok = len(scored_cases) - len(failures)
+    coverage = round(100.0 * scored_ok / len(eligible), 2) if eligible else 100.0
+    reasons: list[str] = []
+    if eligible and coverage < SCORING_COVERAGE_TARGET_PCT:
+        reasons.append("scoring_coverage")
+    if failures:
+        reasons.append("scoring_errors")
+    if llm_queue_pending > 0:
+        reasons.append("llm_queue_pending")
+    return {
+        "eligible_rows": len(eligible),
+        "scored_ok": scored_ok,
+        "scoring_errors": len(failures),
+        "llm_queue_pending": int(llm_queue_pending),
+        "coverage_pct": coverage,
+        "target_coverage_pct": SCORING_COVERAGE_TARGET_PCT,
+        "partial": bool(reasons),
+        "reasons": reasons,
+    }
+
+
 def build_daily_report(
     raw_rows: Sequence[Mapping[str, Any]],
     scored_cases: Sequence[Mapping[str, Any]],
@@ -466,6 +547,7 @@ def build_daily_report(
     quality: Mapping[str, Any],
     month_to_date: Mapping[str, Any] | None = None,
     comparisons: Mapping[str, Any] | None = None,
+    completeness: Mapping[str, Any] | None = None,
     suppress_below: int = 5,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
     scores = [score for row in scored_cases if (score := _safe_number(row.get("overall_pct"))) is not None]
@@ -499,6 +581,7 @@ def build_daily_report(
                     "due_date": (day + timedelta(days=1)).isoformat(),
                 }
             )
+    completeness_payload = dict(completeness or assess_completeness(raw_rows, scored_cases))
     report = {
         "schema_version": 1,
         "run_id": run_id,
@@ -507,6 +590,8 @@ def build_daily_report(
         "revision": revision,
         "generated_at": utc_now(),
         "quality": dict(quality),
+        "completeness": completeness_payload,
+        "partial": bool(completeness_payload.get("partial")),
         "summary": {
             "source_rows": len(raw_rows),
             "eligible_rows": len(eligible_rows),
@@ -548,6 +633,8 @@ def build_daily_report(
         "revision": report["revision"],
         "generated_at": report["generated_at"],
         "quality": report["quality"],
+        "completeness": report["completeness"],
+        "partial": report["partial"],
         "summary": report["summary"],
         "axes": report["axes"],
         "organizations": {
@@ -677,6 +764,23 @@ def _render_daily_report_html(report: Mapping[str, Any], day: date) -> str:
         for item in issues
     ) or "<li>Блокирующих ошибок и предупреждений нет.</li>"
     generated = report.get("generated_at") or ""
+    completeness = report.get("completeness") or {}
+    partial_reasons = {
+        "scoring_coverage": "оценены не все допущенные записи",
+        "scoring_errors": "часть записей завершилась ошибкой оценки",
+        "llm_queue_pending": "остались записи в очереди LLM",
+    }
+    banner_html = ""
+    if report.get("partial"):
+        details = ", ".join(
+            partial_reasons.get(str(code), str(code)) for code in (completeness.get("reasons") or [])
+        )
+        banner_html = (
+            '<section class="banner"><b>День доделывается</b>'
+            f"<span>Покрытие оценки {esc(completeness.get('coverage_pct'))}% из "
+            f"{esc(completeness.get('target_coverage_pct'))}% целевых. {esc(details)}. "
+            "Цифры ниже неполные, повторный прогон запланирован.</span></section>"
+        )
     return f"""<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Отчёт МО за {esc(day.strftime('%d.%m.%Y'))}</title>
@@ -693,11 +797,13 @@ h1{{font-size:30px;margin:0}}h2{{font-size:19px;margin:0 0 16px}}p{{margin:4px 0
 table{{width:100%;border-collapse:collapse}}th,td{{text-align:left;padding:9px 10px;border-bottom:1px solid var(--line)}}th{{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.03em}}
 ul{{padding-left:20px}}li{{margin:7px 0}}li.blocking{{color:#a93245}}li.warning{{color:#9a681a}}
 .wide{{margin-top:16px}}footer{{margin-top:18px;color:var(--muted);font-size:12px}}
+.banner{{background:#fff6e5;border:1px solid #f0d9a8;border-radius:14px;padding:14px 18px;margin-bottom:16px}}.banner b{{display:block;color:#8a5a12}}.banner span{{color:#7a6438}}
 @media(max-width:980px){{.grid{{grid-template-columns:repeat(3,1fr)}}.two{{grid-template-columns:1fr}}}}
 @media(max-width:600px){{main{{padding:18px}}header{{display:block}}.grid{{grid-template-columns:1fr 1fr}}.bar-row{{grid-template-columns:130px 1fr 38px}}}}
 </style></head><body><main>
 <header><div><p class="muted">Ежедневный контроль медицинских осмотров</p><h1>Отчёт МО за {esc(day.strftime('%d.%m.%Y'))}</h1></div>
 <div class="muted">Ревизия {esc(report.get('revision'))}<br>Сформирован {esc(generated)}</div></header>
+{banner_html}
 <section class="grid">{card_html}</section>
 <section class="two"><article class="panel"><h2>Оценка по направлениям</h2>{axis_html}</article>
 <article class="panel"><h2>Качество данных</h2><p>Статус: <b>{'пройден' if quality.get('passed') else 'требует проверки'}</b></p>
@@ -764,6 +870,13 @@ def initialize_warehouse(path: Path) -> None:
         )
 
 
+def day_status(report: Mapping[str, Any]) -> str:
+    """`blocked` -> данные не приняты, `partial` -> день доделывается, `passed` -> готов."""
+    if not (report.get("quality") or {}).get("passed"):
+        return "blocked"
+    return "partial" if report.get("partial") else "passed"
+
+
 def upsert_warehouse(path: Path, raw_rows: Sequence[Mapping[str, Any]], cases: Sequence[Mapping[str, Any]], report: Mapping[str, Any]) -> None:
     initialize_warehouse(path)
     case_by_id = {str(row.get("mis_id") or ""): row for row in cases}
@@ -813,7 +926,7 @@ def upsert_warehouse(path: Path, raw_rows: Sequence[Mapping[str, Any]], cases: S
                 summary.get("scored"),
                 summary.get("avg_score"),
                 report.get("revision"),
-                "passed" if (report.get("quality") or {}).get("passed") else "blocked",
+                day_status(report),
                 now,
             ),
         )

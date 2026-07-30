@@ -12,14 +12,18 @@ import pytest
 
 from clinical_knowledge.mo_daily import (
     add_document_taxonomy,
+    assess_completeness,
     atomic_write_text,
     build_daily_report,
     catch_up_dates,
+    day_status,
     initialize_warehouse,
+    install_daily_partition,
     merge_daily_partitions,
     previous_week_dates,
     resolve_run_date,
     this_week_dates,
+    upsert_warehouse,
     validate_export,
     write_daily_report,
 )
@@ -131,6 +135,78 @@ def test_validation_blocks_duplicates_and_accepts_verified_empty_day() -> None:
     result = validate_export(empty, day=date(2026, 7, 27), source_rows=0)
     assert result.passed
     assert result.metrics["parse_ok_pct"] == 100.0
+
+
+def wide_frame(rows: int, *, day: str = "2026-07-27", **overrides: object) -> pd.DataFrame:
+    base = valid_frame(day).iloc[0].to_dict()
+    records = []
+    for index in range(rows):
+        row = dict(base)
+        row.update({"id": index + 1, "visit_id": 1000 + index, "patient_id": 5000 + index})
+        row.update(overrides)
+        records.append(row)
+    return pd.DataFrame(records)
+
+
+def test_volume_collapse_blocks_incomplete_night_export(monkeypatch: pytest.MonkeyPatch) -> None:
+    thin = wide_frame(2)
+    history = [580, 601, 575, 590]
+    blocked = validate_export(thin, day=date(2026, 7, 27), source_rows=2, historical_same_weekday_counts=history)
+    assert not blocked.passed
+    assert {issue.code for issue in blocked.blocking} == {"volume_collapse"}
+    assert blocked.metrics["volume_ratio_pct"] < 1
+
+    # Осознанный перезабор праздничного дня: гейт снимается переменной окружения.
+    monkeypatch.setenv("MO_VOLUME_COLLAPSE_RATIO", "0")
+    override = validate_export(thin, day=date(2026, 7, 27), source_rows=2, historical_same_weekday_counts=history)
+    assert override.passed
+    assert {issue.code for issue in override.warnings} == {"volume_anomaly"}
+
+
+def test_volume_gate_needs_enough_history_and_allows_normal_day() -> None:
+    thin = wide_frame(2)
+    short_history = validate_export(
+        thin, day=date(2026, 7, 27), source_rows=2, historical_same_weekday_counts=[580, 590]
+    )
+    assert short_history.passed
+
+    normal = wide_frame(560)
+    healthy = validate_export(
+        normal, day=date(2026, 7, 27), source_rows=560, historical_same_weekday_counts=[580, 601, 575, 590]
+    )
+    assert healthy.passed
+    assert not healthy.warnings
+
+
+def test_broken_doctor_join_blocks_the_day() -> None:
+    frame = wide_frame(40, doctor_fio="")
+    result = validate_export(frame, day=date(2026, 7, 27), source_rows=40)
+    assert not result.passed
+    assert {issue.code for issue in result.blocking} == {"doctor_join_broken"}
+
+    # Маленький день с редкими пропусками остаётся предупреждением, а не блокировкой.
+    small = wide_frame(10, doctor_fio="")
+    warned = validate_export(small, day=date(2026, 7, 27), source_rows=10)
+    assert warned.passed
+    assert {issue.code for issue in warned.warnings} == {"doctor_missing"}
+
+
+def test_blocked_day_goes_to_quarantine_not_raw(tmp_path: Path) -> None:
+    frame = wide_frame(2)
+    quality = validate_export(
+        frame, day=date(2026, 7, 27), source_rows=2, historical_same_weekday_counts=[580, 601, 575, 590]
+    )
+    partition, meta_path = install_daily_partition(
+        frame,
+        day=date(2026, 7, 27),
+        root=tmp_path,
+        quality=quality,
+        run_id="run-1",
+        source_meta={"rows": 2},
+    )
+    assert "quarantine" in partition.parts
+    assert not (tmp_path / "raw" / "2026" / "07" / "mo_2026-07-27.parquet").exists()
+    assert json.loads(meta_path.read_text())["quality"]["blocking"][0]["code"] == "volume_collapse"
 
 
 def test_merge_is_idempotent_and_late_row_wins(tmp_path: Path) -> None:
@@ -352,6 +428,130 @@ def test_daily_html_report_has_kpi_axes_and_action_queue(tmp_path: Path) -> None
     assert "Оценка по направлениям" in report_html
     assert "Очередь разбора" in report_html
     assert "font-family" not in report_html or "sans-serif" in report_html
+
+
+def test_partial_day_is_marked_in_report_html_and_warehouse(tmp_path: Path) -> None:
+    import sqlite3
+
+    raw = add_document_taxonomy(wide_frame(3)).to_dict(orient="records")
+    scored_one = [{"mis_id": 1, "visit_id": 1000, "overall_pct": 88, "status": "compliant"}]
+    completeness = assess_completeness(raw, scored_one)
+    assert completeness["partial"]
+    assert completeness["reasons"] == ["scoring_coverage"]
+    assert completeness["coverage_pct"] == pytest.approx(33.33, abs=0.01)
+
+    secure, public = build_daily_report(
+        raw,
+        scored_one,
+        day=date(2026, 7, 27),
+        run_id="test",
+        revision=1,
+        quality={"passed": True, "metrics": {"parse_ok_pct": 100}},
+        completeness=completeness,
+    )
+    assert secure["partial"] is True
+    assert public["partial"] is True
+    assert day_status(secure) == "partial"
+
+    paths = write_daily_report(secure, public, day=date(2026, 7, 27), root=tmp_path)
+    assert "День доделывается" in (paths["report_dir"] / "report.html").read_text()
+
+    warehouse = tmp_path / "warehouse.sqlite"
+    upsert_warehouse(warehouse, raw, scored_one, secure)
+    with sqlite3.connect(warehouse) as db:
+        status = db.execute("SELECT quality_status FROM fact_mo_daily WHERE visit_date = ?", ("2026-07-27",)).fetchone()
+    assert status[0] == "partial"
+
+
+def test_complete_day_is_not_partial_and_blocked_day_wins() -> None:
+    raw = add_document_taxonomy(wide_frame(2)).to_dict(orient="records")
+    cases = [
+        {"mis_id": 1, "visit_id": 1000, "overall_pct": 88},
+        {"mis_id": 2, "visit_id": 1001, "overall_pct": 91},
+    ]
+    completeness = assess_completeness(raw, cases)
+    assert not completeness["partial"]
+    assert completeness["coverage_pct"] == 100.0
+    assert day_status({"quality": {"passed": True}, "partial": False}) == "passed"
+    assert day_status({"quality": {"passed": False}, "partial": True}) == "blocked"
+
+    failed_case = assess_completeness(raw, [cases[0], {"mis_id": 2, "error": "llm timeout"}])
+    assert failed_case["partial"]
+    assert set(failed_case["reasons"]) == {"scoring_coverage", "scoring_errors"}
+
+    queued = assess_completeness(raw, cases, llm_queue_pending=4)
+    assert queued["reasons"] == ["llm_queue_pending"]
+
+
+def test_partial_day_is_retried_by_catch_up_until_attempts_run_out(tmp_path: Path) -> None:
+    state_path = tmp_path / "pipeline.json"
+    state_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "dates": {
+                    "2026-07-25": {"status": "success", "attempts": 1},
+                    "2026-07-26": {"status": "partial", "attempts": 2},
+                    "2026-07-27": {"status": "partial", "attempts": 9},
+                },
+                "runs": [],
+            }
+        )
+    )
+    state = PipelineState(state_path)
+    assert state.settled_dates() == ["2026-07-25", "2026-07-27"]
+    assert catch_up_dates(
+        successful_dates=state.settled_dates(),
+        yesterday=date(2026, 7, 27),
+        first_date=date(2026, 7, 25),
+    ) == [date(2026, 7, 26)]
+
+
+def test_catch_up_picks_partial_day_behind_a_successful_one(tmp_path: Path) -> None:
+    state_path = tmp_path / "data" / "state" / "pipeline.json"
+    state_path.parent.mkdir(parents=True)
+    state_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "dates": {
+                    "2026-07-25": {"status": "partial", "attempts": 1},
+                    "2026-07-26": {"status": "success", "attempts": 1},
+                    "2026-07-27": {"status": "success", "attempts": 1},
+                },
+                "runs": [],
+            }
+        )
+    )
+    pipeline = MoDailyPipeline(PipelinePaths(tmp_path, tmp_path / "data"), runner=lambda _c: None)
+    state = PipelineState(state_path)
+    now = datetime.fromisoformat("2026-07-28T10:00:00+03:00")
+
+    # retry / hourly: только --catch-up, но недоделанный 25-е обязан вернуться в работу.
+    assert pipeline.select_days(catch_up=True, state=state, now=now) == [date(2026, 7, 25)]
+
+    # Основной приём: вчера плюс окно сверки, без дублей дат.
+    assert pipeline.select_days(catch_up=True, reconcile_days=3, state=state, now=now) == [
+        date(2026, 7, 25),
+        date(2026, 7, 26),
+        date(2026, 7, 27),
+    ]
+
+
+def test_partial_day_survives_stale_sweep(tmp_path: Path) -> None:
+    state_path = tmp_path / "pipeline.json"
+    state_path.write_text(
+        json.dumps(
+            {
+                "schema_version": 1,
+                "dates": {"2026-07-26": {"status": "partial", "heartbeat": "2020-01-01T00:00:00+03:00"}},
+                "runs": [],
+            }
+        )
+    )
+    state = PipelineState(state_path)
+    assert state.mark_stale_runs() == []
+    assert state.data["dates"]["2026-07-26"]["status"] == "partial"
 
 
 def test_warehouse_schema_contains_star_and_crm_tables(tmp_path: Path) -> None:
