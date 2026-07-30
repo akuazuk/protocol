@@ -43,6 +43,40 @@ CommandRunner = Callable[[Sequence[str]], subprocess.CompletedProcess[str]]
 # Сколько раз catch-up пытается доделать `partial` день, прежде чем оставить его как есть.
 PARTIAL_MAX_ATTEMPTS = 4
 
+DIGEST_TITLES = {
+    "ok": "Готово",
+    "partial": "Доделывается",
+    "blocked": "Не принято",
+    "failed": "Ошибка",
+}
+
+
+def build_digest(events: Sequence[Mapping[str, Any]], *, now: datetime | None = None) -> str:
+    """Одно сообщение на прогон: сначала проблемы, потом успешные дни.
+
+    Поток «по сообщению на каждый день» превращал Telegram в шум, из которого
+    не видно, что именно требует внимания.
+    """
+    moment = (now or datetime.now(MINSK)).astimezone(MINSK)
+    by_level: dict[str, list[Mapping[str, Any]]] = {level: [] for level in DIGEST_TITLES}
+    for event in events:
+        by_level.setdefault(str(event.get("level") or "failed"), []).append(event)
+    lines = [f"МО, приём {moment:%d.%m %H:%M} Europe/Minsk"]
+    for level in ("failed", "blocked", "partial", "ok"):
+        items = by_level.get(level) or []
+        if not items:
+            continue
+        if level == "ok":
+            days = ", ".join(f"{date.fromisoformat(str(item['day'])):%d.%m}" for item in items)
+            rows = sum(int(item.get("rows") or 0) for item in items)
+            scored = sum(int(item.get("scored") or 0) for item in items)
+            lines.append(f"{DIGEST_TITLES[level]} ({len(items)}): {days}; строк {rows}, оценено {scored}")
+            continue
+        for item in items:
+            day = f"{date.fromisoformat(str(item['day'])):%d.%m}"
+            lines.append(f"{DIGEST_TITLES.get(level, level)}: {day} - {item.get('detail') or 'без деталей'}")
+    return "\n".join(lines)
+
 
 def read_sql_epam_health(path: Path | None) -> dict[str, Any]:
     """Read-only health signal from the neighbouring sync; never runs its jobs."""
@@ -302,6 +336,16 @@ class MoDailyPipeline:
         self.dry_run = dry_run
         self.notify = notify or (lambda _message: False)
         self.rules_path = rules_path or paths.project_root / "config" / "mo_document_kind_rules.json"
+        self.events: list[dict[str, Any]] = []
+        # Результаты прогона доступны даже когда run() бросает из-за сбойного дня.
+        self.last_results: list[dict[str, Any]] = []
+        self._collecting = False
+
+    def _emit(self, day: date, level: str, **fields: Any) -> None:
+        event = {"day": day.isoformat(), "level": level, **fields}
+        self.events.append(event)
+        if not self._collecting:
+            self.notify(build_digest([event]))
 
     def _rules(self) -> Mapping[str, Any]:
         if not self.rules_path.is_file():
@@ -462,17 +506,19 @@ class MoDailyPipeline:
                 meta=str(meta_path),
                 completeness=completeness,
             )
-            if status == "partial":
-                self.notify(
-                    f"МО {day.isoformat()}: день доделывается, покрытие оценки "
-                    f"{completeness['coverage_pct']}% ({', '.join(completeness['reasons'])}), "
-                    f"строк {len(frame)}, revision {revision}"
-                )
-            else:
-                self.notify(
-                    f"МО {day.isoformat()}: готово, строк {len(frame)}, оценено {len(cases)}, "
-                    f"предупреждений качества {len(quality.warnings)}, revision {revision}"
-                )
+            self._emit(
+                day,
+                "partial" if status == "partial" else "ok",
+                rows=len(frame),
+                scored=len(cases),
+                revision=revision,
+                detail=(
+                    f"покрытие оценки {completeness['coverage_pct']}% "
+                    f"({', '.join(completeness['reasons'])})"
+                    if status == "partial"
+                    else f"строк {len(frame)}, оценено {len(cases)}"
+                ),
+            )
             return {
                 "date": day.isoformat(),
                 "status": status,
@@ -482,8 +528,14 @@ class MoDailyPipeline:
                 "coverage_pct": completeness["coverage_pct"],
             }
         except BaseException as exc:
+            stage = state.data["dates"][day.isoformat()].get("stage")
             state.fail(day, exc)
-            self.notify(f"МО {day.isoformat()}: ошибка этапа {state.data['dates'][day.isoformat()].get('stage')}: {type(exc).__name__}")
+            blocked = isinstance(exc, RuntimeError) and str(exc).startswith("data-quality gate blocked")
+            self._emit(
+                day,
+                "blocked" if blocked else "failed",
+                detail=str(exc)[:200] if blocked else f"этап {stage}: {type(exc).__name__}",
+            )
             raise
         finally:
             shutil.rmtree(staging, ignore_errors=True)
@@ -558,8 +610,34 @@ class MoDailyPipeline:
             state=state,
             now=now,
         )
-        with exclusive_lock(self.paths.lock) if not self.dry_run else _null_context():
-            return [self.run_day(day, force=force or previous_week or this_week) for day in days]
+        if self.dry_run:
+            self.last_results = [self.run_day(day, force=force) for day in days]
+            return self.last_results
+
+        self.events = []
+        self.last_results = []
+        self._collecting = True
+        results: list[dict[str, Any]] = []
+        failures: list[str] = []
+        force_day = force or previous_week or this_week
+        try:
+            with exclusive_lock(self.paths.lock):
+                for day in days:
+                    try:
+                        results.append(self.run_day(day, force=force_day))
+                    except BaseException as exc:  # один плохой день не должен ронять остальные
+                        failures.append(f"{day.isoformat()}: {type(exc).__name__}")
+                        results.append({"date": day.isoformat(), "status": "failed", "error": type(exc).__name__})
+                        if isinstance(exc, KeyboardInterrupt):
+                            raise
+        finally:
+            self._collecting = False
+            self.last_results = results
+            if self.events:
+                self.notify(build_digest(self.events))
+        if failures:
+            raise RuntimeError("дни завершились ошибкой: " + "; ".join(failures))
+        return results
 
     @staticmethod
     def _llm_queue_pending(secure_dir: Path, day: date) -> int:

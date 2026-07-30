@@ -32,6 +32,7 @@ from clinical_knowledge.mo_orchestrator import (
     PipelineState,
     PipelinePaths,
     VpnController,
+    build_digest,
     read_sql_epam_health,
     run_with_retry,
 )
@@ -630,6 +631,69 @@ def test_orchestrator_runs_with_injected_exporter_and_batch(tmp_path: Path) -> N
     public = json.loads((paths.data_root / "public" / "latest.json").read_text())
     assert public["summary"]["source_rows"] == 1
     assert "Иванов" not in json.dumps(public, ensure_ascii=False)
+
+
+def test_digest_leads_with_problems_and_groups_successes() -> None:
+    text = build_digest(
+        [
+            {"day": "2026-07-25", "level": "ok", "rows": 500, "scored": 480, "detail": "строк 500"},
+            {"day": "2026-07-26", "level": "partial", "detail": "покрытие оценки 62.5% (scoring_coverage)"},
+            {"day": "2026-07-27", "level": "blocked", "detail": "data-quality gate blocked: ['volume_collapse']"},
+            {"day": "2026-07-28", "level": "ok", "rows": 610, "scored": 600, "detail": "строк 610"},
+        ],
+        now=datetime.fromisoformat("2026-07-30T06:12:00+03:00"),
+    )
+    lines = text.splitlines()
+    assert lines[0] == "МО, приём 30.07 06:12 Europe/Minsk"
+    assert lines[1].startswith("Не принято: 27.07")
+    assert lines[2].startswith("Доделывается: 26.07")
+    assert lines[3] == "Готово (2): 25.07, 28.07; строк 1110, оценено 1080"
+
+
+def test_run_sends_one_digest_and_survives_a_failing_day(tmp_path: Path) -> None:
+    sent: list[str] = []
+    pipeline = MoDailyPipeline(
+        PipelinePaths(tmp_path, tmp_path / "data"),
+        runner=lambda _c: None,
+        vpn=None,
+        notify=lambda message: sent.append(message) or True,
+    )
+    calls: list[date] = []
+
+    def fake_run_day(day: date, *, force: bool = False) -> dict:
+        calls.append(day)
+        if day == date(2026, 7, 26):
+            pipeline._emit(day, "blocked", detail="data-quality gate blocked: ['volume_collapse']")
+            raise RuntimeError("data-quality gate blocked: ['volume_collapse']")
+        pipeline._emit(day, "ok", rows=10, scored=9, detail="строк 10")
+        return {"date": day.isoformat(), "status": "success"}
+
+    pipeline.run_day = fake_run_day  # type: ignore[method-assign]
+    with pytest.raises(RuntimeError, match="2026-07-26"):
+        pipeline.run(reconcile_days=3, now=datetime.fromisoformat("2026-07-28T06:05:00+03:00"))
+
+    # Плохой день не обрывает прогон: 27-е тоже обработано.
+    assert calls == [date(2026, 7, 25), date(2026, 7, 26), date(2026, 7, 27)]
+    assert len(sent) == 1
+    assert "Не принято: 26.07" in sent[0]
+    assert "Готово (2)" in sent[0]
+
+
+def test_run_stays_silent_when_there_is_nothing_to_do(tmp_path: Path) -> None:
+    sent: list[str] = []
+    state_path = tmp_path / "data" / "state" / "pipeline.json"
+    state_path.parent.mkdir(parents=True)
+    state_path.write_text(
+        json.dumps({"schema_version": 1, "dates": {"2026-07-27": {"status": "success", "attempts": 1}}, "runs": []})
+    )
+    pipeline = MoDailyPipeline(
+        PipelinePaths(tmp_path, tmp_path / "data"),
+        runner=lambda _c: None,
+        notify=lambda message: sent.append(message) or True,
+    )
+    results = pipeline.run(catch_up=True, now=datetime.fromisoformat("2026-07-28T11:00:00+03:00"))
+    assert results == []
+    assert sent == []
 
 
 def test_launchd_templates_are_valid_plists() -> None:

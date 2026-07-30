@@ -60,17 +60,25 @@ def main(argv: list[str] | None = None) -> int:
         dry_run=args.dry_run,
         notify=notify,
     )
-    results = pipeline.run(
-        date_value=args.date,
-        catch_up=args.catch_up,
-        catch_up_limit=max(1, args.catch_up_limit),
-        first_date=args.first_date,
-        reconcile_days=max(0, args.reconcile_days),
-        previous_week=args.previous_week,
-        this_week=args.this_week,
-        force=args.force,
-    )
-    print(json.dumps(results, ensure_ascii=False, indent=2))
+    failure: RuntimeError | None = None
+    try:
+        pipeline.run(
+            date_value=args.date,
+            catch_up=args.catch_up,
+            catch_up_limit=max(1, args.catch_up_limit),
+            first_date=args.first_date,
+            reconcile_days=max(0, args.reconcile_days),
+            previous_week=args.previous_week,
+            this_week=args.this_week,
+            force=args.force,
+        )
+    except RuntimeError as exc:
+        # Часть дней могла пройти успешно: печатаем их и отдаём нулевой код только без сбоев.
+        failure = exc
+    print(json.dumps(pipeline.last_results, ensure_ascii=False, indent=2))
+    if failure is not None:
+        print(f"pipeline finished with failures: {failure}", file=sys.stderr)
+        return 1
     return 0
 
 
