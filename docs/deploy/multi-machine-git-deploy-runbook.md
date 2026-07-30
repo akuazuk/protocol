@@ -187,6 +187,19 @@ scripts/ops/render_deploy.sh restart --wait
 `status` явно предупреждает, если `autoDeploy: no` - в этом случае push в `main` деплой
 не запустит, и нужен `deploy` вручную.
 
+На аккаунте есть второй сервис из того же репозитория - `protocol-rag`
+(`srv-d8tb43ojs32c73dd0l00`), созданный Blueprint-синком из `render.yaml` 23 июня.
+Прод - это не он, а `protocol` (`srv-d78he6h5pdvs73b1kufg`, домен `protocol-bimy`).
+С 2026-07-30 `protocol-rag` приостановлен, чтобы не собираться на каждый push и не
+тратить план standard; диск сохранён. Вернуть при необходимости:
+
+```bash
+scripts/ops/render_deploy.sh resume --service-id=srv-d8tb43ojs32c73dd0l00
+```
+
+Из-за этого же расхождения боевой сервис настроен не по `render.yaml`: у него
+`buildCommand` без установки tesseract, поэтому OCR на проде недоступен.
+
 ## 6) Минимальный handoff между ПК
 
 После каждой сессии фиксируем:

@@ -23,6 +23,8 @@ Commands:
   restart             restart the service without rebuilding (use after uploading data to /var/data)
   logs                recent service logs
   services            list services visible to the API key (to find RENDER_SERVICE_ID)
+  suspend             stop the service (billing and auto-deploy stop, the disk is kept)
+  resume              start a suspended service again
   has-key             exit 0 if an API key is configured, 1 otherwise (for scripting)
 
 Options:
@@ -258,6 +260,12 @@ print(json.dumps(payload))
     else
       echo "Follow with: scripts/ops/render_deploy.sh deploys"
     fi
+    ;;
+
+  suspend|resume)
+    api POST "/services/${SERVICE_ID}/${CMD}" '{}' >/dev/null
+    echo "Requested ${CMD} for ${SERVICE_ID}"
+    api GET "/services/${SERVICE_ID}" | python3 -c "$PY_SERVICE"
     ;;
 
   restart)
