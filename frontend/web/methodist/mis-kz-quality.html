@@ -99,12 +99,14 @@
           <div class="page-head"><div><h1 id="title-yesterday">Отчёт за вчера</h1><p id="yesterday-date">Итоги последнего полного календарного дня.</p></div><span class="freshness">Ежедневный отчёт</span></div>
           <div id="partial-banner" class="banner" hidden>Данные неполные. Публикация итогового отчёта заблокирована до завершения проверки.</div>
           <div class="section-actions"><button class="button" data-action="download">Скачать отчёт</button><button class="button secondary" data-go="queue">Открыть очередь</button><button class="button secondary" id="share-yesterday">Поделиться ссылкой на срез</button></div>
-          <div class="kpis" id="yesterday-kpis"></div>
           <div class="grid">
-            <article class="card span-8"><h2>Краткие итоги</h2><p class="card-sub">Источник: БД МИС, период: вчера, знаменатель указан в каждом показателе</p><div id="yesterday-summary"></div></article>
-            <article class="card span-4"><h2>Риски</h2><p class="card-sub">Случаи, которым нужен приоритетный разбор</p><div id="yesterday-risks"></div></article>
-            <article class="card span-6"><h2>Сравнение</h2><div class="bars" id="yesterday-compare"></div></article>
-            <article class="card span-6"><h2>Качество данных</h2><div id="yesterday-quality"></div></article>
+            <article class="card span-12"><h2>Полнота данных и воронка</h2><p class="card-sub">Факт против медианы того же дня недели, лаг, ревизия и путь записей до оценки</p><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
+            <article class="card span-12"><h2>Четыре индекса</h2><p class="card-sub">Сравнение со вчерашним значением и средним того же дня недели за 8 недель</p><div class="kpis index-kpis" id="yesterday-index-cards"></div><div id="yesterday-index-chart"></div></article>
+            <article class="card span-6"><h2>Топ замечаний</h2><p class="card-sub">Число затронутых случаев и приоритет; клик открывает список случаев</p><div id="yesterday-findings-chart"></div><div id="yesterday-findings-list"></div></article>
+            <article class="card span-6"><h2>Врачи ниже ожидаемого</h2><p class="card-sub">Ожидаемое по специальности, дельта ниже -10 п.п., за день n не меньше 5</p><div id="yesterday-doctor-chart"></div><div id="yesterday-doctor-note"></div></article>
+            <article class="card span-12"><h2>P0/P1 случаи для работы</h2><p class="card-sub">Врач, филиал, диагноз и конкретная причина на одном экране</p><div class="table-wrap"><table><thead><tr><th>Приоритет</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>Действие</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
+            <article class="card span-7"><h2>Структура потока и изменения</h2><p class="card-sub">Специальности, филиалы и типы документов против предыдущего дня</p><label class="filter"><span>Разрез потока</span><select class="control" id="yesterday-flow-dimension"><option value="specialty">Специальности</option><option value="branch">Филиалы</option><option value="document_kind">Типы документов</option></select></label><div id="yesterday-flow-chart"></div><div id="yesterday-flow-note"></div></article>
+            <article class="card span-5"><h2>Качество источника</h2><p class="card-sub">Распознавание, заполненность ключевых полей и расхождение дат</p><div id="yesterday-source-quality"></div></article>
           </div>
         </section>
 

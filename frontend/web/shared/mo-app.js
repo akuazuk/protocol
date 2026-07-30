@@ -11,7 +11,7 @@
     var token = MO.api.token;
     var headers = MO.api.headers;
     var state = {
-      page: "overview", period: "month", compare: "previous", pageNo: 1, dateFrom: "", dateTo: "", search: "",
+      page: "overview", period: "month", compare: "previous", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "",
       sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
       data: {}, facets: {}, trigger: null, openCaseId: ""
@@ -65,6 +65,16 @@
     function downloadJson(data, filename) {
       downloadBlob(new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" }), filename);
     }
+    function minskDateKey(dayOffset) {
+      var parts = new Intl.DateTimeFormat("en-CA", {
+        timeZone: "Europe/Minsk", year: "numeric", month: "2-digit", day: "2-digit"
+      }).formatToParts(new Date()).reduce(function (result, part) {
+        result[part.type] = part.value; return result;
+      }, {});
+      var calendar = new Date(Date.UTC(Number(parts.year), Number(parts.month) - 1, Number(parts.day) + (dayOffset || 0)));
+      return calendar.getUTCFullYear() + "-" + String(calendar.getUTCMonth() + 1).padStart(2, "0") +
+        "-" + String(calendar.getUTCDate()).padStart(2, "0");
+    }
     async function exportCurrent(kind) {
       var filters = {};
       query().forEach(function (value, key) { filters[key] = value; });
@@ -82,25 +92,21 @@
     function query() {
       var q = new URLSearchParams();
       q.set("period", state.period); q.set("compare_period", state.compare);
-      var now = new Date();
-      function localDate(value) {
-        return value.getFullYear() + "-" + String(value.getMonth() + 1).padStart(2, "0") + "-" + String(value.getDate()).padStart(2, "0");
-      }
+      var today = minskDateKey(0);
       if (!state.selected.months.length) {
-        if (state.period === "month") q.set("month", localDate(now).slice(0, 7));
+        if (state.period === "month") q.set("month", today.slice(0, 7));
         if (state.period === "yesterday") {
-          var yesterday = new Date(now); yesterday.setDate(yesterday.getDate() - 1);
-          q.set("date_from", localDate(yesterday)); q.set("date_to", localDate(yesterday));
+          q.set("date_from", minskDateKey(-1)); q.set("date_to", minskDateKey(-1));
         }
         if (state.period === "7d") {
-          var weekStart = new Date(now); weekStart.setDate(weekStart.getDate() - 6);
-          q.set("date_from", localDate(weekStart)); q.set("date_to", localDate(now));
+          q.set("date_from", minskDateKey(-6)); q.set("date_to", today);
         }
         if (state.period === "custom" && state.dateFrom && state.dateTo) {
           q.set("date_from", state.dateFrom); q.set("date_to", state.dateTo);
         }
       }
       if (state.search) q.set("q", state.search);
+      if (state.findingCode) q.set("finding_codes", state.findingCode);
       q.set("sort_by", state.sortBy);
       q.set("sort_dir", state.sortDir);
       Object.keys(state.selected).forEach(function (key) {
@@ -223,6 +229,10 @@
             '<button type="button" data-remove="' + esc(key) + '" data-value="' + esc(value) + '" aria-label="Удалить фильтр">×</button></span>');
         });
       });
+      if (state.findingCode) {
+        html.push('<span class="chip">Замечание: ' + esc(state.findingCode) +
+          '<button type="button" data-clear-finding aria-label="Удалить фильтр замечания">×</button></span>');
+      }
       $("filter-chips").innerHTML = html.join("");
       $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -232,6 +242,11 @@
           if (filter) renderFilter(filter);
           filtersChanged();
         });
+      });
+      var clearFinding = $("filter-chips").querySelector("[data-clear-finding]");
+      if (clearFinding) clearFinding.addEventListener("click", function () {
+        state.findingCode = "";
+        filtersChanged();
       });
     }
     function syncUrl(replace) {
@@ -250,6 +265,7 @@
       state.period = q.get("period") || "month"; state.compare = q.get("compare_period") || "previous";
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
       state.search = q.get("q") || "";
+      state.findingCode = q.get("finding_codes") || "";
       state.sortBy = q.get("sort_by") || "date";
       state.sortDir = q.get("sort_dir") || "desc";
       Object.keys(state.selected).forEach(function (key) {
@@ -410,7 +426,7 @@
       container.querySelectorAll("[data-case]").forEach(function (row) {
         function open(event) {
           if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
-          if (event.target && event.target.matches('input[type="checkbox"]')) return;
+          if (event.target && event.target.closest('input[type="checkbox"], button, a')) return;
           event.preventDefault(); openCase(row.getAttribute("data-case"), row);
         }
         row.addEventListener("click", open); row.addEventListener("keydown", open);
@@ -453,7 +469,7 @@
       document.body.style.overflow = "hidden";
       $("drawer-body").innerHTML = '<div class="skeleton"></div>';
       $("drawer-close").focus();
-      var q = query(); q.set("month", q.get("month") || new Date().toISOString().slice(0,7)); q.set("visit_id", id);
+      var q = query(); q.set("month", q.get("month") || minskDateKey(0).slice(0,7)); q.set("visit_id", id);
       try {
         var response = await request("/cases/" + encodeURIComponent(id), "/case-detail?" + q.toString());
         if (!response.ok) throw new Error("Случай не найден.");
@@ -560,22 +576,229 @@
       $("case-drawer").hidden = true; $("drawer-backdrop").hidden = true; document.body.style.overflow = "";
       if (state.trigger) state.trigger.focus();
     }
+    function unavailableBlock(section, fallback) {
+      return '<div class="empty"><b>Показатель недоступен</b><div>' +
+        esc((section || {}).reason || fallback || "Данных для расчёта нет.") + "</div></div>";
+    }
+    function signed(value, suffix) {
+      if (value == null) return "нет сравнения";
+      return (Number(value) > 0 ? "+" : "") + Number(value).toFixed(1) + (suffix || " п.п.");
+    }
+    function renderYesterdayCompleteness(data) {
+      var completeness = data.data_completeness || {};
+      if (!completeness.available) {
+        $("yesterday-completeness").innerHTML = unavailableBlock(completeness);
+      } else {
+        var expected = completeness.expected_rows || {};
+        $("yesterday-completeness").innerHTML =
+          kpi("Получено", completeness.actual_rows, "строк из источника") +
+          kpi("Ожидалось", expected.available ? expected.value : "Нет базы", expected.available ? expected.samples + " сопоставимых дней" : expected.reason) +
+          notice("Лаг", completeness.lag_days + " дн. · ревизия " + (completeness.revision == null ? "не указана" : completeness.revision),
+            completeness.partial ? "День помечен как неполный" : "День завершён", completeness.partial ? "critical" : "good") +
+          (completeness.flags || []).map(function (flag) {
+            return notice(flag.level === "blocking" ? "Блокирующий флаг" : "Предупреждение",
+              flag.message || flag.code, flag.level === "blocking" ? "critical" : "review");
+          }).join("");
+      }
+      var funnel = data.funnel || {};
+      $("yesterday-funnel").innerHTML = funnel.available ?
+        kpi("Источник", funnel.source, "все типы документов") +
+        kpi("Допущено", funnel.eligible, "медосмотры и консультации") +
+        kpi("Оценено", funnel.evaluated, "оценка рассчитана") +
+        kpi("Исключено", funnel.excluded, "не входит в оценку") : unavailableBlock(funnel);
+      $("yesterday-kind-rows").innerHTML = (funnel.document_kinds || []).length ?
+        funnel.document_kinds.map(function (item) {
+          if (item.suppressed) return "<tr><td>" + esc(item.label) + '</td><td colspan="4">Скрыто: группа ' + esc(item.n_bucket) + "</td></tr>";
+          return "<tr><td>" + esc(item.label) + "</td><td>" + esc(item.source) + "</td><td>" + esc(item.eligible) +
+            "</td><td>" + esc(item.evaluated) + "</td><td>" + esc(item.excluded) + "</td></tr>";
+        }).join("") : '<tr><td colspan="5" class="empty">Разбивка по типам документов недоступна.</td></tr>';
+    }
+    function renderYesterdayIndices(data) {
+      var items = ((data.indices || {}).items || []);
+      $("yesterday-index-cards").innerHTML = items.map(function (item) {
+        return kpi(item.label, item.available ? score(item.value) : "Нет данных",
+          "к предыдущему дню: " + signed(item.delta_previous_day),
+          item.delta_weekday_mean == null ? "" : signed(item.delta_weekday_mean) + " к среднему дня недели");
+      }).join("") || unavailableBlock(data.indices);
+      var available = items.filter(function (item) { return item.available; });
+      var chart = MO.moChart($("yesterday-index-chart"), {
+        tooltip: { trigger: "axis" },
+        legend: { data: ["За день", "Предыдущий день", "Среднее дня недели"] },
+        grid: { left: 48, right: 18, top: 46, bottom: 52 },
+        xAxis: { type: "category", name: "Индекс", data: available.map(function (item) { return item.label; }) },
+        yAxis: { type: "value", name: "Оценка, %", min: 0, max: 100 },
+        series: [
+          { name: "За день", type: "bar", data: available.map(function (item) { return item.value; }) },
+          { name: "Предыдущий день", type: "bar", data: available.map(function (item) { return item.previous_day; }) },
+          { name: "Среднее дня недели", type: "line", symbolSize: 9, data: available.map(function (item) { return item.weekday_mean_8w; }) }
+        ]
+      }, {
+        label: "Сравнение четырёх индексов за вчера",
+        description: "Для каждого индекса показано значение дня, предыдущего дня и среднее того же дня недели.",
+        fallback: function (target) {
+          target.innerHTML = available.map(function (item) { return bar(item.label, item.value); }).join("");
+        }
+      });
+      if (chart) chart.on("click", function () { switchPage("documents"); });
+    }
+    function navigateFinding(code) {
+      state.findingCode = code || "";
+      state.search = "";
+      $("case-search").value = "";
+      switchPage("documents");
+    }
+    function renderYesterdayFindings(data) {
+      var items = ((data.top_findings || {}).items || []).slice(0, 12);
+      if (!items.length) {
+        $("yesterday-findings-chart").innerHTML = unavailableBlock(data.top_findings);
+        $("yesterday-findings-list").innerHTML = "";
+        return;
+      }
+      var total = items.reduce(function (sum, item) { return sum + Number(item.cases || 0); }, 0), running = 0;
+      var cumulative = items.map(function (item) { running += Number(item.cases || 0); return total ? Math.round(1000 * running / total) / 10 : 0; });
+      var chart = MO.moChart($("yesterday-findings-chart"), {
+        tooltip: { trigger: "axis" },
+        grid: { left: 48, right: 48, top: 30, bottom: 95 },
+        xAxis: { type: "category", name: "Замечание", axisLabel: { rotate: 35 }, data: items.map(function (item) { return item.finding_code; }) },
+        yAxis: [{ type: "value", name: "Случаи" }, { type: "value", name: "Накоплено, %", min: 0, max: 100 }],
+        series: [
+          { name: "Случаи", type: "bar", data: items.map(function (item) {
+            return { value: item.cases, itemStyle: { decal: { symbol: item.severity === "P0" ? "rect" : "line" } } };
+          }) },
+          { name: "Накопленная доля", type: "line", yAxisIndex: 1, data: cumulative }
+        ]
+      }, {
+        label: "Парето замечаний за вчера",
+        description: "Столбцы показывают число случаев, линия - накопленную долю.",
+        fallback: function (target) {
+          target.innerHTML = items.map(function (item) { return bar(item.finding_code, Math.min(100, item.cases), item.cases); }).join("");
+        }
+      });
+      if (chart) chart.on("click", function (params) { navigateFinding(items[params.dataIndex].finding_code); });
+      $("yesterday-findings-list").innerHTML = items.map(function (item) {
+        return '<button class="finding-link" type="button" data-yesterday-finding="' + esc(item.finding_code) +
+          '"><b>' + esc(item.severity) + "</b> " + esc(item.label) + " · " + esc(item.cases) + " случаев</button>";
+      }).join("");
+    }
+    function renderYesterdayDoctors(data) {
+      var section = data.doctor_outliers || {}, items = section.items || [];
+      if (!items.length) {
+        $("yesterday-doctor-chart").innerHTML = unavailableBlock(section);
+        $("yesterday-doctor-note").innerHTML = "";
+        return;
+      }
+      var chart = MO.moChart($("yesterday-doctor-chart"), {
+        tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, formatter: function (params) {
+          var item = items[params[0].dataIndex], ci = item.delta_ci95 || {};
+          return esc(item.label) + "<br>Дельта: " + signed(item.delta) + "<br>95% ДИ: " +
+            (ci.low == null ? "недоступен" : signed(ci.low) + " ... " + signed(ci.high)) + "<br>n = " + item.n;
+        } },
+        grid: { left: 145, right: 28, top: 20, bottom: 42 },
+        xAxis: { type: "value", name: "Дельта к ожидаемой, п.п." },
+        yAxis: { type: "category", name: "Врач", data: items.map(function (item) { return item.label; }) },
+        series: [{ name: "Дельта", type: "bar", data: items.map(function (item) { return item.delta; }),
+          markLine: { symbol: "none", data: [{ xAxis: -10, name: "Порог -10" }] } }]
+      }, {
+        label: "Врачи с оценкой ниже ожидаемой",
+        description: "Ранжирование по дельте к ожидаемой оценке своей специальности.",
+        fallback: function (target) {
+          target.innerHTML = items.map(function (item) { return notice(item.label, signed(item.delta) + ", n=" + item.n, "review"); }).join("");
+        }
+      });
+      if (chart) chart.on("click", function (params) {
+        var doctor = items[params.dataIndex].label;
+        state.findingCode = "";
+        state.selected.doctors = [doctor]; renderChips(); switchPage("documents");
+      });
+      $("yesterday-doctor-note").innerHTML = '<p class="inline-note">' + esc(section.rule) + "</p>";
+    }
+    function renderYesterdayActions(data) {
+      var section = data.action_cases || {}, items = section.items || [];
+      $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
+        return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
+          (item.severity === "P0" ? "critical" : "review") + '">' + esc(item.severity) +
+          "</span></td><td><b>" + esc(item.doctor) + "</b><br><small>" + esc(item.specialty) +
+          "</small></td><td>" + esc(item.branch) + "</td><td>" + esc(item.diagnosis) +
+          "</td><td><b>" + esc(item.finding_code) + "</b><br><small>" + esc(item.reason) +
+          '</small></td><td><button class="button secondary" type="button" data-take-case="' +
+          esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
+          (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") + "</button></td></tr>";
+      }).join("") : '<tr><td colspan="6">' + unavailableBlock(section, "P0/P1 случаев нет.") + "</td></tr>";
+      bindCaseRows($("yesterday-action-rows"));
+    }
+    function renderYesterdayFlow(data, dimension) {
+      var section = data.flow_changes || {}, dimensions = section.dimensions || {};
+      var items = (dimensions[dimension] || []).filter(function (item) { return item.available; }).slice(0, 12);
+      if (!items.length) {
+        $("yesterday-flow-chart").innerHTML = unavailableBlock(section, "Нет публикуемых групп в этом разрезе.");
+        $("yesterday-flow-note").innerHTML = "";
+        return;
+      }
+      var chart = MO.moChart($("yesterday-flow-chart"), {
+        tooltip: { trigger: "axis" },
+        legend: { data: ["За день", "Предыдущий день"] },
+        grid: { left: 48, right: 18, top: 45, bottom: 95 },
+        xAxis: { type: "category", name: "Группа", axisLabel: { rotate: 30 }, data: items.map(function (item) { return item.key; }) },
+        yAxis: { type: "value", name: "Доля потока, %" },
+        series: [
+          { name: "За день", type: "bar", data: items.map(function (item) { return item.share_pct; }) },
+          { name: "Предыдущий день", type: "bar", data: items.map(function (item) { return item.previous_share_pct; }) }
+        ]
+      }, {
+        label: "Состав потока и изменение против предыдущего дня",
+        description: "Сравниваются доли групп в текущем и предыдущем полном дне.",
+        fallback: function (target) {
+          target.innerHTML = items.map(function (item) { return bar(item.key, item.share_pct); }).join("");
+        }
+      });
+      if (chart) chart.on("click", function (params) {
+        var stateKey = dimension === "specialty" ? "specialties" : dimension === "branch" ? "branches" : "document_types";
+        state.findingCode = "";
+        state.selected[stateKey] = [items[params.dataIndex].key]; renderChips(); switchPage("documents");
+      });
+      $("yesterday-flow-note").innerHTML = items.slice(0, 4).map(function (item) {
+        return notice(item.key, "Доля " + item.share_pct + "%, изменение " + signed(item.share_delta_pp), Math.abs(item.share_delta_pp || 0) >= 5 ? "review" : "good");
+      }).join("");
+    }
+    function renderYesterdaySourceQuality(data) {
+      var section = data.source_quality || {}, items = section.items || [];
+      $("yesterday-source-quality").innerHTML = items.length ? items.map(function (item) {
+        if (!item.available) return notice(item.label, item.reason, "review");
+        var inverse = item.key === "date_mismatch_pct";
+        return bar(item.label, inverse ? Math.max(0, 100 - Number(item.value)) : item.value,
+          Number(item.value).toFixed(1) + "%" + (inverse ? " расхождений" : ""));
+      }).join("") : unavailableBlock(section);
+    }
+    async function takeYesterdayCase(caseId, button) {
+      button.disabled = true;
+      try {
+        await postCaseChanges([caseId], { status: "in_review" }, "Взято в работу из отчёта за вчера");
+        button.textContent = "Уже в работе";
+        showToast("Случай " + caseId + " взят в работу");
+      } catch (error) {
+        button.disabled = false;
+        showError(error.message);
+      }
+    }
+    function renderYesterday(data) {
+      renderYesterdayCompleteness(data);
+      renderYesterdayIndices(data);
+      renderYesterdayFindings(data);
+      renderYesterdayDoctors(data);
+      renderYesterdayActions(data);
+      renderYesterdayFlow(data, $("yesterday-flow-dimension").value);
+      renderYesterdaySourceQuality(data);
+    }
     async function loadYesterday() {
-      var yesterday = new Date(Date.now() - 86400000).toISOString().slice(0,10);
+      var yesterday = minskDateKey(-1);
       $("yesterday-date").textContent = "Итоги за " + new Date(yesterday + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
       var response = await request("/daily-report?date=" + yesterday, "__root__");
+      if (response.status === 401 || response.status === 403) { setAuth(true); return; }
       if (!response.ok) throw new Error("Отчёт за вчера пока недоступен.");
-      var data = await response.json(), summary = normalizeSummary(data);
+      var data = await response.json();
       state.data.daily = data;
       $("partial-banner").hidden = !(data.partial || data.quality_status === "blocked");
-      $("yesterday-kpis").innerHTML = kpi("Записей из БД", summary.n, "за полный день") + kpi("Оценено", summary.evaluated, "допущено к оценке") +
-        kpi("Итоговая оценка", score(summary.score), "среднее") + kpi("Критические", summary.critical, "нужен разбор");
-      $("yesterday-summary").innerHTML = notice("Обработано", summary.evaluated + " записей", "good") +
-        notice("Требует внимания", summary.attention + " записей", "review");
-      $("yesterday-risks").innerHTML = notice("Критические", summary.critical + " случаев", summary.critical ? "critical" : "good");
-      $("yesterday-compare").innerHTML = bar("Итоговая оценка", summary.score || 0) + bar("Полнота проверки", summary.coverage || 0);
-      $("yesterday-quality").innerHTML = notice(data.quality_status === "blocked" ? "Проверка не пройдена" : "Проверка пройдена",
-        data.quality_note || "Критических отклонений загрузки не обнаружено", data.quality_status === "blocked" ? "critical" : "good");
+      renderYesterday(data);
     }
     function renderEntityPages(summary) {
       $("doctor-rows").innerHTML = summary.doctors.length ? summary.doctors.slice(0,100).map(function (x) {
@@ -888,6 +1111,7 @@
         Object.keys(state.selected).forEach(function (key) { state.selected[key] = []; });
         state.period = "month"; state.compare = "previous"; state.dateFrom = ""; state.dateTo = "";
         state.search = "";
+        state.findingCode = "";
         state.sortBy = "date";
         state.sortDir = "desc";
         $("period").value = state.period; $("compare").value = state.compare;
@@ -905,6 +1129,21 @@
       });
       $("bulk-status").addEventListener("click", function () {
         bulkChange({ status: $("bulk-status-value").value });
+      });
+      $("yesterday-findings-list").addEventListener("click", function (event) {
+        var button = event.target.closest("[data-yesterday-finding]");
+        if (button) navigateFinding(button.getAttribute("data-yesterday-finding"));
+      });
+      $("yesterday-action-rows").addEventListener("click", function (event) {
+        var button = event.target.closest("[data-take-case]");
+        if (button) {
+          event.preventDefault();
+          event.stopPropagation();
+          takeYesterdayCase(button.getAttribute("data-take-case"), button);
+        }
+      });
+      $("yesterday-flow-dimension").addEventListener("change", function () {
+        if (state.data.daily) renderYesterdayFlow(state.data.daily, this.value);
       });
       $("saved-view").addEventListener("change", function () { if (this.value !== "") loadView(this.value); });
       $("view-manager").addEventListener("click", function (event) {

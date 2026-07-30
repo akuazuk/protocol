@@ -451,13 +451,15 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                COALESCE(d.specialty, c.specialty) AS doctor_specialty,
                COALESCE(d.filial, c.filial) AS doctor_filial,
                COALESCE(f.p0, 0) AS p0, COALESCE(f.p1, 0) AS p1,
-               COALESCE(f.p2, 0) AS p2, COALESCE(f.p3, 0) AS p3
+               COALESCE(f.p2, 0) AS p2, COALESCE(f.p3, 0) AS p3,
+               COALESCE(f.finding_codes, '') AS finding_codes
         FROM fact_mo_case c
         LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
         LEFT JOIN (
           SELECT mis_id,
                  SUM(severity='P0') p0, SUM(severity='P1') p1,
-                 SUM(severity='P2') p2, SUM(severity='P3') p3
+                 SUM(severity='P2') p2, SUM(severity='P3') p3,
+                 GROUP_CONCAT(DISTINCT finding_code) finding_codes
           FROM fact_mo_finding GROUP BY mis_id
         ) f ON f.mis_id = c.mis_id
     """
@@ -490,6 +492,9 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "p1": int(item.get("p1") or 0),
                 "p2": int(item.get("p2") or 0),
                 "p3": int(item.get("p3") or 0),
+                "finding_codes": [
+                    code for code in str(item.get("finding_codes") or "").split(",") if code
+                ],
                 "parse_ok": "1",
                 "date_mismatch": "0",
                 "_source": "warehouse",
@@ -546,6 +551,7 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
         if params.get(key) not in (None, "")
     }
     selected = {field: set(_values(params.get(key))) for key, field in _MULTI_FILTERS.items()}
+    finding_codes = set(_values(params.get("finding_codes")))
     excludes = {
         field: set(_values(params.get(f"exclude_{key}"))) for key, field in _MULTI_FILTERS.items()
     }
@@ -556,6 +562,19 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
         if any(vals and str(rec.get(field) or "") not in vals for field, vals in selected.items()):
             continue
         if any(vals and str(rec.get(field) or "") in vals for field, vals in excludes.items()):
+            continue
+        record_findings = {
+            str(value)
+            for value in (rec.get("finding_codes") or [])
+            if str(value)
+        }
+        if not record_findings:
+            record_findings = {
+                str(item.get("code") or item.get("finding_code") or "")
+                for item in (rec.get("_findings") or [])
+                if isinstance(item, dict)
+            }
+        if finding_codes and not (finding_codes & record_findings):
             continue
         if str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}:
             if not _needs_review(rec):
@@ -761,81 +780,506 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _pipeline_report_for_date(chosen: date) -> dict[str, Any] | None:
+    for root in _medical_exam_roots():
+        path = root / "reports" / f"{chosen:%Y}" / f"{chosen:%m}" / f"{chosen:%d}" / "report.json"
+        if not path.is_file():
+            continue
+        try:
+            payload = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError):
+            continue
+        if isinstance(payload, dict):
+            return payload
+    return None
+
+
+def _unavailable(reason: str, **values: Any) -> dict[str, Any]:
+    return {"available": False, "reason": reason, **values}
+
+
+_DAILY_AXES = {
+    "documentation": ("Оформление", "avg_documentation"),
+    "clinical_concordance": ("Клиническая согласованность", "avg_clinical_concordance"),
+    "safety": ("Безопасность", "avg_safety"),
+    "regulatory": ("Регуляторика", "avg_regulatory"),
+}
+
+
+def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> dict[str, Any]:
+    """Bounded SQL contract for the authenticated detailed day report."""
+    day = chosen.isoformat()
+    previous_day = (chosen - timedelta(days=1)).isoformat()
+    history_start = (chosen - timedelta(days=56)).isoformat()
+    quality = (stored or {}).get("quality") or {}
+    quality_metrics = quality.get("metrics") if isinstance(quality.get("metrics"), dict) else {}
+    stored_summary = (stored or {}).get("summary") or {}
+    completeness = (stored or {}).get("completeness") or {}
+
+    with closing(_read_connection()) as conn:
+        daily_rows = {
+            str(row["visit_date"]): dict(row)
+            for row in conn.execute(
+                """SELECT * FROM fact_mo_daily
+                   WHERE visit_date BETWEEN ? AND ? ORDER BY visit_date""",
+                (history_start, day),
+            ).fetchall()
+        }
+        current = daily_rows.get(day)
+        warehouse_rows = int(
+            conn.execute(
+                "SELECT COUNT(*) FROM fact_mo_case WHERE visit_date = ?", (day,)
+            ).fetchone()[0]
+        )
+        kind_rows = conn.execute(
+            """SELECT c.document_kind, COALESCE(k.label, c.document_kind) AS label,
+                      COUNT(*) AS source,
+                      SUM(c.document_kind IN ('medical_exam','consultation')) AS eligible,
+                      SUM(c.document_kind IN ('medical_exam','consultation')
+                          AND c.overall_pct IS NOT NULL) AS evaluated
+               FROM fact_mo_case c
+               LEFT JOIN dim_document_kind k ON k.document_kind=c.document_kind
+               WHERE c.visit_date=?
+               GROUP BY c.document_kind, label
+               ORDER BY source DESC LIMIT 20""",
+            (day,),
+        ).fetchall()
+        finding_rows = conn.execute(
+            """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) AS cases
+               FROM fact_mo_finding f
+               JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               WHERE c.visit_date=?
+                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND f.severity IN ('P0','P1','P2','P3')
+               GROUP BY f.finding_code, f.severity
+               ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1
+                         WHEN 'P2' THEN 2 ELSE 3 END, cases DESC
+               LIMIT 30""",
+            (day,),
+        ).fetchall()
+        action_raw = conn.execute(
+            """SELECT c.mis_id, c.visit_id, c.filial, c.specialty, c.diagnosis_code,
+                      COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
+                      COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
+                      f.finding_code, f.severity,
+                      COALESCE(s.status, 'new') AS crm_status
+               FROM fact_mo_case c
+               JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+               LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
+               LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code=c.diagnosis_code
+               LEFT JOIN crm_case_state s
+                 ON s.case_id=COALESCE(NULLIF(c.visit_id,''), c.mis_id)
+               WHERE c.visit_date=?
+                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND f.severity IN ('P0','P1')
+               ORDER BY CASE f.severity WHEN 'P0' THEN 0 ELSE 1 END, c.mis_id
+               LIMIT 500""",
+            (day,),
+        ).fetchall()
+        flow_rows: dict[str, list[sqlite3.Row]] = {}
+        for dimension, column in (
+            ("specialty", "specialty"),
+            ("branch", "filial"),
+            ("document_kind", "document_kind"),
+        ):
+            flow_rows[dimension] = conn.execute(
+                f"""SELECT {column} AS key, visit_date, COUNT(*) AS n
+                    FROM fact_mo_case
+                    WHERE visit_date IN (?, ?)
+                    GROUP BY {column}, visit_date
+                    ORDER BY n DESC LIMIT 60""",
+                (day, previous_day),
+            ).fetchall()
+
+    weekday_history = [
+        row
+        for row in daily_rows.values()
+        if row["visit_date"] < day
+        and date.fromisoformat(str(row["visit_date"])).weekday() == chosen.weekday()
+    ][-8:]
+    baseline_counts = [
+        int(row["source_rows"]) for row in weekday_history if row.get("source_rows") is not None
+    ]
+    expected = statistics.median(baseline_counts) if baseline_counts else None
+    actual = stored_summary.get("source_rows")
+    if actual is None and current:
+        actual = current.get("source_rows")
+    actual = int(actual) if actual is not None else warehouse_rows
+    lag_days = (datetime.now(ZoneInfo("Europe/Minsk")).date() - chosen).days
+    flags = [
+        {
+            "code": str(item.get("code") or ""),
+            "level": str(item.get("severity") or level),
+            "message": str(item.get("message") or ""),
+        }
+        for level in ("blocking", "warnings")
+        for item in (quality.get(level) or [])
+        if isinstance(item, dict)
+    ]
+    expected_payload = (
+        {
+            "available": True,
+            "value": expected,
+            "samples": len(baseline_counts),
+            "method": "Медиана того же дня недели за предыдущие 8 недель",
+        }
+        if expected is not None
+        else _unavailable("Нет истории того же дня недели", value=None, samples=0)
+    )
+    data_completeness = {
+        "available": bool(current or stored),
+        "actual_rows": actual,
+        "warehouse_rows": warehouse_rows,
+        "expected_rows": expected_payload,
+        "actual_vs_expected_pct": (
+            round(100 * actual / expected, 1) if expected not in (None, 0) else None
+        ),
+        "lag_days": lag_days,
+        "flags": flags,
+        "revision": (stored or {}).get("revision") if stored else (current or {}).get("revision"),
+        "partial": bool((stored or {}).get("partial") or (current or {}).get("partial")),
+        "quality_status": (
+            "blocked" if stored and not quality.get("passed") else (current or {}).get("quality_status")
+        ),
+        "coverage_pct": completeness.get("coverage_pct")
+        if completeness.get("coverage_pct") is not None
+        else (current or {}).get("coverage_pct"),
+    }
+    if not data_completeness["available"]:
+        data_completeness["reason"] = "Нет отчёта и дневного агрегата витрины"
+
+    document_kinds = []
+    for row in kind_rows:
+        n = int(row["source"])
+        item = {
+            "key": str(row["document_kind"]),
+            "label": str(row["label"]),
+            "source": n,
+            "eligible": int(row["eligible"] or 0),
+            "evaluated": int(row["evaluated"] or 0),
+            "excluded": n - int(row["eligible"] or 0),
+        }
+        document_kinds.append(
+            suppress_values(
+                item,
+                n=n,
+                threshold=SUPPRESSION_N,
+                protected={"key", "label"},
+            )
+        )
+    eligible = int(stored_summary.get("eligible_rows") or (current or {}).get("eligible_rows") or 0)
+    evaluated = int(stored_summary.get("scored") or (current or {}).get("scored_rows") or 0)
+    funnel = {
+        "available": bool(current or warehouse_rows or stored),
+        "source": actual,
+        "eligible": eligible,
+        "evaluated": evaluated,
+        "excluded": max(0, actual - eligible),
+        "evaluation_errors": stored_summary.get("scoring_errors"),
+        "document_kinds": document_kinds,
+    }
+    if not funnel["available"]:
+        funnel["reason"] = "Нет строк за выбранный день"
+
+    previous = daily_rows.get(previous_day) or {}
+    indices = []
+    stored_axes = (stored or {}).get("axes") or {}
+    for key, (label, column) in _DAILY_AXES.items():
+        value = stored_axes.get(key)
+        if value is None and current:
+            value = current.get(column)
+        weekday_values = [
+            float(row[column])
+            for row in weekday_history
+            if row.get(column) is not None
+        ]
+        weekday_mean = round(statistics.fmean(weekday_values), 2) if weekday_values else None
+        previous_value = previous.get(column)
+        available = value is not None
+        indices.append(
+            {
+                "key": key,
+                "label": label,
+                "available": available,
+                "reason": None if available else "Ось не записана в отчёте или витрине",
+                "value": value,
+                "previous_day": previous_value,
+                "delta_previous_day": round(float(value) - float(previous_value), 2)
+                if value is not None and previous_value is not None
+                else None,
+                "weekday_mean_8w": weekday_mean,
+                "weekday_samples": len(weekday_values),
+                "delta_weekday_mean": round(float(value) - weekday_mean, 2)
+                if value is not None and weekday_mean is not None
+                else None,
+            }
+        )
+
+    top_findings = [
+        {
+            "finding_code": str(row["finding_code"]),
+            "label": f"Замечание: {row['finding_code']}",
+            "severity": str(row["severity"]),
+            "cases": int(row["cases"]),
+            "suppressed": False,
+        }
+        for row in finding_rows
+        if int(row["cases"]) >= SUPPRESSION_N
+    ]
+    findings_contract = {
+        "available": bool(top_findings),
+        "items": top_findings,
+        "suppression_n": SUPPRESSION_N,
+    }
+    if not top_findings:
+        findings_contract["reason"] = "Нет замечаний выше порога публикации"
+
+    action_cases = []
+    seen_cases: set[str] = set()
+    for row in action_raw:
+        case_id = str(row["visit_id"] or row["mis_id"])
+        if case_id in seen_cases:
+            continue
+        seen_cases.add(case_id)
+        action_cases.append(
+            {
+                "case_id": case_id,
+                "mis_id": str(row["mis_id"]),
+                "severity": str(row["severity"]),
+                "doctor": str(row["doctor"]),
+                "specialty": str(row["specialty"] or ""),
+                "branch": str(row["filial"] or ""),
+                "diagnosis": str(row["diagnosis"] or "Диагноз не указан"),
+                "diagnosis_code": str(row["diagnosis_code"] or ""),
+                "finding_code": str(row["finding_code"]),
+                "reason": f"{row['severity']}: замечание {row['finding_code']}",
+                "crm_status": str(row["crm_status"]),
+            }
+        )
+        if len(action_cases) >= 100:
+            break
+    action_contract = {
+        "available": bool(action_cases),
+        "items": action_cases,
+        "limit": 100,
+    }
+    if not action_cases:
+        action_contract["reason"] = "P0/P1 случаи за день не найдены"
+
+    doctor_rows = _doctor_breakdown(
+        DateRange(chosen, chosen), max(5, SUPPRESSION_N), {}
+    )
+    outliers = [
+        {**row, "statistically_distinct": (row.get("delta_ci95") or {}).get("high") is not None
+         and float(row["delta_ci95"]["high"]) < 0}
+        for row in doctor_rows
+        if row.get("enough_data") and row.get("delta") is not None and float(row["delta"]) < -10
+    ][:50]
+    doctor_contract = {
+        "available": bool(outliers),
+        "items": outliers,
+        "sample_gate": max(5, SUPPRESSION_N),
+        "rule": "Дельта ниже -10 п.п.; ожидаемое по специальности; n за день не меньше 5",
+    }
+    if not outliers:
+        doctor_contract["reason"] = "Нет врачей, прошедших порог отклонения и размера выборки"
+
+    flow_dimensions: dict[str, list[dict[str, Any]]] = {}
+    for dimension, rows in flow_rows.items():
+        grouped: dict[str, dict[str, int]] = {}
+        for row in rows:
+            key = str(row["key"] or "Не указано")
+            grouped.setdefault(key, {})[str(row["visit_date"])] = int(row["n"])
+        current_total = sum(values.get(day, 0) for values in grouped.values())
+        previous_total = sum(values.get(previous_day, 0) for values in grouped.values())
+        items = []
+        for key, values in grouped.items():
+            current_n = values.get(day, 0)
+            previous_n = values.get(previous_day, 0)
+            if current_n < SUPPRESSION_N or (previous_n and previous_n < SUPPRESSION_N):
+                items.append(
+                    _unavailable(
+                        f"Группа меньше {SUPPRESSION_N}",
+                        key=key,
+                        suppressed=True,
+                    )
+                )
+                continue
+            current_share = round(100 * current_n / current_total, 2) if current_total else None
+            previous_share = round(100 * previous_n / previous_total, 2) if previous_total else None
+            items.append(
+                {
+                    "key": key,
+                    "available": True,
+                    "n": current_n,
+                    "previous_n": previous_n,
+                    "share_pct": current_share,
+                    "previous_share_pct": previous_share,
+                    "share_delta_pp": round(current_share - previous_share, 2)
+                    if current_share is not None and previous_share is not None
+                    else None,
+                }
+            )
+        flow_dimensions[dimension] = sorted(
+            items,
+            key=lambda item: (item.get("n") is None, -(item.get("n") or 0)),
+        )[:20]
+
+    source_metric_specs = (
+        ("parse_ok_pct", "Распознано"),
+        ("doctor_fio_filled_pct", "Врач заполнен"),
+        ("doctor_specialization_filled_pct", "Специальность заполнена"),
+        ("filial_filled_pct", "Филиал заполнен"),
+        ("mkb_code_main_filled_pct", "МКБ заполнен"),
+        ("date_mismatch_pct", "Расхождение дат"),
+    )
+    source_items = []
+    for key, label in source_metric_specs:
+        if key in quality_metrics:
+            source_items.append({"key": key, "label": label, "available": True, "value": quality_metrics[key]})
+        else:
+            source_items.append(_unavailable("Метрика отсутствует в сохранённом отчёте", key=key, label=label, value=None))
+    source_quality = {
+        "available": any(item["available"] for item in source_items),
+        "items": source_items,
+        "flags": flags,
+    }
+    if not source_quality["available"]:
+        source_quality["reason"] = "Сохранённый отчёт не содержит метрик качества источника"
+
+    indices_available = any(item["available"] for item in indices)
+    flow_available = any(
+        item.get("available")
+        for items in flow_dimensions.values()
+        for item in items
+    )
+    return {
+        "data_completeness": data_completeness,
+        "funnel": funnel,
+        "indices": {
+            "available": indices_available,
+            "reason": None if indices_available else "Четыре оси не записаны за выбранный день",
+            "items": indices,
+        },
+        "top_findings": findings_contract,
+        "action_cases": action_contract,
+        "doctor_outliers": doctor_contract,
+        "flow_changes": {
+            "available": flow_available,
+            "reason": None if flow_available else "Нет публикуемых групп потока за выбранный день",
+            "comparison_date": previous_day,
+            "dimensions": flow_dimensions,
+            "suppression_n": SUPPRESSION_N,
+        },
+        "source_quality": source_quality,
+    }
+
+
 def build_daily_report(report_date: str) -> dict[str, Any]:
     try:
         chosen = date.fromisoformat(report_date)
     except ValueError:
         return {"ok": False, "error": "invalid_date"}
-    configured_root = (os.environ.get("MO_DATA_ROOT") or "").strip()
-    roots = [
-        Path(configured_root).expanduser() if configured_root else Path("/var/data/medical_exams"),
-        ROOT / "data" / "medical_exams",
-    ]
-    for root in roots:
-        path = root / "reports" / f"{chosen:%Y}" / f"{chosen:%m}" / f"{chosen:%d}" / "report.json"
-        if not path.is_file():
-            continue
-        try:
-            stored = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            continue
-        summary = stored.get("summary") or {}
-        overview = {
-            "n": summary.get("source_rows"),
-            "n_evaluated": summary.get("scored"),
-            "avg_overall": summary.get("avg_score"),
-            "n_bad": summary.get("needs_attention"),
-            "severity_totals": {"P0": summary.get("critical")},
-            "avg_coverage": (stored.get("month_to_date") or {}).get("avg_coverage"),
-        }
-        return {
-            "ok": True,
-            "date": stored.get("date") or chosen.isoformat(),
-            "revision": stored.get("revision"),
-            "generated_at": stored.get("generated_at"),
-            "quality_status": "ok" if (stored.get("quality") or {}).get("passed") else "blocked",
-            "executive_summary": {
-                "ok": True,
-                "kpi": {
-                    "n": summary.get("source_rows"),
-                    "eligible": summary.get("eligible_rows"),
-                    "scored": summary.get("scored"),
-                    "avg_score": summary.get("avg_score"),
-                    "needs_attention": summary.get("needs_attention"),
-                    "critical": summary.get("critical"),
-                },
-                "axes": stored.get("axes") or {},
-                "organizations": stored.get("organizations") or {},
-            },
-            "overview": overview,
-            "comparison": stored.get("comparisons") or {},
-            "month_to_date": stored.get("month_to_date") or {},
-            "action_queue": stored.get("action_queue") or [],
-            "data_quality": stored.get("quality") or {},
-        }
-    params = {"date_from": chosen.isoformat(), "date_to": chosen.isoformat()}
-    overview = build_overview(params)
-    cases = build_cases({**params, "page": 1, "page_size": 20, "crm_statuses": "new,assigned,in_review"})
-    previous = build_overview(
-        {"date_from": (chosen - timedelta(days=1)).isoformat(), "date_to": (chosen - timedelta(days=1)).isoformat()}
-    )
-    current_avg = overview["kpi"].get("avg_score")
-    previous_avg = previous["kpi"].get("avg_score")
-    delta = (
-        round(float(current_avg) - float(previous_avg), 1)
-        if isinstance(current_avg, (int, float)) and isinstance(previous_avg, (int, float))
-        else None
-    )
-    return {
+    stored = _pipeline_report_for_date(chosen)
+    summary = (stored or {}).get("summary") or {}
+    overview = {
+        "n": summary.get("source_rows"),
+        "n_evaluated": summary.get("scored"),
+        "avg_overall": summary.get("avg_score"),
+        "n_bad": summary.get("needs_attention"),
+        "severity_totals": {"P0": summary.get("critical")},
+        "avg_coverage": ((stored or {}).get("month_to_date") or {}).get("avg_coverage"),
+    }
+    base = {
         "ok": True,
-        "date": chosen.isoformat(),
-        "revision": 1,
-        "generated_at": _utc(),
-        "quality_status": "no_data" if overview["kpi"].get("n_bucket") == "<5" and not cases["total"] else "ok",
-        "executive_summary": overview,
-        "comparison": {"previous_date": (chosen - timedelta(days=1)).isoformat(), "avg_score_delta": delta},
-        "action_queue": cases["rows"],
-        "data_quality": build_data_quality(params),
+        "date": (stored or {}).get("date") or chosen.isoformat(),
+        "revision": (stored or {}).get("revision"),
+        "generated_at": (stored or {}).get("generated_at") or _utc(),
+        "quality_status": (
+            "ok" if stored and ((stored.get("quality") or {}).get("passed")) else
+            "blocked" if stored else "no_data"
+        ),
+        "partial": bool((stored or {}).get("partial")),
+        "executive_summary": {
+            "ok": True,
+            "kpi": {
+                "n": summary.get("source_rows"),
+                "eligible": summary.get("eligible_rows"),
+                "scored": summary.get("scored"),
+                "avg_score": summary.get("avg_score"),
+                "needs_attention": summary.get("needs_attention"),
+                "critical": summary.get("critical"),
+            },
+            "axes": (stored or {}).get("axes") or {},
+            "organizations": (stored or {}).get("organizations") or {},
+        },
+        "overview": overview,
+        "comparison": (stored or {}).get("comparisons") or {},
+        "month_to_date": (stored or {}).get("month_to_date") or {},
+        "action_queue": (stored or {}).get("action_queue") or [],
+        "data_quality": (stored or {}).get("quality") or {},
+        "source": _backend_source(),
+        "schema_version": SCHEMA_VERSION,
+        "suppression_n": SUPPRESSION_N,
+    }
+    if _source_for_period(DateRange(chosen, chosen)) == "warehouse":
+        expanded = _daily_warehouse_contract(chosen, stored)
+        if not stored:
+            funnel = expanded["funnel"]
+            completeness = expanded["data_completeness"]
+            axis_values = {
+                item["key"]: item["value"]
+                for item in expanded["indices"]["items"]
+                if item.get("available")
+            }
+            legacy_kpi = {
+                "n": funnel.get("source"),
+                "eligible": funnel.get("eligible"),
+                "scored": funnel.get("evaluated"),
+                "avg_score": None,
+                "needs_attention": None,
+                "critical": sum(
+                    1
+                    for item in expanded["action_cases"]["items"]
+                    if item.get("severity") == "P0"
+                ),
+            }
+            base.update(
+                {
+                    "revision": completeness.get("revision"),
+                    "quality_status": completeness.get("quality_status") or "no_data",
+                    "partial": completeness.get("partial", False),
+                    "executive_summary": {
+                        "ok": True,
+                        "kpi": legacy_kpi,
+                        "axes": axis_values,
+                        "organizations": {},
+                    },
+                    "overview": {
+                        "n": funnel.get("source"),
+                        "n_evaluated": funnel.get("evaluated"),
+                        "avg_overall": None,
+                        "n_bad": None,
+                        "severity_totals": {"P0": legacy_kpi["critical"]},
+                        "avg_coverage": completeness.get("coverage_pct"),
+                    },
+                    "action_queue": expanded["action_cases"]["items"],
+                }
+            )
+        return {**base, **expanded}
+    reason = "SQL-витрина не содержит данных за выбранный день"
+    return {
+        **base,
+        "data_completeness": _unavailable(reason),
+        "funnel": _unavailable(reason, document_kinds=[]),
+        "indices": _unavailable(reason, items=[]),
+        "top_findings": _unavailable(reason, items=[]),
+        "action_cases": _unavailable(reason, items=[]),
+        "doctor_outliers": _unavailable(reason, items=[]),
+        "flow_changes": _unavailable(reason, dimensions={}),
+        "source_quality": _unavailable(
+            "Сохранённый отчёт недоступен", items=[]
+        ),
     }
 
 

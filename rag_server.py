@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r22-mo-ui-foundation"
+BUILD_VERSION = "2026-07-30-r23-mo-yesterday-detail"
 
 
 def _app_version() -> str:
@@ -11158,6 +11158,7 @@ def api_methodist_mo_cases(
     document_kinds: str = Query("", max_length=500),
     kz_kinds: str = Query("", max_length=500),
     statuses: str = Query("", max_length=500),
+    finding_codes: str = Query("", max_length=2000),
     mkb_chapters: str = Query("", max_length=1000),
     crm_statuses: str = Query("", max_length=500),
     assignees: str = Query("", max_length=2000),
