@@ -105,6 +105,44 @@ python3 scripts/migrate_mo_crm_to_warehouse.py
 API выполняет тот же перенос автоматически при первом обращении, если старый файл ещё есть.
 CRM-таблицы прежней схемы с данными переименовываются в `*_legacy` и остаются в файле.
 
+## Публикация в прод: как данные попадают на Render
+
+Конвейер работает на рабочей машине, а прод читает диск Render. Без публикации в
+`/var/data/medical_exams` страница «МО Аналитика» показывает только старые месячные файлы.
+
+```bash
+# витрина + отчёты + состояние + оценки последних дней
+python3 scripts/publish_mo_to_render.py --methodist-token "$METHODIST_TOKEN"
+
+# заодно заменить месячные файлы оценок (нужно после пересчёта методики)
+python3 scripts/publish_mo_to_render.py --legacy-first-month 2026-01 --legacy-last-month 2026-07
+
+# посмотреть команды, ничего не отправляя
+python3 scripts/publish_mo_to_render.py --dry-run --no-verify
+```
+
+Что важно знать:
+
+- **CRM прода не затирается.** В прод уезжает копия витрины **без** строк
+ `crm_case_state`, `crm_case_event`, `saved_view`, `export_job`, а на стороне прода
+ факты и справочники доливаются через `INSERT OR REPLACE`. Статусы и события,
+ поставленные методистом в проде, остаются на месте;
+- `MO_DATA_ROOT=/var/data/medical_exams` задан в `render.yaml`;
+- большие файлы уходят потоком `gzip | ssh`: scp и rsync на файлах в десятки мегабайт
+ Render обрывает («Connection closed by remote host»), поток с повторами - нет;
+- месячные файлы заменяются с резервной копией рядом (`*_cases.pre_deep_YYYYMMDD.jsonl`);
+- launchd-обёртка публикует автоматически после каждого прогона
+ (`MO_PUBLISH_TO_RENDER=0` отключает, `bash scripts/run_mo_daily_launchd.sh publish` - только публикация).
+
+Проверка после публикации:
+
+```bash
+curl -s -H "X-Methodist-Token: $METHODIST_TOKEN" \
+  https://protocol-bimy.onrender.com/api/methodist/mo/freshness | python3 -m json.tool
+```
+
+Ожидаем `status: fresh`, `lag_days <= 1` и `roots[0].exists: true`.
+
 ## Одна шкала балла: deep-eval
 
 В файле оценок лежит несколько чисел, и раньше витрина брала первое непустое. Ежедневный

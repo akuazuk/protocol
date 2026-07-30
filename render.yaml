@@ -148,6 +148,10 @@ services:
         value: /var/data/lex_shards
       - key: ML_FEEDBACK_DIR
         value: /var/data/ml/feedback
+      # МО Аналитика: витрина и отчёты приезжают на диск с рабочей машины
+      # (scripts/publish_mo_to_render.py), см. docs/mo-daily-pipeline.md.
+      - key: MO_DATA_ROOT
+        value: /var/data/medical_exams
       - key: CONSULT_ALIGNMENT_ENABLED
         value: "1"
       # Онконастороженность (decision-support, не gate, не диагноз). Управление - вкладка

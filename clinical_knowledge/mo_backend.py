@@ -885,7 +885,7 @@ def apply_bulk_action(*, actor: str, role: str, payload: dict[str, Any]) -> dict
 
 def build_reports() -> dict[str, Any]:
     reports: list[dict[str, Any]] = []
-    roots = [Path("/var/data/medical_exams/reports"), ROOT / "data" / "medical_exams" / "reports"]
+    roots = [root / "reports" for root in _medical_exam_roots()]
     for base in roots:
         if not base.is_dir():
             continue
