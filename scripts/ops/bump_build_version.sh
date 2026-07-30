@@ -11,12 +11,13 @@ cd "$ROOT"
 
 REMOTE_NAME="${REMOTE_NAME:-origin}"
 DRY_RUN=0
+ALLOW_STALE="${ALLOW_STALE:-0}"
 SLUG=""
 
 usage() {
   cat <<'EOF'
 Usage:
-  scripts/ops/bump_build_version.sh <slug> [--dry-run] [--remote=origin]
+  scripts/ops/bump_build_version.sh <slug> [--dry-run] [--allow-stale] [--remote=origin]
 
 Example:
   scripts/ops/bump_build_version.sh render-env-tool
@@ -24,12 +25,15 @@ Example:
 
 The slug is 2-4 latin words in kebab-case describing the commit.
 The number is one above the highest rN used today on any remote branch or locally.
+If the remote cannot be fetched the command fails, because a stale view of the
+branches is how two machines end up on the same number; --allow-stale overrides.
 EOF
 }
 
 for arg in "$@"; do
   case "$arg" in
     --dry-run) DRY_RUN=1 ;;
+    --allow-stale) ALLOW_STALE=1 ;;
     --remote=*) REMOTE_NAME="${arg#*=}" ;;
     -h|--help) usage; exit 0 ;;
     --*) echo "Unknown option: $arg" >&2; usage >&2; exit 2 ;;
@@ -48,7 +52,20 @@ if [[ ! "$SLUG" =~ ^[a-z0-9]+(-[a-z0-9]+)*$ ]]; then
   exit 2
 fi
 
-git fetch "$REMOTE_NAME" -q || echo "WARNING: fetch failed, using local refs only" >&2
+if ! git fetch "$REMOTE_NAME" -q; then
+  # Stale refs are exactly how a colliding number gets picked, so this is fatal by default.
+  if [[ "$ALLOW_STALE" != "1" ]]; then
+    cat >&2 <<EOF
+ERROR: cannot fetch '$REMOTE_NAME', so branches from other machines are invisible
+and the number picked here may already be taken.
+
+Retry when the network is back, or accept the risk explicitly:
+  scripts/ops/bump_build_version.sh $SLUG --allow-stale
+EOF
+    exit 1
+  fi
+  echo "WARNING: fetch failed, using possibly stale refs (--allow-stale)" >&2
+fi
 
 today="$(date +%Y-%m-%d)"
 versions_file="$(mktemp)"
