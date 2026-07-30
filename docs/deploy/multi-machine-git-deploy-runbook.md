@@ -197,8 +197,25 @@ scripts/ops/render_deploy.sh restart --wait
 scripts/ops/render_deploy.sh resume --service-id=srv-d8tb43ojs32c73dd0l00
 ```
 
-Из-за этого же расхождения боевой сервис настроен не по `render.yaml`: у него
-`buildCommand` без установки tesseract, поэтому OCR на проде недоступен.
+### 5.3. Переменные окружения прода
+
+`render.yaml` **не управляет продом** - он описывает приостановленный `protocol-rag`.
+Из 59 объявленных там переменных на боевом сервисе стоят 10, а `buildCommand` у него
+без установки tesseract (OCR при этом работает: `ocr_image_bytes` откатывается на
+Gemini Vision). Переменная, добавленная в `render.yaml`, до прода не доедет.
+
+Настройки прода смотреть и менять так:
+
+```bash
+scripts/ops/render_env.sh diff             # что объявлено в render.yaml, но отсутствует на проде
+scripts/ops/render_env.sh list             # что реально стоит (значения замаскированы)
+scripts/ops/render_env.sh set KEY=VALUE    # применить к проду, Render сам передеплоит
+```
+
+Известное расхождение: на проде `RENDER_PLAN=standard`, хотя сервис на плане `pro`.
+Из-за этого `_render_high_ram()` в `rag_server.py` возвращает False. Ключевые тумблеры
+(`RAG_VECTOR_INDEX`, `RAG_MEMORY_SAVER`) выставлены явно, так что менять это надо
+осознанно и отдельной задачей.
 
 ## 6) Минимальный handoff между ПК
 

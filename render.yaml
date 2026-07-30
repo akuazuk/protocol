@@ -1,4 +1,15 @@
-# Настройки для Render Blueprint / справочно для ручного сервиса.
+# ВНИМАНИЕ: этот файл НЕ управляет продом.
+#
+# Blueprint из него создал сервис `protocol-rag` (srv-d8tb43ojs32c73dd0l00), который с
+# 2026-07-30 приостановлен. Прод - это другой сервис: `protocol`
+# (srv-d78he6h5pdvs73b1kufg, домен protocol-bimy.onrender.com), настроенный вручную в
+# Dashboard. Из 59 переменных, объявленных ниже, на проде реально стоят 10.
+#
+# Поэтому новая переменная, добавленная в этот файл, до прода НЕ доедет. Менять настройки
+# прода нужно через API:
+#   scripts/ops/render_env.sh diff            # что здесь объявлено, а на проде отсутствует
+#   scripts/ops/render_env.sh set KEY=VALUE   # применить к проду
+#
 # PYTHON_VERSION: в Dashboard → Environment добавьте вручную, если сборка тянет Python 3.14.
 # https://render.com/docs/python-version
 #

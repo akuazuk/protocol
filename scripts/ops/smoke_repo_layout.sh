@@ -26,6 +26,8 @@ scripts/ops/render_wait_version.sh --help >/dev/null
 scripts/ops/render_promote_main.sh --help >/dev/null
 scripts/ops/render_deploy.sh --help >/dev/null
 scripts/ops/render_apply_deploy.sh --help >/dev/null
+scripts/ops/render_env.sh --help >/dev/null
+scripts/ops/bump_build_version.sh --help >/dev/null
 echo "OK: ops help"
 
 echo "[4/5] deploy/data/dev wrappers forward safely"
