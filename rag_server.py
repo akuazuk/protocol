@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r11-api-triggered-deploy"
+BUILD_VERSION = "2026-07-30-r12-webhook-check"
 
 
 def _app_version() -> str:
