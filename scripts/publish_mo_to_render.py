@@ -20,8 +20,6 @@ import subprocess
 import sys
 import tempfile
 import time
-import urllib.error
-import urllib.request
 from datetime import date, timedelta
 from pathlib import Path
 from typing import Any, Sequence
@@ -279,15 +277,16 @@ def _publish_files(
 
 def verify_freshness(prod_url: str, token: str | None) -> dict[str, Any]:
     url = prod_url.rstrip("/") + "/api/methodist/mo/freshness"
-    request = urllib.request.Request(url)
+    command = ["curl", "-fsS", "--max-time", "45"]
     if token:
-        request.add_header("X-Methodist-Token", token)
+        command.extend(["-H", f"X-Methodist-Token: {token}"])
+    command.append(url)
     try:
-        with urllib.request.urlopen(request, timeout=30) as response:
-            payload = json.loads(response.read().decode("utf-8"))
-    except urllib.error.HTTPError as error:
-        return {"status": error.code, "error": error.reason}
-    except (urllib.error.URLError, TimeoutError, json.JSONDecodeError) as error:
+        result = subprocess.run(command, check=True, capture_output=True, text=True)
+        payload = json.loads(result.stdout)
+    except subprocess.CalledProcessError as error:
+        return {"status": error.returncode, "error": (error.stderr or "").strip()}
+    except json.JSONDecodeError as error:
         return {"status": "unreachable", "error": str(error)}
     return {
         "status": 200,

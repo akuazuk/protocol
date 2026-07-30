@@ -121,6 +121,49 @@ def prune_after(warehouse: Path, through_date: date) -> int:
     return len(stale_ids)
 
 
+def propagate_visit_scores(warehouse: Path) -> int:
+    """Заполнить дубли документа оценкой того же визита.
+
+    Scoring сводит несколько КЗ к одному случаю на `visit_id`. Записи одного
+    визита могут иметь разные `mis_id` и даже даты, поэтому дневной upsert не
+    всегда видит выбранный scorer-ом случай. Переносим балл только если внутри
+    визита существует ровно одно значение оценки - неоднозначные визиты не
+    трогаем.
+    """
+    with sqlite3.connect(warehouse) as db:
+        before = db.total_changes
+        db.execute(
+            """UPDATE fact_mo_case AS target
+               SET overall_pct = (
+                       SELECT MIN(source.overall_pct)
+                       FROM fact_mo_case AS source
+                       WHERE source.visit_id = target.visit_id
+                         AND source.overall_pct IS NOT NULL
+                       GROUP BY source.visit_id
+                       HAVING COUNT(DISTINCT source.overall_pct) = 1
+                   ),
+                   status = COALESCE(NULLIF(target.status, ''), (
+                       SELECT MIN(NULLIF(source.status, ''))
+                       FROM fact_mo_case AS source
+                       WHERE source.visit_id = target.visit_id
+                         AND source.overall_pct IS NOT NULL
+                   ))
+               WHERE target.overall_pct IS NULL
+                 AND target.document_kind IN ('medical_exam', 'consultation')
+                 AND EXISTS (
+                       SELECT 1
+                       FROM fact_mo_case AS source
+                       WHERE source.visit_id = target.visit_id
+                         AND source.overall_pct IS NOT NULL
+                       GROUP BY source.visit_id
+                       HAVING COUNT(DISTINCT source.overall_pct) = 1
+                 )"""
+        )
+        changed = db.total_changes - before
+        db.commit()
+    return changed
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--first-month", default="2026-01")
@@ -167,6 +210,10 @@ def main() -> int:
         pruned = prune_after(warehouse, args.through_date)
         if pruned:
             print(f"Удалено строк после {args.through_date.isoformat()}: {pruned}", file=sys.stderr)
+    if not args.dry_run:
+        propagated = propagate_visit_scores(warehouse)
+        if propagated:
+            print(f"Заполнено дублей документов оценкой визита: {propagated}", file=sys.stderr)
     print(json.dumps(results, ensure_ascii=False, indent=2))
     return 0 if all(item["status"] in {"success", "dry_run"} for item in results) else 1
 
