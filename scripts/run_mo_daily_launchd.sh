@@ -9,12 +9,13 @@ case "$MODE" in
   main)
     # Основной приём ~06:00 Europe/Minsk: вчера + catch-up + reconcile 3 дней.
     # В понедельник дополнительно перезаписываем прошлую полную неделю Пн-Вс.
-    EXTRA=()
+    # Важно: не раскрывать пустой "${EXTRA[@]}" при set -u (bash падает).
+    MAIN_ARGS=(--catch-up --reconcile-days 3)
     if [ "$(TZ=Europe/Minsk date +%u)" = "1" ]; then
-      EXTRA+=(--previous-week)
+      MAIN_ARGS+=(--previous-week)
     fi
     exec /usr/bin/caffeinate -dimsu "$PYTHON_BIN" "$ROOT/scripts/run_mo_daily_report.py" \
-      --catch-up --reconcile-days 3 "${EXTRA[@]}"
+      "${MAIN_ARGS[@]}"
     ;;
   retry)
     exec /usr/bin/caffeinate -dimsu "$PYTHON_BIN" "$ROOT/scripts/run_mo_daily_report.py" --catch-up
