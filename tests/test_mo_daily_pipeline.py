@@ -15,6 +15,8 @@ from clinical_knowledge.mo_daily import (
     assess_completeness,
     atomic_write_text,
     build_daily_report,
+    case_overall_pct,
+    case_status,
     catch_up_dates,
     day_status,
     doctor_key_for,
@@ -832,6 +834,60 @@ def test_pipeline_queue_does_not_overwrite_methodist_status(tmp_path: Path) -> N
             "confirmed_issue"
         )
         assert db.execute("SELECT updated_by FROM crm_case_state WHERE case_id = '1000'").fetchone()[0] == "ИП"
+
+
+def test_deep_only_cases_keep_their_scores_in_warehouse(tmp_path: Path) -> None:
+    import sqlite3
+
+    # Так выглядят месячные прогоны --deep-only: верхний overall_pct пуст, оценка в deep.
+    raw = add_document_taxonomy(wide_frame(2)).to_dict(orient="records")
+    cases = [
+        {
+            "mis_id": 1,
+            "visit_id": 1000,
+            "overall_pct": None,
+            "status": None,
+            "doctor_fio": "Иванов И.И.",
+            "deep": {
+                "overall_pct": 93.0,
+                "status": "good",
+                "axes": {"documentation": 100.0, "safety": 88.0},
+                "findings": [{"code": "minor", "severity": "P3", "passed": False}],
+            },
+        },
+        {
+            "mis_id": 2,
+            "visit_id": 1001,
+            "core_overall_pct": 64.0,
+            "doctor_fio": "Иванов И.И.",
+        },
+    ]
+    assert case_overall_pct(cases[0]) == 93.0
+    assert case_status(cases[0]) == "good"
+    assert case_overall_pct(cases[1]) == 64.0
+    assert case_overall_pct({"overall_pct": None}) is None
+    # Витрина живёт на deep-шкале: верхний L1-балл дневного прогона её не подменяет,
+    # иначе тренд рвётся на стыке истории и свежих дней.
+    mixed = {"overall_pct": 71.5, "status": "review", "deep": {"overall_pct": 86.2, "status": "good"}}
+    assert case_overall_pct(mixed) == 86.2
+    assert case_status(mixed) == "good"
+
+    completeness = assess_completeness(raw, cases)
+    assert completeness["coverage_pct"] == 100.0
+    assert not completeness["partial"]
+
+    secure, _ = build_daily_report(
+        raw, cases, day=date(2026, 7, 20), run_id="deep-only", revision=1, quality={"passed": True}
+    )
+    assert secure["summary"]["avg_score"] == 78.5
+    path = tmp_path / "warehouse.sqlite"
+    upsert_warehouse(path, raw, cases, secure)
+    with sqlite3.connect(path) as db:
+        scores = [row[0] for row in db.execute("SELECT overall_pct FROM fact_mo_case ORDER BY mis_id")]
+        assert scores == [93.0, 64.0]
+        assert db.execute("SELECT status FROM fact_mo_case WHERE mis_id = '1'").fetchone()[0] == "good"
+        assert db.execute("SELECT avg_score FROM fact_mo_daily").fetchone()[0] == 78.5
+        assert db.execute("SELECT COUNT(*) FROM fact_mo_case WHERE overall_pct IS NULL").fetchone()[0] == 0
 
 
 def test_icd_chapter_maps_codes_and_ignores_garbage() -> None:

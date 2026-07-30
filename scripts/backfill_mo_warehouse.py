@@ -20,6 +20,7 @@ if str(ROOT) not in sys.path:
 from clinical_knowledge.mo_daily import (  # noqa: E402
     add_document_taxonomy,
     build_daily_report,
+    initialize_warehouse,
     upsert_warehouse,
 )
 
@@ -34,10 +35,10 @@ def _months(first: str, last: str) -> list[str]:
     return result
 
 
-def _load_cases(month: str) -> list[dict[str, Any]]:
+def _load_cases(month: str, data_root: Path) -> list[dict[str, Any]]:
     candidates = [
-        ROOT / "data" / "ml" / "reports" / "deep_eval" / f"kz_l1_{month}_cases.jsonl",
-        ROOT / "data" / "mis_protocol" / f"kz_l1_{month}_cases.jsonl",
+        data_root / "ml" / "reports" / "deep_eval" / f"kz_l1_{month}_cases.jsonl",
+        data_root / "mis_protocol" / f"kz_l1_{month}_cases.jsonl",
     ]
     path = next((candidate for candidate in candidates if candidate.is_file()), None)
     if path is None:
@@ -58,8 +59,10 @@ def backfill_month(
     warehouse: Path,
     through_date: date,
     dry_run: bool = False,
+    data_root: Path | None = None,
 ) -> dict[str, Any]:
-    csv_path = ROOT / "data" / "mis_protocol" / f"mis_protocol_{month}.csv"
+    data_root = data_root or ROOT / "data"
+    csv_path = data_root / "mis_protocol" / f"mis_protocol_{month}.csv"
     if not csv_path.is_file():
         return {"month": month, "status": "missing_csv", "rows": 0}
     frame = add_document_taxonomy(pd.read_csv(csv_path, low_memory=False))
@@ -69,7 +72,7 @@ def backfill_month(
     for row in frame.to_dict(orient="records"):
         if len(row["visit_date"]) == 10:
             raw_by_day[row["visit_date"]].append(row)
-    cases = _load_cases(month)
+    cases = _load_cases(month, data_root)
     cases_by_day: dict[str, list[dict[str, Any]]] = defaultdict(list)
     for case in cases:
         day = str(case.get("date") or "")[:10]
@@ -133,19 +136,35 @@ def main() -> int:
         default=date.today() - timedelta(days=1),
         help="последняя дата, включаемая в витрину; по умолчанию вчера",
     )
+    parser.add_argument(
+        "--data-root",
+        type=Path,
+        default=ROOT / "data",
+        help="каталог data/ с выгрузками МИС и оценками (по умолчанию data/ этого чекаута)",
+    )
+    parser.add_argument(
+        "--no-prune",
+        action="store_true",
+        help="не удалять дни после --through-date: их ведёт ежедневный конвейер",
+    )
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
+    warehouse = args.warehouse.expanduser()
+    if not args.dry_run:
+        warehouse.parent.mkdir(parents=True, exist_ok=True)
+        initialize_warehouse(warehouse)
     results = [
         backfill_month(
             month,
-            warehouse=args.warehouse.expanduser(),
+            warehouse=warehouse,
             through_date=args.through_date,
             dry_run=args.dry_run,
+            data_root=args.data_root.expanduser(),
         )
         for month in _months(args.first_month, args.last_month)
     ]
-    if not args.dry_run:
-        pruned = prune_after(args.warehouse.expanduser(), args.through_date)
+    if not args.dry_run and not args.no_prune:
+        pruned = prune_after(warehouse, args.through_date)
         if pruned:
             print(f"Удалено строк после {args.through_date.isoformat()}: {pruned}", file=sys.stderr)
     print(json.dumps(results, ensure_ascii=False, indent=2))

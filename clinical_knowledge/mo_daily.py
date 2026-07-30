@@ -468,6 +468,19 @@ def _safe_number(value: Any) -> float | None:
     return number if math.isfinite(number) else None
 
 
+def _row_keys(row: Mapping[str, Any]) -> set[str]:
+    """Идентификаторы записи: в выгрузке это `id`, в оценках - `mis_id`."""
+    keys: set[str] = set()
+    for field in ("mis_id", "id"):
+        value = row.get(field)
+        if value not in (None, ""):
+            keys.add(f"mis:{value}")
+    visit = row.get("visit_id")
+    if visit not in (None, ""):
+        keys.add(f"visit:{visit}")
+    return keys
+
+
 def load_jsonl(path: Path) -> list[dict[str, Any]]:
     if not path.is_file():
         return []
@@ -484,7 +497,7 @@ def _aggregate_group(rows: Sequence[Mapping[str, Any]], key: str, *, suppress_be
     for row in rows:
         label = str(row.get(key) or "Не указано")
         counts[label] += 1
-        score = _safe_number(row.get("overall_pct"))
+        score = case_overall_pct(row)
         if score is not None:
             groups[label].append(score)
     output = []
@@ -517,8 +530,19 @@ def assess_completeness(
     """
     eligible = [row for row in raw_rows if row.get("document_kind") in SCORED_DOCUMENT_KINDS]
     failures = [row for row in scored_cases if row.get("error")]
-    scored_ok = len(scored_cases) - len(failures)
-    coverage = round(100.0 * scored_ok / len(eligible), 2) if eligible else 100.0
+    # Считаем оценённым только случай с оценкой: пустой результат без ошибки тоже пробел.
+    scored_ok = sum(
+        1 for row in scored_cases if not row.get("error") and case_overall_pct(row) is not None
+    )
+    # Покрытие считаем по допущенным к оценке записям: иначе оценки чужих типов дают >100%.
+    scored_keys = {
+        key
+        for row in scored_cases
+        if not row.get("error") and case_overall_pct(row) is not None
+        for key in _row_keys(row)
+    }
+    covered = sum(1 for row in eligible if _row_keys(row) & scored_keys)
+    coverage = round(100.0 * covered / len(eligible), 2) if eligible else 100.0
     reasons: list[str] = []
     if eligible and coverage < SCORING_COVERAGE_TARGET_PCT:
         reasons.append("scoring_coverage")
@@ -528,6 +552,7 @@ def assess_completeness(
         reasons.append("llm_queue_pending")
     return {
         "eligible_rows": len(eligible),
+        "covered_rows": covered,
         "scored_ok": scored_ok,
         "scoring_errors": len(failures),
         "llm_queue_pending": int(llm_queue_pending),
@@ -551,7 +576,7 @@ def build_daily_report(
     completeness: Mapping[str, Any] | None = None,
     suppress_below: int = 5,
 ) -> tuple[dict[str, Any], dict[str, Any]]:
-    scores = [score for row in scored_cases if (score := _safe_number(row.get("overall_pct"))) is not None]
+    scores = [score for row in scored_cases if (score := case_overall_pct(row)) is not None]
     kinds = Counter(str(row.get("document_kind") or "unknown") for row in raw_rows)
     failures = [row for row in scored_cases if row.get("error")]
     eligible_rows = [row for row in raw_rows if row.get("document_kind") in SCORED_DOCUMENT_KINDS]
@@ -563,7 +588,7 @@ def build_daily_report(
     severe_case_ids: set[str] = set()
     action_queue = []
     for row in scored_cases:
-        score = _safe_number(row.get("overall_pct"))
+        score = case_overall_pct(row)
         deep = row.get("deep") if isinstance(row.get("deep"), Mapping) else {}
         severe = sum(int(v or 0) for key, v in (deep.get("n_by_severity") or {}).items() if key in {"P0", "P1"})
         if severe:
@@ -610,7 +635,7 @@ def build_daily_report(
                 if (
                     str(row.get("mis_id") or row.get("visit_id") or id(row)) in severe_case_ids
                     or (
-                        (case_score := _safe_number(row.get("overall_pct"))) is not None
+                        (case_score := case_overall_pct(row)) is not None
                         and case_score < 50
                     )
                 )
@@ -649,6 +674,40 @@ def build_daily_report(
     }
     assert not (PII_FIELDS & set(public))
     return report, public
+
+
+def case_overall_pct(case: Mapping[str, Any]) -> float | None:
+    """Единая шкала витрины - deep-балл: он же даёт оси и замечания.
+
+    Порядок важен. Ежедневный прогон кладёт в верхний `overall_pct` формальный
+    L1-балл (~71 в среднем), а месячные `--deep-only` файлы оставляют его пустым.
+    Если читать верхнее поле первым, история и свежие дни оказываются на разных
+    шкалах и тренд ломается на стыке.
+    """
+    for value in (
+        (case.get("deep") or {}).get("overall_pct") if isinstance(case.get("deep"), Mapping) else None,
+        (case.get("evaluation_v3") or {}).get("overall_pct")
+        if isinstance(case.get("evaluation_v3"), Mapping)
+        else None,
+        case.get("overall_pct"),
+        case.get("core_overall_pct"),
+    ):
+        score = _safe_number(value)
+        if score is not None:
+            return score
+    return None
+
+
+def case_status(case: Mapping[str, Any]) -> str:
+    """Статус берём из того же источника, что и балл: сначала deep."""
+    for value in (
+        (case.get("deep") or {}).get("status") if isinstance(case.get("deep"), Mapping) else None,
+        case.get("status"),
+    ):
+        text = str(value or "").strip()
+        if text:
+            return text
+    return ""
 
 
 def _axes_summary(cases: Sequence[Mapping[str, Any]]) -> dict[str, float | None]:
@@ -1047,7 +1106,15 @@ def upsert_warehouse(
     доехал целиком, а не только в `fact_mo_case`.
     """
     initialize_warehouse(path)
-    case_by_id = {str(row.get("mis_id") or ""): row for row in cases}
+    case_by_id = {str(row.get("mis_id")): row for row in cases if row.get("mis_id") not in (None, "")}
+    # Оценка идёт по визиту: несколько КЗ одного визита сводятся в один случай
+    # (`n_kz_per_visit`). Поэтому документ без своего mis_id наследует оценку визита,
+    # но только когда на визит есть ровно один случай.
+    by_visit: dict[str, list[Mapping[str, Any]]] = defaultdict(list)
+    for row in cases:
+        if row.get("visit_id") not in (None, ""):
+            by_visit[str(row.get("visit_id"))].append(row)
+    case_by_visit = {visit: rows[0] for visit, rows in by_visit.items() if len(rows) == 1}
     day_key = str(report.get("date") or "")[:10]
     now = utc_now()
     written: Counter[str] = Counter()
@@ -1059,13 +1126,13 @@ def upsert_warehouse(
             if not mis_id:
                 continue
             seen_ids.append(mis_id)
-            case = case_by_id.get(mis_id, {})
+            case = case_by_id.get(mis_id) or case_by_visit.get(str(raw.get("visit_id") or "")) or {}
             doctor_fio = str(raw.get("doctor_fio") or "")
             doctor_key = doctor_key_for(doctor_fio)
             specialty = str(raw.get("doctor_specialization") or "")
             filial = str(raw.get("filial") or "")
             visit_date = str(raw.get("visit_date") or "")[:10] or day_key
-            score = _safe_number(case.get("overall_pct"))
+            score = case_overall_pct(case)
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             db.execute(
                 """INSERT INTO fact_mo_case VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -1081,7 +1148,7 @@ def upsert_warehouse(
                     visit_date,
                     str(raw.get("document_kind") or "unknown"),
                     score,
-                    str(case.get("status") or ""),
+                    case_status(case),
                     doctor_key,
                     specialty,
                     filial,

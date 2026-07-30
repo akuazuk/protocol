@@ -22,6 +22,7 @@ from clinical_knowledge.mo_daily import (
     atomic_write_text,
     atomic_write_json,
     build_daily_report,
+    case_overall_pct,
     catch_up_dates,
     exclusive_lock,
     install_daily_partition,
@@ -462,9 +463,9 @@ class MoDailyPipeline:
             for path in sorted(secure_dir.glob(f"kz_l1_{month}-??_cases.jsonl")):
                 month_cases.extend(load_jsonl(path))
             month_scores = [
-                float(row["overall_pct"])
+                score
                 for row in month_cases
-                if row.get("overall_pct") is not None and not row.get("error")
+                if not row.get("error") and (score := case_overall_pct(row)) is not None
             ]
             mtd = {
                 "month": month,
