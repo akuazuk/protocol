@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r20-mo-phase0-gate-closed"
+BUILD_VERSION = "2026-07-30-r21-mo-sql-semantic-api"
 
 
 def _app_version() -> str:
@@ -10935,6 +10935,143 @@ def _mo_params(**kwargs: Any) -> dict[str, Any]:
         and value not in (None, "")
         and not callable(value)
     }
+
+
+@app.get("/api/methodist/mo/summary")
+def api_methodist_mo_summary(
+    request: "Request",
+    period: str = Query(""),
+    month: str = Query("", max_length=7),
+    compare: str = Query("none"),
+    compare_period: str = Query(""),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_summary
+
+    try:
+        return build_summary(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/timeseries")
+def api_methodist_mo_timeseries(
+    request: "Request",
+    period: str = Query(""),
+    month: str = Query("", max_length=7),
+    compare: str = Query("none"),
+    compare_period: str = Query(""),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    metrics: str = Query("", max_length=500),
+    granularity: str = Query("day"),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_timeseries
+
+    try:
+        return build_timeseries(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/breakdown")
+def api_methodist_mo_breakdown(
+    request: "Request",
+    period: str = Query(""),
+    month: str = Query("", max_length=7),
+    compare: str = Query("none"),
+    compare_period: str = Query(""),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    dimension: str = Query("specialty"),
+    sample_threshold: int = Query(0, ge=0, le=10000),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_breakdown
+
+    try:
+        return build_breakdown(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/heatmap")
+def api_methodist_mo_heatmap(
+    request: "Request",
+    period: str = Query(""),
+    month: str = Query("", max_length=7),
+    compare: str = Query("none"),
+    compare_period: str = Query(""),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    rows: str = Query("specialty"),
+    cols: str = Query("icd_chapter"),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_heatmap
+
+    try:
+        return build_heatmap(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/findings")
+def api_methodist_mo_findings(
+    request: "Request",
+    period: str = Query(""),
+    month: str = Query("", max_length=7),
+    compare: str = Query("none"),
+    compare_period: str = Query(""),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_findings
+
+    try:
+        return build_findings(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/meta")
+def api_methodist_mo_meta(request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_meta
+
+    try:
+        return build_meta()
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/overview")

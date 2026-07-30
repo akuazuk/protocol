@@ -14,11 +14,17 @@ def test_prune_after_removes_only_future_local_facts(tmp_path) -> None:
     initialize_warehouse(warehouse)
     with sqlite3.connect(warehouse) as db:
         db.execute(
-            "INSERT INTO fact_mo_case VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            """INSERT INTO fact_mo_case
+               (mis_id, visit_id, visit_date, document_kind, overall_pct, status,
+                doctor_key, specialty, filial, content_hash, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             ("1", "11", "2026-07-27", "medical_exam", 80, "good", "", "", "", "a", "now"),
         )
         db.execute(
-            "INSERT INTO fact_mo_case VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+            """INSERT INTO fact_mo_case
+               (mis_id, visit_id, visit_date, document_kind, overall_pct, status,
+                doctor_key, specialty, filial, content_hash, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
             ("2", "22", "2026-07-28", "medical_exam", 70, "review", "", "", "", "b", "now"),
         )
         db.execute(
@@ -45,7 +51,10 @@ def test_propagate_visit_scores_only_when_visit_score_is_unambiguous(tmp_path) -
     ]
     with sqlite3.connect(warehouse) as db:
         db.executemany(
-            """INSERT INTO fact_mo_case VALUES (?, ?, ?, ?, ?, ?, '', '', '', 'hash', 'now')""",
+            """INSERT INTO fact_mo_case
+               (mis_id, visit_id, visit_date, document_kind, overall_pct, status,
+                doctor_key, specialty, filial, content_hash, updated_at)
+               VALUES (?, ?, ?, ?, ?, ?, '', '', '', 'hash', 'now')""",
             rows,
         )
         db.commit()

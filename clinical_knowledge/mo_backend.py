@@ -5,6 +5,7 @@ import csv
 import json
 import os
 import sqlite3
+import statistics
 import uuid
 from collections import Counter
 from contextlib import closing
@@ -15,6 +16,15 @@ from typing import Any, Iterable
 from zoneinfo import ZoneInfo
 
 from .mo_daily import CRM_SCHEMA_SQL, initialize_warehouse, migrate_crm
+from .mo_metrics import (
+    METRICS,
+    SCHEMA_VERSION,
+    DateRange,
+    mean_confidence_interval,
+    metric_catalog,
+    resolve_periods,
+    suppress_values,
+)
 from .mis_kz_quality import (
     _facets,
     _filtered_agg,
@@ -116,9 +126,90 @@ def _connect() -> sqlite3.Connection:
     return conn
 
 
+def _warehouse_available() -> bool:
+    path = _db_path()
+    if not path.is_file():
+        return False
+    try:
+        with sqlite3.connect(f"file:{path}?mode=ro", uri=True, timeout=2) as conn:
+            return conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name='fact_mo_case'"
+            ).fetchone() is not None
+    except sqlite3.Error:
+        return False
+
+
+def _backend_source() -> str:
+    configured = (os.environ.get("MO_BACKEND_SOURCE") or "auto").strip().lower()
+    if configured not in {"auto", "warehouse", "jsonl"}:
+        raise ValueError("MO_BACKEND_SOURCE должен быть auto, warehouse или jsonl")
+    if configured == "jsonl":
+        return "jsonl_fallback"
+    if configured == "warehouse":
+        if not _warehouse_available():
+            raise RuntimeError("Витрина МО недоступна при MO_BACKEND_SOURCE=warehouse")
+        return "warehouse"
+    return "warehouse" if _warehouse_available() else "jsonl_fallback"
+
+
+def _read_connection() -> sqlite3.Connection:
+    if _backend_source() != "warehouse":
+        raise RuntimeError("SQL-витрина МО недоступна")
+    conn = sqlite3.connect(f"file:{_db_path()}?mode=ro", uri=True, timeout=10)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA query_only=ON")
+    return conn
+
+
+def _source_for_period(period: DateRange) -> str:
+    """В auto используем SQL только если в выбранном периоде есть факты."""
+    source = _backend_source()
+    if source != "warehouse" or (os.environ.get("MO_BACKEND_SOURCE") or "auto").strip().lower() != "auto":
+        return source
+    try:
+        with closing(_read_connection()) as conn:
+            exists = conn.execute(
+                "SELECT 1 FROM fact_mo_case WHERE visit_date BETWEEN ? AND ? LIMIT 1",
+                (period.date_from.isoformat(), period.date_to.isoformat()),
+            ).fetchone()
+    except sqlite3.Error:
+        return "jsonl_fallback"
+    return "warehouse" if exists else "jsonl_fallback"
+
+
+def _sql_case_filter(
+    period: DateRange,
+    params: dict[str, Any],
+    *,
+    alias: str = "c",
+) -> tuple[str, list[Any]]:
+    clauses = [f"{alias}.visit_date BETWEEN ? AND ?"]
+    values: list[Any] = [period.date_from.isoformat(), period.date_to.isoformat()]
+    mappings = {
+        "specializations": "specialty",
+        "filials": "filial",
+        "document_kinds": "document_kind",
+        "statuses": "status",
+    }
+    for param, column in mappings.items():
+        selected = _values(params.get(param))
+        if not selected:
+            continue
+        clauses.append(f"{alias}.{column} IN ({','.join('?' for _ in selected)})")
+        values.extend(selected)
+    doctors = _values(params.get("doctors"))
+    if doctors:
+        clauses.append(
+            f"{alias}.doctor_key IN (SELECT doctor_key FROM dim_doctor "
+            f"WHERE doctor_fio IN ({','.join('?' for _ in doctors)}))"
+        )
+        values.extend(doctors)
+    return " AND ".join(clauses), values
+
+
 def _month_for_date(value: str) -> str:
     value = (value or "").strip()
-    return value[:7] if len(value) >= 7 else datetime.now().strftime("%Y-%m")
+    return value[:7] if len(value) >= 7 else datetime.now(ZoneInfo("Europe/Minsk")).strftime("%Y-%m")
 
 
 def _selected_months(params: dict[str, Any]) -> list[str]:
@@ -253,6 +344,7 @@ def build_freshness(params: dict[str, Any] | None = None) -> dict[str, Any]:
     )
     return {
         "ok": True,
+        "source": _backend_source(),
         "status": status,
         "lag_days": lag_days,
         "data_through": data_through or None,
@@ -318,7 +410,7 @@ def _pipeline_records_for_month(month: str) -> tuple[dict[str, Any], ...]:
     return tuple(by_case.values())
 
 
-def _records(params: dict[str, Any]) -> list[dict[str, Any]]:
+def _jsonl_records(params: dict[str, Any]) -> list[dict[str, Any]]:
     records_by_key: dict[str, dict[str, Any]] = {}
     months = _selected_months(params)
     for month in months:
@@ -338,6 +430,76 @@ def _records(params: dict[str, Any]) -> list[dict[str, Any]]:
             records_by_key[f"{month}:{rec['case_id']}"] = dict(rec)
     # Витрину заполняет ежедневный pipeline (upsert_warehouse); API здесь ничего не дублирует.
     return list(records_by_key.values())
+
+
+def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
+    where: list[str] = []
+    values: list[Any] = []
+    if params.get("date_from"):
+        where.append("c.visit_date >= ?")
+        values.append(str(params["date_from"])[:10])
+    if params.get("date_to"):
+        where.append("c.visit_date <= ?")
+        values.append(str(params["date_to"])[:10])
+    months = _selected_months(params)
+    if not params.get("date_from") and not params.get("date_to") and months:
+        marks = ",".join("?" for _ in months)
+        where.append(f"substr(c.visit_date, 1, 7) IN ({marks})")
+        values.extend(months)
+    sql = """
+        SELECT c.*, d.doctor_fio,
+               COALESCE(d.specialty, c.specialty) AS doctor_specialty,
+               COALESCE(d.filial, c.filial) AS doctor_filial,
+               COALESCE(f.p0, 0) AS p0, COALESCE(f.p1, 0) AS p1,
+               COALESCE(f.p2, 0) AS p2, COALESCE(f.p3, 0) AS p3
+        FROM fact_mo_case c
+        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+        LEFT JOIN (
+          SELECT mis_id,
+                 SUM(severity='P0') p0, SUM(severity='P1') p1,
+                 SUM(severity='P2') p2, SUM(severity='P3') p3
+          FROM fact_mo_finding GROUP BY mis_id
+        ) f ON f.mis_id = c.mis_id
+    """
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    with closing(_read_connection()) as conn:
+        rows = conn.execute(sql, values).fetchall()
+    output = []
+    for row in rows:
+        item = dict(row)
+        score = item.get("overall_pct")
+        output.append(
+            {
+                "case_id": str(item.get("visit_id") or item["mis_id"]),
+                "mis_id": str(item["mis_id"]),
+                "visit_id": str(item.get("visit_id") or ""),
+                "date": item["visit_date"],
+                "doctor_fio": item.get("doctor_fio") or "",
+                "specialization": item.get("doctor_specialty") or item.get("specialty") or "",
+                "filial": item.get("doctor_filial") or item.get("filial") or "",
+                "document_kind": item.get("document_kind") or "unknown",
+                "overall_pct": score,
+                "status": item.get("status") or "",
+                "score_band": (
+                    "90-100" if isinstance(score, (int, float)) and score >= 90
+                    else "75-90" if isinstance(score, (int, float)) and score >= 75
+                    else "0-75"
+                ),
+                "p0": int(item.get("p0") or 0),
+                "p1": int(item.get("p1") or 0),
+                "p2": int(item.get("p2") or 0),
+                "p3": int(item.get("p3") or 0),
+                "parse_ok": "1",
+                "date_mismatch": "0",
+                "_source": "warehouse",
+            }
+        )
+    return output
+
+
+def _records(params: dict[str, Any]) -> list[dict[str, Any]]:
+    return _warehouse_records(params) if _backend_source() == "warehouse" else _jsonl_records(params)
 
 
 _MULTI_FILTERS = {
@@ -504,6 +666,7 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     return {
         "ok": True,
         "namespace": "mo",
+        "source": _backend_source(),
         "total": len(filtered),
         "page": page,
         "page_size": page_size,
@@ -546,7 +709,13 @@ def build_facets(params: dict[str, Any]) -> dict[str, Any]:
         {"value": key, "n": n if n >= SUPPRESSION_N else None, "n_bucket": None if n >= SUPPRESSION_N else f"<{SUPPRESSION_N}"}
         for key, n in crm.most_common()
     ]
-    return {"ok": True, "facets": facets, "n_filtered": len(filtered), "suppression_n": SUPPRESSION_N}
+    return {
+        "ok": True,
+        "source": _backend_source(),
+        "facets": facets,
+        "n_filtered": len(filtered),
+        "suppression_n": SUPPRESSION_N,
+    }
 
 
 def build_overview(params: dict[str, Any]) -> dict[str, Any]:
@@ -560,6 +729,7 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
     return {
         "ok": True,
         "namespace": "mo",
+        "source": _backend_source(),
         "period": {"date_from": params.get("date_from"), "date_to": params.get("date_to")},
         "kpi": {
             "source_records": None if small_slice else len(filtered),
@@ -690,7 +860,484 @@ def build_trends(params: dict[str, Any]) -> dict[str, Any]:
             }
         )
     legacy = build_kz_dynamics(months=_selected_months(params))
-    return {"ok": True, "daily": daily, "monthly": legacy.get("series") or []}
+    return {
+        "ok": True,
+        "source": _backend_source(),
+        "daily": daily,
+        "monthly": legacy.get("series") or [],
+    }
+
+
+def _resolve_request_period(params: dict[str, Any]):
+    period = str(params.get("period") or "").strip().lower()
+    if not period:
+        period = "custom" if params.get("date_from") or params.get("date_to") else "month"
+    compare = str(params.get("compare_period") or params.get("compare") or "none")
+    return resolve_periods(
+        period=period,
+        month=str(params.get("month") or "") or None,
+        compare=compare,
+        date_from=str(params.get("date_from") or "") or None,
+        date_to=str(params.get("date_to") or "") or None,
+    )
+
+
+def _sql_summary(period: DateRange, params: dict[str, Any] | None = None) -> dict[str, Any]:
+    where, values = _sql_case_filter(period, params or {})
+    with closing(_read_connection()) as conn:
+        row = conn.execute(
+            """SELECT COUNT(*) AS source_records,
+                      SUM(document_kind IN ('medical_exam','consultation')) AS eligible,
+                      SUM(document_kind IN ('medical_exam','consultation')
+                          AND overall_pct IS NOT NULL) AS evaluated,
+                      AVG(CASE WHEN document_kind IN ('medical_exam','consultation')
+                          THEN overall_pct END) AS avg_score,
+                      SUM(document_kind IN ('medical_exam','consultation')
+                          AND overall_pct < 70) AS needs_attention
+               FROM fact_mo_case c
+               WHERE """ + where,
+            values,
+        ).fetchone()
+        critical = conn.execute(
+            """SELECT COUNT(DISTINCT c.mis_id)
+               FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+               WHERE """ + where + """
+                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND f.severity='P0'""",
+            values,
+        ).fetchone()[0]
+        axes = {
+            str(axis): round(float(value), 2)
+            for axis, value in conn.execute(
+                """SELECT a.axis, AVG(a.score)
+                   FROM fact_mo_score_axis a JOIN fact_mo_case c ON c.mis_id=a.mis_id
+                   WHERE """ + where + """
+                     AND c.document_kind IN ('medical_exam','consultation')
+                   GROUP BY a.axis""",
+                values,
+            )
+            if value is not None
+        }
+    result = dict(row)
+    evaluated = int(result.get("evaluated") or 0)
+    eligible = int(result.get("eligible") or 0)
+    attention = int(result.get("needs_attention") or 0)
+    return {
+        "source_records": int(result.get("source_records") or 0),
+        "eligible": eligible,
+        "evaluated": evaluated,
+        "avg_score": round(float(result["avg_score"]), 2) if result.get("avg_score") is not None else None,
+        "needs_attention": attention,
+        "needs_attention_pct": round(100 * attention / evaluated, 2) if evaluated else None,
+        "critical": int(critical or 0),
+        "coverage_pct": round(100 * evaluated / eligible, 2) if eligible else None,
+        "axes": axes,
+    }
+
+
+def _fallback_summary(period: DateRange, params: dict[str, Any] | None = None) -> dict[str, Any]:
+    filters = {
+        **(params or {}),
+        "date_from": period.date_from.isoformat(),
+        "date_to": period.date_to.isoformat(),
+    }
+    rows = _filter_records(_jsonl_records(filters), filters)
+    eligible_rows = [
+        row for row in rows if row.get("document_kind") in {"medical_exam", "consultation"}
+    ]
+    scores = [
+        float(row["overall_pct"])
+        for row in eligible_rows
+        if isinstance(row.get("overall_pct"), (int, float))
+    ]
+    eligible = len(eligible_rows)
+    attention = sum(score < 70 for score in scores)
+    return {
+        "source_records": len(rows),
+        "eligible": eligible,
+        "evaluated": len(scores),
+        "avg_score": round(statistics.fmean(scores), 2) if scores else None,
+        "needs_attention": attention,
+        "needs_attention_pct": round(100 * attention / len(scores), 2) if scores else None,
+        "critical": sum(int(row.get("p0") or 0) > 0 for row in rows),
+        "coverage_pct": round(100 * len(scores) / eligible, 2) if eligible else None,
+        "axes": {},
+    }
+
+
+def build_summary(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    source = _source_for_period(resolved.current)
+    aggregate = _sql_summary if source == "warehouse" else _fallback_summary
+    current = aggregate(resolved.current, params)
+    comparison = aggregate(resolved.comparison, params) if resolved.comparison else None
+    deltas: dict[str, float | int | None] = {}
+    if comparison is not None:
+        for key in ("source_records", "eligible", "evaluated", "avg_score", "needs_attention_pct", "critical", "coverage_pct"):
+            left, right = current.get(key), comparison.get(key)
+            deltas[key] = round(float(left) - float(right), 2) if left is not None and right is not None else None
+    return {
+        "ok": True,
+        "source": source,
+        "schema_version": SCHEMA_VERSION,
+        "periods": resolved.to_dict(),
+        "kpi": current,
+        "comparison": comparison,
+        "deltas": deltas,
+        "suppression_n": SUPPRESSION_N,
+    }
+
+
+def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    requested = set(_values(params.get("metrics"))) or {
+        "overall", "documentation", "clinical_concordance", "safety", "regulatory", "volume", "coverage", "critical"
+    }
+    unknown = requested - set(METRICS)
+    if unknown:
+        raise ValueError(f"Неизвестные metrics: {', '.join(sorted(unknown))}")
+    granularity = str(params.get("granularity") or "day").lower()
+    if granularity not in {"day", "week"}:
+        raise ValueError("granularity должен быть day или week")
+    source = _source_for_period(resolved.current)
+    if source != "warehouse":
+        legacy = build_trends(resolved.current.to_dict())
+        return {
+            "ok": True,
+            "source": source,
+            "schema_version": SCHEMA_VERSION,
+            "periods": resolved.to_dict(),
+            "granularity": "day",
+            "series": legacy["daily"],
+        }
+    case_filters = any(
+        _values(params.get(key))
+        for key in ("specializations", "filials", "doctors", "document_kinds", "statuses")
+    )
+    bucket = "c.visit_date" if granularity == "day" else "strftime('%Y-W%W', c.visit_date)"
+    with closing(_read_connection()) as conn:
+        if case_filters:
+            where, values = _sql_case_filter(resolved.current, params)
+            rows = [
+                dict(row)
+                for row in conn.execute(
+                    f"""SELECT {bucket} AS date, COUNT(*) AS volume,
+                               SUM(c.document_kind IN ('medical_exam','consultation')
+                                   AND c.overall_pct IS NOT NULL) AS evaluated,
+                               ROUND(AVG(CASE WHEN c.document_kind IN ('medical_exam','consultation')
+                                   THEN c.overall_pct END), 2) AS overall,
+                               ROUND(SUM(c.document_kind IN ('medical_exam','consultation')
+                                   AND c.overall_pct IS NOT NULL) * 100.0 /
+                                   NULLIF(SUM(c.document_kind IN ('medical_exam','consultation')), 0), 2)
+                                   AS coverage,
+                               0 AS critical
+                        FROM fact_mo_case c WHERE {where}
+                        GROUP BY {bucket} ORDER BY date""",
+                    values,
+                )
+            ]
+            by_date = {str(row["date"]): row for row in rows}
+            for row in conn.execute(
+                f"""SELECT {bucket} AS date, a.axis, ROUND(AVG(a.score), 2) AS score
+                    FROM fact_mo_score_axis a
+                    JOIN fact_mo_case c ON c.mis_id=a.mis_id
+                    WHERE {where}
+                      AND c.document_kind IN ('medical_exam','consultation')
+                    GROUP BY {bucket}, a.axis""",
+                values,
+            ):
+                target = by_date.get(str(row["date"]))
+                if target is not None:
+                    target[str(row["axis"])] = row["score"]
+            for row in conn.execute(
+                f"""SELECT {bucket} AS date, COUNT(DISTINCT c.mis_id) AS critical
+                    FROM fact_mo_case c
+                    JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+                    WHERE {where}
+                      AND c.document_kind IN ('medical_exam','consultation')
+                      AND f.severity='P0'
+                    GROUP BY {bucket}""",
+                values,
+            ):
+                target = by_date.get(str(row["date"]))
+                if target is not None:
+                    target["critical"] = int(row["critical"])
+        else:
+            daily_bucket = (
+                "visit_date" if granularity == "day" else "strftime('%Y-W%W', visit_date)"
+            )
+            rows = [
+                dict(row)
+                for row in conn.execute(
+                    f"""SELECT {daily_bucket} AS date, SUM(source_rows) AS volume,
+                               SUM(scored_rows) AS evaluated,
+                               ROUND(SUM(avg_score * scored_rows) /
+                                   NULLIF(SUM(scored_rows), 0), 2) AS overall,
+                               ROUND(AVG(avg_documentation), 2) AS documentation,
+                               ROUND(AVG(avg_clinical_concordance), 2) AS clinical_concordance,
+                               ROUND(AVG(avg_safety), 2) AS safety,
+                               ROUND(AVG(avg_regulatory), 2) AS regulatory,
+                               ROUND(AVG(coverage_pct), 2) AS coverage,
+                               SUM(critical) AS critical
+                        FROM fact_mo_daily WHERE visit_date BETWEEN ? AND ?
+                        GROUP BY {daily_bucket} ORDER BY date""",
+                    (resolved.current.date_from.isoformat(), resolved.current.date_to.isoformat()),
+                )
+            ]
+    series = [{key: value for key, value in row.items() if key == "date" or key in requested} for row in rows]
+    return {
+        "ok": True,
+        "source": source,
+        "schema_version": SCHEMA_VERSION,
+        "periods": resolved.to_dict(),
+        "granularity": granularity,
+        "series": series,
+    }
+
+
+_BREAKDOWN_DIMENSIONS = {
+    "doctor": ("c.doctor_key", "d.doctor_fio"),
+    "specialty": ("c.specialty", "c.specialty"),
+    "branch": ("c.filial", "c.filial"),
+    "document_kind": ("c.document_kind", "COALESCE(k.label, c.document_kind)"),
+}
+
+
+def _doctor_breakdown(
+    period: DateRange,
+    sample_threshold: int,
+    params: dict[str, Any],
+) -> list[dict[str, Any]]:
+    where, values = _sql_case_filter(period, params)
+    with closing(_read_connection()) as conn:
+        rows = conn.execute(
+            """SELECT c.doctor_key, COALESCE(d.doctor_fio, c.doctor_key) doctor,
+                      c.specialty, c.overall_pct
+               FROM fact_mo_case c LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
+               WHERE """ + where + """ AND c.doctor_key <> ''
+                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.overall_pct IS NOT NULL""",
+            values,
+        ).fetchall()
+    specialty_scores: dict[str, list[float]] = {}
+    doctors: dict[tuple[str, str, str], list[float]] = {}
+    for row in rows:
+        specialty = str(row["specialty"] or "Не указано")
+        score = float(row["overall_pct"])
+        specialty_scores.setdefault(specialty, []).append(score)
+        doctors.setdefault((str(row["doctor_key"]), str(row["doctor"]), specialty), []).append(score)
+    output = []
+    for (doctor_key, doctor, specialty), scores in doctors.items():
+        n = len(scores)
+        expected = statistics.fmean(specialty_scores[specialty])
+        interval = mean_confidence_interval(scores)
+        row = {
+            "key": doctor_key,
+            "label": doctor,
+            "specialty": specialty,
+            "n": n,
+            "avg_score": round(statistics.fmean(scores), 2),
+            "expected_score": round(expected, 2),
+            "delta": round(statistics.fmean(scores) - expected, 2),
+            "ci95": {"low": interval["low"], "high": interval["high"]},
+            "delta_ci95": {
+                "low": round(float(interval["low"]) - expected, 2) if interval["low"] is not None else None,
+                "high": round(float(interval["high"]) - expected, 2) if interval["high"] is not None else None,
+            },
+            "enough_data": n >= sample_threshold,
+        }
+        output.append(
+            suppress_values(
+                row,
+                n=n,
+                threshold=SUPPRESSION_N,
+                protected={"key", "label", "specialty", "enough_data"},
+            )
+        )
+    output.sort(key=lambda item: (item.get("delta") is None, item.get("delta") or 0))
+    return output
+
+
+def build_breakdown(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    dimension = str(params.get("dimension") or "specialty").lower()
+    if dimension not in _BREAKDOWN_DIMENSIONS:
+        raise ValueError(
+            f"Неизвестный dimension={dimension!r}; допустимо: {', '.join(sorted(_BREAKDOWN_DIMENSIONS))}"
+        )
+    sample_threshold = max(SUPPRESSION_N, int(params.get("sample_threshold") or (20 if dimension == "doctor" else SUPPRESSION_N)))
+    source = _source_for_period(resolved.current)
+    if source != "warehouse":
+        rows = _filter_records(_jsonl_records(resolved.current.to_dict()), resolved.current.to_dict())
+        field = {"doctor": "doctor_fio", "specialty": "specialization", "branch": "filial", "document_kind": "document_kind"}[dimension]
+        items = _organization_groups(rows, field)
+    elif dimension == "doctor":
+        items = _doctor_breakdown(resolved.current, sample_threshold, params)
+    else:
+        key_sql, label_sql = _BREAKDOWN_DIMENSIONS[dimension]
+        joins = (
+            "LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key "
+            "LEFT JOIN dim_document_kind k ON k.document_kind=c.document_kind"
+        )
+        where, values = _sql_case_filter(resolved.current, params)
+        with closing(_read_connection()) as conn:
+            raw = conn.execute(
+                f"""SELECT {key_sql} AS key, {label_sql} AS label, COUNT(*) AS n,
+                           AVG(c.overall_pct) AS avg_score,
+                           SUM(c.overall_pct < 70) AS needs_attention
+                    FROM fact_mo_case c {joins}
+                    WHERE {where}
+                      AND c.document_kind IN ('medical_exam','consultation')
+                    GROUP BY {key_sql}, {label_sql} ORDER BY n DESC""",
+                values,
+            ).fetchall()
+        items = [
+            suppress_values(
+                {
+                    "key": str(row["key"] or ""),
+                    "label": str(row["label"] or "Не указано"),
+                    "avg_score": round(float(row["avg_score"]), 2) if row["avg_score"] is not None else None,
+                    "needs_attention": int(row["needs_attention"] or 0),
+                },
+                n=int(row["n"]),
+                threshold=SUPPRESSION_N,
+                protected={"key", "label"},
+            )
+            for row in raw
+        ]
+    return {
+        "ok": True,
+        "source": source,
+        "schema_version": SCHEMA_VERSION,
+        "periods": resolved.to_dict(),
+        "dimension": dimension,
+        "sample_threshold": sample_threshold,
+        "items": items,
+    }
+
+
+def build_heatmap(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    rows = str(params.get("rows") or "specialty")
+    cols = str(params.get("cols") or "icd_chapter")
+    if rows != "specialty" or cols != "icd_chapter":
+        raise ValueError("Доступная heatmap: rows=specialty&cols=icd_chapter")
+    source = _source_for_period(resolved.current)
+    cells: list[dict[str, Any]] = []
+    if source == "warehouse":
+        where, values = _sql_case_filter(resolved.current, params)
+        with closing(_read_connection()) as conn:
+            raw = conn.execute(
+                f"""SELECT c.specialty AS row_key, c.icd_chapter AS col_key,
+                           COUNT(*) AS n, AVG(c.overall_pct) AS avg_score
+                    FROM fact_mo_case c
+                    WHERE {where}
+                      AND c.document_kind IN ('medical_exam','consultation')
+                      AND c.icd_chapter <> ''
+                    GROUP BY c.specialty, c.icd_chapter
+                    ORDER BY n DESC""",
+                values,
+            ).fetchall()
+        cells = [
+            {
+                "row": str(item["row_key"] or "Не указано"),
+                "col": str(item["col_key"]),
+                "n": int(item["n"]),
+                "avg_score": round(float(item["avg_score"]), 2)
+                if item["avg_score"] is not None
+                else None,
+            }
+            for item in raw
+            if int(item["n"]) >= SUPPRESSION_N
+        ]
+    else:
+        filters = {
+            **params,
+            "date_from": resolved.current.date_from.isoformat(),
+            "date_to": resolved.current.date_to.isoformat(),
+        }
+        records = _filter_records(_jsonl_records(filters), filters)
+        grouped: dict[tuple[str, str], list[float]] = {}
+        for record in records:
+            chapter = str(record.get("icd_chapter") or "")
+            if not chapter:
+                continue
+            key = (str(record.get("specialization") or "Не указано"), chapter)
+            score = record.get("overall_pct")
+            if isinstance(score, (int, float)):
+                grouped.setdefault(key, []).append(float(score))
+        cells = [
+            {
+                "row": row_key,
+                "col": col_key,
+                "n": len(scores),
+                "avg_score": round(statistics.fmean(scores), 2),
+            }
+            for (row_key, col_key), scores in grouped.items()
+            if len(scores) >= SUPPRESSION_N
+        ]
+    return {
+        "ok": True,
+        "source": source,
+        "schema_version": SCHEMA_VERSION,
+        "periods": resolved.to_dict(),
+        "status": "ok" if cells else "not_available",
+        "reason": None
+        if cells
+        else "В выбранном срезе нет групп специальность × глава МКБ выше порога публикации.",
+        "rows": rows,
+        "cols": cols,
+        "cells": cells,
+    }
+
+
+def build_findings(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    source = _source_for_period(resolved.current)
+    items: list[dict[str, Any]] = []
+    if source == "warehouse":
+        where, values = _sql_case_filter(resolved.current, params)
+        with closing(_read_connection()) as conn:
+            rows = conn.execute(
+                """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) AS cases
+                   FROM fact_mo_finding f JOIN fact_mo_case c ON c.mis_id=f.mis_id
+                   WHERE """ + where + """
+                     AND c.document_kind IN ('medical_exam','consultation')
+                   GROUP BY f.finding_code, f.severity ORDER BY cases DESC""",
+                values,
+            ).fetchall()
+        items = [
+            {
+                "finding_code": str(row["finding_code"]),
+                "label": f"Замечание: {row['finding_code']}",
+                "severity": row["severity"],
+                "cases": int(row["cases"]),
+            }
+            for row in rows
+            if int(row["cases"]) >= SUPPRESSION_N
+        ]
+    return {
+        "ok": True,
+        "source": source,
+        "schema_version": SCHEMA_VERSION,
+        "periods": resolved.to_dict(),
+        "items": items,
+        "suppression_n": SUPPRESSION_N,
+    }
+
+
+def build_meta() -> dict[str, Any]:
+    return {
+        "ok": True,
+        "source": _backend_source(),
+        "schema_version": SCHEMA_VERSION,
+        "timezone": "Europe/Minsk",
+        "periods": sorted({"yesterday", "7d", "month", "custom"}),
+        "compare": sorted({"previous", "weekday", "none"}),
+        "dimensions": sorted(_BREAKDOWN_DIMENSIONS),
+        "metrics": metric_catalog(),
+        "suppression_n": SUPPRESSION_N,
+    }
 
 
 def build_data_quality(params: dict[str, Any]) -> dict[str, Any]:

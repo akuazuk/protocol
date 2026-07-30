@@ -2,12 +2,14 @@ from __future__ import annotations
 
 import json
 import sqlite3
+from datetime import date
 from pathlib import Path
 
 from fastapi.testclient import TestClient
 
 import rag_server
 from clinical_knowledge import mo_backend
+from clinical_knowledge.mo_daily import doctor_key_for, initialize_warehouse
 from clinical_knowledge.mis_kz_quality import classify_document_kind
 
 
@@ -286,3 +288,176 @@ def test_legacy_compatibility_metadata_contract() -> None:
     assert meta["deprecated"] is True
     assert meta["replacement"] == "/api/methodist/mo"
     assert {"kz_kind", "evaluation_v3"} <= set(meta["legacy_fields_preserved"])
+
+
+def _seed_analytics_warehouse(path: Path) -> None:
+    initialize_warehouse(path)
+    with sqlite3.connect(path) as conn:
+        doctors = [
+            ("Целевой врач", "Терапия", 60.0, 5),
+            ("Коллега", "Терапия", 60.0, 5),
+            ("Врач другой специальности", "Хирургия", 100.0, 10),
+        ]
+        mis_id = 1
+        for fio, specialty, score, count in doctors:
+            key = doctor_key_for(fio)
+            conn.execute("INSERT INTO dim_doctor VALUES (?, ?, ?, ?)", (key, fio, specialty, "Филиал"))
+            for _ in range(count):
+                conn.execute(
+                    """INSERT INTO fact_mo_case
+                       (mis_id,visit_id,visit_date,document_kind,overall_pct,status,
+                        doctor_key,specialty,filial,content_hash,updated_at)
+                       VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                    (
+                        str(mis_id),
+                        str(mis_id),
+                        "2026-07-15",
+                        "consultation",
+                        score,
+                        "good",
+                        key,
+                        specialty,
+                        "Филиал",
+                        f"hash-{mis_id}",
+                        "2026-07-16T00:00:00Z",
+                    ),
+                )
+                mis_id += 1
+        conn.execute(
+            """INSERT INTO fact_mo_case
+               (mis_id,visit_id,visit_date,document_kind,overall_pct,status,
+                doctor_key,specialty,filial,content_hash,updated_at)
+               VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                str(mis_id),
+                str(mis_id),
+                "2026-07-15",
+                "diagnostic",
+                100.0,
+                "good",
+                "",
+                "Диагностика",
+                "Филиал",
+                f"hash-{mis_id}",
+                "2026-07-16T00:00:00Z",
+            ),
+        )
+        for day, avg in (("2026-07-14", 70.0), ("2026-07-15", 80.0)):
+            conn.execute(
+                """INSERT INTO fact_mo_daily
+                   (visit_date,source_rows,scored_rows,avg_score,revision,quality_status,updated_at,
+                    eligible_rows,partial,coverage_pct,critical)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?)""",
+                (day, 10, 10, avg, 1, "passed", "2026-07-16T00:00:00Z", 10, 0, 100.0, 0),
+            )
+
+
+def test_new_mo_endpoints_require_auth_and_use_seeded_warehouse(monkeypatch, tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo.sqlite"
+    _seed_analytics_warehouse(warehouse)
+    monkeypatch.setenv("METHODIST_TOKEN", "mo-test-token")
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(warehouse))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    client = TestClient(rag_server.app)
+    headers = {"X-Methodist-Token": "mo-test-token"}
+    urls = [
+        "/api/methodist/mo/summary?period=custom&date_from=2026-07-15&date_to=2026-07-15&compare=previous",
+        "/api/methodist/mo/timeseries?period=custom&date_from=2026-07-14&date_to=2026-07-15",
+        "/api/methodist/mo/breakdown?period=custom&date_from=2026-07-15&date_to=2026-07-15&dimension=doctor",
+        "/api/methodist/mo/heatmap?period=custom&date_from=2026-07-15&date_to=2026-07-15",
+        "/api/methodist/mo/findings?period=custom&date_from=2026-07-15&date_to=2026-07-15",
+        "/api/methodist/mo/meta",
+    ]
+    for url in urls:
+        assert client.get(url).status_code == 403
+        response = client.get(url, headers=headers)
+        assert response.status_code == 200, (url, response.text)
+        payload = response.json()
+        assert payload["source"] == "warehouse"
+        assert payload["schema_version"] == 1
+
+    summary = client.get(urls[0], headers=headers).json()
+    assert summary["periods"]["timezone"] == "Europe/Minsk"
+    assert summary["deltas"]["source_records"] == 21
+    assert summary["kpi"]["eligible"] == 20
+    assert summary["kpi"]["evaluated"] == 20
+    assert summary["kpi"]["coverage_pct"] == 100.0
+    heatmap = client.get(urls[3], headers=headers).json()
+    assert heatmap["status"] == "not_available"
+    assert heatmap["cells"] == []
+
+
+def test_doctor_expected_score_uses_specialty_not_clinic_mean(monkeypatch, tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo.sqlite"
+    _seed_analytics_warehouse(warehouse)
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(warehouse))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    result = mo_backend.build_breakdown(
+        {
+            "period": "custom",
+            "date_from": "2026-07-15",
+            "date_to": "2026-07-15",
+            "dimension": "doctor",
+            "sample_threshold": 5,
+        }
+    )
+    target = next(item for item in result["items"] if item["label"] == "Целевой врач")
+    assert target["avg_score"] == 60.0
+    assert target["expected_score"] == 60.0
+    assert target["delta"] == 0.0
+    assert target["enough_data"] is True
+
+
+def test_new_endpoints_reject_unknown_period_and_dimension(monkeypatch, tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo.sqlite"
+    _seed_analytics_warehouse(warehouse)
+    monkeypatch.setenv("METHODIST_TOKEN", "mo-test-token")
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(warehouse))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    client = TestClient(rag_server.app)
+    headers = {"X-Methodist-Token": "mo-test-token"}
+    bad_period = client.get("/api/methodist/mo/summary?period=quarter", headers=headers)
+    assert bad_period.status_code == 422
+    assert "Неизвестный period" in bad_period.text
+    bad_dimension = client.get(
+        "/api/methodist/mo/breakdown?dimension=patient",
+        headers=headers,
+    )
+    assert bad_dimension.status_code == 422
+    assert "Неизвестный dimension" in bad_dimension.text
+
+
+def test_sql_summary_applies_shared_filters(monkeypatch, tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo.sqlite"
+    _seed_analytics_warehouse(warehouse)
+    monkeypatch.setenv("METHODIST_TOKEN", "mo-test-token")
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(warehouse))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    client = TestClient(rag_server.app)
+    response = client.get(
+        "/api/methodist/mo/summary"
+        "?period=custom&date_from=2026-07-15&date_to=2026-07-15"
+        "&specializations=Терапия",
+        headers={"X-Methodist-Token": "mo-test-token"},
+    )
+    assert response.status_code == 200
+    kpi = response.json()["kpi"]
+    assert kpi["source_records"] == 10
+    assert kpi["eligible"] == 10
+    assert kpi["evaluated"] == 10
+    assert kpi["avg_score"] == 60.0
+
+
+def test_auto_source_falls_back_when_period_is_absent_from_warehouse(
+    monkeypatch, tmp_path: Path
+) -> None:
+    warehouse = tmp_path / "mo.sqlite"
+    initialize_warehouse(warehouse)
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(warehouse))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "auto")
+    assert (
+        mo_backend._source_for_period(
+            mo_backend.DateRange(date(2026, 7, 1), date(2026, 7, 31))
+        )
+        == "jsonl_fallback"
+    )

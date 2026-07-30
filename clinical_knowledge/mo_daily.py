@@ -1013,8 +1013,9 @@ def initialize_warehouse(path: Path) -> None:
             CREATE TABLE IF NOT EXISTS fact_mo_case (
               mis_id TEXT PRIMARY KEY, visit_id TEXT, visit_date TEXT NOT NULL,
               document_kind TEXT NOT NULL, overall_pct REAL, status TEXT,
-              doctor_key TEXT, specialty TEXT, filial TEXT, content_hash TEXT NOT NULL,
-              updated_at TEXT NOT NULL
+              doctor_key TEXT, specialty TEXT, filial TEXT,
+              diagnosis_code TEXT, icd_chapter TEXT,
+              content_hash TEXT NOT NULL, updated_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS fact_mo_finding (
               mis_id TEXT NOT NULL, finding_code TEXT NOT NULL, severity TEXT,
@@ -1045,9 +1046,15 @@ def initialize_warehouse(path: Path) -> None:
             CREATE INDEX IF NOT EXISTS idx_case_date ON fact_mo_case(visit_date);
             CREATE INDEX IF NOT EXISTS idx_case_org ON fact_mo_case(filial, specialty);
             CREATE INDEX IF NOT EXISTS idx_case_doctor ON fact_mo_case(doctor_key, visit_date);
+            CREATE INDEX IF NOT EXISTS idx_case_date_document ON fact_mo_case(visit_date, document_kind);
+            CREATE INDEX IF NOT EXISTS idx_case_date_specialty ON fact_mo_case(visit_date, specialty);
+            CREATE INDEX IF NOT EXISTS idx_case_date_filial ON fact_mo_case(visit_date, filial);
+            CREATE INDEX IF NOT EXISTS idx_case_status_date ON fact_mo_case(status, visit_date);
             CREATE INDEX IF NOT EXISTS idx_finding_code ON fact_mo_finding(finding_code, severity);
+            CREATE INDEX IF NOT EXISTS idx_finding_severity_case ON fact_mo_finding(severity, mis_id);
             CREATE INDEX IF NOT EXISTS idx_axis_axis ON fact_mo_score_axis(axis);
             CREATE INDEX IF NOT EXISTS idx_doctor_daily_date ON fact_mo_doctor_daily(visit_date);
+            CREATE INDEX IF NOT EXISTS idx_daily_date_quality ON fact_mo_daily(visit_date, quality_status);
             """
         )
         _upgrade_crm_schema(db)
@@ -1067,14 +1074,28 @@ def initialize_warehouse(path: Path) -> None:
                 "critical": "INTEGER",
             },
         )
+        _ensure_columns(
+            db,
+            "fact_mo_case",
+            {"diagnosis_code": "TEXT", "icd_chapter": "TEXT"},
+        )
         _ensure_columns(db, "dim_diagnosis", {"chapter": "TEXT"})
         _ensure_columns(db, "dim_service", {"service_group": "TEXT"})
+        db.executescript(
+            """
+            CREATE INDEX IF NOT EXISTS idx_case_date_chapter
+              ON fact_mo_case(visit_date, icd_chapter);
+            CREATE INDEX IF NOT EXISTS idx_case_specialty_chapter
+              ON fact_mo_case(specialty, icd_chapter);
+            """
+        )
         db.executemany(
             "INSERT OR IGNORE INTO dim_document_kind(document_kind, label) VALUES (?, ?)",
             [(kind, DOCUMENT_KIND_LABELS.get(kind, kind.replace("_", " "))) for kind in sorted(DOCUMENT_KINDS)],
         )
         # saved_view и export_job наполняет только кабинет: системные пресеты живут в UI,
         # иначе они попадают в личный список методиста.
+        db.execute("PRAGMA user_version=1")
 
 
 def day_status(report: Mapping[str, Any]) -> str:
@@ -1133,14 +1154,25 @@ def upsert_warehouse(
             filial = str(raw.get("filial") or "")
             visit_date = str(raw.get("visit_date") or "")[:10] or day_key
             score = case_overall_pct(case)
+            diagnosis_codes = _split_multi(raw.get("mkb_codes")) or _split_multi(
+                raw.get("mkb_code_main")
+            )
+            diagnosis_code = diagnosis_codes[0] if diagnosis_codes else ""
+            diagnosis_chapter = icd_chapter(diagnosis_code)
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             db.execute(
-                """INSERT INTO fact_mo_case VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                """INSERT INTO fact_mo_case
+                   (mis_id, visit_id, visit_date, document_kind, overall_pct, status,
+                    doctor_key, specialty, filial, diagnosis_code, icd_chapter,
+                    content_hash, updated_at)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(mis_id) DO UPDATE SET
                    visit_id=excluded.visit_id, visit_date=excluded.visit_date,
                    document_kind=excluded.document_kind, overall_pct=excluded.overall_pct,
                    status=excluded.status, doctor_key=excluded.doctor_key,
                    specialty=excluded.specialty, filial=excluded.filial,
+                   diagnosis_code=excluded.diagnosis_code,
+                   icd_chapter=excluded.icd_chapter,
                    content_hash=excluded.content_hash, updated_at=excluded.updated_at""",
                 (
                     mis_id,
@@ -1152,6 +1184,8 @@ def upsert_warehouse(
                     doctor_key,
                     specialty,
                     filial,
+                    diagnosis_code,
+                    diagnosis_chapter,
                     hashlib.sha256(payload.encode("utf-8")).hexdigest(),
                     now,
                 ),
@@ -1177,7 +1211,7 @@ def upsert_warehouse(
             if filial:
                 db.execute("INSERT OR IGNORE INTO dim_branch VALUES (?)", (filial,))
                 written["dim_branch"] += 1
-            for code in _split_multi(raw.get("mkb_codes")) or _split_multi(raw.get("mkb_code_main")):
+            for code in diagnosis_codes:
                 db.execute(
                     "INSERT OR IGNORE INTO dim_diagnosis(diagnosis_code, diagnosis_label, chapter) VALUES (?, ?, ?)",
                     (code, "", icd_chapter(code)),

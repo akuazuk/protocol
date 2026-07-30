@@ -105,6 +105,44 @@ python3 scripts/migrate_mo_crm_to_warehouse.py
 API выполняет тот же перенос автоматически при первом обращении, если старый файл ещё есть.
 CRM-таблицы прежней схемы с данными переименовываются в `*_legacy` и остаются в файле.
 
+## Семантический SQL API
+
+Аналитика читает `mo_analytics.sqlite` напрямую (`MO_BACKEND_SOURCE=auto`):
+если в выбранном периоде есть факты - источник `warehouse`, иначе ответ честно
+помечается `jsonl_fallback`.
+
+| Endpoint | Назначение |
+|---|---|
+| `/api/methodist/mo/summary` | KPI периода, сравнение и дельты |
+| `/api/methodist/mo/timeseries` | временные ряды общей оценки и четырёх осей |
+| `/api/methodist/mo/breakdown` | специальности, филиалы, виды документов, врачи с ожидаемой оценкой и ДИ |
+| `/api/methodist/mo/heatmap` | специальность × глава МКБ |
+| `/api/methodist/mo/findings` | частота дефектов по severity |
+| `/api/methodist/mo/meta` | русский словарь метрик, периоды, измерения |
+
+Общие параметры: `period=yesterday|7d|month|custom`, `month=YYYY-MM`,
+`date_from/date_to`, `compare=previous|weekday|none`, а также фильтры
+`specializations`, `filials`, `doctors`, `document_kinds`, `statuses`.
+Все календарные границы рассчитываются в `Europe/Minsk`.
+
+Переключатель источника для диагностики:
+
+```bash
+MO_BACKEND_SOURCE=warehouse  # не использовать fallback
+MO_BACKEND_SOURCE=jsonl      # принудительный fallback
+MO_BACKEND_SOURCE=auto       # продовый режим
+```
+
+Проверка производительности:
+
+```bash
+python3 scripts/benchmark_mo_summary.py \
+  --warehouse data/medical_exams/warehouse/mo_analytics.sqlite \
+  --month 2026-07 --runs 50
+```
+
+Гейт фазы 1: warm p95 `/summary` < 400 мс.
+
 ## Публикация в прод: как данные попадают на Render
 
 Конвейер работает на рабочей машине, а прод читает диск Render. Без публикации в
