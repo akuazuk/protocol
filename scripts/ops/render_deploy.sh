@@ -23,6 +23,7 @@ Commands:
   restart             restart the service without rebuilding (use after uploading data to /var/data)
   logs                recent service logs
   services            list services visible to the API key (to find RENDER_SERVICE_ID)
+  has-key             exit 0 if an API key is configured, 1 otherwise (for scripting)
 
 Options:
   --wait              wait until the triggered deploy reaches "live"
@@ -69,6 +70,14 @@ done
 
 if [[ -z "${RENDER_API_KEY:-}" && -f .env ]]; then
   RENDER_API_KEY="$(sed -n 's/^[[:space:]]*RENDER_API_KEY[[:space:]]*=[[:space:]]*//p' .env | head -n1 | tr -d '"'"'"'\r')"
+fi
+
+if [[ "$CMD" == "has-key" ]]; then
+  if [[ -n "${RENDER_API_KEY:-}" ]]; then
+    echo "RENDER_API_KEY is configured"
+    exit 0
+  fi
+  exit 1
 fi
 
 if [[ -z "${RENDER_API_KEY:-}" ]]; then

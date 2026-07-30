@@ -85,12 +85,13 @@ scripts/git_deploy_guard.sh \
 echo
 echo "OK: push + pre-deploy guard passed."
 if [[ "$WAIT_RENDER_VERSION" == "1" ]]; then
-  echo "Waiting for Render to apply expected BUILD_VERSION..."
-  scripts/render_wait_version.sh \
+  echo "Deploying and waiting for expected BUILD_VERSION..."
+  scripts/ops/render_apply_deploy.sh \
+    --commit="$(git rev-parse HEAD)" \
     --prod-url="$PROD_URL" \
     --timeout-sec="$WAIT_TIMEOUT_SEC" \
     --interval-sec="$WAIT_INTERVAL_SEC"
 else
   echo "Next: trigger/verify Render deploy for branch '$RENDER_DEPLOY_BRANCH'."
-  echo "Tip: add --wait-version to wait until /api/version matches local BUILD_VERSION."
+  echo "Tip: add --wait-version to deploy through the API and wait for /api/version."
 fi

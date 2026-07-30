@@ -21,7 +21,8 @@ What it does:
   1) verifies clean git state
   2) ensures origin/main is ancestor of current HEAD (fast-forward safe)
   3) pushes HEAD -> origin/main
-  4) optionally waits until /api/version matches local BUILD_VERSION
+  4) triggers the Render deploy for that commit (needs RENDER_API_KEY)
+  5) optionally waits until /api/version matches local BUILD_VERSION
 EOF
 }
 
@@ -78,11 +79,12 @@ fi
 echo "OK: ${REMOTE_NAME}/${TARGET_BRANCH} at $local_tip"
 
 if [[ "$WAIT_RENDER_VERSION" == "1" ]]; then
-  scripts/ops/render_wait_version.sh \
+  scripts/ops/render_apply_deploy.sh \
+    --commit="$local_tip" \
     --prod-url="$PROD_URL" \
     --timeout-sec="$WAIT_TIMEOUT_SEC" \
     --interval-sec="$WAIT_INTERVAL_SEC"
 else
-  echo "Skip wait. Use:"
-  echo "  scripts/ops/render_wait_version.sh --prod-url=$PROD_URL"
+  echo "Skip deploy and wait. Use:"
+  echo "  scripts/ops/render_apply_deploy.sh --prod-url=$PROD_URL"
 fi
