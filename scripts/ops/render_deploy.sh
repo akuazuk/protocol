@@ -10,6 +10,7 @@ PROD_URL="${PROTOCOL_PROD_URL:-https://protocol-bimy.onrender.com}"
 API_BASE="${RENDER_API_BASE:-https://api.render.com/v1}"
 WAIT_TIMEOUT_SEC="${WAIT_TIMEOUT_SEC:-900}"
 WAIT_INTERVAL_SEC="${WAIT_INTERVAL_SEC:-15}"
+WEBHOOK_GRACE_SEC="${WEBHOOK_GRACE_SEC:-25}"
 
 usage() {
   cat <<'EOF'
@@ -20,6 +21,8 @@ Commands:
   status              service settings (autoDeploy/branch/suspended) + last deploys + prod version
   deploys             recent deploys with status and commit
   deploy              trigger a deploy of the latest commit on the service branch
+  ensure-deploy       make sure a commit gets deployed: wait for the push-triggered
+                      deploy if it appears, otherwise trigger one (use --commit=SHA)
   restart             restart the service without rebuilding (use after uploading data to /var/data)
   logs                recent service logs
   services            list services visible to the API key (to find RENDER_SERVICE_ID)
@@ -152,6 +155,16 @@ for d in json.load(sys.stdin)[:limit]:
         print("      " + msg[0][:60])
 '
 
+PY_FIND_COMMIT='
+import json, sys
+sha = sys.argv[1]
+for d in json.load(sys.stdin):
+    commit = (d.get("commit") or {}).get("id") or ""
+    if commit.startswith(sha) or sha.startswith(commit[:7] or "\0"):
+        print(d.get("id", ""), d.get("status", ""))
+        break
+'
+
 PY_LOGS='
 import json, sys
 data = json.load(sys.stdin)
@@ -177,6 +190,26 @@ print(m.group(1) if m else "")
 PY
 }
 
+find_deploy_for_commit() {
+  api GET "/services/${SERVICE_ID}/deploys?limit=10" 2>/dev/null \
+    | python3 -c "$PY_UNWRAP" deploy 2>/dev/null \
+    | python3 -c "$PY_FIND_COMMIT" "$1" 2>/dev/null \
+    || true
+}
+
+trigger_deploy() {
+  local body
+  body="$(python3 -c '
+import json, sys
+payload = {"clearCache": sys.argv[1]}
+if sys.argv[2]:
+    payload["commitId"] = sys.argv[2]
+print(json.dumps(payload))
+' "$1" "$2")"
+  api POST "/services/${SERVICE_ID}/deploys" "$body" \
+    | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))'
+}
+
 wait_for_deploy() {
   local deploy_id="$1"
   local start_ts elapsed status
@@ -184,8 +217,13 @@ wait_for_deploy() {
   echo "Waiting for deploy $deploy_id (timeout ${WAIT_TIMEOUT_SEC}s)..."
   while true; do
     elapsed=$(( $(date +%s) - start_ts ))
-    status="$(api GET "/services/${SERVICE_ID}/deploys/${deploy_id}" \
-      | python3 -c 'import json,sys; print(json.load(sys.stdin).get("status",""))')"
+    # A transient API error must not abort the whole deploy flow.
+    status="$(api GET "/services/${SERVICE_ID}/deploys/${deploy_id}" 2>/dev/null \
+      | python3 -c 'import json,sys; print(json.load(sys.stdin).get("status",""))' 2>/dev/null \
+      || true)"
+    if [[ -z "$status" ]]; then
+      status="api_unavailable"
+    fi
     echo "  elapsed=${elapsed}s status=${status}"
     case "$status" in
       live)
@@ -245,20 +283,51 @@ case "$CMD" in
     if [[ "$CLEAR_CACHE" == "1" ]]; then
       cache_mode="clear"
     fi
-    body="$(python3 -c '
-import json, sys
-payload = {"clearCache": sys.argv[1]}
-if sys.argv[2]:
-    payload["commitId"] = sys.argv[2]
-print(json.dumps(payload))
-' "$cache_mode" "$COMMIT_SHA")"
-    deploy_id="$(api POST "/services/${SERVICE_ID}/deploys" "$body" \
-      | python3 -c 'import json,sys; print(json.load(sys.stdin).get("id",""))')"
+    deploy_id="$(trigger_deploy "$cache_mode" "$COMMIT_SHA")"
     echo "Triggered deploy: $deploy_id"
     if [[ "$WAIT" == "1" ]]; then
       wait_for_deploy "$deploy_id"
     else
       echo "Follow with: scripts/ops/render_deploy.sh deploys"
+    fi
+    ;;
+
+  ensure-deploy)
+    if [[ -z "$COMMIT_SHA" ]]; then
+      COMMIT_SHA="$(git rev-parse HEAD)"
+    fi
+    short="${COMMIT_SHA:0:7}"
+    # The push webhook usually creates the deploy within seconds; reuse it instead of
+    # queueing a second build of the same commit, and trigger one only if it never shows up.
+    found=""
+    grace_start="$(date +%s)"
+    while true; do
+      found="$(find_deploy_for_commit "$COMMIT_SHA")"
+      [[ -n "$found" ]] && break
+      (( $(date +%s) - grace_start >= WEBHOOK_GRACE_SEC )) && break
+      sleep 5
+    done
+
+    deploy_id="${found%% *}"
+    deploy_status="${found##* }"
+
+    case "$deploy_status" in
+      live)
+        echo "Deploy for $short is already live"
+        exit 0
+        ;;
+      created|queued|build_in_progress|update_in_progress|pre_deploy_in_progress)
+        echo "Reusing deploy $deploy_id for $short (started by the push webhook)"
+        ;;
+      *)
+        echo "No usable deploy for $short, triggering one via API..."
+        deploy_id="$(trigger_deploy "do_not_clear" "$COMMIT_SHA")"
+        echo "Triggered deploy: $deploy_id"
+        ;;
+    esac
+
+    if [[ "$WAIT" == "1" ]]; then
+      wait_for_deploy "$deploy_id"
     fi
     ;;
 
