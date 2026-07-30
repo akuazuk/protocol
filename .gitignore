@@ -99,3 +99,13 @@ data/reports/*.log
 # Локальные batch-выгрузки с чувствительными данными
 ml/experiments/batch_clients_consult_*/
 ml/experiments/batch_new_report_*/
+
+# Лексические шарды и манифест путей корпуса: 250+ МБ, регенерируются
+# scripts/build_path_lex_shards.py и scripts/build_corpus_path_manifest.py.
+# В проде читаются с диска Render (RAG_LEX_SHARDS_DIR, RAG_MANIFEST_PATH), не из git.
+data/catalog/lex_shards/
+data/catalog/corpus_path_manifest.jsonl
+
+# Исходные PDF нормативных актов: держим локально, в репозиторий идут только
+# извлечённые JSON в data/regulations/.
+data/regulations/source/

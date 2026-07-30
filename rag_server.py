@@ -8461,7 +8461,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r4-mo-plan-execution-rules"
+BUILD_VERSION = "2026-07-30-r5-repo-hygiene-clean-tree"
 
 
 def _app_version() -> str:
