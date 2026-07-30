@@ -489,7 +489,7 @@ class MoDailyPipeline:
                 completeness=completeness,
             )
             write_daily_report(report, public, day=day, root=self.paths.data_root)
-            upsert_warehouse(self.paths.warehouse, raw_rows, cases, report)
+            warehouse_written = upsert_warehouse(self.paths.warehouse, raw_rows, cases, report)
 
             state.stage(day, "publishing")
             self._public_smoke(public)
@@ -505,6 +505,7 @@ class MoDailyPipeline:
                 partition=str(partition),
                 meta=str(meta_path),
                 completeness=completeness,
+                warehouse=warehouse_written,
             )
             self._emit(
                 day,

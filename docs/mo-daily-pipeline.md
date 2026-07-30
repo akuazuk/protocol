@@ -79,6 +79,32 @@ Blocking gate переносит partition в quarantine и не обновля�
 Причины `partial`: `scoring_coverage` (оценены не все допущенные записи),
 `scoring_errors` (ошибки оценки), `llm_queue_pending` (остались записи в очереди LLM).
 
+## Витрина: один файл на аналитику и кабинет
+
+`data/medical_exams/warehouse/mo_analytics.sqlite` (в проде `/var/data/medical_exams/warehouse/`) -
+единственный файл: звёздная схема ежедневного pipeline и операционные таблицы кабинета
+методиста лежат вместе. Раньше кабинет писал в отдельный `mo_methodist.sqlite`, где те же
+имена таблиц имели другую схему, а факты дублировались write-only копией, которую никто не читал.
+
+- pipeline заполняет `fact_mo_case`, `fact_mo_finding`, `fact_mo_score_axis`,
+ `fact_mo_daily`, `fact_mo_doctor_daily` и все `dim_*` за один день;
+- кабинет владеет `crm_case_state`, `crm_case_event`, `saved_view`, `export_job`;
+ ключ CRM - `case_id` = `visit_id` МИС (разбор ведётся по визиту);
+- pipeline создаёт CRM-заготовки только для случаев из очереди разбора и **никогда**
+ не перезаписывает статус, поставленный методистом;
+- `dim_diagnosis.chapter` заполняется главой МКБ-10 по коду - для группировки диагнозов
+ без внешнего справочника.
+
+Перенос старого файла (идемпотентно, источник только читается):
+
+```bash
+python3 scripts/migrate_mo_crm_to_warehouse.py --dry-run
+python3 scripts/migrate_mo_crm_to_warehouse.py
+```
+
+API выполняет тот же перенос автоматически при первом обращении, если старый файл ещё есть.
+CRM-таблицы прежней схемы с данными переименовываются в `*_legacy` и остаются в файле.
+
 ## Telegram: один дайджест на прогон
 
 Раньше каждый обработанный день писал отдельное сообщение, и при catch-up за неделю

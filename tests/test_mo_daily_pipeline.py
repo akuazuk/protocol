@@ -17,9 +17,12 @@ from clinical_knowledge.mo_daily import (
     build_daily_report,
     catch_up_dates,
     day_status,
+    doctor_key_for,
+    icd_chapter,
     initialize_warehouse,
     install_daily_partition,
     merge_daily_partitions,
+    migrate_crm,
     previous_week_dates,
     resolve_run_date,
     this_week_dates,
@@ -563,6 +566,280 @@ def test_warehouse_schema_contains_star_and_crm_tables(tmp_path: Path) -> None:
     with sqlite3.connect(path) as db:
         tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
     assert {"fact_mo_case", "fact_mo_daily", "dim_doctor", "crm_case_state", "crm_case_event"} <= tables
+
+
+def warehouse_day_rows(day: str = "2026-07-27") -> tuple[list[dict], list[dict]]:
+    frame = wide_frame(3, day=day)
+    frame.loc[0, "mkb_codes"] = "I10|E11.9"
+    frame.loc[1, "mkb_codes"] = "J06.9"
+    frame.loc[2, "mkb_codes"] = ""
+    frame["service_codes"] = "10.100.1. | 10.64."
+    frame["service_names"] = "Консультация врача-терапевта, категория | Перчатки нитриловые"
+    frame.loc[1, "doctor_fio"] = "Петров П.П."
+    frame.loc[1, "doctor_specialization"] = "Кардиолог"
+    frame.loc[1, "filial"] = "B"
+    raw = add_document_taxonomy(frame).to_dict(orient="records")
+    cases = [
+        {
+            "mis_id": 1,
+            "visit_id": 1000,
+            "doctor_fio": "Иванов И.И.",
+            "doctor_specialization": "Терапевт",
+            "filial": "A",
+            "overall_pct": 58,
+            "status": "partially_compliant",
+            "deep": {
+                "axes": {"documentation": 60, "clinical_concordance": 55, "safety": 40, "regulatory": 90},
+                "n_by_severity": {"P0": 0, "P1": 1, "P2": 2},
+                "findings": [
+                    {"code": "no_bp", "axis": "documentation", "severity": "P1", "passed": False, "evidence": "нет АД"},
+                    {"code": "no_plan", "axis": "safety", "severity": "P2", "passed": False, "evidence": "нет плана"},
+                ],
+            },
+        },
+        {
+            "mis_id": 2,
+            "visit_id": 1001,
+            "doctor_fio": "Петров П.П.",
+            "doctor_specialization": "Кардиолог",
+            "filial": "B",
+            "overall_pct": 92,
+            "status": "compliant",
+            "deep": {"axes": {"documentation": 95, "safety": 90}, "n_by_severity": {}, "findings": []},
+        },
+        {
+            "mis_id": 3,
+            "visit_id": 1002,
+            "doctor_fio": "Иванов И.И.",
+            "doctor_specialization": "Терапевт",
+            "filial": "A",
+            "overall_pct": 81,
+            "status": "mostly_compliant",
+            "deep": {"axes": {"documentation": 80}, "findings": []},
+        },
+    ]
+    return raw, cases
+
+
+def test_one_day_fills_every_warehouse_table(tmp_path: Path) -> None:
+    import sqlite3
+
+    raw, cases = warehouse_day_rows()
+    secure, _public = build_daily_report(
+        raw, cases, day=date(2026, 7, 27), run_id="wh", revision=2, quality={"passed": True}
+    )
+    path = tmp_path / "warehouse.sqlite"
+    written = upsert_warehouse(path, raw, cases, secure)
+
+    assert written["fact_mo_case"] == 3
+    assert written["fact_mo_score_axis"] == 7
+    assert written["fact_mo_finding"] == 2
+    assert written["fact_mo_doctor_daily"] == 2
+
+    with sqlite3.connect(path) as db:
+        counts = {
+            table: db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+            for table in (
+                "fact_mo_case",
+                "fact_mo_finding",
+                "fact_mo_score_axis",
+                "fact_mo_daily",
+                "fact_mo_doctor_daily",
+                "dim_date",
+                "dim_doctor",
+                "dim_specialty",
+                "dim_branch",
+                "dim_diagnosis",
+                "dim_service",
+                "dim_document_kind",
+                "crm_case_state",
+                "crm_case_event",
+            )
+        }
+        empty = sorted(name for name, count in counts.items() if count == 0)
+        assert empty == [], f"пустые таблицы витрины: {empty}"
+        # saved_view и export_job наполняет кабинет методиста, а не pipeline.
+        assert db.execute("SELECT COUNT(*) FROM saved_view").fetchone()[0] == 0
+
+        day_row = dict(
+            zip(
+                [c[0] for c in db.execute("SELECT * FROM fact_mo_daily LIMIT 0").description],
+                db.execute("SELECT * FROM fact_mo_daily WHERE visit_date = ?", ("2026-07-27",)).fetchone(),
+            )
+        )
+        assert day_row["eligible_rows"] == 3
+        assert day_row["avg_safety"] == pytest.approx(65.0)
+        assert day_row["needs_attention"] == 1
+        assert day_row["quality_status"] == "passed"
+
+        # Врач с двумя случаями агрегирован отдельно от второго врача.
+        ivanov = db.execute(
+            "SELECT cases, scored, avg_score, needs_attention, critical FROM fact_mo_doctor_daily"
+            " WHERE doctor_key = ?",
+            (doctor_key_for("Иванов И.И."),),
+        ).fetchone()
+        assert ivanov == (2, 2, 69.5, 1, 1)
+        assert db.execute("SELECT chapter FROM dim_diagnosis WHERE diagnosis_code = 'I10'").fetchone()[0] == (
+            "Болезни системы кровообращения"
+        )
+
+
+def test_warehouse_upsert_is_idempotent_and_drops_vanished_rows(tmp_path: Path) -> None:
+    import sqlite3
+
+    raw, cases = warehouse_day_rows()
+    secure, _ = build_daily_report(
+        raw, cases, day=date(2026, 7, 27), run_id="wh", revision=1, quality={"passed": True}
+    )
+    path = tmp_path / "warehouse.sqlite"
+    upsert_warehouse(path, raw, cases, secure)
+    upsert_warehouse(path, raw, cases, secure)
+    with sqlite3.connect(path) as db:
+        assert db.execute("SELECT COUNT(*) FROM fact_mo_case").fetchone()[0] == 3
+        assert db.execute("SELECT COUNT(*) FROM fact_mo_finding").fetchone()[0] == 2
+        assert db.execute("SELECT COUNT(*) FROM fact_mo_doctor_daily").fetchone()[0] == 2
+        assert db.execute("SELECT COUNT(*) FROM crm_case_event").fetchone()[0] == 1
+
+    # Запись удалили в МИС: повторный день не должен оставлять её в витрине.
+    shrunk_raw, shrunk_cases = raw[:2], cases[:2]
+    secure_second, _ = build_daily_report(
+        shrunk_raw, shrunk_cases, day=date(2026, 7, 27), run_id="wh2", revision=2, quality={"passed": True}
+    )
+    written = upsert_warehouse(path, shrunk_raw, shrunk_cases, secure_second)
+    assert written["deleted_stale_cases"] == 1
+    with sqlite3.connect(path) as db:
+        assert db.execute("SELECT COUNT(*) FROM fact_mo_case").fetchone()[0] == 2
+        assert db.execute("SELECT revision FROM fact_mo_daily").fetchone()[0] == 2
+
+
+def legacy_crm_db(path: Path) -> None:
+    """Старый файл кабинета: своя схема CRM без звёздных таблиц pipeline."""
+    import sqlite3
+
+    with sqlite3.connect(path) as db:
+        db.executescript(
+            """
+            CREATE TABLE crm_case_state (
+              case_id TEXT PRIMARY KEY, status TEXT NOT NULL DEFAULT 'new', assignee TEXT,
+              tags_json TEXT NOT NULL DEFAULT '[]', due_date TEXT,
+              finding_decisions_json TEXT NOT NULL DEFAULT '{}',
+              updated_at TEXT NOT NULL, updated_by TEXT NOT NULL
+            );
+            CREATE TABLE crm_case_event (
+              event_id TEXT PRIMARY KEY, case_id TEXT NOT NULL, event_type TEXT NOT NULL,
+              actor TEXT NOT NULL, payload_json TEXT NOT NULL, created_at TEXT NOT NULL
+            );
+            CREATE TABLE saved_view (
+              view_id TEXT PRIMARY KEY, owner TEXT NOT NULL, scope TEXT NOT NULL, name TEXT NOT NULL,
+              filters_json TEXT NOT NULL, config_json TEXT NOT NULL,
+              created_at TEXT NOT NULL, updated_at TEXT NOT NULL
+            );
+            CREATE TABLE export_job (
+              job_id TEXT PRIMARY KEY, owner TEXT NOT NULL, status TEXT NOT NULL, kind TEXT NOT NULL,
+              filters_json TEXT NOT NULL, result_path TEXT, created_at TEXT NOT NULL, expires_at TEXT NOT NULL
+            );
+            """
+        )
+        db.execute(
+            "INSERT INTO crm_case_state VALUES ('1001','in_review','ИП','[\"P1\"]','2026-07-28','{}','2026-07-27T10:00:00Z','ИП')"
+        )
+        db.execute(
+            "INSERT INTO crm_case_event VALUES ('ev1','1001','status_changed','ИП','{}','2026-07-27T10:00:00Z')"
+        )
+        db.execute(
+            "INSERT INTO saved_view VALUES ('v1','ИП','private','Моя очередь','{}','{}','2026-07-27T10:00:00Z','2026-07-27T10:00:00Z')"
+        )
+
+
+def test_crm_migration_preserves_methodist_work_and_is_idempotent(tmp_path: Path) -> None:
+    import sqlite3
+
+    legacy = tmp_path / "mo_methodist.sqlite"
+    legacy_crm_db(legacy)
+    warehouse = tmp_path / "mo_analytics.sqlite"
+
+    moved = migrate_crm(legacy, warehouse)
+    assert moved == {"crm_case_state": 1, "crm_case_event": 1, "saved_view": 1}
+    assert migrate_crm(legacy, warehouse) == {"crm_case_state": 0, "crm_case_event": 0, "saved_view": 0}
+
+    with sqlite3.connect(warehouse) as db:
+        db.row_factory = sqlite3.Row
+        state = db.execute("SELECT * FROM crm_case_state WHERE case_id = '1001'").fetchone()
+        assert state["status"] == "in_review"
+        assert state["assignee"] == "ИП"
+        assert db.execute("SELECT COUNT(*) FROM crm_case_event").fetchone()[0] == 1
+
+    # Источник остаётся нетронутым: это резервная копия.
+    with sqlite3.connect(f"file:{legacy}?mode=ro", uri=True) as origin:
+        assert origin.execute("SELECT COUNT(*) FROM crm_case_state").fetchone()[0] == 1
+
+
+def test_old_crm_tables_are_upgraded_without_losing_rows(tmp_path: Path) -> None:
+    import sqlite3
+
+    warehouse = tmp_path / "mo_analytics.sqlite"
+    with sqlite3.connect(warehouse) as db:
+        db.executescript(
+            """
+            CREATE TABLE crm_case_state (
+              mis_id TEXT PRIMARY KEY, status TEXT NOT NULL DEFAULT 'new', assignee TEXT,
+              due_date TEXT, updated_at TEXT NOT NULL
+            );
+            CREATE TABLE crm_case_event (
+              event_id INTEGER PRIMARY KEY AUTOINCREMENT, mis_id TEXT NOT NULL,
+              event_type TEXT NOT NULL, payload_json TEXT NOT NULL, created_at TEXT NOT NULL
+            );
+            CREATE TABLE saved_view (
+              view_id TEXT PRIMARY KEY, owner TEXT NOT NULL, name TEXT NOT NULL,
+              filters_json TEXT NOT NULL, created_at TEXT NOT NULL
+            );
+            """
+        )
+        db.execute("INSERT INTO crm_case_state VALUES ('7','in_review','ИП','2026-07-28','2026-07-27T10:00:00Z')")
+
+    initialize_warehouse(warehouse)
+    with sqlite3.connect(warehouse) as db:
+        tables = {row[0] for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        # Непустая таблица сохранена под другим именем, пустые просто пересозданы.
+        assert "crm_case_state_legacy" in tables
+        assert db.execute("SELECT status FROM crm_case_state_legacy WHERE mis_id = '7'").fetchone()[0] == "in_review"
+        assert "crm_case_event_legacy" not in tables
+        columns = {row[1] for row in db.execute("PRAGMA table_info(crm_case_state)")}
+        assert {"case_id", "tags_json", "finding_decisions_json", "updated_by"} <= columns
+        assert "scope" in {row[1] for row in db.execute("PRAGMA table_info(saved_view)")}
+
+
+def test_pipeline_queue_does_not_overwrite_methodist_status(tmp_path: Path) -> None:
+    import sqlite3
+
+    warehouse = tmp_path / "mo_analytics.sqlite"
+    initialize_warehouse(warehouse)
+    with sqlite3.connect(warehouse) as db:
+        db.execute(
+            "INSERT INTO crm_case_state VALUES ('1000','confirmed_issue','ИП','[]',NULL,'{}','2026-07-27T09:00:00Z','ИП')"
+        )
+
+    raw, cases = warehouse_day_rows()
+    cases[0]["overall_pct"] = 41
+    secure, _ = build_daily_report(
+        raw, cases, day=date(2026, 7, 27), run_id="wh", revision=1, quality={"passed": True}
+    )
+    assert secure["action_queue"], "низкая оценка обязана попасть в очередь разбора"
+    upsert_warehouse(warehouse, raw, cases, secure)
+
+    with sqlite3.connect(warehouse) as db:
+        assert db.execute("SELECT status FROM crm_case_state WHERE case_id = '1000'").fetchone()[0] == (
+            "confirmed_issue"
+        )
+        assert db.execute("SELECT updated_by FROM crm_case_state WHERE case_id = '1000'").fetchone()[0] == "ИП"
+
+
+def test_icd_chapter_maps_codes_and_ignores_garbage() -> None:
+    assert icd_chapter("I10") == "Болезни системы кровообращения"
+    assert icd_chapter("s72.0") == "Травмы и отравления"
+    assert icd_chapter("Z00.0") == "Факторы, влияющие на здоровье"
+    assert icd_chapter("") == ""
+    assert icd_chapter("нет") == ""
 
 
 def test_dry_run_does_not_call_runner_or_vpn(tmp_path: Path) -> None:

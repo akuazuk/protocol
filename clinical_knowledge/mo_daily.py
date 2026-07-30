@@ -16,6 +16,7 @@ import os
 import sqlite3
 import statistics
 import tempfile
+import uuid
 from collections import Counter, defaultdict
 from contextlib import contextmanager
 from dataclasses import asdict, dataclass, field
@@ -816,6 +817,134 @@ ul{{padding-left:20px}}li{{margin:7px 0}}li.blocking{{color:#a93245}}li.warning{
 </main></body></html>"""
 
 
+DOCUMENT_KIND_LABELS = {
+    "medical_exam": "Медицинский осмотр",
+    "consultation": "Консультативное заключение",
+    "certificate": "Справка",
+    "diagnostic": "Диагностическое исследование",
+    "non_clinical": "Неклинический документ",
+    "empty": "Пустой документ",
+    "unknown": "Не определён",
+}
+
+# Операционные таблицы кабинета методиста. Схема описана здесь один раз: и pipeline,
+# и API работают с одним файлом витрины, а раньше два файла расходились по схеме.
+# Ключ CRM - `case_id` = `visit_id` МИС: разбор ведётся по визиту, а не по строке протокола.
+CRM_SCHEMA_SQL = """
+CREATE TABLE IF NOT EXISTS crm_case_state (
+  case_id TEXT PRIMARY KEY,
+  status TEXT NOT NULL DEFAULT 'new',
+  assignee TEXT,
+  tags_json TEXT NOT NULL DEFAULT '[]',
+  due_date TEXT,
+  finding_decisions_json TEXT NOT NULL DEFAULT '{}',
+  updated_at TEXT NOT NULL,
+  updated_by TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS crm_case_event (
+  event_id TEXT PRIMARY KEY,
+  case_id TEXT NOT NULL,
+  event_type TEXT NOT NULL,
+  actor TEXT NOT NULL,
+  payload_json TEXT NOT NULL,
+  created_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS saved_view (
+  view_id TEXT PRIMARY KEY,
+  owner TEXT NOT NULL,
+  scope TEXT NOT NULL,
+  name TEXT NOT NULL,
+  filters_json TEXT NOT NULL,
+  config_json TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS export_job (
+  job_id TEXT PRIMARY KEY, owner TEXT NOT NULL, status TEXT NOT NULL,
+  kind TEXT NOT NULL, filters_json TEXT NOT NULL, result_path TEXT,
+  created_at TEXT NOT NULL, expires_at TEXT NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_crm_state_status ON crm_case_state(status);
+CREATE INDEX IF NOT EXISTS idx_crm_state_assignee ON crm_case_state(assignee);
+CREATE INDEX IF NOT EXISTS idx_crm_event_case_time ON crm_case_event(case_id, created_at);
+CREATE INDEX IF NOT EXISTS idx_saved_view_owner ON saved_view(owner, scope);
+"""
+CRM_TABLES = ("crm_case_state", "crm_case_event", "saved_view", "export_job")
+
+# Главы МКБ-10: нужны для группировки диагнозов без внешнего справочника.
+_ICD_CHAPTERS: tuple[tuple[str, str, str], ...] = (
+    ("A00", "B99", "Инфекционные и паразитарные болезни"),
+    ("C00", "D48", "Новообразования"),
+    ("D50", "D89", "Болезни крови и иммунные нарушения"),
+    ("E00", "E90", "Эндокринные болезни и нарушения обмена"),
+    ("F00", "F99", "Психические расстройства"),
+    ("G00", "G99", "Болезни нервной системы"),
+    ("H00", "H59", "Болезни глаза"),
+    ("H60", "H95", "Болезни уха"),
+    ("I00", "I99", "Болезни системы кровообращения"),
+    ("J00", "J99", "Болезни органов дыхания"),
+    ("K00", "K93", "Болезни органов пищеварения"),
+    ("L00", "L99", "Болезни кожи"),
+    ("M00", "M99", "Болезни костно-мышечной системы"),
+    ("N00", "N99", "Болезни мочеполовой системы"),
+    ("O00", "O99", "Беременность, роды и послеродовой период"),
+    ("P00", "P96", "Состояния перинатального периода"),
+    ("Q00", "Q99", "Врождённые аномалии"),
+    ("R00", "R99", "Симптомы и отклонения от нормы"),
+    ("S00", "T98", "Травмы и отравления"),
+    ("V01", "Y98", "Внешние причины"),
+    ("Z00", "Z99", "Факторы, влияющие на здоровье"),
+    ("U00", "U99", "Особые цели"),
+)
+
+
+def icd_chapter(code: str) -> str:
+    """Глава МКБ-10 по коду; пустая строка, если код нераспознаваем."""
+    normalized = str(code or "").strip().upper().replace(" ", "")
+    if len(normalized) < 3 or not normalized[0].isalpha():
+        return ""
+    head = normalized[:3]
+    for start, end, title in _ICD_CHAPTERS:
+        if start <= head <= end:
+            return title
+    return ""
+
+
+def _split_multi(value: Any) -> list[str]:
+    raw = str(value or "").strip()
+    if not raw or raw.lower() in {"nan", "none", "null"}:
+        return []
+    return [part.strip() for part in raw.split("|") if part.strip()]
+
+
+def _upgrade_crm_schema(db: sqlite3.Connection) -> list[str]:
+    """Привести CRM-таблицы к единой схеме `case_id`.
+
+    Ранние сборки витрины успели создать `crm_*` и `saved_view` со своими колонками.
+    Пустые таблицы пересоздаём, непустые переименовываем в `*_legacy`, чтобы данные
+    методиста не исчезли молча.
+    """
+    renamed: list[str] = []
+    for table, required in (("crm_case_state", "case_id"), ("crm_case_event", "actor"), ("saved_view", "scope")):
+        columns = {row[1] for row in db.execute(f"PRAGMA table_info({table})")}
+        if not columns or required in columns:
+            continue
+        rows = db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
+        if rows:
+            db.execute(f"ALTER TABLE {table} RENAME TO {table}_legacy")
+            renamed.append(f"{table}_legacy")
+        else:
+            db.execute(f"DROP TABLE {table}")
+    return renamed
+
+
+def _ensure_columns(db: sqlite3.Connection, table: str, columns: Mapping[str, str]) -> None:
+    existing = {row[1] for row in db.execute(f"PRAGMA table_info({table})")}
+    for name, sql_type in columns.items():
+        if name not in existing:
+            db.execute(f"ALTER TABLE {table} ADD COLUMN {name} {sql_type}")
+
+
 def initialize_warehouse(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     with sqlite3.connect(path) as db:
@@ -841,33 +970,52 @@ def initialize_warehouse(path: Path) -> None:
               visit_date TEXT PRIMARY KEY, source_rows INTEGER, scored_rows INTEGER,
               avg_score REAL, revision INTEGER, quality_status TEXT, updated_at TEXT
             );
+            CREATE TABLE IF NOT EXISTS fact_mo_doctor_daily (
+              visit_date TEXT NOT NULL, doctor_key TEXT NOT NULL, specialty TEXT, filial TEXT,
+              cases INTEGER, scored INTEGER, avg_score REAL, needs_attention INTEGER,
+              critical INTEGER, updated_at TEXT NOT NULL,
+              PRIMARY KEY (visit_date, doctor_key)
+            );
             CREATE TABLE IF NOT EXISTS dim_date (date_key TEXT PRIMARY KEY, year INTEGER, month INTEGER, weekday INTEGER);
             CREATE TABLE IF NOT EXISTS dim_doctor (doctor_key TEXT PRIMARY KEY, doctor_fio TEXT, specialty TEXT, filial TEXT);
             CREATE TABLE IF NOT EXISTS dim_specialty (specialty TEXT PRIMARY KEY);
             CREATE TABLE IF NOT EXISTS dim_branch (filial TEXT PRIMARY KEY);
-            CREATE TABLE IF NOT EXISTS dim_diagnosis (diagnosis_code TEXT PRIMARY KEY, diagnosis_label TEXT);
+            CREATE TABLE IF NOT EXISTS dim_diagnosis (diagnosis_code TEXT PRIMARY KEY, diagnosis_label TEXT, chapter TEXT);
             CREATE TABLE IF NOT EXISTS dim_service (service_code TEXT PRIMARY KEY, service_name TEXT);
             CREATE TABLE IF NOT EXISTS dim_document_kind (document_kind TEXT PRIMARY KEY, label TEXT);
-            CREATE TABLE IF NOT EXISTS crm_case_state (
-              mis_id TEXT PRIMARY KEY, status TEXT NOT NULL DEFAULT 'new', assignee TEXT,
-              due_date TEXT, updated_at TEXT NOT NULL
-            );
-            CREATE TABLE IF NOT EXISTS crm_case_event (
-              event_id INTEGER PRIMARY KEY AUTOINCREMENT, mis_id TEXT NOT NULL,
-              event_type TEXT NOT NULL, payload_json TEXT NOT NULL, created_at TEXT NOT NULL
-            );
-            CREATE TABLE IF NOT EXISTS saved_view (
-              view_id TEXT PRIMARY KEY, owner TEXT NOT NULL, name TEXT NOT NULL,
-              filters_json TEXT NOT NULL, created_at TEXT NOT NULL
-            );
             CREATE INDEX IF NOT EXISTS idx_case_date ON fact_mo_case(visit_date);
             CREATE INDEX IF NOT EXISTS idx_case_org ON fact_mo_case(filial, specialty);
+            CREATE INDEX IF NOT EXISTS idx_case_doctor ON fact_mo_case(doctor_key, visit_date);
+            CREATE INDEX IF NOT EXISTS idx_finding_code ON fact_mo_finding(finding_code, severity);
+            CREATE INDEX IF NOT EXISTS idx_axis_axis ON fact_mo_score_axis(axis);
+            CREATE INDEX IF NOT EXISTS idx_doctor_daily_date ON fact_mo_doctor_daily(visit_date);
             """
         )
+        _upgrade_crm_schema(db)
+        db.executescript(CRM_SCHEMA_SQL)
+        _ensure_columns(
+            db,
+            "fact_mo_daily",
+            {
+                "eligible_rows": "INTEGER",
+                "partial": "INTEGER",
+                "coverage_pct": "REAL",
+                "avg_documentation": "REAL",
+                "avg_clinical_concordance": "REAL",
+                "avg_safety": "REAL",
+                "avg_regulatory": "REAL",
+                "needs_attention": "INTEGER",
+                "critical": "INTEGER",
+            },
+        )
+        _ensure_columns(db, "dim_diagnosis", {"chapter": "TEXT"})
+        _ensure_columns(db, "dim_service", {"service_group": "TEXT"})
         db.executemany(
             "INSERT OR IGNORE INTO dim_document_kind(document_kind, label) VALUES (?, ?)",
-            [(kind, kind.replace("_", " ")) for kind in sorted(DOCUMENT_KINDS)],
+            [(kind, DOCUMENT_KIND_LABELS.get(kind, kind.replace("_", " "))) for kind in sorted(DOCUMENT_KINDS)],
         )
+        # saved_view и export_job наполняет только кабинет: системные пресеты живут в UI,
+        # иначе они попадают в личный список методиста.
 
 
 def day_status(report: Mapping[str, Any]) -> str:
@@ -877,18 +1025,47 @@ def day_status(report: Mapping[str, Any]) -> str:
     return "partial" if report.get("partial") else "passed"
 
 
-def upsert_warehouse(path: Path, raw_rows: Sequence[Mapping[str, Any]], cases: Sequence[Mapping[str, Any]], report: Mapping[str, Any]) -> None:
+def doctor_key_for(doctor_fio: Any) -> str:
+    """Псевдонимный ключ врача: витрина группирует по нему, ФИО живёт в dim_doctor.
+
+    Хеш берём от ФИО как есть (только без краевых пробелов), чтобы ключи совпадали
+    с уже записанными строками витрины и история не разъехалась на два врача.
+    """
+    normalized = str(doctor_fio or "").strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20] if normalized else ""
+
+
+def upsert_warehouse(
+    path: Path,
+    raw_rows: Sequence[Mapping[str, Any]],
+    cases: Sequence[Mapping[str, Any]],
+    report: Mapping[str, Any],
+) -> dict[str, int]:
+    """Заполнить витрину за один день: факты, оси, дефекты, все dim и CRM-заготовки.
+
+    Возвращает счётчики записанных строк по таблицам - по ним видно, что день
+    доехал целиком, а не только в `fact_mo_case`.
+    """
     initialize_warehouse(path)
     case_by_id = {str(row.get("mis_id") or ""): row for row in cases}
+    day_key = str(report.get("date") or "")[:10]
     now = utc_now()
+    written: Counter[str] = Counter()
+    doctor_daily: dict[str, dict[str, Any]] = {}
     with sqlite3.connect(path) as db:
+        seen_ids: list[str] = []
         for raw in raw_rows:
             mis_id = str(raw.get("id") or "")
             if not mis_id:
                 continue
+            seen_ids.append(mis_id)
             case = case_by_id.get(mis_id, {})
             doctor_fio = str(raw.get("doctor_fio") or "")
-            doctor_key = hashlib.sha256(doctor_fio.encode("utf-8")).hexdigest()[:20] if doctor_fio else ""
+            doctor_key = doctor_key_for(doctor_fio)
+            specialty = str(raw.get("doctor_specialization") or "")
+            filial = str(raw.get("filial") or "")
+            visit_date = str(raw.get("visit_date") or "")[:10] or day_key
+            score = _safe_number(case.get("overall_pct"))
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             db.execute(
                 """INSERT INTO fact_mo_case VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
@@ -901,35 +1078,240 @@ def upsert_warehouse(path: Path, raw_rows: Sequence[Mapping[str, Any]], cases: S
                 (
                     mis_id,
                     str(raw.get("visit_id") or ""),
-                    str(raw.get("visit_date") or "")[:10],
+                    visit_date,
                     str(raw.get("document_kind") or "unknown"),
-                    _safe_number(case.get("overall_pct")),
+                    score,
                     str(case.get("status") or ""),
                     doctor_key,
-                    str(raw.get("doctor_specialization") or ""),
-                    str(raw.get("filial") or ""),
+                    specialty,
+                    filial,
                     hashlib.sha256(payload.encode("utf-8")).hexdigest(),
                     now,
                 ),
             )
+            written["fact_mo_case"] += 1
+
             if doctor_key:
                 db.execute(
                     "INSERT OR REPLACE INTO dim_doctor VALUES (?, ?, ?, ?)",
-                    (doctor_key, doctor_fio, str(raw.get("doctor_specialization") or ""), str(raw.get("filial") or "")),
+                    (doctor_key, doctor_fio, specialty, filial),
                 )
+                written["dim_doctor"] += 1
+                bucket = doctor_daily.setdefault(
+                    doctor_key,
+                    {"specialty": specialty, "filial": filial, "cases": 0, "scores": [], "critical": 0},
+                )
+                bucket["cases"] += 1
+                if score is not None:
+                    bucket["scores"].append(score)
+            if specialty:
+                db.execute("INSERT OR IGNORE INTO dim_specialty VALUES (?)", (specialty,))
+                written["dim_specialty"] += 1
+            if filial:
+                db.execute("INSERT OR IGNORE INTO dim_branch VALUES (?)", (filial,))
+                written["dim_branch"] += 1
+            for code in _split_multi(raw.get("mkb_codes")) or _split_multi(raw.get("mkb_code_main")):
+                db.execute(
+                    "INSERT OR IGNORE INTO dim_diagnosis(diagnosis_code, diagnosis_label, chapter) VALUES (?, ?, ?)",
+                    (code, "", icd_chapter(code)),
+                )
+                written["dim_diagnosis"] += 1
+            service_codes = _split_multi(raw.get("service_codes"))
+            service_names = _split_multi(raw.get("service_names"))
+            for index, code in enumerate(service_codes):
+                name = service_names[index] if index < len(service_names) else ""
+                db.execute(
+                    "INSERT OR IGNORE INTO dim_service(service_code, service_name, service_group) VALUES (?, ?, ?)",
+                    (code, name, name.split(",")[0][:80]),
+                )
+                written["dim_service"] += 1
+
+        if day_key:
+            moment = date.fromisoformat(day_key)
+            db.execute(
+                "INSERT OR REPLACE INTO dim_date VALUES (?, ?, ?, ?)",
+                (day_key, moment.year, moment.month, moment.weekday()),
+            )
+            written["dim_date"] += 1
+
+        # Повторный прогон дня: записи, исчезнувшие из МИС, не должны оставаться в витрине.
+        if day_key and seen_ids:
+            placeholders = ",".join("?" for _ in seen_ids)
+            stale = [
+                row[0]
+                for row in db.execute(
+                    f"SELECT mis_id FROM fact_mo_case WHERE visit_date = ? AND mis_id NOT IN ({placeholders})",
+                    (day_key, *seen_ids),
+                )
+            ]
+            for mis_id in stale:
+                db.execute("DELETE FROM fact_mo_case WHERE mis_id = ?", (mis_id,))
+                db.execute("DELETE FROM fact_mo_finding WHERE mis_id = ?", (mis_id,))
+                db.execute("DELETE FROM fact_mo_score_axis WHERE mis_id = ?", (mis_id,))
+            written["deleted_stale_cases"] = len(stale)
+
+        for case in cases:
+            mis_id = str(case.get("mis_id") or "")
+            if not mis_id:
+                continue
+            deep = case.get("deep") if isinstance(case.get("deep"), Mapping) else {}
+            db.execute("DELETE FROM fact_mo_finding WHERE mis_id = ?", (mis_id,))
+            db.execute("DELETE FROM fact_mo_score_axis WHERE mis_id = ?", (mis_id,))
+            for axis, value in (deep.get("axes") or {}).items():
+                axis_score = _safe_number(value)
+                if axis_score is None:
+                    continue
+                db.execute(
+                    "INSERT OR REPLACE INTO fact_mo_score_axis VALUES (?, ?, ?)",
+                    (mis_id, str(axis), axis_score),
+                )
+                written["fact_mo_score_axis"] += 1
+            for finding in deep.get("findings") or []:
+                if not isinstance(finding, Mapping):
+                    continue
+                code = str(finding.get("code") or "").strip()
+                if not code:
+                    continue
+                db.execute(
+                    """INSERT OR REPLACE INTO fact_mo_finding
+                       (mis_id, finding_code, severity, passed, evidence, source_ref)
+                       VALUES (?, ?, ?, ?, ?, ?)""",
+                    (
+                        mis_id,
+                        code,
+                        str(finding.get("severity") or ""),
+                        1 if finding.get("passed") else 0,
+                        str(finding.get("evidence") or "")[:2000],
+                        str(finding.get("source_ref") or ""),
+                    ),
+                )
+                written["fact_mo_finding"] += 1
+            severity = deep.get("n_by_severity") or {}
+            severe = sum(int(severity.get(level) or 0) for level in ("P0", "P1"))
+            bucket = doctor_daily.get(doctor_key_for(case.get("doctor_fio")))
+            if bucket is not None and severe:
+                bucket["critical"] += 1
+
+        if day_key:
+            db.execute("DELETE FROM fact_mo_doctor_daily WHERE visit_date = ?", (day_key,))
+            for doctor_key, bucket in doctor_daily.items():
+                scores = bucket["scores"]
+                db.execute(
+                    "INSERT INTO fact_mo_doctor_daily VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)",
+                    (
+                        day_key,
+                        doctor_key,
+                        bucket["specialty"],
+                        bucket["filial"],
+                        bucket["cases"],
+                        len(scores),
+                        round(statistics.fmean(scores), 1) if scores else None,
+                        sum(1 for score in scores if score < 70),
+                        bucket["critical"],
+                        now,
+                    ),
+                )
+                written["fact_mo_doctor_daily"] += 1
+
         summary = report.get("summary") or {}
+        axes = report.get("axes") or {}
+        completeness = report.get("completeness") or {}
         db.execute(
-            "INSERT OR REPLACE INTO fact_mo_daily VALUES (?, ?, ?, ?, ?, ?, ?)",
+            """INSERT INTO fact_mo_daily (
+                 visit_date, source_rows, scored_rows, avg_score, revision, quality_status, updated_at,
+                 eligible_rows, partial, coverage_pct, avg_documentation, avg_clinical_concordance,
+                 avg_safety, avg_regulatory, needs_attention, critical
+               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+               ON CONFLICT(visit_date) DO UPDATE SET
+                 source_rows=excluded.source_rows, scored_rows=excluded.scored_rows,
+                 avg_score=excluded.avg_score, revision=excluded.revision,
+                 quality_status=excluded.quality_status, updated_at=excluded.updated_at,
+                 eligible_rows=excluded.eligible_rows, partial=excluded.partial,
+                 coverage_pct=excluded.coverage_pct, avg_documentation=excluded.avg_documentation,
+                 avg_clinical_concordance=excluded.avg_clinical_concordance,
+                 avg_safety=excluded.avg_safety, avg_regulatory=excluded.avg_regulatory,
+                 needs_attention=excluded.needs_attention, critical=excluded.critical""",
             (
-                report.get("date"),
+                day_key,
                 summary.get("source_rows"),
                 summary.get("scored"),
                 summary.get("avg_score"),
                 report.get("revision"),
                 day_status(report),
                 now,
+                summary.get("eligible_rows"),
+                1 if report.get("partial") else 0,
+                completeness.get("coverage_pct"),
+                _safe_number(axes.get("documentation")),
+                _safe_number(axes.get("clinical_concordance")),
+                _safe_number(axes.get("safety")),
+                _safe_number(axes.get("regulatory")),
+                summary.get("needs_attention"),
+                summary.get("critical"),
             ),
         )
+        written["fact_mo_daily"] += 1
+
+        # Заготовки CRM по визитам: статус методиста не перезаписываем, только добавляем новые.
+        for item in report.get("action_queue") or []:
+            case_id = str(item.get("visit_id") or item.get("mis_id") or "")
+            if not case_id:
+                continue
+            cursor = db.execute(
+                "INSERT OR IGNORE INTO crm_case_state"
+                "(case_id, status, assignee, tags_json, due_date, finding_decisions_json, updated_at, updated_by)"
+                " VALUES (?, 'new', ?, '[]', ?, '{}', ?, 'pipeline')",
+                (case_id, item.get("assignee"), item.get("due_date"), now),
+            )
+            if cursor.rowcount:
+                written["crm_case_state"] += 1
+                db.execute(
+                    "INSERT INTO crm_case_event(event_id, case_id, event_type, actor, payload_json, created_at)"
+                    " VALUES (?, ?, 'queued', 'pipeline', ?, ?)",
+                    (
+                        uuid.uuid4().hex,
+                        case_id,
+                        json.dumps(
+                            {"priority": item.get("priority"), "reason": item.get("reason"), "date": day_key},
+                            ensure_ascii=False,
+                        ),
+                        now,
+                    ),
+                )
+                written["crm_case_event"] += 1
+    return dict(written)
+
+
+def migrate_crm(source: Path, target: Path) -> dict[str, int]:
+    """Перенести операционные таблицы из старого файла CRM в единую витрину.
+
+    Источник открывается только на чтение и не меняется: старый файл остаётся
+    как резервная копия. Повторный запуск ничего не дублирует.
+    """
+    if not source.is_file() or source.resolve() == target.resolve():
+        return {}
+    initialize_warehouse(target)
+    moved: Counter[str] = Counter()
+    with sqlite3.connect(f"file:{source}?mode=ro", uri=True) as origin, sqlite3.connect(target) as destination:
+        origin.row_factory = sqlite3.Row
+        available = {row[0] for row in origin.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        for table in CRM_TABLES:
+            if table not in available:
+                continue
+            target_columns = [row[1] for row in destination.execute(f"PRAGMA table_info({table})")]
+            source_columns = [row[1] for row in origin.execute(f"PRAGMA table_info({table})")]
+            shared = [name for name in target_columns if name in source_columns]
+            if not shared:
+                continue
+            marks = ",".join("?" for _ in shared)
+            columns = ",".join(shared)
+            for row in origin.execute(f"SELECT {columns} FROM {table}"):
+                cursor = destination.execute(
+                    f"INSERT OR IGNORE INTO {table}({columns}) VALUES ({marks})",
+                    tuple(row[name] for name in shared),
+                )
+                moved[table] += cursor.rowcount
+    return dict(moved)
 
 
 def public_case_token(value: str, secret: str) -> str:

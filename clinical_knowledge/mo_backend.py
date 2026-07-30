@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import csv
-import hashlib
 import json
 import os
 import sqlite3
@@ -15,6 +14,7 @@ from pathlib import Path
 from typing import Any, Iterable
 from zoneinfo import ZoneInfo
 
+from .mo_daily import CRM_SCHEMA_SQL, initialize_warehouse, migrate_crm
 from .mis_kz_quality import (
     _facets,
     _filtered_agg,
@@ -45,7 +45,7 @@ CRM_STATUSES = frozenset(
     }
 )
 CRM_ROLES = frozenset({"methodist", "lead", "admin"})
-_SYNCED_MONTHS: set[str] = set()
+_CRM_MIGRATED = False
 
 
 def _utc() -> str:
@@ -53,90 +53,61 @@ def _utc() -> str:
 
 
 def _db_path() -> Path:
+    """Единый файл витрины: аналитика pipeline и CRM методиста живут вместе."""
     configured = (os.environ.get("MO_ANALYTICS_DB") or "").strip()
     if configured:
         return Path(configured)
-    persistent = Path("/var/data/medical_exams/warehouse")
-    if persistent.is_dir() and os.access(persistent, os.W_OK):
-        # Операционный CRM хранится отдельно от аналитического warehouse pipeline:
-        # у таблиц разные жизненные циклы и миграции, общий filename приводил к
-        # несовместимой схеме fact_mo_case.
-        return persistent / "mo_methodist.sqlite"
-    return ROOT / "data" / "ml" / "secure" / "mo_methodist.sqlite"
+    for root in _medical_exam_roots():
+        warehouse = root / "warehouse"
+        if warehouse.is_dir() and os.access(warehouse, os.W_OK):
+            return warehouse / "mo_analytics.sqlite"
+        # Диск Render смонтирован, но каталога ещё нет: создаём, иначе CRM осядет
+        # в контейнере и исчезнет при следующем деплое.
+        if root.parent.is_dir() and os.access(root.parent, os.W_OK):
+            return warehouse / "mo_analytics.sqlite"
+    return ROOT / "data" / "medical_exams" / "warehouse" / "mo_analytics.sqlite"
+
+
+def _legacy_crm_paths() -> list[Path]:
+    """Старые файлы CRM: читаются один раз для миграции и больше не пишутся."""
+    return [
+        *(root / "warehouse" / "mo_methodist.sqlite" for root in _medical_exam_roots()),
+        ROOT / "data" / "ml" / "secure" / "mo_methodist.sqlite",
+    ]
+
+
+def _migrate_legacy_crm(target: Path) -> dict[str, int]:
+    """Перенести CRM из старого файла один раз за процесс.
+
+    При явном `MO_ANALYTICS_DB` (тесты, разбор инцидента) не трогаем чужие данные:
+    файлом управляет тот, кто его указал.
+    """
+    global _CRM_MIGRATED
+    if _CRM_MIGRATED or (os.environ.get("MO_ANALYTICS_DB") or "").strip():
+        return {}
+    _CRM_MIGRATED = True
+    moved: dict[str, int] = {}
+    for legacy in _legacy_crm_paths():
+        if not legacy.is_file() or legacy.resolve() == target.resolve():
+            continue
+        for table, count in migrate_crm(legacy, target).items():
+            if count:
+                moved[table] = moved.get(table, 0) + count
+    return moved
 
 
 def _connect() -> sqlite3.Connection:
     path = _db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
+    fresh = not path.exists()
+    initialize_warehouse(path)
+    if fresh or not _CRM_MIGRATED:
+        _migrate_legacy_crm(path)
     conn = sqlite3.connect(path, timeout=10)
     conn.row_factory = sqlite3.Row
     conn.execute("PRAGMA foreign_keys=ON")
     conn.execute("PRAGMA journal_mode=WAL")
-    conn.executescript(
-        """
-        CREATE TABLE IF NOT EXISTS fact_mo_case (
-          case_id TEXT PRIMARY KEY, visit_date TEXT, document_kind TEXT, payload_hash TEXT,
-          updated_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS fact_mo_finding (
-          case_id TEXT NOT NULL, finding_code TEXT NOT NULL, severity TEXT,
-          PRIMARY KEY(case_id, finding_code)
-        );
-        CREATE TABLE IF NOT EXISTS fact_mo_score_axis (
-          case_id TEXT NOT NULL, axis TEXT NOT NULL, score REAL,
-          PRIMARY KEY(case_id, axis)
-        );
-        CREATE TABLE IF NOT EXISTS fact_mo_daily (
-          report_date TEXT PRIMARY KEY, n_cases INTEGER, avg_score REAL, revision INTEGER
-        );
-        CREATE TABLE IF NOT EXISTS dim_date (date_key TEXT PRIMARY KEY);
-        CREATE TABLE IF NOT EXISTS dim_doctor (doctor_key TEXT PRIMARY KEY, display_name TEXT);
-        CREATE TABLE IF NOT EXISTS dim_specialty (specialty_key TEXT PRIMARY KEY, display_name TEXT);
-        CREATE TABLE IF NOT EXISTS dim_branch (branch_key TEXT PRIMARY KEY, display_name TEXT);
-        CREATE TABLE IF NOT EXISTS dim_diagnosis (diagnosis_key TEXT PRIMARY KEY, display_name TEXT);
-        CREATE TABLE IF NOT EXISTS dim_service (service_key TEXT PRIMARY KEY, display_name TEXT);
-        CREATE TABLE IF NOT EXISTS dim_document_kind (
-          document_kind TEXT PRIMARY KEY, display_name TEXT
-        );
-        CREATE TABLE IF NOT EXISTS crm_case_state (
-          case_id TEXT PRIMARY KEY,
-          status TEXT NOT NULL DEFAULT 'new',
-          assignee TEXT,
-          tags_json TEXT NOT NULL DEFAULT '[]',
-          due_date TEXT,
-          finding_decisions_json TEXT NOT NULL DEFAULT '{}',
-          updated_at TEXT NOT NULL,
-          updated_by TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS crm_case_event (
-          event_id TEXT PRIMARY KEY,
-          case_id TEXT NOT NULL,
-          event_type TEXT NOT NULL,
-          actor TEXT NOT NULL,
-          payload_json TEXT NOT NULL,
-          created_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS saved_view (
-          view_id TEXT PRIMARY KEY,
-          owner TEXT NOT NULL,
-          scope TEXT NOT NULL,
-          name TEXT NOT NULL,
-          filters_json TEXT NOT NULL,
-          config_json TEXT NOT NULL,
-          created_at TEXT NOT NULL,
-          updated_at TEXT NOT NULL
-        );
-        CREATE TABLE IF NOT EXISTS export_job (
-          job_id TEXT PRIMARY KEY, owner TEXT NOT NULL, status TEXT NOT NULL,
-          kind TEXT NOT NULL, filters_json TEXT NOT NULL, result_path TEXT,
-          created_at TEXT NOT NULL, expires_at TEXT NOT NULL
-        );
-        CREATE INDEX IF NOT EXISTS idx_crm_state_status ON crm_case_state(status);
-        CREATE INDEX IF NOT EXISTS idx_crm_state_assignee ON crm_case_state(assignee);
-        CREATE INDEX IF NOT EXISTS idx_crm_event_case_time ON crm_case_event(case_id, created_at);
-        CREATE INDEX IF NOT EXISTS idx_saved_view_owner ON saved_view(owner, scope);
-        """
-    )
+    conn.executescript(CRM_SCHEMA_SQL)
     conn.commit()
     try:
         os.chmod(path, 0o600)
@@ -365,84 +336,8 @@ def _records(params: dict[str, Any]) -> list[dict[str, Any]]:
             records_by_key[dedupe] = rec
         for rec in _pipeline_records_for_month(month):
             records_by_key[f"{month}:{rec['case_id']}"] = dict(rec)
-    records = list(records_by_key.values())
-    pending_months = set(months) - _SYNCED_MONTHS
-    if pending_months:
-        _sync_warehouse([r for r in records if r["_month"] in pending_months])
-        _SYNCED_MONTHS.update(pending_months)
-    return records
-
-
-def _sync_warehouse(records: list[dict[str, Any]]) -> None:
-    """Идемпотентно переносит обезличенные факты legacy-витрины в star schema."""
-    if not records:
-        return
-    now = _utc()
-    labels = {
-        "medical_exam": "Медицинский осмотр",
-        "consultation": "Консультация",
-        "certificate": "Справка",
-        "diagnostic": "Диагностика",
-        "non_clinical": "Неклиническая запись",
-        "empty": "Пустая запись",
-        "unknown": "Требует уточнения",
-    }
-    with closing(_connect()) as conn:
-        conn.execute("BEGIN IMMEDIATE")
-        conn.executemany(
-            "INSERT OR IGNORE INTO dim_document_kind(document_kind,display_name) VALUES(?,?)",
-            labels.items(),
-        )
-        for rec in records:
-            fingerprint = hashlib.sha256(
-                json.dumps(
-                    {
-                        "date": rec.get("date"),
-                        "kind": rec.get("document_kind"),
-                        "score": rec.get("overall_pct"),
-                        "status": rec.get("status"),
-                    },
-                    sort_keys=True,
-                ).encode("utf-8")
-            ).hexdigest()
-            conn.execute(
-                "INSERT OR REPLACE INTO fact_mo_case(case_id,visit_date,document_kind,payload_hash,updated_at) "
-                "VALUES(?,?,?,?,?)",
-                (rec["case_id"], rec.get("date"), rec.get("document_kind"), fingerprint, now),
-            )
-            for axis, score in (
-                ("documentation", rec.get("axis_documentation")),
-                ("clinical_concordance", rec.get("axis_concordance")),
-                ("safety", rec.get("axis_safety")),
-                ("regulatory", rec.get("axis_regulatory")),
-            ):
-                conn.execute(
-                    "INSERT OR REPLACE INTO fact_mo_score_axis(case_id,axis,score) VALUES(?,?,?)",
-                    (rec["case_id"], axis, score),
-                )
-            for table, key, value in (
-                ("dim_date", rec.get("date"), None),
-                ("dim_doctor", rec.get("doctor_fio"), rec.get("doctor_fio")),
-                ("dim_specialty", rec.get("specialization"), rec.get("specialization")),
-                ("dim_branch", rec.get("filial"), rec.get("filial")),
-                ("dim_diagnosis", rec.get("mkb_code_main"), rec.get("mkb_code_main")),
-            ):
-                if not key:
-                    continue
-                if table == "dim_date":
-                    conn.execute("INSERT OR IGNORE INTO dim_date(date_key) VALUES(?)", (key,))
-                else:
-                    column = {
-                        "dim_doctor": "doctor_key",
-                        "dim_specialty": "specialty_key",
-                        "dim_branch": "branch_key",
-                        "dim_diagnosis": "diagnosis_key",
-                    }[table]
-                    conn.execute(
-                        f"INSERT OR IGNORE INTO {table}({column},display_name) VALUES(?,?)",
-                        (key, value),
-                    )
-        conn.commit()
+    # Витрину заполняет ежедневный pipeline (upsert_warehouse); API здесь ничего не дублирует.
+    return list(records_by_key.values())
 
 
 _MULTI_FILTERS = {
