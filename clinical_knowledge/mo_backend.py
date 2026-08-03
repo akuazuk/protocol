@@ -2265,7 +2265,11 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                    LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
                    LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
                    WHERE c.visit_id = ? OR c.mis_id = ?
-                   ORDER BY CASE WHEN c.document_kind IN ('medical_exam','consultation') THEN 0 ELSE 1 END
+                   ORDER BY CASE
+                            WHEN c.document_kind='medical_exam' THEN 0
+                            WHEN c.document_kind='consultation' THEN 1
+                            ELSE 2
+                          END
                    LIMIT 1""",
                 (case_id, case_id),
             ).fetchone()

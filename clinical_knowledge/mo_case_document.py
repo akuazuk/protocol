@@ -15,6 +15,7 @@ import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
+import re
 
 ROOT = Path(__file__).resolve().parents[1]
 
@@ -42,10 +43,38 @@ CLINICAL_FIELDS = (
 )
 
 SCORED_KINDS = frozenset({"medical_exam", "consultation"})
+_HEX_ID_RX = re.compile(r"^[a-f0-9]{32,64}$", re.IGNORECASE)
+_ICD_CODE_RX = re.compile(r"^[A-Za-zА-Яа-я]\d{2}(?:\.\d{1,2})?$")
 
 
 def _esc(value: Any) -> str:
     return html.escape(str(value if value is not None else ""))
+
+
+def _norm_id(value: Any) -> str:
+    text = str(value or "").strip()
+    if text.endswith(".0") and text[:-2].isdigit():
+        return text[:-2]
+    return text
+
+
+def _looks_like_hash(value: Any) -> bool:
+    return bool(_HEX_ID_RX.match(str(value or "").strip()))
+
+
+def _safe_icd(value: Any) -> str:
+    text = str(value or "").strip()
+    if not text or _looks_like_hash(text):
+        return ""
+    return text if _ICD_CODE_RX.match(text) else ""
+
+
+def _pick_icd(*values: Any) -> str:
+    for value in values:
+        code = _safe_icd(value)
+        if code:
+            return code
+    return ""
 
 
 def _medical_exam_roots() -> list[Path]:
@@ -89,7 +118,7 @@ def load_case_source_row(case_id: str, *, visit_date: str | None = None) -> dict
         import pandas as pd
     except ImportError:
         return None
-    needle = str(case_id or "").strip()
+    needle = _norm_id(case_id)
     if not needle:
         return None
     day_hint = (visit_date or "")[:10]
@@ -125,7 +154,7 @@ def load_case_source_row(case_id: str, *, visit_date: str | None = None) -> dict
         for key in ("visit_id", "id", "mis_id"):
             if key not in frame.columns:
                 continue
-            matched = frame[frame[key].astype(str) == needle]
+            matched = frame[frame[key].map(_norm_id) == needle]
             if matched.empty:
                 continue
             row = matched.iloc[0].to_dict()
@@ -147,7 +176,11 @@ def _warehouse_case_meta(case_id: str) -> dict[str, Any]:
                FROM fact_mo_case c
                LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
                WHERE c.visit_id = ? OR c.mis_id = ?
-               ORDER BY CASE WHEN c.document_kind IN ('medical_exam','consultation') THEN 0 ELSE 1 END
+               ORDER BY CASE
+                        WHEN c.document_kind='medical_exam' THEN 0
+                        WHEN c.document_kind='consultation' THEN 1
+                        ELSE 2
+                      END
                LIMIT 1""",
             (needle, needle),
         ).fetchone()
@@ -174,13 +207,26 @@ def build_case_document_payload(case_id: str, *, month: str | None = None) -> di
 
     meta = _warehouse_case_meta(case_id)
     visit_date = str(meta.get("visit_date") or "")[:10]
-    source = load_case_source_row(case_id, visit_date=visit_date or None)
+    source = None
+    for probe in (
+        case_id,
+        meta.get("visit_id"),
+        meta.get("mis_id"),
+    ):
+        if not probe:
+            continue
+        source = load_case_source_row(str(probe), visit_date=visit_date or None)
+        if source:
+            break
     detail = build_case_detail(case_id, month=month or (visit_date[:7] if visit_date else None))
     record = dict(detail.get("record") or {}) if detail.get("ok") else {}
+    source_kind = str((source or {}).get("document_kind") or "").strip()
+    if source_kind == "kz":
+        source_kind = "consultation"
     document_kind = str(
-        meta.get("document_kind")
+        source_kind
+        or meta.get("document_kind")
         or record.get("document_kind")
-        or (source or {}).get("document_kind")
         or "unknown"
     )
     overall = meta.get("overall_pct")
@@ -204,11 +250,12 @@ def build_case_document_payload(case_id: str, *, month: str | None = None) -> di
         or src.get("doctor_fio")
         or "Врач не указан"
     )
-    diagnosis_code = (
-        meta.get("diagnosis_code")
-        or record.get("mkb_code_main")
-        or src.get("mkb_code_main")
-        or ""
+    diagnosis_code = _pick_icd(
+        meta.get("diagnosis_code"),
+        record.get("mkb_code_main"),
+        record.get("diagnosis_code"),
+        src.get("mkb_code_main"),
+        src.get("diagnosis_code"),
     )
     payload = {
         "ok": True,

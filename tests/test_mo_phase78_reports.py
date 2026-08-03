@@ -9,7 +9,8 @@ from fastapi.testclient import TestClient
 
 import rag_server
 from clinical_knowledge.mo_daily import doctor_key_for, initialize_warehouse
-from clinical_knowledge.mo_case_document import render_case_document_html, score_reason
+import clinical_knowledge.mo_case_document as mo_case_document
+from clinical_knowledge.mo_case_document import build_case_document_payload, render_case_document_html, score_reason
 from clinical_knowledge.mo_report_engine import build_telegram_briefing
 
 
@@ -196,3 +197,54 @@ def test_render_case_html_never_shows_content_hash() -> None:
     )
     assert "Хронический тонзиллит" in html
     assert "b7c32c8625076ffe" not in html
+
+
+def test_case_document_prefers_medical_exam_source_and_sanitizes_hash(monkeypatch, tmp_path: Path) -> None:
+    db = tmp_path / "mo.sqlite"
+    doctor = _seed(db)
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(db))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    with sqlite3.connect(db) as conn:
+        conn.execute(
+            """INSERT INTO fact_mo_case
+               (mis_id,visit_id,visit_date,document_kind,overall_pct,status,
+                doctor_key,specialty,filial,diagnosis_code,icd_chapter,content_hash,updated_at)
+               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                "9301",
+                "93001",
+                "2026-08-02",
+                "consultation",
+                40.0,
+                "review",
+                doctor,
+                "Терапия",
+                "Центр",
+                "e39db9f8f3ad204db6ed0a1c72fd7704c082a21823c9dd52bb3da55715522266",
+                "",
+                "e39db9f8f3ad204db6ed0a1c72fd7704c082a21823c9dd52bb3da55715522266",
+                "2026-08-03T00:00:00Z",
+            ),
+        )
+        conn.commit()
+
+    def fake_source(case_id: str, *, visit_date: str | None = None) -> dict[str, object] | None:
+        return {
+            "visit_id": "93001.0",
+            "id": "9301",
+            "document_kind": "medical_exam",
+            "mkb_code_main": "J35.0",
+            "complaints": "Боль в горле",
+            "anamnesis_doctor": "3 дня",
+            "objective_status": "Гиперемия",
+            "clinical_diagnosis": "Тонзиллит",
+            "_source_parquet": "/tmp/source.parquet",
+        }
+
+    monkeypatch.setattr(mo_case_document, "load_case_source_row", fake_source)
+    payload = build_case_document_payload("93001")
+    assert payload["ok"] is True
+    assert payload["document_kind"] == "medical_exam"
+    assert payload["document_kind_label"] == "Медицинский осмотр"
+    assert payload["diagnosis_code"] == "J35.0"
+    assert payload["clinical"]["complaints"] == "Боль в горле"

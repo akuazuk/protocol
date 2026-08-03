@@ -1074,3 +1074,8 @@ Render Dashboard. Проверка успеха - только через `/api/
 - 03.08.2026 (interactive BI wave-3): устранены блокировки popup при открытии PDF (pre-open + token fetch),
   скрыты opaque hash-диагнозы в UI/warehouse fallback, и добавлен SQL fallback
   case detail с заполнением coverage/confidence при отсутствии pipeline-артефакта.
+- 03.08.2026 (interactive BI wave-4): для case PDF исправлен выбор источника МО -
+  приоритет medical_exam, расширен матч case-id (включая `3621757.0`), МКБ
+  санитизируется (hash-like значения исключаются), и клинические поля подтягиваются
+  из parquet по visit_id/mis_id для полнотекстового документа.
+
