@@ -1,8 +1,8 @@
 # МО Аналитика: план улучшений для Cursor (v2)
 
-Дата: 2026-08-03  
-Статус: ready_for_execution  
-Область: `/methodist/mo`, `/api/methodist/mo/*`, дневной склад `/var/data/medical_exams`  
+Дата: 2026-08-03
+Статус: ready_for_execution
+Область: `/methodist/mo`, `/api/methodist/mo/*`, дневной склад `/var/data/medical_exams`
 Ограничение: разработка не имеет прямого доступа к production-БД МИС. Все изменения строятся на API-контрактах, обезличенных fixtures и опубликованных защищённых срезах.
 
 ## 1. Целевой результат
