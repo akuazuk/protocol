@@ -137,6 +137,9 @@ def test_case_drawer_renders_source_mo_and_never_turns_missing_scores_into_zero(
     assert "Как оценивать" in JS
     assert 'id="month-rubric-mz"' in HTML
     assert '"/rubric-summary?"' in JS
+    assert "state.rubricCriterion" in JS
+    assert 'data-rubric-criterion="' in JS
+    assert 'kpi("Рубрика МЗ"' in JS
     for field in ("complaints", "anamnesis_doctor", "objective_status", "clinical_diagnosis"):
         assert f'["{field}"' in JS
     assert 'available ? Math.round(n) + "%" : "Нет данных"' in JS

@@ -11,7 +11,7 @@
     var token = MO.api.token;
     var headers = MO.api.headers;
     var state = {
-      page: "overview", period: "month", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "",
+      page: "overview", period: "month", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
@@ -431,6 +431,10 @@
         html.push('<span class="chip">Замечание: ' + esc(state.findingCode) +
           '<button type="button" data-clear-finding aria-label="Удалить фильтр замечания">×</button></span>');
       }
+      if (state.rubricCriterion) {
+        html.push('<span class="chip">Рубрика МЗ: ' + esc(state.rubricCriterion) +
+          '<button type="button" data-clear-rubric aria-label="Удалить фильтр рубрики">×</button></span>');
+      }
       $("filter-chips").innerHTML = html.join("");
       $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -445,6 +449,11 @@
       if (clearFinding) clearFinding.addEventListener("click", function () {
         state.findingCode = "";
         filtersChanged();
+      });
+      var clearRubric = $("filter-chips").querySelector("[data-clear-rubric]");
+      if (clearRubric) clearRubric.addEventListener("click", function () {
+        state.rubricCriterion = "";
+        renderChips();
       });
     }
     function syncUrl(replace) {
@@ -621,7 +630,8 @@
       $("freshness").textContent="Данные по "+data.data_through;
       $("month-kpis").innerHTML=kpi("Записи MTD",k.source_records,"из БД МИС")+
         kpi("Оценено",k.evaluated,score(k.coverage_pct)+" от допущенных")+
-        kpi("Итоговая оценка",score(k.avg_score),"по оценённым")+
+        kpi("Итоговая оценка",score(k.avg_score),"deep / по оценённым")+
+        kpi("Рубрика МЗ",score((data.rubric_mz || {}).avg_rubric_pct),"shadow · «Как оценивать»")+
         kpi("Требует внимания",k.needs_attention,(k.needs_attention_pct || 0)+"% оценённых")+
         kpi("Критические",k.critical,"P0 случаи")+
         kpi("Прогноз объёма",forecast.projected_source,"к концу месяца");
@@ -653,7 +663,7 @@
         return;
       }
       var top = (rubric.top_fail || []).slice(0, 8).map(function (item) {
-        return '<tr><td>' + esc(item.title || item.id) + '</td><td>' + esc(item.zero_n) +
+        return '<tr tabindex="0" data-rubric-criterion="' + esc(item.id) + '"><td>' + esc(item.title || item.id) + '</td><td>' + esc(item.zero_n) +
           '</td><td>' + esc(item.half_n) + '</td><td><b>' + esc(item.fail_pct) + '%</b></td></tr>';
       }).join("");
       var titles = {};
@@ -672,11 +682,23 @@
         '<th>Критерий</th><th>0</th><th>0.5</th><th>Доля слабостей</th></tr></thead><tbody>' +
         (top || '<tr><td colspan="4" class="empty">Слабых критериев нет.</td></tr>') +
         '</tbody></table></div>' +
+        '<p class="card-sub">Клик по критерию открывает очередь разбора с подсветкой этого пункта в карточке случая.</p>' +
         '<h3 style="margin:14px 0 8px;font-size:14px">Слабости по специальностям</h3>' +
         '<div class="table-wrap"><table class="rubric-table"><thead><tr>' +
         '<th>Специальность</th><th>Слабых оценок</th><th>Топ критерии</th></tr></thead><tbody>' +
         (specialtyRows || '<tr><td colspan="3" class="empty">Недостаточно данных по специальностям.</td></tr>') +
         '</tbody></table></div>';
+      host.querySelectorAll("[data-rubric-criterion]").forEach(function (row) {
+        function openCriterion(event) {
+          if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+          event.preventDefault();
+          state.rubricCriterion = row.getAttribute("data-rubric-criterion") || "";
+          renderChips();
+          switchPage("queue");
+        }
+        row.addEventListener("click", openCriterion);
+        row.addEventListener("keydown", openCriterion);
+      });
     }
     async function loadOverview() {
       var suffix = "?" + query().toString();
@@ -867,6 +889,8 @@
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
+      var focusRow = document.getElementById("rubric-focus-row");
+      if (focusRow) focusRow.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
     function renderRubricMz(rubric) {
       if (!rubric || !rubric.ok) {
@@ -880,7 +904,9 @@
       var rows = (rubric.criteria || []).map(function (item) {
         var label = item.score_label == null ? "n/a" : String(item.score_label);
         var tone = label === "1" ? "good" : (label === "0.5" ? "review" : (label === "0" ? "critical" : "muted"));
-        return '<tr class="rubric-row rubric-row--' + tone + '">' +
+        var focus = state.rubricCriterion && state.rubricCriterion === item.id ? " rubric-row--focus" : "";
+        return '<tr class="rubric-row rubric-row--' + tone + focus + '"' +
+          (focus ? ' id="rubric-focus-row"' : "") + '>' +
           '<td><span class="rubric-score rubric-score--' + tone + '">' + esc(label) + '</span></td>' +
           '<td><div class="rubric-title">' + esc(item.title || item.id || "") + '</div>' +
             '<div class="card-sub">' + esc(groupLabels[item.group] || item.group || "") +
@@ -889,7 +915,9 @@
             (item.how_to_evaluate ? '<div class="card-sub">Как оценивать: ' + esc(item.how_to_evaluate) + '</div>' : "") +
           '</td></tr>';
       }).join("");
-      return '<div class="detail-block"><h3>Рубрика МЗ («Как оценивать»)</h3>' +
+      var focusNote = state.rubricCriterion ?
+        '<p class="inline-note">Фокус очереди: критерий «' + esc(state.rubricCriterion) + '». Серверный фильтр по рубрике - после записи в warehouse.</p>' : "";
+      return '<div class="detail-block"><h3>Рубрика МЗ («Как оценивать»)</h3>' + focusNote +
         '<p class="card-sub">Shadow · ' + esc(rubric.scorer_version || "mz-rubric") +
         ' · оценено ' + esc(rubric.scored_n != null ? rubric.scored_n : " - ") +
         ', n/a ' + esc(rubric.na_n != null ? rubric.na_n : " - ") +

@@ -474,6 +474,12 @@ tbody tr:hover td, tbody tr:focus-within td { background: var(--accent-soft); }
 .rubric-score--critical { background: color-mix(in srgb, #c0392b 16%, #fff); color: #9b2c20; }
 .rubric-score--muted { background: color-mix(in srgb, var(--muted) 14%, #fff); color: var(--muted); }
 .rubric-title { font-weight: 700; }
+.rubric-row--focus {
+  outline: 2px solid color-mix(in srgb, var(--accent) 55%, transparent);
+  background: color-mix(in srgb, var(--accent-soft, #e7f5ef) 70%, #fff);
+}
+[data-rubric-criterion] { cursor: pointer; }
+[data-rubric-criterion]:hover { background: color-mix(in srgb, var(--accent-soft, #e7f5ef) 55%, #fff); }
 
 .auth {
   max-width: 460px; margin: 10vh auto; padding: 28px;
