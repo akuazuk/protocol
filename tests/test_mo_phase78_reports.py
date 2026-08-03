@@ -156,6 +156,16 @@ def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> Non
     assert health.status_code == 200
     assert health.json()["ok"] is True
     assert health.json()["features"]["case_document"] is True
+    assert "report_reconciliation_mismatch" in health.json()["reason_codes"]
+    assert health.json()["components"]["warehouse"]["status"] == "ready"
+    assert health.json()["components"]["case_document_source"]["status"] == "ready"
+    assert health.json()["components"]["case_document_source"]["formats"] == ["raw_parquet"]
+
+    capabilities = client.get("/api/methodist/mo/capabilities", headers=headers)
+    assert capabilities.status_code == 200
+    assert capabilities.json()["pages"]["queue"] is True
+    assert capabilities.json()["actions"]["case_decision"] is True
+    assert "not_applicable" in capabilities.json()["metric_states"]
 
     reports = client.get("/api/methodist/mo/reports", headers=headers)
     assert reports.status_code == 200
@@ -182,6 +192,8 @@ def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> Non
     assert detail_payload["deep_overall_pct"] == 48.0
     assert detail_payload["document"]["clinical"]["complaints"] == "Боль в горле"
     assert detail_payload["document"]["clinical"]["anamnesis_doctor"] == "Болеет три дня"
+    assert detail_payload["document"]["source_state"] == "ready"
+    assert detail_payload["document"]["source_format"] == "parquet"
     assert "source_parquet" not in json.dumps(detail_payload, ensure_ascii=False)
 
     cabinet = client.get(

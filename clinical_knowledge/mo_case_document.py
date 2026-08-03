@@ -334,6 +334,12 @@ def build_case_document_payload(
         "findings": findings,
         "clinical": clinical,
         "has_source_text": bool(clinical),
+        "source_state": "ready" if clinical else "missing",
+        "source_format": (
+            "secure_csv"
+            if str((source or {}).get("_source_file") or "").lower().endswith(".csv")
+            else ("parquet" if source else None)
+        ),
         "source_parquet": (source or {}).get("_source_parquet"),
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "detail_ok": bool(detail.get("ok")),

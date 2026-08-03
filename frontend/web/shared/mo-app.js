@@ -349,6 +349,7 @@
       document.querySelectorAll(".filter-pop").forEach(renderFilter);
     }
     function renderAnalysisRail() {
+      renderBreadcrumbs();
       var path = $("analysis-path"), note = $("analysis-note");
       if (!path || !note) return;
       if (!state.drillTrail.length) {
@@ -369,6 +370,17 @@
           if (entry.apply) entry.apply();
         });
       });
+    }
+    function renderBreadcrumbs() {
+      var root = $("breadcrumbs");
+      if (!root) return;
+      var items = ["МО Аналитика", PAGE_TITLES[state.page] || state.page].concat(
+        state.drillTrail.map(function (entry) { return entry.label; })
+      );
+      root.innerHTML = "<ol>" + items.map(function (label, index) {
+        var current = index === items.length - 1 ? ' aria-current="page"' : "";
+        return "<li" + current + ">" + esc(label) + "</li>";
+      }).join("") + "</ol>";
     }
     function pushDrill(label, apply) {
       if (!state.drillSnapshot) state.drillSnapshot = selectionSnapshot();
@@ -823,8 +835,11 @@
           esc(clinical[field[0]]) + '</p></section>';
       }).join("");
       var reason = documentData.score_reason ? '<p class="inline-note">' + esc(documentData.score_reason) + '</p>' : "";
+      var sourceLabel = documentData.source_format === "secure_csv" ? "защищённый дневной срез" :
+        (documentData.source_format === "parquet" ? "дневной parquet" : "источник не определён");
       return '<div class="detail-block"><h3>Исходное МО</h3>' + reason +
-        (content || '<div class="empty">Клинический текст не найден в локальном срезе. Откройте визит в МИС.</div>') +
+        (content || '<div class="empty"><b>Клинический текст недоступен</b><div>Проверены опубликованные источники за дату визита. Откройте визит в МИС.</div></div>') +
+        '<p class="card-sub">Источник: ' + esc(sourceLabel) + '</p>' +
         '<p class="card-sub">Жалобы и анамнез → статус → диагноз → МКБ → обследования → лечение → наблюдение</p></div>';
     }
     async function postCaseChanges(caseIds, changes, comment) {
@@ -1293,9 +1308,14 @@
       renderEntityPages(state.data.summary);
     }
     async function loadDataQuality() {
-      var response = await request("/data-quality?" + query().toString(), "/cases?" + query().toString());
+      var responses = await Promise.all([
+        request("/data-quality?" + query().toString(), "/cases?" + query().toString()),
+        request("/health", "/freshness")
+      ]);
+      var response = responses[0], healthResponse = responses[1];
       if (!response.ok) throw new Error("Не удалось загрузить качество данных.");
       var data = await response.json();
+      var health = healthResponse.ok ? await healthResponse.json() : {};
       $("quality-kpis").innerHTML =
         kpi("Записей", data.n == null ? data.n_bucket : data.n, "в выбранном срезе") +
         kpi("Распознано", score(data.parse_rate), "структура документа") +
@@ -1312,6 +1332,34 @@
         ((data.empty_state || {}).reason_code && (data.empty_state || {}).reason_code !== "ok"
           ? notice("Пояснение", (data.empty_state || {}).title + ". " + ((data.empty_state || {}).hint || ""), "review")
           : "");
+      var labels = {
+        warehouse: "Витрина", freshness: "Свежесть", reports: "Ежедневные отчёты",
+        case_document_source: "Источник МО", pipeline: "Pipeline"
+      };
+      var statusLabels = { ready:"Готово", fresh:"Актуально", success:"Успешно", degraded:"Требует внимания", stale:"Устарело", critical:"Критично", missing:"Нет источника", unknown:"Нет данных" };
+      $("health-components").innerHTML = Object.keys(health.components || {}).map(function (key) {
+        var component = health.components[key] || {}, value = component.status || "unknown";
+        var detail = key === "case_document_source" ? ((component.formats || []).join(", ") || "клинический источник не опубликован") :
+          (key === "freshness" ? (component.data_through || "дата не определена") :
+          (key === "reports" ? (component.missing_days || 0) + " пропущенных отчётов" : "проверено сервером"));
+        var tone = /ready|fresh|success/.test(value) ? "good" : (/critical|missing|stale/.test(value) ? "critical" : "review");
+        return notice(labels[key] || key, (statusLabels[value] || value) + " · " + detail, tone);
+      }).join("") || '<div class="empty">Состояние компонентов недоступно.</div>';
+    }
+
+    async function loadCapabilities() {
+      try {
+        var response = await request("/capabilities", "/meta");
+        if (!response.ok) return;
+        var capabilities = await response.json();
+        state.data.capabilities = capabilities;
+        document.querySelectorAll(".nav-button[data-page]").forEach(function (button) {
+          var page = button.getAttribute("data-page").replace(/-/g, "_");
+          if (Object.prototype.hasOwnProperty.call(capabilities.pages || {}, page)) {
+            button.closest("li").hidden = capabilities.pages[page] === false;
+          }
+        });
+      } catch (error) {}
     }
     async function loadReports() {
       var responses = await Promise.all([
@@ -1901,7 +1949,7 @@
         var value = $("token-input").value.trim();
         if (!value) { $("auth-error").textContent = "Введите токен."; return; }
         try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
-        setAuth(false); loadPage(state.page);
+        setAuth(false); loadCapabilities(); loadPage(state.page);
       });
       window.addEventListener("popstate", function () { readUrl(); renderChips(); switchPage(state.page, false); });
       renderSavedViews(); refreshSavedViews();
@@ -1914,7 +1962,7 @@
       ensureColumnState();
       $("columns-manager").hidden = true;
       if (!token()) setAuth(true);
-      else { setAuth(false); switchPage(state.page, false); }
+      else { setAuth(false); await loadCapabilities(); switchPage(state.page, false); }
     }
     MO.app = Object.freeze({ init: init, switchPage: switchPage, showToast: showToast });
     init();

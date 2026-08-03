@@ -2723,20 +2723,76 @@ def build_mo_health() -> dict[str, Any]:
                 }
             except sqlite3.Error as exc:
                 reconcile = {"available": False, "reason": str(exc)}
+    data_through = str(freshness.get("data_through") or "")[:10]
+    source_formats: list[str] = []
+    checked_roots = 0
+    if data_through:
+        year, month = data_through[:4], data_through[5:7]
+        for root in _medical_exam_roots():
+            checked_roots += 1
+            raw = root / "raw" / year / month / f"mo_{data_through}.parquet"
+            secure = root / "secure_cases" / year / month / f"mo_{data_through}.csv"
+            quarantine = root / "quarantine" / year / month
+            if raw.is_file() and "raw_parquet" not in source_formats:
+                source_formats.append("raw_parquet")
+            if secure.is_file() and "secure_csv" not in source_formats:
+                source_formats.append("secure_csv")
+            if quarantine.is_dir() and any(quarantine.glob(f"*/mo_{data_through}.parquet")):
+                if "quarantine_parquet" not in source_formats:
+                    source_formats.append("quarantine_parquet")
+    document_source = {
+        "status": "ready" if source_formats else ("missing" if data_through else "unknown"),
+        "data_through": data_through or None,
+        "formats": source_formats,
+        "checked_roots": checked_roots,
+        "case_document_available": bool(source_formats),
+    }
     status = "ok"
+    reason_codes: list[str] = []
     if freshness.get("status") in {"critical", "stale"}:
         status = str(freshness.get("status"))
+        reason_codes.append(f"freshness_{freshness.get('status')}")
     if reconcile.get("alert"):
         status = "degraded"
+        reason_codes.append("report_reconciliation_mismatch")
+    if document_source["status"] == "missing":
+        status = "degraded" if status == "ok" else status
+        reason_codes.append("case_document_source_missing")
+    if not _warehouse_available():
+        reason_codes.append("warehouse_unavailable")
+    components = {
+        "warehouse": {
+            "status": "ready" if _warehouse_available() else "missing",
+            "cases": warehouse_cases,
+            "days": daily_days,
+            "schema_version": schema_version,
+        },
+        "freshness": {
+            "status": freshness.get("status") or "unknown",
+            "data_through": freshness.get("data_through"),
+            "lag_days": freshness.get("lag_days"),
+        },
+        "reports": {
+            "status": "degraded" if reconcile.get("alert") else ("ready" if reconcile.get("available") else "unknown"),
+            "missing_days": len(reconcile.get("missing_report_files") or []),
+        },
+        "case_document_source": document_source,
+        "pipeline": {
+            "status": ((freshness.get("state") or {}).get("last_stage") or "unknown"),
+            "heartbeat": (freshness.get("state") or {}).get("last_heartbeat"),
+        },
+    }
     return {
         "ok": True,
         "status": status,
+        "reason_codes": reason_codes,
         "schema_version": schema_version,
         "warehouse_path": str(db_path),
         "warehouse_cases": warehouse_cases,
         "daily_days": daily_days,
         "freshness": freshness,
         "reconcile": reconcile,
+        "components": components,
         "features": {
             "case_document": True,
             "case_pdf": True,
@@ -2744,6 +2800,44 @@ def build_mo_health() -> dict[str, Any]:
             "llm_costs": True,
             "v4_primary": False,
         },
+        "checked_at": _utc(),
+    }
+
+
+def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
+    """Явный контракт возможностей, чтобы UI не угадывал доступность функций."""
+    normalized_role = role if role in {"viewer", "doctor", "methodist", "lead", "admin"} else "viewer"
+    can_work_cases = normalized_role in {"methodist", "lead", "admin"}
+    can_view_population = normalized_role in {"viewer", "methodist", "lead", "admin"}
+    return {
+        "ok": True,
+        "schema_version": SCHEMA_VERSION,
+        "role": normalized_role,
+        "pages": {
+            "overview": can_view_population,
+            "yesterday": can_view_population,
+            "queue": can_work_cases,
+            "documents": can_view_population,
+            "doctors": can_view_population,
+            "specialties": can_view_population,
+            "diagnoses": can_view_population,
+            "safety": can_view_population,
+            "doctor_cabinet": normalized_role in {"doctor", "methodist", "lead", "admin"},
+            "access_log": normalized_role == "admin",
+            "data_quality": can_view_population,
+            "reports": can_view_population,
+            "settings": normalized_role in {"methodist", "lead", "admin"},
+        },
+        "actions": {
+            "case_document": normalized_role in {"doctor", "methodist", "lead", "admin"},
+            "case_pdf": normalized_role in {"doctor", "methodist", "lead", "admin"},
+            "case_decision": can_work_cases,
+            "bulk_action": can_work_cases,
+            "export_aggregates": can_view_population,
+            "export_clinical": normalized_role in {"methodist", "lead", "admin"},
+            "manage_saved_views": normalized_role not in {"viewer", "doctor"},
+        },
+        "metric_states": ["available", "missing", "not_applicable", "scoring_error", "suppressed"],
         "checked_at": _utc(),
     }
 

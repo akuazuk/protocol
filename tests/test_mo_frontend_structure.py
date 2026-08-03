@@ -57,6 +57,9 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "settings",
     ):
         assert f'data-page="{page}"' in SOURCE
+    for section in ("Мониторинг", "Работа", "Аналитика", "Управление"):
+        assert f'<li class="nav-section-label">{section}</li>' in HTML
+    assert 'id="breadcrumbs"' in HTML
 
 
 def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
@@ -83,6 +86,9 @@ def test_mo_dashboard_accessibility_and_responsive_invariants() -> None:
     assert 'role="dialog"' in HTML
     assert "@media (max-width: 720px)" in CSS
     assert "@media (prefers-reduced-motion: reduce)" in CSS
+    assert '<caption class="sr-only">Очередь случаев для разбора методистом</caption>' in HTML
+    assert '<caption class="sr-only">Все медицинские документы выбранного среза</caption>' in HTML
+    assert 'scope="col"' in HTML
 
 
 def test_user_facing_terminology_has_no_provider_or_internal_jargon() -> None:
@@ -129,6 +135,15 @@ def test_case_drawer_renders_source_mo_and_never_turns_missing_scores_into_zero(
         assert f'["{field}"' in JS
     assert 'available ? Math.round(n) + "%" : "Нет данных"' in JS
     assert 'unscored:"Не оценено"' in JS
+    assert 'documentData.source_format === "secure_csv"' in JS
+    assert "Клинический текст недоступен" in JS
+
+
+def test_health_and_capabilities_are_rendered_without_guessing_features() -> None:
+    assert 'request("/capabilities", "/meta")' in JS
+    assert 'request("/health", "/freshness")' in JS
+    assert 'id="health-components"' in HTML
+    assert "case_document_source" in JS
 
 
 def test_programmatic_main_focus_does_not_draw_workspace_frame() -> None:
