@@ -65,3 +65,26 @@ def test_dynamics_detects_plan_change() -> None:
     by_id = {c["id"]: c for c in result["criteria"]}
     assert by_id["exam_correction"]["score"] == 1.0
     assert by_id["treatment_correction"]["score"] == 1.0
+
+
+def test_follow_up_interval_scores_full() -> None:
+    result = evaluate_mo_rubric_mz(
+        clinical={"treatment_recommendations": "Явка через 7 дней на контроль"},
+        meta={"visit_date": "2026-08-02"},
+    )
+    by_id = {c["id"]: c for c in result["criteria"]}
+    assert by_id["follow_up"]["score"] == 1.0
+
+
+def test_summarize_rubric_batch_ranks_failures() -> None:
+    from clinical_knowledge.mo_rubric_mz import summarize_rubric_batch
+
+    a = evaluate_mo_rubric_mz(clinical={}, meta={})
+    b = evaluate_mo_rubric_mz(
+        clinical={"complaints": "Боль в горле локально, длительность 2 дня, интенсивность сильная"},
+        meta={"visit_date": "2026-08-01", "visit_time": "09:00", "diagnosis_code": "J03.9"},
+    )
+    summary = summarize_rubric_batch([a, b])
+    assert summary["cases_n"] == 2
+    assert summary["top_fail"]
+    assert summary["top_fail"][0]["fail_pct"] >= summary["top_fail"][-1]["fail_pct"]

@@ -8462,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r14-mo-rubric-mz"
+BUILD_VERSION = "2026-08-03-r15-rubric-dynamics-summary"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11499,23 +11499,58 @@ def api_methodist_mo_case_detail(
             "source_format": document.get("source_format"),
         }
     try:
+        from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
         from clinical_knowledge.mo_rubric_mz import evaluate_mo_rubric_mz
 
         record = result.get("record") if isinstance(result.get("record"), dict) else {}
-        result["rubric_mz"] = evaluate_mo_rubric_mz(
+        visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
+        prior = None
+        try:
+            prior = resolve_prior_clinical_for_case(case_id, visit_date=visit_date or None)
+        except Exception:
+            prior = None
+        prior_clinical = (prior or {}).get("clinical") if isinstance(prior, dict) else None
+        rubric = evaluate_mo_rubric_mz(
             clinical=clinical,
             meta={
-                "visit_date": record.get("date") or record.get("visit_date"),
+                "visit_date": visit_date,
                 "visit_time": record.get("visit_time") or clinical.get("visit_time"),
                 "diagnosis_code": record.get("diagnosis_code") or record.get("mkb_code_main"),
                 "mkb_code_main": record.get("mkb_code_main") or record.get("diagnosis_code"),
                 "diagnosis_short": record.get("diagnosis_short"),
             },
             block_scores=result.get("block_scores") if isinstance(result.get("block_scores"), dict) else {},
+            prior_clinical=prior_clinical if isinstance(prior_clinical, dict) else None,
         )
+        if prior and prior.get("visit_date"):
+            rubric["prior_visit_date"] = prior.get("visit_date")
+            rubric["prior_available"] = True
+        else:
+            rubric["prior_available"] = False
+        result["rubric_mz"] = rubric
     except Exception:
         result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
     return result
+
+
+@app.get("/api/methodist/mo/rubric-summary")
+def api_methodist_mo_rubric_summary(
+    request: "Request",
+    response: "Response",
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    limit: int = Query(120, ge=10, le=300),
+) -> dict:
+    """Shadow-сводка рубрики МЗ по защищённым срезам периода."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_rubric_mz import build_rubric_summary_from_sources
+
+    response.headers["Cache-Control"] = "private, no-store"
+    return build_rubric_summary_from_sources(
+        date_from=date_from,
+        date_to=date_to,
+        limit=limit,
+    )
 
 
 @app.get("/api/methodist/mo/cases/{case_id}/document")

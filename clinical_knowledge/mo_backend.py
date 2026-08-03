@@ -2831,6 +2831,7 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
         "actions": {
             "case_document": normalized_role in {"doctor", "methodist", "lead", "admin"},
             "case_pdf": normalized_role in {"doctor", "methodist", "lead", "admin"},
+            "rubric_mz": can_view_population,
             "case_decision": can_work_cases,
             "bulk_action": can_work_cases,
             "export_aggregates": can_view_population,

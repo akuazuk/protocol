@@ -34,7 +34,8 @@
 
 | Дата | Изменение | BUILD_VERSION |
 |------|-----------|---------------|
-| 2026-08-03 | План + YAML + shadow scorer + case-detail UI | (в работе) |
+| 2026-08-03 | План + YAML + shadow scorer + case-detail UI | `2026-08-03-r14-mo-rubric-mz` |
+| 2026-08-03 | Prior-visit dynamics + overview top-fail summary | `2026-08-03-r15-rubric-dynamics-summary` |
 
 ---
 
@@ -60,15 +61,16 @@
 ### Этап 2. Scoring engine (shadow)
 - [x] `clinical_knowledge/mo_rubric_mz.py` - presence/depth heuristics
 - [x] Встраивание в `/api/methodist/mo/cases/{id}` как `rubric_mz`
-- [ ] Dynamics correction по предыдущему визиту пациента
-- [ ] Follow-up frequency vs КП/№127 (не только presence)
+- [x] Dynamics correction по предыдущему визиту пациента (source lookup)
+- [x] Follow-up: marker + interval → 1.0; сверка с КП/№127 - дальше
 - [ ] Запись в warehouse (отдельный PR)
 
 ### Этап 3. Visualization
 - [x] Case drawer: таблица 13 критериев + `rubric_pct`
+- [x] Overview: top-fail критерии (`/rubric-summary`)
 - [ ] Dashboard heatmap критерии × специальность
-- [ ] Top fail criteria / фильтр «критерий = 0»
-- [ ] Dual score в overview KPI
+- [ ] Фильтр «критерий = 0» в очереди
+- [ ] Dual score в overview KPI (deep + rubric primary toggle)
 
 ### Этап 4. Calibration & rollout
 - [ ] Gold 50-100 КЗ

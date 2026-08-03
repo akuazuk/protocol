@@ -254,11 +254,20 @@ def _score_follow_up(crit: Mapping[str, Any], clinical: Mapping[str, Any]) -> di
     if not text:
         return _item(crit, score=0.0, reason="Кратность наблюдения не указана")
     markers = list(crit.get("markers") or [])
-    if _has_marker(text, markers):
+    has_marker = _has_marker(text, markers)
+    has_interval = bool(re.search(r"(через\s+\d+|\d+\s*(дн|день|недел|мес)|раз\s+в)", text.lower()))
+    if has_marker and has_interval:
+        return _item(
+            crit,
+            score=1.0,
+            reason="Кратность наблюдения указана с интервалом; сверка с КП - следующий этап",
+            evidence=text,
+        )
+    if has_marker:
         return _item(
             crit,
             score=0.5,
-            reason="Упоминание наблюдения есть; сверка с КП/№127 ещё не подключена",
+            reason="Упоминание наблюдения есть; интервал/сверка с КП частичные",
             evidence=text,
         )
     return _item(crit, score=0.0, reason="Явной кратности наблюдения не найдено", evidence=text)
@@ -346,3 +355,149 @@ def evaluate_mo_rubric_mz(
         "by_group": by_group,
         "source": "config/mo_rubric_mz.yaml",
     }
+
+
+def summarize_rubric_batch(results: list[Mapping[str, Any]]) -> dict[str, Any]:
+    """Агрегат top-fail по списку evaluate_mo_rubric_mz() результатов."""
+    fail_counts: dict[str, dict[str, Any]] = {}
+    scored_cases = 0
+    pct_sum = 0.0
+    pct_n = 0
+    for result in results:
+        if not result or not result.get("ok"):
+            continue
+        scored_cases += 1
+        if isinstance(result.get("rubric_pct"), (int, float)):
+            pct_sum += float(result["rubric_pct"])
+            pct_n += 1
+        for item in result.get("criteria") or []:
+            cid = str(item.get("id") or "")
+            if not cid:
+                continue
+            bucket = fail_counts.setdefault(
+                cid,
+                {
+                    "id": cid,
+                    "title": item.get("title") or cid,
+                    "group": item.get("group"),
+                    "zero_n": 0,
+                    "half_n": 0,
+                    "full_n": 0,
+                    "na_n": 0,
+                    "scored_n": 0,
+                },
+            )
+            score = item.get("score")
+            if not isinstance(score, (int, float)):
+                bucket["na_n"] += 1
+                continue
+            bucket["scored_n"] += 1
+            if score >= 0.999:
+                bucket["full_n"] += 1
+            elif score >= 0.499:
+                bucket["half_n"] += 1
+            else:
+                bucket["zero_n"] += 1
+    top_fail = []
+    for bucket in fail_counts.values():
+        scored_n = int(bucket["scored_n"])
+        if not scored_n:
+            continue
+        fail_n = int(bucket["zero_n"]) + int(bucket["half_n"])
+        bucket["fail_pct"] = round(100.0 * fail_n / scored_n, 1)
+        bucket["zero_pct"] = round(100.0 * int(bucket["zero_n"]) / scored_n, 1)
+        top_fail.append(bucket)
+    top_fail.sort(key=lambda row: (-float(row["fail_pct"]), -int(row["zero_n"]), str(row["id"])))
+    return {
+        "ok": True,
+        "cases_n": scored_cases,
+        "avg_rubric_pct": round(pct_sum / pct_n, 1) if pct_n else None,
+        "top_fail": top_fail[:13],
+        "primary": False,
+        "source": "config/mo_rubric_mz.yaml",
+    }
+
+
+def build_rubric_summary_from_sources(
+    *,
+    date_from: str = "",
+    date_to: str = "",
+    limit: int = 120,
+) -> dict[str, Any]:
+    """Shadow-сводка по защищённым дневным срезам (без patient_id в ответе)."""
+    from datetime import date, timedelta
+
+    from clinical_knowledge.mo_case_document import (
+        _medical_exam_roots,
+        _read_source_records,
+        clinical_fields_from_row,
+    )
+
+    limit = max(10, min(int(limit or 120), 300))
+    end = (date_to or "")[:10]
+    start = (date_from or "")[:10]
+    try:
+        end_d = date.fromisoformat(end) if end else date.today()
+    except ValueError:
+        end_d = date.today()
+    try:
+        start_d = date.fromisoformat(start) if start else end_d - timedelta(days=7)
+    except ValueError:
+        start_d = end_d - timedelta(days=7)
+    if start_d > end_d:
+        start_d, end_d = end_d, start_d
+
+    files: list[tuple[str, Path]] = []
+    day = end_d
+    while day >= start_d:
+        key = day.isoformat()
+        year, month = key[:4], key[5:7]
+        for root in _medical_exam_roots():
+            for path in (
+                root / "secure_cases" / year / month / f"mo_{key}.csv",
+                root / "raw" / year / month / f"mo_{key}.parquet",
+            ):
+                if path.is_file():
+                    files.append((key, path))
+        day -= timedelta(days=1)
+
+    results: list[dict[str, Any]] = []
+    seen_ids: set[str] = set()
+    for day_key, path in files:
+        if len(results) >= limit:
+            break
+        try:
+            rows = _read_source_records(path)
+        except Exception:  # noqa: BLE001
+            continue
+        for row in rows:
+            if len(results) >= limit:
+                break
+            clinical = clinical_fields_from_row(row)
+            if not clinical:
+                continue
+            rid = str(row.get("id") or row.get("mis_id") or row.get("visit_id") or "").strip()
+            if rid and rid in seen_ids:
+                continue
+            if rid:
+                seen_ids.add(rid)
+            kind = str(row.get("document_kind") or "").strip()
+            if kind in {"certificate", "diagnostic", "non_clinical", "empty"}:
+                continue
+            meta = {
+                "visit_date": str(row.get("date") or row.get("visit_date") or day_key)[:10],
+                "visit_time": str(row.get("visit_time") or row.get("time") or ""),
+                "diagnosis_code": str(row.get("mkb_code_main") or row.get("diagnosis_code") or ""),
+                "diagnosis_short": str(row.get("clinical_diagnosis") or row.get("mis_diagnos") or ""),
+            }
+            results.append(evaluate_mo_rubric_mz(clinical=clinical, meta=meta))
+
+    summary = summarize_rubric_batch(results)
+    summary["date_from"] = start_d.isoformat()
+    summary["date_to"] = end_d.isoformat()
+    summary["sample_n"] = len(results)
+    summary["files_scanned"] = len(files)
+    summary["available"] = bool(results)
+    if not results:
+        summary["reason"] = "Нет клинических строк в защищённых срезах за период"
+    return summary

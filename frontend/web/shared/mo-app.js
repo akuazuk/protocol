@@ -643,20 +643,51 @@
       renderMonthTrend(data);renderMonthHeatmap(data);renderMonthDoctors(data);renderMonthPareto(data);renderMonthFunnel(data);
       $("month-reg55").innerHTML=(data.reg55 || {}).available ?
         kpi("Соответствие №55",score(data.reg55.value),"проверенная метрика") : unavailableBlock(data.reg55);
+      renderMonthRubricMz(data.rubric_mz);
+    }
+    function renderMonthRubricMz(rubric) {
+      var host = $("month-rubric-mz");
+      if (!host) return;
+      if (!rubric || !rubric.available) {
+        host.innerHTML = unavailableBlock(rubric, "Нет выборки для рубрики МЗ за период.");
+        return;
+      }
+      var top = (rubric.top_fail || []).slice(0, 8).map(function (item) {
+        return '<tr><td>' + esc(item.title || item.id) + '</td><td>' + esc(item.zero_n) +
+          '</td><td>' + esc(item.half_n) + '</td><td><b>' + esc(item.fail_pct) + '%</b></td></tr>';
+      }).join("");
+      host.innerHTML =
+        kpi("Средняя рубрика", score(rubric.avg_rubric_pct), "shadow · sample " + (rubric.sample_n || 0)) +
+        kpi("Выборка", rubric.sample_n, (rubric.date_from || "") + " - " + (rubric.date_to || "")) +
+        '<div class="table-wrap" style="margin-top:10px"><table class="rubric-table"><thead><tr>' +
+        '<th>Критерий</th><th>0</th><th>0.5</th><th>Доля слабостей</th></tr></thead><tbody>' +
+        (top || '<tr><td colspan="4" class="empty">Слабых критериев нет.</td></tr>') +
+        '</tbody></table></div>';
     }
     async function loadOverview() {
       var suffix = "?" + query().toString();
+      var q = query();
+      var rubricQuery = new URLSearchParams();
+      if (q.get("date_from")) rubricQuery.set("date_from", q.get("date_from"));
+      if (q.get("date_to")) rubricQuery.set("date_to", q.get("date_to"));
+      rubricQuery.set("limit", "120");
       var responses = await Promise.all([
         request("/month-report" + suffix, "__root__"),
-        request("/facets" + suffix, "/cases" + suffix)
+        request("/facets" + suffix, "/cases" + suffix),
+        request("/rubric-summary?" + rubricQuery.toString())
       ]);
-      var response = responses[0], facetsResponse = responses[1];
+      var response = responses[0], facetsResponse = responses[1], rubricResponse = responses[2];
       if (response.status === 401 || response.status === 403) { setAuth(true); return; }
       if (!response.ok) throw new Error("Не удалось загрузить отчёт месяца.");
       var raw = await response.json();
       if (facetsResponse.ok) {
         var facetPayload = await facetsResponse.json();
         raw.facets = facetPayload.facets || facetPayload;
+      }
+      if (rubricResponse && rubricResponse.ok) {
+        raw.rubric_mz = await rubricResponse.json();
+      } else {
+        raw.rubric_mz = { available: false, reason: "Сводка рубрики МЗ недоступна" };
       }
       renderOverview(raw);
       buildFacets(normalizeSummary(raw), raw.facets);
@@ -848,7 +879,9 @@
         '<p class="card-sub">Shadow · ' + esc(rubric.scorer_version || "mz-rubric") +
         ' · оценено ' + esc(rubric.scored_n != null ? rubric.scored_n : " - ") +
         ', n/a ' + esc(rubric.na_n != null ? rubric.na_n : " - ") +
-        ' · итог ' + esc(score(rubric.rubric_pct)) + '</p>' +
+        ' · итог ' + esc(score(rubric.rubric_pct)) +
+        (rubric.prior_available ? ' · prior ' + esc(rubric.prior_visit_date || "") : ' · prior n/a') +
+        '</p>' +
         '<div class="table-wrap"><table class="rubric-table"><thead><tr>' +
         '<th>Оценка</th><th>Параметр</th><th>Пояснение</th></tr></thead><tbody>' +
         (rows || '<tr><td colspan="3" class="empty">Критерии не рассчитаны.</td></tr>') +
