@@ -8462,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r11-mo-case-document-source-fix"
+BUILD_VERSION = "2026-08-03-r12-mo-warehouse-case-detail"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11476,6 +11476,24 @@ def api_methodist_mo_case_detail(
     result = build_case_detail(case_id, month=month or None)
     if not result.get("ok"):
         raise HTTPException(status_code=404, detail=result.get("error") or "case_not_found")
+    from clinical_knowledge.mo_case_document import build_case_document_payload
+
+    try:
+        document = build_case_document_payload(case_id, month=month or None, detail=result)
+    except (RuntimeError, OSError):
+        # Исходный текст - защищённое дополнение к detail. Его отсутствие не должно
+        # ломать уже доступную оценку из legacy/fallback источника.
+        document = {"ok": False}
+    if document.get("ok"):
+        result["document"] = {
+            "mis_id": document.get("mis_id"),
+            "visit_id": document.get("visit_id"),
+            "document_kind": document.get("document_kind"),
+            "document_kind_label": document.get("document_kind_label"),
+            "score_reason": document.get("score_reason"),
+            "clinical": document.get("clinical") or {},
+            "has_source_text": bool(document.get("has_source_text")),
+        }
     return result
 
 

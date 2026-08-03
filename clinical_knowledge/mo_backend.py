@@ -43,6 +43,15 @@ SUPPRESSION_N = max(2, int(os.environ.get("MO_SUPPRESSION_N", "5")))
 DOCUMENT_KINDS = frozenset(
     {"medical_exam", "consultation", "certificate", "diagnostic", "non_clinical", "empty", "unknown"}
 )
+DOCUMENT_KIND_LABELS = {
+    "medical_exam": "Медицинский осмотр",
+    "consultation": "Консультативное заключение",
+    "certificate": "Справка",
+    "diagnostic": "Диагностическое исследование",
+    "non_clinical": "Неклинический документ",
+    "empty": "Пустой документ",
+    "unknown": "Не определён",
+}
 CRM_STATUSES = frozenset(
     {
         "new",
@@ -2232,21 +2241,96 @@ def build_data_quality(params: dict[str, Any]) -> dict[str, Any]:
 def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
     selected_month = month or _month_for_date("")
     detail: dict[str, Any] = {"ok": False}
-    for rec in _pipeline_records_for_month(selected_month):
-        if rec["case_id"] == case_id:
-            detail = {
-                "ok": True,
-                "record": _public_row(dict(rec)),
-                "axes": {
-                    "documentation": rec.get("axis_documentation"),
-                    "clinical_concordance": rec.get("axis_concordance"),
-                    "safety": rec.get("axis_safety"),
-                    "regulatory": rec.get("axis_regulatory"),
-                },
-                "findings": rec.get("_findings") or [],
-                "source": "daily_pipeline",
-            }
-            break
+    if _backend_source() == "warehouse":
+        with closing(_read_connection()) as conn:
+            row = conn.execute(
+                """SELECT c.*, d.doctor_fio,
+                          COALESCE(d.specialty, c.specialty) AS doctor_specialty,
+                          COALESCE(d.filial, c.filial) AS doctor_filial
+                   FROM fact_mo_case c
+                   LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+                   WHERE c.visit_id = ? OR c.mis_id = ?
+                   ORDER BY CASE WHEN c.document_kind IN ('medical_exam','consultation') THEN 0 ELSE 1 END
+                   LIMIT 1""",
+                (case_id, case_id),
+            ).fetchone()
+            if row:
+                item = dict(row)
+                mis_id = str(item["mis_id"])
+                axes = {
+                    str(axis_row["axis"]): axis_row["score"]
+                    for axis_row in conn.execute(
+                        "SELECT axis, score FROM fact_mo_score_axis WHERE mis_id = ?", (mis_id,)
+                    )
+                }
+                findings = [
+                    dict(finding_row)
+                    for finding_row in conn.execute(
+                        """SELECT f.finding_code AS code, f.finding_code, f.severity,
+                                  f.evidence, f.source_ref,
+                                  COALESCE(df.title_ru, f.finding_code) AS title_ru,
+                                  COALESCE(df.why_important_ru, '') AS detail_ru
+                           FROM fact_mo_finding f
+                           LEFT JOIN dim_finding df ON df.finding_code = f.finding_code
+                           WHERE f.mis_id = ? AND COALESCE(f.passed, 0) = 0
+                           ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1
+                                    WHEN 'P2' THEN 2 ELSE 3 END""",
+                        (mis_id,),
+                    )
+                ]
+                document_kind = str(item.get("document_kind") or "unknown")
+                score = item.get("overall_pct")
+                record = {
+                    "case_id": str(item.get("visit_id") or mis_id),
+                    "mis_id": mis_id,
+                    "visit_id": str(item.get("visit_id") or ""),
+                    "date": item.get("visit_date"),
+                    "doctor_fio": item.get("doctor_fio") or "",
+                    "specialization": item.get("doctor_specialty") or item.get("specialty") or "",
+                    "filial": item.get("doctor_filial") or item.get("filial") or "",
+                    "document_kind": document_kind,
+                    "document_kind_label": DOCUMENT_KIND_LABELS.get(document_kind, document_kind),
+                    "diagnosis_code": item.get("diagnosis_code") or "",
+                    "diagnosis_short": item.get("diagnosis_code") or "",
+                    "mkb_code_main": item.get("diagnosis_code") or "",
+                    "icd_chapter": item.get("icd_chapter") or "",
+                    "overall_pct": score,
+                    "score_reason": (
+                        None
+                        if isinstance(score, (int, float))
+                        else (
+                            "Не оценивается: диагностика / неклинический документ"
+                            if document_kind not in {"medical_exam", "consultation"}
+                            else "Оценка ещё не рассчитана"
+                        )
+                    ),
+                    "status": item.get("status") or "",
+                }
+                detail = {
+                    "ok": True,
+                    "record": record,
+                    "deep_overall_pct": score,
+                    "deep_status": item.get("status") or "",
+                    "axes": axes,
+                    "findings": findings,
+                    "source": "warehouse",
+                }
+    if not detail.get("ok"):
+        for rec in _pipeline_records_for_month(selected_month):
+            if rec["case_id"] == case_id:
+                detail = {
+                    "ok": True,
+                    "record": _public_row(dict(rec)),
+                    "axes": {
+                        "documentation": rec.get("axis_documentation"),
+                        "clinical_concordance": rec.get("axis_concordance"),
+                        "safety": rec.get("axis_safety"),
+                        "regulatory": rec.get("axis_regulatory"),
+                    },
+                    "findings": rec.get("_findings") or [],
+                    "source": "daily_pipeline",
+                }
+                break
     if not detail.get("ok"):
         detail = build_kz_case_detail(month=selected_month, visit_id=case_id)
     if not detail.get("ok") and not month:

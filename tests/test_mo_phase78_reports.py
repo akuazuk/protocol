@@ -106,10 +106,29 @@ def test_score_reason_for_diagnostic() -> None:
 def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> None:
     db = tmp_path / "mo.sqlite"
     doctor = _seed(db)
+    pd = __import__("pandas")
+    raw_dir = tmp_path / "medical_exams" / "raw" / "2026" / "08"
+    raw_dir.mkdir(parents=True)
+    pd.DataFrame(
+        [
+            {
+                "id": "8999", "visit_id": "91001", "document_kind": "diagnostic",
+                "complaints": "Не тот документ визита", "clinical_diagnosis": "Диагностика",
+            },
+            {
+                "id": "9001", "visit_id": "91001", "document_kind": "consultation",
+                "complaints": "Боль в горле", "anamnesis_doctor": "Болеет три дня",
+                "objective_status": "Зев гиперемирован", "clinical_diagnosis": "Тонзиллит",
+                "exam_recommendations": "Общий анализ крови",
+                "treatment_recommendations": "Лечение по протоколу",
+            },
+        ]
+    ).to_parquet(raw_dir / "mo_2026-08-01.parquet", index=False)
     monkeypatch.setenv("METHODIST_TOKEN", "test-token")
     monkeypatch.setenv("MO_ANALYTICS_DB", str(db))
     monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path))
     monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path / "medical_exams"))
     headers = {"X-Methodist-Token": "test-token", "X-Methodist-Role": "methodist"}
     client = TestClient(rag_server.app)
 
@@ -132,7 +151,18 @@ def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> Non
     assert "text/html" in doc.headers.get("content-type", "")
     assert "Тестовый Врач" in doc.text
     assert "J35.0" in doc.text
+    assert "Боль в горле" in doc.text
+    assert "Не тот документ визита" not in doc.text
     assert "abc123hashshouldnotshow" not in doc.text
+
+    detail = client.get("/api/methodist/mo/cases/91001", headers=headers)
+    assert detail.status_code == 200
+    detail_payload = detail.json()
+    assert detail_payload["source"] == "warehouse"
+    assert detail_payload["deep_overall_pct"] == 48.0
+    assert detail_payload["document"]["clinical"]["complaints"] == "Боль в горле"
+    assert detail_payload["document"]["clinical"]["anamnesis_doctor"] == "Болеет три дня"
+    assert "source_parquet" not in json.dumps(detail_payload, ensure_ascii=False)
 
     cabinet = client.get(
         f"/api/methodist/mo/doctor-cabinet?doctor_key={doctor}",
