@@ -101,18 +101,22 @@ GitHub - единственный общий координационный сл
 6. проверяются `/api/version`, `/health` и feature-specific smoke-test.
 
 Нельзя параллельно запускать два deploy, менять Render env или загружать `/var/data`.
-Команды `render_promote_main.sh` и `deploy_promote_main_after_push.sh`, продвигающие HEAD
-напрямую в `main`, не являются штатным multi-agent workflow; использовать их можно только
-как явно согласованную аварийную процедуру после проверки точного SHA.
+Прямой push в `main` блокируется GitHub branch protection. Старые команды
+`render_promote_main.sh` и `deploy_promote_main_after_push.sh` отключены: task HEAD никогда
+не должен становиться production без PR merge.
 
-Если настроен `RENDER_API_KEY`:
+Единственная штатная команда после merge:
 
 ```bash
-scripts/ops/render_deploy.sh ensure-deploy --commit=<merge-sha> --wait
+git fetch origin
+merge_sha=$(git rev-parse origin/main)
+scripts/ops/render_release_main.sh --commit="$merge_sha"
 ```
 
-Без API key нужно дождаться webhook deploy и подтвердить новую сборку не только строкой
-версии, но и поведением нового endpoint/функции.
+Wrapper отклоняет любой SHA, который не равен текущему HEAD `origin/main`, и берёт
+ожидаемый `BUILD_VERSION` из самого merge commit, а не из локальной рабочей ветки. Без API
+key он только контролирует webhook. Production подтверждается полями `version` и
+`git_commit`, health и поведением изменённой функции.
 
 ## 7. Handoff в конце каждой сессии
 

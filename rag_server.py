@@ -8462,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r20-mo-filter-actions-ui"
+BUILD_VERSION = "2026-08-03-r22-mo-filter-actions-ui"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -8567,6 +8567,11 @@ def api_version() -> dict:
         pass
     payload = {
         "version": _app_version(),
+        "git_commit": (
+            os.environ.get("RENDER_GIT_COMMIT")
+            or os.environ.get("GIT_COMMIT_SHA")
+            or ""
+        ).strip() or None,
         "rag_ready": _chunks_load_done.is_set(),
         "corpus_chunks": chunks_total,
         "corpus_structured_chunks": structured,

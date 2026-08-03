@@ -126,13 +126,12 @@ Release-координатор после merge:
 ```bash
 git fetch origin
 merge_sha=$(git rev-parse origin/main)
-scripts/ops/git_deploy_guard.sh --render-git --render-branch=main \
-  --prod-url=https://protocol-bimy.onrender.com
-scripts/ops/render_deploy.sh ensure-deploy --commit="$merge_sha" --wait
+scripts/ops/render_release_main.sh --commit="$merge_sha"
 ```
 
-Если `RENDER_API_KEY` отсутствует, не имитировать успешный deploy. Дождаться webhook и
-проверить production endpoint. В любом случае:
+Wrapper не зависит от текущей локальной ветки: он повторно читает `origin/main`, отклоняет
+другой SHA и получает ожидаемый `BUILD_VERSION` из merge commit. Если `RENDER_API_KEY`
+отсутствует, wrapper не имитирует deploy, а контролирует webhook. В любом случае:
 
 ```bash
 curl -fsS https://protocol-bimy.onrender.com/api/version
@@ -169,14 +168,18 @@ git log --oneline origin/main..HEAD
 Незакоммиченные файлы инвентаризировать отдельно. До решения владельца продолжать работу в
 новом clean worktree от `origin/main`.
 
-## 10. Рекомендуемые настройки GitHub/Render
+## 10. Настройки GitHub/Render
 
-Следующие изменения требуют отдельного административного решения:
+Включено:
 
-1. branch protection для `main`: PR required, no force-push, required review;
-2. исправить CI baseline, чтобы required check снова был значимым;
-3. включить auto-delete head branches после merge;
-4. добавить Git SHA/deploy time в `/api/version` наряду с `BUILD_VERSION`;
-5. перенести deploy в один GitHub Action с `concurrency: production-render`;
-6. хранить Render API key как secret CI, а не копировать между компьютерами.
+1. branch protection для `main`: изменения только через PR, без force-push и удаления;
+2. task HEAD promote scripts завершаются ошибкой;
+3. `/api/version` показывает Git SHA рядом с `BUILD_VERSION`.
+
+Следующий инфраструктурный этап:
+
+1. исправить CI baseline и сделать `lint-and-test` обязательным;
+2. включить auto-delete head branches после merge;
+3. перенести deploy в один GitHub Action с `concurrency: production-render`;
+4. хранить Render API key как secret CI, а не копировать между компьютерами.
 
