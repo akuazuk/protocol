@@ -121,3 +121,11 @@ def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
     assert "История решений" in JS
     assert '$("sort-by").addEventListener("change"' in JS
     assert '$("sort-dir").addEventListener("change"' in JS
+
+
+def test_case_drawer_renders_source_mo_and_never_turns_missing_scores_into_zero() -> None:
+    assert "function renderClinicalDocument" in JS
+    for field in ("complaints", "anamnesis_doctor", "objective_status", "clinical_diagnosis"):
+        assert f'["{field}"' in JS
+    assert 'available ? Math.round(n) + "%" : "Нет данных"' in JS
+    assert 'unscored:"Не оценено"' in JS

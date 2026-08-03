@@ -7,7 +7,6 @@
 from __future__ import annotations
 
 import html
-import json
 import os
 import shutil
 import subprocess
@@ -112,8 +111,24 @@ def score_reason(*, document_kind: str, overall_pct: Any, status: str = "") -> s
     return "Оценено"
 
 
-def load_case_source_row(case_id: str, *, visit_date: str | None = None) -> dict[str, Any] | None:
-    """Найти клиническую строку в parquet по visit_id / mis_id."""
+def _source_row_richness(row: Mapping[str, Any]) -> tuple[int, int]:
+    """Scored documents first, then the row with the richest clinical content."""
+    scored = int(str(row.get("document_kind") or "") in SCORED_KINDS)
+    populated = sum(
+        1
+        for key, _label in CLINICAL_FIELDS
+        if str(row.get(key) or "").strip().lower() not in {"", "nan", "none", "null"}
+    )
+    return scored, populated
+
+
+def load_case_source_row(
+    case_id: str,
+    *,
+    visit_date: str | None = None,
+    mis_id: str | None = None,
+) -> dict[str, Any] | None:
+    """Найти клиническую строку: точная запись МИС, затем лучший документ визита."""
     try:
         import pandas as pd
     except ImportError:
@@ -126,7 +141,7 @@ def load_case_source_row(case_id: str, *, visit_date: str | None = None) -> dict
     for root in _medical_exam_roots():
         raw = root / "raw"
         if day_hint and len(day_hint) >= 10:
-            year, month, day = day_hint[:4], day_hint[5:7], day_hint[8:10]
+            year, month = day_hint[:4], day_hint[5:7]
             day_path = raw / year / month / f"mo_{day_hint}.parquet"
             if day_path.is_file():
                 candidates.append(day_path)
@@ -151,20 +166,35 @@ def load_case_source_row(case_id: str, *, visit_date: str | None = None) -> dict
             continue
         if frame.empty:
             continue
+        exact_needle = str(mis_id or "").strip()
+        if exact_needle:
+            for key in ("id", "mis_id"):
+                if key not in frame.columns:
+                    continue
+                matched = frame[frame[key].astype(str) == exact_needle]
+                if not matched.empty:
+                    row = matched.iloc[0].to_dict()
+                    row["_source_parquet"] = str(path)
+                    return row
+        visit_matches = []
         for key in ("visit_id", "id", "mis_id"):
             if key not in frame.columns:
                 continue
             matched = frame[frame[key].map(_norm_id) == needle]
             if matched.empty:
                 continue
-            row = matched.iloc[0].to_dict()
+            visit_matches.extend(matched.to_dict(orient="records"))
+            if key == "visit_id":
+                break
+        if visit_matches:
+            row = max(visit_matches, key=_source_row_richness)
             row["_source_parquet"] = str(path)
             return row
     return None
 
 
 def _warehouse_case_meta(case_id: str) -> dict[str, Any]:
-    from clinical_knowledge.mo_backend import _db_path, _read_connection
+    from clinical_knowledge.mo_backend import _read_connection
     from contextlib import closing
 
     needle = str(case_id or "").strip()
@@ -202,24 +232,29 @@ def _warehouse_case_meta(case_id: str) -> dict[str, Any]:
         return item
 
 
-def build_case_document_payload(case_id: str, *, month: str | None = None) -> dict[str, Any]:
+def build_case_document_payload(
+    case_id: str,
+    *,
+    month: str | None = None,
+    detail: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     from clinical_knowledge.mo_backend import build_case_detail
 
     meta = _warehouse_case_meta(case_id)
     visit_date = str(meta.get("visit_date") or "")[:10]
-    source = None
-    for probe in (
-        case_id,
-        meta.get("visit_id"),
-        meta.get("mis_id"),
-    ):
-        if not probe:
-            continue
-        source = load_case_source_row(str(probe), visit_date=visit_date or None)
-        if source:
-            break
-    detail = build_case_detail(case_id, month=month or (visit_date[:7] if visit_date else None))
+    detail = dict(detail) if detail is not None else build_case_detail(
+        case_id, month=month or (visit_date[:7] if visit_date else None)
+    )
     record = dict(detail.get("record") or {}) if detail.get("ok") else {}
+    preferred_id = str(meta.get("mis_id") or record.get("mis_id") or case_id)
+    source = load_case_source_row(preferred_id, visit_date=visit_date or None)
+    if not source:
+        for probe in (case_id, meta.get("visit_id"), meta.get("mis_id")):
+            if not probe:
+                continue
+            source = load_case_source_row(str(probe), visit_date=visit_date or None)
+            if source:
+                break
     source_kind = str((source or {}).get("document_kind") or "").strip()
     if source_kind == "kz":
         source_kind = "consultation"

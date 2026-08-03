@@ -164,8 +164,8 @@
         attention: contractKpi.needs_attention != null ? contractKpi.needs_attention : (agg.n_bad || ((agg.status_distribution || {}).needs_review) || 0),
         attentionPct: contractKpi.needs_attention_pct != null ? contractKpi.needs_attention_pct : (agg.pct_bad || 0),
         critical: contractKpi.critical != null ? contractKpi.critical : (((agg.severity_totals || {}).P0) || raw.reg55_p0_defect_n || 0),
-        coverage: agg.avg_coverage || raw.avg_coverage || null,
-        confidence: agg.avg_confidence || raw.avg_confidence || null,
+        coverage: agg.avg_coverage != null ? agg.avg_coverage : (raw.avg_coverage != null ? raw.avg_coverage : null),
+        confidence: agg.avg_confidence != null ? agg.avg_confidence : (raw.avg_confidence != null ? raw.avg_confidence : null),
         specialties: raw.specialties || raw.by_specialty || agg.by_specialty || [],
         doctors: raw.doctors || raw.top_doctors || agg.by_doctor || [],
         branches: raw.filials || agg.by_branch || [],
@@ -180,7 +180,10 @@
         (delta ? '<span class="delta' + (String(delta).charAt(0) === "-" ? " down" : "") + '">' + esc(delta) + '</span> · ' : "") +
         esc(meta || "по выбранному периоду") + "</div></article>";
     }
-    function score(value) { return value == null ? "Нет данных" : Math.round(Number(value)) + "%"; }
+    function score(value) {
+      var numeric = Number(value);
+      return value == null || value === "" || !Number.isFinite(numeric) ? "Нет данных" : Math.round(numeric) + "%";
+    }
     function scoreLabel(value, reason) {
       if (value != null && value !== "") return Math.round(Number(value)) + "%";
       return reason || "Нет оценки";
@@ -238,11 +241,12 @@
       return { value: null, estimated: false };
     }
     function bar(name, value, suffix) {
-      var n = Math.max(0, Math.min(100, Number(value) || 0));
+      var numeric = Number(value), available = value != null && value !== "" && Number.isFinite(numeric);
+      var n = available ? Math.max(0, Math.min(100, numeric)) : 0;
       var cls = n < 60 ? " bad" : n < 75 ? " warn" : "";
       return '<div class="bar"><div class="bar-name" title="' + esc(name) + '">' + esc(name) +
-        '</div><div class="track"><div class="fill' + cls + '" style="width:' + n + '%"></div></div><b>' +
-        esc(suffix == null ? Math.round(n) + "%" : suffix) + "</b></div>";
+        '</div><div class="track"><div class="fill' + (available ? cls : " unavailable") + '" style="width:' + n + '%"></div></div><b>' +
+        esc(suffix == null ? (available ? Math.round(n) + "%" : "Нет данных") : suffix) + "</b></div>";
     }
     function notice(title, text, tone) {
       return '<div style="padding:10px 0;border-bottom:1px solid var(--line)"><span class="status ' +
@@ -651,7 +655,7 @@
       var specialty = row.specialization || row.specialty || "";
       var diagnosis = normalizeDiagnosis(row);
       var total = firstNumeric([row.deep_overall_pct, row.overall_pct, row.l1_overall_pct]);
-      var fallbackStatus = total == null ? "review" : (total < 60 ? "critical" : total < 75 ? "review" : "good");
+      var fallbackStatus = total == null ? "unscored" : (total < 60 ? "critical" : total < 75 ? "review" : "good");
       var status = row.crm_status || ((row.crm || {}).status) || row.deep_status || row.status || fallbackStatus;
       return { raw: row, id: id, date: row.date || row.visit_date || "", doctor: doctor, specialty: specialty,
         branch: row.filial || row.branch || "", diagnosis: diagnosis, total: total, status: status,
@@ -664,7 +668,7 @@
         false_positive:"Отклонено", needs_more_data:"Нужны данные", sent_to_doctor:"Передано врачу",
         resolved:"Решено", closed:"Закрыто", critical:"Критично", review:"Требует внимания",
         poor:"Требует внимания", good:"Хорошо", acceptable:"Приемлемо", needs_review:"Требует внимания",
-        case_action:"Решение по случаю", bulk_action:"Групповое изменение" };
+        case_action:"Решение по случаю", bulk_action:"Групповое изменение", unscored:"Не оценено" };
       return map[value] || value || "Не указан";
     }
     function statusClass(value) { return /critical|confirmed/.test(value) ? "critical" : /good|resolved|closed|acceptable/.test(value) ? "good" : "review"; }
@@ -752,6 +756,7 @@
       var events = data.events || [];
       var coverageInfo = deriveCoverage(data, record, axes);
       var confidenceInfo = deriveConfidence(data, record, axes);
+      var sourceDocument = data.document || {};
       var crmStatus = crm.status || "new";
       var statusOptions = [
         ["new","Новый"],["assigned","Назначен"],["in_review","На разборе"],
@@ -772,8 +777,7 @@
           var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика" };
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
         }).join("") + '</div>' +
-        '<div class="detail-block"><h3>Клиническая цепочка</h3><p>' + esc(item.diagnosis) +
-        '</p><p class="card-sub">Жалобы и анамнез → статус → диагноз → МКБ → обследования → лечение → наблюдение</p></div>' +
+        renderClinicalDocument(sourceDocument) +
         '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
           var title = [finding.code, finding.title_ru || finding.title].filter(Boolean).join(" · ");
           var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
@@ -803,6 +807,25 @@
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
+    }
+    function renderClinicalDocument(documentData) {
+      var clinical = documentData.clinical || {};
+      var fields = [
+        ["complaints", "Жалобы"], ["anamnesis_doctor", "Анамнез"],
+        ["anamnesis_auto", "Анамнез (авто)"], ["objective_status", "Объективный статус"],
+        ["exam_data", "Данные обследований"], ["manipulations", "Манипуляции"],
+        ["clinical_diagnosis", "Клинический диагноз"], ["mis_diagnos", "Диагноз МИС"],
+        ["exam_recommendations", "Рекомендации по обследованию"],
+        ["treatment_recommendations", "Рекомендации по лечению"]
+      ];
+      var content = fields.filter(function (field) { return clinical[field[0]]; }).map(function (field) {
+        return '<section class="clinical-field"><h4>' + esc(field[1]) + '</h4><p>' +
+          esc(clinical[field[0]]) + '</p></section>';
+      }).join("");
+      var reason = documentData.score_reason ? '<p class="inline-note">' + esc(documentData.score_reason) + '</p>' : "";
+      return '<div class="detail-block"><h3>Исходное МО</h3>' + reason +
+        (content || '<div class="empty">Клинический текст не найден в локальном срезе. Откройте визит в МИС.</div>') +
+        '<p class="card-sub">Жалобы и анамнез → статус → диагноз → МКБ → обследования → лечение → наблюдение</p></div>';
     }
     async function postCaseChanges(caseIds, changes, comment) {
       var response = await request("/cases/bulk-action", "/cases/bulk-action", {
