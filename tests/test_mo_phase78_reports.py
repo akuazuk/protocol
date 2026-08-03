@@ -1,6 +1,7 @@
 """Контрактные тесты фаз 7-8: health, документ МО, отчёты без «пустых» KPI."""
 from __future__ import annotations
 
+import builtins
 import json
 import sqlite3
 from pathlib import Path
@@ -113,6 +114,14 @@ def test_case_source_falls_back_to_secure_daily_csv(monkeypatch, tmp_path: Path)
         encoding="utf-8",
     )
     monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path / "medical_exams"))
+    real_import = builtins.__import__
+
+    def import_without_pandas(name, *args, **kwargs):
+        if name == "pandas" or name.startswith("pandas."):
+            raise ImportError("pandas is intentionally absent in the production image")
+        return real_import(name, *args, **kwargs)
+
+    monkeypatch.setattr(builtins, "__import__", import_without_pandas)
 
     source = mo_case_document.load_case_source_row("91007", visit_date="2026-08-02")
 

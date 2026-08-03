@@ -7,6 +7,7 @@ secure_cases CSV). Оценка и замечания - из витрины / ca
 """
 from __future__ import annotations
 
+import csv
 import html
 import os
 import shutil
@@ -123,13 +124,23 @@ def _source_row_richness(row: Mapping[str, Any]) -> tuple[int, int]:
     return scored, populated
 
 
-def _read_source_frame(path: Path, pd: Any) -> Any:
-    """Прочитать только поддерживаемый защищённый формат дневного среза."""
-    if path.suffix.lower() == ".parquet":
-        return pd.read_parquet(path)
-    if path.suffix.lower() == ".csv":
-        return pd.read_csv(path, low_memory=False)
-    return None
+def _read_source_records(path: Path) -> list[dict[str, Any]]:
+    """Прочитать защищённый дневной срез без обязательной зависимости от pandas.
+
+    Production-образ хранит безопасный fallback в CSV и не ставит pandas.
+    Parquet остаётся опциональным богатым источником, когда pandas/pyarrow доступны.
+    """
+    suffix = path.suffix.lower()
+    if suffix == ".csv":
+        with path.open("r", encoding="utf-8-sig", newline="") as handle:
+            return [dict(row) for row in csv.DictReader(handle)]
+    if suffix == ".parquet":
+        try:
+            import pandas as pd
+        except ImportError:
+            return []
+        return pd.read_parquet(path).to_dict(orient="records")
+    return []
 
 
 def load_case_source_row(
@@ -139,10 +150,6 @@ def load_case_source_row(
     mis_id: str | None = None,
 ) -> dict[str, Any] | None:
     """Найти клиническую строку: точная запись МИС, затем лучший документ визита."""
-    try:
-        import pandas as pd
-    except ImportError:
-        return None
     needle = _norm_id(case_id)
     if not needle:
         return None
@@ -177,31 +184,31 @@ def load_case_source_row(
             continue
         seen.add(resolved)
         try:
-            frame = _read_source_frame(path, pd)
+            records = _read_source_records(path)
         except Exception:  # noqa: BLE001
             continue
-        if frame is None or frame.empty:
+        if not records:
             continue
         exact_needle = str(mis_id or "").strip()
         if exact_needle:
             for key in ("id", "mis_id"):
-                if key not in frame.columns:
+                if not any(key in row for row in records):
                     continue
-                matched = frame[frame[key].map(_norm_id) == _norm_id(exact_needle)]
-                if not matched.empty:
-                    row = matched.iloc[0].to_dict()
+                matched = [row for row in records if _norm_id(row.get(key)) == _norm_id(exact_needle)]
+                if matched:
+                    row = dict(matched[0])
                     row["_source_file"] = str(path)
                     if path.suffix.lower() == ".parquet":
                         row["_source_parquet"] = str(path)
                     return row
         visit_matches = []
         for key in ("visit_id", "id", "mis_id"):
-            if key not in frame.columns:
+            if not any(key in row for row in records):
                 continue
-            matched = frame[frame[key].map(_norm_id) == needle]
-            if matched.empty:
+            matched = [row for row in records if _norm_id(row.get(key)) == needle]
+            if not matched:
                 continue
-            visit_matches.extend(matched.to_dict(orient="records"))
+            visit_matches.extend(matched)
             if key == "visit_id":
                 break
         if visit_matches:
