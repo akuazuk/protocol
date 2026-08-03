@@ -915,17 +915,39 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         ).fetchall()
         finding_rows = conn.execute(
             """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) AS cases,
-                      COALESCE(df.title_ru, f.finding_code) AS title_ru
+                      COALESCE(
+                        NULLIF(MAX(f.title_ru), ''),
+                        NULLIF(MAX(df.title_ru), ''),
+                        f.finding_code
+                      ) AS title_ru
                FROM fact_mo_finding f
                JOIN fact_mo_case c ON c.mis_id=f.mis_id
                LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                WHERE c.visit_date=?
                  AND c.document_kind IN ('medical_exam','consultation')
                  AND f.severity IN ('P0','P1','P2','P3')
+                 AND COALESCE(f.passed, 0) = 0
                GROUP BY f.finding_code, f.severity
                ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1
                          WHEN 'P2' THEN 2 ELSE 3 END, cases DESC
                LIMIT 30""",
+            (day,),
+        ).fetchall()
+        sample_rows = conn.execute(
+            """SELECT f.finding_code, f.severity,
+                      COALESCE(NULLIF(c.visit_id,''), c.mis_id) AS case_id,
+                      COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
+                      COALESCE(c.specialty, '') AS specialty
+               FROM fact_mo_finding f
+               JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
+               WHERE c.visit_date=?
+                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND f.severity IN ('P0','P1','P2','P3')
+                 AND COALESCE(f.passed, 0) = 0
+               ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1
+                         WHEN 'P2' THEN 2 ELSE 3 END, c.mis_id
+               LIMIT 400""",
             (day,),
         ).fetchall()
         action_raw = conn.execute(
@@ -934,7 +956,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                       COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
                       COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
                       f.finding_code, f.severity,
-                      COALESCE(df.title_ru, f.finding_code) AS finding_title,
+                      COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS finding_title,
                       COALESCE(s.status, 'new') AS crm_status
                FROM fact_mo_case c
                JOIN fact_mo_finding f ON f.mis_id=c.mis_id
@@ -946,6 +968,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                WHERE c.visit_date=?
                  AND c.document_kind IN ('medical_exam','consultation')
                  AND f.severity IN ('P0','P1')
+                 AND COALESCE(f.passed, 0) = 0
                ORDER BY CASE f.severity WHEN 'P0' THEN 0 ELSE 1 END, c.mis_id
                LIMIT 500""",
             (day,),
@@ -1089,21 +1112,47 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             }
         )
 
-    top_findings = [
-        {
-            "finding_code": str(row["finding_code"]),
-            "label": str(row["title_ru"] or f"Замечание: {row['finding_code']}"),
-            "severity": str(row["severity"]),
-            "cases": int(row["cases"]),
-            "suppressed": False,
-        }
-        for row in finding_rows
-        if int(row["cases"]) >= SUPPRESSION_N
-    ]
+    from .mo_finding_labels_ru import finding_label_ru
+
+    samples_by_key: dict[tuple[str, str], list[dict[str, str]]] = {}
+    for row in sample_rows:
+        key = (str(row["finding_code"]), str(row["severity"]))
+        bucket = samples_by_key.setdefault(key, [])
+        if len(bucket) >= 5:
+            continue
+        case_id = str(row["case_id"] or "").strip()
+        if not case_id or any(item["case_id"] == case_id for item in bucket):
+            continue
+        bucket.append(
+            {
+                "case_id": case_id,
+                "doctor": str(row["doctor"] or "Врач не указан"),
+                "specialty": str(row["specialty"] or ""),
+            }
+        )
+
+    top_findings = []
+    for row in finding_rows:
+        if int(row["cases"]) < SUPPRESSION_N:
+            continue
+        code = str(row["finding_code"])
+        severity = str(row["severity"])
+        label = finding_label_ru(code, str(row["title_ru"] or ""))
+        top_findings.append(
+            {
+                "finding_code": code,
+                "label": label,
+                "severity": severity,
+                "cases": int(row["cases"]),
+                "suppressed": False,
+                "sample_cases": samples_by_key.get((code, severity), [])[:5],
+            }
+        )
     findings_contract = {
         "available": bool(top_findings),
         "items": top_findings,
         "suppression_n": SUPPRESSION_N,
+        "day": day,
     }
     if not top_findings:
         findings_contract["reason"] = "Нет замечаний выше порога публикации"
@@ -1116,7 +1165,8 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             continue
         seen_cases.add(case_id)
         score = row["overall_pct"]
-        finding_title = str(row["finding_title"] or row["finding_code"])
+        code = str(row["finding_code"])
+        finding_title = finding_label_ru(code, str(row["finding_title"] or ""))
         action_cases.append(
             {
                 "case_id": case_id,
@@ -1128,7 +1178,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "diagnosis": str(row["diagnosis"] or "Диагноз не указан"),
                 "diagnosis_code": str(row["diagnosis_code"] or ""),
                 "overall_pct": float(score) if score is not None else None,
-                "finding_code": str(row["finding_code"]),
+                "finding_code": code,
                 "finding_title": finding_title,
                 "reason": f"{row['severity']}: {finding_title}",
                 "crm_status": str(row["crm_status"]),
@@ -1679,10 +1729,18 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
     where, values = _sql_case_filter(period, bounded_params)
     with closing(_read_connection()) as conn:
         finding_rows = conn.execute(
-            """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) cases
-               FROM fact_mo_finding f JOIN fact_mo_case c ON c.mis_id=f.mis_id
+            """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) cases,
+                      COALESCE(
+                        NULLIF(MAX(f.title_ru), ''),
+                        NULLIF(MAX(df.title_ru), ''),
+                        f.finding_code
+                      ) AS title_ru
+               FROM fact_mo_finding f
+               JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                WHERE """ + where + """
                  AND c.document_kind IN ('medical_exam','consultation')
+                 AND COALESCE(f.passed, 0) = 0
                GROUP BY f.finding_code, f.severity
                ORDER BY cases DESC, f.finding_code
                LIMIT 200""",
@@ -1693,7 +1751,8 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
                 """SELECT COUNT(DISTINCT c.mis_id)
                    FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                    WHERE """ + where + """
-                     AND c.document_kind IN ('medical_exam','consultation')""",
+                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND COALESCE(f.passed, 0) = 0""",
                 values,
             ).fetchone()[0]
         )
@@ -1709,10 +1768,12 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
             values,
         ).fetchall()
 
+    from .mo_finding_labels_ru import finding_label_ru
+
     published_findings = [
         {
             "finding_code": str(row["finding_code"]),
-            "label": f"Замечание: {row['finding_code']}",
+            "label": finding_label_ru(str(row["finding_code"]), str(row["title_ru"] or "")),
             "severity": str(row["severity"] or ""),
             "cases": int(row["cases"]),
         }
@@ -2268,7 +2329,7 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     for finding_row in conn.execute(
                         """SELECT f.finding_code AS code, f.finding_code, f.severity,
                                   f.evidence, f.source_ref,
-                                  COALESCE(df.title_ru, f.finding_code) AS title_ru,
+                                  COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS title_ru,
                                   COALESCE(df.why_important_ru, '') AS detail_ru
                            FROM fact_mo_finding f
                            LEFT JOIN dim_finding df ON df.finding_code = f.finding_code
@@ -2278,6 +2339,13 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         (mis_id,),
                     )
                 ]
+                from .mo_finding_labels_ru import finding_label_ru
+
+                for finding in findings:
+                    finding["title_ru"] = finding_label_ru(
+                        str(finding.get("code") or finding.get("finding_code") or ""),
+                        str(finding.get("title_ru") or ""),
+                    )
                 document_kind = str(item.get("document_kind") or "unknown")
                 score = item.get("overall_pct")
                 record = {
@@ -2359,17 +2427,28 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
             ).fetchone()
             if row:
                 item = dict(row)
-                findings = conn.execute(
-                    """SELECT f.finding_code AS code, f.severity, f.source_ref,
-                              COALESCE(df.title_ru, f.finding_code) AS title_ru,
-                              COALESCE(f.detail_ru, f.evidence, '') AS detail_ru,
-                              f.evidence
-                       FROM fact_mo_finding f
-                       LEFT JOIN dim_finding df ON df.finding_code = f.finding_code
-                       WHERE f.mis_id = ?
-                       ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END""",
-                    (item.get("mis_id"),),
-                ).fetchall()
+                findings = [
+                    dict(finding_row)
+                    for finding_row in conn.execute(
+                        """SELECT f.finding_code AS code, f.severity, f.source_ref,
+                                  COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS title_ru,
+                                  COALESCE(f.detail_ru, f.evidence, '') AS detail_ru,
+                                  f.evidence
+                           FROM fact_mo_finding f
+                           LEFT JOIN dim_finding df ON df.finding_code = f.finding_code
+                           WHERE f.mis_id = ?
+                             AND COALESCE(f.passed, 0) = 0
+                           ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END""",
+                        (item.get("mis_id"),),
+                    )
+                ]
+                from .mo_finding_labels_ru import finding_label_ru
+
+                for finding in findings:
+                    finding["title_ru"] = finding_label_ru(
+                        str(finding.get("code") or ""),
+                        str(finding.get("title_ru") or ""),
+                    )
                 axis_rows = conn.execute(
                     "SELECT axis, score FROM fact_mo_score_axis WHERE mis_id = ?",
                     (item.get("mis_id"),),
@@ -2831,6 +2910,7 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
         "actions": {
             "case_document": normalized_role in {"doctor", "methodist", "lead", "admin"},
             "case_pdf": normalized_role in {"doctor", "methodist", "lead", "admin"},
+            "rubric_mz": can_view_population,
             "case_decision": can_work_cases,
             "bulk_action": can_work_cases,
             "export_aggregates": can_view_population,

@@ -202,8 +202,14 @@ def test_yesterday_contract_combines_bounded_warehouse_and_report(monkeypatch, t
     assert len(payload["indices"]["items"]) == 4
     assert all(item["available"] for item in payload["indices"]["items"])
     assert payload["top_findings"]["items"][0]["cases"] == 6
+    label = payload["top_findings"]["items"][0]["label"]
+    assert "C_red_flag" not in label
+    assert "флаг" in label.lower() or "Красный" in label
+    assert payload["top_findings"]["items"][0]["sample_cases"]
+    assert payload["top_findings"]["day"] == "2026-07-29"
     assert len(payload["action_cases"]["items"]) == 6
     assert all(item["reason"] and item["case_id"] for item in payload["action_cases"]["items"])
+    assert all("C_red_flag" not in item["finding_title"] for item in payload["action_cases"]["items"])
     assert payload["doctor_outliers"]["available"] is False
     assert payload["doctor_outliers"]["items"] == []
     assert payload["flow_changes"]["dimensions"]["branch"]
@@ -297,6 +303,9 @@ def test_yesterday_markup_rendering_and_minsk_date_contract() -> None:
     assert "Europe/Minsk" in app
     assert "formatToParts" in app
     assert "Date.now() - 86400000" not in app
+    assert "navigateYesterdayFinding" in app
+    assert "data-open-case" in app
+    assert "открыть список МО" in app
     for renderer in (
         "renderYesterdayIndices",
         "renderYesterdayFindings",

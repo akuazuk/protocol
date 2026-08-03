@@ -1,0 +1,139 @@
+# Рубрика оценки МО по методике МЗ («Как оценивать»).
+# Shadow layer поверх deep/v4. Шкала: 0 | 0.5 | 1 | n/a.
+schema_version: "1.0"
+scorer_version: "mz-rubric-1.0.0"
+primary: false
+scale: [0, 0.5, 1]
+groups:
+  documentation: Документация
+  clinical: Клиника
+  dynamics: Динамика
+  regulatory: Регламент
+
+criteria:
+  - id: mo_complete
+    title: Проведение МО с оформлением
+    how_to_evaluate: Должен быть проведен и оформлен в соответствии с Инструкцией в полном объеме
+    regulation: mz_2015_127
+    scored_by_55: true
+    group: documentation
+    rule: core_fields_completeness
+    fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+
+  - id: datetime
+    title: Дата и время МО
+    how_to_evaluate: Должны быть указаны дата и время
+    regulation: mz_2015_127
+    scored_by_55: false
+    group: documentation
+    rule: datetime_present
+    fields: [visit_date, visit_time]
+
+  - id: complaints
+    title: Жалобы
+    how_to_evaluate: Должны быть указаны и детализированы
+    regulation: mz_2015_127
+    scored_by_55: false
+    group: clinical
+    rule: text_detailed
+    fields: [complaints]
+    detail_markers: [локал, характер, длительн, интенсив, беспоко, боль, слабост, кашел]
+
+  - id: anamnesis
+    title: Анамнез
+    how_to_evaluate: Должны быть указаны в объеме, необходимом для уточнения/подтверждения диагноза
+    regulation: mz_2015_127
+    scored_by_55: false
+    group: clinical
+    rule: text_sufficient
+    fields: [anamnesis_doctor, anamnesis_auto]
+    min_chars_partial: 40
+    min_chars_full: 120
+
+  - id: risk_factors
+    title: Факторы риска
+    how_to_evaluate: Должны быть указаны в объеме, необходимом для уточнения/подтверждения диагноза
+    regulation: mz_2015_127
+    scored_by_55: false
+    group: clinical
+    rule: risk_factors_present
+    fields: [anamnesis_doctor, anamnesis_auto, complaints]
+    markers: [фактор риска, курен, алкогол, ожирен, гипертенз, сахарн, наследств, профвред, аллерго]
+
+  - id: objective
+    title: Объективный осмотр
+    how_to_evaluate: Должны быть указаны в полном объеме; профильный статус - при осмотре соответствующим специалистом
+    regulation: mz_2015_127
+    scored_by_55: false
+    group: clinical
+    rule: objective_complete
+    fields: [objective_status]
+    markers: [состоян, кожн, дыхани, сердц, живот, давлен, чсс, чд, а/д, температура, статус]
+
+  - id: exam_data
+    title: Данные обследований
+    how_to_evaluate: Указываются, если пациент принес результаты / они есть в МО
+    regulation: mz_2021_55
+    scored_by_55: true
+    group: clinical
+    rule: exam_data_optional
+    fields: [exam_data]
+
+  - id: diagnosis
+    title: Диагноз клинический с кодом МКБ
+    how_to_evaluate: Вытекает из жалоб, анамнеза, осмотра и данных обследований; указан код МКБ
+    regulation: mz_2021_55
+    scored_by_55: true
+    group: clinical
+    rule: diagnosis_chain_icd
+    fields: [clinical_diagnosis, mis_diagnos, complaints, anamnesis_doctor, objective_status]
+
+  - id: exam_plan
+    title: План обследования
+    how_to_evaluate: Назначен в соответствии с клиническим протоколом с учетом результатов обследований
+    regulation: mz_2021_55
+    scored_by_55: true
+    group: regulatory
+    rule: plan_present_or_aligned
+    fields: [exam_recommendations]
+    block_score_key: exams
+
+  - id: treatment_plan
+    title: План лечения
+    how_to_evaluate: Назначен в соответствии с клиническим протоколом
+    regulation: mz_2021_55
+    scored_by_55: true
+    group: regulatory
+    rule: plan_present_or_aligned
+    fields: [treatment_recommendations]
+    block_score_key: treatment
+
+  - id: exam_correction
+    title: Коррекция плана обследования
+    how_to_evaluate: Коррекция с учетом динамики состояния
+    regulation: mz_2021_55
+    scored_by_55: true
+    group: dynamics
+    rule: dynamics_correction
+    requires_prior_visit: true
+    fields: [exam_recommendations]
+
+  - id: treatment_correction
+    title: Коррекция плана лечения
+    how_to_evaluate: Коррекция с учетом динамики состояния
+    regulation: mz_2021_55
+    scored_by_55: true
+    group: dynamics
+    rule: dynamics_correction
+    requires_prior_visit: true
+    fields: [treatment_recommendations]
+
+  - id: follow_up
+    title: Кратность наблюдения
+    how_to_evaluate: Соответствует клиническому протоколу и/или приказу №127
+    regulation: mz_2021_55
+    scored_by_55: true
+    group: regulatory
+    rule: follow_up_present
+    fields: [treatment_recommendations, exam_recommendations]
+    markers: [явк, наблюден, контроль, повторн, через, через , кратност, диспансер]

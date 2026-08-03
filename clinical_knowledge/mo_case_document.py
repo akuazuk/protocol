@@ -143,6 +143,88 @@ def _read_source_records(path: Path) -> list[dict[str, Any]]:
     return []
 
 
+def clinical_fields_from_row(row: Mapping[str, Any] | None) -> dict[str, str]:
+    """Извлечь только клинические слоты; без patient_id и прочих идентификаторов."""
+    clinical: dict[str, str] = {}
+    if not row:
+        return clinical
+    for key, _label in CLINICAL_FIELDS:
+        text = str(row.get(key) or "").strip()
+        if text and text.lower() not in {"nan", "none", "null"}:
+            clinical[key] = text
+    return clinical
+
+
+def _iter_source_day_files(*, before_date: str, max_days: int = 90) -> list[Path]:
+    """Файлы дневных срезов строго раньше before_date (новые первыми)."""
+    day = (before_date or "")[:10]
+    if len(day) < 10:
+        return []
+    try:
+        y, m, d = int(day[0:4]), int(day[5:7]), int(day[8:10])
+        from datetime import date, timedelta
+
+        end = date(y, m, d)
+    except ValueError:
+        return []
+    files: list[Path] = []
+    for offset in range(1, max_days + 1):
+        probe = end - timedelta(days=offset)
+        key = probe.isoformat()
+        year, month = key[:4], key[5:7]
+        for root in _medical_exam_roots():
+            for path in (
+                root / "secure_cases" / year / month / f"mo_{key}.csv",
+                root / "raw" / year / month / f"mo_{key}.parquet",
+            ):
+                if path.is_file():
+                    files.append(path)
+    return files
+
+
+def load_prior_clinical(
+    *,
+    patient_id: str,
+    visit_date: str,
+    exclude_ids: set[str] | None = None,
+    max_days: int = 90,
+) -> dict[str, Any] | None:
+    """Найти клинический текст предыдущего визита того же пациента.
+
+    patient_id используется только внутри поиска и в ответ не возвращается.
+    """
+    needle = str(patient_id or "").strip()
+    if not needle or len((visit_date or "")[:10]) < 10:
+        return None
+    excluded = {_norm_id(x) for x in (exclude_ids or set()) if str(x or "").strip()}
+    for path in _iter_source_day_files(before_date=visit_date[:10], max_days=max_days):
+        try:
+            records = _read_source_records(path)
+        except Exception:  # noqa: BLE001
+            continue
+        matches: list[dict[str, Any]] = []
+        for row in records:
+            if str(row.get("patient_id") or "").strip() != needle:
+                continue
+            row_ids = {_norm_id(row.get(k)) for k in ("id", "mis_id", "visit_id") if row.get(k)}
+            if row_ids & excluded:
+                continue
+            clinical = clinical_fields_from_row(row)
+            if not clinical:
+                continue
+            matches.append(row)
+        if not matches:
+            continue
+        best = max(matches, key=_source_row_richness)
+        return {
+            "clinical": clinical_fields_from_row(best),
+            "visit_date": str(best.get("date") or best.get("visit_date") or path.stem.replace("mo_", ""))[:10],
+            "document_kind": str(best.get("document_kind") or ""),
+            # без patient_id / fio
+        }
+    return None
+
+
 def load_case_source_row(
     case_id: str,
     *,
@@ -297,13 +379,12 @@ def build_case_document_payload(
     if overall is None:
         overall = record.get("overall_pct")
     findings = meta.get("findings") or detail.get("findings") or []
-    clinical: dict[str, str] = {}
     src = source or {}
+    clinical = clinical_fields_from_row(src)
     for key, _label in CLINICAL_FIELDS:
-        value = src.get(key)
-        if value is None or str(value).strip() in {"", "nan", "None"}:
-            value = record.get(key)
-        text = str(value or "").strip()
+        if clinical.get(key):
+            continue
+        text = str(record.get(key) or "").strip()
         if text and text.lower() not in {"nan", "none", "null"}:
             clinical[key] = text
     doctor = (
@@ -354,6 +435,40 @@ def build_case_document_payload(
     if not meta and not source and not detail.get("ok"):
         return {"ok": False, "error": "case_not_found", "case_id": case_id}
     return payload
+
+
+def resolve_prior_clinical_for_case(
+    case_id: str,
+    *,
+    visit_date: str | None = None,
+    max_days: int = 90,
+) -> dict[str, Any] | None:
+    """Prior clinical для dynamics; patient_id наружу не отдаётся."""
+    meta = _warehouse_case_meta(case_id)
+    day = (visit_date or str(meta.get("visit_date") or ""))[:10]
+    preferred = str(meta.get("mis_id") or case_id)
+    source = load_case_source_row(preferred, visit_date=day or None)
+    if not source:
+        source = load_case_source_row(case_id, visit_date=day or None)
+    if not source:
+        return None
+    patient_id = str(source.get("patient_id") or "").strip()
+    if not patient_id:
+        return None
+    exclude = {
+        str(case_id),
+        str(meta.get("mis_id") or ""),
+        str(meta.get("visit_id") or ""),
+        str(source.get("id") or ""),
+        str(source.get("mis_id") or ""),
+        str(source.get("visit_id") or ""),
+    }
+    return load_prior_clinical(
+        patient_id=patient_id,
+        visit_date=day or str(source.get("date") or "")[:10],
+        exclude_ids=exclude,
+        max_days=max_days,
+    )
 
 
 def render_case_document_html(payload: Mapping[str, Any]) -> str:
