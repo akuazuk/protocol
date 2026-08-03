@@ -57,7 +57,6 @@ def test_kz_evidence_snippet_finds_match():
 
 
 def test_match_kp_item_with_raw_text():
-    kz = "Ривароксабан 20 мг"
     raw = "Полный текст заключения: назначен ривароксабан 20 мг 1 раз в день."
     m = match_kp_item_to_kz("Ривароксабан 20 мг", "", raw_text=raw)
     assert m["kz_match"] in ("found", "partial")

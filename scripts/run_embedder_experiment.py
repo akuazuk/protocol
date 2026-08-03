@@ -91,7 +91,7 @@ def main() -> int:
 
     if str(ROOT) not in sys.path:
         sys.path.insert(0, str(ROOT))
-    from ml.eval.eval_embedder_mrr import load_pairs, path_fold, split_by_path_fold
+    from ml.eval.eval_embedder_mrr import load_pairs, split_by_path_fold
 
     all_pairs = load_pairs(DATASET)
     golden_raw = _golden_pairs()

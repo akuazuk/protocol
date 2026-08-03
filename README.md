@@ -75,9 +75,8 @@ scripts/ops/git_task_start.sh <task-slug> --pc=pc1
 # 3) перед pull - обязательная guard-проверка
 scripts/ops/git_safe_pull.sh
 
-# 4) production только после PR merge, только точный origin/main SHA
-git fetch origin
-scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)"
+# 4) после PR merge production запускает GitHub Action с точным github.sha
+gh run list --repo akuazuk/protocol --workflow=render-production-deploy.yml --limit=1
 ```
 
 Подробный runbook: `docs/deploy/multi-agent-single-repo-render-runbook-v2.md`.

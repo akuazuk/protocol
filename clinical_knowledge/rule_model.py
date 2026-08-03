@@ -6,7 +6,7 @@ from __future__ import annotations
 
 from typing import Any, Literal
 
-from .consult_schema import ApplicabilityFilter, SourceRef, _Base
+from .consult_schema import SourceRef, _Base
 
 RuleType = Literal[
     "diagnosis_structure_rule",

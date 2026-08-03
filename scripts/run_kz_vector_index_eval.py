@@ -197,8 +197,8 @@ def _write_report_md(out: Path, payload: dict) -> None:
         "",
         "## Vector index",
         "",
-        f"| enabled | loaded | indexed | dim | path |",
-        f"|---|---|---|---|---|",
+        "| enabled | loaded | indexed | dim | path |",
+        "|---|---|---|---|---|",
         f"| {idx.get('enabled')} | {idx.get('loaded')} | {idx.get('indexed')} | {idx.get('dim')} | `{idx.get('path')}` |",
         "",
         "## Сводка",
@@ -250,7 +250,6 @@ def main() -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     token = (os.environ.get("METHODIST_TOKEN") or os.environ.get("METHODIST_PIN") or "").strip()
     batch = _import_batch_module()
-    run_case = batch.run_case
     load_text = batch._load_text
 
     print("Index health...", flush=True)
@@ -322,8 +321,6 @@ def main() -> int:
                             continue
                         break
                 if top_path:
-                    # восстановить полный path если усечён
-                    full_paths = (rep.get("matched_protocols_full") or [])
                     sem = _semantic_probe(args.base, top_path, rep["probe_query"])
                     rep["semantic_ok"] = bool(sem.get("ok"))
                     rep["semantic_mode"] = sem.get("mode")

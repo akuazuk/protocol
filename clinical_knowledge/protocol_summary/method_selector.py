@@ -5,7 +5,7 @@ from dataclasses import dataclass, field
 from typing import Any, Literal
 
 from . import config as _cfg_mod
-from .config import AnalysisMode, protocol_summary_config
+from .config import AnalysisMode
 from .loader import load_summary_by_protocol_id
 from .schema import ProtocolSummary
 from .validator import summary_is_usable

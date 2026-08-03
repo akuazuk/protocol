@@ -215,7 +215,6 @@ def match_protocol_cards(
     ctx = consult_facts.get("patient_context") or {}
     cons = consult_facts.get("consultation") or {}
     icd_list = prioritize_codes([str(x).upper() for x in (cons.get("icd10") or []) if x])
-    icd_roots = {_icd_root(c) for c in icd_list}
     audience = ctx.get("adult_or_child")
     hints = set(cons.get("conditions_hint") or [])
     diag_text = str(cons.get("diagnosis_text") or "")

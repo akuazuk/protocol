@@ -4,7 +4,6 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .patient_exam_extraction import imaging_exams
 from .patient_question_tone import (
     apply_tone_to_questions,
     detect_question_intent,

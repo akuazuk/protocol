@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from konkurs_scenarios import B2C_PROTOCOL_PER_CHECK, b2c_protocol_k
+from konkurs_scenarios import B2C_PROTOCOL_PER_CHECK
 
 # --- Допущения unit economics (не в EBITDA 2029 базового плана) ---
 BYN_PER_USD = 3.2

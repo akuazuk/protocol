@@ -79,7 +79,6 @@ def compute_overall(
         if val is None:
             continue
         # dedupe documentation_score vs structural_score
-        dedupe_key = f"{wkey}:{val}"
         if wkey in ("structural_score", "documentation_score", "documentation_quality_score"):
             if "doc_block" in seen_vals:
                 continue

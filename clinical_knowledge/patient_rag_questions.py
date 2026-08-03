@@ -4,8 +4,6 @@ from __future__ import annotations
 import re
 from typing import Any
 
-from .patient_exam_extraction import extract_exams_from_text
-from .patient_medication_extraction import extract_medications_from_text
 from .patient_questions import sanitize_question_text
 
 _ANCHOR_PATTERNS: list[tuple[str, re.Pattern[str], str]] = [

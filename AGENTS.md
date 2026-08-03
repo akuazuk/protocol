@@ -105,18 +105,20 @@ GitHub - единственный общий координационный сл
 `render_promote_main.sh` и `deploy_promote_main_after_push.sh` отключены: task HEAD никогда
 не должен становиться production без PR merge.
 
-Единственная штатная команда после merge:
+После merge GitHub Action `Production Render release` автоматически берёт `github.sha`,
+сверяет его с `origin/main` и запускает canonical wrapper в единственной concurrency group.
+Release-координатор контролирует run:
 
 ```bash
-git fetch origin
-merge_sha=$(git rev-parse origin/main)
-scripts/ops/render_release_main.sh --commit="$merge_sha"
+gh run list --repo akuazuk/protocol --workflow=render-production-deploy.yml --limit=1
+gh run watch --repo akuazuk/protocol <run-id>
 ```
 
 Wrapper отклоняет любой SHA, который не равен текущему HEAD `origin/main`, и берёт
 ожидаемый `BUILD_VERSION` из самого merge commit, а не из локальной рабочей ветки. Без API
-key он только контролирует webhook. Production подтверждается полями `version` и
-`git_commit`, health и поведением изменённой функции.
+key workflow контролирует Render webhook. Локальный `render_release_main.sh` используется
+только для восстановления после сбоя Action и с тем же точным merge SHA. Production
+подтверждается полями `version` и `git_commit`, health и поведением изменённой функции.
 
 ## 7. Handoff в конце каждой сессии
 

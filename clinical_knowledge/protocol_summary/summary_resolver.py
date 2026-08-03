@@ -13,7 +13,7 @@ from .loader import (
     load_protocol_summaries,
     load_summary_by_protocol_id,
 )
-from .schema import ConditionSummary, ProtocolSummary
+from .schema import ProtocolSummary
 from .validator import summary_is_usable
 
 ROOT = Path(__file__).resolve().parents[2]

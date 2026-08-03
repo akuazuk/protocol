@@ -5,7 +5,7 @@ import re
 from typing import Any
 
 from .condition_registry import infer_conditions_hints
-from .consult_schema import ConsultationDocument, EvidenceMapItem, SourceRef
+from .consult_schema import ConsultationDocument, EvidenceMapItem
 from .rule_labels_ru import (
     decision_ru,
     extract_condition_id,
@@ -56,7 +56,6 @@ def _exam_status(doc: ConsultationDocument, item: str) -> tuple[bool, str, list[
     blobs = _consult_blobs(doc)
     perf = _norm(blobs["performed_exams"])
     rec = _norm(blobs["recommended_exams"])
-    evidence: list[str] = []
     if low in perf or any(tok in perf for tok in low.split() if len(tok) > 4):
         snippet = next((e.exam_name for e in doc.performed_exams if low[:6] in _norm(e.exam_name)), item)
         return True, "performed", [snippet]

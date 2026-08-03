@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import json
-import os
 from collections import Counter
 from datetime import datetime, timezone
 from pathlib import Path
@@ -12,7 +11,7 @@ import yaml
 
 from .feedback_store import feedback_dir
 from .patient_email import send_report_email
-from .patient_specialty import PENDING_DIR, SPECIALTY_DIR
+from .patient_specialty import PENDING_DIR
 
 ROOT = Path(__file__).resolve().parent.parent
 REPORTS_DIR = ROOT / "data" / "ml" / "reports"

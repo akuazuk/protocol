@@ -1,6 +1,9 @@
 # Локальный pytest и HTTP-клиент для TestClient (не обязателен для прод-деплоя)
 pytest>=8.0.0
 httpx>=0.27.0
+# MO pipeline tests import pandas and write Parquet fixtures.
+pandas
+pyarrow
 # Линтер (используется в CI: .github/workflows/ci.yml)
 ruff>=0.15.0
 # Git-хуки (опционально): pre-commit install

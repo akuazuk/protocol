@@ -13,7 +13,6 @@ from .schema import (
     DrugTreatmentItem,
     ExamRequirement,
     ProtocolSummary,
-    RedFlagItem,
     SummarySourceRef,
     SummaryValidationResult,
     ValidationIssue,

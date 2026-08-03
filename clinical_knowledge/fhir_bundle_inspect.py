@@ -322,7 +322,6 @@ def inspect_bundle_checks(bundle: dict[str, Any]) -> dict[str, bool]:
     )
 
     enc = encounters[0] if encounters else {}
-    cond = conditions[0] if conditions else {}
 
     links_ok = bool(patients) and bool(encounters)
     if patients and encounters:

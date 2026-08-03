@@ -10,8 +10,6 @@ from konkurs_finance import (
     FIN_Y1,
     FIN_Y2,
     FIN_Y3,
-    KRAVIRA_B2B_YEAR,
-    MARKET_KZ_MONTH,
     MARKET_KZ_YEAR,
     ROI_METHODIST_SAVING,
     ROI_NET,
@@ -43,7 +41,6 @@ from konkurs_expansion_us import (
     US_INSURANCE_FLYWHEEL,
     US_REVENUE_STACK_TABLE,
     US_STAKEHOLDER_VALUE,
-    US_TAM_TABLE,
 )
 from konkurs_impact import ECOSYSTEM_FLYWHEEL
 from konkurs_scenarios import (

@@ -134,7 +134,6 @@ def compute_icd10_relevance_weights(
     weights: dict[str, int] = {}
     title_blob = _norm_blob(title)
     body_blob = _norm_blob(body[:40_000])
-    primary_set = {_norm_icd(c) for c in icd_primary if _norm_icd(c)}
     freq = chunk_freq or Counter()
     max_freq = max(freq.values()) if freq else 1
 
@@ -531,7 +530,6 @@ def _classify_protocol_kind(
 ) -> tuple[str, str, bool]:
     """protocol_kind, scope_label_ru, general_scope."""
     t = _norm_blob(title)
-    b = _norm_blob(body[:12_000])
 
     if icd_all:
         return "clinical", "Клинический КП (есть коды МКБ)", False

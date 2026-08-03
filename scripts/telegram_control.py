@@ -213,7 +213,6 @@ def _latest_open_decision(st: dict[str, Any]) -> tuple[str, dict[str, Any]] | No
 def handle_update(st: dict[str, Any], upd: dict[str, Any]) -> None:
     cb = upd.get("callback_query")
     if cb:
-        from_user = cb.get("from") or {}
         msg = cb.get("message") or {}
         chat = msg.get("chat") or {}
         if not _authorized_chat(chat):

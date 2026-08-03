@@ -13,9 +13,7 @@ from konkurs_finance import (
     PRICE_BLEND_Y2Y3,
     PROTOCOL_B2C_NET_SHARE,
     SAM_KZ_YEAR,
-    SOM_Y3_KZ_MONTH,
     SOM_Y3_KZ_YEAR,
-    TAM_REVENUE_B2B_YEAR,
     ebitda_k,
     total_rev_k,
 )

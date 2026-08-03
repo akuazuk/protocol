@@ -4,7 +4,7 @@ from __future__ import annotations
 import re
 import sys
 from pathlib import Path
-from typing import Iterable, Sequence
+from typing import Sequence
 
 from docx import Document
 from docx.enum.text import WD_ALIGN_PARAGRAPH
@@ -20,13 +20,11 @@ if str(_SCRIPTS) not in sys.path:
 from konkurs_finance import (  # noqa: E402
     B2C_AVG_PRICE,
     B2C_TIERS,
-    B2C_TAM_TOUCHES_YEAR,
     CERTIFICATE_BYN,
     CLINIC_B2C_REVSHARE,
     FIN_Y1,
     FIN_Y2,
     FIN_Y3,
-    KRAVIRA_B2B_YEAR,
     KRAVIRA_KZ_MONTH,
     MARKET_KZ_MONTH,
     MARKET_KZ_YEAR,
@@ -49,22 +47,16 @@ from konkurs_scenarios import (  # noqa: E402
     ALL_SCENARIOS_Y3,
     B2C_PROTOCOL_PER_CHECK,
     CHANNEL_OUTLOOK,
-    FIN_Y3_SYNC,
-    MONTHLY_Y3_CAUTIOUS,
     PENETRATION_SENSITIVITY,
     SCENARIO_CAUTIOUS,
     SCENARIO_BASE,
     SCENARIO_OPTIMISTIC,
-    TAM_BRIDGE,
-    TAM_CEILING_B2B_YEAR_K,
-    b2c_protocol_k,
 )
 from konkurs_chart_style import BG_FIG, COLOR_NEGATIVE, COLORS, apply_rc, style_ax  # noqa: E402
 from konkurs_market import (  # noqa: E402
     CISZ_DRIVERS,
     COMPETITOR_MATRIX,
     INVESTMENT_PLAN,
-    OPEX_BREAKDOWN,
     RB_MARKET_TABLE,
 )
 
@@ -170,7 +162,6 @@ def add_table_after(
 
 
 def add_picture_after(paragraph: Paragraph, image_path: Path, width_inches: float = 5.8) -> Paragraph:
-    doc = paragraph.part.document
     cap = add_paragraph_after(paragraph, "", space_before=8, space_after=2)
     pic_p = OxmlElement("w:p")
     cap._p.addnext(pic_p)
@@ -357,7 +348,7 @@ def _generate_charts_matplotlib(assets_dir: Path) -> dict[str, Path]:
     ax1.set_xticklabels(years)
     ax1.set_ylabel("Доля рынка, %")
     ax2.set_ylabel("КЗ/мес, тыс.")
-    ax1.set_title(f"Доля от TAM 2,5 млн КЗ/мес · не весь рынок в год 3")
+    ax1.set_title("Доля от TAM 2,5 млн КЗ/мес · не весь рынок в год 3")
     lines1, labels1 = ax1.get_legend_handles_labels()
     lines2, labels2 = ax2.get_legend_handles_labels()
     ax1.legend(lines1 + lines2, labels1 + labels2, loc="upper left", fontsize=8)

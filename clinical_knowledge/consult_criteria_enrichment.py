@@ -632,9 +632,6 @@ def finalize_completeness_card(card: dict[str, Any]) -> None:
     gaps = list(card.get("gaps_ru") or [])
     base = int(card.get("score_pct") or 0)
     card["score_pct"] = score_from_sop_findings_gaps(findings, gaps, base=base)
-    extra = ""
-    if card.get("context_ru"):
-        extra = ""
     card["comment_ru"] = comment_from_findings_gaps(bid, findings, gaps)
     if not (card.get("conclusion_excerpt") or "").strip():
         card["conclusion_excerpt"] = card.get("conclusion_excerpt") or ""

@@ -32,7 +32,6 @@ from clinical_knowledge.kz_block_sources import (
 )
 from clinical_knowledge.kz_clinical_context import (
     build_clinical_context,
-    format_anamnesis_excerpt,
     format_evaluation_basis,
     protocol_pick_comment,
     rank_kp_items_by_context,

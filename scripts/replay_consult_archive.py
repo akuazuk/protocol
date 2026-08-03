@@ -114,7 +114,6 @@ def _compare(saved: dict, comp: dict) -> list[str]:
         new_icd = _primary_icd(saved.get("icd_codes"))  # fallback - не сравниваем если нет новых
     if old_icd and new_icd and set(old_icd) != set(new_icd):
         diffs.append(f"primary_icd: {old_icd!r} → {new_icd!r}")
-    old_rubric = saved.get("rubric_slugs") or []
     # rubric из fresh не в comp directly - skip unless we pass it
     return diffs
 

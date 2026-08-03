@@ -12,10 +12,17 @@ from pathlib import Path
 import pytest
 
 ROOT = Path(__file__).resolve().parents[1]
+WEB = ROOT / "frontend" / "web"
 
 
 def _read(name: str) -> str:
-    return (ROOT / name).read_text(encoding="utf-8")
+    candidates = (
+        ROOT / name,
+        WEB / "doctor" / name,
+        WEB / "patient" / name,
+    )
+    path = next((candidate for candidate in candidates if candidate.is_file()), candidates[0])
+    return path.read_text(encoding="utf-8")
 
 
 @pytest.fixture(scope="module")

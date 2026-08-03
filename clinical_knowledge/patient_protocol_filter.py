@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import copy
-import re
 from typing import Any
 
 from .protocol_audience import infer_protocol_audience, norm_audience_blob

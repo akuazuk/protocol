@@ -218,7 +218,7 @@ def main():
 
     # report
     rep = [
-        f"# Калибровка/валидация deep-оценки КЗ (2026-01, proxy-LLM)\n",
+        "# Калибровка/валидация deep-оценки КЗ (2026-01, proxy-LLM)\n",
         f"Join: **n={n}** размеченных gold-КЗ (LLM overall не пуст), LLM-bad={n_bad} ({round(100*n_bad/n,1)}%).\n",
         f"- corr(deep_overall, llm_overall) = **{corr_o}**, MAE = **{mae}** п.п.\n",
         "## Детекция плохих КЗ (deep review/poor/critical или overall<cutoff) vs LLM-bad\n",

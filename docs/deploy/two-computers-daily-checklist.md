@@ -46,14 +46,16 @@ required CI нельзя игнорировать без явного решен
 
 Штатный путь: task branch -> PR -> squash/merge -> exact SHA в `origin/main` -> Render.
 
+После merge deploy запускает только GitHub Action `Production Render release` с
+`concurrency: production-render`.
+
 ```bash
-git fetch origin
-merge_sha=$(git rev-parse origin/main)
-scripts/ops/render_release_main.sh --commit="$merge_sha"
+gh run list --repo akuazuk/protocol --workflow=render-production-deploy.yml --limit=1
 ```
 
 `render_promote_main.sh` и `deploy_promote_main_after_push.sh` отключены и всегда завершаются
-ошибкой. Task HEAD нельзя отправить в `main` без PR merge.
+ошибкой. Локальный `render_release_main.sh` допустим только для восстановления упавшего
+workflow и принимает только точный текущий SHA `origin/main`.
 
 Production:
 
