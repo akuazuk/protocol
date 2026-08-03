@@ -57,6 +57,19 @@ state_fingerprint() {
     printf 'missing\n'
   fi
 }
+catch_up_needed() {
+  if [ ! -s "$STATE_FILE" ]; then
+    return 0
+  fi
+  local yesterday
+  yesterday="$(TZ=Europe/Minsk date -v-1d +%F)"
+  # Mirrors the cheap part of PipelineState selection. Avoid importing the
+  # scoring stack every hour when yesterday is already settled.
+  jq -e --arg day "$yesterday" '
+    (.dates[$day].status != "success")
+    or any(.dates[]; .status == "partial" and ((.attempts // 0) < 4))
+  ' "$STATE_FILE" >/dev/null 2>&1
+}
 run_pipeline() {
   local before after
   before="$(state_fingerprint)"
@@ -87,12 +100,20 @@ case "$MODE" in
     publish_if_changed
     ;;
   retry)
-    run_pipeline --catch-up
-    publish_if_changed
+    if catch_up_needed; then
+      run_pipeline --catch-up
+      publish_if_changed
+    else
+      echo "МО: catch-up не требуется, retry пропущен"
+    fi
     ;;
   hourly)
-    run_pipeline --catch-up --catch-up-limit 31
-    publish_if_changed
+    if catch_up_needed; then
+      run_pipeline --catch-up --catch-up-limit 31
+      publish_if_changed
+    else
+      echo "МО: catch-up не требуется, hourly пропущен"
+    fi
     ;;
   weekly)
     # Страховка понедельника: явная перезапись прошлой недели (если утренний main не успел).

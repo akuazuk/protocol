@@ -8462,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r2-mo-publish-schema"
+BUILD_VERSION = "2026-08-03-r3-mo-hourly-fastpath"
 
 
 def _app_version() -> str:
