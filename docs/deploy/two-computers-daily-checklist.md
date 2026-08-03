@@ -49,11 +49,11 @@ required CI нельзя игнорировать без явного решен
 ```bash
 git fetch origin
 merge_sha=$(git rev-parse origin/main)
-scripts/ops/render_deploy.sh ensure-deploy --commit="$merge_sha" --wait
+scripts/ops/render_release_main.sh --commit="$merge_sha"
 ```
 
-`render_promote_main.sh` и `deploy_promote_main_after_push.sh` не использовать в обычной
-параллельной работе: они предназначены только для явно согласованной аварийной процедуры.
+`render_promote_main.sh` и `deploy_promote_main_after_push.sh` отключены и всегда завершаются
+ошибкой. Task HEAD нельзя отправить в `main` без PR merge.
 
 Production:
 

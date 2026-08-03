@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Promote current HEAD to Render deploy branch (main) safely.
+# Deprecated command kept only to block direct task HEAD promotion.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -17,12 +17,8 @@ usage() {
 Usage:
   scripts/ops/render_promote_main.sh [--remote origin] [--target-branch main] [--prod-url URL] [--no-wait-version]
 
-What it does:
-  1) verifies clean git state
-  2) ensures origin/main is ancestor of current HEAD (fast-forward safe)
-  3) pushes HEAD -> origin/main
-  4) triggers the Render deploy for that commit (needs RENDER_API_KEY)
-  5) optionally waits until /api/version matches local BUILD_VERSION
+This command is disabled. Use PR merge followed by:
+  scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)"
 EOF
 }
 
@@ -40,51 +36,14 @@ for arg in "$@"; do
   esac
 done
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
-if [[ "$branch" == "HEAD" ]]; then
-  echo "ERROR: detached HEAD is not supported." >&2
-  exit 1
-fi
+cat >&2 <<'EOF'
+ERROR: direct promotion of task HEAD to main is permanently disabled.
 
-if [[ -n "$(git status --porcelain)" ]]; then
-  echo "ERROR: working tree is dirty. Commit first." >&2
-  git status --short >&2
-  exit 1
-fi
+Required workflow:
+  task branch -> PR -> merge -> origin/main -> Render
 
-git fetch "$REMOTE_NAME" -q
-
-if ! git show-ref --quiet "refs/remotes/${REMOTE_NAME}/${TARGET_BRANCH}"; then
-  echo "ERROR: ${REMOTE_NAME}/${TARGET_BRANCH} not found." >&2
-  exit 1
-fi
-
-if ! git merge-base --is-ancestor "${REMOTE_NAME}/${TARGET_BRANCH}" HEAD; then
-  echo "ERROR: ${REMOTE_NAME}/${TARGET_BRANCH} is not ancestor of current HEAD." >&2
-  echo "Fix: rebase/merge ${REMOTE_NAME}/${TARGET_BRANCH} into '$branch' before promote." >&2
-  exit 1
-fi
-
-echo "Promote: HEAD ($branch) -> ${REMOTE_NAME}/${TARGET_BRANCH}"
-git push "$REMOTE_NAME" "HEAD:${TARGET_BRANCH}"
-
-echo "Verifying remote branch tip..."
-remote_tip="$(git ls-remote --heads "$REMOTE_NAME" "$TARGET_BRANCH" | awk '{print $1}')"
-local_tip="$(git rev-parse HEAD)"
-if [[ -z "$remote_tip" || "$remote_tip" != "$local_tip" ]]; then
-  echo "ERROR: remote ${TARGET_BRANCH} tip differs after push." >&2
-  echo "local=$local_tip remote=${remote_tip:-missing}" >&2
-  exit 1
-fi
-echo "OK: ${REMOTE_NAME}/${TARGET_BRANCH} at $local_tip"
-
-if [[ "$WAIT_RENDER_VERSION" == "1" ]]; then
-  scripts/ops/render_apply_deploy.sh \
-    --commit="$local_tip" \
-    --prod-url="$PROD_URL" \
-    --timeout-sec="$WAIT_TIMEOUT_SEC" \
-    --interval-sec="$WAIT_INTERVAL_SEC"
-else
-  echo "Skip deploy and wait. Use:"
-  echo "  scripts/ops/render_apply_deploy.sh --prod-url=$PROD_URL"
-fi
+After merge, run:
+  git fetch origin
+  scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)"
+EOF
+exit 64

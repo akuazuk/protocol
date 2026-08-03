@@ -72,29 +72,19 @@ scripts/ops/git_safe_start.sh
 # 2) новая задача: авто-ветка + clean worktree (подставьте slug и pc1/pc2)
 scripts/ops/git_task_start.sh <task-slug> --pc=pc1
 
-# 3) перед pull и deploy - обязательные guard-проверки
+# 3) перед pull - обязательная guard-проверка
 scripts/ops/git_safe_pull.sh
-scripts/ops/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com
 
-# если deploy идёт в Render напрямую из Git (ветка подключения, обычно main)
-scripts/ops/git_deploy_guard.sh --render-git --render-branch=main --prod-url=https://protocol-bimy.onrender.com
-
-# one-shot wrapper: push main + guard
-scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com
-
-# one-shot wrapper: push + guard + ожидание целевой версии на Render
-scripts/ops/deploy_after_push.sh --branch=main --prod-url=https://protocol-bimy.onrender.com --wait-version
-
-# если работали в ветке != main, но Render деплоит из main:
-# безопасно продвинуть текущий HEAD в origin/main и дождаться версии
-scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
+# 4) production только после PR merge, только точный origin/main SHA
+git fetch origin
+scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)"
 ```
 
-Подробный runbook: `docs/deploy/multi-machine-git-deploy-runbook.md`.
+Подробный runbook: `docs/deploy/multi-agent-single-repo-render-runbook-v2.md`.
 
 Hygiene-audit рабочей копии (read-only): `scripts/ops/check_repo_hygiene.sh`.
 
-Совместимость: старые пути `scripts/*.sh` пока сохранены и продолжают работать.
+Старые promote-команды сохранены только как fail-closed заглушки и не меняют `main`.
 
 ## Основные разделы UI
 

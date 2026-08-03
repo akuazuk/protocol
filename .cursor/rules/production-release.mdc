@@ -1,0 +1,25 @@
+---
+description: Жёсткий release-процесс Protocol: Render получает только merged HEAD origin/main.
+alwaysApply: true
+---
+
+# Production release: только origin/main
+
+Эти правила обязательны для всех агентов, компьютеров и worktree.
+
+1. Task-агент делает только task-ветку -> commit -> push -> PR. Он не запускает production deploy.
+2. Старый SHA в Render не означает ошибку ветки: пока PR не merged, production обязан оставаться
+   на текущем `origin/main`.
+3. `main` меняется только merge PR через GitHub. Прямой push и promote task HEAD запрещены.
+4. После merge release-координатор выполняет `git fetch origin` и фиксирует точный
+   `merge_sha=$(git rev-parse origin/main)`.
+5. Единственная штатная команда:
+   `scripts/ops/render_release_main.sh --commit="$merge_sha"`.
+6. Команда обязана завершиться ошибкой, если SHA не равен текущему HEAD `origin/main`.
+7. Не использовать `render_promote_main.sh`, `deploy_promote_main_after_push.sh`,
+   `render_deploy.sh deploy` или произвольный `ensure-deploy`.
+8. Deploy завершён только когда `/api/version` показывает ожидаемые `version` и `git_commit`,
+   `/health/live` успешен и пройден feature smoke-test.
+9. Если merge SHA изменился до запуска deploy, остановиться и заново определить release scope.
+10. Render env, manual deploy/restart и данные `/var/data` во время release меняет только один
+    явно назначенный release-координатор.

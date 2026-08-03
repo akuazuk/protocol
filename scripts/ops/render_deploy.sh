@@ -11,6 +11,8 @@ API_BASE="${RENDER_API_BASE:-https://api.render.com/v1}"
 WAIT_TIMEOUT_SEC="${WAIT_TIMEOUT_SEC:-900}"
 WAIT_INTERVAL_SEC="${WAIT_INTERVAL_SEC:-15}"
 WEBHOOK_GRACE_SEC="${WEBHOOK_GRACE_SEC:-25}"
+REMOTE_NAME="${REMOTE_NAME:-origin}"
+TARGET_BRANCH="${TARGET_BRANCH:-main}"
 
 usage() {
   cat <<'EOF'
@@ -20,7 +22,7 @@ Usage:
 Commands:
   status              service settings (autoDeploy/branch/suspended) + last deploys + prod version
   deploys             recent deploys with status and commit
-  deploy              trigger a deploy of the latest commit on the service branch
+  deploy              trigger a deploy of exact current origin/main (requires --commit)
   ensure-deploy       make sure a commit gets deployed: wait for the push-triggered
                       deploy if it appears, otherwise trigger one (use --commit=SHA)
   restart             restart the service without rebuilding (use after uploading data to /var/data)
@@ -244,6 +246,24 @@ wait_for_deploy() {
   done
 }
 
+verify_main_commit() {
+  if [[ -z "$COMMIT_SHA" ]]; then
+    echo "ERROR: --commit is required for production deploy." >&2
+    echo "Use scripts/ops/render_release_main.sh --commit=\"\$(git rev-parse origin/main)\"." >&2
+    exit 2
+  fi
+  git fetch "$REMOTE_NAME" "$TARGET_BRANCH" -q
+  local main_sha requested_sha
+  main_sha="$(git rev-parse "${REMOTE_NAME}/${TARGET_BRANCH}^{commit}")"
+  requested_sha="$(git rev-parse "${COMMIT_SHA}^{commit}" 2>/dev/null || true)"
+  if [[ -z "$requested_sha" || "$requested_sha" != "$main_sha" ]]; then
+    echo "ERROR: Render production accepts only current ${REMOTE_NAME}/${TARGET_BRANCH}." >&2
+    echo "requested=${requested_sha:-invalid} ${REMOTE_NAME}/${TARGET_BRANCH}=$main_sha" >&2
+    exit 1
+  fi
+  COMMIT_SHA="$requested_sha"
+}
+
 case "$CMD" in
   services)
     api GET "/services?limit=50" \
@@ -279,6 +299,7 @@ case "$CMD" in
     ;;
 
   deploy)
+    verify_main_commit
     cache_mode="do_not_clear"
     if [[ "$CLEAR_CACHE" == "1" ]]; then
       cache_mode="clear"
@@ -293,9 +314,7 @@ case "$CMD" in
     ;;
 
   ensure-deploy)
-    if [[ -z "$COMMIT_SHA" ]]; then
-      COMMIT_SHA="$(git rev-parse HEAD)"
-    fi
+    verify_main_commit
     short="${COMMIT_SHA:0:7}"
     # The push webhook usually creates the deploy within seconds; reuse it instead of
     # queueing a second build of the same commit, and trigger one only if it never shows up.
