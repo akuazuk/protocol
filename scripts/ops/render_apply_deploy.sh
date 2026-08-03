@@ -10,9 +10,12 @@ ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
 PROD_URL="${PROTOCOL_PROD_URL:-https://protocol-bimy.onrender.com}"
+REMOTE_NAME="${REMOTE_NAME:-origin}"
+TARGET_BRANCH="${TARGET_BRANCH:-main}"
 WAIT_TIMEOUT_SEC="${WAIT_TIMEOUT_SEC:-900}"
 WAIT_INTERVAL_SEC="${WAIT_INTERVAL_SEC:-20}"
 COMMIT_SHA=""
+EXPECTED_VERSION="${EXPECTED_VERSION:-}"
 TRIGGER=1
 
 usage() {
@@ -22,8 +25,9 @@ Usage:
                                      [--timeout-sec N] [--interval-sec N]
 
 Steps:
-  1) follow the deploy of this commit, triggering one if the push did not (needs RENDER_API_KEY)
-  2) wait until the deploy is live and /api/version matches local BUILD_VERSION
+  1) require the commit to equal current origin/main
+  2) follow the deploy of this commit, triggering one if the push did not (needs RENDER_API_KEY)
+  3) wait until /api/version matches BUILD_VERSION from that commit
 EOF
 }
 
@@ -40,7 +44,29 @@ for arg in "$@"; do
 done
 
 if [[ -z "$COMMIT_SHA" ]]; then
-  COMMIT_SHA="$(git rev-parse HEAD)"
+  echo "ERROR: --commit is required; local HEAD is never an implicit release source." >&2
+  exit 2
+fi
+
+git fetch "$REMOTE_NAME" "$TARGET_BRANCH" -q
+main_sha="$(git rev-parse "${REMOTE_NAME}/${TARGET_BRANCH}^{commit}")"
+commit_sha="$(git rev-parse "${COMMIT_SHA}^{commit}" 2>/dev/null || true)"
+if [[ -z "$commit_sha" || "$commit_sha" != "$main_sha" ]]; then
+  echo "ERROR: deploy commit must equal current ${REMOTE_NAME}/${TARGET_BRANCH}." >&2
+  echo "requested=${commit_sha:-invalid} ${REMOTE_NAME}/${TARGET_BRANCH}=$main_sha" >&2
+  exit 1
+fi
+COMMIT_SHA="$commit_sha"
+
+if [[ -z "$EXPECTED_VERSION" ]]; then
+  EXPECTED_VERSION="$(
+    git show "${COMMIT_SHA}:rag_server.py" \
+      | python3 -c 'import re,sys; m=re.search(r"^BUILD_VERSION\s*=\s*\"([^\"]+)\"", sys.stdin.read(), re.M); print(m.group(1) if m else "")'
+  )"
+fi
+if [[ -z "$EXPECTED_VERSION" ]]; then
+  echo "ERROR: expected BUILD_VERSION is empty for $COMMIT_SHA." >&2
+  exit 1
 fi
 
 if [[ "$TRIGGER" == "1" ]] && scripts/ops/render_deploy.sh has-key >/dev/null 2>&1; then
@@ -55,6 +81,7 @@ else
 fi
 
 scripts/ops/render_wait_version.sh \
+  --expected="$EXPECTED_VERSION" \
   --prod-url="$PROD_URL" \
   --timeout-sec="$WAIT_TIMEOUT_SEC" \
   --interval-sec="$WAIT_INTERVAL_SEC"

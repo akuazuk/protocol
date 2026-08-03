@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Push current branch, then safely promote HEAD to Render branch (main).
+# Deprecated command kept only to block direct task HEAD promotion.
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
@@ -18,11 +18,8 @@ usage() {
 Usage:
   scripts/deploy_promote_main_after_push.sh [--remote=origin] [--target-branch=main] [--prod-url=URL] [--wait-version] [--no-wait-version] [--no-push]
 
-What it does:
-  1) verifies current branch and clean git state
-  2) pushes current branch to remote (unless --no-push)
-  3) promotes current HEAD to target Render branch (fast-forward only)
-  4) waits for /api/version to match local BUILD_VERSION (default: on)
+This command is disabled. Push the task branch, merge its PR, then use:
+  scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)"
 EOF
 }
 
@@ -41,32 +38,14 @@ for arg in "$@"; do
   esac
 done
 
-branch="$(git rev-parse --abbrev-ref HEAD)"
-if [[ "$branch" == "HEAD" ]]; then
-  echo "ERROR: detached HEAD is not supported." >&2
-  exit 1
-fi
+cat >&2 <<'EOF'
+ERROR: push-and-promote is permanently disabled.
 
-if [[ -n "$(git status --porcelain)" ]]; then
-  echo "ERROR: working tree is dirty. Commit first." >&2
-  git status --short >&2
-  exit 1
-fi
+Required workflow:
+  task branch -> PR -> merge -> origin/main -> Render
 
-if [[ "$SKIP_PUSH" != "1" ]]; then
-  echo "Pushing current branch '$branch' to '$REMOTE_NAME'..."
-  git push "$REMOTE_NAME" "$branch"
-fi
-
-echo "Promoting current HEAD to ${REMOTE_NAME}/${TARGET_BRANCH}..."
-args=(
-  "--remote=${REMOTE_NAME}"
-  "--target-branch=${TARGET_BRANCH}"
-  "--prod-url=${PROD_URL}"
-  "--timeout-sec=${WAIT_TIMEOUT_SEC}"
-  "--interval-sec=${WAIT_INTERVAL_SEC}"
-)
-if [[ "$WAIT_RENDER_VERSION" != "1" ]]; then
-  args+=("--no-wait-version")
-fi
-scripts/ops/render_promote_main.sh "${args[@]}"
+After merge, run:
+  git fetch origin
+  scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)"
+EOF
+exit 64

@@ -6,7 +6,7 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 cd "$ROOT"
 
-ALLOWED_BRANCHES_DEFAULT="main release/* hotfix/* codex/main-sync"
+ALLOWED_BRANCHES_DEFAULT="main"
 ALLOWED_BRANCHES="${ALLOWED_BRANCHES:-$ALLOWED_BRANCHES_DEFAULT}"
 REMOTE_NAME="${REMOTE_NAME:-origin}"
 PROD_URL="${PROTOCOL_PROD_URL:-}"
@@ -19,7 +19,7 @@ Usage:
   scripts/git_deploy_guard.sh [--prod-url URL] [--render-git] [--render-branch main]
 
 Env:
-  ALLOWED_BRANCHES="main release/* hotfix/* codex/main-sync"
+  ALLOWED_BRANCHES="main"
   REMOTE_NAME=origin
   PROTOCOL_PROD_URL=https://protocol-bimy.onrender.com
   RENDER_GIT_MODE=1
@@ -68,6 +68,16 @@ if [[ -n "$(git status --porcelain)" ]]; then
 fi
 
 git fetch "$REMOTE_NAME" -q
+
+if [[ "$branch" == "$RENDER_DEPLOY_BRANCH" ]]; then
+  remote_release_sha="$(git rev-parse "${REMOTE_NAME}/${RENDER_DEPLOY_BRANCH}^{commit}")"
+  local_release_sha="$(git rev-parse HEAD)"
+  if [[ "$local_release_sha" != "$remote_release_sha" ]]; then
+    echo "ERROR: local $branch is not exact ${REMOTE_NAME}/${RENDER_DEPLOY_BRANCH}." >&2
+    echo "local=$local_release_sha remote=$remote_release_sha" >&2
+    exit 1
+  fi
+fi
 
 if ! upstream_ref="$(git rev-parse --abbrev-ref --symbolic-full-name '@{u}' 2>/dev/null)"; then
   if git show-ref --quiet "refs/remotes/${REMOTE_NAME}/${branch}"; then
