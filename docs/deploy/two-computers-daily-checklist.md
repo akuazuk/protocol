@@ -1,63 +1,78 @@
-# Ежедневный чеклист для 2 компьютеров
+# Ежедневный чеклист: несколько агентов и компьютеров
 
-Короткая памятка для безопасной работы и деплоя в проекте Protocol.
+Канонические правила: `AGENTS.md` и
+`docs/deploy/multi-agent-single-repo-render-runbook-v2.md`.
 
-## 1) Старт сессии
-
-```bash
-git checkout codex/main-sync
-scripts/ops/git_safe_pull.sh
-```
-
-## 2) Работа и локальная проверка
-
-- Внести изменения в рабочей ветке `codex/main-sync`.
-- Прогнать релевантные тесты по измененным модулям.
-
-## 3) Фиксация изменений
-
-- Если изменение осмысленное - обновить `BUILD_VERSION` в `rag_server.py`.
-- Сделать commit и push в рабочую ветку.
+## 1. Preflight - до любой правки
 
 ```bash
-git add <files>
-git commit -m "your message"
-git push origin codex/main-sync
+git status --short --branch
+git fetch --prune origin
+git rev-list --left-right --count origin/main...HEAD
+gh pr list --repo akuazuk/protocol --state open
 ```
 
-## 4) Промо в прод-ветку Render
-
-Рекомендуемая единая команда (из любой рабочей ветки):
+Если checkout грязный, behind или diverged - не выполнять pull/reset/clean. Создать clean
+task-worktree:
 
 ```bash
-scripts/ops/deploy_promote_main_after_push.sh --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/git_task_start.sh <task-slug> --pc=<pc-id> \
+  --branch=codex/<task-slug>-<agent-id>-<pc-id>
 ```
 
-Она сама:
-- пушит текущую ветку в origin;
-- fast-forward продвигает текущий `HEAD` в `origin/main`;
-- ждёт обновления `/api/version` на Render.
+## 2. Работа
+
+- одна задача, ветка, владелец и worktree;
+- base - свежий `origin/main`;
+- проверить открытые PR на пересечение файлов;
+- не использовать общую `codex/main-sync`;
+- не работать и не коммитить напрямую в `main`.
+
+## 3. Проверка и публикация
 
 ```bash
-scripts/ops/render_promote_main.sh --prod-url=https://protocol-bimy.onrender.com
+scripts/ops/bump_build_version.sh <slug>  # для release-значимого изменения
+git diff --check
+# запустить релевантные тесты/lint/syntax
+git add <точные-файлы>
+git commit -m "type(scope): summary"
+git push -u origin HEAD
 ```
 
-Важно: аргументы передавать как `--key=value` (а не через пробел).
+Открыть PR. Перед merge обновить refs и проверить расхождение с `origin/main`. Красный
+required CI нельзя игнорировать без явного решения владельца.
 
-## 5) Контроль деплоя
+## 4. Merge и deploy - только release-координатор
 
-- Проверить версию на сервере:
-  - [https://protocol-bimy.onrender.com/api/version](https://protocol-bimy.onrender.com/api/version)
-- Версия должна совпадать с локальным `BUILD_VERSION`.
-
-## Быстрая диагностика, если Render взял старый коммит
-
-Проверить, что `main` и рабочая ветка указывают на один SHA:
+Штатный путь: task branch -> PR -> squash/merge -> exact SHA в `origin/main` -> Render.
 
 ```bash
-git fetch origin --prune
-git rev-parse origin/main
-git rev-parse origin/codex/main-sync
+git fetch origin
+merge_sha=$(git rev-parse origin/main)
+scripts/ops/render_deploy.sh ensure-deploy --commit="$merge_sha" --wait
 ```
 
-Если SHA отличаются, выполнить шаг 4 (promote) и дождаться обновления версии.
+`render_promote_main.sh` и `deploy_promote_main_after_push.sh` не использовать в обычной
+параллельной работе: они предназначены только для явно согласованной аварийной процедуры.
+
+Production:
+
+- service: `protocol` / `srv-d78he6h5pdvs73b1kufg`;
+- URL: `https://protocol-bimy.onrender.com`;
+- `protocol-rag` из `render.yaml` - не production.
+
+## 5. Проверка production
+
+```bash
+curl -fsS https://protocol-bimy.onrender.com/api/version
+curl -fsS https://protocol-bimy.onrender.com/health/live
+```
+
+Кроме версии обязательно проверить изменённую функцию. Для МО использовать локальный
+`METHODIST_TOKEN` только в `X-Methodist-Token`; не выводить токен, case ID и clinical text.
+
+## 6. Handoff
+
+Записать в `docs/reports/YYYY-MM-DD-handoff-<topic>.md`: branch, worktree, base/head SHA,
+PR, тесты, merge SHA, deploy, `BUILD_VERSION`, smoke-test, оставшиеся задачи и одну следующую
+безопасную команду.
