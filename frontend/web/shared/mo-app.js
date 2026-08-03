@@ -656,12 +656,26 @@
         return '<tr><td>' + esc(item.title || item.id) + '</td><td>' + esc(item.zero_n) +
           '</td><td>' + esc(item.half_n) + '</td><td><b>' + esc(item.fail_pct) + '%</b></td></tr>';
       }).join("");
+      var titles = {};
+      (rubric.top_fail || []).forEach(function (item) { titles[item.id] = item.title || item.id; });
+      var specialtyRows = (rubric.by_specialty || []).slice(0, 8).map(function (row) {
+        var weak = (row.top_criteria || []).map(function (c) {
+          return esc(titles[c.id] || c.id) + " (" + esc(c.fail_n) + ")";
+        }).join("; ");
+        return "<tr><td>" + esc(row.specialty) + "</td><td>" + esc(row.fail_n) +
+          "</td><td>" + (weak || " - ") + "</td></tr>";
+      }).join("");
       host.innerHTML =
         kpi("Средняя рубрика", score(rubric.avg_rubric_pct), "shadow · sample " + (rubric.sample_n || 0)) +
         kpi("Выборка", rubric.sample_n, (rubric.date_from || "") + " - " + (rubric.date_to || "")) +
         '<div class="table-wrap" style="margin-top:10px"><table class="rubric-table"><thead><tr>' +
         '<th>Критерий</th><th>0</th><th>0.5</th><th>Доля слабостей</th></tr></thead><tbody>' +
         (top || '<tr><td colspan="4" class="empty">Слабых критериев нет.</td></tr>') +
+        '</tbody></table></div>' +
+        '<h3 style="margin:14px 0 8px;font-size:14px">Слабости по специальностям</h3>' +
+        '<div class="table-wrap"><table class="rubric-table"><thead><tr>' +
+        '<th>Специальность</th><th>Слабых оценок</th><th>Топ критерии</th></tr></thead><tbody>' +
+        (specialtyRows || '<tr><td colspan="3" class="empty">Недостаточно данных по специальностям.</td></tr>') +
         '</tbody></table></div>';
     }
     async function loadOverview() {

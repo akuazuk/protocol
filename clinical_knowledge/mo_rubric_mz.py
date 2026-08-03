@@ -357,16 +357,24 @@ def evaluate_mo_rubric_mz(
     }
 
 
-def summarize_rubric_batch(results: list[Mapping[str, Any]]) -> dict[str, Any]:
+def summarize_rubric_batch(
+    results: list[Mapping[str, Any]],
+    *,
+    specialties: list[str] | None = None,
+) -> dict[str, Any]:
     """Агрегат top-fail по списку evaluate_mo_rubric_mz() результатов."""
     fail_counts: dict[str, dict[str, Any]] = {}
     scored_cases = 0
     pct_sum = 0.0
     pct_n = 0
-    for result in results:
+    specialty_fail: dict[str, dict[str, dict[str, int]]] = {}
+    for idx, result in enumerate(results):
         if not result or not result.get("ok"):
             continue
         scored_cases += 1
+        specialty = ""
+        if specialties and idx < len(specialties):
+            specialty = str(specialties[idx] or "").strip() or "Без специальности"
         if isinstance(result.get("rubric_pct"), (int, float)):
             pct_sum += float(result["rubric_pct"])
             pct_n += 1
@@ -394,10 +402,19 @@ def summarize_rubric_batch(results: list[Mapping[str, Any]]) -> dict[str, Any]:
             bucket["scored_n"] += 1
             if score >= 0.999:
                 bucket["full_n"] += 1
+                level = "full"
             elif score >= 0.499:
                 bucket["half_n"] += 1
+                level = "half"
             else:
                 bucket["zero_n"] += 1
+                level = "zero"
+            if specialty and level in {"zero", "half"}:
+                cell = specialty_fail.setdefault(specialty, {}).setdefault(
+                    cid, {"zero_n": 0, "half_n": 0, "scored_n": 0}
+                )
+                cell["scored_n"] += 1
+                cell["zero_n" if level == "zero" else "half_n"] += 1
     top_fail = []
     for bucket in fail_counts.values():
         scored_n = int(bucket["scored_n"])
@@ -408,15 +425,39 @@ def summarize_rubric_batch(results: list[Mapping[str, Any]]) -> dict[str, Any]:
         bucket["zero_pct"] = round(100.0 * int(bucket["zero_n"]) / scored_n, 1)
         top_fail.append(bucket)
     top_fail.sort(key=lambda row: (-float(row["fail_pct"]), -int(row["zero_n"]), str(row["id"])))
+
+    specialty_rows = []
+    for specialty, criteria_map in specialty_fail.items():
+        worst = sorted(
+            (
+                {
+                    "id": cid,
+                    "zero_n": vals["zero_n"],
+                    "half_n": vals["half_n"],
+                    "fail_n": vals["zero_n"] + vals["half_n"],
+                }
+                for cid, vals in criteria_map.items()
+            ),
+            key=lambda row: (-int(row["fail_n"]), str(row["id"])),
+        )
+        specialty_rows.append(
+            {
+                "specialty": specialty,
+                "fail_n": sum(int(x["fail_n"]) for x in worst),
+                "top_criteria": worst[:3],
+            }
+        )
+    specialty_rows.sort(key=lambda row: (-int(row["fail_n"]), str(row["specialty"])))
+
     return {
         "ok": True,
         "cases_n": scored_cases,
         "avg_rubric_pct": round(pct_sum / pct_n, 1) if pct_n else None,
         "top_fail": top_fail[:13],
+        "by_specialty": specialty_rows[:12],
         "primary": False,
         "source": "config/mo_rubric_mz.yaml",
     }
-
 
 def build_rubric_summary_from_sources(
     *,
@@ -462,6 +503,7 @@ def build_rubric_summary_from_sources(
         day -= timedelta(days=1)
 
     results: list[dict[str, Any]] = []
+    specialties: list[str] = []
     seen_ids: set[str] = set()
     for day_key, path in files:
         if len(results) >= limit:
@@ -491,8 +533,11 @@ def build_rubric_summary_from_sources(
                 "diagnosis_short": str(row.get("clinical_diagnosis") or row.get("mis_diagnos") or ""),
             }
             results.append(evaluate_mo_rubric_mz(clinical=clinical, meta=meta))
+            specialties.append(
+                str(row.get("specialization") or row.get("specialty") or row.get("doctor_specialization") or "").strip()
+            )
 
-    summary = summarize_rubric_batch(results)
+    summary = summarize_rubric_batch(results, specialties=specialties)
     summary["date_from"] = start_d.isoformat()
     summary["date_to"] = end_d.isoformat()
     summary["sample_n"] = len(results)

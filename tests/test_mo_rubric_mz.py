@@ -88,3 +88,5 @@ def test_summarize_rubric_batch_ranks_failures() -> None:
     assert summary["cases_n"] == 2
     assert summary["top_fail"]
     assert summary["top_fail"][0]["fail_pct"] >= summary["top_fail"][-1]["fail_pct"]
+    with_spec = summarize_rubric_batch([a, b], specialties=["Терапевт", "Хирург"])
+    assert with_spec["by_specialty"]

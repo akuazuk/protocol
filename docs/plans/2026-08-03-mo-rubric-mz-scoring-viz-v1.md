@@ -36,6 +36,7 @@
 |------|-----------|---------------|
 | 2026-08-03 | План + YAML + shadow scorer + case-detail UI | `2026-08-03-r14-mo-rubric-mz` |
 | 2026-08-03 | Prior-visit dynamics + overview top-fail summary | `2026-08-03-r15-rubric-dynamics-summary` |
+| 2026-08-03 | Specialty weakness table in rubric summary | `2026-08-03-r16-rubric-specialty-fail` |
 
 ---
 
@@ -68,7 +69,8 @@
 ### Этап 3. Visualization
 - [x] Case drawer: таблица 13 критериев + `rubric_pct`
 - [x] Overview: top-fail критерии (`/rubric-summary`)
-- [ ] Dashboard heatmap критерии × специальность
+- [x] Overview: слабости по специальностям (таблица)
+- [ ] Dashboard heatmap критерии × специальность (ECharts)
 - [ ] Фильтр «критерий = 0» в очереди
 - [ ] Dual score в overview KPI (deep + rubric primary toggle)
 
