@@ -5,6 +5,7 @@ import csv
 import calendar
 import json
 import os
+import re
 import sqlite3
 import statistics
 import uuid
@@ -57,10 +58,33 @@ CRM_STATUSES = frozenset(
 )
 CRM_ROLES = frozenset({"methodist", "lead", "admin"})
 _CRM_MIGRATED = False
+_HEX_ID_RX = re.compile(r"^[a-f0-9]{32,64}$", re.IGNORECASE)
+_ICD_CODE_RX = re.compile(r"^[A-Za-zА-Яа-я]\d{2}(?:\.\d{1,2})?$")
 
 
 def _utc() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
+
+
+def _looks_like_opaque_id(value: Any) -> bool:
+    text = str(value or "").strip()
+    return bool(text) and bool(_HEX_ID_RX.match(text))
+
+
+def _is_valid_icd_code(value: Any) -> bool:
+    text = str(value or "").strip()
+    return bool(text) and bool(_ICD_CODE_RX.match(text))
+
+
+def _safe_diagnosis_text(*values: Any) -> str:
+    for raw in values:
+        text = str(raw or "").strip()
+        if not text:
+            continue
+        if _looks_like_opaque_id(text):
+            continue
+        return text
+    return ""
 
 
 def _db_path() -> Path:
@@ -451,11 +475,13 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
         SELECT c.*, d.doctor_fio,
                COALESCE(d.specialty, c.specialty) AS doctor_specialty,
                COALESCE(d.filial, c.filial) AS doctor_filial,
+               COALESCE(NULLIF(dx.diagnosis_label, ''), '') AS diagnosis_label,
                COALESCE(f.p0, 0) AS p0, COALESCE(f.p1, 0) AS p1,
                COALESCE(f.p2, 0) AS p2, COALESCE(f.p3, 0) AS p3,
                COALESCE(f.finding_codes, '') AS finding_codes
         FROM fact_mo_case c
         LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
         LEFT JOIN (
           SELECT mis_id,
                  SUM(severity='P0') p0, SUM(severity='P1') p1,
@@ -472,6 +498,13 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
     for row in rows:
         item = dict(row)
         score = item.get("overall_pct")
+        diagnosis_code = str(item.get("diagnosis_code") or "").strip()
+        diagnosis_label = _safe_diagnosis_text(item.get("diagnosis_label"))
+        diagnosis_short = _safe_diagnosis_text(
+            diagnosis_label,
+            diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
+        ) or "Не указан"
+        diagnosis_code_public = diagnosis_code if _is_valid_icd_code(diagnosis_code) else ""
         output.append(
             {
                 "case_id": str(item.get("visit_id") or item["mis_id"]),
@@ -491,9 +524,9 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                     "empty": "Пустой документ",
                     "unknown": "Не определён",
                 }.get(str(item.get("document_kind") or "unknown"), str(item.get("document_kind") or "")),
-                "diagnosis_code": item.get("diagnosis_code") or "",
-                "diagnosis_short": item.get("diagnosis_code") or "",
-                "mkb_code_main": item.get("diagnosis_code") or "",
+                "diagnosis_code": diagnosis_code_public,
+                "diagnosis_short": diagnosis_short,
+                "mkb_code_main": diagnosis_code_public,
                 "icd_chapter": item.get("icd_chapter") or "",
                 "overall_pct": score,
                 "score_reason": (
@@ -2222,8 +2255,130 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
             if detail.get("ok"):
                 break
     if not detail.get("ok"):
-        return detail
+        with closing(_read_connection()) as conn:
+            row = conn.execute(
+                """SELECT c.*, d.doctor_fio,
+                          COALESCE(d.specialty, c.specialty) AS doctor_specialty,
+                          COALESCE(d.filial, c.filial) AS doctor_filial,
+                          COALESCE(NULLIF(dx.diagnosis_label, ''), '') AS diagnosis_label
+                   FROM fact_mo_case c
+                   LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+                   LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+                   WHERE c.visit_id = ? OR c.mis_id = ?
+                   ORDER BY CASE WHEN c.document_kind IN ('medical_exam','consultation') THEN 0 ELSE 1 END
+                   LIMIT 1""",
+                (case_id, case_id),
+            ).fetchone()
+            if row:
+                item = dict(row)
+                findings = conn.execute(
+                    """SELECT f.finding_code AS code, f.severity, f.source_ref,
+                              COALESCE(df.title_ru, f.finding_code) AS title_ru,
+                              COALESCE(f.detail_ru, f.evidence, '') AS detail_ru,
+                              f.evidence
+                       FROM fact_mo_finding f
+                       LEFT JOIN dim_finding df ON df.finding_code = f.finding_code
+                       WHERE f.mis_id = ?
+                       ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1 WHEN 'P2' THEN 2 ELSE 3 END""",
+                    (item.get("mis_id"),),
+                ).fetchall()
+                axis_rows = conn.execute(
+                    "SELECT axis, score FROM fact_mo_score_axis WHERE mis_id = ?",
+                    (item.get("mis_id"),),
+                ).fetchall()
+                axes = {str(r["axis"]): r["score"] for r in axis_rows}
+                diagnosis_code = str(item.get("diagnosis_code") or "").strip()
+                diagnosis_label = _safe_diagnosis_text(item.get("diagnosis_label"))
+                diagnosis_short = _safe_diagnosis_text(
+                    diagnosis_label,
+                    diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
+                ) or "Не указан"
+                score = item.get("overall_pct")
+                detail = {
+                    "ok": True,
+                    "record": {
+                        "case_id": str(item.get("visit_id") or item.get("mis_id") or case_id),
+                        "visit_id": str(item.get("visit_id") or ""),
+                        "mis_id": str(item.get("mis_id") or ""),
+                        "date": str(item.get("visit_date") or ""),
+                        "doctor_fio": item.get("doctor_fio") or "",
+                        "specialization": item.get("doctor_specialty") or item.get("specialty") or "",
+                        "filial": item.get("doctor_filial") or item.get("filial") or "",
+                        "document_kind": item.get("document_kind") or "unknown",
+                        "document_kind_label": {
+                            "medical_exam": "Медицинский осмотр",
+                            "consultation": "Консультативное заключение",
+                            "certificate": "Справка",
+                            "diagnostic": "Диагностическое исследование",
+                            "non_clinical": "Неклинический документ",
+                            "empty": "Пустой документ",
+                            "unknown": "Не определён",
+                        }.get(str(item.get("document_kind") or "unknown"), str(item.get("document_kind") or "")),
+                        "diagnosis_code": diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
+                        "mkb_code_main": diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
+                        "diagnosis_short": diagnosis_short,
+                        "overall_pct": score,
+                        "status": item.get("status") or "",
+                        "score_reason": (
+                            None
+                            if isinstance(score, (int, float))
+                            else (
+                                "Не оценивается: диагностика / неклинический документ"
+                                if str(item.get("document_kind") or "") not in {"medical_exam", "consultation"}
+                                else "Оценка ещё не рассчитана"
+                            )
+                        ),
+                        "parse_ok": "1",
+                        "date_mismatch": "0",
+                        "_source": "warehouse_case_detail",
+                    },
+                    "axes": {
+                        "documentation": axes.get("documentation"),
+                        "clinical_concordance": axes.get("clinical_concordance"),
+                        "safety": axes.get("safety"),
+                        "regulatory": axes.get("regulatory"),
+                    },
+                    "findings": [dict(row) for row in findings],
+                    "source": "warehouse",
+                }
+            else:
+                return detail
     record = dict(detail.get("record") or {})
+    diagnosis_code = str(
+        record.get("diagnosis_code")
+        or record.get("mkb_code_main")
+        or ""
+    ).strip()
+    diagnosis_short = _safe_diagnosis_text(
+        record.get("diagnosis_short"),
+        record.get("diagnosis"),
+        diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
+    )
+    record["diagnosis_short"] = diagnosis_short or "Не указан"
+    record["diagnosis_code"] = diagnosis_code if _is_valid_icd_code(diagnosis_code) else ""
+    record["mkb_code_main"] = record["diagnosis_code"]
+    axes = detail.get("axes") if isinstance(detail.get("axes"), dict) else {}
+    if detail.get("coverage_pct") is None:
+        if isinstance(record.get("coverage_pct"), (int, float)):
+            detail["coverage_pct"] = float(record["coverage_pct"])
+        else:
+            populated_axes = sum(1 for key in ("documentation", "clinical_concordance", "safety", "regulatory") if axes.get(key) is not None)
+            if populated_axes:
+                detail["coverage_pct"] = round(100.0 * populated_axes / 4.0, 2)
+            elif str(record.get("parse_ok") or "").strip() == "1":
+                detail["coverage_pct"] = 100.0
+    if detail.get("confidence_pct") is None:
+        if isinstance(record.get("confidence_pct"), (int, float)):
+            detail["confidence_pct"] = float(record["confidence_pct"])
+        else:
+            parse_ok = str(record.get("parse_ok") or "").strip() == "1"
+            mismatch = str(record.get("date_mismatch") or "0").strip() == "1"
+            if parse_ok and mismatch:
+                detail["confidence_pct"] = 75.0
+            elif parse_ok:
+                detail["confidence_pct"] = 90.0
+            elif axes:
+                detail["confidence_pct"] = 55.0
     record.pop("patient_id", None)
     detail["record"] = record
     detail["case_id"] = case_id
@@ -2861,9 +3016,12 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str, include_unsc
             continue
         score = item.get("overall_pct")
         case_id = str(item.get("visit_id") or item.get("mis_id"))
+        diagnosis_code = str(item.get("diagnosis_code") or "").strip()
+        safe_diagnosis_code = diagnosis_code if _is_valid_icd_code(diagnosis_code) else ""
         item.update(
             {
                 "case_id": case_id,
+                "diagnosis_code": safe_diagnosis_code,
                 "document_kind_label": kind_labels.get(kind, kind),
                 "score_reason": (
                     None
@@ -2878,7 +3036,7 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str, include_unsc
                     part
                     for part in (
                         str(item.get("visit_date") or ""),
-                        str(item.get("diagnosis_code") or "Без кода МКБ"),
+                        str(safe_diagnosis_code or "Без кода МКБ"),
                         kind_labels.get(kind, kind),
                     )
                     if part

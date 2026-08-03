@@ -181,6 +181,58 @@ def test_daily_pipeline_cases_extend_monthly_analytics(monkeypatch, tmp_path: Pa
     assert "_source" not in detail["record"]
 
 
+def test_case_detail_falls_back_to_warehouse_and_sanitizes_hash_diagnosis(monkeypatch, tmp_path: Path) -> None:
+    db = tmp_path / "mo.sqlite"
+    initialize_warehouse(db)
+    doctor = doctor_key_for("Тест Врач")
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(db))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    with sqlite3.connect(db) as conn:
+        conn.execute(
+            "INSERT INTO dim_doctor(doctor_key,doctor_fio,specialty,filial) VALUES(?,?,?,?)",
+            (doctor, "Тест Врач", "Терапия", "Филиал"),
+        )
+        conn.execute(
+            """INSERT INTO fact_mo_case
+               (mis_id,visit_id,visit_date,document_kind,overall_pct,status,doctor_key,specialty,filial,
+                diagnosis_code,icd_chapter,content_hash,updated_at)
+               VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+            (
+                "hx-9001",
+                "hx-91001",
+                "2026-08-02",
+                "consultation",
+                77.0,
+                "review",
+                doctor,
+                "Терапия",
+                "Филиал",
+                "27b2db9e5a9f66a60ae6b378870abdb74ecaf847ed63d5fd17ed4d712b15b2a5",
+                "N/A",
+                "27b2db9e5a9f66a60ae6b378870abdb74ecaf847ed63d5fd17ed4d712b15b2a5",
+                "2026-08-03T00:00:00Z",
+            ),
+        )
+        conn.executemany(
+            "INSERT INTO fact_mo_score_axis(mis_id,axis,score) VALUES(?,?,?)",
+            [
+                ("hx-9001", "documentation", 78.0),
+                ("hx-9001", "clinical_concordance", 75.0),
+                ("hx-9001", "safety", 80.0),
+            ],
+        )
+        conn.commit()
+    mo_backend._pipeline_records_for_month.cache_clear()
+    detail = mo_backend.build_case_detail("hx-91001")
+    assert detail["ok"] is True
+    assert detail["source"] == "warehouse"
+    assert detail["record"]["diagnosis_short"] == "Не указан"
+    assert detail["record"]["diagnosis_code"] == ""
+    assert isinstance(detail.get("coverage_pct"), float)
+    assert isinstance(detail.get("confidence_pct"), float)
+    assert detail["coverage_pct"] >= 70.0
+
+
 def test_freshness_reports_lag_and_empty_reason(monkeypatch, tmp_path: Path) -> None:
     monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path))
     report_dir = tmp_path / "reports" / "2026" / "07" / "27"

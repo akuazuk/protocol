@@ -68,22 +68,34 @@
     function downloadJson(data, filename) {
       downloadBlob(new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" }), filename);
     }
-    async function openPdfWithToken(path, preferredName) {
+    async function openPdfWithToken(path, options) {
+      options = options || {};
+      var targetWindow = options.targetWindow || null;
+      var preferredName = options.preferredName || "mo-case.pdf";
       var response = await fetch(path, { headers: headers() });
       if (response.status === 401 || response.status === 403) {
+        if (targetWindow && !targetWindow.closed) targetWindow.close();
         throw new Error("Требуется вход методиста. Обновите токен и повторите.");
       }
-      if (!response.ok) throw new Error("Не удалось открыть PDF МО.");
+      if (!response.ok) {
+        if (targetWindow && !targetWindow.closed) targetWindow.close();
+        throw new Error("Не удалось открыть PDF МО.");
+      }
       var type = (response.headers.get("content-type") || "").toLowerCase();
       if (type.indexOf("application/pdf") >= 0) {
         var pdfBlob = await response.blob();
         var pdfUrl = URL.createObjectURL(pdfBlob);
-        window.open(pdfUrl, "_blank", "noopener");
+        if (targetWindow && !targetWindow.closed) {
+          targetWindow.location.replace(pdfUrl);
+        } else {
+          var popup = window.open(pdfUrl, "_blank", "noopener");
+          if (!popup) downloadBlob(pdfBlob, preferredName);
+        }
         window.setTimeout(function () { URL.revokeObjectURL(pdfUrl); }, 30000);
         return;
       }
       var htmlText = await response.text();
-      var doc = window.open("", "_blank", "noopener");
+      var doc = (targetWindow && !targetWindow.closed) ? targetWindow : window.open("", "_blank", "noopener");
       if (!doc) throw new Error("Браузер заблокировал всплывающее окно.");
       doc.document.open();
       doc.document.write(htmlText);
@@ -172,6 +184,58 @@
     function scoreLabel(value, reason) {
       if (value != null && value !== "") return Math.round(Number(value)) + "%";
       return reason || "Нет оценки";
+    }
+    function firstNumeric(values) {
+      for (var i = 0; i < values.length; i++) {
+        var value = values[i];
+        if (value == null || value === "") continue;
+        var num = Number(value);
+        if (!Number.isNaN(num)) return num;
+      }
+      return null;
+    }
+    function looksLikeOpaqueHash(value) {
+      var text = String(value == null ? "" : value).trim();
+      return /^(?:[a-f0-9]{32}|[a-f0-9]{40}|[a-f0-9]{64})$/i.test(text);
+    }
+    function isIcdCode(value) {
+      var text = String(value == null ? "" : value).trim();
+      return /^[A-Za-zА-Яа-я]\d{2}(?:\.\d{1,2})?$/.test(text);
+    }
+    function normalizeDiagnosis(row) {
+      var choices = [row.diagnosis_short, row.diagnosis, row.diagnosis_label, row.mkb_code_main, row.diagnosis_code];
+      for (var i = 0; i < choices.length; i++) {
+        var text = String(choices[i] == null ? "" : choices[i]).trim();
+        if (!text || looksLikeOpaqueHash(text)) continue;
+        if (i >= 3 && !isIcdCode(text)) continue;
+        return text;
+      }
+      return "Не указан";
+    }
+    function deriveCoverage(detail, record, axes) {
+      var value = firstNumeric([detail.coverage_pct, record.coverage_pct, record.coverage, record.deep_coverage_pct]);
+      if (value != null) return { value: value, estimated: false };
+      var axisKeys = ["documentation", "clinical_concordance", "safety", "regulatory"];
+      var present = 0;
+      axisKeys.forEach(function (key) {
+        if (axes[key] != null || record["axis_" + key] != null) present += 1;
+      });
+      if (present > 0) return { value: Math.round((100 * present / axisKeys.length) * 10) / 10, estimated: true };
+      if (String(record.parse_ok || "") === "1") return { value: 100, estimated: true };
+      return { value: null, estimated: false };
+    }
+    function deriveConfidence(detail, record, axes) {
+      var value = firstNumeric([detail.confidence_pct, record.confidence_pct, record.confidence, record.deep_confidence_pct]);
+      if (value != null) return { value: value, estimated: false };
+      var hasAxes = ["documentation", "clinical_concordance", "safety", "regulatory"].some(function (key) {
+        return axes[key] != null || record["axis_" + key] != null;
+      });
+      var parseOk = String(record.parse_ok || "") === "1";
+      var mismatch = String(record.date_mismatch || "0") === "1";
+      if (parseOk && mismatch) return { value: 75, estimated: true };
+      if (parseOk) return { value: 90, estimated: true };
+      if (hasAxes) return { value: 55, estimated: true };
+      return { value: null, estimated: false };
     }
     function bar(name, value, suffix) {
       var n = Math.max(0, Math.min(100, Number(value) || 0));
@@ -585,13 +649,15 @@
       var id = row.case_id || row.visit_id || row.id || "";
       var doctor = row.doctor_fio || row.doctor || "Врач не указан";
       var specialty = row.specialization || row.specialty || "";
-      var diagnosis = row.diagnosis_short || row.diagnosis || row.mkb_code_main || "Не указан";
-      var total = row.deep_overall_pct != null ? row.deep_overall_pct : (row.overall_pct != null ? row.overall_pct : row.l1_overall_pct);
-      var status = row.crm_status || ((row.crm || {}).status) || row.deep_status || row.status || (total < 60 ? "critical" : total < 75 ? "review" : "good");
+      var diagnosis = normalizeDiagnosis(row);
+      var total = firstNumeric([row.deep_overall_pct, row.overall_pct, row.l1_overall_pct]);
+      var fallbackStatus = total == null ? "review" : (total < 60 ? "critical" : total < 75 ? "review" : "good");
+      var status = row.crm_status || ((row.crm || {}).status) || row.deep_status || row.status || fallbackStatus;
       return { raw: row, id: id, date: row.date || row.visit_date || "", doctor: doctor, specialty: specialty,
         branch: row.filial || row.branch || "", diagnosis: diagnosis, total: total, status: status,
         kind: row.document_kind_label || row.kz_kind_label || row.kz_kind || "Не указан",
-        coverage: row.coverage_pct || row.coverage, confidence: row.confidence_pct || row.confidence };
+        coverage: firstNumeric([row.coverage_pct, row.coverage, row.deep_coverage_pct]),
+        confidence: firstNumeric([row.confidence_pct, row.confidence, row.deep_confidence_pct]) };
     }
     function statusLabel(value) {
       var map = { new:"Новый", assigned:"Назначен", in_review:"На разборе", confirmed_issue:"Подтверждено",
@@ -684,6 +750,8 @@
       var findings = data.findings || record.findings || [];
       var crm = data.crm || record.crm || {};
       var events = data.events || [];
+      var coverageInfo = deriveCoverage(data, record, axes);
+      var confidenceInfo = deriveConfidence(data, record, axes);
       var crmStatus = crm.status || "new";
       var statusOptions = [
         ["new","Новый"],["assigned","Назначен"],["in_review","На разборе"],
@@ -698,8 +766,8 @@
       $("drawer-body").innerHTML =
         '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
         kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
-        kpi("Полнота проверки", score(data.coverage_pct || item.coverage), "доступность исходных данных") +
-        kpi("Надёжность", score(data.confidence_pct || item.confidence), "устойчивость результата") + '</div>' +
+        kpi("Полнота проверки", score(coverageInfo.value), coverageInfo.estimated ? "оценка по доступным полям" : "доступность исходных данных") +
+        kpi("Надёжность", score(confidenceInfo.value), confidenceInfo.estimated ? "оценка по доступным полям" : "устойчивость результата") + '</div>' +
         '<div class="detail-block"><h3>Оси оценки</h3>' + ["documentation","clinical_concordance","safety","regulatory"].map(function (key) {
           var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика" };
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
@@ -735,12 +803,6 @@
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
-      $("drawer-body").querySelectorAll("[data-open-pdf]").forEach(function (button) {
-        button.addEventListener("click", function () {
-          openPdfWithToken(button.getAttribute("data-open-pdf"), button.getAttribute("data-open-name"))
-            .catch(function (error) { showError(error.message); });
-        });
-      });
     }
     async function postCaseChanges(caseIds, changes, comment) {
       var response = await request("/cases/bulk-action", "/cases/bulk-action", {
@@ -1531,7 +1593,7 @@
       for (var i = 0; i < ids.length; i++) {
         var caseId = ids[i];
         try {
-          await openPdfWithToken('/api/methodist/mo/cases/' + encodeURIComponent(caseId) + '/pdf', 'mo-' + caseId + '.pdf');
+          await openPdfWithToken('/api/methodist/mo/cases/' + encodeURIComponent(caseId) + '/pdf', { preferredName: 'mo-' + caseId + '.pdf' });
         } catch (error) {
           showError('Не удалось открыть PDF для ' + caseId + ': ' + error.message);
           break;
@@ -1675,7 +1737,13 @@
         if (!pdfButton) return;
         event.preventDefault();
         event.stopPropagation();
-        openPdfWithToken(pdfButton.getAttribute("data-open-pdf"), pdfButton.getAttribute("data-open-name"))
+        var popup = window.open("", "_blank");
+        if (!popup) {
+          showError("Разрешите всплывающие окна для открытия PDF.");
+          return;
+        }
+        popup.document.write("<p style='font-family:Segoe UI,sans-serif;padding:18px'>Загрузка PDF...</p>");
+        openPdfWithToken(pdfButton.getAttribute("data-open-pdf"), { preferredName: pdfButton.getAttribute("data-open-name"), targetWindow: popup })
           .catch(function (error) { showError(error.message); });
       });
 

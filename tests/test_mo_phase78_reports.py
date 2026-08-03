@@ -107,6 +107,7 @@ def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> Non
     doctor = _seed(db)
     monkeypatch.setenv("METHODIST_TOKEN", "test-token")
     monkeypatch.setenv("MO_ANALYTICS_DB", str(db))
+    monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path))
     monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
     headers = {"X-Methodist-Token": "test-token", "X-Methodist-Role": "methodist"}
     client = TestClient(rag_server.app)
@@ -120,9 +121,10 @@ def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> Non
     assert reports.status_code == 200
     items = reports.json()["items"]
     assert items
-    assert items[0]["date"] == "2026-08-01"
-    assert items[0]["evaluated"] == 8
-    assert items[0]["critical"] == 1
+    by_date = {item["date"]: item for item in items if item.get("date")}
+    assert "2026-08-01" in by_date
+    assert by_date["2026-08-01"]["evaluated"] == 8
+    assert by_date["2026-08-01"]["critical"] == 1
 
     doc = client.get("/api/methodist/mo/cases/91001/document", headers=headers)
     assert doc.status_code == 200
