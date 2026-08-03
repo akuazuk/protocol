@@ -18,7 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-08-03-ci-release-concurrency-v3.md](2026-08-03-ci-release-concurrency-v3.md) | CI baseline 0, обязательный lint и GitHub Actions concurrency для production release | active |
+| [2026-08-03-ci-release-concurrency-v3.md](2026-08-03-ci-release-concurrency-v3.md) | CI baseline 0, обязательный lint и GitHub Actions concurrency для production release | completed |
 | [2026-08-03-mo-filter-actions-ui-v1.md](2026-08-03-mo-filter-actions-ui-v1.md) | МО Аналитика: явный запуск поиска, подтверждение мультифильтров и раскрываемые панели | active |
 | [2026-08-03-multi-agent-release-guard-v2.md](2026-08-03-multi-agent-release-guard-v2.md) | Multi-agent release guard: только merged `origin/main` в Render, hard guards и branch protection | archived (преемник: ci-release-concurrency-v3) |
 | [2026-08-03-mo-rubric-mz-scoring-viz-v1.md](2026-08-03-mo-rubric-mz-scoring-viz-v1.md) | МО: рубрика МЗ «Как оценивать» (0/0.5/1), shadow scorer и визуализация в case detail | active |
