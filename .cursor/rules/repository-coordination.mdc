@@ -1,0 +1,25 @@
+---
+description: Обязательная координация нескольких агентов и компьютеров в одном Protocol repo и Render production.
+alwaysApply: true
+---
+
+# Общие правила репозитория и deploy
+
+До любой осмысленной работы полностью прочитай корневой `AGENTS.md` и следуй ему как
+каноническому источнику Git/PR/Render workflow.
+
+Обязательно:
+
+1. Выполни preflight из `AGENTS.md` и сравни HEAD с `origin/main`.
+2. Не работай в грязном или отстающем checkout и не исправляй его destructive-командами.
+3. Создай отдельные task-ветку и worktree от свежего `origin/main`.
+4. Не используй общую `codex/main-sync` для разработки и не push в `main` напрямую.
+5. Публикуй изменения task-веткой и PR; после merge ветку не переиспользуй.
+6. Перед release-значимым commit подними `BUILD_VERSION`.
+7. Deploy разрешён только одному release-координатору, только для точного merge SHA из
+   `origin/main`, с `/api/version`, health и feature-specific smoke-test.
+8. В конце оставь handoff по шаблону из `AGENTS.md`.
+
+Если локальное Cursor-правило конфликтует с `AGENTS.md`, применяется более безопасное
+правило из `AGENTS.md`.
+

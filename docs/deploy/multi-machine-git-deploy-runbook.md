@@ -1,7 +1,13 @@
 # Runbook: безопасная работа с двух компьютеров
 
 Дата: 2026-07-28
-Статус: active
+Статус: superseded
+
+> Этот документ сохранён как история. Для текущей работы обязательны
+> корневой `AGENTS.md` и
+> `docs/deploy/multi-agent-single-repo-render-runbook-v2.md`. Общая
+> `codex/main-sync` и прямой promote task-HEAD в `main` больше не являются
+> штатным workflow.
 
 Этот runbook фиксирует единый workflow для двух компьютеров, чтобы:
 - не ломать `main` в грязном состоянии;
