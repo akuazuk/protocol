@@ -82,6 +82,17 @@
           </div>
         </div>
         <div class="chips" id="filter-chips" aria-live="polite"></div>
+        <div class="analysis-rail" id="analysis-rail" aria-live="polite">
+          <div class="analysis-head">
+            <strong>Маршрут анализа</strong>
+            <div class="row-actions">
+              <button class="button secondary compact" id="analysis-back" type="button">Шаг назад</button>
+              <button class="button secondary compact" id="analysis-clear" type="button">Сбросить</button>
+            </div>
+          </div>
+          <div class="analysis-path" id="analysis-path">Переходите в графики и нажимайте на точки для drill-down.</div>
+          <p class="card-sub" id="analysis-note">Текущие фильтры применяются ко всем экранам и таблицам.</p>
+        </div>
       </header>
 
       <main id="main" class="content" tabindex="-1">
@@ -111,7 +122,7 @@
             <article class="card span-12"><h2>Четыре индекса</h2><p class="card-sub">Сравнение со вчерашним значением и средним того же дня недели за 8 недель</p><div class="kpis index-kpis" id="yesterday-index-cards"></div><div id="yesterday-index-chart"></div></article>
             <article class="card span-6"><h2>Топ замечаний</h2><p class="card-sub">Число затронутых случаев и приоритет; клик открывает список случаев</p><div id="yesterday-findings-chart"></div><div id="yesterday-findings-list"></div></article>
             <article class="card span-6"><h2>Врачи ниже ожидаемого</h2><p class="card-sub">Ожидаемое по специальности, дельта ниже -10 п.п., за день n не меньше 5</p><div id="yesterday-doctor-chart"></div><div id="yesterday-doctor-note"></div></article>
-            <article class="card span-12"><h2>P0/P1 случаи для работы</h2><p class="card-sub">Врач, филиал, диагноз, ссылка на МО/PDF и причина на одном экране</p><div class="table-wrap"><table><thead><tr><th>Приоритет</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>Действие / МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
+            <article class="card span-12"><h2>P0/P1 случаи для работы</h2><p class="card-sub">Врач, филиал, диагноз, ссылка на МО/PDF и причина на одном экране</p><div class="table-wrap sticky-first"><table><thead><tr><th>Приоритет</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>Действие / МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
             <article class="card span-7"><h2>Структура потока и изменения</h2><p class="card-sub">Специальности, филиалы и типы документов против предыдущего дня</p><label class="filter"><span>Разрез потока</span><select class="control" id="yesterday-flow-dimension"><option value="specialty">Специальности</option><option value="branch">Филиалы</option><option value="document_kind">Типы документов</option></select></label><div id="yesterday-flow-chart"></div><div id="yesterday-flow-note"></div></article>
             <article class="card span-5"><h2>Качество источника</h2><p class="card-sub">Распознавание, заполненность ключевых полей и расхождение дат</p><div id="yesterday-source-quality"></div></article>
           </div>
@@ -119,14 +130,14 @@
 
         <section class="page" id="page-queue" data-page="queue" hidden aria-labelledby="title-queue">
           <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Назначение ответственных, контроль срока и фиксация решения по каждому случаю.</p></div></div>
-          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
-          <div class="card"><div class="table-wrap"><table><thead><tr><th><span class="sr-only">Выбрать</span></th><th>Приоритет</th><th>Дата</th><th>Филиал</th><th>Врач / специальность</th><th>Диагноз</th><th>Итог</th><th>Причина</th><th>Ответственный</th><th>Срок</th><th>Статус</th><th>МО</th></tr></thead><tbody id="queue-rows"></tbody></table></div></div>
+          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button><button class="button secondary" id="queue-critical-only" type="button">Только критические</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
+          <div class="card"><div class="table-wrap sticky-first"><table><thead><tr><th><span class="sr-only">Выбрать</span></th><th>Приоритет</th><th>Дата</th><th>Филиал</th><th>Врач / специальность</th><th>Диагноз</th><th>Итог</th><th>Причина</th><th>Ответственный</th><th>Срок</th><th>Статус</th><th>МО</th></tr></thead><tbody id="queue-rows"></tbody></table></div></div>
         </section>
 
         <section class="page" id="page-documents" data-page="documents" hidden aria-labelledby="title-documents">
           <div class="page-head"><div><h1 id="title-documents">Все случаи</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
           <div class="section-actions"><button class="button secondary" id="columns-button" aria-pressed="false">Скрыть служебные колонки</button><label class="filter"><span>Сортировка</span><select class="control" id="sort-by"><option value="date">По дате</option><option value="overall">По баллу</option><option value="priority">По приоритету</option></select></label><label class="filter"><span>Порядок</span><select class="control" id="sort-dir"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select></label><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
-          <div class="card"><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Тип документа</th><th>Итог</th><th>Полнота</th><th>Надёжность</th><th>Статус</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
+          <div class="card"><div class="table-wrap sticky-first"><table><thead><tr><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Тип документа</th><th>Итог</th><th>Полнота</th><th>Надёжность</th><th>Статус</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
         </section>
 
         <section class="page" id="page-doctors" data-page="doctors" hidden aria-labelledby="title-doctors"><div class="page-head"><div><h1 id="title-doctors">Врачи</h1><p>Объём против дельты к ожидаемой оценке. Размер точки - число P0; рейтинг доступен только при n не меньше 20.</p></div></div><div class="grid"><article class="card span-9"><h2>Объём и дельта к ожидаемой</h2><p class="card-sub">Рамкой выделите врачей для группового действия; клик открывает кабинет врача</p><div id="doctor-scatter-chart"></div></article><article class="card span-3"><h2>Выбранные врачи</h2><div id="doctor-selection-flow" class="empty">Выделите точки рамкой. Действие не выполняется автоматически.</div></article></div><div class="card"><div class="table-wrap"><table><thead><tr><th>Врач</th><th>Специальность</th><th>n</th><th>Дельта</th><th>95% ДИ</th><th>P0</th></tr></thead><tbody id="doctor-rows"></tbody></table></div></div></section>
@@ -142,6 +153,7 @@
             <button class="button" data-action="export-aggregates">Создать сводку</button>
             <button class="button secondary" data-action="export">Экспорт данных</button>
             <button class="button secondary" id="print-report">Печать / PDF</button>
+            <button class="button secondary" id="open-briefing-html">Брифинг HTML</button>
             <button class="button secondary" data-go="yesterday">Открыть вчера</button>
           </div>
           <div class="kpis" id="report-kpis"></div>
@@ -166,7 +178,7 @@
               </div>
             </article>
             <article class="card span-12"><h2>Как определяется оценка</h2><p class="card-sub">Оси, пороги и правила приоритета клинического риска</p><div id="scoring-method"><div class="skeleton"></div></div></article>
-            <article class="card span-12"><h2>Расходы LLM</h2><p class="card-sub">Токены, стоимость и задержка каждого ночного прогона</p><div id="llm-costs"><div class="skeleton"></div></div></article>
+            <article class="card span-12"><h2>Расходы AI</h2><p class="card-sub">Токены, стоимость и задержка каждого ночного прогона</p><div id="llm-costs"><div class="skeleton"></div></div></article>
           </div>
         </section>
       </main>

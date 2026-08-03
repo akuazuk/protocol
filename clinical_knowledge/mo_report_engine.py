@@ -51,7 +51,7 @@ def render_day_briefing_html(
             score=_esc(item.get("score")),
             reason=_esc(item.get("reason")),
             link=_esc(f"{base_url.rstrip('/')}/methodist/mis-kz-quality.html#queue?case={item.get('visit_id') or item.get('mis_id')}"),
-            pdf=_esc(f"{base_url.rstrip('/')}/api/methodist/mo/cases/{item.get('visit_id') or item.get('mis_id')}/document"),
+            pdf=_esc(f"{base_url.rstrip('/')}/api/methodist/mo/cases/{item.get('visit_id') or item.get('mis_id')}/pdf"),
         )
         for item in queue
     ) or "<tr><td colspan='5'>Срочных случаев нет.</td></tr>"
@@ -100,7 +100,7 @@ def build_telegram_briefing(
         case_id = item.get("visit_id") or item.get("mis_id")
         lines.append(
             f"- {item.get('priority')}: {item.get('doctor_fio')} · {item.get('score')}% · "
-            f"{base_url.rstrip('/')}/api/methodist/mo/cases/{case_id}/document"
+            f"{base_url.rstrip('/')}/api/methodist/mo/cases/{case_id}/pdf"
         )
     if not queue:
         lines.append("Срочной очереди нет.")

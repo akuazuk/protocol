@@ -178,6 +178,50 @@ select[multiple].control { min-height: 72px; }
 }
 .chip button { border: 0; padding: 0; background: transparent; color: inherit; cursor: pointer; }
 
+.analysis-rail {
+  margin-top: 10px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-solid) 90%, white 10%);
+}
+.analysis-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+}
+.analysis-head strong {
+  font-size: 12px;
+  letter-spacing: .02em;
+  color: var(--muted);
+  text-transform: uppercase;
+}
+.analysis-path {
+  margin-top: 8px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  font-size: 12px;
+}
+.analysis-step {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 9px;
+  border-radius: 999px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  border: 1px solid color-mix(in srgb, var(--accent) 24%, transparent);
+}
+.analysis-step button {
+  border: 0;
+  background: transparent;
+  cursor: pointer;
+  color: inherit;
+  font-weight: 700;
+}
+
 .content { max-width: 1520px; margin: 0 auto; padding: 24px; }
 .page-head {
   display: flex; justify-content: space-between; gap: 18px; align-items: flex-start;
@@ -303,6 +347,20 @@ th {
 }
 tbody tr { cursor: pointer; transition: background .12s ease; }
 tbody tr:hover td, tbody tr:focus-within td { background: var(--accent-soft); }
+.sticky-first th:first-child,
+.sticky-first td:first-child {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  background: var(--surface-solid);
+  box-shadow: 1px 0 0 var(--line-soft);
+}
+.sticky-first tbody tr:hover td:first-child,
+.sticky-first tbody tr:focus-within td:first-child {
+  background: var(--accent-soft);
+}
+.table-wrap.compact-table th,
+.table-wrap.compact-table td { padding: 8px 10px; }
 #page-documents table.compact-columns th:nth-child(7),
 #page-documents table.compact-columns td:nth-child(7),
 #page-documents table.compact-columns th:nth-child(8),
@@ -344,6 +402,11 @@ tbody tr:hover td, tbody tr:focus-within td { background: var(--accent-soft); }
 #yesterday-index-chart, #yesterday-findings-chart, #yesterday-doctor-chart,
 #yesterday-flow-chart, #doctor-scatter-chart, #specialty-boxplot-chart,
 #icd-treemap-chart, #safety-severity-chart { min-height: 360px; }
+
+#month-trend-chart, #month-pareto-chart, #yesterday-findings-chart,
+#doctor-scatter-chart, #specialty-boxplot-chart, #safety-severity-chart {
+  min-height: 390px;
+}
 
 .finding-link {
   width: 100%; padding: 10px 6px; border: 0; border-bottom: 1px solid var(--line-soft);

@@ -168,7 +168,7 @@ def test_telegram_briefing_contains_links() -> None:
             ],
         }
     )
-    assert "91001/document" in text
+    assert "91001/pdf" in text
     assert "Критические: 1" in text
 
 

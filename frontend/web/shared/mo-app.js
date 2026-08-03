@@ -14,7 +14,8 @@
       page: "overview", period: "month", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "",
       sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
-      data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: ""
+      data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
+      drillTrail: [], drillSnapshot: null
     };
     var PAGE_TITLES = {
       overview: "Обзор МО", yesterday: "Отчёт за вчера", queue: "Очередь разбора",
@@ -228,6 +229,94 @@
         });
       });
     }
+    function selectionSnapshot() {
+      return {
+        period: state.period,
+        compare: state.compare,
+        dateFrom: state.dateFrom,
+        dateTo: state.dateTo,
+        search: state.search,
+        findingCode: state.findingCode,
+        selected: JSON.parse(JSON.stringify(state.selected || {}))
+      };
+    }
+    function restoreSelection(snapshot) {
+      if (!snapshot) return;
+      state.period = snapshot.period || state.period;
+      state.compare = snapshot.compare || state.compare;
+      state.dateFrom = snapshot.dateFrom || "";
+      state.dateTo = snapshot.dateTo || "";
+      state.search = snapshot.search || "";
+      state.findingCode = snapshot.findingCode || "";
+      state.selected = JSON.parse(JSON.stringify(snapshot.selected || state.selected));
+      $("period").value = state.period;
+      $("compare").value = state.compare;
+      $("date-from").value = state.dateFrom;
+      $("date-to").value = state.dateTo;
+      $("case-search").value = state.search;
+      $("date-from-wrap").hidden = state.period !== "custom";
+      $("date-to-wrap").hidden = state.period !== "custom";
+      document.querySelectorAll(".filter-pop").forEach(renderFilter);
+    }
+    function renderAnalysisRail() {
+      var path = $("analysis-path"), note = $("analysis-note");
+      if (!path || !note) return;
+      if (!state.drillTrail.length) {
+        path.innerHTML = "Переходите в графики и нажимайте на точки для drill-down.";
+        note.textContent = "Текущие фильтры применяются ко всем экранам и таблицам.";
+        return;
+      }
+      path.innerHTML = state.drillTrail.map(function (entry, index) {
+        return '<span class="analysis-step">' + esc(entry.label || ("Шаг " + (index + 1))) +
+          ' <button type="button" data-drill-index="' + index + '" aria-label="Открыть шаг">↗</button></span>';
+      }).join("");
+      note.textContent = "Страница: " + (PAGE_TITLES[state.page] || state.page) + " · шагов: " + state.drillTrail.length;
+      path.querySelectorAll("[data-drill-index]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var index = Number(button.getAttribute("data-drill-index"));
+          var entry = state.drillTrail[index];
+          if (!entry) return;
+          if (entry.apply) entry.apply();
+        });
+      });
+    }
+    function pushDrill(label, apply) {
+      if (!state.drillSnapshot) state.drillSnapshot = selectionSnapshot();
+      state.drillTrail.push({ label: label, apply: apply });
+      if (state.drillTrail.length > 14) state.drillTrail = state.drillTrail.slice(-14);
+      renderAnalysisRail();
+    }
+    function clearDrillTrail(restore) {
+      if (restore && state.drillSnapshot) restoreSelection(state.drillSnapshot);
+      state.drillTrail = [];
+      state.drillSnapshot = null;
+      renderAnalysisRail();
+    }
+    function applyDrill(options) {
+      options = options || {};
+      var action = function () {
+        if (options.findingCode !== undefined) state.findingCode = options.findingCode;
+        if (options.search !== undefined) state.search = options.search;
+        if (options.caseSearchValue !== undefined) $("case-search").value = options.caseSearchValue;
+        if (options.selected) {
+          Object.keys(options.selected).forEach(function (key) {
+            state.selected[key] = options.selected[key];
+          });
+        }
+        if (options.period) {
+          state.period = options.period;
+          $("period").value = state.period;
+          $("date-from-wrap").hidden = state.period !== "custom";
+          $("date-to-wrap").hidden = state.period !== "custom";
+        }
+        if (options.dateFrom !== undefined) { state.dateFrom = options.dateFrom; $("date-from").value = state.dateFrom; }
+        if (options.dateTo !== undefined) { state.dateTo = options.dateTo; $("date-to").value = state.dateTo; }
+        renderChips();
+        switchPage(options.page || state.page);
+      };
+      pushDrill(options.label || "drill-down", action);
+      action();
+    }
     function renderChips() {
       var html = [];
       Object.keys(state.selected).forEach(function (key) {
@@ -287,8 +376,13 @@
       $("date-to-wrap").hidden = state.period !== "custom";
     }
     function filtersChanged() {
+      if (state.drillTrail.length) {
+        state.drillTrail = [];
+        state.drillSnapshot = null;
+      }
       state.pageNo = 1;
       renderChips(); syncUrl(true); loadPage(state.page);
+      renderAnalysisRail();
     }
     function switchPage(page, push) {
       if (!PAGE_TITLES[page]) page = "overview";
@@ -300,6 +394,7 @@
       });
       document.title = PAGE_TITLES[page] + " | МО Аналитика";
       if (push !== false) syncUrl(false);
+      renderAnalysisRail();
       loadPage(page);
       $("main").focus({ preventScroll: true });
       window.scrollTo(0, 0);
@@ -346,7 +441,7 @@
         fallback:function (target) { target.innerHTML=items.map(function (item) { return bar(item.date,item.overall); }).join(""); } });
       if (chart) chart.on("click", function (params) {
         var day = items[params.dataIndex] && items[params.dataIndex].date;
-        if (day) { state.period="custom"; state.dateFrom=day; state.dateTo=day; switchPage("documents"); }
+        if (day) applyDrill({ label: "День " + day, period: "custom", dateFrom: day, dateTo: day, page: "documents" });
       });
     }
     function renderMonthHeatmap(data) {
@@ -362,7 +457,7 @@
       }, { label:"Тепловая карта специальностей и глав МКБ", description:"Цвет означает среднюю оценку, подпись число случаев.",
         fallback:function (target) { target.innerHTML=cells.slice(0,12).map(function (x) { return bar(x.row+" / "+x.col,x.avg_score,x.n); }).join(""); } });
       if (chart) chart.on("click", function (params) {
-        var cell=cells[params.dataIndex]; state.selected.specialties=[cell.row]; renderChips(); switchPage("documents");
+        var cell=cells[params.dataIndex]; applyDrill({ label: "Специальность " + cell.row, selected: { specialties: [cell.row] }, page: "documents" });
       });
     }
     function renderMonthDoctors(data) {
@@ -379,7 +474,7 @@
           data:items.map(function (x) { return x.delta; }),markLine:{ symbol:"none",data:[{ xAxis:0 }] } }]
         }, { label:"Рейтинг врачей по case-mix дельте",description:"Показаны врачи с достаточной выборкой и доверительным интервалом.",
           fallback:function (target) { target.innerHTML=items.map(function (x) { return notice(x.label,signed(x.delta)+", n="+x.n,"review"); }).join(""); } });
-        if (chart) chart.on("click",function (p) { state.selected.doctors=[items[p.dataIndex].label];renderChips();switchPage("documents"); });
+        if (chart) chart.on("click",function (p) { applyDrill({ label: "Врач " + items[p.dataIndex].label, selected: { doctors: [items[p.dataIndex].label] }, page: "documents" }); });
       }
       $("month-doctor-note").innerHTML='<p class="inline-note">'+esc(section.rule || "")+"</p>";
     }
@@ -394,7 +489,7 @@
           { type:"line",name:"Накопленная доля",smooth:true,showSymbol:false,yAxisIndex:1,data:items.map(function (x) { return x.cumulative_share_pct; }) }]
       }, { label:"Парето замечаний месяца",description:"Столбцы число затронутых случаев, линия накопленная доля.",
         fallback:function (target) { target.innerHTML=items.map(function (x) { return bar(x.finding_code,x.cumulative_share_pct,x.cases); }).join(""); } });
-      if (chart) chart.on("click",function (p) { navigateFinding(items[p.dataIndex].finding_code); });
+      if (chart) chart.on("click",function (p) { navigateFinding(items[p.dataIndex].finding_code, "Парето " + items[p.dataIndex].finding_code); });
     }
     function renderMonthFunnel(data) {
       var funnel=data.funnel || {}, stages=[
@@ -727,13 +822,16 @@
           target.innerHTML = available.map(function (item) { return bar(item.label, item.value); }).join("");
         }
       });
-      if (chart) chart.on("click", function () { switchPage("documents"); });
+      if (chart) chart.on("click", function () { applyDrill({ label: "Индексы за вчера", page: "documents" }); });
     }
-    function navigateFinding(code) {
-      state.findingCode = code || "";
-      state.search = "";
-      $("case-search").value = "";
-      switchPage("documents");
+    function navigateFinding(code, sourceLabel) {
+      applyDrill({
+        label: sourceLabel || ("Замечание " + (code || "")),
+        findingCode: code || "",
+        search: "",
+        caseSearchValue: "",
+        page: "documents"
+      });
     }
     function renderYesterdayFindings(data) {
       var items = ((data.top_findings || {}).items || []).slice(0, 12);
@@ -762,7 +860,7 @@
           target.innerHTML = items.map(function (item) { return bar(item.finding_code, Math.min(100, item.cases), item.cases); }).join("");
         }
       });
-      if (chart) chart.on("click", function (params) { navigateFinding(items[params.dataIndex].finding_code); });
+      if (chart) chart.on("click", function (params) { navigateFinding(items[params.dataIndex].finding_code, "Топ замечаний " + items[params.dataIndex].finding_code); });
       $("yesterday-findings-list").innerHTML = items.map(function (item) {
         return '<button class="finding-link" type="button" data-yesterday-finding="' + esc(item.finding_code) +
           '"><b>' + esc(item.severity) + "</b> " + esc(item.label) + " · " + esc(item.cases) + " случаев</button>";
@@ -796,7 +894,7 @@
       if (chart) chart.on("click", function (params) {
         var doctor = items[params.dataIndex].label;
         state.findingCode = "";
-        state.selected.doctors = [doctor]; renderChips(); switchPage("documents");
+        applyDrill({ label: "Врач " + doctor, selected: { doctors: [doctor] }, page: "documents" });
       });
       $("yesterday-doctor-note").innerHTML = '<p class="inline-note">' + esc(section.rule) + "</p>";
     }
@@ -846,7 +944,7 @@
       if (chart) chart.on("click", function (params) {
         var stateKey = dimension === "specialty" ? "specialties" : dimension === "branch" ? "branches" : "document_types";
         state.findingCode = "";
-        state.selected[stateKey] = [items[params.dataIndex].key]; renderChips(); switchPage("documents");
+        applyDrill({ label: "Поток " + items[params.dataIndex].key, selected: (function(){ var obj={}; obj[stateKey]=[items[params.dataIndex].key]; return obj; })(), page: "documents" });
       });
       $("yesterday-flow-note").innerHTML = items.slice(0, 4).map(function (item) {
         return notice(item.key, "Доля " + item.share_pct + "%, изменение " + signed(item.share_delta_pp), Math.abs(item.share_delta_pp || 0) >= 5 ? "review" : "good");
@@ -936,10 +1034,20 @@
         description:"Каждая точка - врач с выборкой не меньше двадцати записей. Размер означает число P0." });
       function openDoctor(key) { state.cabinetDoctorKey=key; switchPage("doctor-cabinet"); }
       $("doctor-rows").querySelectorAll("[data-open-doctor]").forEach(function (button) {
-        button.addEventListener("click",function () { openDoctor(button.getAttribute("data-open-doctor")); });
+        button.addEventListener("click",function () {
+          var key = button.getAttribute("data-open-doctor");
+          if (!key) return;
+          pushDrill("Кабинет врача", function () { openDoctor(key); });
+          openDoctor(key);
+        });
       });
       if (chart) {
-        chart.on("click",function (params) { if (plotted[params.dataIndex]) openDoctor(plotted[params.dataIndex].key); });
+        chart.on("click",function (params) {
+          if (!plotted[params.dataIndex]) return;
+          var key = plotted[params.dataIndex].key;
+          pushDrill("Кабинет врача", function () { openDoctor(key); });
+          openDoctor(key);
+        });
         chart.on("brushSelected",function (params) {
           var selected=[], batches=(params.batch && params.batch[0] && params.batch[0].selected) || [];
           batches.forEach(function (batch) { (batch.dataIndex || []).forEach(function (index) {
@@ -951,7 +1059,7 @@
             "Выделите точки рамкой. Действие не выполняется автоматически.";
           var action=$("open-selected-doctors");
           if (action) action.addEventListener("click",function () {
-            state.selected.doctors=selected.map(function (x) { return x.label; }); renderChips(); switchPage("documents");
+            applyDrill({ label: "Группа врачей", selected: { doctors: selected.map(function (x) { return x.label; }) }, page: "documents" });
           });
         });
       }
@@ -968,7 +1076,7 @@
       $("specialty-attention").innerHTML=items.length ? '<p class="card-sub">Показано групп: '+items.length+". Малые группы скрыты.</p>" : '<div class="empty">Нет групп выше порога публикации.</div>';
       if (chart) chart.on("click",function (params) {
         var item=items[params.dataIndex]; if (!item) return;
-        state.selected.specialties=[item.key]; renderChips(); switchPage("doctors");
+        applyDrill({ label: "Специальность " + item.key, selected: { specialties: [item.key] }, page: "doctors" });
       });
     }
     async function loadDiagnosesDimension() {
@@ -985,7 +1093,7 @@
       },{ label:"Дерево глав и кодов МКБ",description:"Площадь означает объём, цвет среднюю оценку." });
       if (chart) chart.on("click",function (params) {
         var drill=params.data && params.data.drilldown;
-        if (drill && drill.level === "diagnosis") { state.search=drill.id; $("case-search").value=drill.id; switchPage("documents"); }
+        if (drill && drill.level === "diagnosis") applyDrill({ label: "МКБ " + drill.id, search: drill.id, caseSearchValue: drill.id, page: "documents" });
       });
     }
     async function loadSafetyDimension() {
@@ -1144,17 +1252,13 @@
         button.addEventListener("click", function () {
           var day = button.getAttribute("data-report-date");
           if (!day) return;
-          state.period = "custom";
-          state.dateFrom = day;
-          state.dateTo = day;
-          $("period").value = "custom";
-          $("date-from").value = day;
-          $("date-to").value = day;
-          $("date-from-wrap").hidden = false;
-          $("date-to-wrap").hidden = false;
-          switchPage("yesterday");
+          applyDrill({ label: "Отчёт " + day, period: "custom", dateFrom: day, dateTo: day, page: "yesterday" });
         });
       });
+    }
+    function currentReportDay() {
+      if (state.period === "custom" && state.dateFrom) return state.dateFrom;
+      return minskDateKey(-1);
     }
     async function loadScoringMethod() {
       await ensureSummary();
@@ -1447,12 +1551,36 @@
         document.querySelectorAll(".filter-pop").forEach(renderFilter); filtersChanged();
       });
       $("save-view").addEventListener("click", saveView);
+      $("analysis-back").addEventListener("click", function () {
+        if (!state.drillTrail.length) return;
+        state.drillTrail.pop();
+        if (!state.drillTrail.length) {
+          clearDrillTrail(true);
+          filtersChanged();
+          return;
+        }
+        var last = state.drillTrail[state.drillTrail.length - 1];
+        renderAnalysisRail();
+        if (last && last.apply) last.apply();
+      });
+      $("analysis-clear").addEventListener("click", function () {
+        clearDrillTrail(true);
+        filtersChanged();
+      });
       $("bulk-assign").addEventListener("click", function () {
         var assignee = prompt("Ответственный");
         if (assignee) bulkChange({ status: "assigned", assignee: assignee });
       });
       $("bulk-status").addEventListener("click", function () {
         bulkChange({ status: $("bulk-status-value").value });
+      });
+      $("queue-critical-only").addEventListener("click", function () {
+        state.findingCode = "";
+        state.search = "";
+        state.selected.statuses = ["critical"];
+        $("case-search").value = "";
+        showToast("Применён фильтр: только критические");
+        filtersChanged();
       });
       $("yesterday-findings-list").addEventListener("click", function (event) {
         var button = event.target.closest("[data-yesterday-finding]");
@@ -1483,6 +1611,10 @@
         navigator.clipboard.writeText(location.href); $("announcer").textContent = "Ссылка скопирована";
       });
       $("print-report").addEventListener("click", function () { window.print(); });
+      $("open-briefing-html").addEventListener("click", function () {
+        var day = currentReportDay();
+        window.open("/api/methodist/mo/briefing?format=html&date=" + encodeURIComponent(day), "_blank", "noopener");
+      });
       $("theme-toggle").addEventListener("click", function () {
         var dark = this.getAttribute("aria-pressed") !== "true";
         try { localStorage.setItem(THEME_KEY, dark ? "dark" : "light"); } catch (error) {}
@@ -1594,6 +1726,7 @@
       readUrl(); applyPreferences(); bind();
       if ($("methodology")) $("methodology").value = state.methodology === "v3" ? "v3" : "v4";
       renderChips();
+      renderAnalysisRail();
       if (!token()) setAuth(true);
       else { setAuth(false); switchPage(state.page, false); }
     }
