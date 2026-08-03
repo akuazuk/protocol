@@ -30,7 +30,10 @@
 
 ---
 
-## 2. Что изменено в проде
+## 2. Что подготовлено в ветке (не в production)
+
+PR #5 остаётся draft. Production не менялся и показывает
+`2026-08-03-r13-multi-agent-runbook`.
 
 | Дата | Изменение | BUILD_VERSION |
 |------|-----------|---------------|
@@ -38,6 +41,8 @@
 | 2026-08-03 | Prior-visit dynamics + overview top-fail summary | `2026-08-03-r15-rubric-dynamics-summary` |
 | 2026-08-03 | Specialty weakness table in rubric summary | `2026-08-03-r16-rubric-specialty-fail` |
 | 2026-08-03 | Dual KPI + rubric criterion focus for queue | `2026-08-03-r17-rubric-queue-focus` |
+| 2026-08-03 | Русские названия замечаний и ссылки на МО | `2026-08-03-r18-finding-labels-ru` |
+| 2026-08-03 | Handoff и соблюдение нового Git workflow | `2026-08-03-r19-rubric-handoff-workflow` |
 
 ---
 
