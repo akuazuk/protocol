@@ -11,7 +11,7 @@
     var token = MO.api.token;
     var headers = MO.api.headers;
     var state = {
-      page: "overview", period: "month", compare: "previous", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "",
+      page: "overview", period: "month", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "",
       sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: ""
@@ -93,6 +93,7 @@
     function query() {
       var q = new URLSearchParams();
       q.set("period", state.period); q.set("compare_period", state.compare);
+      q.set("methodology", state.methodology);
       var today = minskDateKey(0);
       if (!state.selected.months.length) {
         if (state.period === "month") q.set("month", today.slice(0, 7));
@@ -1127,20 +1128,49 @@
     }
     async function loadScoringMethod() {
       await ensureSummary();
-      var response = await request("/scoring-method", "/scoring-info");
+      var responses = await Promise.all([
+        request("/scoring-method", "/scoring-info"),
+        request("/llm-costs?" + query(), "")
+      ]);
+      var response = responses[0];
       if (!response.ok) throw new Error("Не удалось загрузить методику оценки.");
       var data = await response.json();
       var axes = (data.axes || []).map(function (axis) {
-        return notice(axis.label || axis.key, axis.desc || "", "good");
+        var weight = axis.weight == null ? "" : " · вес " + Math.round(Number(axis.weight) * 100) + "%";
+        return notice((axis.label || axis.key) + weight, axis.desc || "", "good");
       }).join("");
       var gates = (data.risk_gate || []).map(function (rule) {
         return "<li>" + esc(rule) + "</li>";
       }).join("");
       $("scoring-method").innerHTML =
-        '<p><b>Итог:</b> ' + esc(data.overall_rule || "") + '</p><div class="grid"><div class="span-6">' +
+        '<p><b>Методика:</b> ' + esc(data.scorer_version || "") + ' · веса ' +
+        esc(data.weights_version || "") + '</p><p><b>Итог:</b> ' + esc(data.overall_rule || "") +
+        '</p><div class="grid"><div class="span-6">' +
         axes + '</div><div class="span-6"><h3>Правила клинического риска</h3><ol>' + gates +
         '</ol><p class="card-sub">Пороговые значения: хорошо ' + esc((data.thresholds || {}).good) +
         ', приемлемо ' + esc((data.thresholds || {}).acceptable) + '.</p></div></div>';
+      var costResponse = responses[1];
+      if (!costResponse.ok) {
+        $("llm-costs").innerHTML = '<div class="empty">Расходы пока недоступны.</div>';
+        return;
+      }
+      var costs = await costResponse.json();
+      var rows = (costs.items || []).map(function (item) {
+        return "<tr><td>" + esc(item.usage_date) + "</td><td>" + esc(item.tier) +
+          "</td><td>" + esc(item.model) + "</td><td>" + fmt(item.calls) +
+          "</td><td>" + fmt(item.prompt_tokens) + " / " + fmt(item.completion_tokens) +
+          "</td><td>$" + Number(item.cost_usd || 0).toFixed(4) + "</td><td>" +
+          fmt(item.avg_latency_ms) + " мс</td></tr>";
+      }).join("");
+      $("llm-costs").innerHTML =
+        '<div class="kpi-row"><div class="kpi"><span>Вызовы</span><b>' + fmt(costs.calls) +
+        '</b></div><div class="kpi"><span>Случаи</span><b>' + fmt(costs.cases) +
+        '</b></div><div class="kpi"><span>Итого</span><b>$' +
+        Number(costs.total_usd || 0).toFixed(4) + '</b></div><div class="kpi"><span>На случай</span><b>$' +
+        Number(costs.cost_per_case_usd || 0).toFixed(4) +
+        '</b></div></div><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Тир</th><th>Модель</th><th>Вызовы</th><th>Токены вход / выход</th><th>Стоимость</th><th>Задержка</th></tr></thead><tbody>' +
+        (rows || '<tr><td colspan="7">LLM-вызовов за период не было.</td></tr>') +
+        '</tbody></table></div>';
     }
     async function loadPage(page) {
       $("global-error").hidden = true;
@@ -1435,6 +1465,12 @@
         applyPreferences();
         showToast(this.value === "compact" ? "Компактная плотность включена" : "Комфортная плотность включена");
       });
+      $("methodology").addEventListener("change", function () {
+        state.methodology = this.value === "v3" ? "v3" : "v4";
+        state.data = {};
+        showToast("Выбрана методика " + state.methodology);
+        loadPage(state.page);
+      });
       $("admin-token-save").addEventListener("click", function () {
         var value = $("admin-token-input").value.trim();
         if (!value) {
@@ -1525,7 +1561,9 @@
       renderSavedViews(); refreshSavedViews();
     }
     async function init() {
-      readUrl(); applyPreferences(); bind(); renderChips();
+      readUrl(); applyPreferences(); bind();
+      if ($("methodology")) $("methodology").value = state.methodology === "v3" ? "v3" : "v4";
+      renderChips();
       if (!token()) setAuth(true);
       else { setAuth(false); switchPage(state.page, false); }
     }

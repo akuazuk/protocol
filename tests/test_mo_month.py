@@ -61,7 +61,9 @@ def _seed_month(path: Path) -> None:
                 if global_index < 20:
                     code = "DOC_GAP" if global_index < 12 else "PLAN_GAP"
                     conn.execute(
-                        "INSERT INTO fact_mo_finding VALUES (?,?,?,?,?,?)",
+                        """INSERT INTO fact_mo_finding
+                           (mis_id,finding_code,severity,passed,evidence,source_ref)
+                           VALUES (?,?,?,?,?,?)""",
                         (mis_id, code, "P1", 0, "private patient evidence", "private source"),
                     )
                 if global_index < 5:

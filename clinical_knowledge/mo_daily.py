@@ -678,16 +678,19 @@ def build_daily_report(
 
 
 def case_overall_pct(case: Mapping[str, Any]) -> float | None:
-    """Единая шкала витрины - deep-балл: он же даёт оси и замечания.
+    """Единая шкала витрины - primary v4, затем детерминированный deep fallback.
 
-    Порядок важен. Ежедневный прогон кладёт в верхний `overall_pct` формальный
-    L1-балл (~71 в среднем), а месячные `--deep-only` файлы оставляют его пустым.
-    Если читать верхнее поле первым, история и свежие дни оказываются на разных
-    шкалах и тренд ломается на стыке.
+    `overall_pct_v3` хранится отдельно для окна сравнения методик и никогда не
+    подменяет primary score после успешного v4.
     """
+    evaluation_v4 = (
+        case.get("evaluation_v4") if isinstance(case.get("evaluation_v4"), Mapping) else {}
+    )
+    v4_primary = bool((evaluation_v4.get("mode") or {}).get("primary"))
     for value in (
+        evaluation_v4.get("score_pct") if v4_primary else None,
         (case.get("deep") or {}).get("overall_pct") if isinstance(case.get("deep"), Mapping) else None,
-        (case.get("evaluation_v3") or {}).get("overall_pct")
+        (case.get("evaluation_v3") or {}).get("score_pct")
         if isinstance(case.get("evaluation_v3"), Mapping)
         else None,
         case.get("overall_pct"),
@@ -700,8 +703,14 @@ def case_overall_pct(case: Mapping[str, Any]) -> float | None:
 
 
 def case_status(case: Mapping[str, Any]) -> str:
-    """Статус берём из того же источника, что и балл: сначала deep."""
+    """Статус берём из того же источника, что и балл."""
+    evaluation_v4 = (
+        case.get("evaluation_v4") if isinstance(case.get("evaluation_v4"), Mapping) else {}
+    )
     for value in (
+        evaluation_v4.get("status")
+        if (evaluation_v4.get("mode") or {}).get("primary")
+        else None,
         (case.get("deep") or {}).get("status") if isinstance(case.get("deep"), Mapping) else None,
         case.get("status"),
     ):
@@ -714,10 +723,19 @@ def case_status(case: Mapping[str, Any]) -> str:
 def _axes_summary(cases: Sequence[Mapping[str, Any]]) -> dict[str, float | None]:
     values: dict[str, list[float]] = defaultdict(list)
     for case in cases:
-        deep = case.get("deep")
-        if not isinstance(deep, Mapping):
+        candidate = (
+            case.get("evaluation_v4")
+            if isinstance(case.get("evaluation_v4"), Mapping)
+            else {}
+        )
+        evaluation = (
+            candidate
+            if (candidate.get("mode") or {}).get("primary")
+            else case.get("deep")
+        )
+        if not isinstance(evaluation, Mapping):
             continue
-        for axis, raw in (deep.get("axes") or {}).items():
+        for axis, raw in (evaluation.get("axes") or {}).items():
             score = _safe_number(raw)
             if score is not None:
                 values[str(axis)].append(score)
@@ -1034,14 +1052,18 @@ def initialize_warehouse(path: Path) -> None:
             PRAGMA journal_mode=WAL;
             CREATE TABLE IF NOT EXISTS fact_mo_case (
               mis_id TEXT PRIMARY KEY, visit_id TEXT, visit_date TEXT NOT NULL,
-              document_kind TEXT NOT NULL, overall_pct REAL, status TEXT,
+              document_kind TEXT NOT NULL, overall_pct REAL, overall_pct_v3 REAL,
+              status TEXT, scorer_version TEXT, score_schema_version TEXT,
+              llm_cost_usd REAL DEFAULT 0,
               doctor_key TEXT, specialty TEXT, filial TEXT,
               diagnosis_code TEXT, icd_chapter TEXT,
               content_hash TEXT NOT NULL, updated_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS fact_mo_finding (
               mis_id TEXT NOT NULL, finding_code TEXT NOT NULL, severity TEXT,
-              passed INTEGER, evidence TEXT, source_ref TEXT,
+              passed INTEGER, evidence TEXT, source_ref TEXT, axis TEXT,
+              title_ru TEXT, detail_ru TEXT, trust_level TEXT,
+              penalty_applied INTEGER DEFAULT 0, needs_human INTEGER DEFAULT 0,
               PRIMARY KEY (mis_id, finding_code)
             );
             CREATE TABLE IF NOT EXISTS fact_mo_score_axis (
@@ -1065,6 +1087,23 @@ def initialize_warehouse(path: Path) -> None:
               threshold REAL NOT NULL, provenance_json TEXT NOT NULL,
               detected_at TEXT NOT NULL
             );
+            CREATE TABLE IF NOT EXISTS fact_mo_visit (
+              visit_id TEXT PRIMARY KEY, visit_date TEXT NOT NULL,
+              records INTEGER NOT NULL, scored_records INTEGER NOT NULL,
+              overall_pct REAL, worst_severity TEXT, scorer_version TEXT,
+              updated_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS fact_llm_usage (
+              usage_id TEXT PRIMARY KEY, run_id TEXT, usage_date TEXT NOT NULL,
+              tier TEXT, model TEXT, case_id TEXT, prompt_tokens INTEGER,
+              completion_tokens INTEGER, cost_usd REAL, latency_ms INTEGER,
+              status TEXT, retry_count INTEGER DEFAULT 0, created_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS dim_finding (
+              finding_code TEXT PRIMARY KEY, title_ru TEXT NOT NULL,
+              why_important_ru TEXT NOT NULL, source_ref TEXT,
+              axis TEXT, default_severity TEXT, updated_at TEXT NOT NULL
+            );
             CREATE TABLE IF NOT EXISTS dim_date (date_key TEXT PRIMARY KEY, year INTEGER, month INTEGER, weekday INTEGER);
             CREATE TABLE IF NOT EXISTS dim_doctor (doctor_key TEXT PRIMARY KEY, doctor_fio TEXT, specialty TEXT, filial TEXT);
             CREATE TABLE IF NOT EXISTS dim_specialty (specialty TEXT PRIMARY KEY);
@@ -1085,6 +1124,9 @@ def initialize_warehouse(path: Path) -> None:
             CREATE INDEX IF NOT EXISTS idx_doctor_daily_date ON fact_mo_doctor_daily(visit_date);
             CREATE INDEX IF NOT EXISTS idx_template_pair_doctor
               ON fact_mo_template_pair(doctor_key, detected_at);
+            CREATE INDEX IF NOT EXISTS idx_visit_date ON fact_mo_visit(visit_date);
+            CREATE INDEX IF NOT EXISTS idx_llm_usage_date ON fact_llm_usage(usage_date, tier);
+            CREATE INDEX IF NOT EXISTS idx_llm_usage_case ON fact_llm_usage(case_id);
             CREATE INDEX IF NOT EXISTS idx_daily_date_quality ON fact_mo_daily(visit_date, quality_status);
             """
         )
@@ -1108,7 +1150,26 @@ def initialize_warehouse(path: Path) -> None:
         _ensure_columns(
             db,
             "fact_mo_case",
-            {"diagnosis_code": "TEXT", "icd_chapter": "TEXT"},
+            {
+                "diagnosis_code": "TEXT",
+                "icd_chapter": "TEXT",
+                "overall_pct_v3": "REAL",
+                "scorer_version": "TEXT",
+                "score_schema_version": "TEXT",
+                "llm_cost_usd": "REAL DEFAULT 0",
+            },
+        )
+        _ensure_columns(
+            db,
+            "fact_mo_finding",
+            {
+                "axis": "TEXT",
+                "title_ru": "TEXT",
+                "detail_ru": "TEXT",
+                "trust_level": "TEXT",
+                "penalty_applied": "INTEGER DEFAULT 0",
+                "needs_human": "INTEGER DEFAULT 0",
+            },
         )
         _ensure_columns(db, "dim_diagnosis", {"chapter": "TEXT"})
         _ensure_columns(db, "dim_service", {"service_group": "TEXT"})
@@ -1126,7 +1187,7 @@ def initialize_warehouse(path: Path) -> None:
         )
         # saved_view и export_job наполняет только кабинет: системные пресеты живут в UI,
         # иначе они попадают в личный список методиста.
-        db.execute("PRAGMA user_version=1")
+        db.execute("PRAGMA user_version=2")
 
 
 def day_status(report: Mapping[str, Any]) -> str:
@@ -1253,6 +1314,7 @@ def upsert_warehouse(
     eligible_scores: list[float] = []
     eligible_case_ids: set[str] = set()
     eligible_critical_ids: set[str] = set()
+    eligible_attention_ids: set[str] = set()
     eligible_axis_scores: dict[str, list[float]] = defaultdict(list)
     with sqlite3.connect(path) as db:
         seen_ids: list[str] = []
@@ -1268,6 +1330,24 @@ def upsert_warehouse(
             filial = str(raw.get("filial") or "")
             visit_date = str(raw.get("visit_date") or "")[:10] or day_key
             score = case_overall_pct(case)
+            evaluation_v4 = (
+                case.get("evaluation_v4")
+                if isinstance(case.get("evaluation_v4"), Mapping)
+                else {}
+            )
+            deep_case = case.get("deep") if isinstance(case.get("deep"), Mapping) else {}
+            previous_score = _safe_number(case.get("overall_pct_v3"))
+            if previous_score is None:
+                previous_score = _safe_number(deep_case.get("overall_pct"))
+            scorer_version = str(
+                evaluation_v4.get("scorer_version")
+                or case.get("scorer_version")
+                or ("deep-v2-fallback" if deep_case else "")
+            )
+            if not scorer_version:
+                scorer_version = "not-applicable-v4"
+            score_schema_version = str(evaluation_v4.get("schema_version") or "")
+            llm_cost = _safe_number(case.get("llm_cost_usd")) or 0.0
             diagnosis_codes = _split_multi(raw.get("mkb_codes")) or _split_multi(
                 raw.get("mkb_code_main")
             )
@@ -1281,24 +1361,37 @@ def upsert_warehouse(
                 selected_case_id = str(case.get("mis_id") or "")
                 if selected_case_id:
                     eligible_case_ids.add(selected_case_id)
-                deep_case = case.get("deep") if isinstance(case.get("deep"), Mapping) else {}
+                finding_source = evaluation_v4 or deep_case
                 if any(
                     str(finding.get("severity") or "") == "P0"
-                    for finding in deep_case.get("findings") or []
+                    for finding in finding_source.get("findings") or []
                     if isinstance(finding, Mapping)
                 ):
                     eligible_critical_ids.add(selected_case_id or mis_id)
+                if evaluation_v4.get("attention_required") or any(
+                    not finding.get("passed")
+                    and str(finding.get("severity") or "") in {"P0", "P1"}
+                    for finding in finding_source.get("findings") or []
+                    if isinstance(finding, Mapping)
+                ):
+                    eligible_attention_ids.add(selected_case_id or mis_id)
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             db.execute(
                 """INSERT INTO fact_mo_case
-                   (mis_id, visit_id, visit_date, document_kind, overall_pct, status,
+                   (mis_id, visit_id, visit_date, document_kind, overall_pct,
+                    overall_pct_v3, status, scorer_version, score_schema_version,
+                    llm_cost_usd,
                     doctor_key, specialty, filial, diagnosis_code, icd_chapter,
                     content_hash, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(mis_id) DO UPDATE SET
                    visit_id=excluded.visit_id, visit_date=excluded.visit_date,
                    document_kind=excluded.document_kind, overall_pct=excluded.overall_pct,
-                   status=excluded.status, doctor_key=excluded.doctor_key,
+                   overall_pct_v3=excluded.overall_pct_v3,
+                   status=excluded.status, scorer_version=excluded.scorer_version,
+                   score_schema_version=excluded.score_schema_version,
+                   llm_cost_usd=excluded.llm_cost_usd,
+                   doctor_key=excluded.doctor_key,
                    specialty=excluded.specialty, filial=excluded.filial,
                    diagnosis_code=excluded.diagnosis_code,
                    icd_chapter=excluded.icd_chapter,
@@ -1309,7 +1402,11 @@ def upsert_warehouse(
                     visit_date,
                     str(raw.get("document_kind") or "unknown"),
                     score,
+                    previous_score,
                     case_status(case),
+                    scorer_version,
+                    score_schema_version,
+                    llm_cost,
                     doctor_key,
                     specialty,
                     filial,
@@ -1335,12 +1432,15 @@ def upsert_warehouse(
                             "filial": filial,
                             "cases": 0,
                             "scores": [],
+                            "attention": 0,
                             "critical": 0,
                         },
                     )
                     bucket["cases"] += 1
                     if score is not None:
                         bucket["scores"].append(score)
+                    if (str(case.get("mis_id") or "") or mis_id) in eligible_attention_ids:
+                        bucket["attention"] += 1
             if specialty:
                 db.execute("INSERT OR IGNORE INTO dim_specialty VALUES (?)", (specialty,))
                 written["dim_specialty"] += 1
@@ -1391,7 +1491,12 @@ def upsert_warehouse(
             mis_id = str(case.get("mis_id") or "")
             if not mis_id:
                 continue
-            deep = case.get("deep") if isinstance(case.get("deep"), Mapping) else {}
+            deep = (
+                case.get("evaluation_v4")
+                if isinstance(case.get("evaluation_v4"), Mapping)
+                else case.get("deep")
+            )
+            deep = deep if isinstance(deep, Mapping) else {}
             db.execute("DELETE FROM fact_mo_finding WHERE mis_id = ?", (mis_id,))
             db.execute("DELETE FROM fact_mo_score_axis WHERE mis_id = ?", (mis_id,))
             for axis, value in (deep.get("axes") or {}).items():
@@ -1413,8 +1518,10 @@ def upsert_warehouse(
                     continue
                 db.execute(
                     """INSERT OR REPLACE INTO fact_mo_finding
-                       (mis_id, finding_code, severity, passed, evidence, source_ref)
-                       VALUES (?, ?, ?, ?, ?, ?)""",
+                       (mis_id, finding_code, severity, passed, evidence, source_ref,
+                        axis, title_ru, detail_ru, trust_level, penalty_applied,
+                        needs_human)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (
                         mis_id,
                         code,
@@ -1422,11 +1529,50 @@ def upsert_warehouse(
                         1 if finding.get("passed") else 0,
                         str(finding.get("evidence") or "")[:2000],
                         str(finding.get("source_ref") or ""),
+                        str(finding.get("axis") or ""),
+                        str(finding.get("title_ru") or code),
+                        str(finding.get("detail_ru") or ""),
+                        str(finding.get("trust_level") or "D"),
+                        1 if finding.get("penalty_applied") else 0,
+                        1 if finding.get("needs_human") else 0,
                     ),
                 )
+                title = str(finding.get("title_ru") or code)
+                detail = str(finding.get("detail_ru") or "").strip()
+                why = detail or f"Замечание «{title}» влияет на полноту и безопасность медицинской записи."
+                db.execute(
+                    """INSERT INTO dim_finding
+                       (finding_code,title_ru,why_important_ru,source_ref,axis,
+                        default_severity,updated_at)
+                       VALUES (?,?,?,?,?,?,?)
+                       ON CONFLICT(finding_code) DO UPDATE SET
+                       title_ru=excluded.title_ru,
+                       why_important_ru=excluded.why_important_ru,
+                       source_ref=excluded.source_ref,axis=excluded.axis,
+                       default_severity=excluded.default_severity,
+                       updated_at=excluded.updated_at""",
+                    (
+                        code,
+                        title,
+                        why,
+                        str(finding.get("source_ref") or ""),
+                        str(finding.get("axis") or ""),
+                        str(finding.get("severity") or ""),
+                        now,
+                    ),
+                )
+                written["dim_finding"] += 1
                 written["fact_mo_finding"] += 1
             severity = deep.get("n_by_severity") or {}
             severe = sum(int(severity.get(level) or 0) for level in ("P0", "P1"))
+            if not severity:
+                severe = sum(
+                    1
+                    for finding in deep.get("findings") or []
+                    if isinstance(finding, Mapping)
+                    and not finding.get("passed")
+                    and str(finding.get("severity") or "") in {"P0", "P1"}
+                )
             bucket = doctor_daily.get(doctor_key_for(case.get("doctor_fio")))
             if bucket is not None and severe:
                 bucket["critical"] += 1
@@ -1482,6 +1628,74 @@ def upsert_warehouse(
                     ),
                 )
                 written["fact_mo_finding"] += 1
+                db.execute(
+                    """INSERT OR IGNORE INTO dim_finding
+                       (finding_code,title_ru,why_important_ru,source_ref,axis,
+                        default_severity,updated_at)
+                       VALUES ('E_template_copy','Высокая шаблонность записи',
+                        'Требует проверки, что индивидуальные данные пациента отражены полностью.',
+                        'advisory:exact_jaccard_5_shingles_v1','documentation','P2',?)""",
+                    (now,),
+                )
+
+        db.execute(
+            """INSERT OR IGNORE INTO dim_finding
+               (finding_code,title_ru,why_important_ru,source_ref,axis,
+                default_severity,updated_at)
+               SELECT finding_code,
+                      COALESCE(MAX(NULLIF(title_ru,'')),finding_code),
+                      'Замечание требует проверки полноты, согласованности или безопасности медицинской записи.',
+                      COALESCE(MAX(source_ref),''),
+                      COALESCE(MAX(axis),''),
+                      COALESCE(MAX(severity),''),
+                      ?
+               FROM fact_mo_finding GROUP BY finding_code""",
+            (now,),
+        )
+
+        if day_key:
+            db.execute("DELETE FROM fact_mo_visit WHERE visit_date = ?", (day_key,))
+            db.execute(
+                """INSERT OR REPLACE INTO fact_mo_visit
+                   (visit_id,visit_date,records,scored_records,overall_pct,
+                    worst_severity,scorer_version,updated_at)
+                   SELECT c.visit_id,c.visit_date,c.records,c.scored_records,
+                          c.overall_pct,
+                          CASE
+                            WHEN COALESCE(f.p0,0)>0 THEN 'P0'
+                            WHEN COALESCE(f.p1,0)>0 THEN 'P1'
+                            WHEN COALESCE(f.p2,0)>0 THEN 'P2'
+                            WHEN COALESCE(f.p3,0)>0 THEN 'P3'
+                            ELSE 'ok'
+                          END,
+                          c.scorer_version,?
+                   FROM (
+                     SELECT visit_id,visit_date,COUNT(*) records,
+                            COUNT(overall_pct) scored_records,
+                            ROUND(AVG(overall_pct),2) overall_pct,
+                            MAX(scorer_version) scorer_version
+                     FROM fact_mo_case
+                     WHERE visit_date=? AND visit_id<>''
+                     GROUP BY visit_id,visit_date
+                   ) c
+                   LEFT JOIN (
+                     SELECT fc.visit_id,
+                            SUM(CASE WHEN f.severity='P0' AND f.passed=0 THEN 1 ELSE 0 END) p0,
+                            SUM(CASE WHEN f.severity='P1' AND f.passed=0 THEN 1 ELSE 0 END) p1,
+                            SUM(CASE WHEN f.severity='P2' AND f.passed=0 THEN 1 ELSE 0 END) p2,
+                            SUM(CASE WHEN f.severity='P3' AND f.passed=0 THEN 1 ELSE 0 END) p3
+                     FROM fact_mo_case fc
+                     JOIN fact_mo_finding f ON f.mis_id=fc.mis_id
+                     WHERE fc.visit_date=?
+                     GROUP BY fc.visit_id
+                   ) f ON f.visit_id=c.visit_id""",
+                (now, day_key, day_key),
+            )
+            written["fact_mo_visit"] = int(
+                db.execute(
+                    "SELECT COUNT(*) FROM fact_mo_visit WHERE visit_date=?", (day_key,)
+                ).fetchone()[0]
+            )
 
         if day_key:
             db.execute("DELETE FROM fact_mo_doctor_daily WHERE visit_date = ?", (day_key,))
@@ -1497,7 +1711,7 @@ def upsert_warehouse(
                         bucket["cases"],
                         len(scores),
                         round(statistics.fmean(scores), 1) if scores else None,
-                        sum(1 for score in scores if score < 70),
+                        bucket["attention"],
                         bucket["critical"],
                         now,
                     ),
@@ -1511,7 +1725,7 @@ def upsert_warehouse(
         avg_score = (
             round(statistics.fmean(eligible_scores), 1) if eligible_scores else None
         )
-        needs_attention = sum(1 for score in eligible_scores if score < 70)
+        needs_attention = len(eligible_attention_ids)
         daily_axes = {
             axis: round(statistics.fmean(values), 1)
             for axis, values in eligible_axis_scores.items()

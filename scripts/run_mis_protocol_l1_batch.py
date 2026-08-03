@@ -473,6 +473,15 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
     for row in rows:
         kind = kz_kind_of(row)
         document_kind = str(row.get("document_kind") or "").strip()
+        if not document_kind or document_kind.lower() == "nan":
+            try:
+                from clinical_knowledge.mo_daily import classify_document_kind
+
+                document_kind, _reason = classify_document_kind(row)
+                row["document_kind"] = document_kind
+                row["mo_score_eligible"] = document_kind in {"medical_exam", "consultation"}
+            except Exception:  # noqa: BLE001
+                document_kind = ""
         by_kind[kind] += 1
         # Битая ::-строка (обрезана - слотов меньше схемы) в оценку не идёт: parse_ok=='0'.
         # Это не «плохой КЗ», а некорректно выгруженная строка. При отсутствии столбца
@@ -1380,6 +1389,33 @@ def main() -> int:
                             case["evaluation_v3"] = v3.to_public_dict()
                     except Exception as e:  # noqa: BLE001
                         case["evaluation_v3_error"] = str(e)[:200]
+                    # V4 is the single primary score. Deep remains the deterministic
+                    # fallback and v3 is retained for the 30-day comparison window.
+                    try:
+                        from clinical_knowledge.kz_evaluation_v4 import evaluate_kz_v4
+
+                        v4 = evaluate_kz_v4(
+                            deep_case,
+                            protocol_ctx=proto,
+                            drug_ctx=load_drug_ctx(),
+                            legacy={
+                                "deep_overall_pct": deep.get("overall_pct"),
+                                "deep_status": deep.get("overall_status"),
+                                "l1_overall_pct": case.get("overall_pct"),
+                                "v3_score_pct": (
+                                    case.get("evaluation_v3") or {}
+                                ).get("score_pct"),
+                            },
+                        )
+                        case["evaluation_v4"] = v4.to_public_dict()
+                        case["overall_pct_v3"] = deep.get("overall_pct")
+                        case["scorer_version"] = v4.scorer_version
+                        if v4.mode.primary:
+                            case["overall_pct"] = v4.score_pct
+                            case["status"] = v4.status
+                    except Exception as e:  # noqa: BLE001
+                        case["evaluation_v4_error"] = str(e)[:200]
+                        case["scorer_version"] = "deep-v2-fallback"
                 except Exception as e:  # noqa: BLE001
                     case["deep_error"] = str(e)[:200]
             return case

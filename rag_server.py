@@ -8462,8 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r4-mo-ui-charts-fix"
-
+BUILD_VERSION = "2026-08-03-r5-mo-scorer-v4-shadow"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11135,6 +11134,7 @@ def api_methodist_mo_month_report(
     doctors: str = Query("", max_length=5000),
     document_kinds: str = Query("", max_length=500),
     statuses: str = Query("", max_length=500),
+    methodology: str = Query("v4", pattern="^(v3|v4)$"),
 ) -> dict:
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_month_report
@@ -11160,6 +11160,7 @@ def api_methodist_mo_summary(
     doctors: str = Query("", max_length=5000),
     document_kinds: str = Query("", max_length=500),
     statuses: str = Query("", max_length=500),
+    methodology: str = Query("v4", pattern="^(v3|v4)$"),
 ) -> dict:
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_summary
@@ -11168,6 +11169,38 @@ def api_methodist_mo_summary(
         return build_summary(_mo_params(**locals()))
     except (ValueError, RuntimeError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/llm-costs")
+def api_methodist_mo_llm_costs(
+    request: "Request",
+    response: "Response",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_llm_costs
+
+    response.headers["Cache-Control"] = "private, no-store"
+    return build_llm_costs(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/methodology")
+def api_methodist_mo_methodology(
+    request: "Request",
+    response: "Response",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_methodology_status
+
+    response.headers["Cache-Control"] = "private, no-store"
+    return build_methodology_status(_mo_params(**locals()))
 
 
 @app.get("/api/methodist/mo/timeseries")
@@ -11186,6 +11219,7 @@ def api_methodist_mo_timeseries(
     doctors: str = Query("", max_length=5000),
     document_kinds: str = Query("", max_length=500),
     statuses: str = Query("", max_length=500),
+    methodology: str = Query("v4", pattern="^(v3|v4)$"),
 ) -> dict:
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_timeseries

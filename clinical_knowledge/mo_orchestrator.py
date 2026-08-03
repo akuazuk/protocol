@@ -454,8 +454,46 @@ class MoDailyPipeline:
             batch_command[batch_command.index("--csv") + 1] = str(daily_csv)
             run_with_retry(self.runner, batch_command, attempts=2, base_delay_seconds=10)
 
-            state.stage(day, "reporting", merge=merge_info)
             cases_path = secure_dir / f"kz_l1_{day.isoformat()}_cases.jsonl"
+            queue_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_queue.json"
+            grades_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
+            llm_enabled = os.environ.get("MO_LLM_NIGHT_ENABLED", "1").strip().lower() not in {
+                "0", "false", "no", "off",
+            }
+            llm_available = bool(
+                os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
+            )
+            if llm_enabled and llm_available and queue_path.is_file():
+                state.stage(day, "llm_review", queue=str(queue_path))
+                llm_command = (
+                    os.environ.get("PYTHON", os.sys.executable),
+                    str(self.paths.project_root / "scripts" / "grade_kz_llm.py"),
+                    "--cases", str(cases_path),
+                    "--queue", str(queue_path),
+                    "--out", str(grades_path),
+                    "--warehouse", str(self.paths.warehouse),
+                    "--run-id", run_id,
+                    "--escalate",
+                    "--resume",
+                    "--bulk-model", os.environ.get("MO_LLM_BULK_MODEL", "gemini-3.6-flash"),
+                    "--judge-model", os.environ.get(
+                        "MO_LLM_JUDGE_MODEL", "gemini-3.1-pro-preview"
+                    ),
+                )
+                try:
+                    run_with_retry(
+                        self.runner, llm_command, attempts=2, base_delay_seconds=20
+                    )
+                except RuntimeError as exc:
+                    # LLM is advisory: retain the queue and finish deterministic scoring.
+                    self._emit(
+                        day,
+                        "warning",
+                        code="llm_queue_deferred",
+                        message=str(exc)[:300],
+                    )
+
+            state.stage(day, "reporting", merge=merge_info)
             cases = load_jsonl(cases_path)
             raw_rows = frame.to_dict(orient="records")
             revision = state.revision(day, content_hash)
@@ -654,16 +692,31 @@ class MoDailyPipeline:
             payload = json.loads(path.read_text(encoding="utf-8"))
         except (OSError, json.JSONDecodeError):
             return 0
+        queued: set[str] = set()
         if isinstance(payload, list):
-            return len(payload)
+            queued = {str(item.get("visit_id") if isinstance(item, Mapping) else item) for item in payload}
         if isinstance(payload, Mapping):
-            for key in ("pending", "queue", "items", "cases"):
+            for key in ("pending", "queue", "items", "cases", "visit_ids"):
                 value = payload.get(key)
                 if isinstance(value, list):
-                    return len(value)
+                    queued = {
+                        str(item.get("visit_id") if isinstance(item, Mapping) else item)
+                        for item in value
+                    }
+                    break
                 if isinstance(value, int):
                     return value
-        return 0
+            if not queued and isinstance(payload.get("n"), int):
+                return int(payload["n"])
+        if not queued:
+            return 0
+        graded_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
+        graded = {
+            str(row.get("visit_id") or "")
+            for row in load_jsonl(graded_path)
+            if not row.get("_error")
+        }
+        return len(queued - graded)
 
     def _same_weekday_counts(self, day: date) -> list[int]:
         counts = []

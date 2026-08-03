@@ -1,0 +1,22 @@
+schema_version: "4.0"
+scorer_version: "v4.0.0"
+weights_version: "2026-07-30.1"
+axis_weights:
+  documentation: 0.25
+  clinical_concordance: 0.35
+  safety: 0.30
+  regulatory: 0.10
+attention:
+  severities: [P0, P1]
+  include_low_evidence: true
+  minimum_coverage: 0.50
+  minimum_confidence: 0.50
+risk_caps:
+  P0: 40.0
+  P1: 60.0
+case_mix:
+  minimum_group_n: 20
+  minimum_r_squared: 0.30
+trust:
+  penalty_levels: [A, B]
+  advisory_levels: [C, D]

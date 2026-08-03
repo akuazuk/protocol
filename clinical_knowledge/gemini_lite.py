@@ -51,8 +51,8 @@ def get_lite_gemini_model():
     return genai.GenerativeModel(name, safety_settings=safety)
 
 
-def generate_lite_json(model, full_prompt: str, *, timeout: float | None = None) -> str:
-    """JSON-mode generate с таймаутом (без rag_server)."""
+def generate_lite_json_response(model, full_prompt: str, *, timeout: float | None = None):
+    """JSON-mode response with usage metadata and a hard timeout."""
     if timeout is None:
         timeout = float(os.environ.get("GEMINI_CALL_TIMEOUT", "240"))
     with warnings.catch_warnings():
@@ -76,4 +76,9 @@ def generate_lite_json(model, full_prompt: str, *, timeout: float | None = None)
             resp = fut.result(timeout=timeout)
         except FuturesTimeout as e:
             raise TimeoutError(f"Gemini timeout {timeout}s") from e
-    return _extract_text(resp)
+    return resp
+
+
+def generate_lite_json(model, full_prompt: str, *, timeout: float | None = None) -> str:
+    """JSON text compatibility wrapper for callers that do not need usage."""
+    return _extract_text(generate_lite_json_response(model, full_prompt, timeout=timeout))

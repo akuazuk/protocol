@@ -37,6 +37,7 @@ def _months(first: str, last: str) -> list[str]:
 
 def _load_cases(month: str, data_root: Path) -> list[dict[str, Any]]:
     candidates = [
+        data_root / "ml" / "reports" / "v4" / f"kz_l1_{month}_cases.jsonl",
         data_root / "ml" / "reports" / "deep_eval" / f"kz_l1_{month}_cases.jsonl",
         data_root / "mis_protocol" / f"kz_l1_{month}_cases.jsonl",
     ]
@@ -62,7 +63,9 @@ def backfill_month(
     data_root: Path | None = None,
 ) -> dict[str, Any]:
     data_root = data_root or ROOT / "data"
-    csv_path = data_root / "mis_protocol" / f"mis_protocol_{month}.csv"
+    csv_path = data_root / "ml" / "reports" / "v4" / f"mis_protocol_{month}_complete.csv"
+    if not csv_path.is_file():
+        csv_path = data_root / "mis_protocol" / f"mis_protocol_{month}.csv"
     if not csv_path.is_file():
         return {"month": month, "status": "missing_csv", "rows": 0}
     frame = add_document_taxonomy(pd.read_csv(csv_path, low_memory=False))
@@ -147,6 +150,24 @@ def propagate_visit_scores(warehouse: Path) -> int:
                        FROM fact_mo_case AS source
                        WHERE source.visit_id = target.visit_id
                          AND source.overall_pct IS NOT NULL
+                   )),
+                   overall_pct_v3 = COALESCE(target.overall_pct_v3, (
+                       SELECT MIN(source.overall_pct_v3)
+                       FROM fact_mo_case AS source
+                       WHERE source.visit_id = target.visit_id
+                         AND source.overall_pct IS NOT NULL
+                   )),
+                   scorer_version = COALESCE(NULLIF(target.scorer_version, ''), (
+                       SELECT MIN(NULLIF(source.scorer_version, ''))
+                       FROM fact_mo_case AS source
+                       WHERE source.visit_id = target.visit_id
+                         AND source.overall_pct IS NOT NULL
+                   )),
+                   score_schema_version = COALESCE(NULLIF(target.score_schema_version, ''), (
+                       SELECT MIN(NULLIF(source.score_schema_version, ''))
+                       FROM fact_mo_case AS source
+                       WHERE source.visit_id = target.visit_id
+                         AND source.overall_pct IS NOT NULL
                    ))
                WHERE target.overall_pct IS NULL
                  AND target.document_kind IN ('medical_exam', 'consultation')
@@ -190,7 +211,11 @@ def refresh_daily_case_aggregates(warehouse: Path) -> int:
                      SELECT COUNT(*) FROM fact_mo_case c
                      WHERE c.visit_date=fact_mo_daily.visit_date
                        AND c.document_kind IN ('medical_exam','consultation')
-                       AND c.overall_pct < 70
+                       AND EXISTS (
+                         SELECT 1 FROM fact_mo_finding f
+                         WHERE f.mis_id=c.mis_id AND f.passed=0
+                           AND f.severity IN ('P0','P1')
+                       )
                    ),
                    coverage_pct = (
                      SELECT CASE WHEN COUNT(*)=0 THEN NULL

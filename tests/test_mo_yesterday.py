@@ -76,7 +76,9 @@ def _seed_yesterday(path: Path, report_root: Path) -> None:
             )
             if index < 6:
                 conn.execute(
-                    "INSERT INTO fact_mo_finding VALUES (?,?,?,?,?,?)",
+                    """INSERT INTO fact_mo_finding
+                       (mis_id,finding_code,severity,passed,evidence,source_ref)
+                       VALUES (?,?,?,?,?,?)""",
                     (mis_id, "C_red_flag", "P1", 0, "private evidence", "private source"),
                 )
         for index in range(10):
@@ -202,8 +204,8 @@ def test_yesterday_contract_combines_bounded_warehouse_and_report(monkeypatch, t
     assert payload["top_findings"]["items"][0]["cases"] == 6
     assert len(payload["action_cases"]["items"]) == 6
     assert all(item["reason"] and item["case_id"] for item in payload["action_cases"]["items"])
-    assert payload["doctor_outliers"]["items"][0]["n"] == 6
-    assert payload["doctor_outliers"]["items"][0]["delta"] == -20.0
+    assert payload["doctor_outliers"]["available"] is False
+    assert payload["doctor_outliers"]["items"] == []
     assert payload["flow_changes"]["dimensions"]["branch"]
     assert payload["source_quality"]["available"] is True
     drilldown = mo_backend.build_cases(

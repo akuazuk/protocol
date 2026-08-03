@@ -1328,27 +1328,39 @@ def _resolve_request_period(params: dict[str, Any]):
 
 
 def _sql_summary(period: DateRange, params: dict[str, Any] | None = None) -> dict[str, Any]:
-    where, values = _sql_case_filter(period, params or {})
+    params = params or {}
+    where, values = _sql_case_filter(period, params)
+    score_expr = (
+        "COALESCE(c.overall_pct_v3,c.overall_pct)"
+        if str(params.get("methodology") or "").lower() == "v3"
+        else "c.overall_pct"
+    )
     with closing(_read_connection()) as conn:
         row = conn.execute(
-            """SELECT COUNT(*) AS source_records,
+            f"""SELECT COUNT(*) AS source_records,
                       SUM(document_kind IN ('medical_exam','consultation')) AS eligible,
                       SUM(document_kind IN ('medical_exam','consultation')
-                          AND overall_pct IS NOT NULL) AS evaluated,
+                          AND {score_expr} IS NOT NULL) AS evaluated,
                       AVG(CASE WHEN document_kind IN ('medical_exam','consultation')
-                          THEN overall_pct END) AS avg_score,
-                      SUM(document_kind IN ('medical_exam','consultation')
-                          AND overall_pct < 70) AS needs_attention
+                          THEN {score_expr} END) AS avg_score
                FROM fact_mo_case c
-               WHERE """ + where,
+               WHERE {where}""",
             values,
         ).fetchone()
+        attention = conn.execute(
+            """SELECT COUNT(DISTINCT c.mis_id)
+               FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
+               WHERE """ + where + """
+                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND f.passed=0 AND f.severity IN ('P0','P1')""",
+            values,
+        ).fetchone()[0]
         critical = conn.execute(
             """SELECT COUNT(DISTINCT c.mis_id)
                FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                WHERE """ + where + """
                  AND c.document_kind IN ('medical_exam','consultation')
-                 AND f.severity='P0'""",
+                 AND f.passed=0 AND f.severity='P0'""",
             values,
         ).fetchone()[0]
         axes = {
@@ -1366,7 +1378,7 @@ def _sql_summary(period: DateRange, params: dict[str, Any] | None = None) -> dic
     result = dict(row)
     evaluated = int(result.get("evaluated") or 0)
     eligible = int(result.get("eligible") or 0)
-    attention = int(result.get("needs_attention") or 0)
+    attention = int(attention or 0)
     return {
         "source_records": int(result.get("source_records") or 0),
         "eligible": eligible,
@@ -1396,7 +1408,11 @@ def _fallback_summary(period: DateRange, params: dict[str, Any] | None = None) -
         if isinstance(row.get("overall_pct"), (int, float))
     ]
     eligible = len(eligible_rows)
-    attention = sum(score < 70 for score in scores)
+    attention = sum(
+        1
+        for row in eligible_rows
+        if int(row.get("p0") or 0) > 0 or int(row.get("p1") or 0) > 0
+    )
     return {
         "source_records": len(rows),
         "eligible": eligible,
@@ -1733,6 +1749,11 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
     case_filters = any(
         _values(params.get(key))
         for key in ("specializations", "filials", "doctors", "document_kinds", "statuses")
+    ) or str(params.get("methodology") or "").lower() == "v3"
+    score_expr = (
+        "COALESCE(c.overall_pct_v3,c.overall_pct)"
+        if str(params.get("methodology") or "").lower() == "v3"
+        else "c.overall_pct"
     )
     bucket = "c.visit_date" if granularity == "day" else "strftime('%Y-W%W', c.visit_date)"
     with closing(_read_connection()) as conn:
@@ -1743,11 +1764,11 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
                 for row in conn.execute(
                     f"""SELECT {bucket} AS date, COUNT(*) AS volume,
                                SUM(c.document_kind IN ('medical_exam','consultation')
-                                   AND c.overall_pct IS NOT NULL) AS evaluated,
+                                   AND {score_expr} IS NOT NULL) AS evaluated,
                                ROUND(AVG(CASE WHEN c.document_kind IN ('medical_exam','consultation')
-                                   THEN c.overall_pct END), 2) AS overall,
+                                   THEN {score_expr} END), 2) AS overall,
                                ROUND(SUM(c.document_kind IN ('medical_exam','consultation')
-                                   AND c.overall_pct IS NOT NULL) * 100.0 /
+                                   AND {score_expr} IS NOT NULL) * 100.0 /
                                    NULLIF(SUM(c.document_kind IN ('medical_exam','consultation')), 0), 2)
                                    AS coverage,
                                0 AS critical
@@ -1839,7 +1860,7 @@ def _doctor_breakdown(
     with closing(_read_connection()) as conn:
         rows = conn.execute(
             """SELECT c.doctor_key, COALESCE(d.doctor_fio, c.doctor_key) doctor,
-                      c.specialty, c.overall_pct
+                      c.specialty, c.icd_chapter, c.overall_pct
                FROM fact_mo_case c LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
                WHERE """ + where + """ AND c.doctor_key <> ''
                  AND c.document_kind IN ('medical_exam','consultation')
@@ -1847,16 +1868,48 @@ def _doctor_breakdown(
             values,
         ).fetchall()
     specialty_scores: dict[str, list[float]] = {}
-    doctors: dict[tuple[str, str, str], list[float]] = {}
+    case_mix_scores: dict[tuple[str, str], list[float]] = {}
+    doctors: dict[tuple[str, str, str], list[tuple[float, str]]] = {}
     for row in rows:
         specialty = str(row["specialty"] or "Не указано")
         score = float(row["overall_pct"])
         specialty_scores.setdefault(specialty, []).append(score)
-        doctors.setdefault((str(row["doctor_key"]), str(row["doctor"]), specialty), []).append(score)
+        chapter = str(row["icd_chapter"] or "Не указано")
+        case_mix_scores.setdefault((specialty, chapter), []).append(score)
+        doctors.setdefault(
+            (str(row["doctor_key"]), str(row["doctor"]), specialty), []
+        ).append((score, chapter))
+    overall_mean = statistics.fmean(float(row["overall_pct"]) for row in rows) if rows else 0.0
+    predictions = []
+    actual = []
+    for row in rows:
+        specialty = str(row["specialty"] or "Не указано")
+        chapter = str(row["icd_chapter"] or "Не указано")
+        group = case_mix_scores[(specialty, chapter)]
+        predicted = (
+            statistics.fmean(group)
+            if len(group) >= 20
+            else statistics.fmean(specialty_scores[specialty])
+        )
+        predictions.append(predicted)
+        actual.append(float(row["overall_pct"]))
+    denominator = sum((value - overall_mean) ** 2 for value in actual)
+    model_r_squared = (
+        1.0 - sum((value - predicted) ** 2 for value, predicted in zip(actual, predictions)) / denominator
+        if denominator
+        else 0.0
+    )
+    model_valid = model_r_squared >= 0.30
     output = []
-    for (doctor_key, doctor, specialty), scores in doctors.items():
+    for (doctor_key, doctor, specialty), observations in doctors.items():
+        scores = [score for score, _chapter in observations]
         n = len(scores)
-        expected = statistics.fmean(specialty_scores[specialty])
+        expected = statistics.fmean(
+            statistics.fmean(case_mix_scores[(specialty, chapter)])
+            if len(case_mix_scores[(specialty, chapter)]) >= 20
+            else statistics.fmean(specialty_scores[specialty])
+            for _score, chapter in observations
+        )
         interval = mean_confidence_interval(scores)
         row = {
             "key": doctor_key,
@@ -1871,7 +1924,13 @@ def _doctor_breakdown(
                 "low": round(float(interval["low"]) - expected, 2) if interval["low"] is not None else None,
                 "high": round(float(interval["high"]) - expected, 2) if interval["high"] is not None else None,
             },
-            "enough_data": n >= sample_threshold,
+            "enough_data": n >= sample_threshold and model_valid,
+            "case_mix_model": {
+                "features": ["specialty", "icd_chapter"],
+                "r_squared": round(model_r_squared, 4),
+                "valid": model_valid,
+                "minimum_r_squared": 0.30,
+            },
         }
         output.append(
             suppress_values(
@@ -1911,7 +1970,11 @@ def build_breakdown(params: dict[str, Any]) -> dict[str, Any]:
             raw = conn.execute(
                 f"""SELECT {key_sql} AS key, {label_sql} AS label, COUNT(*) AS n,
                            AVG(c.overall_pct) AS avg_score,
-                           SUM(c.overall_pct < 70) AS needs_attention
+                           SUM(EXISTS(
+                             SELECT 1 FROM fact_mo_finding af
+                             WHERE af.mis_id=c.mis_id AND af.passed=0
+                               AND af.severity IN ('P0','P1')
+                           )) AS needs_attention
                     FROM fact_mo_case c {joins}
                     WHERE {where}
                       AND c.document_kind IN ('medical_exam','consultation')
@@ -2816,6 +2879,114 @@ def get_export(*, actor: str, job_id: str) -> Path:
     if row["status"] != "ready" or not path.is_file():
         raise FileNotFoundError("export_not_ready")
     return path
+
+
+def build_llm_costs(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    with closing(_read_connection()) as conn:
+        table_exists = conn.execute(
+            "SELECT 1 FROM sqlite_master WHERE type='table' AND name='fact_llm_usage'"
+        ).fetchone()
+        if not table_exists:
+            return {
+                "ok": True,
+                "available": False,
+                "reason": "Учёт расходов появится после первого LLM-прогона v4",
+                "periods": resolved.to_dict(),
+                "total_usd": 0.0,
+                "calls": 0,
+                "items": [],
+            }
+        date_values = (
+            resolved.current.date_from.isoformat(),
+            resolved.current.date_to.isoformat(),
+        )
+        rows = conn.execute(
+            """SELECT usage_date,tier,model,COUNT(*) calls,
+                      SUM(prompt_tokens) prompt_tokens,
+                      SUM(completion_tokens) completion_tokens,
+                      ROUND(SUM(cost_usd),6) cost_usd,
+                      ROUND(AVG(latency_ms),1) avg_latency_ms,
+                      SUM(status NOT LIKE 'ok%') failed
+               FROM fact_llm_usage
+               WHERE usage_date BETWEEN ? AND ?
+               GROUP BY usage_date,tier,model
+               ORDER BY usage_date,tier,model""",
+            date_values,
+        ).fetchall()
+        totals = conn.execute(
+            """SELECT COUNT(*) calls,ROUND(COALESCE(SUM(cost_usd),0),6) total_usd,
+                      COUNT(DISTINCT case_id) cases
+               FROM fact_llm_usage WHERE usage_date BETWEEN ? AND ?""",
+            date_values,
+        ).fetchone()
+    cases = int(totals["cases"] or 0)
+    total = float(totals["total_usd"] or 0)
+    return {
+        "ok": True,
+        "available": True,
+        "periods": resolved.to_dict(),
+        "currency": "USD",
+        "pricing_source": "https://ai.google.dev/gemini-api/docs/pricing",
+        "calls": int(totals["calls"] or 0),
+        "cases": cases,
+        "total_usd": total,
+        "cost_per_case_usd": round(total / cases, 6) if cases else None,
+        "items": [dict(row) for row in rows],
+    }
+
+
+def build_methodology_status(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    where, values = _sql_case_filter(resolved.current, params)
+    with closing(_read_connection()) as conn:
+        versions = [
+            {"scorer_version": str(row[0] or "legacy"), "n": int(row[1])}
+            for row in conn.execute(
+                "SELECT scorer_version,COUNT(*) FROM fact_mo_case c WHERE "
+                + where
+                + " GROUP BY scorer_version ORDER BY COUNT(*) DESC",
+                values,
+            )
+        ]
+        visits = conn.execute(
+            """SELECT COUNT(*) visits,COALESCE(SUM(records),0) records,
+                      COALESCE(SUM(scored_records),0) scored_records
+               FROM fact_mo_visit WHERE visit_date BETWEEN ? AND ?""",
+            (resolved.current.date_from.isoformat(), resolved.current.date_to.isoformat()),
+        ).fetchone()
+        explanation = conn.execute(
+            """SELECT COUNT(DISTINCT f.finding_code) shown,
+                      COUNT(DISTINCT d.finding_code) explained
+               FROM fact_mo_finding f
+               LEFT JOIN dim_finding d ON d.finding_code=f.finding_code
+               JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               WHERE """
+            + where,
+            values,
+        ).fetchone()
+    shown = int(explanation["shown"] or 0)
+    explained = int(explanation["explained"] or 0)
+    return {
+        "ok": True,
+        "periods": resolved.to_dict(),
+        "primary_scorer": "v4.0.0",
+        "weights": {
+            "documentation": 0.25,
+            "clinical_concordance": 0.35,
+            "safety": 0.30,
+            "regulatory": 0.10,
+        },
+        "versions": versions,
+        "visit_denominators": dict(visits),
+        "finding_explanations": {
+            "shown": shown,
+            "explained": explained,
+            "coverage_pct": round(100 * explained / shown, 2) if shown else 100.0,
+        },
+        "attention_rule": "P0/P1 или низкая доказательность; порог общего балла не используется",
+        "trust_rule": "Штраф и risk-cap применяются только к правилам trust A/B",
+    }
 
 
 def compatibility_metadata() -> dict[str, Any]:

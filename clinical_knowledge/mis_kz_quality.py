@@ -1054,30 +1054,37 @@ def build_scoring_info() -> dict[str, Any]:
     Используется дашбордом (вкладка «Как считается скор») - методист видит, из чего
     складывается overall и почему выставлен статус.
     """
-    cfg = {}
     try:
-        from .kz_deep_eval import load_deep_config
+        from .kz_evaluation_v4 import load_v4_config
 
-        cfg = load_deep_config()
+        cfg = load_v4_config()
     except Exception:  # noqa: BLE001
-        cfg = {"t_good": 80.0, "t_acc": 60.0, "min_axis_review": None}
-    t_good = cfg.get("t_good", 80.0)
-    t_acc = cfg.get("t_acc", 60.0)
-    min_axis = cfg.get("min_axis_review")
+        cfg = {
+            "scorer_version": "v4.0.0",
+            "weights_version": "2026-07-30.1",
+            "axis_weights": {
+                "documentation": 0.25, "clinical_concordance": 0.35,
+                "safety": 0.30, "regulatory": 0.10,
+            },
+        }
+    weights = cfg["axis_weights"]
+    t_good = 80.0
+    t_acc = 60.0
     return {
         "ok": True,
         "overall_rule": (
-            "Overall = среднее доступных осей (оси без данных не штрафуются - объективность). "
-            "Затем применяется risk-gate: критичные находки ограничивают итог независимо от среднего."
+            "Оценка v4 выводится из подтверждённых дефектов по четырём независимым индексам. "
+            "Вес: оформление 25%, клиническая согласованность 35%, безопасность 30%, "
+            "регуляторика 10%. Недоверенные правила остаются advisory и не штрафуют."
         ),
         "axes": [
-            {"key": "documentation", "label": "Оформление (A)",
+            {"key": "documentation", "label": "Оформление (A)", "weight": weights["documentation"],
              "desc": "Полнота КЗ: жалобы, анамнез, объективный статус, диагноз, рекомендации по обследованию и лечению, наблюдение."},
-            {"key": "clinical_concordance", "label": "Согласованность (B)",
+            {"key": "clinical_concordance", "label": "Согласованность (B)", "weight": weights["clinical_concordance"],
              "desc": "Диагноз опирается на жалобы/анамнез/статус; валидность и совпадение кода МКБ; покрытие обязательных обследований и диагностических критериев протокола МЗ; лечение соответствует протоколу."},
-            {"key": "safety", "label": "Безопасность (C)",
+            {"key": "safety", "label": "Безопасность (C)", "weight": weights["safety"],
              "desc": "Red flags без маршрутизации, дубли НПВС, лекарственные взаимодействия (DDInter), препараты высокого риска без дозы/мониторинга (ISMP), STOPP/Beers у пожилых."},
-            {"key": "regulatory", "label": "Регуляторика (D)",
+            {"key": "regulatory", "label": "Регуляторика (D)", "weight": weights["regulatory"],
              "desc": "Соответствие требованиям Пост. №55 (обязательные реквизиты и разделы КЗ)."},
         ],
         "severity": [
@@ -1087,19 +1094,21 @@ def build_scoring_info() -> dict[str, Any]:
             {"key": "P3", "label": "Формальное", "desc": "Незначительное замечание."},
         ],
         "risk_gate": [
-            "Есть находка P0 → overall ≤ 40, статус «критично».",
-            "Есть находка P1 → overall ≤ 60, статус «на разбор» (или «плохо» при <50).",
-            (f"Любая ось ниже {int(min_axis)} → статус не выше «на разбор» "
-             "(сильная ось не маскирует провал другой)." if min_axis is not None
-             else "Правило min-axis отключено."),
+            "Подтверждённая находка P0 trust A/B → overall ≤ 40, статус «критично».",
+            "Подтверждённая находка P1 trust A/B → overall ≤ 60, статус «на разбор».",
+            "P0/P1 trust C/D не штрафуют: создают advisory и очередь методисту.",
             f"Иначе overall ≥ {int(t_good)} → «хорошо»; ≥ {int(t_acc)} → «приемлемо»; ниже → «на разбор».",
         ],
-        "thresholds": {"good": t_good, "acceptable": t_acc, "min_axis_review": min_axis},
+        "thresholds": {"good": t_good, "acceptable": t_acc},
+        "scorer_version": cfg["scorer_version"],
+        "weights_version": cfg["weights_version"],
+        "primary": False,
+        "validation_status": "Ожидает двойной экспертной разметки 300 случаев",
         "status_labels": {
             "good": "хорошо", "acceptable": "приемлемо", "review": "на разбор",
             "poor": "плохо", "critical": "критично", "insufficient_data": "мало данных",
         },
-        "source": "config/deep_thresholds.yaml (Э4-калибровка на LLM-прокси); движок clinical_knowledge/kz_deep_eval.py",
+        "source": "config/mo_scorer_v4.yaml; движок clinical_knowledge/kz_evaluation_v4.py",
     }
 
 

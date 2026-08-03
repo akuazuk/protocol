@@ -23,6 +23,7 @@ import argparse
 import json
 import re
 import sys
+import time
 from pathlib import Path
 from typing import Any
 
@@ -173,6 +174,31 @@ def _build_model(model_name: str):
     return genai.GenerativeModel(name), name
 
 
+def _generate_with_fallback(model_name: str, prompt: str):
+    import os
+
+    from clinical_knowledge.gemini_lite import generate_lite_json_response
+
+    configured = [
+        value.strip()
+        for value in os.environ.get(
+            "MO_LLM_MODEL_FALLBACKS", "gemini-3.6-flash,gemini-2.5-flash"
+        ).split(",")
+        if value.strip()
+    ]
+    candidates = list(dict.fromkeys([model_name, *configured]))
+    errors: list[str] = []
+    for candidate in candidates:
+        try:
+            model, resolved = _build_model(candidate)
+            started = time.perf_counter()
+            response = generate_lite_json_response(model, prompt)
+            return response, resolved, int((time.perf_counter() - started) * 1000)
+        except Exception as exc:  # noqa: BLE001
+            errors.append(f"{candidate}:{str(exc)[:120]}")
+    raise RuntimeError("all_llm_models_failed:" + " | ".join(errors))
+
+
 def grade_kz_llm(
     case: dict,
     protocol_ctx: Any = None,
@@ -184,14 +210,24 @@ def grade_kz_llm(
     protocol_name: str = "",
 ) -> dict:
     """Оценить КЗ грейдером. Возвращает parsed JSON + метаданные тира/эскалации."""
-    from clinical_knowledge.gemini_lite import generate_lite_json
+    from clinical_knowledge.gemini_lite import _extract_text
+    from clinical_knowledge.mo_llm_usage import response_usage
 
     checklist = _checklist_from_protocol(protocol_ctx)
     prompt = build_grader_prompt(case, checklist, protocol_name=protocol_name)
 
-    model, bulk_resolved = _build_model(bulk_model)
-    raw = generate_lite_json(model, prompt)
+    response, bulk_resolved, bulk_latency = _generate_with_fallback(bulk_model, prompt)
+    raw = _extract_text(response)
     parsed = parse_grader_response(raw)
+    prompt_tokens, completion_tokens = response_usage(response)
+    calls = [{
+        "tier": "bulk",
+        "model": bulk_resolved,
+        "prompt_tokens": prompt_tokens,
+        "completion_tokens": completion_tokens,
+        "latency_ms": bulk_latency,
+        "status": "parse_error" if parsed.get("_parse_error") else "ok",
+    }]
     tier = "bulk"
     model_used = bulk_resolved
     esc_reason = ""
@@ -199,9 +235,20 @@ def grade_kz_llm(
     if escalate:
         do_esc, esc_reason = _should_escalate(parsed, deterministic)
         if do_esc:
-            jmodel, judge_resolved = _build_model(judge_model)
-            raw_j = generate_lite_json(jmodel, prompt)
+            judge_response, judge_resolved, judge_latency = _generate_with_fallback(
+                judge_model, prompt
+            )
+            raw_j = _extract_text(judge_response)
             parsed_j = parse_grader_response(raw_j)
+            judge_prompt_tokens, judge_completion_tokens = response_usage(judge_response)
+            calls.append({
+                "tier": "judge",
+                "model": judge_resolved,
+                "prompt_tokens": judge_prompt_tokens,
+                "completion_tokens": judge_completion_tokens,
+                "latency_ms": judge_latency,
+                "status": "parse_error" if parsed_j.get("_parse_error") else "ok",
+            })
             if not parsed_j.get("_parse_error"):
                 parsed = parsed_j
                 tier = "judge"
@@ -210,6 +257,7 @@ def grade_kz_llm(
     parsed["_grader_tier"] = tier
     parsed["_grader_model"] = model_used
     parsed["_escalation_reason"] = esc_reason
+    parsed["_llm_calls"] = calls
     return parsed
 
 
@@ -223,6 +271,9 @@ def main() -> int:
     ap.add_argument("--bulk-model", default="gemini-3.6-flash")
     ap.add_argument("--judge-model", default="gemini-3.1-pro-preview")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument("--queue", type=Path, help="JSON queue containing visit_ids")
+    ap.add_argument("--warehouse", type=Path, help="MO warehouse for token and cost accounting")
+    ap.add_argument("--run-id", default="", help="stable pipeline run identifier")
     args = ap.parse_args()
 
     from clinical_knowledge.gemini_lite import gemini_available
@@ -252,6 +303,12 @@ def main() -> int:
     if args.worst_only:
         cases = [c for c in cases if (c.get("deep") or {}).get("has_potential_harm")
                  or (c.get("overall_pct") or 100) < 60]
+    if args.queue and args.queue.is_file():
+        queued = {
+            str(value)
+            for value in (json.loads(args.queue.read_text(encoding="utf-8")).get("visit_ids") or [])
+        }
+        cases = [case for case in cases if str(case.get("visit_id") or "") in queued]
     if args.limit:
         cases = cases[: args.limit]
 
@@ -272,6 +329,16 @@ def main() -> int:
                     protocol_name=(proto or {}).get("name") or "",
                 )
                 res["visit_id"] = vid
+                if args.warehouse:
+                    from clinical_knowledge.mo_llm_usage import record_llm_usage
+
+                    for call in res.get("_llm_calls") or []:
+                        record_llm_usage(
+                            args.warehouse,
+                            run_id=args.run_id or f"llm-{args.out.stem}",
+                            case_id=vid,
+                            **call,
+                        )
                 fout.write(json.dumps(res, ensure_ascii=False) + "\n")
                 fout.flush()
                 ok += 1

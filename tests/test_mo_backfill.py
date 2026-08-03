@@ -98,6 +98,11 @@ def test_refresh_daily_case_aggregates_uses_only_eligible_documents(tmp_path) ->
                (visit_date,source_rows,scored_rows,avg_score,revision,quality_status,updated_at)
                VALUES ('2026-07-01',3,3,80,1,'passed','now')"""
         )
+        db.execute(
+            """INSERT INTO fact_mo_finding
+               (mis_id,finding_code,severity,passed,evidence,source_ref)
+               VALUES ('2','B_clinical_gap','P1',0,'','test')"""
+        )
     assert refresh_daily_case_aggregates(warehouse) == 1
     with sqlite3.connect(warehouse) as db:
         assert db.execute(
