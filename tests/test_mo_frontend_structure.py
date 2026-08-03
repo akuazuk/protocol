@@ -72,6 +72,20 @@ def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     assert 'data-quick-period=' in SOURCE
 
 
+def test_mo_search_and_filters_have_explicit_apply_actions() -> None:
+    assert 'id="case-search-form"' in HTML
+    assert 'id="case-search-submit"' in HTML
+    assert 'id="case-search-clear"' in HTML
+    assert 'id="filters-panel"' in HTML
+    assert 'id="views-panel"' in HTML
+    assert 'data-filter-apply' in JS
+    assert 'data-filter-clear' in JS
+    assert '$("case-search-form").addEventListener("submit"' in JS
+    assert '$("case-search").addEventListener("change"' not in JS
+    assert "state.search = q.get(\"q\") || \"\"" in JS
+    assert "Pavel" not in SOURCE
+
+
 def test_mo_dashboard_prefers_new_api_with_legacy_fallback() -> None:
     assert 'var API_ROOT = "/api/methodist/mo"' in SOURCE
     assert 'var LEGACY_ROOT = "/api/methodist/mis-kz-quality"' in SOURCE
