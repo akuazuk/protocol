@@ -15,7 +15,8 @@
       sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
-      drillTrail: [], drillSnapshot: null
+      drillTrail: [], drillSnapshot: null,
+      columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false
     };
     var PAGE_TITLES = {
       overview: "Обзор МО", yesterday: "Отчёт за вчера", queue: "Очередь разбора",
@@ -66,6 +67,27 @@
     }
     function downloadJson(data, filename) {
       downloadBlob(new Blob([JSON.stringify(data, null, 2)], { type: "application/json;charset=utf-8" }), filename);
+    }
+    async function openPdfWithToken(path, preferredName) {
+      var response = await fetch(path, { headers: headers() });
+      if (response.status === 401 || response.status === 403) {
+        throw new Error("Требуется вход методиста. Обновите токен и повторите.");
+      }
+      if (!response.ok) throw new Error("Не удалось открыть PDF МО.");
+      var type = (response.headers.get("content-type") || "").toLowerCase();
+      if (type.indexOf("application/pdf") >= 0) {
+        var pdfBlob = await response.blob();
+        var pdfUrl = URL.createObjectURL(pdfBlob);
+        window.open(pdfUrl, "_blank", "noopener");
+        window.setTimeout(function () { URL.revokeObjectURL(pdfUrl); }, 30000);
+        return;
+      }
+      var htmlText = await response.text();
+      var doc = window.open("", "_blank", "noopener");
+      if (!doc) throw new Error("Браузер заблокировал всплывающее окно.");
+      doc.document.open();
+      doc.document.write(htmlText);
+      doc.document.close();
     }
     function minskDateKey(dayOffset) {
       var parts = new Intl.DateTimeFormat("en-CA", {
@@ -598,8 +620,7 @@
         esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
         esc(item.raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(item.raw.due_date || crm.due_date || "Сегодня") +
         '</td><td>' + esc(statusLabel(item.status)) +
-        '</td><td class="row-actions"><a class="button secondary compact" href="' + esc(pdfUrl) +
-        '" target="_blank" rel="noopener">МО в PDF</a></td></tr>';
+        '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.id) + '.pdf">МО в PDF</button></td></tr>';
     }
     function bindCaseRows(container) {
       container.querySelectorAll("[data-case]").forEach(function (row) {
@@ -625,6 +646,7 @@
         esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
         esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
       bindCaseRows(body);
+      applyColumnVisibility(queue ? "queue" : "documents");
       if (!queue) {
         var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / 50));
         $("pager").innerHTML = '<span>Страница ' + state.pageNo + " из " + pages + " · всего " + esc(total) +
@@ -708,12 +730,17 @@
         esc((crm.tags || []).join(", ")) + '"></label><label class="filter" style="margin-top:10px"><span>Комментарий</span><input class="control" id="drawer-comment" maxlength="2000"></label>' +
         '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> ' +
         '<a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a> ' +
-        '<a class="button secondary" href="/api/methodist/mo/cases/' + encodeURIComponent(item.id) +
-        '/pdf" target="_blank" rel="noopener">МО в PDF</a></p></div>' +
+        '<button class="button secondary" type="button" data-open-pdf="/api/methodist/mo/cases/' + encodeURIComponent(item.id) + '/pdf" data-open-name="mo-' + encodeURIComponent(item.id) + '.pdf">МО в PDF</button></p></div>' +
         '<div class="detail-block"><h3>История решений</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
+      $("drawer-body").querySelectorAll("[data-open-pdf]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          openPdfWithToken(button.getAttribute("data-open-pdf"), button.getAttribute("data-open-name"))
+            .catch(function (error) { showError(error.message); });
+        });
+      });
     }
     async function postCaseChanges(caseIds, changes, comment) {
       var response = await request("/cases/bulk-action", "/cases/bulk-action", {
@@ -911,8 +938,7 @@
           '</small></td><td class="row-actions"><button class="button secondary compact" type="button" data-take-case="' +
           esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
           (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") +
-          '</button> <a class="button secondary compact" href="' + esc(pdfUrl) +
-          '" target="_blank" rel="noopener">МО в PDF</a></td></tr>';
+          '</button> <button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">МО в PDF</button></td></tr>';
       }).join("") : '<tr><td colspan="6">' + unavailableBlock(section, "P0/P1 случаев нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
     }
@@ -1139,8 +1165,7 @@
         var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(caseId) + "/pdf");
         return '<div class="case-card" data-case="' + esc(caseId) + '"><b>'+esc(title)+
           "</b><p>Оценка: "+esc(scoreLabel(item.overall_pct, item.score_reason))+
-          '</p><div class="row-actions"><a class="button secondary compact" href="'+esc(pdfUrl)+
-          '" target="_blank" rel="noopener">МО в PDF</a></div>'+caseFindings.map(function (finding) {
+          '</p><div class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="'+esc(pdfUrl)+'" data-open-name="mo-'+esc(caseId)+'.pdf">МО в PDF</button></div>'+caseFindings.map(function (finding) {
             return '<div class="finding"><b>'+esc(finding.severity+" · "+(finding.title_ru || finding.finding_code))+
               "</b><p>Источник: "+esc(finding.source_ref || "не указан")+
               '</p><button class="button secondary compact" data-dispute-case="'+esc(item.visit_id || item.mis_id)+
@@ -1459,6 +1484,61 @@
       options.forEach(function (option, index) { option.setAttribute("aria-selected", index === current ? "true" : "false"); });
       options[current].focus();
     }
+    var COLUMN_MAP = {
+      documents: ["Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "Полнота", "Надёжность", "Статус"],
+      queue: ["Выбор", "Приоритет", "Дата", "Филиал", "Врач / специальность", "Диагноз", "Итог", "Причина", "Ответственный", "Срок", "Статус", "МО"]
+    };
+    function ensureColumnState() {
+      if (!state.columnVisible.documents.length) state.columnVisible.documents = COLUMN_MAP.documents.map(function () { return true; });
+      if (!state.columnVisible.queue.length) state.columnVisible.queue = COLUMN_MAP.queue.map(function () { return true; });
+    }
+    function applyColumnVisibility(key) {
+      ensureColumnState();
+      var table = key === "queue" ? document.querySelector("#page-queue table") : document.querySelector("#page-documents table");
+      if (!table) return;
+      var visible = state.columnVisible[key] || [];
+      table.querySelectorAll("tr").forEach(function (row) {
+        Array.from(row.children).forEach(function (cell, idx) {
+          cell.style.display = visible[idx] === false ? "none" : "";
+        });
+      });
+    }
+    function renderColumnsManager() {
+      ensureColumnState();
+      function block(key, targetId) {
+        var host = $(targetId);
+        host.innerHTML = '<h3>' + (key === "queue" ? "Очередь" : "Все случаи") + '</h3>' +
+          '<div class="filter-options">' + COLUMN_MAP[key].map(function (label, idx) {
+            return '<label class="filter-option"><input type="checkbox" data-col-key="' + key + '" data-col-index="' + idx + '"' +
+              (state.columnVisible[key][idx] === false ? '' : ' checked') + '><span>' + esc(label) + '</span></label>';
+          }).join('') + '</div>';
+      }
+      block("documents", "columns-manager-doc");
+      block("queue", "columns-manager-queue");
+      $("columns-manager").querySelectorAll("[data-col-key]").forEach(function (input) {
+        input.addEventListener("change", function () {
+          var key = input.getAttribute("data-col-key");
+          var idx = Number(input.getAttribute("data-col-index"));
+          state.columnVisible[key][idx] = !!input.checked;
+          applyColumnVisibility(key);
+        });
+      });
+    }
+    async function openSelectedQueuePdfs() {
+      var ids = selectedCases();
+      if (!ids.length) { showToast("Выберите случаи в очереди"); return; }
+      if (ids.length > 12 && !confirm("Открыть " + ids.length + " PDF?")) return;
+      for (var i = 0; i < ids.length; i++) {
+        var caseId = ids[i];
+        try {
+          await openPdfWithToken('/api/methodist/mo/cases/' + encodeURIComponent(caseId) + '/pdf', 'mo-' + caseId + '.pdf');
+        } catch (error) {
+          showError('Не удалось открыть PDF для ' + caseId + ': ' + error.message);
+          break;
+        }
+        if (i < ids.length - 1) await new Promise(function (resolve) { window.setTimeout(resolve, 180); });
+      }
+    }
     function renderSearchSuggestions(term) {
       var source = [];
       ["doctors", "specialties", "branches"].forEach(function (key) {
@@ -1509,10 +1589,11 @@
         });
       });
       $("columns-button").addEventListener("click", function () {
-        var table = document.querySelector("#page-documents table");
-        var compact = table.classList.toggle("compact-columns");
-        this.setAttribute("aria-pressed", compact ? "true" : "false");
-        this.textContent = compact ? "Показать все колонки" : "Скрыть служебные колонки";
+        state.columnsPanelOpen = !state.columnsPanelOpen;
+        $("columns-manager").hidden = !state.columnsPanelOpen;
+        this.setAttribute("aria-pressed", state.columnsPanelOpen ? "true" : "false");
+        this.textContent = state.columnsPanelOpen ? "Скрыть настройку колонок" : "Колонки таблиц";
+        if (state.columnsPanelOpen) renderColumnsManager();
       });
       $("period").addEventListener("change", function () {
         state.period = this.value;
@@ -1574,6 +1655,9 @@
       $("bulk-status").addEventListener("click", function () {
         bulkChange({ status: $("bulk-status-value").value });
       });
+      $("queue-open-pdf-selected").addEventListener("click", function () {
+        openSelectedQueuePdfs().catch(function (error) { showError(error.message); });
+      });
       $("queue-critical-only").addEventListener("click", function () {
         state.findingCode = "";
         state.search = "";
@@ -1586,6 +1670,15 @@
         var button = event.target.closest("[data-yesterday-finding]");
         if (button) navigateFinding(button.getAttribute("data-yesterday-finding"));
       });
+      document.addEventListener("click", function (event) {
+        var pdfButton = event.target.closest("[data-open-pdf]");
+        if (!pdfButton) return;
+        event.preventDefault();
+        event.stopPropagation();
+        openPdfWithToken(pdfButton.getAttribute("data-open-pdf"), pdfButton.getAttribute("data-open-name"))
+          .catch(function (error) { showError(error.message); });
+      });
+
       $("yesterday-action-rows").addEventListener("click", function (event) {
         var button = event.target.closest("[data-take-case]");
         if (button) {
@@ -1727,6 +1820,8 @@
       if ($("methodology")) $("methodology").value = state.methodology === "v3" ? "v3" : "v4";
       renderChips();
       renderAnalysisRail();
+      ensureColumnState();
+      $("columns-manager").hidden = true;
       if (!token()) setAuth(true);
       else { setAuth(false); switchPage(state.page, false); }
     }
