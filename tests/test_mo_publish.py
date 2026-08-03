@@ -59,6 +59,26 @@ def test_publish_snapshot_has_facts_and_no_crm_rows(tmp_path: Path) -> None:
         assert db.execute("SELECT COUNT(*) FROM crm_case_state").fetchone()[0] == 1
 
 
+def test_publish_snapshot_ignores_schema_from_code_not_deployed_yet(tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo_analytics.sqlite"
+    _seed(warehouse)
+    with sqlite3.connect(warehouse) as db:
+        db.execute("ALTER TABLE fact_mo_case ADD COLUMN future_score REAL")
+        db.execute("UPDATE fact_mo_case SET future_score = 99.0")
+        db.execute("CREATE TABLE fact_future_scorer (case_id TEXT PRIMARY KEY, score REAL)")
+        db.execute("INSERT INTO fact_future_scorer VALUES ('100', 99.0)")
+        db.commit()
+
+    snapshot = tmp_path / "publish.sqlite"
+    counts = build_publish_snapshot(warehouse, snapshot)
+
+    assert counts["fact_mo_case"] == 1
+    assert "fact_future_scorer" not in counts
+    with sqlite3.connect(snapshot) as db:
+        columns = {row[1] for row in db.execute("PRAGMA table_info(fact_mo_case)")}
+        assert "future_score" not in columns
+
+
 def test_merge_keeps_production_crm_state(tmp_path: Path) -> None:
     local = tmp_path / "local.sqlite"
     _seed(local)

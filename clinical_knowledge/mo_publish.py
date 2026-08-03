@@ -11,7 +11,7 @@ import sqlite3
 from pathlib import Path
 from typing import Iterable
 
-from clinical_knowledge.mo_daily import CRM_TABLES
+from clinical_knowledge.mo_daily import CRM_TABLES, initialize_warehouse
 
 # Таблицы, которыми владеет конвейер: их можно перезаливать целиком.
 PUBLISHED_PREFIXES = ("fact_", "dim_")
@@ -28,22 +28,42 @@ def published_tables(db: sqlite3.Connection) -> list[str]:
 
 
 def build_publish_snapshot(warehouse: Path, target: Path) -> dict[str, int]:
-    """Сделать копию витрины без строк CRM и вернуть число строк по таблицам."""
+    """Build a snapshot compatible with the currently deployed code schema.
+
+    A development scorer can migrate the local warehouse before its server code
+    reaches production. Copying that database byte-for-byte would make the
+    remote ``INSERT ... SELECT *`` fail on different column counts. Start from
+    the schema known to this checkout and copy only common pipeline columns.
+    """
     if not warehouse.is_file():
         raise FileNotFoundError(f"нет витрины: {warehouse}")
     target.parent.mkdir(parents=True, exist_ok=True)
     target.unlink(missing_ok=True)
-    with sqlite3.connect(warehouse) as source:
-        source.execute("VACUUM INTO ?", (str(target),))
+    initialize_warehouse(target)
     counts: dict[str, int] = {}
     with sqlite3.connect(target) as copy:
-        existing = {
-            row[0] for row in copy.execute("SELECT name FROM sqlite_master WHERE type='table'")
+        copy.execute("ATTACH DATABASE ? AS source", (str(warehouse.resolve()),))
+        source_tables = {
+            row[0]
+            for row in copy.execute("SELECT name FROM source.sqlite_master WHERE type='table'")
         }
-        for table in CRM_TABLES:
-            if table in existing:
-                copy.execute(f"DELETE FROM {table}")
+        for table in published_tables(copy):
+            if table not in source_tables:
+                continue
+            target_columns = [row[1] for row in copy.execute(f"PRAGMA main.table_info({table})")]
+            source_columns = {
+                row[1] for row in copy.execute(f"PRAGMA source.table_info({table})")
+            }
+            columns = [column for column in target_columns if column in source_columns]
+            if not columns:
+                continue
+            quoted = ", ".join(f'"{column}"' for column in columns)
+            copy.execute(
+                f"INSERT OR REPLACE INTO main.{table} ({quoted}) "
+                f"SELECT {quoted} FROM source.{table}"
+            )
         copy.commit()
+        copy.execute("DETACH DATABASE source")
         copy.execute("VACUUM")
         for table in published_tables(copy):
             counts[table] = copy.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]
