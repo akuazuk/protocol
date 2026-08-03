@@ -11493,6 +11493,8 @@ def api_methodist_mo_case_detail(
             "score_reason": document.get("score_reason"),
             "clinical": document.get("clinical") or {},
             "has_source_text": bool(document.get("has_source_text")),
+            "source_state": document.get("source_state") or "unknown",
+            "source_format": document.get("source_format"),
         }
     return result
 
@@ -11551,6 +11553,14 @@ def api_methodist_mo_health(request: "Request") -> dict:
     from clinical_knowledge.mo_backend import build_mo_health
 
     return build_mo_health()
+
+
+@app.get("/api/methodist/mo/capabilities")
+def api_methodist_mo_capabilities(request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_mo_capabilities
+
+    return build_mo_capabilities(_mo_role(request))
 
 
 @app.get("/api/methodist/mo/briefing")
