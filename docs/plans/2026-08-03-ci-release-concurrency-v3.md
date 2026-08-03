@@ -1,7 +1,7 @@
 # CI baseline и сериализованный production release (v3)
 
 Дата: 2026-08-03
-Статус: active
+Статус: completed
 Предшественник: `2026-08-03-multi-agent-release-guard-v2.md`
 
 ## Контекст
@@ -13,15 +13,16 @@ Hard guards уже не позволяют деплоить task HEAD, `main` з
 
 ## Что изменено в production
 
-Production работает на `883e43a2490b11aa071fc243872bbf63a41b94fb`,
-`2026-08-03-r22-mo-filter-actions-ui`. GitHub `main` требует PR и актуальный
-`manifest-mode`; release wrapper принимает только текущий `origin/main`.
+Production успешно обновлён GitHub Action на
+`721e10e655199ecd52343b40700963155958e258`,
+`2026-08-03-r23-ci-release-concurrency`. GitHub `main` требует PR и оба актуальных
+check: `manifest-mode`, `lint-and-test`.
 
 ## Метрики
 
 - Ruff errors: было 102, стало 0, цель 0.
 - Full pytest: был скрыт красным lint, стало 100% passed (1 skip), цель green.
-- Required CI checks: был 1 (`manifest-mode`), пока 1, цель 2 (`manifest-mode`, `lint-and-test`).
+- Required CI checks: был 1 (`manifest-mode`), стало 2 (`manifest-mode`, `lint-and-test`), цель 2.
 - Production release concurrency: было локальное соглашение, стала 1 GitHub concurrency group.
 - Release source in CI: было отсутствует, стал только `github.sha` после push в `main`.
 - Render API secret: сейчас отсутствует в GitHub, workflow должен безопасно работать через webhook.
@@ -33,9 +34,10 @@ Production работает на `883e43a2490b11aa071fc243872bbf63a41b94fb`,
 - [x] Исправить скрытый pytest baseline: перенесённые frontend paths и 4 функциональных теста.
 - [x] Добавить GitHub Actions workflow с `concurrency: production-render`.
 - [x] В workflow проверять только точный `github.sha` через canonical release wrapper.
-- [ ] После зелёного PR сделать `lint-and-test` обязательным для `main`.
+- [x] После зелёного PR сделать `lint-and-test` обязательным для `main`.
 - [x] Поднять `BUILD_VERSION` до `2026-08-03-r23-ci-release-concurrency`.
-- [ ] Commit, push, PR, merge и production verification.
+- [x] Commit, push, PR #8, merge и production verification.
+- [x] Подтвердить первый serialized workflow run: exact merge SHA, success за 2m1s.
 
 ## Риски
 
