@@ -103,6 +103,26 @@ def test_score_reason_for_diagnostic() -> None:
     assert "Не оценивается" in score_reason(document_kind="diagnostic", overall_pct=None)
 
 
+def test_case_source_falls_back_to_secure_daily_csv(monkeypatch, tmp_path: Path) -> None:
+    secure_dir = tmp_path / "medical_exams" / "secure_cases" / "2026" / "08"
+    secure_dir.mkdir(parents=True)
+    csv_path = secure_dir / "mo_2026-08-02.csv"
+    csv_path.write_text(
+        "id,visit_id,document_kind,complaints,anamnesis_doctor,clinical_diagnosis\n"
+        "9007,91007,consultation,Боль в горле,Болеет три дня,Тонзиллит\n",
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path / "medical_exams"))
+
+    source = mo_case_document.load_case_source_row("91007", visit_date="2026-08-02")
+
+    assert source is not None
+    assert source["complaints"] == "Боль в горле"
+    assert source["anamnesis_doctor"] == "Болеет три дня"
+    assert source["_source_file"] == str(csv_path)
+    assert "_source_parquet" not in source
+
+
 def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> None:
     db = tmp_path / "mo.sqlite"
     doctor = _seed(db)

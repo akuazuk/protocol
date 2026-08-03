@@ -1,8 +1,9 @@
 """Печатный документ МО: текст записи + оценка для сверки методистом.
 
-Источник истины для текста - дневной parquet (raw/quarantine). Оценка и замечания -
-из витрины / case detail. PDF строится через Chrome headless, если доступен;
-иначе отдаём print-ready HTML (браузер: Печать → PDF).
+Источник истины для текста - защищённый дневной срез (raw/quarantine parquet или
+secure_cases CSV). Оценка и замечания - из витрины / case detail. PDF строится
+через Chrome headless, если доступен; иначе отдаём print-ready HTML
+(браузер: Печать → PDF).
 """
 from __future__ import annotations
 
@@ -122,6 +123,15 @@ def _source_row_richness(row: Mapping[str, Any]) -> tuple[int, int]:
     return scored, populated
 
 
+def _read_source_frame(path: Path, pd: Any) -> Any:
+    """Прочитать только поддерживаемый защищённый формат дневного среза."""
+    if path.suffix.lower() == ".parquet":
+        return pd.read_parquet(path)
+    if path.suffix.lower() == ".csv":
+        return pd.read_csv(path, low_memory=False)
+    return None
+
+
 def load_case_source_row(
     case_id: str,
     *,
@@ -140,6 +150,7 @@ def load_case_source_row(
     candidates: list[Path] = []
     for root in _medical_exam_roots():
         raw = root / "raw"
+        secure = root / "secure_cases"
         if day_hint and len(day_hint) >= 10:
             year, month = day_hint[:4], day_hint[5:7]
             day_path = raw / year / month / f"mo_{day_hint}.parquet"
@@ -149,8 +160,13 @@ def load_case_source_row(
             if q_root.is_dir():
                 candidates.extend(sorted(q_root.glob(f"*/mo_{day_hint}.parquet"), reverse=True))
                 candidates.extend(sorted(q_root.glob(f"{day_hint}*/mo_{day_hint}.parquet"), reverse=True))
+            secure_path = secure / year / month / f"mo_{day_hint}.csv"
+            if secure_path.is_file():
+                candidates.append(secure_path)
         if raw.is_dir():
             candidates.extend(sorted(raw.rglob("mo_*.parquet"), reverse=True)[:40])
+        if secure.is_dir():
+            candidates.extend(sorted(secure.rglob("mo_*.csv"), reverse=True)[:40])
     seen: set[Path] = set()
     for path in candidates:
         try:
@@ -161,20 +177,22 @@ def load_case_source_row(
             continue
         seen.add(resolved)
         try:
-            frame = pd.read_parquet(path)
+            frame = _read_source_frame(path, pd)
         except Exception:  # noqa: BLE001
             continue
-        if frame.empty:
+        if frame is None or frame.empty:
             continue
         exact_needle = str(mis_id or "").strip()
         if exact_needle:
             for key in ("id", "mis_id"):
                 if key not in frame.columns:
                     continue
-                matched = frame[frame[key].astype(str) == exact_needle]
+                matched = frame[frame[key].map(_norm_id) == _norm_id(exact_needle)]
                 if not matched.empty:
                     row = matched.iloc[0].to_dict()
-                    row["_source_parquet"] = str(path)
+                    row["_source_file"] = str(path)
+                    if path.suffix.lower() == ".parquet":
+                        row["_source_parquet"] = str(path)
                     return row
         visit_matches = []
         for key in ("visit_id", "id", "mis_id"):
@@ -188,7 +206,9 @@ def load_case_source_row(
                 break
         if visit_matches:
             row = max(visit_matches, key=_source_row_richness)
-            row["_source_parquet"] = str(path)
+            row["_source_file"] = str(path)
+            if path.suffix.lower() == ".parquet":
+                row["_source_parquet"] = str(path)
             return row
     return None
 

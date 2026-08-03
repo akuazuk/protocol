@@ -129,3 +129,7 @@ def test_case_drawer_renders_source_mo_and_never_turns_missing_scores_into_zero(
         assert f'["{field}"' in JS
     assert 'available ? Math.round(n) + "%" : "Нет данных"' in JS
     assert 'unscored:"Не оценено"' in JS
+
+
+def test_programmatic_main_focus_does_not_draw_workspace_frame() -> None:
+    assert ".content:focus { outline: none; }" in SOURCE
