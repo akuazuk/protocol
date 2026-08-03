@@ -136,8 +136,36 @@
         <section class="page" id="page-doctor-cabinet" data-page="doctor-cabinet" hidden aria-labelledby="title-doctor-cabinet"><div class="page-head"><div><h1 id="title-doctor-cabinet">Кабинет врача</h1><p>Свои записи, замечания с источниками, рекомендации по исправлению и оспаривание.</p></div></div><div id="doctor-cabinet-unavailable" class="card">Выберите врача на диаграмме. Прямой вход врача доступен только при настроенной доверенной серверной идентификации.</div><div id="doctor-cabinet-content" hidden><div class="kpis" id="doctor-cabinet-kpis"></div><div class="grid"><article class="card span-7"><h2>Записи и замечания</h2><div id="doctor-cabinet-records"></div></article><article class="card span-5"><h2>Что исправить</h2><div id="doctor-cabinet-actions"></div><h2>Шаблонные пары</h2><div id="doctor-template-pairs"></div></article></div></div></section>
         <section class="page" id="page-access-log" data-page="access-log" hidden aria-labelledby="title-access-log"><div class="page-head"><div><h1 id="title-access-log">Журнал доступа</h1><p>Открытие персональных кабинетов и выгрузок. Доступно только администратору.</p></div></div><div class="card" id="access-log-content">Для просмотра требуется роль администратора.</div></section>
         <section class="page" id="page-data-quality" data-page="data-quality" hidden aria-labelledby="title-data-quality"><div class="page-head"><div><h1 id="title-data-quality">Качество данных</h1><p>Свежесть, полнота, дубли, расхождения дат и состояние повторной обработки.</p></div></div><div class="kpis" id="quality-kpis"></div><div class="grid"><article class="card span-7"><h2>Показатели загрузки</h2><div class="bars" id="quality-chart"></div></article><article class="card span-5"><h2>Предупреждения</h2><div id="quality-warnings"></div></article></div></section>
-        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports"><div class="page-head"><div><h1 id="title-reports">Отчёты</h1><p>Ежедневные и периодические отчёты по текущему срезу.</p></div></div><div class="section-actions"><button class="button" data-action="export-aggregates">Создать отчёт</button><button class="button secondary" data-action="export">Экспорт данных</button><button class="button secondary" id="print-report">Печать / PDF</button></div><div class="card"><div id="report-list"></div></div></section>
-        <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings"><div class="page-head"><div><h1 id="title-settings">Настройки и методика</h1><p>Рабочие представления, отображение таблиц и прозрачные правила оценки.</p></div></div><div class="grid"><article class="card span-6"><h2>Сохранённые представления</h2><p class="card-sub">Личные представления хранят текущие фильтры и страницу.</p><div id="view-manager"></div></article><article class="card span-6"><h2>Интерфейс</h2><label class="filter"><span>Плотность таблиц</span><select class="control" id="density"><option value="comfortable">Комфортная</option><option value="compact">Компактная</option></select></label><h2>Администратор</h2><p class="card-sub">Отдельный токен хранится только до закрытия вкладки.</p><label class="filter"><span>Админ-токен</span><input class="control" id="admin-token-input" type="password" autocomplete="off"></label><button class="button secondary" id="admin-token-save" type="button">Сохранить для сессии</button></article><article class="card span-12"><h2>Как определяется оценка</h2><p class="card-sub">Оси, пороги и правила приоритета клинического риска</p><div id="scoring-method"><div class="skeleton"></div></div></article></div></section>
+        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports">
+          <div class="page-head"><div><h1 id="title-reports">Отчёты</h1><p>Ежедневные отчёты, свежесть данных и быстрый переход к разбору.</p></div></div>
+          <div class="section-actions">
+            <button class="button" data-action="export-aggregates">Создать сводку</button>
+            <button class="button secondary" data-action="export">Экспорт данных</button>
+            <button class="button secondary" id="print-report">Печать / PDF</button>
+            <button class="button secondary" data-go="yesterday">Открыть вчера</button>
+          </div>
+          <div class="kpis" id="report-kpis"></div>
+          <div class="card"><h2>Готовые ежедневные отчёты</h2><p class="card-sub">Клик открывает отчёт за выбранный день на экране «Вчера»</p><div class="report-grid" id="report-list"></div></div>
+        </section>
+        <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">
+          <div class="page-head"><div><h1 id="title-settings">Настройки и методика</h1><p>Рабочие представления, отображение таблиц и прозрачные правила оценки.</p></div></div>
+          <div class="grid">
+            <article class="card span-6"><h2>Сохранённые представления</h2><p class="card-sub">Личные представления хранят текущие фильтры и страницу.</p><div id="view-manager"></div></article>
+            <article class="card span-6">
+              <h2>Интерфейс</h2>
+              <div class="settings-stack">
+                <label class="filter"><span>Плотность таблиц</span><select class="control" id="density"><option value="comfortable">Комфортная</option><option value="compact">Компактная</option></select></label>
+                <div>
+                  <h2>Администратор</h2>
+                  <p class="card-sub">Отдельный токен хранится только до закрытия вкладки.</p>
+                  <label class="filter"><span>Админ-токен</span><input class="control" id="admin-token-input" type="password" autocomplete="off"></label>
+                  <button class="button secondary" id="admin-token-save" type="button">Сохранить для сессии</button>
+                </div>
+              </div>
+            </article>
+            <article class="card span-12"><h2>Как определяется оценка</h2><p class="card-sub">Оси, пороги и правила приоритета клинического риска</p><div id="scoring-method"><div class="skeleton"></div></div></article>
+          </div>
+        </section>
       </main>
     </div>
   </div>

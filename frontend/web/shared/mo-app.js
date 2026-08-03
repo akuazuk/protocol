@@ -315,9 +315,18 @@
         return { name:names[key], type:"line", connectNulls:true, symbolSize:6,
           data:items.map(function (item) { return item[key]; }) };
       });
-      series.push({ name:"Объём", type:"bar", yAxisIndex:1, opacity:.28,
+      series = series.map(function (item) {
+        return Object.assign({}, item, {
+          smooth: true,
+          showSymbol: false,
+          lineStyle: { width: 2.4 },
+          areaStyle: item.name === "Итог" ? { opacity: 0.08 } : undefined
+        });
+      });
+      series.push({ name:"Объём", type:"bar", yAxisIndex:1, barMaxWidth:18,
+        itemStyle:{ borderRadius:[6,6,0,0], opacity:.45 },
         data:items.map(function (item) {
-          return { value:item.volume, itemStyle:item.anomaly ? { color:"#c63d53" } : null };
+          return { value:item.volume, itemStyle:item.anomaly ? { color:"#be123c", opacity:1 } : null };
         }), markPoint:{ data:items.map(function (item, index) {
           return item.anomaly ? { name:"Аномалия", coord:[index,item.volume], value:"!" } : null;
         }).filter(Boolean) } });
@@ -361,7 +370,8 @@
           tooltip:{ formatter:function (p) { var x=items[p.dataIndex], ci=x.delta_ci95 || {}; return esc(x.label)+"<br>Дельта: "+signed(x.delta)+"<br>95% ДИ: "+signed(ci.low)+" ... "+signed(ci.high)+"<br>n = "+x.n; } },
           grid:{ left:145,right:24,top:18,bottom:42 }, xAxis:{ type:"value",name:"Дельта, п.п." },
           yAxis:{ type:"category",data:items.map(function (x) { return x.label; }) },
-          series:[{ type:"bar",data:items.map(function (x) { return x.delta; }),markLine:{ symbol:"none",data:[{ xAxis:0 }] } }]
+          series:[{ type:"bar",barMaxWidth:18,itemStyle:{ borderRadius:[0,8,8,0] },
+          data:items.map(function (x) { return x.delta; }),markLine:{ symbol:"none",data:[{ xAxis:0 }] } }]
         }, { label:"Рейтинг врачей по case-mix дельте",description:"Показаны врачи с достаточной выборкой и доверительным интервалом.",
           fallback:function (target) { target.innerHTML=items.map(function (x) { return notice(x.label,signed(x.delta)+", n="+x.n,"review"); }).join(""); } });
         if (chart) chart.on("click",function (p) { state.selected.doctors=[items[p.dataIndex].label];renderChips();switchPage("documents"); });
@@ -375,8 +385,8 @@
         tooltip:{ trigger:"axis" }, grid:{ left:48,right:48,top:28,bottom:95 },
         xAxis:{ type:"category",axisLabel:{ rotate:35 },data:items.map(function (x) { return x.finding_code; }) },
         yAxis:[{ type:"value",name:"Случаи" },{ type:"value",name:"Накоплено, %",min:0,max:100 }],
-        series:[{ type:"bar",name:"Случаи",data:items.map(function (x) { return x.cases; }) },
-          { type:"line",name:"Накопленная доля",yAxisIndex:1,data:items.map(function (x) { return x.cumulative_share_pct; }) }]
+        series:[{ type:"bar",name:"Случаи",barMaxWidth:22,itemStyle:{ borderRadius:[6,6,0,0] },data:items.map(function (x) { return x.cases; }) },
+          { type:"line",name:"Накопленная доля",smooth:true,showSymbol:false,yAxisIndex:1,data:items.map(function (x) { return x.cumulative_share_pct; }) }]
       }, { label:"Парето замечаний месяца",description:"Столбцы число затронутых случаев, линия накопленная доля.",
         fallback:function (target) { target.innerHTML=items.map(function (x) { return bar(x.finding_code,x.cumulative_share_pct,x.cases); }).join(""); } });
       if (chart) chart.on("click",function (p) { navigateFinding(items[p.dataIndex].finding_code); });
@@ -388,6 +398,7 @@
       ];
       MO.moChart($("month-funnel-chart"), { tooltip:{ trigger:"item" },
         series:[{ type:"funnel",left:"8%",width:"84%",label:{ formatter:"{b}: {c}" },
+          itemStyle:{ borderRadius:6, borderColor:"#fff", borderWidth:1 },
           data:stages.map(function (x) { return { name:x[0],value:x[1] || 0 }; }) }] },
       { label:"Воронка месяца",description:"Путь записей от источника до закрытия в CRM.",
         fallback:function (target) { target.innerHTML=stages.map(function (x) { return bar(x[0],funnel.source ? 100*x[1]/funnel.source : 0,x[1]); }).join(""); } });
@@ -395,7 +406,7 @@
       if (!keys.length) $("month-crm-chart").innerHTML=unavailableBlock(data.crm_progress);
       else MO.moChart($("month-crm-chart"), { tooltip:{ trigger:"axis" },grid:{ left:105,right:18,top:18,bottom:40 },
         xAxis:{ type:"value",name:"Случаи" },yAxis:{ type:"category",data:keys.map(statusLabel) },
-        series:[{ type:"bar",data:keys.map(function (key) { return statuses[key]; }) }] },
+        series:[{ type:"bar",barMaxWidth:18,itemStyle:{ borderRadius:[0,8,8,0] },data:keys.map(function (key) { return statuses[key]; }) }] },
       { label:"Прогресс CRM по статусам",description:"Количество оценённых случаев в каждом рабочем статусе.",
         fallback:function (target) { target.innerHTML=keys.map(function (key) { return notice(statusLabel(key),statuses[key]+" случаев","good"); }).join(""); } });
     }
@@ -658,8 +669,9 @@
         $("yesterday-completeness").innerHTML =
           kpi("Получено", completeness.actual_rows, "строк из источника") +
           kpi("Ожидалось", expected.available ? expected.value : "Нет базы", expected.available ? expected.samples + " сопоставимых дней" : expected.reason) +
-          notice("Лаг", completeness.lag_days + " дн. · ревизия " + (completeness.revision == null ? "не указана" : completeness.revision),
-            completeness.partial ? "День помечен как неполный" : "День завершён", completeness.partial ? "critical" : "good") +
+          notice("Лаг", completeness.lag_days + " дн. · ревизия " + (completeness.revision == null ? "не указана" : completeness.revision) +
+            " · " + (completeness.partial ? "день помечен как неполный" : "день завершён"),
+            completeness.partial ? "critical" : "good") +
           (completeness.flags || []).map(function (flag) {
             return notice(flag.level === "blocking" ? "Блокирующий флаг" : "Предупреждение",
               flag.message || flag.code, flag.level === "blocking" ? "critical" : "review");
@@ -693,9 +705,9 @@
         xAxis: { type: "category", name: "Индекс", data: available.map(function (item) { return item.label; }) },
         yAxis: { type: "value", name: "Оценка, %", min: 0, max: 100 },
         series: [
-          { name: "За день", type: "bar", data: available.map(function (item) { return item.value; }) },
-          { name: "Предыдущий день", type: "bar", data: available.map(function (item) { return item.previous_day; }) },
-          { name: "Среднее дня недели", type: "line", symbolSize: 9, data: available.map(function (item) { return item.weekday_mean_8w; }) }
+          { name: "За день", type: "bar", barMaxWidth: 28, itemStyle: { borderRadius: [6,6,0,0] }, data: available.map(function (item) { return item.value; }) },
+          { name: "Предыдущий день", type: "bar", barMaxWidth: 28, itemStyle: { borderRadius: [6,6,0,0] }, data: available.map(function (item) { return item.previous_day; }) },
+          { name: "Среднее дня недели", type: "line", smooth: true, symbolSize: 9, data: available.map(function (item) { return item.weekday_mean_8w; }) }
         ]
       }, {
         label: "Сравнение четырёх индексов за вчера",
@@ -855,11 +867,11 @@
       renderYesterdaySourceQuality(data);
     }
     async function loadYesterday() {
-      var yesterday = minskDateKey(-1);
-      $("yesterday-date").textContent = "Итоги за " + new Date(yesterday + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
-      var response = await request("/daily-report?date=" + yesterday, "__root__");
+      var day = (state.period === "custom" && state.dateFrom) ? state.dateFrom : minskDateKey(-1);
+      $("yesterday-date").textContent = "Итоги за " + new Date(day + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
+      var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (response.status === 401 || response.status === 403) { setAuth(true); return; }
-      if (!response.ok) throw new Error("Отчёт за вчера пока недоступен.");
+      if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
       var data = await response.json();
       state.data.daily = data;
       $("partial-banner").hidden = !(data.partial || data.quality_status === "blocked");
@@ -875,8 +887,6 @@
         bar("Полнота проверки", summary.coverage || 0) + bar("Надёжность", summary.confidence || 0);
       $("quality-warnings").innerHTML = notice(summary.generated ? "Загрузка завершена" : "Нет времени обновления",
         summary.generated || "Проверьте источник данных", summary.generated ? "good" : "review");
-      $("report-list").innerHTML = notice("Отчёт за вчера", "Готов к открытию и выгрузке", "good") +
-        notice("Отчёт за текущий месяц", "Формируется по текущему срезу", "review");
     }
     async function dimensionData(name) {
       var response = await request("/dimensions/" + name + "?" + query().toString(), "/dimensions/" + name);
@@ -1064,24 +1074,56 @@
           : "");
     }
     async function loadReports() {
-      var responses = await Promise.all([request("/reports", "/dynamics"), request("/freshness?" + query().toString(), "/dynamics")]);
-      var response = responses[0], freshnessResponse = responses[1];
+      var responses = await Promise.all([
+        request("/reports", "/dynamics"),
+        request("/freshness?" + query().toString(), "/dynamics"),
+        request("/month-report?" + query().toString(), "__root__")
+      ]);
+      var response = responses[0], freshnessResponse = responses[1], monthResponse = responses[2];
       if (!response.ok) throw new Error("Не удалось загрузить список отчётов.");
       var data = await response.json(), items = data.items || [];
       var freshness = freshnessResponse.ok ? await freshnessResponse.json() : (data.freshness || {});
-      var health = "";
-      if (freshness && freshness.status) {
-        var statusText = freshness.status === "fresh" ? "Актуально" : freshness.status === "stale" ? "Требует обновления" : "Нет свежих данных";
-        health = notice(
-          "Состояние загрузки",
-          statusText + " · лаг " + (freshness.lag_days == null ? "не определён" : freshness.lag_days + " дн.") +
-            " · данные до " + (freshness.data_through || "не определено"),
-          freshness.status === "critical" ? "critical" : freshness.status === "stale" ? "review" : "good"
-        );
+      var month = monthResponse && monthResponse.ok ? await monthResponse.json() : {};
+      var kpis = $("report-kpis");
+      if (kpis) {
+        kpis.innerHTML =
+          kpi("Свежесть", freshness.status === "fresh" ? "Актуально" : (freshness.status || "Нет данных"),
+            "лаг " + (freshness.lag_days == null ? "н/д" : freshness.lag_days + " дн.")) +
+          kpi("Данные до", freshness.data_through || "н/д", "Europe/Minsk") +
+          kpi("Отчётов в списке", items.length, "ежедневные готовые срезы") +
+          kpi("Оценено за месяц", ((month.kpi || {}).evaluated != null ? month.kpi.evaluated : "н/д"),
+            score((month.kpi || {}).avg_score));
       }
-      $("report-list").innerHTML = health + (items.length ? items.map(function (item) {
-        return notice(item.date || item.month || "Отчёт", "Ревизия " + (item.revision || 1) + " · " + statusLabel(item.quality_status || "готов"), item.quality_status === "blocked" ? "critical" : "good");
-      }).join("") : '<div class="empty">Готовых отчётов пока нет.</div>');
+      if (!items.length) {
+        $("report-list").innerHTML = '<div class="empty">Готовых отчётов пока нет. Дождитесь утреннего приёма данных.</div>';
+        return;
+      }
+      $("report-list").innerHTML = items.map(function (item) {
+        var day = item.date || item.month || "";
+        var tone = item.quality_status === "blocked" || item.quality_status === "failed" ? "critical" :
+          (item.quality_status === "partial" ? "review" : "good");
+        return '<button class="report-card" type="button" data-report-date="' + esc(day) + '">' +
+          '<strong>' + esc(day) + '</strong>' +
+          '<span class="status ' + tone + '">' + esc(statusLabel(item.quality_status || "готов")) + '</span>' +
+          '<span>Ревизия ' + esc(item.revision || 1) +
+          (item.generated_at ? ' · ' + esc(String(item.generated_at).replace("T", " ").replace("Z", " UTC")) : "") +
+          '</span></button>';
+      }).join("");
+      $("report-list").querySelectorAll("[data-report-date]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var day = button.getAttribute("data-report-date");
+          if (!day) return;
+          state.period = "custom";
+          state.dateFrom = day;
+          state.dateTo = day;
+          $("period").value = "custom";
+          $("date-from").value = day;
+          $("date-to").value = day;
+          $("date-from-wrap").hidden = false;
+          $("date-to-wrap").hidden = false;
+          switchPage("yesterday");
+        });
+      });
     }
     async function loadScoringMethod() {
       await ensureSummary();
@@ -1137,7 +1179,7 @@
       }).join("");
       $("view-manager").innerHTML = views.length ? views.map(function (v, i) {
         var key = v.view_id || ("local:" + i);
-        return '<div style="display:flex;justify-content:space-between;gap:8px;padding:9px 0;border-bottom:1px solid var(--line)"><button class="button secondary" data-load-view="' +
+        return '<div class="view-row"><button class="button secondary" data-load-view="' +
           esc(key) + '">' + esc(v.name) + '</button><button class="button secondary danger" data-delete-view="' + esc(key) + '">Удалить</button></div>';
       }).join("") : '<p class="empty">Сохранённых представлений пока нет.</p>';
     }
@@ -1165,11 +1207,20 @@
       if (String(key).indexOf("local:") === 0) return savedViews()[Number(String(key).slice(6))];
       return savedViews().find(function (view) { return view.view_id === key; });
     }
+    function filtersToSearchParams(filters) {
+      var params = new URLSearchParams();
+      Object.keys(filters || {}).forEach(function (key) {
+        var value = filters[key];
+        if (value == null || value === "") return;
+        params.set(key, Array.isArray(value) ? value.join(",") : String(value));
+      });
+      return params;
+    }
     function loadView(key) {
       var view = viewByKey(key); if (!view) return;
       var suffix = view.url;
       if (!suffix) {
-        var params = new URLSearchParams(view.filters || {});
+        var params = filtersToSearchParams(view.filters || {});
         params.set("page", ((view.config || {}).page) || "overview");
         suffix = "?" + params.toString();
       }

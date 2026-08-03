@@ -9,33 +9,80 @@
     return value || fallback;
   }
 
+  function mergeDeep(base, override) {
+    var result = Object.assign({}, base || {});
+    Object.keys(override || {}).forEach(function (key) {
+      var left = result[key];
+      var right = override[key];
+      if (
+        left && right &&
+        typeof left === "object" && typeof right === "object" &&
+        !Array.isArray(left) && !Array.isArray(right)
+      ) {
+        result[key] = mergeDeep(left, right);
+      } else if (right !== undefined) {
+        result[key] = right;
+      }
+    });
+    return result;
+  }
+
+  function themeAxis(axis, defaults) {
+    if (!axis) return defaults;
+    if (Array.isArray(axis)) {
+      return axis.map(function (item) { return themeAxis(item, defaults); });
+    }
+    return mergeDeep(defaults, axis);
+  }
+
   function themedOption(option, config) {
     option = Object.assign({}, option || {});
     option.aria = Object.assign({ enabled: true, decal: { show: true } }, option.aria || {});
     option.animation = !reduceMotion.matches;
-    option.animationDuration = reduceMotion.matches ? 0 : 180;
+    option.animationDuration = reduceMotion.matches ? 0 : 420;
+    option.animationEasing = "cubicOut";
     option.textStyle = Object.assign({
-      color: token("--ink", "#18312c"),
-      fontFamily: token("--font-ui", "system-ui")
+      color: token("--ink", "#14241f"),
+      fontFamily: token("--font-ui", "system-ui"),
+      fontSize: 12
     }, option.textStyle || {});
     option.backgroundColor = "transparent";
-    if (option.xAxis) {
-      option.xAxis = Object.assign({
-        axisLabel: { color: token("--muted", "#5f716d") },
-        axisLine: { lineStyle: { color: token("--line", "#dbe5e1") } }
-      }, option.xAxis);
-    }
-    if (option.yAxis) {
-      option.yAxis = Object.assign({
-        axisLabel: { color: token("--muted", "#5f716d") },
-        splitLine: { lineStyle: { color: token("--line", "#dbe5e1") } }
-      }, option.yAxis);
-    }
+    option.tooltip = mergeDeep({
+      backgroundColor: token("--surface-raised", "#ffffff"),
+      borderColor: token("--line", "#d7e3de"),
+      borderWidth: 1,
+      textStyle: { color: token("--ink", "#14241f"), fontSize: 12 },
+      extraCssText: "border-radius:12px;box-shadow:0 12px 32px rgba(16,40,34,.12);padding:10px 12px;"
+    }, option.tooltip || {});
+    option.legend = mergeDeep({
+      textStyle: { color: token("--muted", "#5b6f6a") },
+      icon: "roundRect",
+      itemWidth: 12,
+      itemHeight: 8
+    }, option.legend || {});
+    option.grid = mergeDeep({
+      containLabel: true,
+      left: 18,
+      right: 18,
+      top: 48,
+      bottom: 28
+    }, option.grid || {});
+
+    var axisDefaults = {
+      axisLabel: { color: token("--muted", "#5b6f6a"), hideOverlap: true },
+      axisLine: { lineStyle: { color: token("--line", "#d7e3de") } },
+      axisTick: { show: false },
+      splitLine: { lineStyle: { color: token("--line-soft", "#ebf1ee"), type: "dashed" } }
+    };
+    if (option.xAxis) option.xAxis = themeAxis(option.xAxis, axisDefaults);
+    if (option.yAxis) option.yAxis = themeAxis(option.yAxis, axisDefaults);
+
     option.color = option.color || [
-      token("--accent", "#11715e"),
-      token("--warn", "#a15c00"),
-      token("--bad", "#b4233c"),
-      token("--good", "#147a57")
+      token("--accent", "#0f7660"),
+      token("--chart-2", "#2563eb"),
+      token("--chart-3", "#c27803"),
+      token("--chart-4", "#be123c"),
+      token("--chart-5", "#7c3aed")
     ];
     if (config && config.description) option.aria.description = config.description;
     return option;
@@ -63,8 +110,16 @@
     element.classList.add("mo-chart");
     element.setAttribute("role", "img");
     if (config.label) element.setAttribute("aria-label", config.label);
-    var chart = window.echarts.init(element, null, { renderer: config.renderer || "svg" });
-    chart.setOption(themedOption(option, config), true);
+    var chart = window.echarts.init(element, null, { renderer: config.renderer || "canvas" });
+    try {
+      chart.setOption(themedOption(option, config), true);
+    } catch (error) {
+      element.classList.add("chart-fallback");
+      if (typeof config.fallback === "function") config.fallback(element);
+      else element.innerHTML = '<div class="empty">Не удалось построить график</div>';
+      try { chart.dispose(); } catch (disposeError) {}
+      return null;
+    }
     var resize = function () { if (!chart.isDisposed()) chart.resize(); };
     var observer = null;
     if ("ResizeObserver" in window) {
@@ -79,7 +134,7 @@
 
   function exportChartPng(element, filename) {
     var entry = registry.get(element);
-    if (!entry) return false;
+    if (!entry || !entry.chart || typeof entry.chart.getDataURL !== "function") return false;
     var link = document.createElement("a");
     link.href = entry.chart.getDataURL({
       type: "png",
@@ -96,4 +151,5 @@
   MO.moChart = moChart;
   MO.exportChartPng = exportChartPng;
   MO.disposeChart = dispose;
+  MO.themeAxis = themeAxis;
 })(window.MO = window.MO || {});

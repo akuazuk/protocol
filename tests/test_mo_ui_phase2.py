@@ -81,7 +81,17 @@ def test_echarts_is_self_hosted_wrapped_and_has_fallback() -> None:
     assert "prefers-reduced-motion: reduce" in CHARTS
     assert "exportChartPng" in CHARTS
     assert "typeof config.fallback" in CHARTS
+    assert "Array.isArray(axis)" in CHARTS
+    assert "themeAxis" in CHARTS
     assert "renderTrendChart" in APP and "MO.moChart(element" in APP
+
+
+def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
+    assert 'id="report-kpis"' in HTML
+    assert 'class="report-grid"' in HTML
+    assert 'data-report-date="' in APP
+    assert "filtersToSearchParams" in APP
+    assert 'daily-report?date=' in APP
 
 
 def test_page_references_no_external_url_or_cdn_and_has_no_long_dash() -> None:
