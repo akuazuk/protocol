@@ -36,7 +36,7 @@ Render wrapper по умолчанию принимал локальный HEAD.
 - [x] Добавить Git SHA в `/api/version`.
 - [x] Включить branch protection для `main`.
 - [x] Поднять `BUILD_VERSION` до `2026-08-03-r21-render-main-guard`.
-- [ ] Завершить тесты, commit, push и PR.
+- [x] Завершить тесты, commit, push и открыть PR #7.
 
 ## Риски
 
