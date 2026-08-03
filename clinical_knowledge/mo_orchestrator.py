@@ -621,7 +621,11 @@ class MoDailyPipeline:
         self._collecting = True
         results: list[dict[str, Any]] = []
         failures: list[str] = []
-        force_day = force or previous_week or this_week
+        # Weekly reconciliation must refresh exports, reports and the warehouse,
+        # but unchanged scoring artifacts are reusable through --resume. Only an
+        # explicit --force (or a changed content hash in run_day) should discard
+        # them; otherwise every Monday needlessly re-scores the whole week.
+        force_day = force
         try:
             with exclusive_lock(self.paths.lock):
                 for day in days:

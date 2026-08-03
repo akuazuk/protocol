@@ -1012,6 +1012,30 @@ def test_run_sends_one_digest_and_survives_a_failing_day(tmp_path: Path) -> None
     assert "Готово (2)" in sent[0]
 
 
+def test_weekly_reconciliation_reuses_scores_unless_force_is_explicit(tmp_path: Path) -> None:
+    pipeline = MoDailyPipeline(
+        PipelinePaths(tmp_path, tmp_path / "data"),
+        runner=lambda _c: None,
+        notify=lambda _message: True,
+    )
+    calls: list[tuple[date, bool]] = []
+
+    def fake_run_day(day: date, *, force: bool = False) -> dict:
+        calls.append((day, force))
+        return {"date": day.isoformat(), "status": "success"}
+
+    pipeline.run_day = fake_run_day  # type: ignore[method-assign]
+    now = datetime.fromisoformat("2026-08-03T06:00:00+03:00")
+    pipeline.run(previous_week=True, now=now)
+    assert len(calls) == 7
+    assert all(force is False for _, force in calls)
+
+    calls.clear()
+    pipeline.run(previous_week=True, force=True, now=now)
+    assert len(calls) == 7
+    assert all(force is True for _, force in calls)
+
+
 def test_run_stays_silent_when_there_is_nothing_to_do(tmp_path: Path) -> None:
     sent: list[str] = []
     state_path = tmp_path / "data" / "state" / "pipeline.json"

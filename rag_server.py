@@ -8462,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-07-30-r25-mo-doctor-analytics"
+BUILD_VERSION = "2026-08-03-r1-mo-weekly-resume"
 
 
 def _app_version() -> str:
