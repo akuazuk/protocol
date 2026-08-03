@@ -421,10 +421,22 @@ tbody tr:hover td, tbody tr:focus-within td { background: var(--accent-soft); }
 }
 
 .finding-link {
-  width: 100%; padding: 10px 6px; border: 0; border-bottom: 1px solid var(--line-soft);
-  background: transparent; color: var(--ink); text-align: left; cursor: pointer; border-radius: 8px;
+  display: grid; gap: 4px; width: 100%; padding: 10px 12px;
+  border: 1px solid var(--line); border-bottom: 1px solid var(--line);
+  background: var(--surface-solid); color: var(--ink); text-align: left;
+  cursor: pointer; border-radius: 12px;
 }
 .finding-link:hover { color: var(--accent-dark); background: var(--accent-soft); }
+.finding-card { display: grid; gap: 6px; margin-bottom: 8px; }
+.finding-meta { display: block; color: var(--muted); font-size: 12px; font-weight: 600; }
+.finding-cases { display: flex; flex-wrap: wrap; gap: 6px; padding: 0 2px 2px; }
+.finding-case-link {
+  border: 0; border-radius: 999px; padding: 5px 10px;
+  background: color-mix(in srgb, var(--accent-soft, #e7f5ef) 80%, #fff);
+  color: var(--accent-dark, #0f6b5c); cursor: pointer; font-size: 12px;
+}
+.finding-case-link:hover { background: var(--accent-soft, #e7f5ef); }
+.finding-case-link small { color: var(--muted); }
 #yesterday-action-rows td:nth-child(5) { min-width: 230px; }
 #yesterday-flow-dimension { margin-bottom: 8px; max-width: 240px; }
 

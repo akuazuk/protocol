@@ -593,14 +593,22 @@
       var section=data.pareto || {}, items=section.items || [];
       if (!items.length) { $("month-pareto-chart").innerHTML=unavailableBlock(section); return; }
       var chart=MO.moChart($("month-pareto-chart"), {
-        tooltip:{ trigger:"axis" }, grid:{ left:48,right:48,top:28,bottom:95 },
-        xAxis:{ type:"category",axisLabel:{ rotate:35 },data:items.map(function (x) { return x.finding_code; }) },
+        tooltip:{ trigger:"axis", formatter:function (params) {
+          var x=items[params[0].dataIndex] || {};
+          return esc(x.label || x.finding_code || "") + "<br>" + esc(x.cases) + " случаев";
+        } }, grid:{ left:48,right:48,top:28,bottom:110 },
+        xAxis:{ type:"category",axisLabel:{ rotate:28, interval:0, formatter:function (value) {
+          return String(value || "").length > 28 ? String(value).slice(0, 26) + "…" : value;
+        } },data:items.map(function (x) { return x.label || x.finding_code; }) },
         yAxis:[{ type:"value",name:"Случаи" },{ type:"value",name:"Накоплено, %",min:0,max:100 }],
         series:[{ type:"bar",name:"Случаи",barMaxWidth:22,itemStyle:{ borderRadius:[6,6,0,0] },data:items.map(function (x) { return x.cases; }) },
           { type:"line",name:"Накопленная доля",smooth:true,showSymbol:false,yAxisIndex:1,data:items.map(function (x) { return x.cumulative_share_pct; }) }]
-      }, { label:"Парето замечаний месяца",description:"Столбцы число затронутых случаев, линия накопленная доля.",
-        fallback:function (target) { target.innerHTML=items.map(function (x) { return bar(x.finding_code,x.cumulative_share_pct,x.cases); }).join(""); } });
-      if (chart) chart.on("click",function (p) { navigateFinding(items[p.dataIndex].finding_code, "Парето " + items[p.dataIndex].finding_code); });
+      }, { label:"Парето замечаний месяца",description:"Клик открывает документы с этим замечанием.",
+        fallback:function (target) { target.innerHTML=items.map(function (x) { return bar(x.label || x.finding_code,x.cumulative_share_pct,x.cases); }).join(""); } });
+      if (chart) chart.on("click",function (p) {
+        var item = items[p.dataIndex] || {};
+        navigateFinding(item.finding_code, item.label || item.finding_code);
+      });
     }
     function renderMonthFunnel(data) {
       var funnel=data.funnel || {}, stages=[
@@ -861,7 +869,7 @@
         renderRubricMz(rubric) +
         renderClinicalDocument(sourceDocument) +
         '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
-          var title = [finding.code, finding.title_ru || finding.title].filter(Boolean).join(" · ");
+          var title = finding.title_ru || finding.title || finding.code || "Замечание";
           var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
           return notice(finding.severity || "Проверить", title || finding.detail_ru || finding.detail || "Требуется ручная проверка",
             finding.severity === "P0" ? "critical" : "review") +
@@ -1069,8 +1077,21 @@
         page: "documents"
       });
     }
+    function navigateYesterdayFinding(code, label, day) {
+      applyDrill({
+        label: label || ("Замечание " + (code || "")),
+        findingCode: code || "",
+        search: "",
+        caseSearchValue: "",
+        period: day ? "custom" : state.period,
+        dateFrom: day || state.dateFrom,
+        dateTo: day || state.dateTo,
+        page: "documents"
+      });
+    }
     function renderYesterdayFindings(data) {
       var items = ((data.top_findings || {}).items || []).slice(0, 12);
+      var day = (data.top_findings || {}).day || data.day || data.data_through || "";
       if (!items.length) {
         $("yesterday-findings-chart").innerHTML = unavailableBlock(data.top_findings);
         $("yesterday-findings-list").innerHTML = "";
@@ -1078,10 +1099,17 @@
       }
       var total = items.reduce(function (sum, item) { return sum + Number(item.cases || 0); }, 0), running = 0;
       var cumulative = items.map(function (item) { running += Number(item.cases || 0); return total ? Math.round(1000 * running / total) / 10 : 0; });
+      var chartLabels = items.map(function (item) { return item.label || item.finding_code; });
       var chart = MO.moChart($("yesterday-findings-chart"), {
-        tooltip: { trigger: "axis" },
-        grid: { left: 48, right: 48, top: 30, bottom: 95 },
-        xAxis: { type: "category", name: "Замечание", axisLabel: { rotate: 35 }, data: items.map(function (item) { return item.finding_code; }) },
+        tooltip: { trigger: "axis", formatter: function (params) {
+          var item = items[params[0].dataIndex] || {};
+          return esc(item.label || item.finding_code || "") + "<br>" + esc(item.severity || "") +
+            " · " + esc(item.cases) + " случаев";
+        } },
+        grid: { left: 48, right: 48, top: 30, bottom: 110 },
+        xAxis: { type: "category", name: "Замечание", axisLabel: { rotate: 28, interval: 0, formatter: function (value) {
+          return String(value || "").length > 28 ? String(value).slice(0, 26) + "…" : value;
+        } }, data: chartLabels },
         yAxis: [{ type: "value", name: "Случаи" }, { type: "value", name: "Накоплено, %", min: 0, max: 100 }],
         series: [
           { name: "Случаи", type: "bar", data: items.map(function (item) {
@@ -1091,15 +1119,31 @@
         ]
       }, {
         label: "Парето замечаний за вчера",
-        description: "Столбцы показывают число случаев, линия - накопленную долю.",
+        description: "Клик открывает список МО с этим замечанием за день.",
         fallback: function (target) {
-          target.innerHTML = items.map(function (item) { return bar(item.finding_code, Math.min(100, item.cases), item.cases); }).join("");
+          target.innerHTML = items.map(function (item) { return bar(item.label || item.finding_code, Math.min(100, item.cases), item.cases); }).join("");
         }
       });
-      if (chart) chart.on("click", function (params) { navigateFinding(items[params.dataIndex].finding_code, "Топ замечаний " + items[params.dataIndex].finding_code); });
+      if (chart) chart.on("click", function (params) {
+        var item = items[params.dataIndex] || {};
+        navigateYesterdayFinding(item.finding_code, item.label, day);
+      });
       $("yesterday-findings-list").innerHTML = items.map(function (item) {
-        return '<button class="finding-link" type="button" data-yesterday-finding="' + esc(item.finding_code) +
-          '"><b>' + esc(item.severity) + "</b> " + esc(item.label) + " · " + esc(item.cases) + " случаев</button>";
+        var samples = (item.sample_cases || []).slice(0, 5).map(function (sample) {
+          return '<button class="finding-case-link" type="button" data-open-case="' + esc(sample.case_id) + '">' +
+            esc(sample.doctor || sample.case_id) +
+            (sample.specialty ? ' <small>' + esc(sample.specialty) + '</small>' : '') +
+            '</button>';
+        }).join("");
+        return '<div class="finding-card">' +
+          '<button class="finding-link" type="button" data-yesterday-finding="' + esc(item.finding_code) +
+          '" data-yesterday-label="' + esc(item.label || item.finding_code) +
+          '" data-yesterday-day="' + esc(day) + '">' +
+          '<span class="status ' + (item.severity === "P0" || item.severity === "P1" ? "critical" : "review") + '">' +
+          esc(item.severity) + '</span> <b>' + esc(item.label || item.finding_code) + '</b>' +
+          '<span class="finding-meta">' + esc(item.cases) + ' случаев · открыть список МО</span></button>' +
+          (samples ? '<div class="finding-cases">' + samples + '</div>' : '') +
+          '</div>';
       }).join("");
     }
     function renderYesterdayDoctors(data) {
@@ -1909,8 +1953,20 @@
         filtersChanged();
       });
       $("yesterday-findings-list").addEventListener("click", function (event) {
+        var caseButton = event.target.closest("[data-open-case]");
+        if (caseButton) {
+          event.preventDefault();
+          openCase(caseButton.getAttribute("data-open-case"), caseButton);
+          return;
+        }
         var button = event.target.closest("[data-yesterday-finding]");
-        if (button) navigateFinding(button.getAttribute("data-yesterday-finding"));
+        if (button) {
+          navigateYesterdayFinding(
+            button.getAttribute("data-yesterday-finding"),
+            button.getAttribute("data-yesterday-label"),
+            button.getAttribute("data-yesterday-day")
+          );
+        }
       });
       document.addEventListener("click", function (event) {
         var pdfButton = event.target.closest("[data-open-pdf]");
