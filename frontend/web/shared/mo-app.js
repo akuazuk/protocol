@@ -495,7 +495,6 @@
     function queueRow(item) {
       var priority = Number(item.raw.p0 || 0) > 0 ? "P0" : Number(item.raw.p1 || 0) > 0 ? "P1" : "Низкий балл";
       var crm = item.raw.crm || {};
-      var docUrl = item.raw.document_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/document");
       var pdfUrl = item.raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
         statusClass(item.status) + '">' + esc(priority) + '</span></td><td>' + esc(item.date) +
@@ -504,9 +503,8 @@
         esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
         esc(item.raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(item.raw.due_date || crm.due_date || "Сегодня") +
         '</td><td>' + esc(statusLabel(item.status)) +
-        '</td><td class="row-actions"><a class="button secondary compact" href="' + esc(docUrl) +
-        '" target="_blank" rel="noopener">МО</a> <a class="button secondary compact" href="' + esc(pdfUrl) +
-        '" target="_blank" rel="noopener">PDF</a></td></tr>';
+        '</td><td class="row-actions"><a class="button secondary compact" href="' + esc(pdfUrl) +
+        '" target="_blank" rel="noopener">МО в PDF</a></td></tr>';
     }
     function bindCaseRows(container) {
       container.querySelectorAll("[data-case]").forEach(function (row) {
@@ -616,9 +614,7 @@
         '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> ' +
         '<a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a> ' +
         '<a class="button secondary" href="/api/methodist/mo/cases/' + encodeURIComponent(item.id) +
-        '/document" target="_blank" rel="noopener">Открыть МО</a> ' +
-        '<a class="button secondary" href="/api/methodist/mo/cases/' + encodeURIComponent(item.id) +
-        '/pdf" target="_blank" rel="noopener">PDF</a></p></div>' +
+        '/pdf" target="_blank" rel="noopener">МО в PDF</a></p></div>' +
         '<div class="detail-block"><h3>История решений</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
@@ -807,7 +803,6 @@
     function renderYesterdayActions(data) {
       var section = data.action_cases || {}, items = section.items || [];
       $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
-        var docUrl = item.document_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.case_id) + "/document");
         var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.case_id) + "/pdf");
         return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
           (item.severity === "P0" ? "critical" : "review") + '">' + esc(item.severity) +
@@ -818,9 +813,8 @@
           '</small></td><td class="row-actions"><button class="button secondary compact" type="button" data-take-case="' +
           esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
           (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") +
-          '</button> <a class="button secondary compact" href="' + esc(docUrl) +
-          '" target="_blank" rel="noopener">МО</a> <a class="button secondary compact" href="' + esc(pdfUrl) +
-          '" target="_blank" rel="noopener">PDF</a></td></tr>';
+          '</button> <a class="button secondary compact" href="' + esc(pdfUrl) +
+          '" target="_blank" rel="noopener">МО в PDF</a></td></tr>';
       }).join("") : '<tr><td colspan="6">' + unavailableBlock(section, "P0/P1 случаев нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
     }
@@ -1034,13 +1028,11 @@
         var caseFindings=byCase[item.mis_id] || [];
         var caseId = item.case_id || item.visit_id || item.mis_id;
         var title = item.title || [item.visit_date, item.diagnosis_code || "Без кода МКБ", item.document_kind_label].filter(Boolean).join(" · ");
-        var docUrl = item.document_url || ("/api/methodist/mo/cases/" + encodeURIComponent(caseId) + "/document");
         var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(caseId) + "/pdf");
         return '<div class="case-card" data-case="' + esc(caseId) + '"><b>'+esc(title)+
           "</b><p>Оценка: "+esc(scoreLabel(item.overall_pct, item.score_reason))+
-          '</p><div class="row-actions"><a class="button secondary compact" href="'+esc(docUrl)+
-          '" target="_blank" rel="noopener">Открыть МО</a> <a class="button secondary compact" href="'+esc(pdfUrl)+
-          '" target="_blank" rel="noopener">PDF</a></div>'+caseFindings.map(function (finding) {
+          '</p><div class="row-actions"><a class="button secondary compact" href="'+esc(pdfUrl)+
+          '" target="_blank" rel="noopener">МО в PDF</a></div>'+caseFindings.map(function (finding) {
             return '<div class="finding"><b>'+esc(finding.severity+" · "+(finding.title_ru || finding.finding_code))+
               "</b><p>Источник: "+esc(finding.source_ref || "не указан")+
               '</p><button class="button secondary compact" data-dispute-case="'+esc(item.visit_id || item.mis_id)+

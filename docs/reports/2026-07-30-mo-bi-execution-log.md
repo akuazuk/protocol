@@ -207,3 +207,6 @@
 - Для P0/P1: ссылки «МО» / «PDF» (`/cases/{id}/document|pdf`).
 - `/api/methodist/mo/health`, `/briefing`, `scripts/ops/mo_morning_briefing.py`,
   `docs/mo-analytics-ui.md`, тесты `test_mo_phase78_reports.py`.
+- 03.08.2026 (UI polish): убрана синяя рамка вокруг таблиц, ссылки МО в очередях
+  и карточках переведены на PDF-first (`МО в PDF`), в drawer оставлена прямая
+  кнопка PDF для любого разбираемого случая.

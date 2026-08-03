@@ -278,8 +278,17 @@ select[multiple].control { min-height: 72px; }
 
 .table-wrap {
   overflow: auto; max-height: 650px;
-  border: 1px solid var(--line); border-radius: 14px;
+  border: 1px solid color-mix(in srgb, #111827 12%, #ffffff 88%);
+  border-radius: 14px;
   background: var(--surface-solid);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7);
+}
+.table-wrap:focus-within {
+  border-color: color-mix(in srgb, #111827 18%, #ffffff 82%);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.7), 0 0 0 1px rgba(15, 23, 42, .06);
+}
+.table-wrap table tr:focus-visible {
+  outline: none;
 }
 table { width: 100%; border-collapse: separate; border-spacing: 0; font-size: 13px; }
 th, td {
