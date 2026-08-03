@@ -44,44 +44,65 @@
     </aside>
 
     <div class="workspace">
-      <header class="context-bar" aria-label="Глобальные фильтры">
-        <div class="context-main">
-          <label class="filter"><span>Период</span>
-            <select class="control" id="period">
-              <option value="yesterday">Вчера</option>
-              <option value="7d">Последние 7 дней</option>
-              <option value="month" selected>Текущий месяц</option>
-              <option value="custom">Произвольный</option>
-            </select>
-          </label>
-          <label class="filter" id="date-from-wrap" hidden><span>С даты</span><input class="control" id="date-from" type="date"></label>
-          <label class="filter" id="date-to-wrap" hidden><span>По дату</span><input class="control" id="date-to" type="date"></label>
-          <label class="filter"><span>Сравнение</span>
-            <select class="control" id="compare">
-              <option value="previous">Предыдущий период</option>
-              <option value="weekday">Тот же день недели</option>
-              <option value="none">Без сравнения</option>
-            </select>
-          </label>
-          <div class="toolbar-inline" aria-label="Быстрый выбор периода">
-            <button class="button secondary" type="button" data-quick-period="yesterday">Вчера</button>
-            <button class="button secondary" type="button" data-quick-period="7d">7 дней</button>
-            <button class="button secondary" type="button" data-quick-period="month">Месяц</button>
-          </div>
-          <details class="filter-pop" data-filter="months"><summary>Месяцы <b>Все</b></summary><div class="filter-menu"></div></details>
-          <details class="filter-pop" data-filter="branches"><summary>Филиалы <b>Все</b></summary><div class="filter-menu"></div></details>
-          <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
-          <details class="filter-pop" data-filter="doctors"><summary>Врачи <b>Все</b></summary><div class="filter-menu"></div></details>
-          <details class="filter-pop" data-filter="document_types"><summary>Тип документа <b>Все</b></summary><div class="filter-menu"></div></details>
-          <details class="filter-pop" data-filter="statuses"><summary>Статусы <b>Все</b></summary><div class="filter-menu"></div></details>
-          <div class="actions">
-            <label class="filter search-field"><span>Поиск по случаям</span><input class="control" id="case-search" type="search" placeholder="Врач, диагноз, МКБ" autocomplete="off" aria-controls="search-suggestions" aria-expanded="false"><span class="suggestions" id="search-suggestions" role="listbox" hidden></span></label>
-            <label class="filter"><span>Представление</span><select class="control" id="saved-view"><option value="">Текущий срез</option></select></label>
+      <header class="context-bar" aria-label="Поиск и глобальные фильтры">
+        <div class="context-top">
+          <form class="case-search-form" id="case-search-form" role="search">
+            <label class="filter search-field"><span>Поиск по случаям</span><input class="control" id="case-search" type="search" placeholder="Врач, диагноз или МКБ" autocomplete="off" aria-controls="search-suggestions" aria-expanded="false"><span class="suggestions" id="search-suggestions" role="listbox" hidden></span></label>
+            <button class="button" id="case-search-submit" type="submit">Найти</button>
+            <button class="button secondary" id="case-search-clear" type="button" hidden>Очистить</button>
+          </form>
+          <div class="context-top-actions">
+            <details class="toolbar-section" id="filters-panel">
+              <summary><span>Фильтры</span><b id="filter-total">Без дополнительных фильтров</b></summary>
+              <div class="toolbar-panel">
+                <div class="context-main context-main--filters">
+                  <label class="filter"><span>Период</span>
+                    <select class="control" id="period">
+                      <option value="yesterday">Вчера</option>
+                      <option value="7d">Последние 7 дней</option>
+                      <option value="month" selected>Текущий месяц</option>
+                      <option value="custom">Произвольный</option>
+                    </select>
+                  </label>
+                  <label class="filter" id="date-from-wrap" hidden><span>С даты</span><input class="control" id="date-from" type="date"></label>
+                  <label class="filter" id="date-to-wrap" hidden><span>По дату</span><input class="control" id="date-to" type="date"></label>
+                  <label class="filter"><span>Сравнение</span>
+                    <select class="control" id="compare">
+                      <option value="previous">Предыдущий период</option>
+                      <option value="weekday">Тот же день недели</option>
+                      <option value="none">Без сравнения</option>
+                    </select>
+                  </label>
+                  <div class="toolbar-inline" aria-label="Быстрый выбор периода">
+                    <button class="button secondary" type="button" data-quick-period="yesterday">Вчера</button>
+                    <button class="button secondary" type="button" data-quick-period="7d">7 дней</button>
+                    <button class="button secondary" type="button" data-quick-period="month">Месяц</button>
+                  </div>
+                  <details class="filter-pop" data-filter="months"><summary>Месяцы <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="branches"><summary>Филиалы <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="doctors"><summary>Врачи <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="document_types"><summary>Тип документа <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="statuses"><summary>Статусы <b>Все</b></summary><div class="filter-menu"></div></details>
+                </div>
+                <div class="toolbar-panel-actions">
+                  <span class="panel-help">Откройте группу, отметьте значения и нажмите «Применить».</span>
+                  <button class="button secondary" id="reset-filters" type="button">Сбросить фильтры</button>
+                </div>
+              </div>
+            </details>
+            <details class="toolbar-section toolbar-section--views" id="views-panel">
+              <summary><span>Представления</span><b>Текущий срез и действия</b></summary>
+              <div class="toolbar-panel toolbar-panel--views">
+                <label class="filter"><span>Сохранённое представление</span><select class="control" id="saved-view"><option value="">Текущий срез</option></select></label>
+                <div class="toolbar-panel-actions">
+                  <button class="button" id="save-view" type="button">Сохранить срез</button>
+                  <button class="button secondary" id="share-view" type="button">Скопировать ссылку</button>
+                </div>
+              </div>
+            </details>
             <button class="button secondary" id="command-open" type="button" aria-haspopup="dialog">Команды <kbd>⌘K</kbd></button>
             <button class="button secondary icon" id="theme-toggle" type="button" aria-pressed="false" aria-label="Включить тёмную тему">◐</button>
-            <button class="button secondary" id="save-view">Сохранить</button>
-            <button class="button secondary" id="share-view">Скопировать ссылку</button>
-            <button class="button secondary" id="reset-filters">Сбросить</button>
           </div>
         </div>
         <div class="chips" id="filter-chips" aria-live="polite"></div>

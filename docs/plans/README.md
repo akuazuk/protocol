@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-03-mo-filter-actions-ui-v1.md](2026-08-03-mo-filter-actions-ui-v1.md) | МО Аналитика: явный запуск поиска, подтверждение мультифильтров и раскрываемые панели | active |
 | [2026-08-03-mo-rubric-mz-scoring-viz-v1.md](2026-08-03-mo-rubric-mz-scoring-viz-v1.md) | МО: рубрика МЗ «Как оценивать» (0/0.5/1), shadow scorer и визуализация в case detail | active |
 | [2026-07-30-mo-analytics-bi-redesign-v1.md](2026-07-30-mo-analytics-bi-redesign-v1.md) | МО Аналитика: редизайн BI (ECharts, фильтры, «Вчера» и «Месяц»), доставка данных в прод и оценка v4 | active |
 | [2026-07-29-repo-structure-cleanup-v1.md](2026-07-29-repo-structure-cleanup-v1.md) | Cleanup структуры репозитория: frontend/backend/ops без регрессий прода | active |

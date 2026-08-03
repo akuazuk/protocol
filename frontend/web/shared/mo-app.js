@@ -289,11 +289,38 @@
         statuses: values(rawFacets.statuses || ["Хорошо","Требует внимания","Критично","Недостаточно данных"], ["value"])
       };
       document.querySelectorAll(".filter-pop").forEach(renderFilter);
+      updateFilterSummary();
+    }
+    function appliedFilterCount() {
+      return Object.keys(state.selected).reduce(function (total, key) {
+        return total + (state.selected[key] || []).length;
+      }, 0);
+    }
+    function updateFilterSummary() {
+      var count = appliedFilterCount();
+      var total = $("filter-total");
+      if (total) total.textContent = count ? "Выбрано: " + count : "Без дополнительных фильтров";
+      var clearSearch = $("case-search-clear");
+      if (clearSearch) clearSearch.hidden = !String(state.search || $("case-search").value || "").trim();
+    }
+    function clearCaseSearch() {
+      state.search = "";
+      $("case-search").value = "";
+      $("search-suggestions").hidden = true;
+      $("case-search").setAttribute("aria-expanded", "false");
+      filtersChanged();
+      $("case-search").focus();
+    }
+    function closeOtherFilterMenus(current) {
+      document.querySelectorAll(".filter-pop[open]").forEach(function (details) {
+        if (details !== current) details.open = false;
+      });
     }
     function renderFilter(details) {
       var key = details.getAttribute("data-filter");
       var list = state.facets[key] || [];
-      var selected = state.selected[key] || [];
+      var selected = (state.selected[key] || []).slice();
+      var draft = selected.slice();
       details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
       details.querySelector(".filter-menu").innerHTML =
         '<input class="control" type="search" placeholder="Найти" aria-label="Поиск по фильтру">' +
@@ -301,8 +328,18 @@
           return '<label class="filter-option" data-label="' + esc(item.label.toLowerCase()) + '"><input type="checkbox" value="' +
             esc(item.value) + '"' + (selected.indexOf(item.value) >= 0 ? " checked" : "") + '><span>' +
             esc(item.label) + '</span><span class="filter-count">' + esc(item.count == null ? "" : item.count) + "</span></label>";
-        }).join("") + "</div>";
+        }).join("") + '</div><div class="filter-menu-actions"><span class="filter-selection">Без изменений</span>' +
+        '<button class="button secondary compact" type="button" data-filter-clear>Очистить</button>' +
+        '<button class="button compact" type="button" data-filter-apply>Применить</button></div>';
       var search = details.querySelector('input[type="search"]');
+      var selection = details.querySelector(".filter-selection");
+      var apply = details.querySelector("[data-filter-apply]");
+      function renderDraftState() {
+        var changed = JSON.stringify(draft) !== JSON.stringify(selected);
+        selection.textContent = changed ? "Будет выбрано: " + draft.length : "Без изменений";
+        apply.disabled = !changed;
+        details.classList.toggle("has-pending", changed);
+      }
       search.addEventListener("input", function () {
         var term = search.value.trim().toLowerCase();
         details.querySelectorAll(".filter-option").forEach(function (option) {
@@ -311,13 +348,41 @@
       });
       details.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
         input.addEventListener("change", function () {
-          var index = state.selected[key].indexOf(input.value);
-          if (input.checked && index < 0) state.selected[key].push(input.value);
-          if (!input.checked && index >= 0) state.selected[key].splice(index, 1);
-          details.querySelector("summary b").textContent = state.selected[key].length || "Все";
-          filtersChanged();
+          var index = draft.indexOf(input.value);
+          if (input.checked && index < 0) draft.push(input.value);
+          if (!input.checked && index >= 0) draft.splice(index, 1);
+          renderDraftState();
         });
       });
+      details.querySelector("[data-filter-clear]").addEventListener("click", function () {
+        draft = [];
+        details.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
+          input.checked = false;
+        });
+        renderDraftState();
+      });
+      apply.addEventListener("click", function () {
+        state.selected[key] = draft.slice();
+        selected = draft.slice();
+        details.querySelector("summary b").textContent = draft.length || "Все";
+        details.classList.remove("has-pending");
+        details.open = false;
+        showToast(draft.length ? "Фильтр применён: " + FILTER_LABELS[key] : "Фильтр очищен: " + FILTER_LABELS[key]);
+        filtersChanged();
+      });
+      details.ontoggle = function () {
+        if (details.open) {
+          closeOtherFilterMenus(details);
+          window.setTimeout(function () { search.focus(); }, 0);
+        } else if (JSON.stringify(draft) !== JSON.stringify(selected)) {
+          draft = selected.slice();
+          details.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
+            input.checked = draft.indexOf(input.value) >= 0;
+          });
+          renderDraftState();
+        }
+      };
+      renderDraftState();
     }
     function selectionSnapshot() {
       return {
@@ -421,6 +486,10 @@
     }
     function renderChips() {
       var html = [];
+      if (state.search) {
+        html.push('<span class="chip chip-search">Поиск: ' + esc(state.search) +
+          '<button type="button" data-clear-search aria-label="Очистить поиск">×</button></span>');
+      }
       Object.keys(state.selected).forEach(function (key) {
         state.selected[key].forEach(function (value) {
           html.push('<span class="chip">' + esc(FILTER_LABELS[key] + ": " + value) +
@@ -445,6 +514,8 @@
           filtersChanged();
         });
       });
+      var clearSearch = $("filter-chips").querySelector("[data-clear-search]");
+      if (clearSearch) clearSearch.addEventListener("click", clearCaseSearch);
       var clearFinding = $("filter-chips").querySelector("[data-clear-finding]");
       if (clearFinding) clearFinding.addEventListener("click", function () {
         state.findingCode = "";
@@ -485,6 +556,7 @@
       $("sort-dir").value = state.sortDir;
       $("date-from-wrap").hidden = state.period !== "custom";
       $("date-to-wrap").hidden = state.period !== "custom";
+      updateFilterSummary();
     }
     function filtersChanged() {
       if (state.drillTrail.length) {
@@ -492,7 +564,7 @@
         state.drillSnapshot = null;
       }
       state.pageNo = 1;
-      renderChips(); syncUrl(true); loadPage(state.page);
+      renderChips(); updateFilterSummary(); syncUrl(true); loadPage(state.page);
       renderAnalysisRail();
     }
     function switchPage(page, push) {
@@ -1845,10 +1917,10 @@
       box.querySelectorAll("[data-suggestion]").forEach(function (button) {
         button.addEventListener("click", function () {
           $("case-search").value = button.getAttribute("data-suggestion");
-          state.search = $("case-search").value;
           box.hidden = true;
           $("case-search").setAttribute("aria-expanded", "false");
-          filtersChanged();
+          updateFilterSummary();
+          $("case-search-submit").focus();
         });
       });
     }
@@ -1890,7 +1962,15 @@
       $("date-from").addEventListener("change", function () { state.dateFrom = this.value; filtersChanged(); });
       $("date-to").addEventListener("change", function () { state.dateTo = this.value; filtersChanged(); });
       $("compare").addEventListener("change", function () { state.compare = this.value; filtersChanged(); });
-      $("case-search").addEventListener("change", function () { state.search = this.value.trim(); filtersChanged(); });
+      $("case-search-form").addEventListener("submit", function (event) {
+        event.preventDefault();
+        state.search = $("case-search").value.trim();
+        $("search-suggestions").hidden = true;
+        $("case-search").setAttribute("aria-expanded", "false");
+        showToast(state.search ? "Поиск применён: " + state.search : "Поиск очищен");
+        filtersChanged();
+      });
+      $("case-search-clear").addEventListener("click", clearCaseSearch);
       $("sort-by").addEventListener("change", function () { state.sortBy = this.value; filtersChanged(); });
       $("sort-dir").addEventListener("change", function () { state.sortDir = this.value; filtersChanged(); });
       document.querySelectorAll("[data-quick-period]").forEach(function (button) {
@@ -1900,6 +1980,14 @@
           $("date-from-wrap").hidden = state.period !== "custom";
           $("date-to-wrap").hidden = state.period !== "custom";
           filtersChanged();
+        });
+      });
+      document.querySelectorAll(".toolbar-section").forEach(function (details) {
+        details.addEventListener("toggle", function () {
+          if (!details.open) return;
+          document.querySelectorAll(".toolbar-section[open]").forEach(function (other) {
+            if (other !== details) other.open = false;
+          });
         });
       });
       $("reset-filters").addEventListener("click", function () {
@@ -1915,7 +2003,10 @@
         $("sort-dir").value = "desc";
         $("date-from").value = ""; $("date-to").value = "";
         $("date-from-wrap").hidden = true; $("date-to-wrap").hidden = true;
-        document.querySelectorAll(".filter-pop").forEach(renderFilter); filtersChanged();
+        document.querySelectorAll(".filter-pop").forEach(renderFilter);
+        $("filters-panel").open = false;
+        filtersChanged();
+        showToast("Фильтры сброшены");
       });
       $("save-view").addEventListener("click", saveView);
       $("analysis-back").addEventListener("click", function () {
@@ -2062,6 +2153,7 @@
       var searchTimer = null;
       $("case-search").addEventListener("input", function () {
         var value = this.value;
+        updateFilterSummary();
         window.clearTimeout(searchTimer);
         searchTimer = window.setTimeout(function () { renderSearchSuggestions(value); }, 250);
       });
