@@ -146,6 +146,10 @@
         esc(meta || "по выбранному периоду") + "</div></article>";
     }
     function score(value) { return value == null ? "Нет данных" : Math.round(Number(value)) + "%"; }
+    function scoreLabel(value, reason) {
+      if (value != null && value !== "") return Math.round(Number(value)) + "%";
+      return reason || "Нет оценки";
+    }
     function bar(name, value, suffix) {
       var n = Math.max(0, Math.min(100, Number(value) || 0));
       var cls = n < 60 ? " bad" : n < 75 ? " warn" : "";
@@ -484,20 +488,25 @@
     function documentRow(item) {
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
-        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(score(item.total)) + '</b></td><td>' + esc(score(item.coverage)) +
+        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td>' + esc(score(item.coverage)) +
         '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
         esc(statusLabel(item.status)) + "</span></td></tr>";
     }
     function queueRow(item) {
       var priority = Number(item.raw.p0 || 0) > 0 ? "P0" : Number(item.raw.p1 || 0) > 0 ? "P1" : "Низкий балл";
       var crm = item.raw.crm || {};
+      var docUrl = item.raw.document_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/document");
+      var pdfUrl = item.raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
         statusClass(item.status) + '">' + esc(priority) + '</span></td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
-        '</small></td><td>' + esc(item.diagnosis) + '</td><td>' + esc(score(item.total)) + '</td><td>' +
+        '</small></td><td>' + esc(item.diagnosis) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
         esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
         esc(item.raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(item.raw.due_date || crm.due_date || "Сегодня") +
-        '</td><td>' + esc(statusLabel(item.status)) + "</td></tr>";
+        '</td><td>' + esc(statusLabel(item.status)) +
+        '</td><td class="row-actions"><a class="button secondary compact" href="' + esc(docUrl) +
+        '" target="_blank" rel="noopener">МО</a> <a class="button secondary compact" href="' + esc(pdfUrl) +
+        '" target="_blank" rel="noopener">PDF</a></td></tr>';
     }
     function bindCaseRows(container) {
       container.querySelectorAll("[data-case]").forEach(function (row) {
@@ -519,7 +528,7 @@
       var body = queue ? $("queue-rows") : $("document-rows");
       var emptyState = data.empty_state || {};
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
-        '<tr><td colspan="' + (queue ? 11 : 9) + '" class="empty"><b>' +
+        '<tr><td colspan="' + (queue ? 12 : 9) + '" class="empty"><b>' +
         esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
         esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
       bindCaseRows(body);
@@ -604,7 +613,12 @@
         esc(crm.assignee || "") + '"></label><label class="filter"><span>Срок</span><input class="control" id="drawer-due" type="date" value="' +
         esc(crm.due_date || "") + '"></label><label class="filter"><span>Метки через запятую</span><input class="control" id="drawer-tags" maxlength="500" value="' +
         esc((crm.tags || []).join(", ")) + '"></label><label class="filter" style="margin-top:10px"><span>Комментарий</span><input class="control" id="drawer-comment" maxlength="2000"></label>' +
-        '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> <a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a></p></div>' +
+        '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> ' +
+        '<a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a> ' +
+        '<a class="button secondary" href="/api/methodist/mo/cases/' + encodeURIComponent(item.id) +
+        '/document" target="_blank" rel="noopener">Открыть МО</a> ' +
+        '<a class="button secondary" href="/api/methodist/mo/cases/' + encodeURIComponent(item.id) +
+        '/pdf" target="_blank" rel="noopener">PDF</a></p></div>' +
         '<div class="detail-block"><h3>История решений</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
@@ -793,14 +807,20 @@
     function renderYesterdayActions(data) {
       var section = data.action_cases || {}, items = section.items || [];
       $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
+        var docUrl = item.document_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.case_id) + "/document");
+        var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.case_id) + "/pdf");
         return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
           (item.severity === "P0" ? "critical" : "review") + '">' + esc(item.severity) +
           "</span></td><td><b>" + esc(item.doctor) + "</b><br><small>" + esc(item.specialty) +
           "</small></td><td>" + esc(item.branch) + "</td><td>" + esc(item.diagnosis) +
-          "</td><td><b>" + esc(item.finding_code) + "</b><br><small>" + esc(item.reason) +
-          '</small></td><td><button class="button secondary" type="button" data-take-case="' +
+          "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b><br><small>" + esc(item.reason) +
+          (item.overall_pct != null ? " · оценка " + Math.round(Number(item.overall_pct)) + "%" : "") +
+          '</small></td><td class="row-actions"><button class="button secondary compact" type="button" data-take-case="' +
           esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
-          (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") + "</button></td></tr>";
+          (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") +
+          '</button> <a class="button secondary compact" href="' + esc(docUrl) +
+          '" target="_blank" rel="noopener">МО</a> <a class="button secondary compact" href="' + esc(pdfUrl) +
+          '" target="_blank" rel="noopener">PDF</a></td></tr>';
       }).join("") : '<tr><td colspan="6">' + unavailableBlock(section, "P0/P1 случаев нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
     }
@@ -1012,14 +1032,23 @@
         kpi("Споров",(data.dispute_stats || {}).total || 0,"передано методисту");
       $("doctor-cabinet-records").innerHTML=(data.cases || []).map(function (item) {
         var caseFindings=byCase[item.mis_id] || [];
-        return '<div class="case-card"><b>'+esc(item.visit_date+" · "+(item.diagnosis_code || "Без кода"))+
-          "</b><p>Оценка: "+esc(score(item.overall_pct))+"</p>"+caseFindings.map(function (finding) {
-            return '<div class="finding"><b>'+esc(finding.severity+" · "+finding.finding_code)+
+        var caseId = item.case_id || item.visit_id || item.mis_id;
+        var title = item.title || [item.visit_date, item.diagnosis_code || "Без кода МКБ", item.document_kind_label].filter(Boolean).join(" · ");
+        var docUrl = item.document_url || ("/api/methodist/mo/cases/" + encodeURIComponent(caseId) + "/document");
+        var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(caseId) + "/pdf");
+        return '<div class="case-card" data-case="' + esc(caseId) + '"><b>'+esc(title)+
+          "</b><p>Оценка: "+esc(scoreLabel(item.overall_pct, item.score_reason))+
+          '</p><div class="row-actions"><a class="button secondary compact" href="'+esc(docUrl)+
+          '" target="_blank" rel="noopener">Открыть МО</a> <a class="button secondary compact" href="'+esc(pdfUrl)+
+          '" target="_blank" rel="noopener">PDF</a></div>'+caseFindings.map(function (finding) {
+            return '<div class="finding"><b>'+esc(finding.severity+" · "+(finding.title_ru || finding.finding_code))+
               "</b><p>Источник: "+esc(finding.source_ref || "не указан")+
-              '</p><button class="button secondary" data-dispute-case="'+esc(item.visit_id || item.mis_id)+
+              '</p><button class="button secondary compact" data-dispute-case="'+esc(item.visit_id || item.mis_id)+
               '" data-dispute-finding="'+esc(finding.finding_code)+'">Оспорить</button></div>';
           }).join("")+"</div>";
-      }).join("") || '<div class="empty">Записей нет.</div>';
+      }).join("") || '<div class="empty">Оцениваемых записей нет.' +
+        (data.hidden_unscored ? ' Скрыто непрофильных: ' + data.hidden_unscored + '.' : '') + '</div>';
+      bindCaseRows($("doctor-cabinet-records"));
       $("doctor-cabinet-actions").innerHTML=(data.what_to_fix || []).map(function (code) {
         return notice(code,"Откройте запись и сверите замечание с указанным источником.","review");
       }).join("") || '<div class="empty">Активных рекомендаций нет.</div>';
@@ -1102,13 +1131,22 @@
       $("report-list").innerHTML = items.map(function (item) {
         var day = item.date || item.month || "";
         var tone = item.quality_status === "blocked" || item.quality_status === "failed" ? "critical" :
-          (item.quality_status === "partial" ? "review" : "good");
+          (item.quality_status === "partial" || item.quality_status === "warehouse_only" ? "review" : "good");
+        var meta = [];
+        if (item.source_rows != null) meta.push("записей " + item.source_rows);
+        if (item.evaluated != null) meta.push("оценено " + item.evaluated);
+        if (item.avg_score != null) meta.push("средняя " + Math.round(Number(item.avg_score)) + "%");
+        if (item.critical != null) meta.push("крит. " + item.critical);
+        if (item.needs_attention != null) meta.push("внимание " + item.needs_attention);
+        if (item.empty_reason) meta.push(item.empty_reason);
         return '<button class="report-card" type="button" data-report-date="' + esc(day) + '">' +
           '<strong>' + esc(day) + '</strong>' +
           '<span class="status ' + tone + '">' + esc(statusLabel(item.quality_status || "готов")) + '</span>' +
-          '<span>Ревизия ' + esc(item.revision || 1) +
+          '<span>Ревизия ' + esc(item.revision || (item.has_report_file === false ? "витрина" : 1)) +
           (item.generated_at ? ' · ' + esc(String(item.generated_at).replace("T", " ").replace("Z", " UTC")) : "") +
-          '</span></button>';
+          '</span>' +
+          (meta.length ? '<span class="report-meta">' + esc(meta.join(" · ")) + '</span>' : '') +
+          '</button>';
       }).join("");
       $("report-list").querySelectorAll("[data-report-date]").forEach(function (button) {
         button.addEventListener("click", function () {

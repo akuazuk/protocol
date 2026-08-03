@@ -482,12 +482,36 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "specialization": item.get("doctor_specialty") or item.get("specialty") or "",
                 "filial": item.get("doctor_filial") or item.get("filial") or "",
                 "document_kind": item.get("document_kind") or "unknown",
+                "document_kind_label": {
+                    "medical_exam": "Медицинский осмотр",
+                    "consultation": "Консультативное заключение",
+                    "certificate": "Справка",
+                    "diagnostic": "Диагностическое исследование",
+                    "non_clinical": "Неклинический документ",
+                    "empty": "Пустой документ",
+                    "unknown": "Не определён",
+                }.get(str(item.get("document_kind") or "unknown"), str(item.get("document_kind") or "")),
+                "diagnosis_code": item.get("diagnosis_code") or "",
+                "diagnosis_short": item.get("diagnosis_code") or "",
+                "mkb_code_main": item.get("diagnosis_code") or "",
+                "icd_chapter": item.get("icd_chapter") or "",
                 "overall_pct": score,
+                "score_reason": (
+                    None
+                    if isinstance(score, (int, float))
+                    else (
+                        "Не оценивается: диагностика / неклинический документ"
+                        if str(item.get("document_kind") or "")
+                        not in {"medical_exam", "consultation"}
+                        else "Оценка ещё не рассчитана"
+                    )
+                ),
                 "status": item.get("status") or "",
                 "score_band": (
                     "90-100" if isinstance(score, (int, float)) and score >= 90
                     else "75-90" if isinstance(score, (int, float)) and score >= 75
-                    else "0-75"
+                    else "0-75" if isinstance(score, (int, float))
+                    else "unscored"
                 ),
                 "p0": int(item.get("p0") or 0),
                 "p1": int(item.get("p1") or 0),
@@ -496,6 +520,8 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "finding_codes": [
                     code for code in str(item.get("finding_codes") or "").split(",") if code
                 ],
+                "document_url": f"/api/methodist/mo/cases/{item.get('visit_id') or item['mis_id']}/document",
+                "pdf_url": f"/api/methodist/mo/cases/{item.get('visit_id') or item['mis_id']}/pdf",
                 "parse_ok": "1",
                 "date_mismatch": "0",
                 "_source": "warehouse",
@@ -846,9 +872,11 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             (day,),
         ).fetchall()
         finding_rows = conn.execute(
-            """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) AS cases
+            """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) AS cases,
+                      COALESCE(df.title_ru, f.finding_code) AS title_ru
                FROM fact_mo_finding f
                JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                WHERE c.visit_date=?
                  AND c.document_kind IN ('medical_exam','consultation')
                  AND f.severity IN ('P0','P1','P2','P3')
@@ -860,14 +888,17 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         ).fetchall()
         action_raw = conn.execute(
             """SELECT c.mis_id, c.visit_id, c.filial, c.specialty, c.diagnosis_code,
+                      c.overall_pct, c.document_kind,
                       COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
                       COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
                       f.finding_code, f.severity,
+                      COALESCE(df.title_ru, f.finding_code) AS finding_title,
                       COALESCE(s.status, 'new') AS crm_status
                FROM fact_mo_case c
                JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
                LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code=c.diagnosis_code
+               LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                LEFT JOIN crm_case_state s
                  ON s.case_id=COALESCE(NULLIF(c.visit_id,''), c.mis_id)
                WHERE c.visit_date=?
@@ -1019,7 +1050,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
     top_findings = [
         {
             "finding_code": str(row["finding_code"]),
-            "label": f"Замечание: {row['finding_code']}",
+            "label": str(row["title_ru"] or f"Замечание: {row['finding_code']}"),
             "severity": str(row["severity"]),
             "cases": int(row["cases"]),
             "suppressed": False,
@@ -1042,6 +1073,8 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         if case_id in seen_cases:
             continue
         seen_cases.add(case_id)
+        score = row["overall_pct"]
+        finding_title = str(row["finding_title"] or row["finding_code"])
         action_cases.append(
             {
                 "case_id": case_id,
@@ -1052,9 +1085,13 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "branch": str(row["filial"] or ""),
                 "diagnosis": str(row["diagnosis"] or "Диагноз не указан"),
                 "diagnosis_code": str(row["diagnosis_code"] or ""),
+                "overall_pct": float(score) if score is not None else None,
                 "finding_code": str(row["finding_code"]),
-                "reason": f"{row['severity']}: замечание {row['finding_code']}",
+                "finding_title": finding_title,
+                "reason": f"{row['severity']}: {finding_title}",
                 "crm_status": str(row["crm_status"]),
+                "document_url": f"/api/methodist/mo/cases/{case_id}/document",
+                "pdf_url": f"/api/methodist/mo/cases/{case_id}/pdf",
             }
         )
         if len(action_cases) >= 100:
@@ -2322,6 +2359,7 @@ def apply_bulk_action(*, actor: str, role: str, payload: dict[str, Any]) -> dict
 
 def build_reports() -> dict[str, Any]:
     reports: list[dict[str, Any]] = []
+    seen_dates: set[str] = set()
     roots = [root / "reports" for root in _medical_exam_roots()]
     for base in roots:
         if not base.is_dir():
@@ -2331,18 +2369,140 @@ def build_reports() -> dict[str, Any]:
                 data = json.loads(path.read_text(encoding="utf-8"))
             except (OSError, json.JSONDecodeError):
                 continue
+            day = str(data.get("date") or path.parent.name)
+            if day in seen_dates:
+                continue
+            seen_dates.add(day)
+            summary = data.get("summary") or {}
             reports.append(
                 {
-                    "date": data.get("date") or path.parent.name,
+                    "date": day,
                     "revision": data.get("revision"),
                     "generated_at": data.get("generated_at"),
                     "quality_status": data.get("quality_status")
-                    or ("ok" if (data.get("quality") or {}).get("passed") else "blocked"),
+                    or ("partial" if data.get("partial") else ("ok" if (data.get("quality") or {}).get("passed") else "blocked")),
+                    "source_rows": summary.get("source_rows"),
+                    "evaluated": summary.get("scored") or summary.get("eligible_rows"),
+                    "avg_score": summary.get("avg_score"),
+                    "needs_attention": summary.get("needs_attention"),
+                    "critical": summary.get("critical"),
+                    "has_report_file": True,
                 }
             )
+    # Дополняем днями из витрины, если HTML/JSON отчёт ещё не опубликован, но данные есть.
+    if _warehouse_available():
+        with closing(_read_connection()) as conn:
+            try:
+                rows = conn.execute(
+                    """SELECT visit_date, source_rows, scored_rows, avg_score, needs_attention, critical, quality_status
+                       FROM fact_mo_daily ORDER BY visit_date DESC LIMIT 120"""
+                ).fetchall()
+            except sqlite3.Error:
+                rows = []
+        for row in rows:
+            day = str(row["visit_date"])
+            if day in seen_dates:
+                # обогащаем уже найденный отчёт, если KPI пустые
+                for item in reports:
+                    if item["date"] == day:
+                        item.setdefault("source_rows", row["source_rows"])
+                        item.setdefault("evaluated", row["scored_rows"])
+                        item.setdefault("avg_score", row["avg_score"])
+                        item.setdefault("needs_attention", row["needs_attention"])
+                        item.setdefault("critical", row["critical"])
+                        break
+                continue
+            seen_dates.add(day)
+            reports.append(
+                {
+                    "date": day,
+                    "revision": None,
+                    "generated_at": None,
+                    "quality_status": str(row["quality_status"] or "warehouse_only"),
+                    "source_rows": row["source_rows"],
+                    "evaluated": row["scored_rows"],
+                    "avg_score": row["avg_score"],
+                    "needs_attention": row["needs_attention"],
+                    "critical": row["critical"],
+                    "has_report_file": False,
+                    "empty_reason": "Есть витрина, файл дневного отчёта ещё не сформирован",
+                }
+            )
+    reports.sort(key=lambda item: str(item.get("date") or ""), reverse=True)
     if not reports:
         reports = [{"month": month, "kind": "legacy_monthly"} for month in reversed(build_kz_dynamics().get("months") or [])]
     return {"ok": True, "items": reports, "freshness": build_freshness({})}
+
+
+def build_mo_health() -> dict[str, Any]:
+    """Сводка здоровья модуля МО (фаза 7): витрина, лаг, сверка, LLM."""
+    freshness = build_freshness({})
+    db_path = _db_path()
+    schema_version = None
+    warehouse_cases = None
+    daily_days = None
+    reconcile: dict[str, Any] = {"available": False}
+    if _warehouse_available():
+        with closing(_read_connection()) as conn:
+            try:
+                schema_version = conn.execute("PRAGMA user_version").fetchone()[0]
+            except sqlite3.Error:
+                schema_version = None
+            try:
+                warehouse_cases = int(conn.execute("SELECT COUNT(*) FROM fact_mo_case").fetchone()[0])
+                daily_days = int(conn.execute("SELECT COUNT(*) FROM fact_mo_daily").fetchone()[0])
+            except sqlite3.Error:
+                pass
+            try:
+                # Сверка: дни витрины против дней отчётов на диске.
+                days = [
+                    str(row[0])
+                    for row in conn.execute(
+                        "SELECT visit_date FROM fact_mo_daily ORDER BY visit_date DESC LIMIT 14"
+                    ).fetchall()
+                ]
+                missing_reports = []
+                for day in days:
+                    found = False
+                    for root in _medical_exam_roots():
+                        path = root / "reports" / day[0:4] / day[5:7] / day[8:10] / "report.json"
+                        if path.is_file():
+                            found = True
+                            break
+                    if not found:
+                        missing_reports.append(day)
+                reconcile = {
+                    "available": True,
+                    "checked_days": len(days),
+                    "missing_report_files": missing_reports,
+                    "mismatch_pct": round(100 * len(missing_reports) / len(days), 2) if days else 0.0,
+                    "alert": bool(days) and (100 * len(missing_reports) / len(days) > 0.5),
+                }
+            except sqlite3.Error as exc:
+                reconcile = {"available": False, "reason": str(exc)}
+    status = "ok"
+    if freshness.get("status") in {"critical", "stale"}:
+        status = str(freshness.get("status"))
+    if reconcile.get("alert"):
+        status = "degraded"
+    return {
+        "ok": True,
+        "status": status,
+        "schema_version": schema_version,
+        "warehouse_path": str(db_path),
+        "warehouse_cases": warehouse_cases,
+        "daily_days": daily_days,
+        "freshness": freshness,
+        "reconcile": reconcile,
+        "features": {
+            "case_document": True,
+            "case_pdf": True,
+            "methodology_toggle": True,
+            "llm_costs": True,
+            "v4_primary": False,
+        },
+        "checked_at": _utc(),
+    }
 
 
 def build_entity(kind: str, entity_id: str, params: dict[str, Any]) -> dict[str, Any]:
@@ -2629,7 +2789,7 @@ def list_access_log(*, role: str, limit: int = 200) -> dict[str, Any]:
     return {"ok": True, "items": items}
 
 
-def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str) -> dict[str, Any]:
+def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str, include_unscored: bool = False) -> dict[str, Any]:
     if not doctor_key:
         raise PermissionError("trusted_doctor_identity_required")
     record_access(actor=actor, role=role, action="doctor_cabinet_open", doctor_key=doctor_key)
@@ -2641,14 +2801,18 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str) -> dict[str,
         if not doctor:
             return {"ok": False, "error": "doctor_not_found"}
         cases = conn.execute(
-            """SELECT mis_id,visit_id,visit_date,overall_pct,status,diagnosis_code
+            """SELECT mis_id,visit_id,visit_date,overall_pct,status,diagnosis_code,
+                      document_kind,specialty,filial,scorer_version
                FROM fact_mo_case WHERE doctor_key=?
-               ORDER BY visit_date DESC LIMIT 500""",
+               ORDER BY visit_date DESC, CASE WHEN document_kind IN ('medical_exam','consultation') THEN 0 ELSE 1 END
+               LIMIT 500""",
             (doctor_key,),
         ).fetchall()
         findings = conn.execute(
-            """SELECT f.mis_id,f.finding_code,f.severity,f.source_ref
+            """SELECT f.mis_id,f.finding_code,f.severity,f.source_ref,
+                      COALESCE(df.title_ru, f.finding_code) AS title_ru
                FROM fact_mo_finding f JOIN fact_mo_case c ON c.mis_id=f.mis_id
+               LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                WHERE c.doctor_key=? ORDER BY c.visit_date DESC,f.severity LIMIT 1000""",
             (doctor_key,),
         ).fetchall()
@@ -2679,6 +2843,53 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str) -> dict[str,
                  )""",
             (doctor_key,),
         ).fetchone()
+    kind_labels = {
+        "medical_exam": "Медицинский осмотр",
+        "consultation": "Консультативное заключение",
+        "certificate": "Справка",
+        "diagnostic": "Диагностическое исследование",
+        "non_clinical": "Неклинический документ",
+        "empty": "Пустой документ",
+        "unknown": "Не определён",
+    }
+    scored_kinds = {"medical_exam", "consultation"}
+    case_items = []
+    for row in cases:
+        item = dict(row)
+        kind = str(item.get("document_kind") or "unknown")
+        if not include_unscored and kind not in scored_kinds:
+            continue
+        score = item.get("overall_pct")
+        case_id = str(item.get("visit_id") or item.get("mis_id"))
+        item.update(
+            {
+                "case_id": case_id,
+                "document_kind_label": kind_labels.get(kind, kind),
+                "score_reason": (
+                    None
+                    if isinstance(score, (int, float))
+                    else (
+                        f"Не оценивается: {kind_labels.get(kind, kind)}"
+                        if kind not in scored_kinds
+                        else "Оценка ещё не рассчитана"
+                    )
+                ),
+                "title": " · ".join(
+                    part
+                    for part in (
+                        str(item.get("visit_date") or ""),
+                        str(item.get("diagnosis_code") or "Без кода МКБ"),
+                        kind_labels.get(kind, kind),
+                    )
+                    if part
+                ),
+                "document_url": f"/api/methodist/mo/cases/{case_id}/document",
+                "pdf_url": f"/api/methodist/mo/cases/{case_id}/pdf",
+            }
+        )
+        # Никогда не отдаём content_hash и сырые opaque id как заголовок.
+        item.pop("content_hash", None)
+        case_items.append(item)
     pair_items = []
     for row in pairs:
         item = dict(row)
@@ -2690,14 +2901,17 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str) -> dict[str,
         item["payload"] = json.loads(item.pop("payload_json") or "{}")
         action_items.append(item)
     finding_items = []
+    scored_mis_ids = {str(item["mis_id"]) for item in case_items}
     for row in findings:
         item = dict(row)
+        if scored_mis_ids and str(item.get("mis_id")) not in scored_mis_ids and not include_unscored:
+            continue
         item["citation"] = item.get("source_ref") or None
         finding_items.append(item)
     return {
         "ok": True,
         "doctor": dict(doctor),
-        "cases": [dict(row) for row in cases],
+        "cases": case_items,
         "findings": finding_items,
         "actions": action_items,
         "template_pairs": pair_items,
@@ -2706,7 +2920,9 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str) -> dict[str,
             "submitted": int(dispute_rows["submitted"] or 0),
             "false_positive": int(dispute_rows["false_positive"] or 0),
         },
-        "what_to_fix": sorted({str(row["finding_code"]) for row in findings})[:50],
+        "what_to_fix": sorted({str(row["finding_code"]) for row in finding_items})[:50],
+        "include_unscored": include_unscored,
+        "hidden_unscored": max(0, len(cases) - len(case_items)),
     }
 
 

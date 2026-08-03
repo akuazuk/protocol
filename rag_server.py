@@ -8462,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r5-mo-scorer-v4-shadow"
+BUILD_VERSION = "2026-08-03-r6-mo-case-pdf-reports"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11050,6 +11050,7 @@ def api_methodist_mo_doctor_cabinet(
     request: "Request",
     response: "Response",
     doctor_key: str = Query("", max_length=120),
+    include_unscored: bool = Query(False),
 ) -> dict:
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_doctor_cabinet
@@ -11060,6 +11061,7 @@ def api_methodist_mo_doctor_cabinet(
         doctor_key=resolved,
         actor=_mo_actor(request),
         role=_mo_role(request),
+        include_unscored=include_unscored,
     )
     if not result.get("ok"):
         raise HTTPException(status_code=404, detail=result.get("error") or "doctor_not_found")
@@ -11475,6 +11477,87 @@ def api_methodist_mo_case_detail(
     if not result.get("ok"):
         raise HTTPException(status_code=404, detail=result.get("error") or "case_not_found")
     return result
+
+
+@app.get("/api/methodist/mo/cases/{case_id}/document")
+def api_methodist_mo_case_document(
+    case_id: str,
+    request: "Request",
+    response: "Response",
+    month: str = Query("", min_length=0, max_length=7),
+):
+    """Print-ready HTML текста МО + оценка для сверки."""
+    _require_methodist_auth(request)
+    from fastapi.responses import HTMLResponse
+
+    from clinical_knowledge.mo_case_document import build_case_document_response
+
+    response.headers["Cache-Control"] = "private, no-store"
+    result = build_case_document_response(case_id, month=month or None, as_pdf=False)
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail=result.get("error") or "case_not_found")
+    return HTMLResponse(result["html"])
+
+
+@app.get("/api/methodist/mo/cases/{case_id}/pdf")
+def api_methodist_mo_case_pdf(
+    case_id: str,
+    request: "Request",
+    response: "Response",
+    month: str = Query("", min_length=0, max_length=7),
+):
+    """PDF МО (Chrome headless) или HTML fallback для печати в браузере."""
+    _require_methodist_auth(request)
+    from fastapi.responses import HTMLResponse, Response as FastResponse
+
+    from clinical_knowledge.mo_case_document import build_case_document_response
+
+    response.headers["Cache-Control"] = "private, no-store"
+    result = build_case_document_response(case_id, month=month or None, as_pdf=True)
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail=result.get("error") or "case_not_found")
+    if result.get("pdf_available") and result.get("pdf_bytes"):
+        filename = f"mo-{case_id}.pdf"
+        return FastResponse(
+            content=result["pdf_bytes"],
+            media_type="application/pdf",
+            headers={"Content-Disposition": f'attachment; filename="{filename}"'},
+        )
+    # На Render без Chrome отдаём HTML с кнопкой «Печать / PDF».
+    return HTMLResponse(result["html"], headers={"X-MO-PDF-Fallback": "html-print"})
+
+
+@app.get("/api/methodist/mo/health")
+def api_methodist_mo_health(request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_mo_health
+
+    return build_mo_health()
+
+
+@app.get("/api/methodist/mo/briefing")
+def api_methodist_mo_briefing(
+    request: "Request",
+    report_date: str = Query("", max_length=10, alias="date"),
+    format: str = Query("json", pattern="^(json|telegram|html)$"),
+) -> dict:
+    """Утренний брифинг / текст Telegram (фаза 8)."""
+    _require_methodist_auth(request)
+    from datetime import date, datetime, timedelta
+    from zoneinfo import ZoneInfo
+
+    from clinical_knowledge.mo_backend import build_daily_report
+    from clinical_knowledge.mo_report_engine import build_telegram_briefing, render_day_briefing_html
+
+    day = (report_date or "").strip()
+    if not day:
+        day = (datetime.now(ZoneInfo("Europe/Minsk")).date() - timedelta(days=1)).isoformat()
+    report = build_daily_report(day)
+    if format == "telegram":
+        return {"ok": True, "date": day, "text": build_telegram_briefing(report)}
+    if format == "html":
+        return {"ok": True, "date": day, "html": render_day_briefing_html(report)}
+    return {"ok": True, "date": day, "report": report, "telegram": build_telegram_briefing(report)}
 
 
 @app.get("/api/methodist/mo/entities/{entity_kind}/{entity_id}")

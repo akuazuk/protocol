@@ -197,3 +197,13 @@
 - 03.08.2026: контур v4 (API methodology/llm-costs, конфиг весов, тесты) выведен
   в прод как shadow (`2026-08-03-r5-mo-scorer-v4-shadow`). Primary в UI - v3.
   Клинические гейты 6.5/6.7 по-прежнему открыты.
+
+## Фазы 7-8 + документ МО (03.08.2026)
+
+- Причина «Оценка: Нет данных» с 64-символьными хешами: кабинет врача показывал
+  diagnostic/non_clinical строки без оценки; hash = `content_hash` витрины.
+  Исправление: по умолчанию только scored kinds, явная `score_reason`, без hash в UI.
+- Отчёты обогащаются KPI из `fact_mo_daily`, если файла report.json нет.
+- Для P0/P1: ссылки «МО» / «PDF» (`/cases/{id}/document|pdf`).
+- `/api/methodist/mo/health`, `/briefing`, `scripts/ops/mo_morning_briefing.py`,
+  `docs/mo-analytics-ui.md`, тесты `test_mo_phase78_reports.py`.

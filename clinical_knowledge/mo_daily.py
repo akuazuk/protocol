@@ -828,15 +828,18 @@ def _render_daily_report_html(report: Mapping[str, Any], day: date) -> str:
         )
 
     queue_html = "".join(
-        "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td></tr>".format(
+        "<tr><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td>{}</td><td><a href=\"{}\">МО</a></td></tr>".format(
             esc(item.get("priority")),
             esc(item.get("doctor_fio")),
             esc(item.get("score")),
             esc(item.get("reason")),
             esc(item.get("status")),
+            esc(
+                f"/api/methodist/mo/cases/{item.get('visit_id') or item.get('mis_id')}/document"
+            ),
         )
         for item in queue[:100]
-    ) or '<tr><td colspan="5" class="muted">Случаев для срочного разбора нет.</td></tr>'
+    ) or '<tr><td colspan="6" class="muted">Случаев для срочного разбора нет.</td></tr>'
     issues = list(quality.get("blocking") or []) + list(quality.get("warnings") or [])
     quality_html = "".join(
         f'<li class="{esc(item.get("severity"))}"><b>{esc(item.get("code"))}</b>: {esc(item.get("message"))}</li>'
@@ -890,7 +893,7 @@ ul{{padding-left:20px}}li{{margin:7px 0}}li.blocking{{color:#a93245}}li.warning{
 <section class="two"><article class="panel"><h2>Типы документов</h2><table><thead><tr><th>Тип</th><th>Количество</th></tr></thead><tbody>{kinds_html}</tbody></table></article>
 <article class="panel"><h2>Специальности</h2><table><thead><tr><th>Специальность</th><th>N</th><th>Средняя</th><th>Внимание</th></tr></thead><tbody>{organization_rows('specialties')}</tbody></table></article></section>
 <section class="panel wide"><h2>Филиалы</h2><table><thead><tr><th>Филиал</th><th>N</th><th>Средняя</th><th>Внимание</th></tr></thead><tbody>{organization_rows('filials')}</tbody></table></section>
-<section class="panel wide"><h2>Очередь разбора</h2><table><thead><tr><th>Приоритет</th><th>Врач</th><th>Оценка</th><th>Причина</th><th>Статус</th></tr></thead><tbody>{queue_html}</tbody></table></section>
+<section class="panel wide"><h2>Очередь разбора</h2><table><thead><tr><th>Приоритет</th><th>Врач</th><th>Оценка</th><th>Причина</th><th>Статус</th><th>МО</th></tr></thead><tbody>{queue_html}</tbody></table></section>
 <footer>Отчёт содержит защищённые сведения и предназначен только для внутреннего контура.</footer>
 </main></body></html>"""
 
