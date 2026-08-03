@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import csv
-import re
 from difflib import SequenceMatcher
 from pathlib import Path
 from typing import Any

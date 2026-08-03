@@ -6,7 +6,7 @@ import re
 from pathlib import Path
 from typing import Any
 
-from .config import OUT_REGISTRY, OUTPUT_ROOT, SPECIALTY_FROM_FOLDER
+from .config import OUT_REGISTRY, SPECIALTY_FROM_FOLDER
 from .entities_extract import extract_icd10
 
 RE_APPROVAL_NUM = re.compile(r"(?:№|_|\s)(\d{1,4})(?:\.pdf|$|\s)", re.I)

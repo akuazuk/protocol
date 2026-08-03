@@ -7,7 +7,7 @@ import secrets
 import time
 from typing import Any
 
-from .patient_clinic_config import TIER_CATALOG, resolve_tier
+from .patient_clinic_config import resolve_tier
 
 
 def payment_required() -> bool:

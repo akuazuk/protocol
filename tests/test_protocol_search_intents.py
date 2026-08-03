@@ -51,7 +51,7 @@ def test_format_nav_item_query_aware_drugs():
 
 def test_frontend_intent_terms_synced_with_python():
     """P3: ключевые treatment-термины есть в index.html."""
-    html = (ROOT / "index.html").read_text(encoding="utf-8")
+    html = (ROOT / "frontend" / "web" / "doctor" / "index.html").read_text(encoding="utf-8")
     terms = INTENT_SPECS["treatment"]["terms"]
     missing = [t for t in terms if t not in html]
     assert not missing, f"terms missing in index.html: {missing[:8]}"

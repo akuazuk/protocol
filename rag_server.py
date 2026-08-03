@@ -1755,9 +1755,9 @@ def _precomputed_chunk_embed_rerank_pool(
     out_rows: list[tuple[float, float, float, dict]] = []
     for i, row in enumerate(pool_rows):
         if len(row) >= 5:
-            final, lex, mult, ch = row[0], row[1], row[3], row[4]
+            _, lex, mult, ch = row[0], row[1], row[3], row[4]
         else:
-            final, lex, mult, ch = row[0], row[1], row[2], row[3]
+            _, lex, mult, ch = row[0], row[1], row[2], row[3]
         doc_vec = [float(x) for x in ch["embedding"]]
         cos = _cosine_vec(q_vec, doc_vec)
         h = alpha * lex_norm[i] + (1.0 - alpha) * cos
@@ -3648,7 +3648,6 @@ def _retrieve_core(
     else:
         chunk_source = iter(_chunks)
     for ch in chunk_source:
-        pth = ch.get("path") or ""
         if path_allowlist_set and not _path_matches_allowlist(ch, path_allowlist_set):
             continue
         if aud_filter and aud_strict and use_routing:
@@ -3689,7 +3688,6 @@ def _retrieve_core(
                 post *= float(
                     os.environ.get("RAG_ICD_QUERY_MISS_CHUNK_MULT", "0.62")
                 )
-        pth = ch.get("path") or ""
         catalog_pth = _retrieval_path_for_chunk(ch)
         if path_boost_set and catalog_pth in path_boost_set:
             post *= path_boost_factor
@@ -8462,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r22-mo-filter-actions-ui"
+BUILD_VERSION = "2026-08-03-r23-ci-release-concurrency"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -9075,7 +9073,6 @@ def _api_assist_impl(body: AssistIn) -> dict:
 
     t_start = time.perf_counter()
     _require_rag_loaded()
-    model = get_gemini()
 
     tier_raw = (body.search_tier or "").strip() or None
     if not tier_raw and body.retrieve_only and not body.assist_full:
@@ -9101,6 +9098,7 @@ def _api_assist_impl(body: AssistIn) -> dict:
     if search_tier != "S2":
         assist_lite = True
     skip_llm_search = retrieve_only and _search_skip_llm_on_retrieve_only()
+    model = None if skip_llm_search else get_gemini()
     icd_fast = bool(body.icd_fast_path) or bool(tier_flags.get("icd_fast_path"))
     skip_refine = skip_llm_search or icd_fast or bool(body.icd_codes)
     skip_icd_gemini = skip_llm_search or icd_fast or bool(body.icd_codes)
@@ -9713,6 +9711,7 @@ def _api_assist_impl(body: AssistIn) -> dict:
         if os.environ.get("RAG_PROTOCOL_CARD", "1") == "1":
             from clinical_knowledge.page_locator import locate_page_for_quote
             from clinical_knowledge.protocol_card import attach_protocol_cards
+            from clinical_knowledge.protocol_links import normalize_protocol_path
 
             def _card_page_lookup(path: str, quote: str) -> int | None:
                 chunks = _chunks_by_path.get(path)
@@ -10033,7 +10032,7 @@ def api_search_protocols_by_icd(body: ProtocolsByIcdIn) -> dict:
             payload.setdefault("llm_json", {})["protocols"] = gated
             payload["applicability_gate_applied"] = True
     except Exception as exc:
-        logger.warning("search applicability gate failed: %s", str(exc)[:200])
+        _logger.warning("search applicability gate failed: %s", str(exc)[:200])
     payload["icd"] = _icd_client_payload(icd_analysis)
     payload["search_timing"] = _build_search_timing(
         path="icd_fast_lookup",
@@ -11630,7 +11629,7 @@ def api_methodist_mo_briefing(
 ) -> dict:
     """Утренний брифинг / текст Telegram (фаза 8)."""
     _require_methodist_auth(request)
-    from datetime import date, datetime, timedelta
+    from datetime import datetime, timedelta
     from zoneinfo import ZoneInfo
 
     from clinical_knowledge.mo_backend import build_daily_report
@@ -12696,9 +12695,10 @@ async def api_consult_review_stream(
         )
     except HTTPException as e:
         detail = e.detail if isinstance(e.detail, str) else str(e.detail)
+        status_code = e.status_code
 
         def err_gen():
-            yield sse_encode_error(detail, e.status_code)
+            yield sse_encode_error(detail, status_code)
 
         return StreamingResponse(err_gen(), media_type="text/event-stream")
 

@@ -10,7 +10,6 @@ from typing import Any
 
 from clinical_knowledge.consult_schema import ConsultationDocument
 from clinical_knowledge.kz_clinical_context import split_anamnesis_parts
-from clinical_knowledge.meaningful_excerpt import meaningful_excerpt
 
 KRAVIRA_SOP_SOURCE = "СОП № 2 Кравира (амбулаторная карта)"
 

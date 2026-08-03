@@ -225,7 +225,6 @@ def sync_report_questions_from_checklist(
     question_tone: str | None = None,
 ) -> dict[str, Any]:
     """После RAG-дополнения: dedupe, tone, пересборка checklist и производных."""
-    from .patient_medication_extraction import extract_medications_from_text
     from .patient_report_v2 import _message_to_doctor, _visit_sheet
 
     tone = normalize_question_tone(question_tone or report.get("question_tone"))

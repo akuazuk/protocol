@@ -9,7 +9,6 @@ from typing import Any
 
 from ..rule_model import ProtocolRule
 from . import config as _cfg_mod
-from .config import protocol_summary_config
 from .schema import ConditionSummary, ProtocolSummary
 from .summary_to_rules import summary_to_protocol_rules
 from .validator import summary_is_usable

@@ -21,7 +21,6 @@ from clinical_knowledge.protocol_summary.loader import (  # noqa: E402
 from clinical_knowledge.protocol_summary.source_text import (  # noqa: E402
     SOURCE_DIR,
     build_source_text_document,
-    load_source_text,
     save_source_text,
 )
 from clinical_knowledge.protocol_summary.summary_to_rag import write_summary_rag_jsonl  # noqa: E402

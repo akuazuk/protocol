@@ -10,7 +10,6 @@ from .schema import (
     CriteriaBlock,
     CriterionItem,
     ExamRequirement,
-    FollowUpRequirement,
     ProtocolApplicability,
     ProtocolSummary,
     RedFlagItem,

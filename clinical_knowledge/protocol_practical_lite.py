@@ -8,7 +8,6 @@ from clinical_knowledge.rich_chunk_search import (
     _CHUNK_TYPE_LABELS,
     _LOW_SIGNAL_TYPES,
     chunk_type_multiplier,
-    detect_query_intent,
 )
 
 SECTION_CHUNK_TYPES: dict[str, tuple[str, ...]] = {

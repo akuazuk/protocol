@@ -11,11 +11,11 @@ alwaysApply: true
 2. Старый SHA в Render не означает ошибку ветки: пока PR не merged, production обязан оставаться
    на текущем `origin/main`.
 3. `main` меняется только merge PR через GitHub. Прямой push и promote task HEAD запрещены.
-4. После merge release-координатор выполняет `git fetch origin` и фиксирует точный
-   `merge_sha=$(git rev-parse origin/main)`.
-5. Единственная штатная команда:
-   `scripts/ops/render_release_main.sh --commit="$merge_sha"`.
-6. Команда обязана завершиться ошибкой, если SHA не равен текущему HEAD `origin/main`.
+4. После merge production запускает только GitHub Action `Production Render release`.
+5. Action использует только `github.sha`, проверяет его равенство HEAD `origin/main` и
+   сериализуется через `concurrency: production-render`.
+6. Локальный `render_release_main.sh` допустим только для восстановления Action и обязан
+   завершиться ошибкой, если SHA не равен текущему HEAD `origin/main`.
 7. Не использовать `render_promote_main.sh`, `deploy_promote_main_after_push.sh`,
    `render_deploy.sh deploy` или произвольный `ensure-deploy`.
 8. Deploy завершён только когда `/api/version` показывает ожидаемые `version` и `git_commit`,

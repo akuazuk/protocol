@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import re
-from typing import Any
 
 # Приоритетные заголовки разделов (точное совпадение начала)
 _SECTION_HEADING_TYPES: list[tuple[re.Pattern[str], str]] = [

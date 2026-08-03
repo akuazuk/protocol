@@ -7,7 +7,6 @@ from clinical_knowledge.rule_family_gates import expand_specialty_slugs_for_icd,
 from clinical_knowledge.respiratory_path_filters import (
     filter_paths_for_respiratory_context,
     is_urti_icd_only,
-    path_has_respiratory_wrong_markers,
     path_has_urti_markers,
     scan_registry_urti_paths,
 )
@@ -207,10 +206,9 @@ def consult_target_protocol_paths(
 ) -> tuple[list[str], dict[str, Any]]:
     """Список source_path PDF, по которым разрешён RAG для КЗ."""
     from .loader import load_protocol_cards_registry
-    from .protocol_match import compute_match_score, match_protocol_cards
+    from .protocol_match import match_protocol_cards
     from .protocol_match_detail import compute_match_detail
     from .protocol_pick_filters import (
-        clinical_relevance_multiplier,
         icd_fit_for_card,
         is_administrative_protocol,
     )

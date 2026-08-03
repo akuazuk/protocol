@@ -5,7 +5,6 @@ import json
 import os
 import urllib.error
 import urllib.request
-from typing import Any
 
 
 def backend_name() -> str:

@@ -27,7 +27,6 @@ def test_extract_rules_sample_pdf():
     paths = catalog_source_paths()
     if not paths:
         return
-    sample = next((p for p in paths if "аппендицит" in p.lower()), paths[0])
     extracted, meta = extract_rules_all_catalog_pdfs(
         Path("output/chunks/chunks.jsonl"),
         chunks_index={},

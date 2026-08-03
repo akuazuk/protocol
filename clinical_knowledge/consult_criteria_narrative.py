@@ -65,7 +65,6 @@ def enrich_criteria_comments_llm(criteria: list[dict[str, Any]]) -> list[dict[st
         if model is None:
             return criteria
         prompt = _build_prompt(criteria)
-        timeout = int(os.environ.get("CONSULT_CRITERIA_NARRATIVE_TIMEOUT", "12"))
         resp = generate_gemini_consult_review_synthesize(
             model, prompt, max_out=1200,
         )

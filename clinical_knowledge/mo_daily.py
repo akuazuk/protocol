@@ -472,8 +472,8 @@ def _safe_number(value: Any) -> float | None:
 def _row_keys(row: Mapping[str, Any]) -> set[str]:
     """Идентификаторы записи: в выгрузке это `id`, в оценках - `mis_id`."""
     keys: set[str] = set()
-    for field in ("mis_id", "id"):
-        value = row.get(field)
+    for field_name in ("mis_id", "id"):
+        value = row.get(field_name)
         if value not in (None, ""):
             keys.add(f"mis:{value}")
     visit = row.get("visit_id")

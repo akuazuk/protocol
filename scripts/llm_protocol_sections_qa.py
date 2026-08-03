@@ -3,7 +3,6 @@
 from __future__ import annotations
 
 import argparse
-import hashlib
 import json
 import os
 import re
@@ -82,7 +81,6 @@ def main() -> int:
             protocol_title=str(chunks[0].get("protocol_title") or ""),
             section_outline=list(outline.values())[:40],
         )
-        key = hashlib.sha256(prompt.encode()).hexdigest()[:16]
         out_path = OUT_DIR / f"{did}.json"
         if out_path.is_file():
             try:

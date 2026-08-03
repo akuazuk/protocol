@@ -27,7 +27,6 @@ from fill_konkurs_docx import (  # noqa: E402
 )
 from konkurs_bp_sections import RESUME, SECTIONS, TOC  # noqa: E402
 from konkurs_finance import (  # noqa: E402
-    B2C_AVG_PRICE,
     B2C_TIERS,
     CERTIFICATE_BYN,
     CLINIC_B2C_REV_Y1_K,
@@ -45,9 +44,7 @@ from konkurs_finance import (  # noqa: E402
     ROI_PROTOCOL_COST,
     ROI_TOTAL_SAVING,
     SAM_KZ_YEAR,
-    SOM_Y3_KZ_YEAR,
     TAM_B2B_CEILING_YEAR_K,
-    TAM_REVENUE_YEAR,
     Y3_MARKET_SHARE,
     ebitda_k,
     ebitda_month_k,
@@ -57,12 +54,8 @@ from konkurs_scenarios import (  # noqa: E402
     B2C_CONV_SENSITIVITY,
     B2C_PROTOCOL_PER_CHECK,
     CHANNEL_TABLE,
-    MONTHLY_Y3_CAUTIOUS,
     PENETRATION_SENSITIVITY,
-    SCENARIO_BASE,
-    SCENARIO_CAUTIOUS,
     SCENARIO_COMPARE_TABLE,
-    SCENARIO_OPTIMISTIC,
     TAM_BRIDGE,
 )
 from konkurs_expansion import (  # noqa: E402
@@ -72,7 +65,6 @@ from konkurs_expansion import (  # noqa: E402
     EXPANSION_PUBLIC_SECTOR,
     EXPANSION_RISKS,
     EXPANSION_RUSSIA,
-    BELSTAT_AMBULATORY_VISITS_YEAR,
 )
 from konkurs_expansion_intl import (  # noqa: E402
     CALC_METHODOLOGY,
@@ -101,7 +93,6 @@ from konkurs_future import (  # noqa: E402
 from konkurs_expansion_us import (  # noqa: E402
     US_B2C_BASE_K,
     US_CORPUS_TABLE,
-    US_ENTRY_COST_K,
     US_EXPANSION_INTRO,
     US_GTM_PHASES,
     US_GTM_STEPS,
@@ -866,15 +857,15 @@ def write_passport_html(path: Path) -> None:
 def write_strategy_html(path: Path) -> None:
     body = (
         _cover("СТРАТЕГИЯ", "коммерциализации инновационного проекта")
-        + f'<div class="section"><h2>Проект и организация</h2></div>'
+        + '<div class="section"><h2>Проект и организация</h2></div>'
         + f'<div class="section-body"><p><strong>{_e(ORG_PROJECT)}</strong></p><p>{_e(ORG_NAME)}</p></div>'
-        + f'<div class="section"><h2>Уровень коммерциализации</h2></div>'
+        + '<div class="section"><h2>Уровень коммерциализации</h2></div>'
         + f'<div class="section-body"><p>{_e(STRATEGY_LEVELS)}</p><p>Опытный образец, B2B-пилот в Кравире, B2C MVP patient.html (ERIP и rev-share - {STRATEGY_YEAR}).</p></div>'
-        + f'<div class="section"><h2>Способы коммерциализации</h2></div>'
+        + '<div class="section"><h2>Способы коммерциализации</h2></div>'
         + f'<div class="section-body"><p>{_e(STRATEGY_METHODS)}</p></div>'
-        + f'<div class="section"><h2>План на ближайший год</h2></div>'
+        + '<div class="section"><h2>План на ближайший год</h2></div>'
         + f'<div class="section-body">{_ps(STRATEGY_YEAR_PLAN)}</div>'
-        + f'<div class="section"><h2>Стратегия на 5 лет</h2></div>'
+        + '<div class="section"><h2>Стратегия на 5 лет</h2></div>'
         + f'<div class="section-body">{_ps(STRATEGY_5Y)}</div>'
     )
     path.write_text(_page("Стратегия - Protocol", body), encoding="utf-8")

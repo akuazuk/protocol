@@ -6,7 +6,6 @@ from typing import Any
 from .patient_exam_extraction import exams_patient_summary, extract_exams_from_text, imaging_exams, lab_exams
 from .patient_flags import (
     patient_plain_terms_enabled,
-    patient_protocol_age_filter_enabled,
     patient_report_v2_enabled,
     patient_safe_quotes_enabled,
     patient_show_protocol_technical_block,

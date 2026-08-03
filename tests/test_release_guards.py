@@ -61,3 +61,14 @@ def test_version_endpoint_exposes_render_git_commit() -> None:
     server = (ROOT / "rag_server.py").read_text(encoding="utf-8")
     assert '"git_commit": (' in server
     assert 'os.environ.get("RENDER_GIT_COMMIT")' in server
+
+
+def test_production_workflow_serializes_exact_main_sha() -> None:
+    workflow = (
+        ROOT / ".github" / "workflows" / "render-production-deploy.yml"
+    ).read_text(encoding="utf-8")
+    assert "group: production-render" in workflow
+    assert "cancel-in-progress: false" in workflow
+    assert 'test "$(git rev-parse origin/main)" = "$GITHUB_SHA"' in workflow
+    assert '--commit="$GITHUB_SHA"' in workflow
+    assert "scripts/ops/render_release_main.sh" in workflow

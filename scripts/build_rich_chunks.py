@@ -1060,7 +1060,6 @@ def process_pdf(pdf_path: Path, rel_path: str) -> dict[str, Any]:
 
         # Build section_path from number
         if sec_number:
-            parts_num = sec_number.split(".")
             path_labels = [sec_title]
         else:
             path_labels = [sec_title]

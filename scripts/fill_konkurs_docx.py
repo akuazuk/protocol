@@ -15,7 +15,6 @@ import urllib.request
 from pathlib import Path
 
 from docx import Document
-from docx.shared import Pt
 
 _SCRIPTS = Path(__file__).resolve().parent
 if str(_SCRIPTS) not in sys.path:

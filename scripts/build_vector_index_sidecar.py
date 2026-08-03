@@ -11,7 +11,7 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from clinical_knowledge.vector_index import _write_chunk_id_sidecar, build_index_from_chunks, load_index
+from clinical_knowledge.vector_index import _write_chunk_id_sidecar, load_index
 
 
 def _jsonl_parts(inp: Path) -> list[Path]:

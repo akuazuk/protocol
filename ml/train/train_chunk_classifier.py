@@ -90,7 +90,6 @@ def train_and_eval(
         from sklearn.linear_model import LogisticRegression
         from sklearn.metrics import (
             accuracy_score,
-            classification_report,
             f1_score,
             precision_recall_fscore_support,
         )

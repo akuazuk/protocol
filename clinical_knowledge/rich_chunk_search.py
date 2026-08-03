@@ -466,7 +466,6 @@ def build_rich_protocol_nav(
 
     if query or icd_codes:
         ql = (query or "").lower()
-        icd_set = {c.upper() for c in (icd_codes or [])}
 
         def _sec_score(sec: dict[str, Any]) -> float:
             sc = 0.0

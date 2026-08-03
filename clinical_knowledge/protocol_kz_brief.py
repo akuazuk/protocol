@@ -265,7 +265,6 @@ def build_expanded_brief(
     if cond is None:
         return {"available": False, "path": catalog_path, "error": "condition_not_found"}
 
-    icd_set = {c.strip().upper() for c in (icd_codes or []) if c}
     sections_out: list[dict[str, Any]] = []
     red_flags: list[dict[str, Any]] = []
 

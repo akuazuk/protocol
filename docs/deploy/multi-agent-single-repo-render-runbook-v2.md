@@ -121,17 +121,21 @@ branch: main
 `protocol-rag` из `render.yaml` - другой приостановленный сервис. Не resume/deploy его по
 ошибке.
 
-Release-координатор после merge:
+После merge автоматически запускается workflow `.github/workflows/render-production-deploy.yml`.
+Он сериализует releases через `concurrency: production-render`, принимает только
+`github.sha` и проверяет его равенство текущему `origin/main`.
+
+Release-координатор контролирует workflow:
 
 ```bash
-git fetch origin
-merge_sha=$(git rev-parse origin/main)
-scripts/ops/render_release_main.sh --commit="$merge_sha"
+gh run list --repo akuazuk/protocol --workflow=render-production-deploy.yml --limit=1
+gh run watch --repo akuazuk/protocol <run-id>
 ```
 
 Wrapper не зависит от текущей локальной ветки: он повторно читает `origin/main`, отклоняет
 другой SHA и получает ожидаемый `BUILD_VERSION` из merge commit. Если `RENDER_API_KEY`
-отсутствует, wrapper не имитирует deploy, а контролирует webhook. В любом случае:
+отсутствует в GitHub secrets, wrapper не имитирует deploy, а контролирует webhook. Локальный
+запуск wrapper разрешён только для восстановления после сбоя Action. В любом случае:
 
 ```bash
 curl -fsS https://protocol-bimy.onrender.com/api/version
@@ -178,8 +182,7 @@ git log --oneline origin/main..HEAD
 
 Следующий инфраструктурный этап:
 
-1. исправить CI baseline и сделать `lint-and-test` обязательным;
-2. включить auto-delete head branches после merge;
-3. перенести deploy в один GitHub Action с `concurrency: production-render`;
-4. хранить Render API key как secret CI, а не копировать между компьютерами.
+1. добавить `RENDER_API_KEY` в GitHub Actions secret, чтобы workflow мог явно создавать
+   deploy, а не только контролировать webhook;
+2. расширить production workflow feature-specific smoke-тестами.
 
