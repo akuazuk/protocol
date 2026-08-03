@@ -131,6 +131,9 @@ def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
 
 def test_case_drawer_renders_source_mo_and_never_turns_missing_scores_into_zero() -> None:
     assert "function renderClinicalDocument" in JS
+    assert "function renderRubricMz" in JS
+    assert "Рубрика МЗ" in JS
+    assert "Как оценивать" in JS
     for field in ("complaints", "anamnesis_doctor", "objective_status", "clinical_diagnosis"):
         assert f'["{field}"' in JS
     assert 'available ? Math.round(n) + "%" : "Нет данных"' in JS

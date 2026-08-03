@@ -460,6 +460,20 @@ tbody tr:hover td, tbody tr:focus-within td { background: var(--accent-soft); }
 .drawer-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; }
 .detail-block { margin-top: 15px; padding-top: 15px; border-top: 1px solid var(--line); }
 .detail-block h3 { margin: 0 0 8px; font-size: 14px; }
+.rubric-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+.rubric-table th, .rubric-table td {
+  padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: top; text-align: left;
+}
+.rubric-table th { color: var(--muted); font-size: 11px; font-weight: 750; letter-spacing: .02em; }
+.rubric-score {
+  display: inline-grid; place-items: center; min-width: 2.4rem; padding: 4px 8px;
+  border-radius: 8px; font-weight: 800; font-variant-numeric: tabular-nums;
+}
+.rubric-score--good { background: color-mix(in srgb, var(--good, #1f8a5b) 18%, #fff); color: #146c45; }
+.rubric-score--review { background: color-mix(in srgb, #c9851a 18%, #fff); color: #8a5a00; }
+.rubric-score--critical { background: color-mix(in srgb, #c0392b 16%, #fff); color: #9b2c20; }
+.rubric-score--muted { background: color-mix(in srgb, var(--muted) 14%, #fff); color: var(--muted); }
+.rubric-title { font-weight: 700; }
 
 .auth {
   max-width: 460px; margin: 10vh auto; padding: 28px;

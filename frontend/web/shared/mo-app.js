@@ -780,8 +780,10 @@
       }).join("");
       $("drawer-title").textContent = "Разбор случая";
       $("drawer-subtitle").textContent = [item.date, item.doctor, item.specialty, item.branch].filter(Boolean).join(" · ");
+      var rubric = data.rubric_mz || {};
       $("drawer-body").innerHTML =
         '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
+        kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "shadow · «Как оценивать»") +
         kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
         kpi("Полнота проверки", score(coverageInfo.value), coverageInfo.estimated ? "оценка по доступным полям" : "доступность исходных данных") +
         kpi("Надёжность", score(confidenceInfo.value), confidenceInfo.estimated ? "оценка по доступным полям" : "устойчивость результата") + '</div>' +
@@ -789,6 +791,7 @@
           var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика" };
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
         }).join("") + '</div>' +
+        renderRubricMz(rubric) +
         renderClinicalDocument(sourceDocument) +
         '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
           var title = [finding.code, finding.title_ru || finding.title].filter(Boolean).join(" · ");
@@ -819,6 +822,37 @@
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
+    }
+    function renderRubricMz(rubric) {
+      if (!rubric || !rubric.ok) {
+        return '<div class="detail-block"><h3>Рубрика МЗ («Как оценивать»)</h3>' +
+          '<p class="empty">Shadow-оценка по методике МЗ пока недоступна для этого случая.</p></div>';
+      }
+      var groupLabels = {
+        documentation: "Документация", clinical: "Клиника",
+        dynamics: "Динамика", regulatory: "Регламент"
+      };
+      var rows = (rubric.criteria || []).map(function (item) {
+        var label = item.score_label == null ? "n/a" : String(item.score_label);
+        var tone = label === "1" ? "good" : (label === "0.5" ? "review" : (label === "0" ? "critical" : "muted"));
+        return '<tr class="rubric-row rubric-row--' + tone + '">' +
+          '<td><span class="rubric-score rubric-score--' + tone + '">' + esc(label) + '</span></td>' +
+          '<td><div class="rubric-title">' + esc(item.title || item.id || "") + '</div>' +
+            '<div class="card-sub">' + esc(groupLabels[item.group] || item.group || "") +
+            (item.scored_by_55 ? " · №55" : " · №127") + '</div></td>' +
+          '<td><div>' + esc(item.reason || "") + '</div>' +
+            (item.how_to_evaluate ? '<div class="card-sub">Как оценивать: ' + esc(item.how_to_evaluate) + '</div>' : "") +
+          '</td></tr>';
+      }).join("");
+      return '<div class="detail-block"><h3>Рубрика МЗ («Как оценивать»)</h3>' +
+        '<p class="card-sub">Shadow · ' + esc(rubric.scorer_version || "mz-rubric") +
+        ' · оценено ' + esc(rubric.scored_n != null ? rubric.scored_n : " - ") +
+        ', n/a ' + esc(rubric.na_n != null ? rubric.na_n : " - ") +
+        ' · итог ' + esc(score(rubric.rubric_pct)) + '</p>' +
+        '<div class="table-wrap"><table class="rubric-table"><thead><tr>' +
+        '<th>Оценка</th><th>Параметр</th><th>Пояснение</th></tr></thead><tbody>' +
+        (rows || '<tr><td colspan="3" class="empty">Критерии не рассчитаны.</td></tr>') +
+        '</tbody></table></div></div>';
     }
     function renderClinicalDocument(documentData) {
       var clinical = documentData.clinical || {};

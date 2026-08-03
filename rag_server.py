@@ -8462,7 +8462,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-03-r13-multi-agent-runbook"
+BUILD_VERSION = "2026-08-03-r14-mo-rubric-mz"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11484,18 +11484,37 @@ def api_methodist_mo_case_detail(
         # Исходный текст - защищённое дополнение к detail. Его отсутствие не должно
         # ломать уже доступную оценку из legacy/fallback источника.
         document = {"ok": False}
+    clinical: dict = {}
     if document.get("ok"):
+        clinical = document.get("clinical") or {}
         result["document"] = {
             "mis_id": document.get("mis_id"),
             "visit_id": document.get("visit_id"),
             "document_kind": document.get("document_kind"),
             "document_kind_label": document.get("document_kind_label"),
             "score_reason": document.get("score_reason"),
-            "clinical": document.get("clinical") or {},
+            "clinical": clinical,
             "has_source_text": bool(document.get("has_source_text")),
             "source_state": document.get("source_state") or "unknown",
             "source_format": document.get("source_format"),
         }
+    try:
+        from clinical_knowledge.mo_rubric_mz import evaluate_mo_rubric_mz
+
+        record = result.get("record") if isinstance(result.get("record"), dict) else {}
+        result["rubric_mz"] = evaluate_mo_rubric_mz(
+            clinical=clinical,
+            meta={
+                "visit_date": record.get("date") or record.get("visit_date"),
+                "visit_time": record.get("visit_time") or clinical.get("visit_time"),
+                "diagnosis_code": record.get("diagnosis_code") or record.get("mkb_code_main"),
+                "mkb_code_main": record.get("mkb_code_main") or record.get("diagnosis_code"),
+                "diagnosis_short": record.get("diagnosis_short"),
+            },
+            block_scores=result.get("block_scores") if isinstance(result.get("block_scores"), dict) else {},
+        )
+    except Exception:
+        result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
     return result
 
 
