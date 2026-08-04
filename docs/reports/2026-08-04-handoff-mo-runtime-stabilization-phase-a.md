@@ -1,7 +1,7 @@
 # Handoff PC2: MO runtime Phase A (2026-08-04)
 
 **Владелец ветки (PC1 / agent1):** работа завершена на ветке  
-`codex/mo-runtime-stabilization-agent1-pc1` @ `9bf8493` (`BUILD_VERSION` `2026-08-04-r2-phase-a-pc2-handoff`).  
+`codex/mo-runtime-stabilization-agent1-pc1` (смотреть `origin/codex/mo-runtime-stabilization-agent1-pc1`; `BUILD_VERSION` `2026-08-04-r2-phase-a-pc2-handoff`).  
 **План:** `docs/plans/2026-08-04-mo-runtime-stabilization-v1.md` (active).  
 **Канон координации:** `AGENTS.md`, `docs/deploy/multi-agent-single-repo-render-runbook-v2.md`,  
 `docs/deploy/two-computers-daily-checklist.md`.
