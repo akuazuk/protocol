@@ -12,25 +12,24 @@
 5. **A4** - stale pid cleanup для `launchd-run.lock` и `pipeline.lock` (shell + `exclusive_lock`).
 6. **A5** - health отдаёт `yesterday.{partial,reasons,advisory_reasons}`; UI «Вчера» показывает причины.
 
-## Операционные шаги на Mac (A6, после merge)
+## Операционные шаги на Mac (A6)
+
+Уже сделано 2026-08-04 с этой машины:
+
+1. `mo_reclassify_advisory_partial.py --dates 2026-08-01 2026-08-02 2026-08-03` → days `passed`, LLM advisory.
+2. `publish_mo_to_render.py` → remote `through=2026-08-03`, freshness **200**, `lag_days=1`.
+
+После merge PR и Action deploy проверить UI «Вчера» (advisory banner) и `/api/methodist/mo/health` поле `yesterday`.
 
 ```bash
-# 1. переклассифицировать дни, застрявшие на llm_queue_pending
-python3 scripts/mo_reclassify_advisory_partial.py \
-  --dates 2026-08-01 2026-08-02 2026-08-03
-
-# 2. убедиться, что .env содержит METHODIST_TOKEN
-# 3. опубликовать
-bash scripts/run_mo_daily_launchd.sh publish
-
-# 4. smoke
 curl -fsS -H "X-Methodist-Token: $METHODIST_TOKEN" \
-  https://protocol-bimy.onrender.com/api/methodist/mo/health | jq '.yesterday,.status'
+  https://protocol-bimy.onrender.com/api/methodist/mo/health | jq '.yesterday,.status,.reason_codes'
 ```
 
 Не класть токен в LaunchAgents plist. После `manage_mo_daily_launchd.py install` wrapper сам читает `.env`.
 
 ## Не сделано
 
+- Merge PR + Production Render release Action (код health/UI ещё не в `main`).
 - Фаза B (Docker / cloud worker).
 - Полный drain LLM-очереди (не обязателен при advisory-политике).

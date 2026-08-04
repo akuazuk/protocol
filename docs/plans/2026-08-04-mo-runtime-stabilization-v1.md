@@ -118,7 +118,9 @@
 - [x] A3. `publish_mo_to_render.py`: fail на freshness != 200 / missing token; Telegram на fail.
 - [x] A4. Auto-clear stale `pipeline.lock` / `launchd-run.lock` если pid мёртв.
 - [x] A5. `/api/methodist/mo/health` → `yesterday.reasons`; UI «Вчера» показывает partial/advisory.
-- [ ] A6. Handoff + smoke: freshness, daily-report за вчера, одна карточка МО; reclassify 2026-08-01..03 + publish.
+- [x] A6. Handoff + smoke: freshness 200, `data_through=2026-08-03`, lag=1;
+      reclassify 2026-08-01..03 → `passed` + publish выполнен 2026-08-04.
+      Осталось: merge PR → deploy Action → проверить UI reasons на новой версии.
 
 Критерий выхода A: 2 утра подряд lag<=1 или понятный алерт <15 мин после fail.
 
