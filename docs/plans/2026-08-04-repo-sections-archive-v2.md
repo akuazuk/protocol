@@ -39,19 +39,21 @@ FastAPI (`rag_server.py` / `backend.server:app`) с несколькими ра�
 
 ## Что изменено в production
 
-До merge этой задачи production остаётся на текущем `origin/main`.
-Фаза 1 не меняет runtime-поведение API/UI; только структуру репозитория и docs.
+После merge PR: структура репозитория + те же URL статики (`/search-flow.css`,
+`/protocol-logo.svg`, …) через явные shared-маршруты. Поведение API/UI без
+функциональных изменений.
 
 ## Метрики
 
-| Метрика | Было | Цель фазы 1 | Цель фазы 2+ |
-|---------|------|-------------|--------------|
+| Метрика | Было | Цель фазы 1 | Стало / цель фазы 2 |
+|---------|------|-------------|---------------------|
 | `docs/konkurs/` в рабочей docs-навигации | да | в `archive/docs/konkurs` | archive |
 | Исторические `ml/experiments/batch_*` в рабочей зоне | да | в `archive/ml-experiments` | archive |
 | Пустые stub-каталоги (`export/`, `checkpoints/`) | да | 0 или README-указатель | 0 |
 | Официальный план разделов | нет | 1 файл v2 | active |
-| Root CSS/JS leftovers | да | без изменений в фазе 1 | в `frontend/web/shared` |
-| Плоский `scripts/*.py` (~180) | да | без переноса в фазе 1 | домены scripts |
+| Root CSS/JS leftovers | да | без изменений в фазе 1 | в `frontend/web/shared` (фаза 2a) |
+| Root brand logos | да | без изменений в фазе 1 | в `frontend/web/shared` (фаза 2a) |
+| Плоский `scripts/*.py` (~180) | да | без переноса в фазе 1 | домены scripts (фаза 2b) |
 
 ## Фазы
 
@@ -74,9 +76,18 @@ FastAPI (`rag_server.py` / `backend.server:app`) с несколькими ра�
 - удаление corpus JSON из корня;
 - физический перенос GB-локальных `output/` / `corpus_vector_index/` (только ignore/документация).
 
-### Фаза 2 - корень по разделам
+### Фаза 2a - shared frontend assets (эта итерация)
 
-- Root CSS/JS/logos → `frontend/web/shared/`.
+- [x] Root CSS/JS (`protocol-chrome-tabs.css`, `search-flow.*`, `ux-redesign.css`) → `frontend/web/shared/`.
+- [x] Root brand logos → `frontend/web/shared/`.
+- [x] Расширить `CANONICAL_ASSET_MAP` + единый `_serve_shared_static_asset` (legacy URL без изменений).
+- [x] Обновить relative-пути в print-docs / archive konkurs HTML.
+- [x] Smoke/tests + PDF sync для architecture print HTML + PR update.
+
+Не делать в фазе 2a: перенос `build_*.py`, группировка `scripts/mo|mis|corpus`, docs-таксономия.
+
+### Фаза 2b - scripts и docs (следующая)
+
 - Root legacy build/verify → только `scripts/data|dev/py` (+ shim на 1 релиз).
 - Группировка `scripts/mo`, `scripts/mis`, `scripts/corpus`.
 - `docs/{architecture,product,deploy,plans,reports}`.

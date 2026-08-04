@@ -17,9 +17,10 @@ WEB = ROOT / "frontend" / "web"
 
 def _read(name: str) -> str:
     candidates = (
-        ROOT / name,
+        WEB / "shared" / name,
         WEB / "doctor" / name,
         WEB / "patient" / name,
+        ROOT / name,
     )
     path = next((candidate for candidate in candidates if candidate.is_file()), candidates[0])
     return path.read_text(encoding="utf-8")

@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-04-r1-repo-sections-archive"
+BUILD_VERSION = "2026-08-04-r2-shared-frontend-assets"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -13349,14 +13349,27 @@ if has_frontend_file("index.html"):
             headers={"Cache-Control": "no-cache, must-revalidate"},
         )
 
-    _MO_STATIC_ASSETS = {
-        "mo-tokens.css": ("shared/mo-tokens.css", "text/css; charset=utf-8"),
-        "mo-ui.css": ("shared/mo-ui.css", "text/css; charset=utf-8"),
-        "mo-api.js": ("shared/mo-api.js", "application/javascript; charset=utf-8"),
-        "mo-charts.js": ("shared/mo-charts.js", "application/javascript; charset=utf-8"),
-        "mo-app.js": ("shared/mo-app.js", "application/javascript; charset=utf-8"),
-        "vendor/echarts.min.js": ("shared/vendor/echarts.min.js", "application/javascript; charset=utf-8"),
-        "vendor/ECHARTS-LICENSE.txt": ("shared/vendor/ECHARTS-LICENSE.txt", "text/plain; charset=utf-8"),
+    _SHARED_STATIC_ASSETS = {
+        # Methodist / МО
+        "mo-tokens.css": "text/css; charset=utf-8",
+        "mo-ui.css": "text/css; charset=utf-8",
+        "mo-api.js": "application/javascript; charset=utf-8",
+        "mo-charts.js": "application/javascript; charset=utf-8",
+        "mo-app.js": "application/javascript; charset=utf-8",
+        "vendor/echarts.min.js": "application/javascript; charset=utf-8",
+        "vendor/ECHARTS-LICENSE.txt": "text/plain; charset=utf-8",
+        # Doctor chrome / search UX (legacy root URLs)
+        "protocol-chrome-tabs.css": "text/css; charset=utf-8",
+        "search-flow.css": "text/css; charset=utf-8",
+        "search-flow.js": "application/javascript; charset=utf-8",
+        "ux-redesign.css": "text/css; charset=utf-8",
+        # Brand assets (legacy root URLs)
+        "protocol-logo.svg": "image/svg+xml",
+        "protocol-logo-mini.svg": "image/svg+xml",
+        "protocol-logo-wordmark.svg": "image/svg+xml",
+        "protocol-logo-wordmark-text.svg": "image/svg+xml",
+        "protocol_logo_curves_transparent.svg": "image/svg+xml",
+        "logo_mini.png": "image/png",
     }
 
     @app.get("/mo-tokens.css", include_in_schema=False)
@@ -13366,13 +13379,23 @@ if has_frontend_file("index.html"):
     @app.get("/mo-app.js", include_in_schema=False)
     @app.get("/vendor/echarts.min.js", include_in_schema=False)
     @app.get("/vendor/ECHARTS-LICENSE.txt", include_in_schema=False)
-    def _serve_methodist_mo_asset(request: Request) -> FileResponse:
-        """Стабильные self-hosted ресурсы МО без устаревшего кэша."""
+    @app.get("/protocol-chrome-tabs.css", include_in_schema=False)
+    @app.get("/search-flow.css", include_in_schema=False)
+    @app.get("/search-flow.js", include_in_schema=False)
+    @app.get("/ux-redesign.css", include_in_schema=False)
+    @app.get("/protocol-logo.svg", include_in_schema=False)
+    @app.get("/protocol-logo-mini.svg", include_in_schema=False)
+    @app.get("/protocol-logo-wordmark.svg", include_in_schema=False)
+    @app.get("/protocol-logo-wordmark-text.svg", include_in_schema=False)
+    @app.get("/protocol_logo_curves_transparent.svg", include_in_schema=False)
+    @app.get("/logo_mini.png", include_in_schema=False)
+    def _serve_shared_static_asset(request: Request) -> FileResponse:
+        """Стабильные shared-ресурсы (МО + doctor chrome + brand) без устаревшего кэша."""
         key = request.url.path.lstrip("/")
-        relative_path, media_type = _MO_STATIC_ASSETS[key]
-        path = ROOT / "frontend" / "web" / relative_path
+        media_type = _SHARED_STATIC_ASSETS[key]
+        path = frontend_file(key)
         if not path.is_file():
-            raise HTTPException(status_code=404, detail="Ресурс МО не найден")
+            raise HTTPException(status_code=404, detail="Ресурс не найден")
         return FileResponse(
             path=str(path),
             media_type=media_type,

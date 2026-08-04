@@ -50,3 +50,17 @@ def test_patient_asset_prefers_canonical_grouped_path(tmp_path: Path, monkeypatc
     assert p == web / "patient.html"
     assert p.read_text(encoding="utf-8") == "grouped-patient"
 
+
+def test_shared_doctor_assets_resolve_under_frontend_web(tmp_path: Path, monkeypatch) -> None:
+    web = tmp_path / "frontend" / "web"
+    shared = web / "shared"
+    shared.mkdir(parents=True, exist_ok=True)
+    (shared / "search-flow.css").write_text("shared-css", encoding="utf-8")
+    (tmp_path / "search-flow.css").write_text("root-css", encoding="utf-8")
+    monkeypatch.setattr(frontend_paths, "ROOT", tmp_path)
+    monkeypatch.setattr(frontend_paths, "FRONTEND_WEB_ROOT", web)
+
+    p = frontend_paths.frontend_file("search-flow.css")
+    assert p == shared / "search-flow.css"
+    assert p.read_text(encoding="utf-8") == "shared-css"
+

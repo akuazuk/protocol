@@ -308,8 +308,8 @@ def _page(title: str, body: str, *, extra_head: str = "") -> str:
 
 
 def _cover(title: str, doc_kind: str, *, show_emblem: bool = True, hero_logo: bool = False) -> str:
-    logo_rel = "../../protocol-logo-wordmark.svg"
-    emblem_rel = "../../protocol-logo.svg"
+    logo_rel = "../../../frontend/web/shared/protocol-logo-wordmark.svg"
+    emblem_rel = "../../../frontend/web/shared/protocol-logo.svg"
     emblem_html = (
         f'  <div class="logo-emblem"><img src="{emblem_rel}" alt="Protocol"/></div>\n'
         if show_emblem
