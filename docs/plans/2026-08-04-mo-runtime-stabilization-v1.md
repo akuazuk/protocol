@@ -120,7 +120,9 @@
 - [x] A5. `/api/methodist/mo/health` → `yesterday.reasons`; UI «Вчера» показывает partial/advisory.
 - [x] A6. Handoff + smoke: freshness 200, `data_through=2026-08-03`, lag=1;
       reclassify 2026-08-01..03 → `passed` + publish выполнен 2026-08-04.
-      Осталось: merge PR → deploy Action → проверить UI reasons на новой версии.
+      PC2 playbook: `docs/reports/2026-08-04-handoff-mo-runtime-stabilization-phase-a.md`
+      (+ ссылки в `AGENTS.md` и `two-computers-daily-checklist.md`).
+      Осталось на PC2: открыть/смержить PR → Action deploy → smoke health/UI.
 
 Критерий выхода A: 2 утра подряд lag<=1 или понятный алерт <15 мин после fail.
 

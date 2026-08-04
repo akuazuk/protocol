@@ -8460,11 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-<<<<<<< HEAD
-BUILD_VERSION = "2026-08-04-r3-script-domain-indexes"
-=======
-BUILD_VERSION = "2026-08-04-r1-mo-runtime-phase-a"
->>>>>>> 0f34a49 (fix(mo): Phase A runtime stabilization for partial LLM days)
+BUILD_VERSION = "2026-08-05-r1-mo-runtime-phase-a"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
