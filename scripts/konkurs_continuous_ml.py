@@ -67,8 +67,8 @@ ML_COMPETITION_NOTE = """
 
 ML_APPENDIX_TABLE = [
     ("ml/README.md", "Архитектура ML и принципы"),
-    ("ml/experiments/embedder_exp_001/", "Fine-tune e5: MRR 0,12→0,41"),
-    ("ml/experiments/ab_kz_embedder/", "A/B: RAG и consult_gold"),
+    ("archive/ml-experiments/embedder_exp_001/", "Fine-tune e5: MRR 0,12→0,41"),
+    ("archive/ml-experiments/ab_kz_embedder/", "A/B: RAG и consult_gold"),
     ("scripts/run_embedder_experiment.py", "Пайплайн обучения embedder"),
     ("scripts/run_ab_embedder_kz.py", "A/B baseline vs fine-tune в retrieve()"),
     ("scripts/export_training_feedback.py", "Экспорт датасетов из пилота"),

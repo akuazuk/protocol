@@ -3,7 +3,7 @@
 
 Пример:
   python3 scripts/import_kz_pilot_feedback.py
-  python3 scripts/import_kz_pilot_feedback.py --experiment ml/experiments/kz_pilot_2026-06-18
+  python3 scripts/import_kz_pilot_feedback.py --experiment archive/ml-experiments/kz_pilot_2026-06-18
   python3 scripts/export_training_feedback.py
 """
 from __future__ import annotations

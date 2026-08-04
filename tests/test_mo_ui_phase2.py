@@ -112,6 +112,13 @@ def test_static_assets_have_stable_routes_content_types_and_no_cache() -> None:
         "/mo-app.js": "application/javascript",
         "/vendor/echarts.min.js": "application/javascript",
         "/vendor/ECHARTS-LICENSE.txt": "text/plain",
+        "/protocol-chrome-tabs.css": "text/css",
+        "/search-flow.css": "text/css",
+        "/search-flow.js": "application/javascript",
+        "/ux-redesign.css": "text/css",
+        "/protocol-logo.svg": "image/svg+xml",
+        "/protocol-logo-mini.svg": "image/svg+xml",
+        "/protocol-logo-wordmark.svg": "image/svg+xml",
     }
     for route, content_type in expected.items():
         response = client.get(route)

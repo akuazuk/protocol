@@ -14,9 +14,19 @@ git status --short || true
 echo
 
 echo "== Potentially heavy local directories =="
-for p in corpus_vector_index output/rich_chunks output/rich_meta data/ml/chunk_qa_cache data/ml/chunk_qa_shards; do
+for p in corpus_vector_index output/rich_chunks output/rich_meta data/ml/chunk_qa_cache data/ml/chunk_qa_shards .local-archive; do
   if [[ -d "$p" ]]; then
     du -sh "$p" 2>/dev/null || true
+  fi
+done
+echo
+
+echo "== Archive zones (expected) =="
+for p in archive/docs/konkurs archive/ml-experiments ml/experiments; do
+  if [[ -d "$p" ]]; then
+    echo "OK: $p ($(find "$p" -type f 2>/dev/null | wc -l | tr -d ' ') files)"
+  else
+    echo "MISSING: $p"
   fi
 done
 echo

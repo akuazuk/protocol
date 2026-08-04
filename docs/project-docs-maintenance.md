@@ -35,7 +35,7 @@
 | `docs/plans/` | актуальные планы работ | версионируемые планы, метрики, риски |
 | `docs/cursor-spend-checklist.md` | Cursor Pro+ $70 ROI | chunk GOOGLE vs Cursor $, прогоны B1-B3 |
 | `docs/current_project_audit.md` | compliance KZ (snapshot) | scoring, модули; BUILD - сверять с prod |
-| `docs/konkurs/03_Biznes_plan_*` | конкурс / инвест | B2C MVP status, monetization |
+| `archive/docs/konkurs/03_Biznes_plan_*` | конкурс / инвест (архив) | B2C MVP status, monetization |
 | `.cursor/rules/project-docs-sync.mdc` | агент Cursor | напоминание прогонять чек-лист |
 
 ---
@@ -49,7 +49,8 @@
 3. **UI shell:**
    - `index.html`: sticky mini logo + pastel pill tabs в одной строке; footer - 4 карточки для врача (статистика, B2C, презентация, кабинет); буклет, архитектура PDF, чек-лист - только в `?mode=methodist`.
    - `patient.html`: sticky top-bar, hero wordmark.
-   - Print-docs: wordmark `protocol-logo-wordmark.svg` в шапке каждого HTML-документа в `docs/`.
+   - Print-docs: wordmark `frontend/web/shared/protocol-logo-wordmark.svg` в шапке HTML в `docs/`
+     (относительный путь `../frontend/web/shared/...`).
 4. **Тексты:** нет устаревших «6 блоков», «?methodist=1», «B2C в будущем» (если `patient.html` уже в prod).
 5. **Метаданные docs:** в audit / architecture-b2c - строка `Last aligned with code` + текущий `BUILD_VERSION`.
 6. **Архитектурный HTML:** если меняли `architecture-*-print.html` → `python3 scripts/build_architecture_pdf.py --all` и коммит PDF.
@@ -65,7 +66,7 @@
 | `?methodist=1` | `?mode=methodist` (+ токен методиста) |
 | «6 блоков scoring» | **8 блоков** structured compliance |
 | «B2C - дорожная карта» | **`patient.html`** PWA в production, API `/api/patient/*` |
-| `protocol-logo.svg` = wordmark | emblem (favicon); wordmark = `protocol-logo-wordmark.svg`; mini = `protocol-logo-mini.svg` |
+| Brand logos | канон: `frontend/web/shared/protocol-logo*.svg`; URL `/protocol-logo*.svg` |
 | Вкладка по умолчанию без hash | `#consult-review`, hash сохраняется при F5 |
 | «Два контура» без пациента | B2B: поиск + проверка КЗ; B2C: `patient.html` |
 

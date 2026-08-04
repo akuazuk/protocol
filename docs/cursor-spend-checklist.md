@@ -27,7 +27,7 @@
 4. **$0** - L2 smoke с проверкой `rag_chunks_n` и preamble в JSON ответа
 5. **GOOGLE** - только retry fix + continuous queue из feedback, **не** Wave B без gate
 
-Подробности: [`data/ml/reports/chunk_qa_progress.md`](../data/ml/reports/chunk_qa_progress.md), batch `ml/experiments/batch_post_deploy_2026-06-29/`.
+Подробности: [`data/ml/reports/chunk_qa_progress.md`](../data/ml/reports/chunk_qa_progress.md), batch `archive/ml-experiments/ — см. также новые прогоны в ml/experiments/batch_post_deploy_*/`.
 
 ---
 
@@ -188,7 +188,7 @@ export CHUNK_QA_LLM=1 CHUNK_QA_LLM_BACKEND=gemini CHUNK_QA_MAX_OUT=16000
   --limit 800 --batch-size 8
 ```
 
-Полный план волн: [`ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md`](../ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md).
+Полный план волн: [`archive/ml-experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md`](../archive/ml-experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md).
 
 ### D1-D2 - post-Wave A (копипаст)
 
@@ -230,11 +230,11 @@ cd protocol
 
 **Почему первый сейчас:** post-Wave A L1 **84.2%** без изменений - провалы **scoring vs routing vs chunks**. L1 tier **не читает chunk-RAG**; routing B1 двигает L2 и слабые `report_n_*`. Универсально для **всех** специальностей.
 
-**Файлы (@):**  
-`ml/experiments/batch_clients_consult_2026-06-28/ACTION_PLAN.md` ·  
-`ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md` (§3.3) ·  
-`clinical_knowledge/consult_retrieval.py` ·  
-`clinical_knowledge/patient_protocol_filter.py` ·  
+**Файлы (@):**
+`archive/ml-experiments/batch_clients_consult_2026-06-28/ACTION_PLAN.md` ·
+`archive/ml-experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md` (§3.3) ·
+`clinical_knowledge/consult_retrieval.py` ·
+`clinical_knowledge/patient_protocol_filter.py` ·
 `tests/test_consult_retrieval.py`
 
 **Промпт Agent (Auto, финал Opus только для таблицы):**
@@ -384,8 +384,8 @@ Push/smoke - только если вы сами нажали кнопку (пр
 
 | Документ | Зачем |
 |----------|--------|
-| [`GEMINI_FULL_QA_PLAN.md`](../ml/experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md) | chunk waves, gates |
-| [`ACTION_PLAN.md`](../ml/experiments/batch_clients_consult_2026-06-28/ACTION_PLAN.md) | batch KZ failures |
+| [`GEMINI_FULL_QA_PLAN.md`](../archive/ml-experiments/batch_r70_2026-06-28/GEMINI_FULL_QA_PLAN.md) | chunk waves, gates |
+| [`ACTION_PLAN.md`](../archive/ml-experiments/batch_clients_consult_2026-06-28/ACTION_PLAN.md) | batch KZ failures |
 | [`architecture-b2c-patient.md`](architecture-b2c-patient.md) | B2C gaps §17 |
 | [`chunk-quality-pipeline.md`](chunk-quality-pipeline.md) | rule QA modules |
 

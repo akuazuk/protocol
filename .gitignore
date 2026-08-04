@@ -99,6 +99,28 @@ data/reports/*.log
 # Локальные batch-выгрузки с чувствительными данными
 ml/experiments/batch_clients_consult_*/
 ml/experiments/batch_new_report_*/
+ml/experiments/batch_post_*/
+ml/experiments/batch_smoke_*/
+ml/experiments/methodist_*/
+
+# Локальный архив тяжёлых/PII артефактов вне git (PDF КЗ, output dumps)
+.local-archive/
+
+# Кэши и очереди chunk QA / probe (регенерируются скриптами)
+data/ml/chunk_qa_*.jsonl
+data/ml/chunk_qa_*.json
+data/ml/chunk_rule_fixes.jsonl
+data/ml/protocol_section_map/
+data/ml/feedback_render/
+data/ml/reports/probe_*.jsonl
+data/ml/reports/probe_*.md
+data/ml/reports/symptom_icd_probe_*.jsonl
+data/ml/reports/symptom_icd_probe_*.md
+data/ml/reports/chunk_quality_*.json
+data/ml/reports/chunk_quality_*.md
+data/ml/reports/*benchmark*
+data/ml/reports/*_summary.txt
+data/reports/method_comparison/
 
 # Лексические шарды и манифест путей корпуса: 250+ МБ, регенерируются
 # scripts/build_path_lex_shards.py и scripts/build_corpus_path_manifest.py.

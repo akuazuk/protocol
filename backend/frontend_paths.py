@@ -29,8 +29,25 @@ CANONICAL_ASSET_MAP: dict[str, str] = {
     "patient-ui.js": "patient/patient-ui.js",
     "patient-manifest.webmanifest": "patient/patient-manifest.webmanifest",
     "patient-sw.js": "patient/patient-sw.js",
-    # Shared tools
+    # Shared tools / doctor chrome / brand / МО assets
     "proto-viewer.html": "shared/proto-viewer.html",
+    "protocol-chrome-tabs.css": "shared/protocol-chrome-tabs.css",
+    "search-flow.css": "shared/search-flow.css",
+    "search-flow.js": "shared/search-flow.js",
+    "ux-redesign.css": "shared/ux-redesign.css",
+    "protocol-logo.svg": "shared/protocol-logo.svg",
+    "protocol-logo-mini.svg": "shared/protocol-logo-mini.svg",
+    "protocol-logo-wordmark.svg": "shared/protocol-logo-wordmark.svg",
+    "protocol-logo-wordmark-text.svg": "shared/protocol-logo-wordmark-text.svg",
+    "protocol_logo_curves_transparent.svg": "shared/protocol_logo_curves_transparent.svg",
+    "logo_mini.png": "shared/logo_mini.png",
+    "mo-tokens.css": "shared/mo-tokens.css",
+    "mo-ui.css": "shared/mo-ui.css",
+    "mo-api.js": "shared/mo-api.js",
+    "mo-charts.js": "shared/mo-charts.js",
+    "mo-app.js": "shared/mo-app.js",
+    "vendor/echarts.min.js": "shared/vendor/echarts.min.js",
+    "vendor/ECHARTS-LICENSE.txt": "shared/vendor/ECHARTS-LICENSE.txt",
 }
 
 
