@@ -486,7 +486,14 @@ def test_complete_day_is_not_partial_and_blocked_day_wins() -> None:
     assert set(failed_case["reasons"]) == {"scoring_coverage", "scoring_errors"}
 
     queued = assess_completeness(raw, cases, llm_queue_pending=4)
-    assert queued["reasons"] == ["llm_queue_pending"]
+    assert queued["reasons"] == []
+    assert queued["advisory_reasons"] == ["llm_queue_pending"]
+    assert not queued["partial"]
+    assert queued["llm_queue_pending"] == 4
+
+    queued_with_gap = assess_completeness(raw, [cases[0]], llm_queue_pending=2)
+    assert set(queued_with_gap["reasons"]) == {"scoring_coverage", "llm_queue_pending"}
+    assert queued_with_gap["partial"]
 
 
 def test_partial_day_is_retried_by_catch_up_until_attempts_run_out(tmp_path: Path) -> None:

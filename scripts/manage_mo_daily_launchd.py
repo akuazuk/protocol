@@ -54,7 +54,9 @@ def install() -> int:
         print(f"installed {path}")
     print(
         "Важно: launchd calendar использует системный timezone; "
-        "Mac должен быть Europe/Minsk для точного 06:00 daily и понедельничного weekly."
+        "Mac должен быть Europe/Minsk для точного 06:00 daily и понедельничного weekly.\n"
+        "METHODIST_TOKEN / Telegram не пишем в plist: "
+        "scripts/run_mo_daily_launchd.sh читает их из ROOT/.env (или PROTOCOL_ENV_FILE)."
     )
     return 0
 

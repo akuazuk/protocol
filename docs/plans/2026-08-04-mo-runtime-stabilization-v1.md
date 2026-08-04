@@ -112,12 +112,13 @@
 
 Цель: «Вчера» предсказуемо, алерты честные, Mac ещё primary.
 
-- [ ] A1. Закрыть/дожать `llm_queue_pending` за 2026-08-01..03 (или явная политика: день `success` при coverage>=99% и очередь advisory).
-- [ ] A2. В launchd plist / env добавить `METHODIST_TOKEN` для freshness-check после publish.
-- [ ] A3. Починить/обернуть publish: ретраи SSH, понятный exit code, Telegram при fail, не считать 403 «тихим успехом».
-- [ ] A4. Снять stale locks (`pipeline.lock`) автоматически если pid мёртв.
-- [ ] A5. В `/api/methodist/mo/health` и UI «Вчера» явно показывать `partial` + `reasons` (`llm_queue_pending`).
-- [ ] A6. Handoff + smoke: freshness, daily-report за вчера, одна карточка МО.
+- [x] A1. Политика: `llm_queue_pending` advisory при coverage>=цели и без scoring_errors;
+      скрипт `scripts/mo_reclassify_advisory_partial.py` для уже сохранённых дней.
+- [x] A2. `run_mo_daily_launchd.sh` читает `METHODIST_TOKEN` из `ROOT/.env` (не в plist).
+- [x] A3. `publish_mo_to_render.py`: fail на freshness != 200 / missing token; Telegram на fail.
+- [x] A4. Auto-clear stale `pipeline.lock` / `launchd-run.lock` если pid мёртв.
+- [x] A5. `/api/methodist/mo/health` → `yesterday.reasons`; UI «Вчера» показывает partial/advisory.
+- [ ] A6. Handoff + smoke: freshness, daily-report за вчера, одна карточка МО; reclassify 2026-08-01..03 + publish.
 
 Критерий выхода A: 2 утра подряд lag<=1 или понятный алерт <15 мин после fail.
 

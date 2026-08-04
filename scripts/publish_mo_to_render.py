@@ -15,6 +15,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import shlex
 import subprocess
 import sys
@@ -277,15 +278,24 @@ def _publish_files(
 
 def verify_freshness(prod_url: str, token: str | None) -> dict[str, Any]:
     url = prod_url.rstrip("/") + "/api/methodist/mo/freshness"
+    if not (token or "").strip():
+        return {
+            "status": 403,
+            "error": "METHODIST_TOKEN missing: freshness endpoint requires auth",
+        }
     command = ["curl", "-fsS", "--max-time", "45"]
-    if token:
-        command.extend(["-H", f"X-Methodist-Token: {token}"])
+    command.extend(["-H", f"X-Methodist-Token: {token.strip()}"])
     command.append(url)
     try:
         result = subprocess.run(command, check=True, capture_output=True, text=True)
         payload = json.loads(result.stdout)
     except subprocess.CalledProcessError as error:
-        return {"status": error.returncode, "error": (error.stderr or "").strip()}
+        stderr = (error.stderr or "").strip()
+        return {
+            "status": error.returncode,
+            "error": stderr or f"curl exit {error.returncode}",
+            "http_hint": "403" if "403" in stderr else None,
+        }
     except json.JSONDecodeError as error:
         return {"status": "unreachable", "error": str(error)}
     return {
@@ -294,6 +304,23 @@ def verify_freshness(prod_url: str, token: str | None) -> dict[str, Any]:
         "lag_days": payload.get("lag_days"),
         "roots": payload.get("roots"),
     }
+
+
+def _resolve_methodist_token(args: argparse.Namespace) -> str:
+    return (
+        (args.methodist_token or "").strip()
+        or (os.environ.get("METHODIST_TOKEN") or "").strip()
+        or (os.environ.get("METHODIST_PIN") or "").strip()
+    )
+
+
+def _notify_publish_failure(message: str) -> None:
+    try:
+        from scripts.telegram_notify import send_telegram
+
+        send_telegram(message)
+    except Exception as error:  # noqa: BLE001 - notify must not mask publish failure
+        print(f"telegram notify failed: {error}", file=sys.stderr)
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -331,8 +358,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--no-verify", dest="verify", action="store_false")
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args(argv)
-    report = publish(args)
+    args.methodist_token = _resolve_methodist_token(args)
+    try:
+        report = publish(args)
+    except Exception as error:  # noqa: BLE001
+        _notify_publish_failure(f"МО publish failed: {type(error).__name__}: {error}")
+        print(json.dumps({"ok": False, "error": str(error)}, ensure_ascii=False, indent=2))
+        return 1
     print(json.dumps(report, ensure_ascii=False, indent=2))
+    if args.dry_run or not args.verify:
+        return 0
+    freshness = report.get("freshness") or {}
+    status = freshness.get("status")
+    if status != 200:
+        error = freshness.get("error") or f"freshness status={status}"
+        print(f"freshness verify failed: {error}", file=sys.stderr)
+        _notify_publish_failure(f"МО publish freshness fail: {error}")
+        return 3
     return 0
 
 

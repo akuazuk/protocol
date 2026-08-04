@@ -131,23 +131,77 @@ def atomic_write_json(path: Path, payload: Mapping[str, Any]) -> None:
     )
 
 
+def _lock_owner_pid(path: Path) -> int | None:
+    try:
+        raw = path.read_text(encoding="utf-8").strip().splitlines()
+    except OSError:
+        return None
+    if not raw:
+        return None
+    try:
+        return int(raw[0].strip())
+    except ValueError:
+        return None
+
+
+def _pid_alive(pid: int) -> bool:
+    if pid <= 0:
+        return False
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    return True
+
+
 @contextmanager
 def exclusive_lock(path: Path, *, blocking: bool = False) -> Iterator[None]:
+    """Эксклюзивная блокировка пайплайна; мёртвый pid в файле не держит замок.
+
+    `fcntl.flock` снимается ОС при смерти процесса, но файл с pid может остаться.
+    Если flock занят, а pid в файле мёртв - снимаем stale-файл и пробуем ещё раз.
+    """
     path.parent.mkdir(parents=True, exist_ok=True)
-    with path.open("a+", encoding="utf-8") as stream:
+
+    def _acquire() -> Any:
+        stream = path.open("a+", encoding="utf-8")
         flags = fcntl.LOCK_EX | (0 if blocking else fcntl.LOCK_NB)
         try:
             fcntl.flock(stream.fileno(), flags)
-        except BlockingIOError as exc:
-            raise RuntimeError(f"МО-pipeline уже запущен: {path}") from exc
+        except BlockingIOError:
+            stream.close()
+            raise
         stream.seek(0)
         stream.truncate()
         stream.write(f"{os.getpid()}\n")
         stream.flush()
+        return stream
+
+    try:
+        handle = _acquire()
+    except BlockingIOError as first:
+        owner = _lock_owner_pid(path)
+        if owner is not None and not _pid_alive(owner):
+            try:
+                path.unlink(missing_ok=True)
+            except OSError:
+                pass
+            try:
+                handle = _acquire()
+            except BlockingIOError as second:
+                raise RuntimeError(f"МО-pipeline уже запущен: {path}") from second
+        else:
+            detail = f" pid={owner}" if owner is not None else ""
+            raise RuntimeError(f"МО-pipeline уже запущен: {path}{detail}") from first
+    try:
+        yield
+    finally:
         try:
-            yield
+            fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
         finally:
-            fcntl.flock(stream.fileno(), fcntl.LOCK_UN)
+            handle.close()
 
 
 def sha256_file(path: Path) -> str:
@@ -525,9 +579,10 @@ def assess_completeness(
     *,
     llm_queue_pending: int = 0,
 ) -> dict[str, Any]:
-    """День `partial`, если оценка не покрыла все допущенные к оценке записи.
+    """День `partial`, если оценка не покрыла допущенные записи или есть ошибки.
 
-    Такой день не считается успешным: retry и hourly обязаны его доделать.
+    Очередь LLM сама по себе - advisory: при coverage >= цели и без scoring_errors
+    день может быть `success`, а `llm_queue_pending` остаётся в advisory_reasons.
     """
     eligible = [row for row in raw_rows if row.get("document_kind") in SCORED_DOCUMENT_KINDS]
     failures = [row for row in scored_cases if row.get("error")]
@@ -545,23 +600,63 @@ def assess_completeness(
     covered = sum(1 for row in eligible if _row_keys(row) & scored_keys)
     coverage = round(100.0 * covered / len(eligible), 2) if eligible else 100.0
     reasons: list[str] = []
+    advisory_reasons: list[str] = []
     if eligible and coverage < SCORING_COVERAGE_TARGET_PCT:
         reasons.append("scoring_coverage")
     if failures:
         reasons.append("scoring_errors")
-    if llm_queue_pending > 0:
-        reasons.append("llm_queue_pending")
+    pending = int(llm_queue_pending)
+    if pending > 0:
+        # Очередь LLM блокирует день только вместе с дырами в оценке.
+        if reasons:
+            reasons.append("llm_queue_pending")
+        else:
+            advisory_reasons.append("llm_queue_pending")
     return {
         "eligible_rows": len(eligible),
         "covered_rows": covered,
         "scored_ok": scored_ok,
         "scoring_errors": len(failures),
-        "llm_queue_pending": int(llm_queue_pending),
+        "llm_queue_pending": pending,
         "coverage_pct": coverage,
         "target_coverage_pct": SCORING_COVERAGE_TARGET_PCT,
         "partial": bool(reasons),
         "reasons": reasons,
+        "advisory_reasons": advisory_reasons,
     }
+
+
+def apply_completeness_policy(completeness: Mapping[str, Any]) -> dict[str, Any]:
+    """Нормализовать сохранённую completeness под текущую политику LLM-очереди."""
+    result = dict(completeness)
+    coverage = float(result.get("coverage_pct") or 0.0)
+    target = float(result.get("target_coverage_pct") or SCORING_COVERAGE_TARGET_PCT)
+    scoring_errors = int(result.get("scoring_errors") or 0)
+    pending = int(result.get("llm_queue_pending") or 0)
+    blocking = [
+        str(code)
+        for code in (result.get("reasons") or [])
+        if str(code) != "llm_queue_pending"
+    ]
+    if coverage < target and "scoring_coverage" not in blocking:
+        blocking.append("scoring_coverage")
+    if scoring_errors > 0 and "scoring_errors" not in blocking:
+        blocking.append("scoring_errors")
+    advisory = [
+        str(code)
+        for code in (result.get("advisory_reasons") or [])
+        if str(code) != "llm_queue_pending"
+    ]
+    if pending > 0:
+        if blocking:
+            blocking.append("llm_queue_pending")
+        else:
+            advisory.append("llm_queue_pending")
+    result["reasons"] = blocking
+    result["advisory_reasons"] = advisory
+    result["partial"] = bool(blocking)
+    result["llm_queue_pending"] = pending
+    return result
 
 
 def build_daily_report(
@@ -862,6 +957,18 @@ def _render_daily_report_html(report: Mapping[str, Any], day: date) -> str:
             f"<span>Покрытие оценки {esc(completeness.get('coverage_pct'))}% из "
             f"{esc(completeness.get('target_coverage_pct'))}% целевых. {esc(details)}. "
             "Цифры ниже неполные, повторный прогон запланирован.</span></section>"
+        )
+    elif completeness.get("advisory_reasons"):
+        details = ", ".join(
+            partial_reasons.get(str(code), str(code))
+            for code in (completeness.get("advisory_reasons") or [])
+        )
+        pending = completeness.get("llm_queue_pending")
+        banner_html = (
+            '<section class="banner"><b>День принят с замечанием</b>'
+            f"<span>{esc(details)}"
+            f"{(' (' + esc(pending) + ')') if pending not in (None, '', 0) else ''}. "
+            "Оценка покрыта, очередь LLM не блокирует итог.</span></section>"
         )
     return f"""<!doctype html>
 <html lang="ru"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
