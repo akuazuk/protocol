@@ -35,7 +35,7 @@
 | `docs/plans/` | актуальные планы работ | версионируемые планы, метрики, риски |
 | `docs/cursor-spend-checklist.md` | Cursor Pro+ $70 ROI | chunk GOOGLE vs Cursor $, прогоны B1-B3 |
 | `docs/current_project_audit.md` | compliance KZ (snapshot) | scoring, модули; BUILD - сверять с prod |
-| `docs/konkurs/03_Biznes_plan_*` | конкурс / инвест | B2C MVP status, monetization |
+| `archive/docs/konkurs/03_Biznes_plan_*` | конкурс / инвест (архив) | B2C MVP status, monetization |
 | `.cursor/rules/project-docs-sync.mdc` | агент Cursor | напоминание прогонять чек-лист |
 
 ---

@@ -1,55 +1,7 @@
-# Пакет для конкурса Белинфонда 2026 (МЦ «Кравира»)
+# Перенесено
 
-**Срок подачи:** до 01.08.2026 · [konkurs.belinfond.by/participants](https://konkurs.belinfond.by/participants)
+Пакет конкурса / инвест-документов перенесён в:
 
-## Основной формат: PDF
+**`archive/docs/konkurs/`**
 
-| Файл | Назначение |
-|------|------------|
-| [01_Zayavka_Kravira_Protocol.pdf](01_Zayavka_Kravira_Protocol.pdf) | Заявка |
-| [02_Pasport_Kravira_Protocol.pdf](02_Pasport_Kravira_Protocol.pdf) | Паспорт инновационного проекта |
-| [03_Biznes_plan_Kravira_Protocol.pdf](03_Biznes_plan_Kravira_Protocol.pdf) | **Бизнес-план** (разделы 1-16, социальная значимость, графики) |
-| [04_Strategiya_Kravira_Protocol.pdf](04_Strategiya_Kravira_Protocol.pdf) | Стратегия коммерциализации |
-| [06_ROI_Kravira.pdf](06_ROI_Kravira.pdf) | ROI якорного клиента |
-
-**Пересборка PDF (рекомендуется):**
-
-```bash
-python3 scripts/build_konkurs_pdf.py
-```
-
-Требуется Google Chrome (headless). Исходники: `*-print.html` в этой же папке.
-
-## Дополнительно
-
-| Файл | Назначение |
-|------|------------|
-| `*.docx` | Legacy-формы Word (опционально: `--with-docx`) |
-| [05_Biznes_plan_Prilozheniya.html](05_Biznes_plan_Prilozheniya.html) | Интерактивные приложения (браузер) |
-| [ml/README.md](../../ml/README.md) | ML-контур: непрерывное дообучение, MLOps |
-| [docx-preprint-checklist.md](docx-preprint-checklist.md) | Чек-лист перед подачей |
-| [financial_assumptions.md](financial_assumptions.md) | Единые допущения финмодели |
-
-## Якорь рынка
-
-| Показатель | Значение |
-|------------|----------|
-| КЗ/мес в Кравире | **25 000** (= **1%** частных ОЗ РБ) |
-| TAM | **2,5 млн КЗ/мес** · **30 млн/год** |
-| Рынок платных медуслуг РБ, 2025 | **~2,7 млрд BYN** (+24% г/г) |
-
-## Социальная значимость Protocol
-
-- **Пациенты** - B2C «Проверь КЗ» (patient.html, PWA), 8 блоков, 478 КП Минздрава
-- **Врачи** - L0 подсказка до ЭЦП, send_gate по правилам
-- **Клиники** - 100% потока, ЦИСЗ + клиника в одном контуре; rev-share B2C
-- **Государство** - качество данных в ЦИСЗ, исполнение КП; роль контроля, не ручной аудит каждого КЗ
-- **Экосистема flywheel** - рост B2C → давление на клиники → B2B → лучше КЗ в ЦИСЗ (раздел 3.1 бизнес-плана)
-
-## Подача
-
-1. Загрузка PDF на сайт конкурса.
-2. Печать, подпись, печать Кравиры (при бумажной подаче).
-3. Белинфонд: 220072, г. Минск, пр. Независимости, 68-2, каб. 112.
-
-Контакт: rkip@belinfond.by, +375 17 270-84-29.
+См. `archive/README.md` и план `docs/plans/2026-08-04-repo-sections-archive-v2.md`.

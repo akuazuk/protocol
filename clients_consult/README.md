@@ -23,4 +23,8 @@ python3 scripts/run_kz_pilot_batch.py --submit-render
 python3 scripts/run_kz_pilot_batch.py --export-feedback
 ```
 
-Отчёт: `ml/experiments/kz_pilot_*/REVIEW_QUEUE.md` · разметка в UI: **Очередь** → **Открыть**.
+Отчёт (архив пилота): `archive/ml-experiments/kz_pilot_2026-06-18/REVIEW_QUEUE.md`.
+Новые прогоны - в `ml/experiments/`. Разметка в UI: **Очередь** → **Открыть**.
+
+Локальные PDF с ПДн можно держать здесь или в `.local-archive/clients_consult/`
+(каталог в gitignore, не коммитить).

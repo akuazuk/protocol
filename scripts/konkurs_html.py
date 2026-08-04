@@ -623,7 +623,7 @@ def _continuous_ml_html() -> str:
 <p>{_prose(CONTINUOUS_ML_INTRO)}</p>
 <div class="highlight">{_prose(ML_COMPETITION_NOTE)}</div>
 <h3>Результаты эксперимента embedder (июнь 2026)</h3>
-{_table(['Метрика', 'Baseline e5', 'Fine-tune', 'Δ'], ML_EXPERIMENT_EMBEDDER_TABLE, caption='Офлайн MRR на seed 313 пар (ml/experiments/embedder_exp_001)')}
+{_table(['Метрика', 'Baseline e5', 'Fine-tune', 'Δ'], ML_EXPERIMENT_EMBEDDER_TABLE, caption='Офлайн MRR на seed 313 пар (archive/ml-experiments/embedder_exp_001)')}
 <h3>A/B: baseline vs fine-tune в retrieve()</h3>
 {_table(['Слой оценки', 'Baseline e5', 'Fine-tune', 'Δ'], ML_AB_KZ_TABLE, caption='consult_gold + golden RAG на полном корпусе КП')}
 <p>{_prose(ML_AB_INTERPRETATION)}</p>

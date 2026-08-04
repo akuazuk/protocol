@@ -2,7 +2,7 @@
 """Заполнение официальных форм конкурса Белинфонда для МЦ «Кравира».
 
 Источник шаблонов: https://konkurs.belinfund.by/participants
-Выход: docs/konkurs/*.docx
+Выход: archive/docs/konkurs/*.docx
 
 Перед подачей замените поля [УНП], [ФИО директора], [адрес], [телефон], [email].
 """
@@ -45,8 +45,8 @@ from konkurs_org import (
 )
 
 ROOT = Path(__file__).resolve().parents[1]
-ASSETS_DIR = ROOT / "docs" / "konkurs" / "_assets"
-OUT_DIR = ROOT / "docs" / "konkurs"
+ASSETS_DIR = ROOT / "archive" / "docs" / "konkurs" / "_assets"
+OUT_DIR = ROOT / "archive" / "docs" / "konkurs"
 TMP = OUT_DIR / "_templates"
 
 BASE_URL = "https://konkurs.belinfund.by/storage/docs/"
