@@ -1,7 +1,7 @@
 # Handoff PC2: MO runtime Phase A (2026-08-04)
 
 **Владелец ветки (PC1 / agent1):** работа завершена на ветке  
-`codex/mo-runtime-stabilization-agent1-pc1` @ `60f349a` (+ docs ниже после push).  
+`codex/mo-runtime-stabilization-agent1-pc1` @ `9bf8493` (`BUILD_VERSION` `2026-08-04-r2-phase-a-pc2-handoff`).  
 **План:** `docs/plans/2026-08-04-mo-runtime-stabilization-v1.md` (active).  
 **Канон координации:** `AGENTS.md`, `docs/deploy/multi-agent-single-repo-render-runbook-v2.md`,  
 `docs/deploy/two-computers-daily-checklist.md`.
@@ -23,7 +23,7 @@
 | A3 | Publish: exit 3 при freshness != 200 / missing token; Telegram на fail | `scripts/publish_mo_to_render.py` |
 | A4 | Auto-clear stale `pipeline.lock` / `launchd-run.lock` если pid мёртв | `mo_daily.exclusive_lock`, launchd shell |
 | A5 | Health `yesterday.{partial,reasons,advisory_reasons}` + UI «Вчера» | `mo_backend.py`, `frontend/web/shared/mo-app.js` |
-| ver | `BUILD_VERSION` | `2026-08-04-r1-mo-runtime-phase-a` (или новее, если в ветке был docs-bump) |
+| ver | `BUILD_VERSION` | `2026-08-04-r2-phase-a-pc2-handoff` (ожидать в `/api/version` после merge) |
 
 ### Данные (уже на Mac PC1 и на диске Render)
 
