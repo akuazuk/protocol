@@ -53,7 +53,7 @@ FastAPI (`rag_server.py` / `backend.server:app`) с несколькими ра�
 | Официальный план разделов | нет | 1 файл v2 | active |
 | Root CSS/JS leftovers | да | без изменений в фазе 1 | в `frontend/web/shared` (фаза 2a) |
 | Root brand logos | да | без изменений в фазе 1 | в `frontend/web/shared` (фаза 2a) |
-| Плоский `scripts/*.py` (~180) | да | без переноса в фазе 1 | домены scripts (фаза 2b) |
+| Плоский `scripts/*.py` (~180) | да | без переноса в фазе 1 | indexes + shims `mo/mis/corpus` (2b); физический move позже |
 
 ## Фазы
 
@@ -76,7 +76,7 @@ FastAPI (`rag_server.py` / `backend.server:app`) с несколькими ра�
 - удаление corpus JSON из корня;
 - физический перенос GB-локальных `output/` / `corpus_vector_index/` (только ignore/документация).
 
-### Фаза 2a - shared frontend assets (эта итерация)
+### Фаза 2a - shared frontend assets
 
 - [x] Root CSS/JS (`protocol-chrome-tabs.css`, `search-flow.*`, `ux-redesign.css`) → `frontend/web/shared/`.
 - [x] Root brand logos → `frontend/web/shared/`.
@@ -86,11 +86,16 @@ FastAPI (`rag_server.py` / `backend.server:app`) с несколькими ра�
 
 Не делать в фазе 2a: перенос `build_*.py`, группировка `scripts/mo|mis|corpus`, docs-таксономия.
 
-### Фаза 2b - scripts и docs (следующая)
+### Фаза 2b - scripts и docs (навигация без big-bang move)
 
-- Root legacy build/verify → только `scripts/data|dev/py` (+ shim на 1 релиз).
-- Группировка `scripts/mo`, `scripts/mis`, `scripts/corpus`.
-- `docs/{architecture,product,deploy,plans,reports}`.
+- [x] `scripts/{mo,mis,corpus}/` + `scripts/*/py/*` shims на ключевые entrypoints.
+- [x] `scripts/README.md` карта доменов; smoke проверяет indexes + py_compile.
+- [x] `docs/architecture/README.md`, `docs/product/README.md` (индексы без переноса файлов).
+- [ ] Физический `git mv` flat `scripts/*.py` в домены - отдельная итерация после audit call-sites.
+- [ ] Физический перенос docs HTML/MD в `docs/{architecture,product}/` - после indexes.
+
+Уже есть (cleanup v1): `scripts/{ops,data,dev,deploy}` и root-level `scripts/data/py` для
+legacy top-level `build_*.py`.
 
 ### Фаза 3 - data plane
 

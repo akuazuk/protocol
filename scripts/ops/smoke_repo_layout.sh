@@ -5,17 +5,25 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
-echo "[1/5] bash syntax check for canonical wrappers"
+echo "[1/6] bash syntax check for canonical wrappers"
 for f in scripts/ops/*.sh scripts/deploy/*.sh scripts/data/*.sh scripts/dev/*.sh; do
   bash -n "$f"
 done
 echo "OK: wrapper syntax"
 
-echo "[2/5] python wrapper compile check"
-python3 -m py_compile scripts/data/py/*.py scripts/dev/py/*.py
+echo "[2/6] python wrapper compile check"
+python3 -m py_compile scripts/data/py/*.py scripts/dev/py/*.py \
+  scripts/mo/py/*.py scripts/mis/py/*.py scripts/corpus/py/*.py
 echo "OK: python wrapper compile"
 
-echo "[3/5] ops commands expose help/usage"
+echo "[2b/6] domain README indexes exist"
+for f in scripts/README.md scripts/mo/README.md scripts/mis/README.md scripts/corpus/README.md \
+  docs/architecture/README.md docs/product/README.md; do
+  [[ -f "$f" ]] || { echo "MISSING: $f" >&2; exit 1; }
+done
+echo "OK: domain indexes"
+
+echo "[3/6] ops commands expose help/usage"
 scripts/ops/git_safe_start.sh --help >/dev/null
 scripts/ops/git_safe_pull.sh --help >/dev/null
 scripts/ops/git_deploy_guard.sh --help >/dev/null
@@ -31,7 +39,7 @@ scripts/ops/render_env.sh --help >/dev/null
 scripts/ops/bump_build_version.sh --help >/dev/null
 echo "OK: ops help"
 
-echo "[4/5] deploy/data/dev wrappers forward safely"
+echo "[4/6] deploy/data/dev wrappers forward safely"
 if scripts/ops/render_promote_main.sh >/dev/null 2>&1; then
   echo "ERROR: deprecated render_promote_main.sh must fail closed" >&2
   exit 1
@@ -46,7 +54,7 @@ scripts/data/pull_methodist_feedback.sh >/dev/null 2>&1 || true
 scripts/dev/run_mo_daily_launchd.sh unknown >/dev/null 2>&1 || true
 echo "OK: wrapper forward smoke"
 
-echo "[5/5] hygiene command runs"
+echo "[5/6] hygiene command runs"
 scripts/ops/check_repo_hygiene.sh >/tmp/protocol_hygiene_smoke.out 2>&1 || true
 echo "OK: hygiene smoke"
 
