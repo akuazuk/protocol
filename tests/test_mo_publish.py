@@ -84,6 +84,11 @@ def test_merge_keeps_production_crm_state(tmp_path: Path) -> None:
     _seed(local)
     snapshot = tmp_path / "publish.sqlite"
     tables = sorted(build_publish_snapshot(local, snapshot))
+    with sqlite3.connect(snapshot) as db:
+        column_map = {
+            table: [row[1] for row in db.execute(f'PRAGMA table_info("{table}")')]
+            for table in tables
+        }
 
     production = tmp_path / "prod.sqlite"
     initialize_warehouse(production)
@@ -95,7 +100,9 @@ def test_merge_keeps_production_crm_state(tmp_path: Path) -> None:
         db.commit()
 
     with sqlite3.connect(production) as db:
-        db.executescript(merge_sql(tables, snapshot_path=str(snapshot)))
+        db.executescript(
+            merge_sql(tables, snapshot_path=str(snapshot), column_map=column_map)
+        )
 
     with sqlite3.connect(production) as db:
         assert db.execute("SELECT COUNT(*) FROM fact_mo_case").fetchone()[0] == 1
@@ -103,6 +110,52 @@ def test_merge_keeps_production_crm_state(tmp_path: Path) -> None:
             "SELECT status, assignee FROM crm_case_state WHERE case_id = '100'"
         ).fetchone()
     assert (status, assignee) == ("in_review", "Методист")
+
+
+def test_merge_named_columns_survives_legacy_column_order(tmp_path: Path) -> None:
+    """Прод с ALTER-колонками в конце не должен получать сдвиг doctor_key."""
+    snapshot = tmp_path / "snap.sqlite"
+    initialize_warehouse(snapshot)
+    with sqlite3.connect(snapshot) as db:
+        db.execute(
+            "INSERT INTO fact_mo_case (mis_id, visit_id, visit_date, document_kind, overall_pct,"
+            " overall_pct_v3, status, scorer_version, score_schema_version, llm_cost_usd,"
+            " doctor_key, specialty, filial, diagnosis_code, icd_chapter, content_hash, updated_at)"
+            " VALUES ('9', '90', '2026-08-04', 'medical_exam', 77.6, 70.0, 'review', 'v4.0.0',"
+            " '4.0', 0.0, 'abc123doctor', 'Офтальмолог', 'Захарова', 'H52.1', 'VII', 'hash', 'now')"
+        )
+        db.commit()
+        columns = [row[1] for row in db.execute("PRAGMA table_info(fact_mo_case)")]
+
+    production = tmp_path / "prod_legacy.sqlite"
+    with sqlite3.connect(production) as db:
+        db.executescript(
+            """
+            CREATE TABLE fact_mo_case (
+              mis_id TEXT PRIMARY KEY, visit_id TEXT, visit_date TEXT NOT NULL,
+              document_kind TEXT NOT NULL, overall_pct REAL, status TEXT,
+              doctor_key TEXT, specialty TEXT, filial TEXT, content_hash TEXT NOT NULL,
+              updated_at TEXT NOT NULL
+            );
+            ALTER TABLE fact_mo_case ADD COLUMN diagnosis_code TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN icd_chapter TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN overall_pct_v3 REAL;
+            ALTER TABLE fact_mo_case ADD COLUMN scorer_version TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN score_schema_version TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN llm_cost_usd REAL DEFAULT 0;
+            """
+        )
+        db.executescript(
+            merge_sql(
+                ["fact_mo_case"],
+                snapshot_path=str(snapshot),
+                column_map={"fact_mo_case": columns},
+            )
+        )
+        row = db.execute(
+            "SELECT doctor_key, specialty, filial, status, overall_pct FROM fact_mo_case WHERE mis_id='9'"
+        ).fetchone()
+    assert row == ("abc123doctor", "Офтальмолог", "Захарова", "review", 77.6)
 
 
 def test_published_tables_cover_facts_and_dimensions(tmp_path: Path) -> None:

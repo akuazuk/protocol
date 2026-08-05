@@ -140,6 +140,22 @@ publish_if_changed() {
   fi
 }
 
+# Gemini с Mac часто geo-block - night LLM и action-judge гоняем на Render после publish.
+run_render_llm_for_yesterday() {
+  local day
+  day="$(TZ=Europe/Minsk date -v-1d +%Y-%m-%d 2>/dev/null || TZ=Europe/Minsk date -d yesterday +%Y-%m-%d)"
+  if [ "${MO_RENDER_LLM_AFTER_PUBLISH:-1}" = "0" ]; then
+    echo "МО: remote LLM после publish отключён (MO_RENDER_LLM_AFTER_PUBLISH=0)"
+    return 0
+  fi
+  if [ ! -x "$ROOT/scripts/run_mo_render_llm_backfill.sh" ]; then
+    chmod +x "$ROOT/scripts/run_mo_render_llm_backfill.sh" 2>/dev/null || true
+  fi
+  echo "МО: remote LLM backfill на Render за $day"
+  bash "$ROOT/scripts/run_mo_render_llm_backfill.sh" "$day" "$day" \
+    || echo "МО: remote LLM backfill завершился с ошибкой (день уже опубликован)" >&2
+}
+
 case "$MODE" in
   main)
     # Основной приём ~06:00 Europe/Minsk: вчера + catch-up + reconcile 3 дней.
@@ -150,11 +166,17 @@ case "$MODE" in
     fi
     run_pipeline "${MAIN_ARGS[@]}"
     publish_if_changed
+    if [ "$PIPELINE_CHANGED" = "1" ]; then
+      run_render_llm_for_yesterday
+    fi
     ;;
   retry)
     if catch_up_needed; then
       run_pipeline --catch-up
       publish_if_changed
+      if [ "$PIPELINE_CHANGED" = "1" ]; then
+        run_render_llm_for_yesterday
+      fi
     else
       echo "МО: catch-up не требуется, retry пропущен"
     fi
@@ -163,6 +185,9 @@ case "$MODE" in
     if catch_up_needed; then
       run_pipeline --catch-up --catch-up-limit 31
       publish_if_changed
+      if [ "$PIPELINE_CHANGED" = "1" ]; then
+        run_render_llm_for_yesterday
+      fi
     else
       echo "МО: catch-up не требуется, hourly пропущен"
     fi
@@ -175,6 +200,10 @@ case "$MODE" in
   publish)
     # Только публикация: пригодится после ручного пересчёта истории.
     publish_to_render
+    ;;
+  llm-yesterday)
+    # Ручной/страховочный прогон LLM на Render за вчера.
+    run_render_llm_for_yesterday
     ;;
   *)
     echo "unknown mode: $MODE" >&2

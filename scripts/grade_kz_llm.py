@@ -271,6 +271,11 @@ def main() -> int:
     ap.add_argument("--bulk-model", default="gemini-3.6-flash")
     ap.add_argument("--judge-model", default="gemini-3.1-pro-preview")
     ap.add_argument("--resume", action="store_true")
+    ap.add_argument(
+        "--retry-errors",
+        action="store_true",
+        help="при --resume не считать успешными строки с _error (перепрогон после geo-block)",
+    )
     ap.add_argument("--queue", type=Path, help="JSON queue containing visit_ids")
     ap.add_argument("--warehouse", type=Path, help="MO warehouse for token and cost accounting")
     ap.add_argument("--run-id", default="", help="stable pipeline run identifier")
@@ -284,12 +289,25 @@ def main() -> int:
         return 2
 
     done: set[str] = set()
+    kept_lines: list[str] = []
     if args.resume and args.out.is_file():
         for line in args.out.read_text(encoding="utf-8").splitlines():
             try:
-                done.add(str(json.loads(line).get("visit_id")))
+                row = json.loads(line)
             except json.JSONDecodeError:
-                pass
+                continue
+            vid = str(row.get("visit_id") or "")
+            if not vid:
+                continue
+            if args.retry_errors and (row.get("_error") or row.get("error") or row.get("status") == "error"):
+                continue
+            done.add(vid)
+            kept_lines.append(line)
+        if args.retry_errors:
+            args.out.write_text(
+                ("\n".join(kept_lines) + ("\n" if kept_lines else "")),
+                encoding="utf-8",
+            )
 
     cases = []
     for line in args.cases.read_text(encoding="utf-8").splitlines():
@@ -332,11 +350,15 @@ def main() -> int:
                 if args.warehouse:
                     from clinical_knowledge.mo_llm_usage import record_llm_usage
 
+                    visit_day = str(
+                        c.get("visit_date") or c.get("date") or ""
+                    ).strip()[:10] or None
                     for call in res.get("_llm_calls") or []:
                         record_llm_usage(
                             args.warehouse,
                             run_id=args.run_id or f"llm-{args.out.stem}",
                             case_id=vid,
+                            usage_date=visit_day,
                             **call,
                         )
                 fout.write(json.dumps(res, ensure_ascii=False) + "\n")

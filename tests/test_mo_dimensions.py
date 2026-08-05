@@ -86,9 +86,12 @@ def test_dimension_sql_contracts_n_gate_ci_and_no_raw_ranking(monkeypatch, tmp_p
     )
     selected = next(item for item in doctors["items"] if item["key"] == doctor_a)
     assert selected["n"] == 25
-    assert selected["enough_data"] is False
+    # n-gate открывает карточку; ranking требует case_mix_reliable (R² >= 0.30)
+    assert selected["enough_data"] is True
+    assert selected["case_mix_reliable"] is False
     assert selected["case_mix_model"]["valid"] is False
     assert selected["case_mix_model"]["r_squared"] < 0.3
+    assert selected["key"] not in {item["key"] for item in doctors["ranking"]}
     assert selected["delta_ci95"]["low"] is not None
     assert selected["p0_cases"] == 3
 

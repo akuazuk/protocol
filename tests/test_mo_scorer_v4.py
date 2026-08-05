@@ -74,10 +74,13 @@ def test_llm_pricing_and_usage_are_persisted(tmp_path):
         completion_tokens=200,
         latency_ms=1200,
         status="ok",
+        usage_date="2026-08-01",
     )
     assert usage["cost_usd"] > 0
+    assert usage["usage_date"] == "2026-08-01"
     with sqlite3.connect(warehouse) as db:
         assert db.execute("SELECT COUNT(*) FROM fact_llm_usage").fetchone()[0] == 1
+        assert db.execute("SELECT usage_date FROM fact_llm_usage").fetchone()[0] == "2026-08-01"
 
 
 def test_warehouse_preserves_v3_and_visit_denominators(tmp_path):

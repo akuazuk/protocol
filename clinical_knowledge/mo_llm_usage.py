@@ -62,6 +62,7 @@ def record_llm_usage(
     latency_ms: int,
     status: str,
     retry_count: int = 0,
+    usage_date: str | None = None,
 ) -> dict[str, Any]:
     from .mo_daily import initialize_warehouse
 
@@ -76,10 +77,11 @@ def record_llm_usage(
     except ValueError:
         cost = 0.0
         pricing_status = "unpriced"
+    day = (usage_date or now[:10]).strip()[:10] or now[:10]
     payload = {
         "usage_id": usage_id,
         "run_id": run_id,
-        "usage_date": now[:10],
+        "usage_date": day,
         "tier": tier,
         "model": model,
         "case_id": case_id,
