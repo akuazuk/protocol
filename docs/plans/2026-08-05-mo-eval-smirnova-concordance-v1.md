@@ -79,12 +79,12 @@
 
 ## 3. Метрики
 
-| Метрика | Было | Стало (E1) | Цель после v1 |
+| Метрика | Было | Стало (E2) | Цель после v1 |
 |--|--|--|--|
 | Эталон Смирнова ловит ≥4 из 6 паттернов A | 0 (вручную) | 6/6 на fixture | ≥4 findings с expected codes |
-| False positive rate на 50 «чистых» МО без разрывов | н/д | н/д (E2) | <10% по P1+ |
+| False positive rate на 50 «чистых» МО без разрывов | н/д | any finding 0.5% / P1+ 0.1% на 5k июля | <10% по P1+ |
 | Изменение среднего deep overall на месяце | baseline | 0 (shadow-only) | сдвиг объяснить; не >3 п.п. без калибровки порогов |
-| Согласие методиста на 20 кейсах очереди | н/д | н/д (E2/E3) | ≥70% «finding справедлив» |
+| Согласие методиста на 20 кейсах очереди | н/д | н/д (E3) | ≥70% «finding справедлив» |
 
 ---
 
@@ -93,7 +93,7 @@
 ### Этап E0 - зафиксировать эталон (0.5 дня)
 
 - [x] Обезличенный fixture: fact graph + ожидаемые finding codes (Смирнова) - `tests/test_mo_concordance_smirnova.py`.
-- [ ] Ещё 5 positive / 5 negative кейсов (ортопедия/педиатрия) в `eval/mo_concordance/`.
+- [x] Ещё 5 positive / 5 negative кейсов (ортопедия/педиатрия) в `eval/mo_concordance/`.
 - [x] Не класть PHI PDF в git.
 
 ### Этап E1 - signals + findings (2-4 дня)
@@ -105,9 +105,10 @@
 
 ### Этап E2 - калибровка (2-3 дня)
 
-- [ ] Прогон на выборке июля/августа МО (без публикации в прод-дашборд как blocking).
-- [ ] Подкрутить severity / порог duration / whitelist ICD.
-- [ ] Решить: `underworkup` = P1 всегда или P1 только pediatric.
+- [x] Прогон на выборке июля МО (5000) без публикации в прод-дашборд как blocking.
+- [x] Подкрутить severity / порог duration / whitelist ICD / negation отёка.
+- [x] Решено: `underworkup` = **P1 только pediatric**, adult → P2.
+- [x] Отчёт: `docs/reports/2026-08-05-mo-concordance-calibration-e2.md`.
 
 ### Этап E3 - UI / очередь (1-2 дня)
 
@@ -145,11 +146,13 @@
 
 ## 7. Владение файлами
 
-- `clinical_knowledge/mo_case_signals.py` (новый) - E1 done
-- `clinical_knowledge/mo_concordance_findings.py` (новый) - E1 done
+- `clinical_knowledge/mo_case_signals.py` (новый) - E1/E2 done
+- `clinical_knowledge/mo_concordance_findings.py` (новый) - E1/E2 done
 - `clinical_knowledge/kz_deep_eval.py` - hook `shadow_findings` - E1 done
-- `tests/test_mo_concordance_smirnova.py` - E1 done
-- `eval/mo_concordance/` - E0 remainder (5+5)
+- `tests/test_mo_concordance_smirnova.py` - E1/E2 done
+- `scripts/calibrate_mo_concordance.py` - E2 done
+- `eval/mo_concordance/` - E0/E2 done
+- `docs/reports/2026-08-05-mo-concordance-calibration-e2.md` - E2 done
 - при необходимости строки в `config/mo_rubric_mz.yaml`
 
 Не пересекать без согласования: `publish_mo_to_render.py`, launchd, Phase A completeness.

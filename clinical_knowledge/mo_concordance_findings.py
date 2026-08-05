@@ -72,11 +72,19 @@ def evaluate_mo_concordance(case: dict[str, Any]) -> list[dict[str, Any]]:
             )
 
     # 2) anamnesis_thin_for_duration
+    # E2: только при MSK red-flag презентации (хромота / отёк сустава).
+    # Иначе ~12% FP на любой хронике (гинекология, АГ, кашель…).
     duration = sig.get("duration_days")
-    if isinstance(duration, int) and duration >= 28:
+    red_presentation = bool(sig.get("has_limp") or sig.get("joint_edema"))
+    if (
+        isinstance(duration, int)
+        and duration >= 28
+        and red_presentation
+    ):
         themes = int(sig.get("anamnesis_theme_count") or 0)
         anam_len = int(sig.get("anamnesis_len") or 0)
-        if themes < 2 or anam_len < 80:
+        # E2: themes AND short text (шаблонный длинный анамнез с 1 темой - не finding).
+        if themes < 2 and anam_len < 120:
             out.append(
                 _finding(
                     "anamnesis_thin_for_duration",
@@ -84,17 +92,17 @@ def evaluate_mo_concordance(case: dict[str, Any]) -> list[dict[str, Any]]:
                     "P2",
                     title="Анамнез слишком краток для длительности жалобы",
                     detail=(
-                        f"Длительность ~{duration} дн., тем анамнеза {themes}/4, "
-                        f"длина текста {anam_len} символов"
+                        f"Длительность ~{duration} дн. при хромоте/отёке сустава; "
+                        f"тем анамнеза {themes}/4, длина текста {anam_len} символов"
                     ),
                     evidence=(sig.get("anamnesis") or "")[:300],
                 )
             )
 
     # 3) underworkup_chronic_red_flag
+    # E2 decision: P1 только pediatric; adult → P2 (шумнее, меньше safety-сигнал).
     pediatric = sig.get("audience") == "pediatric"
     chronic = isinstance(duration, int) and duration >= 28
-    red_presentation = bool(sig.get("has_limp") or sig.get("joint_edema"))
     no_workup = not (sig.get("plan_has_imaging") or sig.get("plan_has_labs"))
     worsening_only = bool(sig.get("follow_up_on_worsening_only"))
     if chronic and red_presentation and no_workup and worsening_only:

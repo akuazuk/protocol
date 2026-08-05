@@ -75,6 +75,43 @@ def test_clean_adult_case_has_no_smirnova_p1_patterns() -> None:
     assert "pediatric_limp_ddx_not_addressed" not in codes
 
 
+def test_adult_chronic_non_msk_not_thin_anamnesis() -> None:
+    """E2: anamnesis_thin не должен срабатывать на хронике без хромоты/отёка."""
+    case = {
+        "patient_age_years": 40,
+        "complaints": "головная боль 3 месяца",
+        "anamnesis_doctor": "Аллергоанамнез не отягощён. Наследственность не отягощена.",
+        "objective_status": "Неврологически без очага. Суставы без особенностей.",
+        "clinical_diagnosis": "G43.9 Мигрень неуточнённая",
+        "mkb_code_main": "G43.9",
+        "treatment_recommendations": "НПВП по потребности. Явка через месяц.",
+        "exam_recommendations": "",
+    }
+    codes = {f["code"] for f in evaluate_mo_concordance(case)}
+    assert "anamnesis_thin_for_duration" not in codes
+
+
+def test_edema_negation_oteki_net_not_joint_edema() -> None:
+    case = {
+        "patient_age_years": 44,
+        "complaints": "Боль в правом бедре 1 месяц",
+        "anamnesis_doctor": "Травму отрицает. Аллергоанамнез не отягощён.",
+        "objective_status": (
+            "Отеки: нет. Движения в правом тазобедренном суставе в полном объеме. "
+            "Осевая нагрузка безболезненна."
+        ),
+        "clinical_diagnosis": "M16 Коксартроз",
+        "mkb_code_main": "M16",
+        "treatment_recommendations": "НПВП 7 дней. Контроль через 2 недели.",
+        "exam_recommendations": "Рентген ТБС",
+    }
+    sig = extract_mo_case_signals(case)
+    assert sig["joint_edema"] == []
+    codes = {f["code"] for f in evaluate_mo_concordance(case)}
+    assert "finding_not_in_diagnosis" not in codes
+    assert "anamnesis_thin_for_duration" not in codes
+
+
 def test_shadow_findings_do_not_change_overall_by_default(monkeypatch) -> None:
     monkeypatch.setenv("MO_CONCORDANCE_FINDINGS", "1")
     monkeypatch.setenv("MO_CONCORDANCE_PRIMARY", "0")

@@ -20,7 +20,14 @@ _JOINTS: tuple[tuple[str, re.Pattern[str]], ...] = (
     ("wrist", re.compile(r"лучезапяст", re.I)),
 )
 
-_EDEMA = re.compile(r"\b(от[её]к\w*|выпот\w*|припухл\w*|сглаженност\w*|от[её]чен\w*)\b", re.I)
+_EDEMA = re.compile(r"\b(от[её]к\w*|выпот\w*|припухл\w*|сглаженност\w*|от[её]чен\w*|отечн\w*)\b", re.I)
+_EDEMA_NEGATED = re.compile(
+    r"(?:от[её]к\w*|отечн\w*|от[её]ков)\s*[:\-]?\s*нет|"
+    r"нет\s+(?:от[её]к\w*|отечн\w*)|"
+    r"без\s+(?:от[её]к\w*|отечн\w*|припухл\w*)|"
+    r"от[её]ков\s+нет",
+    re.I,
+)
 _TENDERNESS = re.compile(r"\b(болезненн\w*|боль при пальпац\w*)\b", re.I)
 _LIMP = re.compile(r"\bхромот\w*\b", re.I)
 _MUSCLE = re.compile(r"\b(мышц\w*|миозит\w*|rectus|прямо[йе] мышцы)\b", re.I)
@@ -48,9 +55,9 @@ _INFECTION = re.compile(
 )
 
 _DX_COVER_JOINT = {
-    "knee": re.compile(r"(колен|гонарт|m17|m23|m25\.4|m08|синовит|артрит)", re.I),
-    "hip": re.compile(r"(тазобедрен|cox|m16|m91|пертес|легг)", re.I),
-    "ankle": re.compile(r"(голеностоп|m19|артрит|синовит)", re.I),
+    "knee": re.compile(r"(колен|гонарт|артропат|m17|m23|m25|m08|синовит|артрит)", re.I),
+    "hip": re.compile(r"(тазобедрен|cox|коксарт|m16|m91|пертес|легг)", re.I),
+    "ankle": re.compile(r"(голеностоп|\bгсс\b|m19|артрит|синовит|артропат)", re.I),
     "shoulder": re.compile(r"(плеч|m75|артрит|синовит)", re.I),
     "elbow": re.compile(r"(локтев|артрит|синовит)", re.I),
     "wrist": re.compile(r"(лучезапяст|запяст|артрит|синовит)", re.I),
@@ -98,6 +105,14 @@ def _side(text: str) -> str | None:
     return None
 
 
+def _has_positive_edema(window: str) -> bool:
+    """True если в окне есть отёк/выпот, не шаблон «Отеки: нет»."""
+    if not window:
+        return False
+    cleaned = _EDEMA_NEGATED.sub(" ", window)
+    return bool(_EDEMA.search(cleaned))
+
+
 def _audience(case: dict[str, Any]) -> str:
     age = case.get("patient_age_years")
     try:
@@ -132,7 +147,7 @@ def extract_mo_case_signals(case: dict[str, Any]) -> dict[str, Any]:
             start = max(0, m.start() - 80)
             end = min(len(objective), m.end() + 80)
             window = objective[start:end]
-            if _EDEMA.search(window):
+            if _has_positive_edema(window):
                 joint_edema.append(
                     {
                         "joint": joint,
