@@ -229,8 +229,20 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
         publisher.upload_file(snapshot, remote_snapshot)
 
         merge_path = Path(tmp) / "merge.sql"
+        import sqlite3
+
+        with sqlite3.connect(snapshot) as snap_db:
+            column_map = {
+                table: [row[1] for row in snap_db.execute(f'PRAGMA table_info("{table}")')]
+                for table in sorted(report["tables"])
+            }
         merge_path.write_text(
-            merge_sql(sorted(report["tables"]), snapshot_path=remote_snapshot), encoding="utf-8"
+            merge_sql(
+                sorted(report["tables"]),
+                snapshot_path=remote_snapshot,
+                column_map=column_map,
+            ),
+            encoding="utf-8",
         )
         remote_merge = f"{publisher.remote_root}/warehouse/merge.sql"
         publisher.upload_file(merge_path, remote_merge)
@@ -262,6 +274,11 @@ def _publish_files(
             publisher.rsync(source, subdir, mirror=subdir == "public")
     for month_dir in _recent_days(data_root, args.days):
         publisher.rsync(month_dir, f"secure_cases/{month_dir.parent.name}/{month_dir.name}")
+    # Shadow LLM action-judge (если прогнан локально) - иначе пишется прямо на Render disk.
+    judge_root = data_root / "llm_action_judge"
+    if judge_root.is_dir():
+        publisher.ssh(f"mkdir -p {shlex.quote(publisher.remote_root + '/llm_action_judge')}")
+        publisher.rsync(judge_root, "llm_action_judge")
 
     if args.legacy_first_month:
         report["legacy_months"] = publish_legacy_months(

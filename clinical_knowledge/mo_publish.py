@@ -70,13 +70,42 @@ def build_publish_snapshot(warehouse: Path, target: Path) -> dict[str, int]:
     return counts
 
 
-def merge_sql(tables: Iterable[str], *, snapshot_path: str) -> str:
-    """SQL для прода: долить факты и справочники, не касаясь таблиц кабинета."""
+def merge_sql(
+    tables: Iterable[str],
+    *,
+    snapshot_path: str,
+    column_map: dict[str, list[str]] | None = None,
+) -> str:
+    """SQL для прода: долить факты и справочники, не касаясь таблиц кабинета.
+
+    Обязательно по именам колонок: на Render `fact_mo_case` часто создан старым
+    CREATE + ALTER (новые поля в конце), а снапшот - актуальным CREATE. `SELECT *`
+    тогда сдвигает doctor_key/specialty/filial и ломает BI.
+    """
     statements = [f"ATTACH DATABASE '{snapshot_path}' AS pub;", "BEGIN;"]
     for table in tables:
-        statements.append(f"INSERT OR REPLACE INTO {table} SELECT * FROM pub.{table};")
+        columns = (column_map or {}).get(table) or []
+        if columns:
+            quoted = ", ".join(f'"{column}"' for column in columns)
+            statements.append(
+                f'INSERT OR REPLACE INTO "{table}" ({quoted}) '
+                f'SELECT {quoted} FROM pub."{table}";'
+            )
+        else:
+            # fallback только если карта колонок не передана (старые вызовы/тесты)
+            statements.append(
+                f'INSERT OR REPLACE INTO "{table}" '
+                f'SELECT * FROM pub."{table}";'
+            )
     statements.extend(["COMMIT;", "DETACH DATABASE pub;"])
     return "\n".join(statements)
+
+
+def common_columns(db_a: sqlite3.Connection, db_b: sqlite3.Connection, table: str) -> list[str]:
+    """Пересечение колонок в порядке схемы db_a (обычно main/prod)."""
+    cols_a = [row[1] for row in db_a.execute(f'PRAGMA table_info("{table}")')]
+    cols_b = {row[1] for row in db_b.execute(f'PRAGMA table_info("{table}")')}
+    return [column for column in cols_a if column in cols_b]
 
 
 def snapshot_summary(snapshot: Path) -> dict[str, object]:

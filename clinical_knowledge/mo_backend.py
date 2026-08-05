@@ -2198,6 +2198,8 @@ def _doctor_breakdown(
         if denominator
         else 0.0
     )
+    # На коротком MTD (начало месяца) R² case-mix часто < 0.30 - график всё равно
+    # нужен методисту. Порог n оставляет enough_data; valid отдельным флагом.
     model_valid = model_r_squared >= 0.30
     output = []
     for (doctor_key, doctor, specialty), observations in doctors.items():
@@ -2223,7 +2225,8 @@ def _doctor_breakdown(
                 "low": round(float(interval["low"]) - expected, 2) if interval["low"] is not None else None,
                 "high": round(float(interval["high"]) - expected, 2) if interval["high"] is not None else None,
             },
-            "enough_data": n >= sample_threshold and model_valid,
+            "enough_data": n >= sample_threshold,
+            "case_mix_reliable": model_valid,
             "case_mix_model": {
                 "features": ["specialty", "icd_chapter"],
                 "r_squared": round(model_r_squared, 4),
