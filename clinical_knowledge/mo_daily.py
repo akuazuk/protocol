@@ -1063,6 +1063,24 @@ CREATE TABLE IF NOT EXISTS crm_dispute_state (
   actor TEXT NOT NULL, created_at TEXT NOT NULL, updated_at TEXT NOT NULL,
   resolved_by TEXT
 );
+CREATE TABLE IF NOT EXISTS crm_review_pack (
+  pack_id TEXT PRIMARY KEY,
+  case_id TEXT NOT NULL,
+  visit_id TEXT NOT NULL,
+  mis_id TEXT,
+  patient_id TEXT,
+  visit_date TEXT,
+  doctor_fio TEXT,
+  specialty TEXT,
+  filial TEXT,
+  clinical_json TEXT NOT NULL,
+  system_json TEXT NOT NULL,
+  decision_json TEXT NOT NULL,
+  training_use INTEGER NOT NULL DEFAULT 1,
+  actor TEXT,
+  created_at TEXT NOT NULL,
+  supersedes_pack_id TEXT
+);
 CREATE INDEX IF NOT EXISTS idx_crm_state_status ON crm_case_state(status);
 CREATE INDEX IF NOT EXISTS idx_crm_state_assignee ON crm_case_state(assignee);
 CREATE INDEX IF NOT EXISTS idx_crm_event_case_time ON crm_case_event(case_id, created_at);
@@ -1070,6 +1088,8 @@ CREATE INDEX IF NOT EXISTS idx_saved_view_owner ON saved_view(owner, scope);
 CREATE INDEX IF NOT EXISTS idx_access_log_time ON access_log(created_at);
 CREATE INDEX IF NOT EXISTS idx_access_log_doctor ON access_log(doctor_key, created_at);
 CREATE INDEX IF NOT EXISTS idx_dispute_case_status ON crm_dispute_state(case_id, status);
+CREATE INDEX IF NOT EXISTS idx_crm_review_pack_case ON crm_review_pack(case_id, created_at DESC);
+CREATE INDEX IF NOT EXISTS idx_crm_review_pack_training ON crm_review_pack(training_use, created_at DESC);
 """
 CRM_TABLES = (
     "crm_case_state",
@@ -1078,6 +1098,7 @@ CRM_TABLES = (
     "export_job",
     "access_log",
     "crm_dispute_state",
+    "crm_review_pack",
 )
 
 # Главы МКБ-10: нужны для группировки диагнозов без внешнего справочника.
@@ -1334,7 +1355,7 @@ def sanitize_mo_org_label(
 ) -> str:
     """Убрать из specialty/filial мусор вроде scorer_version (`v4.0.0`) / schema (`4.0`)."""
     text = str(value or "").strip()
-    if not text or text in {"-", "—", "–", "Не указано", "не указано"}:
+    if not text or text in {"-", "\u2014", "\u2013", "Не указано", "не указано"}:
         return ""
     if scorer_version and text == str(scorer_version).strip():
         return ""

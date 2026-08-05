@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-05-r10-mo-llm-judge-viz"
+BUILD_VERSION = "2026-08-05-r11-mo-review-pack-ui"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11424,7 +11424,10 @@ def api_methodist_mo_cases(
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_cases
 
-    return build_cases(_mo_params(**locals()))
+    params = _mo_params(**locals())
+    if _mo_role(request) in {"methodist", "lead", "admin"}:
+        params["include_patient_id"] = True
+    return build_cases(params)
 
 
 @app.post("/api/methodist/mo/cases/bulk-action")
@@ -11566,7 +11569,147 @@ def api_methodist_mo_case_detail(
             "shadow": True,
             "reason": "LLM-оценка action-очереди недоступна",
         }
+    role = _mo_role(request)
+    record = result.get("record") if isinstance(result.get("record"), dict) else {}
+    visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
+    if role in {"methodist", "lead", "admin"}:
+        patient_id = str(result.pop("_patient_id_hint", "") or "")
+        if not patient_id:
+            try:
+                from clinical_knowledge.mo_review_pack import lookup_patient_id
+
+                patient_id = lookup_patient_id(
+                    case_id,
+                    visit_date=visit_date or None,
+                    mis_id=str(record.get("mis_id") or "") or None,
+                )
+            except Exception:
+                patient_id = ""
+        if patient_id:
+            record["patient_id"] = patient_id
+            result["record"] = record
+            try:
+                from clinical_knowledge.mo_backend import record_access
+
+                record_access(
+                    actor=_mo_actor(request),
+                    role=role,
+                    action="view_patient_id",
+                    case_id=case_id,
+                    metadata={"visit_date": visit_date},
+                )
+            except Exception:
+                pass
+    else:
+        result.pop("_patient_id_hint", None)
     return result
+
+
+@app.post("/api/methodist/mo/cases/{case_id}/review-pack")
+def api_methodist_mo_save_review_pack(
+    case_id: str,
+    request: "Request",
+    body: dict[str, Any],
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_review_pack import save_review_pack
+
+    try:
+        result = save_review_pack(
+            case_id=case_id,
+            actor=_mo_actor(request),
+            role=_mo_role(request),
+            decision=body.get("decision") if isinstance(body.get("decision"), dict) else body,
+            supersedes_pack_id=body.get("supersedes_pack_id"),
+            month=str(body.get("month") or "")[:7] or None,
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    try:
+        from clinical_knowledge.mo_backend import record_access
+
+        record_access(
+            actor=_mo_actor(request),
+            role=_mo_role(request),
+            action="save_review_pack",
+            case_id=case_id,
+            metadata={"pack_id": result.get("pack_id")},
+        )
+    except Exception:
+        pass
+    return result
+
+
+@app.get("/api/methodist/mo/cases/{case_id}/review-packs")
+def api_methodist_mo_list_review_packs(
+    case_id: str,
+    request: "Request",
+    response: "Response",
+    limit: int = Query(50, ge=1, le=200),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_review_pack import list_review_packs
+
+    response.headers["Cache-Control"] = "private, no-store"
+    try:
+        return list_review_packs(case_id, limit=limit)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/review-packs/{pack_id}")
+def api_methodist_mo_get_review_pack(
+    pack_id: str,
+    request: "Request",
+    response: "Response",
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_review_pack import get_review_pack
+
+    response.headers["Cache-Control"] = "private, no-store"
+    result = get_review_pack(pack_id)
+    if not result.get("ok"):
+        raise HTTPException(status_code=404, detail=result.get("error") or "pack_not_found")
+    if _mo_role(request) in {"methodist", "lead", "admin"}:
+        try:
+            from clinical_knowledge.mo_backend import record_access
+
+            pack = result.get("pack") or {}
+            record_access(
+                actor=_mo_actor(request),
+                role=_mo_role(request),
+                action="view_review_pack",
+                case_id=str(pack.get("case_id") or ""),
+                metadata={"pack_id": pack_id},
+            )
+        except Exception:
+            pass
+    return result
+
+
+@app.post("/api/methodist/mo/review-packs/{pack_id}/revise")
+def api_methodist_mo_revise_review_pack(
+    pack_id: str,
+    request: "Request",
+    body: dict[str, Any],
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_review_pack import revise_review_pack
+
+    try:
+        return revise_review_pack(
+            pack_id=pack_id,
+            actor=_mo_actor(request),
+            role=_mo_role(request),
+            decision=body.get("decision") if isinstance(body.get("decision"), dict) else body,
+            month=str(body.get("month") or "")[:7] or None,
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=403, detail=str(exc)) from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/rubric-summary")

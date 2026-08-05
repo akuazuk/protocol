@@ -15,6 +15,7 @@
       sortBy: "date", sortDir: "desc",
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
+      caseDetail: null, supersedesPackId: "",
       drillTrail: [], drillSnapshot: null,
       columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false
     };
@@ -816,7 +817,8 @@
       var total = firstNumeric([row.deep_overall_pct, row.overall_pct, row.l1_overall_pct]);
       var fallbackStatus = total == null ? "unscored" : (total < 60 ? "critical" : total < 75 ? "review" : "good");
       var status = row.crm_status || ((row.crm || {}).status) || row.deep_status || row.status || fallbackStatus;
-      return { raw: row, id: id, date: row.date || row.visit_date || "", doctor: doctor, specialty: specialty,
+      return { raw: row, id: id, visitId: row.visit_id || id, patientId: row.patient_id || "",
+        date: row.date || row.visit_date || "", doctor: doctor, specialty: specialty,
         branch: row.filial || row.branch || "", diagnosis: diagnosis, total: total, status: status,
         kind: row.document_kind_label || row.kz_kind_label || row.kz_kind || "Не указан",
         coverage: firstNumeric([row.coverage_pct, row.coverage, row.deep_coverage_pct]),
@@ -832,7 +834,8 @@
     }
     function statusClass(value) { return /critical|confirmed/.test(value) ? "critical" : /good|resolved|closed|acceptable/.test(value) ? "good" : "review"; }
     function documentRow(item) {
-      return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
+      return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
+        '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
         '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td>' + esc(score(item.coverage)) +
         '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
@@ -843,7 +846,8 @@
       var crm = item.raw.crm || {};
       var pdfUrl = item.raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
-        statusClass(item.status) + '">' + esc(priority) + '</span></td><td>' + esc(item.date) +
+        statusClass(item.status) + '">' + esc(priority) + '</span></td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
+        '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
         '</small></td><td>' + esc(item.diagnosis) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
         esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
@@ -871,7 +875,7 @@
       var body = queue ? $("queue-rows") : $("document-rows");
       var emptyState = data.empty_state || {};
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
-        '<tr><td colspan="' + (queue ? 12 : 9) + '" class="empty"><b>' +
+        '<tr><td colspan="' + (queue ? 14 : 11) + '" class="empty"><b>' +
         esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
         esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
       bindCaseRows(body);
@@ -1053,6 +1057,36 @@
         '</div></div>' +
         '<p class="card-sub">Shadow · не меняет warehouse overall · ' + esc(footerMeta) + '</p></div>';
     }
+    function verdictSelect(id, current) {
+      var options = [
+        ["unreviewed", "Не проверено"],
+        ["agree", "Согласен"],
+        ["partial", "Частично"],
+        ["disagree", "Не согласен"]
+      ];
+      return '<select class="control" id="' + id + '">' + options.map(function (option) {
+        return '<option value="' + option[0] + '"' + (option[0] === (current || "unreviewed") ? " selected" : "") + ">" +
+          option[1] + "</option>";
+      }).join("") + "</select>";
+    }
+    function renderReviewPackHistory(packs) {
+      if (!(packs || []).length) {
+        return '<div class="detail-block review-pack-history"><h3>История разборов</h3><p class="empty">Сохранённых пакетов пока нет.</p></div>';
+      }
+      return '<div class="detail-block review-pack-history"><h3>История разборов</h3>' + packs.map(function (pack, index) {
+        var summary = pack.decision_summary || {};
+        return '<article class="review-pack-item"><div><b>v' + (packs.length - index) + '</b> · ' +
+          esc(new Date(pack.created_at).toLocaleString("ru-RU")) + ' · ' + esc(pack.actor || "методист") +
+          (pack.training_use ? ' · <span class="status good">gold</span>' : "") +
+          '</div><div class="card-sub">' +
+          esc(["Полнота: " + (summary.verdict_completeness || "-"),
+            "Диагноз: " + (summary.verdict_diagnosis || "-"),
+            "Рек.: " + (summary.verdict_recommendations || "-")].join(" · ")) +
+          '</div>' + (summary.summary_ru ? '<p>' + esc(summary.summary_ru) + '</p>' : "") +
+          '<div class="row-actions"><button class="button secondary compact" type="button" data-load-pack="' +
+          esc(pack.pack_id) + '">Открыть / исправить</button></div></article>';
+      }).join("") + '</div>';
+    }
     function renderCase(data) {
       var record = data.record || data.case || data;
       var item = rowRecord(record);
@@ -1060,11 +1094,14 @@
       var findings = data.findings || record.findings || [];
       var crm = data.crm || record.crm || {};
       var events = data.events || [];
+      var packs = data.review_packs || [];
       var coverageInfo = deriveCoverage(data, record, axes);
       var confidenceInfo = deriveConfidence(data, record, axes);
       var sourceDocument = data.document || {};
       var llmJudge = data.llm_action_judge || {};
       var crmStatus = crm.status || "new";
+      state.caseDetail = data;
+      state.supersedesPackId = "";
       var statusOptions = [
         ["new","Новый"],["assigned","Назначен"],["in_review","На разборе"],
         ["confirmed_issue","Подтверждено"],["false_positive","Отклонено"],
@@ -1074,10 +1111,67 @@
         return '<option value="' + option[0] + '"' + (option[0] === crmStatus ? " selected" : "") + ">" + option[1] + "</option>";
       }).join("");
       $("drawer-title").textContent = "Разбор случая";
-      $("drawer-subtitle").textContent = [item.date, item.doctor, item.specialty, item.branch].filter(Boolean).join(" · ");
+      $("drawer-subtitle").textContent = [
+        "визит " + (item.visitId || item.id || "-"),
+        "пациент " + (item.patientId || "-"),
+        item.date, item.doctor, item.specialty, item.branch
+      ].filter(Boolean).join(" · ");
       var rubric = data.rubric_mz || {};
+      var findingsHtml = '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
+        var title = finding.title_ru || finding.title || finding.code || "Замечание";
+        var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
+        var linked = finding.linked_fields || [];
+        var shadowBadge = (finding.is_shadow || finding.shadow) ?
+          '<span class="status review finding-shadow-badge">shadow</span> ' : "";
+        var linkHint = finding.link_hint_ru ?
+          '<p class="finding-link-hint">' + esc(finding.link_hint_ru) +
+          (linked.length ? ' · поля: ' + linked.map(function (field) {
+            return '<button type="button" class="linkish" data-focus-clinical="' + esc(field) + '">' +
+              esc(clinicalFieldLabel(field)) + '</button>';
+          }).join(", ") : "") + '</p>' : "";
+        return notice(finding.severity || "Проверить", shadowBadge + (title || finding.detail_ru || finding.detail || "Требуется ручная проверка"),
+          finding.severity === "P0" ? "critical" : "review") +
+          ((finding.detail_ru || finding.detail) ? '<p>' + esc(finding.detail_ru || finding.detail) + '</p>' : "") +
+          linkHint +
+          (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
+          (finding.evidence_span ? '<p class="card-sub">Поле ' + esc(finding.evidence_span.field) +
+            ', символы ' + esc(finding.evidence_span.start) + '-' + esc(finding.evidence_span.end) + '</p>' : "") +
+          (finding.source_ref ? '<details><summary>Источник</summary><p>' + esc(finding.source_ref) + "</p></details>" : "") +
+          (finding.code ? '<label class="filter"><span>Решение по замечанию</span><select class="control" data-finding-code="' +
+            esc(finding.code) + '"><option value="unreviewed"' + (decision === "unreviewed" ? " selected" : "") +
+            '>Не проверено</option><option value="confirmed"' + (decision === "confirmed" ? " selected" : "") +
+            '>Подтверждено</option><option value="false_positive"' + (decision === "false_positive" ? " selected" : "") +
+            '>Отклонено</option><option value="needs_more_data"' + (decision === "needs_more_data" ? " selected" : "") +
+            '>Нужны данные</option></select></label>' : "");
+      }).join("") : '<p>Критических замечаний не найдено.</p>') + '</div>';
+      var decisionHtml =
+        '<div class="methodist-decision-panel"><h3>Решение методиста</h3>' +
+        '<label class="filter"><span>Статус</span><select class="control" id="drawer-status">' + statusOptions +
+        '</select></label><label class="filter"><span>Ответственный</span><input class="control" id="drawer-assignee" maxlength="120" value="' +
+        esc(crm.assignee || "") + '"></label><label class="filter"><span>Срок</span><input class="control" id="drawer-due" type="date" value="' +
+        esc(crm.due_date || "") + '"></label><label class="filter"><span>Метки через запятую</span><input class="control" id="drawer-tags" maxlength="500" value="' +
+        esc((crm.tags || []).join(", ")) + '"></label>' +
+        '<p class="card-sub" style="margin-top:10px">Согласие с LLM по трём вопросам</p>' +
+        '<div class="verdict-row">' +
+        '<label class="filter"><span>Полнота</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
+        '<label class="filter"><span>Диагноз</span>' + verdictSelect("drawer-verdict-d", "unreviewed") + '</label>' +
+        '<label class="filter"><span>Рекомендации</span>' + verdictSelect("drawer-verdict-r", "unreviewed") + '</label>' +
+        '</div>' +
+        '<p class="card-sub">Корректировка % (shadow, необязательно)</p>' +
+        '<div class="corrected-row">' +
+        '<label class="filter"><span>Полнота %</span><input class="control" id="drawer-score-c" type="number" min="0" max="100" step="1" placeholder="-"></label>' +
+        '<label class="filter"><span>Диагноз %</span><input class="control" id="drawer-score-d" type="number" min="0" max="100" step="1" placeholder="-"></label>' +
+        '<label class="filter"><span>Рек. %</span><input class="control" id="drawer-score-r" type="number" min="0" max="100" step="1" placeholder="-"></label>' +
+        '</div>' +
+        '<label class="filter"><span>Развёрнутый разбор</span><textarea class="control" id="drawer-summary" rows="6" maxlength="4000" placeholder="Что подтвердили, что отклонили, что исправить врачу"></textarea></label>' +
+        '<label class="filter" style="margin-top:8px"><span><input type="checkbox" id="drawer-training-use" checked> Можно в gold / обучение</span></label>' +
+        '<p><button class="button" id="drawer-save" type="button">Сохранить пакет разбора</button> ' +
+        '<a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a> ' +
+        '<button class="button secondary" type="button" data-open-pdf="/api/methodist/mo/cases/' + encodeURIComponent(item.id) + '/pdf" data-open-name="mo-' + encodeURIComponent(item.id) + '.pdf">МО в PDF</button></p></div>';
       $("drawer-body").innerHTML =
-        renderLlmActionJudge(llmJudge, sourceDocument, item) +
+        '<div class="case-workspace-grid">' +
+        '<div class="case-workspace-clinical">' +
+        renderClinicalDocument(sourceDocument, findings) +
         '<details class="detail-block mo-secondary-details"><summary>Подробнее: итоговая оценка, оси, рубрика МЗ</summary>' +
         '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
         kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "shadow · «Как оценивать»") +
@@ -1089,46 +1183,16 @@
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
         }).join("") + '</div>' +
         renderRubricMz(rubric) +
-        '</details>' +
-        renderClinicalDocument(sourceDocument, findings) +
-        '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
-          var title = finding.title_ru || finding.title || finding.code || "Замечание";
-          var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
-          var linked = finding.linked_fields || [];
-          var shadowBadge = (finding.is_shadow || finding.shadow) ?
-            '<span class="status review finding-shadow-badge">shadow</span> ' : "";
-          var linkHint = finding.link_hint_ru ?
-            '<p class="finding-link-hint">' + esc(finding.link_hint_ru) +
-            (linked.length ? ' · поля: ' + linked.map(function (field) {
-              return '<button type="button" class="linkish" data-focus-clinical="' + esc(field) + '">' +
-                esc(clinicalFieldLabel(field)) + '</button>';
-            }).join(", ") : "") + '</p>' : "";
-          return notice(finding.severity || "Проверить", shadowBadge + (title || finding.detail_ru || finding.detail || "Требуется ручная проверка"),
-            finding.severity === "P0" ? "critical" : "review") +
-            ((finding.detail_ru || finding.detail) ? '<p>' + esc(finding.detail_ru || finding.detail) + '</p>' : "") +
-            linkHint +
-            (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
-            (finding.evidence_span ? '<p class="card-sub">Поле ' + esc(finding.evidence_span.field) +
-              ', символы ' + esc(finding.evidence_span.start) + '-' + esc(finding.evidence_span.end) + '</p>' : "") +
-            (finding.source_ref ? '<details><summary>Источник</summary><p>' + esc(finding.source_ref) + "</p></details>" : "") +
-            (finding.code ? '<label class="filter"><span>Решение по замечанию</span><select class="control" data-finding-code="' +
-              esc(finding.code) + '"><option value="unreviewed"' + (decision === "unreviewed" ? " selected" : "") +
-              '>Не проверено</option><option value="confirmed"' + (decision === "confirmed" ? " selected" : "") +
-              '>Подтверждено</option><option value="false_positive"' + (decision === "false_positive" ? " selected" : "") +
-              '>Отклонено</option><option value="needs_more_data"' + (decision === "needs_more_data" ? " selected" : "") +
-              '>Нужны данные</option></select></label>' : "");
-        }).join("") : '<p>Критических замечаний не найдено.</p>') + '</div>' +
-        '<div class="detail-block"><h3>Решение методиста</h3><label class="filter"><span>Статус</span><select class="control" id="drawer-status">' + statusOptions +
-        '</select></label><label class="filter"><span>Ответственный</span><input class="control" id="drawer-assignee" maxlength="120" value="' +
-        esc(crm.assignee || "") + '"></label><label class="filter"><span>Срок</span><input class="control" id="drawer-due" type="date" value="' +
-        esc(crm.due_date || "") + '"></label><label class="filter"><span>Метки через запятую</span><input class="control" id="drawer-tags" maxlength="500" value="' +
-        esc((crm.tags || []).join(", ")) + '"></label><label class="filter" style="margin-top:10px"><span>Комментарий</span><input class="control" id="drawer-comment" maxlength="2000"></label>' +
-        '<p><button class="button" id="drawer-save" type="button">Сохранить решение</button> ' +
-        '<a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a> ' +
-        '<button class="button secondary" type="button" data-open-pdf="/api/methodist/mo/cases/' + encodeURIComponent(item.id) + '/pdf" data-open-name="mo-' + encodeURIComponent(item.id) + '.pdf">МО в PDF</button></p></div>' +
-        '<div class="detail-block"><h3>История решений</h3>' + (events.length ? events.map(function (event) {
+        '</details></div>' +
+        '<div class="case-workspace-decision">' +
+        renderLlmActionJudge(llmJudge, sourceDocument, item) +
+        findingsHtml +
+        decisionHtml +
+        renderReviewPackHistory(packs) +
+        '<div class="detail-block"><h3>История CRM</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
-        }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
+        }).join("") : '<p class="empty">Событий пока нет.</p>') + '</div>' +
+        '</div></div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
       $("drawer-body").querySelectorAll("[data-focus-clinical]").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -1142,8 +1206,44 @@
           target.scrollIntoView({ block: "nearest", behavior: "smooth" });
         });
       });
+      $("drawer-body").querySelectorAll("[data-load-pack]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          loadReviewPackIntoForm(button.getAttribute("data-load-pack"));
+        });
+      });
       var focusRow = document.getElementById("rubric-focus-row");
       if (focusRow) focusRow.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+    async function loadReviewPackIntoForm(packId) {
+      if (!packId) return;
+      try {
+        var response = await request("/review-packs/" + encodeURIComponent(packId));
+        if (!response.ok) throw new Error("Не удалось открыть пакет разбора.");
+        var payload = await response.json();
+        var pack = payload.pack || {};
+        var decision = pack.decision || {};
+        state.supersedesPackId = pack.pack_id || packId;
+        if ($("drawer-status") && decision.status) $("drawer-status").value = decision.status;
+        if ($("drawer-assignee")) $("drawer-assignee").value = decision.assignee || "";
+        if ($("drawer-due")) $("drawer-due").value = decision.due_date || "";
+        if ($("drawer-tags")) $("drawer-tags").value = (decision.tags || []).join(", ");
+        if ($("drawer-verdict-c")) $("drawer-verdict-c").value = decision.verdict_completeness || "unreviewed";
+        if ($("drawer-verdict-d")) $("drawer-verdict-d").value = decision.verdict_diagnosis || "unreviewed";
+        if ($("drawer-verdict-r")) $("drawer-verdict-r").value = decision.verdict_recommendations || "unreviewed";
+        var scores = decision.corrected_scores || {};
+        if ($("drawer-score-c") && scores.completeness != null) $("drawer-score-c").value = scores.completeness;
+        if ($("drawer-score-d") && scores.diagnosis != null) $("drawer-score-d").value = scores.diagnosis;
+        if ($("drawer-score-r") && scores.recommendations != null) $("drawer-score-r").value = scores.recommendations;
+        if ($("drawer-summary")) $("drawer-summary").value = decision.summary_ru || "";
+        if ($("drawer-training-use")) $("drawer-training-use").checked = decision.training_use !== false;
+        Object.keys(decision.finding_decisions || {}).forEach(function (code) {
+          var select = $("drawer-body").querySelector('[data-finding-code="' + code + '"]');
+          if (select) select.value = decision.finding_decisions[code];
+        });
+        $("announcer").textContent = "Пакет загружен для правки - сохранение создаст новую версию";
+        var panel = $("drawer-body").querySelector(".methodist-decision-panel");
+        if (panel) panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      } catch (e) { showError(e.message); }
     }
     function clinicalFieldLabel(key) {
       return ({
@@ -1233,14 +1333,37 @@
         document.querySelectorAll("[data-finding-code]").forEach(function (select) {
           findingDecisions[select.getAttribute("data-finding-code")] = select.value;
         });
-        await postCaseChanges([state.openCaseId], {
+        var corrected = {};
+        [["completeness", "drawer-score-c"], ["diagnosis", "drawer-score-d"], ["recommendations", "drawer-score-r"]].forEach(function (pair) {
+          var el = $(pair[1]);
+          if (!el || el.value === "") return;
+          var n = Number(el.value);
+          if (!isNaN(n) && n >= 0 && n <= 100) corrected[pair[0]] = Math.round(n);
+        });
+        var decision = {
           status: $("drawer-status").value,
           assignee: $("drawer-assignee").value.trim(),
           due_date: $("drawer-due").value,
           tags: $("drawer-tags").value.split(",").map(function (tag) { return tag.trim(); }).filter(Boolean),
-          finding_decisions: findingDecisions
-        }, $("drawer-comment").value);
-        $("announcer").textContent = "Решение сохранено";
+          finding_decisions: findingDecisions,
+          verdict_completeness: ($("drawer-verdict-c") && $("drawer-verdict-c").value) || "unreviewed",
+          verdict_diagnosis: ($("drawer-verdict-d") && $("drawer-verdict-d").value) || "unreviewed",
+          verdict_recommendations: ($("drawer-verdict-r") && $("drawer-verdict-r").value) || "unreviewed",
+          corrected_scores: corrected,
+          summary_ru: ($("drawer-summary") && $("drawer-summary").value) || "",
+          training_use: !($("drawer-training-use") && !$("drawer-training-use").checked)
+        };
+        var body = { decision: decision };
+        if (state.supersedesPackId) body.supersedes_pack_id = state.supersedesPackId;
+        var month = (query().get("month") || minskDateKey(0).slice(0, 7));
+        if (month) body.month = month;
+        var response = await request(
+          "/cases/" + encodeURIComponent(state.openCaseId) + "/review-pack",
+          null,
+          { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
+        );
+        if (!response.ok) throw new Error("Не удалось сохранить пакет разбора.");
+        $("announcer").textContent = "Пакет разбора сохранён";
         closeDrawer(); loadPage(state.page);
       } catch (e) { showError(e.message); }
     }
@@ -1477,11 +1600,15 @@
       var section = data.action_cases || {}, items = section.items || [];
       $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
         var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.case_id) + "/pdf");
+        var visitId = item.visit_id || item.case_id || "-";
         return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
           (item.severity === "P0" ? "critical" : "review") + '">' + esc(item.severity) +
-          "</span></td><td><b>" + esc(item.doctor) + "</b><br><small>" + esc(item.specialty) +
+          '</span></td><td class="id-cell">' + esc(visitId) +
+          '</td><td class="id-cell">' + esc(item.patient_id || "-") +
+          '</td><td>' + esc(item.visit_date || data.date || "-") +
+          '</td><td><b>' + esc(item.doctor_fio || item.doctor) + "</b><br><small>" + esc(item.specialty) +
           "</small>" + llmJudgeMini(item) +
-          "</td><td>" + esc(item.branch) + "</td><td>" + esc(item.diagnosis) +
+          "</td><td>" + esc(item.filial || item.branch) + "</td><td>" + esc(item.diagnosis) +
           "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b>" +
           (item.is_shadow ? ' <span class="status review finding-shadow-badge">shadow</span>' : "") +
           "<br><small>" + esc(item.reason) +
@@ -1490,7 +1617,7 @@
           esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
           (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") +
           '</button> <button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">МО в PDF</button></td></tr>';
-      }).join("") : '<tr><td colspan="6">' + unavailableBlock(section, "P0/P1 случаев нет.") + "</td></tr>";
+      }).join("") : '<tr><td colspan="9">' + unavailableBlock(section, "P0/P1 случаев нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
     }
     function renderYesterdayFlow(data, dimension) {
@@ -2084,8 +2211,8 @@
       options[current].focus();
     }
     var COLUMN_MAP = {
-      documents: ["Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "Полнота", "Надёжность", "Статус"],
-      queue: ["Выбор", "Приоритет", "Дата", "Филиал", "Врач / специальность", "Диагноз", "Итог", "Причина", "Ответственный", "Срок", "Статус", "МО"]
+      documents: ["Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "Полнота", "Надёжность", "Статус"],
+      queue: ["Выбор", "Приоритет", "Визит", "Пациент", "Дата", "Филиал", "Врач / специальность", "Диагноз", "Итог", "Причина", "Ответственный", "Срок", "Статус", "МО"]
     };
     function ensureColumnState() {
       if (!state.columnVisible.documents.length) state.columnVisible.documents = COLUMN_MAP.documents.map(function () { return true; });

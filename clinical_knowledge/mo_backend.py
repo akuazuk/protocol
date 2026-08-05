@@ -768,6 +768,11 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     states = _crm_states([r["case_id"] for r in filtered])
     crm_statuses = set(_values(params.get("crm_statuses")))
     assignees = set(_values(params.get("assignees")))
+    include_patient_id = str(params.get("include_patient_id") or "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
     if crm_statuses:
         filtered = [r for r in filtered if states.get(r["case_id"], {}).get("status", "new") in crm_statuses]
     if assignees:
@@ -794,7 +799,18 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     rows = []
     for rec in filtered[start : start + page_size]:
         crm = states.get(rec["case_id"]) or {"status": "new", "tags": [], "finding_decisions": {}}
-        rows.append({**_public_row(rec), "crm": crm})
+        public = _public_row(rec)
+        if include_patient_id:
+            public["patient_id"] = str(rec.get("patient_id") or "")
+            public["visit_id"] = str(rec.get("visit_id") or rec.get("case_id") or "")
+        rows.append({**public, "crm": crm})
+    if include_patient_id:
+        try:
+            from .mo_review_pack import enrich_rows_with_patient_id
+
+            enrich_rows_with_patient_id(rows)
+        except Exception:  # noqa: BLE001
+            pass
     agg = _filtered_agg(filtered)
     agg["by_specialty"] = [_suppressed_group(r) for r in agg.get("by_specialty") or []]
     agg["by_chapter"] = [_suppressed_group(r) for r in agg.get("by_chapter") or []]
@@ -998,7 +1014,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             (day,),
         ).fetchall()
         action_raw = conn.execute(
-            """SELECT c.mis_id, c.visit_id, c.filial, c.specialty, c.diagnosis_code,
+            """SELECT c.mis_id, c.visit_id, c.visit_date, c.filial, c.specialty, c.diagnosis_code,
                       c.overall_pct, c.document_kind,
                       c.scorer_version, c.score_schema_version,
                       COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
@@ -1231,6 +1247,12 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
 
     action_cases = []
     seen_cases: set[str] = set()
+    try:
+        from .mo_review_pack import patient_id_map_for_day
+
+        patient_map = patient_id_map_for_day(day)
+    except Exception:  # noqa: BLE001
+        patient_map = {}
     for row in action_raw:
         case_id = str(row["visit_id"] or row["mis_id"])
         if case_id in seen_cases:
@@ -1257,14 +1279,28 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         branch = sanitize_mo_org_label(
             filial_raw, scorer_version=scorer_version, schema_version=schema_version
         )
+        visit_id = str(row["visit_id"] or case_id)
+        mis_id = str(row["mis_id"])
+        visit_date = str(row["visit_date"] if "visit_date" in row.keys() else day)[:10]
+        patient_id = (
+            patient_map.get(visit_id)
+            or patient_map.get(case_id)
+            or patient_map.get(mis_id)
+            or ""
+        )
         action_cases.append(
             {
                 "case_id": case_id,
-                "mis_id": str(row["mis_id"]),
+                "visit_id": visit_id,
+                "mis_id": mis_id,
+                "patient_id": patient_id,
+                "visit_date": visit_date,
                 "severity": str(row["severity"]),
                 "doctor": str(row["doctor"]),
+                "doctor_fio": str(row["doctor"]),
                 "specialty": specialty or "Специальность не указана",
                 "branch": branch or "Филиал не указан",
+                "filial": branch or "Филиал не указан",
                 "diagnosis": str(row["diagnosis"] or "Диагноз не указан"),
                 "diagnosis_code": str(row["diagnosis_code"] or ""),
                 "overall_pct": float(score) if score is not None else None,
@@ -2697,16 +2733,32 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                 detail["confidence_pct"] = 90.0
             elif axes:
                 detail["confidence_pct"] = 55.0
-    record.pop("patient_id", None)
+    patient_id_raw = str(record.pop("patient_id", None) or "").strip()
     detail["record"] = record
     detail["case_id"] = case_id
     with closing(_connect()) as conn:
+        try:
+            from .mo_review_pack import ensure_review_pack_schema
+
+            ensure_review_pack_schema(conn)
+        except Exception:  # noqa: BLE001
+            pass
         state = conn.execute("SELECT * FROM crm_case_state WHERE case_id=?", (case_id,)).fetchone()
         events = conn.execute(
             "SELECT event_id,event_type,actor,payload_json,created_at FROM crm_case_event "
             "WHERE case_id=? ORDER BY created_at DESC LIMIT 200",
             (case_id,),
         ).fetchall()
+        review_packs = []
+        try:
+            review_packs = conn.execute(
+                """SELECT pack_id, created_at, actor, training_use, decision_json, supersedes_pack_id
+                   FROM crm_review_pack WHERE case_id=?
+                   ORDER BY created_at DESC LIMIT 20""",
+                (case_id,),
+            ).fetchall()
+        except sqlite3.Error:
+            review_packs = []
     crm = dict(state) if state else {
         "case_id": case_id,
         "status": "new",
@@ -2721,6 +2773,34 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
     ]
     for event in detail["events"]:
         event.pop("payload_json", None)
+    pack_items = []
+    for row in review_packs:
+        item = dict(row)
+        decision = {}
+        try:
+            decision = json.loads(item.pop("decision_json", None) or "{}")
+        except json.JSONDecodeError:
+            item.pop("decision_json", None)
+        pack_items.append(
+            {
+                "pack_id": item.get("pack_id"),
+                "created_at": item.get("created_at"),
+                "actor": item.get("actor") or "",
+                "training_use": bool(int(item.get("training_use") or 0)),
+                "supersedes_pack_id": item.get("supersedes_pack_id"),
+                "decision_summary": {
+                    "status": decision.get("status"),
+                    "verdict_completeness": decision.get("verdict_completeness"),
+                    "verdict_diagnosis": decision.get("verdict_diagnosis"),
+                    "verdict_recommendations": decision.get("verdict_recommendations"),
+                    "summary_ru": (decision.get("summary_ru") or "")[:240],
+                },
+            }
+        )
+    detail["review_packs"] = pack_items
+    # patient_id только по явному флагу в API (methodist+); по умолчанию скрыт.
+    if patient_id_raw:
+        detail["_patient_id_hint"] = patient_id_raw
     return detail
 
 
