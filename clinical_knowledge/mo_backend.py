@@ -302,7 +302,12 @@ def _selected_months(params: dict[str, Any]) -> list[str]:
 
 
 def _values(value: Any) -> list[str]:
-    """Разбор multi-select. UI шлёт значения через `|` (адреса филиалов содержат запятые)."""
+    """Разбор multi-select.
+
+    UI шлёт фильтры через `|` (адреса филиалов содержат запятые).
+    Legacy CSV (metrics/коды без пробелов) по-прежнему через `,`.
+    Строка с запятой и пробелами в сегментах - одно значение (филиал).
+    """
     if value is None:
         return []
     if isinstance(value, (list, tuple, set)):
@@ -312,8 +317,11 @@ def _values(value: Any) -> list[str]:
         return []
     if "|" in text:
         return [part.strip() for part in text.split("|") if part.strip()]
-    # Одно значение целиком (в т.ч. «ул. Захарова, 50Д»). Legacy CSV только если
-    # нет запятой внутри единственного токена-адреса - см. UI join("|").
+    if "," in text:
+        parts = [part.strip() for part in text.split(",") if part.strip()]
+        # «overall,volume» - коды; «ул. Захарова, 50Д» - один адрес (есть пробелы).
+        if parts and all(" " not in part for part in parts):
+            return parts
     return [text]
 
 
