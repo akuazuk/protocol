@@ -5,7 +5,9 @@
 from __future__ import annotations
 
 import json
+import os
 import re
+from pathlib import Path
 from typing import Any
 
 ENGINE = "mo_llm_action_judge_v1"
@@ -557,3 +559,165 @@ EXAMPLE_STAGE_B: dict[str, Any] = {
     "confidence": 0.74,
     "needs_human": True,
 }
+
+
+def _judge_data_roots() -> list[Path]:
+    roots: list[Path] = []
+    configured = (os.environ.get("MO_DATA_ROOT") or "").strip()
+    if configured:
+        roots.append(Path(configured))
+    roots.append(Path(__file__).resolve().parents[1] / "data" / "medical_exams")
+    var = Path("/var/data/medical_exams")
+    if var.is_dir():
+        roots.append(var)
+    return roots
+
+
+def judge_jsonl_path(day: str, *, root: Path | None = None) -> Path:
+    y, m, d = str(day)[:10].split("-")
+    base = root or _judge_data_roots()[0]
+    return base / "llm_action_judge" / y / m / d / "judges.jsonl"
+
+
+def load_llm_action_judge_row(
+    case_id: str,
+    *,
+    visit_date: str,
+    roots: list[Path] | None = None,
+) -> dict[str, Any] | None:
+    """Найти shadow-строку judges.jsonl по case_id за дату визита."""
+    cid = str(case_id or "").strip()
+    day = str(visit_date or "").strip()[:10]
+    if not cid or len(day) != 10:
+        return None
+    for root in roots or _judge_data_roots():
+        path = judge_jsonl_path(day, root=root)
+        if not path.is_file():
+            continue
+        try:
+            with path.open(encoding="utf-8") as fh:
+                for line in fh:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    row = json.loads(line)
+                    if not isinstance(row, dict):
+                        continue
+                    keys = {
+                        str(row.get("case_id") or "").strip(),
+                        str(row.get("visit_id") or "").strip(),
+                        str(row.get("mis_id") or "").strip(),
+                    }
+                    if cid in keys:
+                        return row
+        except (OSError, json.JSONDecodeError):
+            continue
+    return None
+
+
+def _kpi_payload(score_pct: Any, verdict: Any, summary_ru: Any) -> dict[str, Any]:
+    return {
+        "score_pct": _as_pct(score_pct),
+        "verdict": str(verdict or "").strip() or None,
+        "summary_ru": _clip(str(summary_ru or ""), 400),
+    }
+
+
+def summarize_llm_action_judge_for_ui(row: dict[str, Any] | None) -> dict[str, Any]:
+    """Компактный payload для case detail: 3 KPI + выводы (shadow)."""
+    if not row:
+        return {
+            "available": False,
+            "shadow": True,
+            "engine": ENGINE,
+            "reason": "LLM-оценка action-очереди ещё не готова для этого случая",
+        }
+    if row.get("error") and not row.get("stage_a") and not row.get("stage_b"):
+        return {
+            "available": False,
+            "shadow": True,
+            "engine": ENGINE,
+            "reason": _clip(str(row.get("error") or "ошибка прогона"), 240),
+            "error": _clip(str(row.get("error") or ""), 240),
+        }
+    stage_a = row.get("stage_a") if isinstance(row.get("stage_a"), dict) else {}
+    stage_b = row.get("stage_b") if isinstance(row.get("stage_b"), dict) else {}
+    completeness = stage_a.get("completeness") if isinstance(stage_a.get("completeness"), dict) else {}
+    diagnosis = (
+        stage_a.get("diagnosis_assessment")
+        if isinstance(stage_a.get("diagnosis_assessment"), dict)
+        else {}
+    )
+    plan = stage_b.get("plan_assessment") if isinstance(stage_b.get("plan_assessment"), dict) else {}
+    findings: list[dict[str, Any]] = []
+    for src in (stage_a.get("findings") or [], stage_b.get("findings") or []):
+        for item in src:
+            if not isinstance(item, dict):
+                continue
+            findings.append(
+                {
+                    "code": str(item.get("code") or "")[:80],
+                    "severity": str(item.get("severity") or "none")[:8],
+                    "text_ru": _clip(str(item.get("text_ru") or ""), 240),
+                    "evidence": _clip(str(item.get("evidence") or ""), 160),
+                }
+            )
+            if len(findings) >= 8:
+                break
+        if len(findings) >= 8:
+            break
+    missing = [_clip(str(x), 40) for x in (completeness.get("missing_blocks") or [])[:8]]
+    return {
+        "available": True,
+        "shadow": True,
+        "engine": ENGINE,
+        "case_id": str(row.get("case_id") or row.get("visit_id") or "").strip(),
+        "mis_id": str(row.get("mis_id") or "").strip(),
+        "date": str(row.get("date") or "").strip()[:10],
+        "models": {"a": row.get("model_a"), "b": row.get("model_b")},
+        "kpis": {
+            "completeness": _kpi_payload(
+                completeness.get("score_pct"),
+                completeness.get("verdict"),
+                completeness.get("summary_ru"),
+            ),
+            "diagnosis": _kpi_payload(
+                diagnosis.get("score_pct"),
+                diagnosis.get("verdict"),
+                diagnosis.get("summary_ru"),
+            ),
+            "recommendations": _kpi_payload(
+                plan.get("score_pct"),
+                plan.get("verdict"),
+                plan.get("summary_ru")
+                or (
+                    (plan.get("exam_recommendations") or {}).get("summary_ru")
+                    if isinstance(plan.get("exam_recommendations"), dict)
+                    else ""
+                ),
+            ),
+        },
+        "conclusions": {
+            "completeness_ru": _clip(str(completeness.get("summary_ru") or ""), 400),
+            "diagnosis_ru": _clip(str(diagnosis.get("summary_ru") or stage_a.get("conclusion_ru") or ""), 400),
+            "recommendations_ru": _clip(
+                str(plan.get("summary_ru") or stage_b.get("conclusion_ru") or ""),
+                400,
+            ),
+            "missing_blocks": missing,
+            "blocked_by_incomplete": bool(diagnosis.get("blocked_by_incomplete")),
+            "findings": findings,
+        },
+        "error": _clip(str(row.get("error") or ""), 240) or None,
+    }
+
+
+def load_llm_action_judge_for_case(
+    case_id: str,
+    *,
+    visit_date: str,
+    roots: list[Path] | None = None,
+) -> dict[str, Any]:
+    return summarize_llm_action_judge_for_ui(
+        load_llm_action_judge_row(case_id, visit_date=visit_date, roots=roots)
+    )

@@ -46,7 +46,7 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
 | Контракт A с `completeness` | нет | validate + prompt + tests | ok |
 | Specialty/filial без `v4.0.0` | мусор в UI | sanitize на read/upsert | ok после деплоя |
 | Охват batch | нет | CLI dry-run | только `action_cases.items` дня |
-| UI отвечает на 3 вопроса | нет | - | да, без лишних блоков |
+| UI отвечает на 3 вопроса | нет | case detail: 3 KPI + compare | ok после деплоя + jsonl |
 | Пилот Gemini на очереди дня | нет | - | отчёт методисту |
 | Primary overall меняется | - | - | нет (shadow only) |
 
@@ -275,7 +275,7 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 - [x] Обновить validate/prompt под блок `completeness` в этапе A.
 - [x] Починить specialty/filial в action queue (sanitize `v4.0.0` / `4.0`; пустое ФИО - re-export).
 - [ ] Пилотный прогон на очереди одного дня (Render), отчёт методисту.
-- [ ] UI: 3 KPI + сравнение с текстом МО в case detail.
+- [x] UI: 3 KPI + сравнение с текстом МО в case detail (`llm_action_judge`).
 
 ---
 

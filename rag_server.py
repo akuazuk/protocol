@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-05-r7-mo-llm-completeness-org"
+BUILD_VERSION = "2026-08-05-r8-mo-llm-judge-ui"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11551,6 +11551,21 @@ def api_methodist_mo_case_detail(
         result["rubric_mz"] = rubric
     except Exception:
         result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
+    try:
+        from clinical_knowledge.mo_llm_action_judge import load_llm_action_judge_for_case
+
+        record = result.get("record") if isinstance(result.get("record"), dict) else {}
+        visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
+        result["llm_action_judge"] = load_llm_action_judge_for_case(
+            case_id,
+            visit_date=visit_date,
+        )
+    except Exception:
+        result["llm_action_judge"] = {
+            "available": False,
+            "shadow": True,
+            "reason": "LLM-оценка action-очереди недоступна",
+        }
     return result
 
 

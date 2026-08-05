@@ -9,7 +9,9 @@ from clinical_knowledge.mo_llm_action_judge import (
     build_prompt_a,
     build_prompt_b,
     extract_json_object,
+    load_llm_action_judge_for_case,
     stage_a_digest,
+    summarize_llm_action_judge_for_ui,
     validate_stage_a,
     validate_stage_b,
 )
@@ -76,3 +78,52 @@ def test_sanitize_mo_org_label_strips_versions() -> None:
     assert sanitize_mo_org_label("4.0", schema_version="4.0") == ""
     assert sanitize_mo_org_label("deep-v2-fallback") == ""
     assert sanitize_mo_org_label("Урология", scorer_version="v4.0.0") == "Урология"
+
+
+def test_summarize_ui_payload_has_three_kpis() -> None:
+    a = validate_stage_a(EXAMPLE_STAGE_A)
+    b = validate_stage_b(EXAMPLE_STAGE_B)
+    ui = summarize_llm_action_judge_for_ui(
+        {
+            "case_id": "3646270",
+            "date": "2026-08-04",
+            "model_a": "gemini-3.6-flash",
+            "model_b": "gemini-3.6-flash",
+            "stage_a": a,
+            "stage_b": b,
+        }
+    )
+    assert ui["available"] is True
+    assert ui["shadow"] is True
+    assert ui["kpis"]["completeness"]["score_pct"] == 70
+    assert ui["kpis"]["diagnosis"]["score_pct"] == 35
+    assert ui["kpis"]["recommendations"]["score_pct"] == 25
+
+
+def test_load_llm_action_judge_from_jsonl(tmp_path) -> None:
+    day = "2026-08-04"
+    a = validate_stage_a(EXAMPLE_STAGE_A)
+    b = validate_stage_b(EXAMPLE_STAGE_B)
+    root = tmp_path / "medical_exams"
+    path = root / "llm_action_judge" / "2026" / "08" / "04" / "judges.jsonl"
+    path.parent.mkdir(parents=True)
+    path.write_text(
+        __import__("json").dumps(
+            {
+                "case_id": "3646270",
+                "visit_id": "3646270",
+                "mis_id": "898517",
+                "date": day,
+                "stage_a": a,
+                "stage_b": b,
+            },
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    ui = load_llm_action_judge_for_case("3646270", visit_date=day, roots=[root])
+    assert ui["available"] is True
+    assert ui["kpis"]["diagnosis"]["verdict"] == "poor"
+    missing = load_llm_action_judge_for_case("no-such", visit_date=day, roots=[root])
+    assert missing["available"] is False

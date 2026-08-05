@@ -906,6 +906,79 @@
         renderCase(await response.json());
       } catch (e) { $("drawer-body").innerHTML = '<div class="banner">' + esc(e.message) + "</div>"; }
     }
+    function verdictTone(verdict) {
+      var value = String(verdict || "").toLowerCase();
+      if (/critical|poor/.test(value)) return "critical";
+      if (/good|acceptable/.test(value)) return "good";
+      return "review";
+    }
+    function judgeKpiCard(label, kpiData) {
+      var payload = kpiData || {};
+      var pct = payload.score_pct;
+      var verdict = payload.verdict || "";
+      var tone = verdictTone(verdict);
+      return '<article class="kpi llm-judge-kpi llm-judge-kpi--' + tone + '">' +
+        '<div class="kpi-label">' + esc(label) + '</div>' +
+        '<div class="kpi-value">' + esc(score(pct)) + '</div>' +
+        '<div class="kpi-meta"><span class="status ' + tone + '">' +
+        esc(statusLabel(verdict) || "Нет вердикта") + '</span></div>' +
+        (payload.summary_ru ? '<p class="llm-judge-kpi-summary">' + esc(payload.summary_ru) + '</p>' : "") +
+        '</article>';
+    }
+    function renderLlmActionJudge(judge, documentData, item) {
+      var clinical = (documentData && documentData.clinical) || {};
+      var metaLine = [item.doctor, item.specialty, item.date].filter(Boolean).join(" · ");
+      var head = '<div class="detail-block llm-judge-block"><h3>Три вопроса методиста <span class="status review finding-shadow-badge">shadow LLM</span></h3>' +
+        '<p class="card-sub">' + esc(metaLine || "Врач и дата не указаны") +
+        ' · полнота · диагноз · рекомендации</p>';
+      if (!judge || !judge.available) {
+        return head + '<p class="empty">LLM-оценка action-очереди ещё не готова. ' +
+          esc((judge && judge.reason) || "После прогона batch появится здесь.") +
+          '</p></div>';
+      }
+      var kpis = judge.kpis || {};
+      var conclusions = judge.conclusions || {};
+      var slotPairs = [
+        ["complaints", "Жалобы"], ["anamnesis_doctor", "Анамнез"],
+        ["objective_status", "Объективный статус"], ["exam_data", "Обследования"],
+        ["clinical_diagnosis", "Диагноз"], ["exam_recommendations", "Рек. по обследованию"],
+        ["treatment_recommendations", "Рек. по лечению"]
+      ];
+      var moSlots = slotPairs.filter(function (pair) { return clinical[pair[0]]; }).map(function (pair) {
+        return '<section class="llm-judge-slot"><h4>' + esc(pair[1]) + '</h4><p>' +
+          esc(String(clinical[pair[0]]).slice(0, 420)) +
+          (String(clinical[pair[0]]).length > 420 ? "…" : "") + '</p></section>';
+      }).join("");
+      var why = [
+        ["Полнота", conclusions.completeness_ru],
+        ["Диагноз", conclusions.diagnosis_ru],
+        ["Рекомендации", conclusions.recommendations_ru]
+      ].filter(function (row) { return row[1]; }).map(function (row) {
+        return '<section class="llm-judge-slot"><h4>' + esc(row[0]) + '</h4><p>' + esc(row[1]) + '</p></section>';
+      }).join("");
+      var findingsHtml = (conclusions.findings || []).slice(0, 6).map(function (finding) {
+        return '<div class="llm-judge-finding"><span class="status ' +
+          (finding.severity === "P0" ? "critical" : "review") + '">' + esc(finding.severity || "P?") +
+          '</span> ' + esc(finding.text_ru || finding.code || "") +
+          (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
+          '</div>';
+      }).join("");
+      var missing = (conclusions.missing_blocks || []).length ?
+        '<p class="inline-note">Пустые блоки: ' + esc(conclusions.missing_blocks.join(", ")) + '</p>' : "";
+      return head +
+        '<div class="drawer-grid llm-judge-kpis">' +
+        judgeKpiCard("Полнота", kpis.completeness) +
+        judgeKpiCard("Диагноз", kpis.diagnosis) +
+        judgeKpiCard("Рекомендации", kpis.recommendations) +
+        '</div>' + missing +
+        '<div class="llm-judge-compare">' +
+        '<div><h4>Реальное МО</h4>' + (moSlots || '<p class="empty">Клинический текст недоступен</p>') + '</div>' +
+        '<div><h4>Почему такая оценка</h4>' + (why || '<p class="empty">Нет кратких выводов</p>') +
+        (findingsHtml ? '<div class="llm-judge-findings">' + findingsHtml + '</div>' : "") +
+        '</div></div>' +
+        '<p class="card-sub">Не меняет итоговую оценку warehouse · engine ' +
+        esc(judge.engine || "mo_llm_action_judge_v1") + '</p></div>';
+    }
     function renderCase(data) {
       var record = data.record || data.case || data;
       var item = rowRecord(record);
@@ -916,6 +989,7 @@
       var coverageInfo = deriveCoverage(data, record, axes);
       var confidenceInfo = deriveConfidence(data, record, axes);
       var sourceDocument = data.document || {};
+      var llmJudge = data.llm_action_judge || {};
       var crmStatus = crm.status || "new";
       var statusOptions = [
         ["new","Новый"],["assigned","Назначен"],["in_review","На разборе"],
@@ -929,6 +1003,8 @@
       $("drawer-subtitle").textContent = [item.date, item.doctor, item.specialty, item.branch].filter(Boolean).join(" · ");
       var rubric = data.rubric_mz || {};
       $("drawer-body").innerHTML =
+        renderLlmActionJudge(llmJudge, sourceDocument, item) +
+        '<details class="detail-block mo-secondary-details"><summary>Подробнее: итоговая оценка, оси, рубрика МЗ</summary>' +
         '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
         kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "shadow · «Как оценивать»") +
         kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
@@ -939,6 +1015,7 @@
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
         }).join("") + '</div>' +
         renderRubricMz(rubric) +
+        '</details>' +
         renderClinicalDocument(sourceDocument, findings) +
         '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
           var title = finding.title_ru || finding.title || finding.code || "Замечание";
