@@ -1252,11 +1252,11 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
     action_cases = []
     seen_cases: set[str] = set()
     try:
-        from .mo_review_pack import patient_id_map_for_day
+        from .mo_review_pack import visit_identity_map_for_day
 
-        patient_map = patient_id_map_for_day(day)
+        identity_map = visit_identity_map_for_day(day)
     except Exception:  # noqa: BLE001
-        patient_map = {}
+        identity_map = {}
     for row in action_raw:
         case_id = str(row["visit_id"] or row["mis_id"])
         if case_id in seen_cases:
@@ -1286,22 +1286,37 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         visit_id = str(row["visit_id"] or case_id)
         mis_id = str(row["mis_id"])
         visit_date = str(row["visit_date"] if "visit_date" in row.keys() else day)[:10]
-        patient_id = (
-            patient_map.get(visit_id)
-            or patient_map.get(case_id)
-            or patient_map.get(mis_id)
-            or ""
-        )
+        identity = identity_map.get(visit_id) or identity_map.get(case_id) or identity_map.get(mis_id) or {}
+        patient_id = str(identity.get("patient_id") or "")
+        doctor_id = str(identity.get("doctor_id") or "")
+        doctor_name = str(row["doctor"] or "").strip()
+        if (not doctor_name or doctor_name == "Врач не указан") and identity.get("doctor_fio"):
+            doctor_name = identity["doctor_fio"]
+        if not specialty and identity.get("specialty"):
+            specialty = sanitize_mo_org_label(
+                identity.get("specialty"),
+                scorer_version=scorer_version,
+                schema_version=schema_version,
+            )
+        if not branch and identity.get("filial"):
+            branch = sanitize_mo_org_label(
+                identity.get("filial"),
+                scorer_version=scorer_version,
+                schema_version=schema_version,
+            )
+        if (not doctor_name or doctor_name == "Врач не указан") and doctor_id:
+            doctor_name = f"ID врача: {doctor_id}"
         action_cases.append(
             {
                 "case_id": case_id,
                 "visit_id": visit_id,
                 "mis_id": mis_id,
                 "patient_id": patient_id,
+                "doctor_id": doctor_id,
                 "visit_date": visit_date,
                 "severity": str(row["severity"]),
-                "doctor": str(row["doctor"]),
-                "doctor_fio": str(row["doctor"]),
+                "doctor": doctor_name or "Врач не указан",
+                "doctor_fio": doctor_name or "Врач не указан",
                 "specialty": specialty or "Специальность не указана",
                 "branch": branch or "Филиал не указан",
                 "filial": branch or "Филиал не указан",

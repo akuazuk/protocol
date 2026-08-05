@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-05-r12-mo-review-pack-ci"
+BUILD_VERSION = "2026-08-05-r13-doctor-id-expert-plan"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11574,29 +11574,43 @@ def api_methodist_mo_case_detail(
     visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
     if role in {"methodist", "lead", "admin"}:
         patient_id = str(result.pop("_patient_id_hint", "") or "")
-        if not patient_id:
-            try:
-                from clinical_knowledge.mo_review_pack import lookup_patient_id
+        doctor_id = ""
+        try:
+            from clinical_knowledge.mo_review_pack import lookup_case_identity
 
-                patient_id = lookup_patient_id(
-                    case_id,
-                    visit_date=visit_date or None,
-                    mis_id=str(record.get("mis_id") or "") or None,
-                )
-            except Exception:
-                patient_id = ""
+            identity = lookup_case_identity(
+                case_id,
+                visit_date=visit_date or None,
+                mis_id=str(record.get("mis_id") or "") or None,
+            )
+            if not patient_id:
+                patient_id = str(identity.get("patient_id") or "")
+            doctor_id = str(identity.get("doctor_id") or "")
+            if (not str(record.get("doctor_fio") or "").strip()) and identity.get("doctor_fio"):
+                record["doctor_fio"] = identity["doctor_fio"]
+            if (not str(record.get("filial") or "").strip()) and identity.get("filial"):
+                record["filial"] = identity["filial"]
+            if (not str(record.get("specialization") or "").strip()) and identity.get("specialty"):
+                record["specialization"] = identity["specialty"]
+        except Exception:
+            doctor_id = ""
         if patient_id:
             record["patient_id"] = patient_id
-            result["record"] = record
+        if doctor_id:
+            record["doctor_id"] = doctor_id
+            if not str(record.get("doctor_fio") or "").strip():
+                record["doctor_fio"] = f"ID врача: {doctor_id}"
+        result["record"] = record
+        if patient_id or doctor_id:
             try:
                 from clinical_knowledge.mo_backend import record_access
 
                 record_access(
                     actor=_mo_actor(request),
                     role=role,
-                    action="view_patient_id",
+                    action="view_case_identifiers",
                     case_id=case_id,
-                    metadata={"visit_date": visit_date},
+                    metadata={"visit_date": visit_date, "has_doctor_id": bool(doctor_id)},
                 )
             except Exception:
                 pass

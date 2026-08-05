@@ -167,12 +167,31 @@ def test_patient_id_map_for_day(monkeypatch, tmp_path: Path) -> None:
     day_dir = tmp_path / "secure_cases" / "2026" / "08"
     day_dir.mkdir(parents=True)
     with (day_dir / "mo_2026-08-04.csv").open("w", encoding="utf-8", newline="") as handle:
-        writer = csv.DictWriter(handle, fieldnames=["visit_id", "mis_id", "patient_id"])
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=["visit_id", "mis_id", "patient_id", "doctor_id", "doctor_fio", "filial"],
+        )
         writer.writeheader()
-        writer.writerow({"visit_id": "10", "mis_id": "20", "patient_id": "P1"})
+        writer.writerow(
+            {
+                "visit_id": "10",
+                "mis_id": "20",
+                "patient_id": "P1",
+                "doctor_id": "991",
+                "doctor_fio": "",
+                "filial": "Центр",
+            }
+        )
     mapping = mo_review_pack.patient_id_map_for_day("2026-08-04")
     assert mapping["10"] == "P1"
     assert mapping["20"] == "P1"
+    identity = mo_review_pack.visit_identity_map_for_day("2026-08-04")
+    assert identity["10"]["doctor_id"] == "991"
+    assert identity["10"]["filial"] == "Центр"
+    rows = [{"case_id": "10", "visit_id": "10", "date": "2026-08-04", "doctor": "Врач не указан"}]
+    mo_review_pack.enrich_rows_with_patient_id(rows)
+    assert rows[0]["doctor_id"] == "991"
+    assert rows[0]["filial"] == "Центр"
 
 
 def test_save_review_pack_requires_methodist_role(monkeypatch, tmp_path: Path) -> None:

@@ -817,8 +817,10 @@
       var total = firstNumeric([row.deep_overall_pct, row.overall_pct, row.l1_overall_pct]);
       var fallbackStatus = total == null ? "unscored" : (total < 60 ? "critical" : total < 75 ? "review" : "good");
       var status = row.crm_status || ((row.crm || {}).status) || row.deep_status || row.status || fallbackStatus;
+      var doctorId = row.doctor_id || "";
+      if ((!doctor || doctor === "Врач не указан") && doctorId) doctor = "ID врача: " + doctorId;
       return { raw: row, id: id, visitId: row.visit_id || id, patientId: row.patient_id || "",
-        date: row.date || row.visit_date || "", doctor: doctor, specialty: specialty,
+        doctorId: doctorId, date: row.date || row.visit_date || "", doctor: doctor, specialty: specialty,
         branch: row.filial || row.branch || "", diagnosis: diagnosis, total: total, status: status,
         kind: row.document_kind_label || row.kz_kind_label || row.kz_kind || "Не указан",
         coverage: firstNumeric([row.coverage_pct, row.coverage, row.deep_coverage_pct]),
@@ -1114,6 +1116,7 @@
       $("drawer-subtitle").textContent = [
         "визит " + (item.visitId || item.id || "-"),
         "пациент " + (item.patientId || "-"),
+        item.doctorId ? ("врач ID " + item.doctorId) : "",
         item.date, item.doctor, item.specialty, item.branch
       ].filter(Boolean).join(" · ");
       var rubric = data.rubric_mz || {};
