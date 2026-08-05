@@ -824,7 +824,11 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         "rows": rows,
         "aggregate": agg,
         "suppression_n": SUPPRESSION_N,
-        "applied_filters": {k: v for k, v in params.items() if v not in (None, "", [], False)},
+        "applied_filters": {
+            k: v
+            for k, v in params.items()
+            if k != "include_patient_id" and v not in (None, "", [], False)
+        },
         "empty_state": _describe_empty_state(
             total_records=len(all_records),
             filtered_records=len(filtered),

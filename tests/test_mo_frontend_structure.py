@@ -138,7 +138,10 @@ def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
     assert 'id="drawer-assignee"' in JS
     assert 'id="drawer-due"' in JS
     assert 'data-finding-code="' in JS
-    assert "История решений" in JS
+    assert "История разборов" in JS
+    assert "История CRM" in JS
+    assert "Сохранить пакет разбора" in JS
+    assert "/review-pack" in JS
     assert '$("sort-by").addEventListener("change"' in JS
     assert '$("sort-dir").addEventListener("change"' in JS
 
