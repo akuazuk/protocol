@@ -67,32 +67,96 @@ def _medical_exam_roots() -> list[Path]:
     return list(roots())
 
 
-def patient_id_map_for_day(day: str) -> dict[str, str]:
-    """visit_id / mis_id → patient_id из secure CSV за день (для methodist+)."""
+def _secure_day_rows(day: str) -> list[dict[str, str]]:
+    """Строки secure CSV за день (первый найденный файл)."""
     key = str(day or "").strip()[:10]
     if len(key) < 10:
-        return {}
+        return []
     year, month = key[:4], key[5:7]
-    out: dict[str, str] = {}
     for root in _medical_exam_roots():
         path = root / "secure_cases" / year / month / f"mo_{key}.csv"
         if not path.is_file():
             continue
         try:
             with path.open("r", encoding="utf-8-sig", newline="") as handle:
-                for row in csv.DictReader(handle):
-                    patient = str(row.get("patient_id") or "").strip()
-                    if not patient:
-                        continue
-                    for field in ("visit_id", "id", "mis_id"):
-                        value = str(row.get(field) or "").strip()
-                        if value and value not in out:
-                            out[value] = patient
+                return [dict(row) for row in csv.DictReader(handle)]
         except OSError:
             continue
-        if out:
-            break
+    return []
+
+
+def patient_id_map_for_day(day: str) -> dict[str, str]:
+    """visit_id / mis_id → patient_id из secure CSV за день (для methodist+)."""
+    out: dict[str, str] = {}
+    for row in _secure_day_rows(day):
+        patient = str(row.get("patient_id") or "").strip()
+        if not patient:
+            continue
+        for field in ("visit_id", "id", "mis_id"):
+            value = str(row.get(field) or "").strip()
+            if value and value not in out:
+                out[value] = patient
     return out
+
+
+def visit_identity_map_for_day(day: str) -> dict[str, dict[str, str]]:
+    """visit_id / mis_id → идентификаторы врача и пациента из secure CSV."""
+    out: dict[str, dict[str, str]] = {}
+    for row in _secure_day_rows(day):
+        doctor_id = (
+            str(row.get("doctor_id") or "").strip()
+            or str(row.get("specialist_id_from_visit") or "").strip()
+            or str(row.get("specialist_id") or "").strip()
+        )
+        payload = {
+            "patient_id": str(row.get("patient_id") or "").strip(),
+            "doctor_id": doctor_id,
+            "doctor_fio": str(row.get("doctor_fio") or "").strip(),
+            "specialty": str(
+                row.get("doctor_specialization") or row.get("specialty") or ""
+            ).strip(),
+            "filial": str(row.get("filial") or "").strip(),
+        }
+        if not any(payload.values()):
+            continue
+        for field in ("visit_id", "id", "mis_id"):
+            value = str(row.get(field) or "").strip()
+            if value and value not in out:
+                out[value] = payload
+    return out
+
+
+def _lookup_identity(
+    case_id: str,
+    *,
+    visit_date: str | None = None,
+    mis_id: str | None = None,
+) -> dict[str, str]:
+    day = str(visit_date or "").strip()[:10]
+    if day:
+        day_map = visit_identity_map_for_day(day)
+        for key in (case_id, mis_id):
+            needle = str(key or "").strip()
+            if needle and needle in day_map:
+                return dict(day_map[needle])
+    try:
+        row = load_case_source_row(case_id, visit_date=visit_date, mis_id=mis_id)
+    except Exception:  # noqa: BLE001
+        return {}
+    if not row:
+        return {}
+    doctor_id = (
+        str(row.get("doctor_id") or "").strip()
+        or str(row.get("specialist_id_from_visit") or "").strip()
+        or str(row.get("specialist_id") or "").strip()
+    )
+    return {
+        "patient_id": str(row.get("patient_id") or "").strip(),
+        "doctor_id": doctor_id,
+        "doctor_fio": str(row.get("doctor_fio") or "").strip(),
+        "specialty": str(row.get("doctor_specialization") or row.get("specialty") or "").strip(),
+        "filial": str(row.get("filial") or "").strip(),
+    }
 
 
 def lookup_patient_id(
@@ -101,41 +165,65 @@ def lookup_patient_id(
     visit_date: str | None = None,
     mis_id: str | None = None,
 ) -> str:
-    day = str(visit_date or "").strip()[:10]
-    if day:
-        day_map = patient_id_map_for_day(day)
-        for key in (case_id, mis_id):
-            needle = str(key or "").strip()
-            if needle and needle in day_map:
-                return day_map[needle]
-    try:
-        row = load_case_source_row(case_id, visit_date=visit_date, mis_id=mis_id)
-    except Exception:  # noqa: BLE001
-        return ""
-    if not row:
-        return ""
-    return str(row.get("patient_id") or "").strip()
+    return str(
+        _lookup_identity(case_id, visit_date=visit_date, mis_id=mis_id).get("patient_id") or ""
+    ).strip()
+
+
+def lookup_doctor_id(
+    case_id: str,
+    *,
+    visit_date: str | None = None,
+    mis_id: str | None = None,
+) -> str:
+    return str(
+        _lookup_identity(case_id, visit_date=visit_date, mis_id=mis_id).get("doctor_id") or ""
+    ).strip()
+
+
+def lookup_case_identity(
+    case_id: str,
+    *,
+    visit_date: str | None = None,
+    mis_id: str | None = None,
+) -> dict[str, str]:
+    """patient_id / doctor_id / doctor_fio / specialty / filial из secure CSV."""
+    return _lookup_identity(case_id, visit_date=visit_date, mis_id=mis_id)
 
 
 def enrich_rows_with_patient_id(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
-    """Добавить patient_id в список публичных строк (очередь / документы)."""
-    by_day: dict[str, dict[str, str]] = {}
+    """Добавить patient_id и doctor_id в список публичных строк (очередь / документы)."""
+    by_day: dict[str, dict[str, dict[str, str]]] = {}
     for row in rows:
         day = str(row.get("date") or row.get("visit_date") or "")[:10]
         if len(day) >= 10 and day not in by_day:
-            by_day[day] = patient_id_map_for_day(day)
+            by_day[day] = visit_identity_map_for_day(day)
     for row in rows:
-        if row.get("patient_id"):
-            continue
         day = str(row.get("date") or row.get("visit_date") or "")[:10]
         day_map = by_day.get(day) or {}
+        identity: dict[str, str] = {}
         for key in (row.get("visit_id"), row.get("case_id"), row.get("mis_id"), row.get("id")):
             needle = str(key or "").strip()
             if needle and needle in day_map:
-                row["patient_id"] = day_map[needle]
+                identity = day_map[needle]
                 break
-        else:
-            row.setdefault("patient_id", "")
+        if not row.get("patient_id"):
+            row["patient_id"] = identity.get("patient_id") or ""
+        if not row.get("doctor_id"):
+            row["doctor_id"] = identity.get("doctor_id") or ""
+        # Подставить ФИО/филиал из CSV только если в витрине пусто / placeholder.
+        doctor = str(row.get("doctor_fio") or row.get("doctor") or "").strip()
+        if (not doctor or doctor == "Врач не указан") and identity.get("doctor_fio"):
+            row["doctor_fio"] = identity["doctor_fio"]
+            row["doctor"] = identity["doctor_fio"]
+        branch = str(row.get("filial") or row.get("branch") or "").strip()
+        if (not branch or branch == "Филиал не указан") and identity.get("filial"):
+            row["filial"] = identity["filial"]
+            row["branch"] = identity["filial"]
+        specialty = str(row.get("specialty") or row.get("specialization") or "").strip()
+        if (not specialty or specialty == "Специальность не указана") and identity.get("specialty"):
+            row["specialty"] = identity["specialty"]
+            row["specialization"] = identity["specialty"]
     return rows
 
 
