@@ -54,7 +54,7 @@
 - [x] P5: doctor charts: `enough_data` без жёсткого R²; фильтры facets на месте
 - [x] P5b: `usage_date` = visit_date; таблица покрытия night/action-judge в «Расходы AI»
 - [x] P6: BUILD_VERSION r16, PR #17 merge + deploy; night LLM backfill 08-01..04 на Render (в процессе)
-- [ ] P7: фильтр филиала - `|` вместо `,` (адреса с запятой); r17
+- [x] P7: фильтр филиала - `|` + heuristic CSV; r17 (#18)
 
 ---
 
