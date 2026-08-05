@@ -302,10 +302,27 @@ def _selected_months(params: dict[str, Any]) -> list[str]:
 
 
 def _values(value: Any) -> list[str]:
+    """Разбор multi-select.
+
+    UI шлёт фильтры через `|` (адреса филиалов содержат запятые).
+    Legacy CSV (metrics/коды без пробелов) по-прежнему через `,`.
+    Строка с запятой и пробелами в сегментах - одно значение (филиал).
+    """
     if value is None:
         return []
-    raw = value if isinstance(value, (list, tuple, set)) else str(value).split(",")
-    return [str(v).strip() for v in raw if str(v).strip()]
+    if isinstance(value, (list, tuple, set)):
+        return [str(v).strip() for v in value if str(v).strip()]
+    text = str(value).strip()
+    if not text:
+        return []
+    if "|" in text:
+        return [part.strip() for part in text.split("|") if part.strip()]
+    if "," in text:
+        parts = [part.strip() for part in text.split(",") if part.strip()]
+        # «overall,volume» - коды; «ул. Захарова, 50Д» - один адрес (есть пробелы).
+        if parts and all(" " not in part for part in parts):
+            return parts
+    return [text]
 
 
 def _medical_exam_roots() -> list[Path]:
