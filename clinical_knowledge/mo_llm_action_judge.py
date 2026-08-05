@@ -14,6 +14,16 @@ ENGINE = "mo_llm_action_judge_v1"
 SCHEMA_VERSION = 1
 
 VERDICTS = frozenset({"good", "acceptable", "review", "poor", "critical"})
+# Частая путаница модели: fit ICD вместо verdict.
+VERDICT_ALIASES = {
+    "strong": "good",
+    "adequate": "acceptable",
+    "weak": "poor",
+    "ok": "good",
+    "fail": "poor",
+    "failed": "poor",
+    "bad": "poor",
+}
 OUTCOMES = frozenset({"ok", "gap", "contradiction", "unknown"})
 SEVERITIES = frozenset({"P0", "P1", "P2", "P3", "none"})
 AUDIENCES = frozenset({"pediatric", "adult", "unknown"})
@@ -54,6 +64,13 @@ def _as_conf(v: Any) -> float | None:
     return x if 0.0 <= x <= 1.0 else None
 
 
+def _normalize_verdict(raw: Any) -> str:
+    verdict = str(raw or "").strip().lower()
+    if verdict in VERDICTS:
+        return verdict
+    return VERDICT_ALIASES.get(verdict, verdict)
+
+
 def extract_json_object(raw: str) -> dict[str, Any]:
     text = (raw or "").strip()
     if not text:
@@ -91,7 +108,7 @@ def _validate_completeness(raw: Any) -> dict[str, Any]:
     score = _as_pct(raw.get("score_pct"))
     if score is None:
         raise ValueError("completeness.score_pct 0-100")
-    verdict = str(raw.get("verdict") or "").strip()
+    verdict = _normalize_verdict(raw.get("verdict"))
     if verdict not in VERDICTS:
         raise ValueError(f"completeness.verdict недопустим: {verdict}")
     blocks_in = raw.get("blocks") if isinstance(raw.get("blocks"), dict) else {}
@@ -129,7 +146,7 @@ def validate_stage_a(raw: dict[str, Any], *, case_id: str | None = None) -> dict
     score = _as_pct(dx.get("score_pct"))
     if score is None:
         raise ValueError("diagnosis_assessment.score_pct 0-100")
-    verdict = str(dx.get("verdict") or "").strip()
+    verdict = _normalize_verdict(dx.get("verdict"))
     if verdict not in VERDICTS:
         raise ValueError(f"diagnosis_assessment.verdict недопустим: {verdict}")
     patient = raw.get("patient") if isinstance(raw.get("patient"), dict) else {}
@@ -224,7 +241,7 @@ def validate_stage_b(raw: dict[str, Any], *, case_id: str | None = None) -> dict
     score = _as_pct(plan.get("score_pct"))
     if score is None:
         raise ValueError("plan_assessment.score_pct 0-100")
-    verdict = str(plan.get("verdict") or "").strip()
+    verdict = _normalize_verdict(plan.get("verdict"))
     if verdict not in VERDICTS:
         raise ValueError(f"plan_assessment.verdict недопустим: {verdict}")
 
@@ -233,7 +250,7 @@ def validate_stage_b(raw: dict[str, Any], *, case_id: str | None = None) -> dict
         b_score = _as_pct(block.get("score_pct"))
         if b_score is None:
             raise ValueError(f"plan_assessment.{name}.score_pct 0-100")
-        b_verdict = str(block.get("verdict") or "").strip()
+        b_verdict = _normalize_verdict(block.get("verdict"))
         if b_verdict not in VERDICTS:
             raise ValueError(f"plan_assessment.{name}.verdict недопустим: {b_verdict}")
         out: dict[str, Any] = {

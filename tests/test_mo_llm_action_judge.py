@@ -43,6 +43,14 @@ def test_reject_bad_verdict() -> None:
         validate_stage_a(bad)
 
 
+def test_verdict_alias_strong_to_good() -> None:
+    raw = dict(EXAMPLE_STAGE_A)
+    raw["diagnosis_assessment"] = dict(EXAMPLE_STAGE_A["diagnosis_assessment"])
+    raw["diagnosis_assessment"]["verdict"] = "strong"
+    a = validate_stage_a(raw)
+    assert a["diagnosis_assessment"]["verdict"] == "good"
+
+
 def test_reject_missing_completeness() -> None:
     bad = dict(EXAMPLE_STAGE_A)
     bad.pop("completeness")

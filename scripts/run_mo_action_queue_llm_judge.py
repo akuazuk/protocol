@@ -131,14 +131,37 @@ def load_action_items_local(day: str, *, medical_root: Path) -> list[dict[str, A
 
 
 def fetch_case_document(case_id: str, *, base_url: str) -> dict[str, Any]:
+    """Клинические слоты из JSON case-detail (HTML /document не подходит)."""
     token = _methodist_token()
-    url = f"{base_url.rstrip('/')}/api/methodist/mo/cases/{case_id}/document"
+    url = f"{base_url.rstrip('/')}/api/methodist/mo/cases/{case_id}"
     try:
-        return _http_json(url, token=token, timeout=90.0)
+        detail = _http_json(url, token=token, timeout=90.0)
     except HTTPError as e:
         return {"_error": f"HTTP {e.code}", "case_id": case_id}
     except URLError as e:
         return {"_error": str(e.reason)[:200], "case_id": case_id}
+    except json.JSONDecodeError as e:
+        return {"_error": f"json: {e}", "case_id": case_id}
+    if not isinstance(detail, dict):
+        return {"_error": "case_detail_not_object", "case_id": case_id}
+    document = detail.get("document") if isinstance(detail.get("document"), dict) else {}
+    clinical = document.get("clinical") if isinstance(document.get("clinical"), dict) else {}
+    record = detail.get("record") if isinstance(detail.get("record"), dict) else {}
+    if not clinical:
+        return {
+            "_error": "no_clinical_in_case_detail",
+            "case_id": case_id,
+            "record": record,
+        }
+    return {
+        "ok": True,
+        "case_id": case_id,
+        "mis_id": document.get("mis_id") or record.get("mis_id"),
+        "visit_id": document.get("visit_id") or record.get("visit_id") or case_id,
+        "clinical": clinical,
+        "document_kind": document.get("document_kind") or record.get("document_kind"),
+        "age_years": record.get("age_years") or clinical.get("age_years"),
+    }
 
 
 def document_to_case_pack(item: dict[str, Any], document: dict[str, Any]) -> dict[str, Any]:
@@ -264,9 +287,15 @@ def judge_one(
     stage_a_obj: dict[str, Any] | None = None
     try:
         if "a" in stages:
-            text_a, ms_a = _generate_gemini(build_prompt_a(pack), model_name=model_name)
+            prompt_a = build_prompt_a(pack)
+            text_a, ms_a = _generate_gemini(prompt_a, model_name=model_name)
             row["latency_ms_a"] = ms_a
-            stage_a_obj = validate_stage_a(extract_json_object(text_a), case_id=case_id)
+            try:
+                stage_a_obj = validate_stage_a(extract_json_object(text_a), case_id=case_id)
+            except (ValueError, json.JSONDecodeError):
+                text_a, ms_a2 = _generate_gemini(prompt_a, model_name=model_name)
+                row["latency_ms_a"] = int(ms_a) + int(ms_a2)
+                stage_a_obj = validate_stage_a(extract_json_object(text_a), case_id=case_id)
             row["stage_a"] = stage_a_obj
         if "b" in stages:
             if stage_a_obj is None:
@@ -280,9 +309,15 @@ def judge_one(
                 }
             else:
                 digest = stage_a_digest(stage_a_obj)
-            text_b, ms_b = _generate_gemini(build_prompt_b(pack, digest), model_name=model_name)
+            prompt_b = build_prompt_b(pack, digest)
+            text_b, ms_b = _generate_gemini(prompt_b, model_name=model_name)
             row["latency_ms_b"] = ms_b
-            row["stage_b"] = validate_stage_b(extract_json_object(text_b), case_id=case_id)
+            try:
+                row["stage_b"] = validate_stage_b(extract_json_object(text_b), case_id=case_id)
+            except (ValueError, json.JSONDecodeError):
+                text_b, ms_b2 = _generate_gemini(prompt_b, model_name=model_name)
+                row["latency_ms_b"] = int(ms_b) + int(ms_b2)
+                row["stage_b"] = validate_stage_b(extract_json_object(text_b), case_id=case_id)
     except Exception as e:  # noqa: BLE001 - batch must continue
         row["error"] = str(e)[:400]
     return row
