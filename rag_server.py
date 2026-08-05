@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-05-r13-doctor-id-expert-plan"
+BUILD_VERSION = "2026-08-05-r14-mo-expert-portal"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -8660,11 +8660,32 @@ def _verify_key_admin_guard(request: "Request") -> None:
 
 def _require_methodist_auth(request: "Request") -> None:
     from clinical_knowledge.feedback_store import is_methodist_authenticated, methodist_auth_enabled
+    from clinical_knowledge.mo_expert_auth import (
+        expert_path_allowed,
+        resolve_expert_session,
+    )
+
+    expert = resolve_expert_session(request.headers)
+    if expert:
+        path = request.url.path
+        if not expert_path_allowed(path):
+            raise HTTPException(
+                status_code=403,
+                detail="Роль эксперта имеет доступ только к отчётам и разбору случаев.",
+            )
+        # блокируем bulk и прочие мутации вне review-pack
+        if path.endswith("/bulk-action") or "/doctor-cabinet" in path:
+            raise HTTPException(status_code=403, detail="Действие недоступно роли эксперта.")
+        request.state.mo_expert = expert  # type: ignore[attr-defined]
+        return
 
     if not methodist_auth_enabled():
         raise HTTPException(status_code=503, detail="METHODIST_TOKEN не настроен на сервере.")
     if not is_methodist_authenticated(request.headers):
-        raise HTTPException(status_code=403, detail="Требуется корректный X-Methodist-Token.")
+        raise HTTPException(
+            status_code=403,
+            detail="Требуется корректный X-Methodist-Token или сессия эксперта.",
+        )
     if (request.headers.get("x-methodist-role") or "").strip().lower() == "doctor":
         path = request.url.path
         allowed = path.startswith("/api/methodist/mo/doctor-cabinet") or (
@@ -10606,6 +10627,46 @@ def api_methodist_status() -> dict:
     }
 
 
+@app.post("/api/expert/login")
+def api_expert_login(body: dict[str, Any]) -> dict:
+    """Вход врача-эксперта: логин/пароль → session token."""
+    from clinical_knowledge.mo_expert_auth import login_expert
+
+    try:
+        return login_expert(
+            login=str(body.get("login") or ""),
+            password=str(body.get("password") or ""),
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=401, detail="Неверный логин или пароль.") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/api/expert/logout")
+def api_expert_logout(request: "Request") -> dict:
+    from clinical_knowledge.mo_expert_auth import SESSION_HEADER, logout_expert
+
+    token = (request.headers.get(SESSION_HEADER) or request.headers.get("X-Expert-Session") or "").strip()
+    return logout_expert(token)
+
+
+@app.get("/api/expert/status")
+def api_expert_status(request: "Request") -> dict:
+    """Публичный статус кабинета эксперта + текущая сессия при наличии токена."""
+    from clinical_knowledge.mo_expert_auth import expert_status, resolve_expert_session
+
+    out = expert_status()
+    session = resolve_expert_session(request.headers)
+    if session:
+        out["authenticated"] = True
+        out["login"] = session.get("login")
+        out["display_name"] = session.get("display_name")
+    else:
+        out["authenticated"] = False
+    return out
+
+
 @app.get("/api/methodist/bootstrap")
 def api_methodist_bootstrap() -> dict:
     """Автовход для on-prem: токен и инициалы из env (только при METHODIST_UI_AUTO_LOGIN=1)."""
@@ -10928,7 +10989,11 @@ def api_methodist_mis_kz_case_detail(
 
 def _mo_actor(request: "Request") -> str:
     from clinical_knowledge.feedback_store import methodist_default_reviewer
+    from clinical_knowledge.mo_expert_auth import resolve_expert_session
 
+    expert = getattr(request.state, "mo_expert", None) or resolve_expert_session(request.headers)
+    if expert:
+        return str(expert.get("actor") or f"expert:{expert.get('login')}")[:120]
     if (request.headers.get("x-methodist-role") or "").strip().lower() == "doctor":
         return _mo_trusted_doctor_identity(request)
     return (
@@ -10939,6 +11004,11 @@ def _mo_actor(request: "Request") -> str:
 
 
 def _mo_role(request: "Request") -> str:
+    from clinical_knowledge.mo_expert_auth import resolve_expert_session
+
+    expert = getattr(request.state, "mo_expert", None) or resolve_expert_session(request.headers)
+    if expert:
+        return "expert"
     role = (request.headers.get("x-methodist-role") or "methodist").strip().lower()
     if role == "admin":
         expected = (os.environ.get("MO_ADMIN_TOKEN") or "").strip()
@@ -11348,13 +11418,32 @@ def api_methodist_mo_daily_report(
     response: "Response" = None,
 ) -> dict:
     _require_methodist_auth(request)
-    from clinical_knowledge.mo_backend import build_daily_report
+    from clinical_knowledge.mo_backend import build_daily_report, record_access
+    from clinical_knowledge.mo_expert_auth import reports_min_date
 
+    role = _mo_role(request)
+    if role == "expert":
+        min_day = reports_min_date()
+        if report_date < min_day:
+            raise HTTPException(
+                status_code=403,
+                detail=f"Отчёты эксперта доступны с {min_day}.",
+            )
     if response is not None:
         response.headers["Cache-Control"] = "private, no-store"
     result = build_daily_report(report_date)
     if result.get("error") == "invalid_date":
         raise HTTPException(status_code=422, detail="Некорректная дата отчёта.")
+    if role == "expert":
+        try:
+            record_access(
+                actor=_mo_actor(request),
+                role=role,
+                action="report_opened",
+                metadata={"report_date": report_date},
+            )
+        except Exception:
+            pass
     return result
 
 
@@ -11425,7 +11514,7 @@ def api_methodist_mo_cases(
     from clinical_knowledge.mo_backend import build_cases
 
     params = _mo_params(**locals())
-    if _mo_role(request) in {"methodist", "lead", "admin"}:
+    if _mo_role(request) in {"methodist", "lead", "admin", "expert"}:
         params["include_patient_id"] = True
     return build_cases(params)
 
@@ -11572,7 +11661,7 @@ def api_methodist_mo_case_detail(
     role = _mo_role(request)
     record = result.get("record") if isinstance(result.get("record"), dict) else {}
     visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
-    if role in {"methodist", "lead", "admin"}:
+    if role in {"methodist", "lead", "admin", "expert"}:
         patient_id = str(result.pop("_patient_id_hint", "") or "")
         doctor_id = ""
         try:
@@ -11601,10 +11690,18 @@ def api_methodist_mo_case_detail(
             if not str(record.get("doctor_fio") or "").strip():
                 record["doctor_fio"] = f"ID врача: {doctor_id}"
         result["record"] = record
-        if patient_id or doctor_id:
-            try:
-                from clinical_knowledge.mo_backend import record_access
+        try:
+            from clinical_knowledge.mo_backend import record_access
 
+            if role == "expert":
+                record_access(
+                    actor=_mo_actor(request),
+                    role=role,
+                    action="case_opened",
+                    case_id=case_id,
+                    metadata={"visit_date": visit_date},
+                )
+            if patient_id or doctor_id:
                 record_access(
                     actor=_mo_actor(request),
                     role=role,
@@ -11612,8 +11709,8 @@ def api_methodist_mo_case_detail(
                     case_id=case_id,
                     metadata={"visit_date": visit_date, "has_doctor_id": bool(doctor_id)},
                 )
-            except Exception:
-                pass
+        except Exception:
+            pass
     else:
         result.pop("_patient_id_hint", None)
     return result
@@ -11901,8 +11998,10 @@ def api_methodist_mo_scoring_method(request: "Request") -> dict:
 def api_methodist_mo_reports(request: "Request") -> dict:
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_reports
+    from clinical_knowledge.mo_expert_auth import reports_min_date
 
-    return build_reports()
+    min_date = reports_min_date() if _mo_role(request) == "expert" else None
+    return build_reports(min_date=min_date)
 
 
 @app.get("/api/methodist/mo/saved-views")
@@ -13532,6 +13631,21 @@ if has_frontend_file("index.html"):
         p = frontend_file("mis-kz-quality.html")
         if not p.is_file():
             raise HTTPException(status_code=404, detail="Страница МО не найдена")
+        return FileResponse(
+            path=str(p),
+            media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
+
+    @app.get("/methodist/expert", include_in_schema=False)
+    @app.get("/methodist/expert.html", include_in_schema=False)
+    @app.get("/methodist/expert/yesterday", include_in_schema=False)
+    @app.get("/methodist/expert/reports", include_in_schema=False)
+    def _serve_methodist_expert() -> FileResponse:
+        """Кабинет врача-эксперта: вчера + отчёты с августа + разбор случаев."""
+        p = frontend_file("expert.html")
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Страница эксперта не найдена")
         return FileResponse(
             path=str(p),
             media_type="text/html; charset=utf-8",

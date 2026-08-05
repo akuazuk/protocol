@@ -179,11 +179,11 @@ Cookie httpOnly + server session в SQLite проще отозвать и не �
 ## 8. Шаги
 
 - [x] E0: enrich `doctor_id` / `specialist_id` из secure CSV; UI `ID врача: …` при пустом FIO.
-- [ ] E1: схема `crm_expert_user` + `crm_expert_session` + CLI upsert.
-- [ ] E2: API login/logout; роль `expert` в capabilities.
-- [ ] E3: UI `/methodist/expert.html` - вчера + отчёты + case workspace (reuse).
-- [ ] E4: review pack save с `source=expert`; events open/save в access_log.
-- [ ] E5: smoke на Render; 1 тестовый эксперт; инструкция пароля вне git.
+- [x] E1: схема `crm_expert_user` + `crm_expert_session` + CLI upsert.
+- [x] E2: API login/logout; роль `expert` в capabilities.
+- [x] E3: UI `/methodist/expert` - вчера + отчёты с 2026-08-01 + case workspace (reuse).
+- [x] E4: review pack save с `source=expert`; events open/save в access_log.
+- [ ] E5: smoke на Render; 1 тестовый эксперт; пароль только в Render env.
 - [ ] E6 (позже): export gold JSONL + eval harness vs LLM.
 
 ---

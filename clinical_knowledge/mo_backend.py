@@ -65,7 +65,7 @@ CRM_STATUSES = frozenset(
         "closed",
     }
 )
-CRM_ROLES = frozenset({"methodist", "lead", "admin"})
+CRM_ROLES = frozenset({"methodist", "lead", "admin", "expert"})
 _CRM_MIGRATED = False
 _HEX_ID_RX = re.compile(r"^[a-f0-9]{32,64}$", re.IGNORECASE)
 _ICD_CODE_RX = re.compile(r"^[A-Za-zА-Яа-я]\d{2}(?:\.\d{1,2})?$")
@@ -2929,9 +2929,10 @@ def apply_bulk_action(*, actor: str, role: str, payload: dict[str, Any]) -> dict
     return {"ok": True, "updated": len(case_ids), "case_ids": case_ids, "updated_at": now}
 
 
-def build_reports() -> dict[str, Any]:
+def build_reports(*, min_date: str | None = None) -> dict[str, Any]:
     reports: list[dict[str, Any]] = []
     seen_dates: set[str] = set()
+    min_day = str(min_date or "").strip()[:10]
     roots = [root / "reports" for root in _medical_exam_roots()]
     for base in roots:
         if not base.is_dir():
@@ -2942,6 +2943,8 @@ def build_reports() -> dict[str, Any]:
             except (OSError, json.JSONDecodeError):
                 continue
             day = str(data.get("date") or path.parent.name)
+            if min_day and day < min_day:
+                continue
             if day in seen_dates:
                 continue
             seen_dates.add(day)
@@ -2973,6 +2976,8 @@ def build_reports() -> dict[str, Any]:
                 rows = []
         for row in rows:
             day = str(row["visit_date"])
+            if min_day and day < min_day:
+                continue
             if day in seen_dates:
                 # обогащаем уже найденный отчёт, если KPI пустые
                 for item in reports:
@@ -3001,9 +3006,14 @@ def build_reports() -> dict[str, Any]:
                 }
             )
     reports.sort(key=lambda item: str(item.get("date") or ""), reverse=True)
-    if not reports:
+    if not reports and not min_day:
         reports = [{"month": month, "kind": "legacy_monthly"} for month in reversed(build_kz_dynamics().get("months") or [])]
-    return {"ok": True, "items": reports, "freshness": build_freshness({})}
+    return {
+        "ok": True,
+        "items": reports,
+        "min_date": min_day or None,
+        "freshness": build_freshness({}),
+    }
 
 
 def build_mo_health() -> dict[str, Any]:
@@ -3178,37 +3188,47 @@ def build_mo_health() -> dict[str, Any]:
 
 def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
     """Явный контракт возможностей, чтобы UI не угадывал доступность функций."""
-    normalized_role = role if role in {"viewer", "doctor", "methodist", "lead", "admin"} else "viewer"
-    can_work_cases = normalized_role in {"methodist", "lead", "admin"}
+    normalized_role = (
+        role
+        if role in {"viewer", "doctor", "methodist", "lead", "admin", "expert"}
+        else "viewer"
+    )
+    is_expert = normalized_role == "expert"
+    can_work_cases = normalized_role in {"methodist", "lead", "admin", "expert"}
     can_view_population = normalized_role in {"viewer", "methodist", "lead", "admin"}
+    from .mo_expert_auth import reports_min_date
+
+    expert_min = reports_min_date() if is_expert else None
     return {
         "ok": True,
         "schema_version": SCHEMA_VERSION,
         "role": normalized_role,
+        "reports_min_date": expert_min,
         "pages": {
-            "overview": can_view_population,
-            "yesterday": can_view_population,
-            "queue": can_work_cases,
-            "documents": can_view_population,
-            "doctors": can_view_population,
-            "specialties": can_view_population,
-            "diagnoses": can_view_population,
-            "safety": can_view_population,
+            "overview": can_view_population and not is_expert,
+            "yesterday": can_view_population or is_expert,
+            "queue": can_work_cases and not is_expert,
+            "documents": can_view_population and not is_expert,
+            "doctors": can_view_population and not is_expert,
+            "specialties": can_view_population and not is_expert,
+            "diagnoses": can_view_population and not is_expert,
+            "safety": can_view_population and not is_expert,
             "doctor_cabinet": normalized_role in {"doctor", "methodist", "lead", "admin"},
             "access_log": normalized_role == "admin",
-            "data_quality": can_view_population,
-            "reports": can_view_population,
+            "data_quality": can_view_population and not is_expert,
+            "reports": can_view_population or is_expert,
             "settings": normalized_role in {"methodist", "lead", "admin"},
         },
         "actions": {
-            "case_document": normalized_role in {"doctor", "methodist", "lead", "admin"},
-            "case_pdf": normalized_role in {"doctor", "methodist", "lead", "admin"},
-            "rubric_mz": can_view_population,
+            "case_document": normalized_role in {"doctor", "methodist", "lead", "admin", "expert"},
+            "case_pdf": normalized_role in {"doctor", "methodist", "lead", "admin", "expert"},
+            "rubric_mz": can_view_population or is_expert,
             "case_decision": can_work_cases,
-            "bulk_action": can_work_cases,
-            "export_aggregates": can_view_population,
+            "bulk_action": can_work_cases and not is_expert,
+            "export_aggregates": can_view_population and not is_expert,
             "export_clinical": normalized_role in {"methodist", "lead", "admin"},
-            "manage_saved_views": normalized_role not in {"viewer", "doctor"},
+            "manage_saved_views": normalized_role in {"methodist", "lead", "admin"},
+            "review_pack": can_work_cases,
         },
         "metric_states": ["available", "missing", "not_applicable", "scoring_error", "suppressed"],
         "checked_at": _utc(),

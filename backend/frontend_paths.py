@@ -21,6 +21,7 @@ CANONICAL_ASSET_MAP: dict[str, str] = {
     "consult_review.html": "doctor/consult_review.html",
     # Methodist workspace
     "mis-kz-quality.html": "methodist/mis-kz-quality.html",
+    "expert.html": "methodist/expert.html",
     "onco-risk.html": "methodist/onco-risk.html",
     # Patient workspace
     "patient.html": "patient/patient.html",
