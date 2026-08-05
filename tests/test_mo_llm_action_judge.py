@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import pytest
 
+from clinical_knowledge.mo_daily import sanitize_mo_org_label
 from clinical_knowledge.mo_llm_action_judge import (
     EXAMPLE_STAGE_A,
     EXAMPLE_STAGE_B,
@@ -19,7 +20,10 @@ def test_validate_examples() -> None:
     b = validate_stage_b(EXAMPLE_STAGE_B)
     assert a["stage"] == "A"
     assert b["stage"] == "B"
+    assert a["completeness"]["score_pct"] == 70
+    assert a["completeness"]["missing_blocks"] == ["exam_data"]
     assert a["diagnosis_assessment"]["score_pct"] == 35
+    assert a["diagnosis_assessment"]["blocked_by_incomplete"] is False
     assert b["plan_assessment"]["score_pct"] == 25
 
 
@@ -37,6 +41,20 @@ def test_reject_bad_verdict() -> None:
         validate_stage_a(bad)
 
 
+def test_reject_missing_completeness() -> None:
+    bad = dict(EXAMPLE_STAGE_A)
+    bad.pop("completeness")
+    with pytest.raises(ValueError, match="completeness"):
+        validate_stage_a(bad)
+
+
+def test_stage_a_digest_includes_completeness() -> None:
+    a = validate_stage_a(EXAMPLE_STAGE_A)
+    digest = stage_a_digest(a)
+    assert digest["completeness_score_pct"] == 70
+    assert "missing:exam_data" in digest["key_gaps"] or "exam_data" in digest["missing_blocks"]
+
+
 def test_prompts_contain_case_id() -> None:
     pack = {
         "meta": {"case_id": "3646270", "visit_id": "3646270", "mis_id": "1"},
@@ -46,6 +64,15 @@ def test_prompts_contain_case_id() -> None:
     pa = build_prompt_a(pack)
     pb = build_prompt_b(pack, stage_a_digest(a))
     assert "3646270" in pa
+    assert "completeness" in pa
+    assert "полнота" in pa.lower() or "Полнота" in pa
     assert "stage_a_ref" in pb or "Итог этапа A" in pb
     assert "Этап A" in pa
     assert "Этап B" in pb
+
+
+def test_sanitize_mo_org_label_strips_versions() -> None:
+    assert sanitize_mo_org_label("v4.0.0", scorer_version="v4.0.0") == ""
+    assert sanitize_mo_org_label("4.0", schema_version="4.0") == ""
+    assert sanitize_mo_org_label("deep-v2-fallback") == ""
+    assert sanitize_mo_org_label("Урология", scorer_version="v4.0.0") == "Урология"

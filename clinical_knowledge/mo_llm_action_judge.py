@@ -18,6 +18,15 @@ AUDIENCES = frozenset({"pediatric", "adult", "unknown"})
 ICD_FITS = frozenset({"weak", "adequate", "strong", "unknown"})
 FOLLOW_KINDS = frozenset({"on_worsening_only", "scheduled", "unclear", "absent"})
 AGE_SOURCES = frozenset({"visit_meta", "text", "unknown"})
+COMPLETENESS_BLOCKS = (
+    "complaints",
+    "anamnesis",
+    "objective_status",
+    "exam_data",
+    "diagnosis",
+    "exam_recommendations",
+    "treatment_recommendations",
+)
 
 _JSON_FENCE = re.compile(r"```(?:json)?\s*([\s\S]*?)```", re.I)
 
@@ -74,9 +83,44 @@ def _validate_finding(item: Any, *, idx: int) -> dict[str, Any]:
     }
 
 
+def _validate_completeness(raw: Any) -> dict[str, Any]:
+    if not isinstance(raw, dict):
+        raise ValueError("completeness обязателен")
+    score = _as_pct(raw.get("score_pct"))
+    if score is None:
+        raise ValueError("completeness.score_pct 0-100")
+    verdict = str(raw.get("verdict") or "").strip()
+    if verdict not in VERDICTS:
+        raise ValueError(f"completeness.verdict недопустим: {verdict}")
+    blocks_in = raw.get("blocks") if isinstance(raw.get("blocks"), dict) else {}
+    blocks_out: dict[str, Any] = {}
+    for name in COMPLETENESS_BLOCKS:
+        block = blocks_in.get(name) if isinstance(blocks_in.get(name), dict) else {}
+        blocks_out[name] = {
+            "present": bool(block.get("present")),
+            "adequate": bool(block.get("adequate")),
+            "note": _clip(str(block.get("note") or ""), 160),
+        }
+    missing = [
+        _clip(str(x), 40)
+        for x in (raw.get("missing_blocks") or [])
+        if str(x).strip() in COMPLETENESS_BLOCKS
+    ][:12]
+    if not missing:
+        missing = [name for name, block in blocks_out.items() if not block["present"]]
+    return {
+        "score_pct": score,
+        "verdict": verdict,
+        "blocks": blocks_out,
+        "missing_blocks": missing,
+        "summary_ru": _clip(str(raw.get("summary_ru") or ""), 400),
+    }
+
+
 def validate_stage_a(raw: dict[str, Any], *, case_id: str | None = None) -> dict[str, Any]:
     if str(raw.get("stage") or "") != "A":
         raise ValueError("stage должен быть A")
+    completeness = _validate_completeness(raw.get("completeness"))
     dx = raw.get("diagnosis_assessment")
     if not isinstance(dx, dict):
         raise ValueError("diagnosis_assessment обязателен")
@@ -123,6 +167,8 @@ def validate_stage_a(raw: dict[str, Any], *, case_id: str | None = None) -> dict
     findings = [
         _validate_finding(f, idx=i) for i, f in enumerate(raw.get("findings") or []) if isinstance(f, dict)
     ]
+    blocks = completeness["blocks"]
+    inputs_src = raw.get("inputs_used") if isinstance(raw.get("inputs_used"), dict) else {}
     cid = str(raw.get("case_id") or case_id or "").strip()
     return {
         "schema_version": SCHEMA_VERSION,
@@ -136,19 +182,23 @@ def validate_stage_a(raw: dict[str, Any], *, case_id: str | None = None) -> dict
             "audience": audience,
             "age_source": age_source,
         },
+        "completeness": completeness,
         "inputs_used": {
-            "complaints": bool((raw.get("inputs_used") or {}).get("complaints")),
-            "anamnesis": bool((raw.get("inputs_used") or {}).get("anamnesis")),
-            "exams": bool((raw.get("inputs_used") or {}).get("exams")),
-            "objective_status": bool((raw.get("inputs_used") or {}).get("objective_status")),
-            "diagnosis": bool((raw.get("inputs_used") or {}).get("diagnosis")),
+            "complaints": bool(inputs_src.get("complaints", blocks["complaints"]["present"])),
+            "anamnesis": bool(inputs_src.get("anamnesis", blocks["anamnesis"]["present"])),
+            "exams": bool(inputs_src.get("exams", blocks["exam_data"]["present"])),
+            "objective_status": bool(
+                inputs_src.get("objective_status", blocks["objective_status"]["present"])
+            ),
+            "diagnosis": bool(inputs_src.get("diagnosis", blocks["diagnosis"]["present"])),
         },
         "diagnosis_assessment": {
             "score_pct": score,
             "verdict": verdict,
+            "blocked_by_incomplete": bool(dx.get("blocked_by_incomplete", False)),
             "summary_ru": _clip(str(dx.get("summary_ru") or ""), 500),
-            "supported_by": [ _clip(str(x), 120) for x in (dx.get("supported_by") or [])[:8] ],
-            "not_supported_by": [ _clip(str(x), 120) for x in (dx.get("not_supported_by") or [])[:8] ],
+            "supported_by": [_clip(str(x), 120) for x in (dx.get("supported_by") or [])[:8]],
+            "not_supported_by": [_clip(str(x), 120) for x in (dx.get("not_supported_by") or [])[:8]],
             "icd": {
                 "code": _clip(str(icd_in.get("code") or ""), 16),
                 "text": _clip(str(icd_in.get("text") or ""), 200),
@@ -238,13 +288,20 @@ def validate_stage_b(raw: dict[str, Any], *, case_id: str | None = None) -> dict
 
 def stage_a_digest(stage_a: dict[str, Any]) -> dict[str, Any]:
     dx = stage_a.get("diagnosis_assessment") or {}
+    completeness = stage_a.get("completeness") or {}
     gaps = [f.get("code") for f in (stage_a.get("findings") or []) if f.get("code")]
+    for name in completeness.get("missing_blocks") or []:
+        gaps.append(f"missing:{name}")
     for link in stage_a.get("chain") or []:
         if link.get("outcome") in {"gap", "contradiction"} and link.get("note"):
             gaps.append(str(link.get("from")) + "->" + str(link.get("to")))
     return {
+        "completeness_score_pct": completeness.get("score_pct"),
+        "completeness_verdict": completeness.get("verdict"),
+        "missing_blocks": list(completeness.get("missing_blocks") or [])[:8],
         "diagnosis_score_pct": dx.get("score_pct"),
         "diagnosis_verdict": dx.get("verdict"),
+        "blocked_by_incomplete": bool(dx.get("blocked_by_incomplete")),
         "key_gaps": gaps[:8],
         "conclusion_ru": stage_a.get("conclusion_ru") or "",
         "patient": stage_a.get("patient") or {},
@@ -255,6 +312,7 @@ def build_prompt_a(case_pack: dict[str, Any]) -> str:
     """case_pack: clinical slots + meta (без сырого result целиком)."""
     meta = case_pack.get("meta") or {}
     slots = case_pack.get("slots") or {}
+    block_hint = {"present": True, "adequate": True, "note": ""}
     schema_hint = {
         "schema_version": SCHEMA_VERSION,
         "stage": "A",
@@ -262,7 +320,18 @@ def build_prompt_a(case_pack: dict[str, Any]) -> str:
         "case_id": meta.get("case_id"),
         "visit_id": meta.get("visit_id"),
         "mis_id": meta.get("mis_id"),
-        "patient": {"age_years": None, "audience": "pediatric|adult|unknown", "age_source": "visit_meta|text|unknown"},
+        "patient": {
+            "age_years": None,
+            "audience": "pediatric|adult|unknown",
+            "age_source": "visit_meta|text|unknown",
+        },
+        "completeness": {
+            "score_pct": 0,
+            "verdict": "good|acceptable|review|poor|critical",
+            "blocks": {name: dict(block_hint) for name in COMPLETENESS_BLOCKS},
+            "missing_blocks": [],
+            "summary_ru": "",
+        },
         "inputs_used": {
             "complaints": True,
             "anamnesis": True,
@@ -273,12 +342,20 @@ def build_prompt_a(case_pack: dict[str, Any]) -> str:
         "diagnosis_assessment": {
             "score_pct": 0,
             "verdict": "good|acceptable|review|poor|critical",
+            "blocked_by_incomplete": False,
             "summary_ru": "",
             "supported_by": [],
             "not_supported_by": [],
             "icd": {"code": "", "text": "", "fit": "weak|adequate|strong|unknown"},
         },
-        "chain": [{"from": "complaints", "to": "diagnosis", "outcome": "ok|gap|contradiction|unknown", "note": ""}],
+        "chain": [
+            {
+                "from": "complaints",
+                "to": "diagnosis",
+                "outcome": "ok|gap|contradiction|unknown",
+                "note": "",
+            }
+        ],
         "findings": [{"code": "", "severity": "P0|P1|P2|P3|none", "text_ru": "", "evidence": ""}],
         "conclusion_ru": "",
         "confidence": 0.0,
@@ -286,10 +363,12 @@ def build_prompt_a(case_pack: dict[str, Any]) -> str:
     }
     return "\n".join(
         [
-            "Ты клинический методист. Этап A: согласованность диагноза с данными.",
-            "Оцени ТОЛЬКО: возраст/audience, жалобы, анамнез, обследования/статус ↔ диагноз(+МКБ).",
-            "Не оценивай лечение и рекомендации по обследованию (это этап B).",
-            "Не выдумывай факты. Если поля пустые - отметь inputs_used=false и outcome=unknown.",
+            "Ты клинический методист. Этап A: полнота заполнения МО + согласованность диагноза.",
+            "Сначала оцени completeness по блокам (жалобы, анамнез, статус, обследования, диагноз, рекомендации).",
+            "Затем diagnosis fit (жалобы/анамнез/статус/обследования ↔ диагноз(+МКБ)).",
+            "Если критически пусты жалобы/статус/диагноз - blocked_by_incomplete=true, не угадывай Dx.",
+            "Не оценивай адекватность плана лечения/дообследования (это этап B) - только наличие блоков.",
+            "Не выдумывай факты. Если поля пустые - present=false, adequate=false.",
             "Ответ: один JSON по схеме, без markdown.",
             "Схема:",
             json.dumps(schema_hint, ensure_ascii=False),
@@ -378,6 +457,21 @@ EXAMPLE_STAGE_A: dict[str, Any] = {
     "visit_id": "3646270",
     "mis_id": "898517",
     "patient": {"age_years": 9, "audience": "pediatric", "age_source": "text"},
+    "completeness": {
+        "score_pct": 70,
+        "verdict": "review",
+        "blocks": {
+            "complaints": {"present": True, "adequate": True, "note": ""},
+            "anamnesis": {"present": True, "adequate": False, "note": "нет динамики"},
+            "objective_status": {"present": True, "adequate": True, "note": ""},
+            "exam_data": {"present": False, "adequate": False, "note": "пусто"},
+            "diagnosis": {"present": True, "adequate": True, "note": ""},
+            "exam_recommendations": {"present": True, "adequate": True, "note": ""},
+            "treatment_recommendations": {"present": True, "adequate": True, "note": ""},
+        },
+        "missing_blocks": ["exam_data"],
+        "summary_ru": "Клиника заполнена; блок данных обследований пуст.",
+    },
     "inputs_used": {
         "complaints": True,
         "anamnesis": True,
@@ -388,6 +482,7 @@ EXAMPLE_STAGE_A: dict[str, Any] = {
     "diagnosis_assessment": {
         "score_pct": 35,
         "verdict": "poor",
+        "blocked_by_incomplete": False,
         "summary_ru": "Диагноз не закрывает суставную находку и хроническую хромоту.",
         "supported_by": ["болезненность мышцы бедра"],
         "not_supported_by": ["отёк колена", "хромота 3 месяца"],
@@ -409,7 +504,7 @@ EXAMPLE_STAGE_A: dict[str, Any] = {
             "evidence": "отёк правого коленного сустава",
         }
     ],
-    "conclusion_ru": "Нужен DDx суставной патологии.",
+    "conclusion_ru": "Полнота средняя; диагноз слабо согласован с клиникой.",
     "confidence": 0.78,
     "needs_human": True,
 }

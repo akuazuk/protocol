@@ -41,14 +41,14 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
 
 ## 2. Метрики
 
-| Метрика | Было | Цель v1 |
-|--|--|--|
-| Охват batch | нет | только `action_cases.items` дня |
-| UI отвечает на 3 вопроса (полнота / Dx / рекомендации) | нет | да, без лишних блоков |
-| Время на очередь ~10 кейсов (3.6-flash, 2 этапа) | н/д | < 15 мин wall |
-| Стоимость на очередь ~10 кейсов | н/д | < $1 на 3.6-flash |
-| Валидный JSON A и B | н/д | 100% parse после retry×1 |
-| Primary overall меняется | - | нет (shadow only) |
+| Метрика | Было | Стало | Цель v1 |
+|--|--|--|--|
+| Контракт A с `completeness` | нет | validate + prompt + tests | ok |
+| Specialty/filial без `v4.0.0` | мусор в UI | sanitize на read/upsert | ok после деплоя |
+| Охват batch | нет | CLI dry-run | только `action_cases.items` дня |
+| UI отвечает на 3 вопроса | нет | - | да, без лишних блоков |
+| Пилот Gemini на очереди дня | нет | - | отчёт методисту |
+| Primary overall меняется | - | - | нет (shadow only) |
 
 ---
 
@@ -272,8 +272,8 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 - [x] Чистый модуль validate/prompt: `clinical_knowledge/mo_llm_action_judge.py`.
 - [x] CLI `scripts/run_mo_action_queue_llm_judge.py` (dry-run + execute).
 - [x] Unit-тесты на parse/validate.
-- [ ] Обновить validate/prompt под блок `completeness` в этапе A.
-- [ ] Починить ФИО/специальность в action queue.
+- [x] Обновить validate/prompt под блок `completeness` в этапе A.
+- [x] Починить specialty/filial в action queue (sanitize `v4.0.0` / `4.0`; пустое ФИО - re-export).
 - [ ] Пилотный прогон на очереди одного дня (Render), отчёт методисту.
 - [ ] UI: 3 KPI + сравнение с текстом МО в case detail.
 
@@ -291,7 +291,7 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 
 ---
 
-## 7. Definition of Done v1 (docs+CLI)
+## 8. Definition of Done v1 (docs+CLI)
 
 1. Контракт A/B описан и валидируется тестами.
 2. `--dry-run` печатает case_id из action-очереди выбранного дня.
@@ -299,7 +299,7 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 
 ---
 
-## 8. Первая безопасная команда
+## 9. Первая безопасная команда
 
 ```bash
 cd /private/tmp/protocol-task-mo-llm-action-queue-judge-pc1
