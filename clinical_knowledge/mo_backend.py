@@ -3887,7 +3887,12 @@ def _llm_night_coverage(date_from: date, date_to: date) -> list[dict[str, Any]]:
                     for line in grades_path.read_text(encoding="utf-8").splitlines():
                         if not line.strip():
                             continue
-                        if '"_error"' in line or '"error"' in line:
+                        try:
+                            row = json.loads(line)
+                        except json.JSONDecodeError:
+                            err += 1
+                            continue
+                        if isinstance(row, dict) and (row.get("_error") or row.get("error")):
                             err += 1
                         else:
                             ok += 1
