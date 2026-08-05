@@ -939,13 +939,23 @@
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
         }).join("") + '</div>' +
         renderRubricMz(rubric) +
-        renderClinicalDocument(sourceDocument) +
+        renderClinicalDocument(sourceDocument, findings) +
         '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
           var title = finding.title_ru || finding.title || finding.code || "Замечание";
           var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
-          return notice(finding.severity || "Проверить", title || finding.detail_ru || finding.detail || "Требуется ручная проверка",
+          var linked = finding.linked_fields || [];
+          var shadowBadge = (finding.is_shadow || finding.shadow) ?
+            '<span class="status review finding-shadow-badge">shadow</span> ' : "";
+          var linkHint = finding.link_hint_ru ?
+            '<p class="finding-link-hint">' + esc(finding.link_hint_ru) +
+            (linked.length ? ' · поля: ' + linked.map(function (field) {
+              return '<button type="button" class="linkish" data-focus-clinical="' + esc(field) + '">' +
+                esc(clinicalFieldLabel(field)) + '</button>';
+            }).join(", ") : "") + '</p>' : "";
+          return notice(finding.severity || "Проверить", shadowBadge + (title || finding.detail_ru || finding.detail || "Требуется ручная проверка"),
             finding.severity === "P0" ? "critical" : "review") +
             ((finding.detail_ru || finding.detail) ? '<p>' + esc(finding.detail_ru || finding.detail) + '</p>' : "") +
+            linkHint +
             (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
             (finding.evidence_span ? '<p class="card-sub">Поле ' + esc(finding.evidence_span.field) +
               ', символы ' + esc(finding.evidence_span.start) + '-' + esc(finding.evidence_span.end) + '</p>' : "") +
@@ -969,8 +979,29 @@
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Решений пока нет.</p>') + '</div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
+      $("drawer-body").querySelectorAll("[data-focus-clinical]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var field = button.getAttribute("data-focus-clinical");
+          var target = $("drawer-body").querySelector('[data-clinical-field="' + field + '"]');
+          if (!target) return;
+          $("drawer-body").querySelectorAll(".clinical-field--linked").forEach(function (node) {
+            node.classList.remove("clinical-field--focus");
+          });
+          target.classList.add("clinical-field--focus");
+          target.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        });
+      });
       var focusRow = document.getElementById("rubric-focus-row");
       if (focusRow) focusRow.scrollIntoView({ block: "nearest", behavior: "smooth" });
+    }
+    function clinicalFieldLabel(key) {
+      return ({
+        complaints: "Жалобы", anamnesis_doctor: "Анамнез", anamnesis_auto: "Анамнез (авто)",
+        objective_status: "Объективный статус", exam_data: "Данные обследований",
+        clinical_diagnosis: "Клинический диагноз", mis_diagnos: "Диагноз МИС",
+        mkb_code_main: "МКБ", exam_recommendations: "Рекомендации по обследованию",
+        treatment_recommendations: "Рекомендации по лечению"
+      })[key] || key;
     }
     function renderRubricMz(rubric) {
       if (!rubric || !rubric.ok) {
@@ -1009,8 +1040,12 @@
         (rows || '<tr><td colspan="3" class="empty">Критерии не рассчитаны.</td></tr>') +
         '</tbody></table></div></div>';
     }
-    function renderClinicalDocument(documentData) {
+    function renderClinicalDocument(documentData, findings) {
       var clinical = documentData.clinical || {};
+      var linkedSet = {};
+      (findings || []).forEach(function (finding) {
+        (finding.linked_fields || []).forEach(function (field) { linkedSet[field] = true; });
+      });
       var fields = [
         ["complaints", "Жалобы"], ["anamnesis_doctor", "Анамнез"],
         ["anamnesis_auto", "Анамнез (авто)"], ["objective_status", "Объективный статус"],
@@ -1020,8 +1055,10 @@
         ["treatment_recommendations", "Рекомендации по лечению"]
       ];
       var content = fields.filter(function (field) { return clinical[field[0]]; }).map(function (field) {
-        return '<section class="clinical-field"><h4>' + esc(field[1]) + '</h4><p>' +
-          esc(clinical[field[0]]) + '</p></section>';
+        var linked = linkedSet[field[0]] ? " clinical-field--linked" : "";
+        return '<section class="clinical-field' + linked + '" data-clinical-field="' + esc(field[0]) + '"><h4>' +
+          esc(field[1]) + (linkedSet[field[0]] ? ' <span class="clinical-link-mark">↔ замечание</span>' : "") +
+          '</h4><p>' + esc(clinical[field[0]]) + '</p></section>';
       }).join("");
       var reason = documentData.score_reason ? '<p class="inline-note">' + esc(documentData.score_reason) + '</p>' : "";
       var sourceLabel = documentData.source_format === "secure_csv" ? "защищённый дневной срез" :
@@ -1279,7 +1316,9 @@
           (item.severity === "P0" ? "critical" : "review") + '">' + esc(item.severity) +
           "</span></td><td><b>" + esc(item.doctor) + "</b><br><small>" + esc(item.specialty) +
           "</small></td><td>" + esc(item.branch) + "</td><td>" + esc(item.diagnosis) +
-          "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b><br><small>" + esc(item.reason) +
+          "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b>" +
+          (item.is_shadow ? ' <span class="status review finding-shadow-badge">shadow</span>' : "") +
+          "<br><small>" + esc(item.reason) +
           (item.overall_pct != null ? " · оценка " + Math.round(Number(item.overall_pct)) + "%" : "") +
           '</small></td><td class="row-actions"><button class="button secondary compact" type="button" data-take-case="' +
           esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +

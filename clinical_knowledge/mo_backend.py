@@ -195,6 +195,41 @@ def _read_connection() -> sqlite3.Connection:
     return conn
 
 
+def _warehouse_has_column(db_path: str, table: str, column: str) -> bool:
+    try:
+        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=5)
+        try:
+            cols = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
+            return column in cols
+        finally:
+            conn.close()
+    except sqlite3.Error:
+        return False
+
+
+def _finding_shadow_select(alias: str = "f") -> str:
+    """SELECT-фрагмент is_shadow: на старых витринах колонки ещё нет."""
+    path = str(_db_path())
+    if _warehouse_has_column(path, "fact_mo_finding", "is_shadow"):
+        return f"COALESCE({alias}.is_shadow, 0) AS is_shadow"
+    return "0 AS is_shadow"
+
+
+def _finding_link_select(alias: str = "f") -> str:
+    path = str(_db_path())
+    linked = (
+        f"{alias}.linked_fields_json"
+        if _warehouse_has_column(path, "fact_mo_finding", "linked_fields_json")
+        else "NULL AS linked_fields_json"
+    )
+    hint = (
+        f"{alias}.link_hint_ru"
+        if _warehouse_has_column(path, "fact_mo_finding", "link_hint_ru")
+        else "'' AS link_hint_ru"
+    )
+    return f"{linked}, {hint}"
+
+
 def _source_for_period(period: DateRange) -> str:
     """В auto используем SQL только если в выбранном периоде есть факты."""
     source = _backend_source()
@@ -956,6 +991,9 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                       COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
                       COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
                       f.finding_code, f.severity,
+                      """
+            + _finding_shadow_select("f")
+            + """,
                       COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS finding_title,
                       COALESCE(s.status, 'new') AS crm_status
                FROM fact_mo_case c
@@ -1186,6 +1224,10 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         score = row["overall_pct"]
         code = str(row["finding_code"])
         finding_title = finding_label_ru(code, str(row["finding_title"] or ""))
+        is_shadow = bool(int(row["is_shadow"] or 0)) if "is_shadow" in row.keys() else False
+        reason = f"{row['severity']}: {finding_title}"
+        if is_shadow:
+            reason = f"{reason} (shadow concordance)"
         action_cases.append(
             {
                 "case_id": case_id,
@@ -1199,7 +1241,8 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "overall_pct": float(score) if score is not None else None,
                 "finding_code": code,
                 "finding_title": finding_title,
-                "reason": f"{row['severity']}: {finding_title}",
+                "is_shadow": is_shadow,
+                "reason": reason,
                 "crm_status": str(row["crm_status"]),
                 "document_url": f"/api/methodist/mo/cases/{case_id}/document",
                 "pdf_url": f"/api/methodist/mo/cases/{case_id}/pdf",
@@ -2318,6 +2361,33 @@ def build_data_quality(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _normalize_finding_row(finding_row: Mapping[str, Any]) -> dict[str, Any]:
+    """Нормализовать строку fact_mo_finding для case detail / API."""
+    from .mo_finding_labels_ru import finding_label_ru
+
+    finding = dict(finding_row)
+    code = str(finding.get("code") or finding.get("finding_code") or "")
+    finding["code"] = code
+    finding["title_ru"] = finding_label_ru(code, str(finding.get("title_ru") or ""))
+    is_shadow = bool(int(finding.get("is_shadow") or 0))
+    finding["is_shadow"] = is_shadow
+    finding["shadow"] = is_shadow
+    linked_raw = finding.pop("linked_fields_json", None)
+    linked: list[str] = []
+    if isinstance(linked_raw, str) and linked_raw.strip():
+        try:
+            parsed = json.loads(linked_raw)
+            if isinstance(parsed, list):
+                linked = [str(item) for item in parsed if item]
+        except json.JSONDecodeError:
+            linked = []
+    if not linked and finding.get("linked_fields"):
+        linked = [str(item) for item in finding.get("linked_fields") or [] if item]
+    finding["linked_fields"] = linked
+    finding["link_hint_ru"] = str(finding.get("link_hint_ru") or "")
+    return finding
+
+
 def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
     selected_month = month or _month_for_date("")
     detail: dict[str, Any] = {"ok": False}
@@ -2344,12 +2414,17 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     )
                 }
                 findings = [
-                    dict(finding_row)
+                    _normalize_finding_row(finding_row)
                     for finding_row in conn.execute(
                         """SELECT f.finding_code AS code, f.finding_code, f.severity,
-                                  f.evidence, f.source_ref,
+                                  f.evidence, f.source_ref, f.axis,
+                                  """
+                        + _finding_shadow_select("f")
+                        + ", "
+                        + _finding_link_select("f")
+                        + """,
                                   COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS title_ru,
-                                  COALESCE(df.why_important_ru, '') AS detail_ru
+                                  COALESCE(NULLIF(f.detail_ru,''), df.why_important_ru, '') AS detail_ru
                            FROM fact_mo_finding f
                            LEFT JOIN dim_finding df ON df.finding_code = f.finding_code
                            WHERE f.mis_id = ? AND COALESCE(f.passed, 0) = 0
@@ -2358,13 +2433,6 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         (mis_id,),
                     )
                 ]
-                from .mo_finding_labels_ru import finding_label_ru
-
-                for finding in findings:
-                    finding["title_ru"] = finding_label_ru(
-                        str(finding.get("code") or finding.get("finding_code") or ""),
-                        str(finding.get("title_ru") or ""),
-                    )
                 document_kind = str(item.get("document_kind") or "unknown")
                 score = item.get("overall_pct")
                 record = {
@@ -2447,9 +2515,14 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
             if row:
                 item = dict(row)
                 findings = [
-                    dict(finding_row)
+                    _normalize_finding_row(finding_row)
                     for finding_row in conn.execute(
-                        """SELECT f.finding_code AS code, f.severity, f.source_ref,
+                        """SELECT f.finding_code AS code, f.severity, f.source_ref, f.axis,
+                                  """
+                        + _finding_shadow_select("f")
+                        + ", "
+                        + _finding_link_select("f")
+                        + """,
                                   COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS title_ru,
                                   COALESCE(f.detail_ru, f.evidence, '') AS detail_ru,
                                   f.evidence
@@ -2461,13 +2534,6 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         (item.get("mis_id"),),
                     )
                 ]
-                from .mo_finding_labels_ru import finding_label_ru
-
-                for finding in findings:
-                    finding["title_ru"] = finding_label_ru(
-                        str(finding.get("code") or ""),
-                        str(finding.get("title_ru") or ""),
-                    )
                 axis_rows = conn.execute(
                     "SELECT axis, score FROM fact_mo_score_axis WHERE mis_id = ?",
                     (item.get("mis_id"),),

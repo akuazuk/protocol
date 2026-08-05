@@ -34,6 +34,13 @@ FINDING_TITLE_RU: dict[str, str] = {
     "C_drug_unresolved": "Препарат не удалось надёжно распознать",
     "D_reg55_p0": "Критический дефект по постановлению №55",
     "E_template_copy": "Подозрение на копирование шаблона",
+    # Concordance shadow (E1/E3) - mo_concordance_v1
+    "finding_not_in_diagnosis": "Находка в статусе не отражена в диагнозе",
+    "anamnesis_thin_for_duration": "Анамнез слишком краток для длительности жалобы",
+    "underworkup_chronic_red_flag": "Недостаточный объём обследования при хроническом сценарии",
+    "plan_laterality_mismatch": "Латеральность плана не совпадает с жалобой",
+    "icd_weakly_supported": "Код МКБ слабо поддержан клинической картиной",
+    "pediatric_limp_ddx_not_addressed": "Не закрыт детский DDx длительной хромоты",
 }
 
 _CODE_LIKE = re.compile(r"^[A-E]_[A-Za-z0-9_]+$")

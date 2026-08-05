@@ -1367,6 +1367,8 @@ def main() -> int:
                         "has_potential_harm": deep["has_potential_harm"],
                         "protocol_used": deep["protocol_used"],
                         "findings": deep["findings"][:20],
+                        # E3: shadow concordance для warehouse / очереди «Вчера»
+                        "shadow_findings": (deep.get("shadow_findings") or [])[:20],
                     }
                     # Аддитивно: scorer v3 в shadow-режиме (не переключает prod score/gate).
                     try:

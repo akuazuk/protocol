@@ -1279,6 +1279,9 @@ def initialize_warehouse(path: Path) -> None:
                 "trust_level": "TEXT",
                 "penalty_applied": "INTEGER DEFAULT 0",
                 "needs_human": "INTEGER DEFAULT 0",
+                "is_shadow": "INTEGER DEFAULT 0",
+                "linked_fields_json": "TEXT",
+                "link_hint_ru": "TEXT",
             },
         )
         _ensure_columns(db, "dim_diagnosis", {"chapter": "TEXT"})
@@ -1395,6 +1398,30 @@ def detect_template_copies(
     return pairs
 
 
+def _case_shadow_findings(case: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    """Shadow concordance из deep (не из evaluation_v4 - там их нет)."""
+    deep = case.get("deep") if isinstance(case.get("deep"), Mapping) else {}
+    items = deep.get("shadow_findings") if isinstance(deep, Mapping) else None
+    if not isinstance(items, list):
+        return []
+    return [item for item in items if isinstance(item, Mapping)]
+
+
+def _case_primary_findings(case: Mapping[str, Any]) -> list[Mapping[str, Any]]:
+    """Primary findings: предпочитаем v4, иначе deep."""
+    v4 = case.get("evaluation_v4") if isinstance(case.get("evaluation_v4"), Mapping) else None
+    deep = case.get("deep") if isinstance(case.get("deep"), Mapping) else {}
+    source = v4 if isinstance(v4, Mapping) else deep
+    items = (source or {}).get("findings") if isinstance(source, Mapping) else None
+    if not isinstance(items, list):
+        return []
+    return [item for item in items if isinstance(item, Mapping)]
+
+
+def _finding_is_severe_attention(finding: Mapping[str, Any]) -> bool:
+    return (not finding.get("passed")) and str(finding.get("severity") or "") in {"P0", "P1"}
+
+
 def upsert_warehouse(
     path: Path,
     raw_rows: Sequence[Mapping[str, Any]],
@@ -1472,16 +1499,21 @@ def upsert_warehouse(
                 if selected_case_id:
                     eligible_case_ids.add(selected_case_id)
                 finding_source = evaluation_v4 or deep_case
+                primary_findings = (
+                    list(finding_source.get("findings") or [])
+                    if isinstance(finding_source, Mapping)
+                    else []
+                )
+                shadow_findings = _case_shadow_findings(case) if isinstance(case, Mapping) else []
                 if any(
                     str(finding.get("severity") or "") == "P0"
-                    for finding in finding_source.get("findings") or []
+                    for finding in primary_findings
                     if isinstance(finding, Mapping)
                 ):
                     eligible_critical_ids.add(selected_case_id or mis_id)
                 if evaluation_v4.get("attention_required") or any(
-                    not finding.get("passed")
-                    and str(finding.get("severity") or "") in {"P0", "P1"}
-                    for finding in finding_source.get("findings") or []
+                    _finding_is_severe_attention(finding)
+                    for finding in (*primary_findings, *shadow_findings)
                     if isinstance(finding, Mapping)
                 ):
                     eligible_attention_ids.add(selected_case_id or mis_id)
@@ -1630,8 +1662,8 @@ def upsert_warehouse(
                     """INSERT OR REPLACE INTO fact_mo_finding
                        (mis_id, finding_code, severity, passed, evidence, source_ref,
                         axis, title_ru, detail_ru, trust_level, penalty_applied,
-                        needs_human)
-                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
+                        needs_human, is_shadow, linked_fields_json, link_hint_ru)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)""",
                     (
                         mis_id,
                         code,
@@ -1645,6 +1677,9 @@ def upsert_warehouse(
                         str(finding.get("trust_level") or "D"),
                         1 if finding.get("penalty_applied") else 0,
                         1 if finding.get("needs_human") else 0,
+                        1 if finding.get("shadow") or finding.get("is_shadow") else 0,
+                        json.dumps(finding.get("linked_fields") or [], ensure_ascii=False),
+                        str(finding.get("link_hint_ru") or ""),
                     ),
                 )
                 title = str(finding.get("title_ru") or code)
@@ -1673,6 +1708,69 @@ def upsert_warehouse(
                 )
                 written["dim_finding"] += 1
                 written["fact_mo_finding"] += 1
+            # E3: shadow concordance - в витрину и очередь, без влияния на overall/axes.
+            for finding in _case_shadow_findings(case):
+                code = str(finding.get("code") or "").strip()
+                if not code:
+                    continue
+                # Не затирать primary с тем же code.
+                exists = db.execute(
+                    "SELECT 1 FROM fact_mo_finding WHERE mis_id=? AND finding_code=?",
+                    (mis_id, code),
+                ).fetchone()
+                if exists:
+                    continue
+                linked = finding.get("linked_fields") or []
+                db.execute(
+                    """INSERT OR REPLACE INTO fact_mo_finding
+                       (mis_id, finding_code, severity, passed, evidence, source_ref,
+                        axis, title_ru, detail_ru, trust_level, penalty_applied,
+                        needs_human, is_shadow, linked_fields_json, link_hint_ru)
+                       VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1, ?, ?)""",
+                    (
+                        mis_id,
+                        code,
+                        str(finding.get("severity") or ""),
+                        1 if finding.get("passed") else 0,
+                        str(finding.get("evidence") or "")[:2000],
+                        str(finding.get("source_ref") or ""),
+                        str(finding.get("axis") or ""),
+                        str(finding.get("title_ru") or code),
+                        str(finding.get("detail_ru") or ""),
+                        str(finding.get("trust_level") or "D"),
+                        0,
+                        1 if finding.get("needs_human") else 0,
+                        json.dumps(linked if isinstance(linked, list) else [], ensure_ascii=False),
+                        str(finding.get("link_hint_ru") or ""),
+                    ),
+                )
+                title = str(finding.get("title_ru") or code)
+                detail = str(finding.get("detail_ru") or "").strip()
+                why = detail or f"Shadow-согласованность: «{title}»."
+                db.execute(
+                    """INSERT INTO dim_finding
+                       (finding_code,title_ru,why_important_ru,source_ref,axis,
+                        default_severity,updated_at)
+                       VALUES (?,?,?,?,?,?,?)
+                       ON CONFLICT(finding_code) DO UPDATE SET
+                       title_ru=excluded.title_ru,
+                       why_important_ru=excluded.why_important_ru,
+                       source_ref=excluded.source_ref,axis=excluded.axis,
+                       default_severity=excluded.default_severity,
+                       updated_at=excluded.updated_at""",
+                    (
+                        code,
+                        title,
+                        why,
+                        str(finding.get("source_ref") or ""),
+                        str(finding.get("axis") or ""),
+                        str(finding.get("severity") or ""),
+                        now,
+                    ),
+                )
+                written["dim_finding"] += 1
+                written["fact_mo_finding"] += 1
+                written["fact_mo_finding_shadow"] += 1
             severity = deep.get("n_by_severity") or {}
             severe = sum(int(severity.get(level) or 0) for level in ("P0", "P1"))
             if not severity:
@@ -1683,6 +1781,14 @@ def upsert_warehouse(
                     and not finding.get("passed")
                     and str(finding.get("severity") or "") in {"P0", "P1"}
                 )
+            # Shadow P1 тоже поднимает critical в doctor_daily (очередь методиста).
+            shadow_p1 = sum(
+                1
+                for finding in _case_shadow_findings(case)
+                if _finding_is_severe_attention(finding)
+            )
+            if shadow_p1 and not severe:
+                severe = shadow_p1
             bucket = doctor_daily.get(doctor_key_for(case.get("doctor_fio")))
             if bucket is not None and severe:
                 bucket["critical"] += 1
