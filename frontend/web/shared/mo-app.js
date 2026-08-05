@@ -19,6 +19,8 @@
     var state = {
       page: "overview", period: "month", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       sortBy: "date", sortDir: "desc",
+      caseNavIds: [],
+      protocolSuggest: null,
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
       caseDetail: null, supersedesPackId: "",
@@ -892,23 +894,65 @@
         row.addEventListener("click", open); row.addEventListener("keydown", open);
       });
     }
+    function isSingleDayPeriod() {
+      return !!(state.dateFrom && state.dateTo && state.dateFrom === state.dateTo);
+    }
+    function bindSortableHeaders(table) {
+      if (!table) return;
+      table.querySelectorAll("th[data-sort-key]").forEach(function (th) {
+        th.classList.add("sortable-th");
+        var key = th.getAttribute("data-sort-key");
+        th.setAttribute("aria-sort", state.sortBy === key ? (state.sortDir === "asc" ? "ascending" : "descending") : "none");
+        th.addEventListener("click", function () {
+          if (state.sortBy === key) state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+          else { state.sortBy = key; state.sortDir = key === "date" ? "desc" : "asc"; }
+          state.pageNo = 1;
+          if ($("sort-by")) $("sort-by").value = state.sortBy;
+          if ($("sort-dir")) $("sort-dir").value = state.sortDir;
+          filtersChanged();
+        });
+      });
+    }
     async function loadCases(queue) {
-      var q = query(); q.set("page", state.pageNo); q.set("page_size", 50);
+      var q = query();
+      q.set("page", state.pageNo);
+      q.set("page_size", isSingleDayPeriod() ? "100" : "50");
       if (queue) q.set("queue_only", "1");
       var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
       if (!response.ok) throw new Error("Не удалось загрузить случаи.");
       var data = await response.json();
       var rows = (data.rows || data.cases || data.items || data.worst_visits || []).map(rowRecord);
+      state.caseNavIds = rows.map(function (item) { return item.id; }).filter(Boolean);
       var body = queue ? $("queue-rows") : $("document-rows");
       var emptyState = data.empty_state || {};
+      var pageHost = queue ? $("page-queue") : $("page-documents");
+      var banner = pageHost ? pageHost.querySelector(".day-table-banner") : null;
+      if (!queue && pageHost) {
+        if (!banner) {
+          banner = document.createElement("div");
+          banner.className = "day-table-banner";
+          var card = pageHost.querySelector(".card");
+          if (card) pageHost.insertBefore(banner, card);
+        }
+        if (isSingleDayPeriod()) {
+          banner.hidden = false;
+          banner.innerHTML = "<b>Таблица за " + esc(state.dateFrom) + "</b> · всего " +
+            esc(data.total || rows.length) + " записей. Фильтры и сортировка по колонкам применяются к этому дню.";
+        } else {
+          banner.hidden = true;
+          banner.innerHTML = "";
+        }
+      }
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
         '<tr><td colspan="' + (queue ? 14 : 11) + '" class="empty"><b>' +
         esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
         esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
       bindCaseRows(body);
       applyColumnVisibility(queue ? "queue" : "documents");
+      bindSortableHeaders(body.closest("table"));
       if (!queue) {
-        var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / 50));
+        var pageSize = Number(data.page_size || (isSingleDayPeriod() ? 100 : 50));
+        var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / pageSize));
         $("pager").innerHTML = '<span>Страница ' + state.pageNo + " из " + pages + " · всего " + esc(total) +
           '</span><button class="button secondary" id="previous-page"' + (state.pageNo <= 1 ? " disabled" : "") +
           '>Предыдущая</button><button class="button secondary" id="next-page"' +
@@ -979,7 +1023,7 @@
         patient.age_years != null ? ("возраст " + patient.age_years) : "",
         patient.audience && patient.audience !== "unknown" ? patient.audience : ""
       ].filter(Boolean).join(" · ");
-      var head = '<div class="detail-block llm-judge-block"><h3>Разбор LLM: три вопроса <span class="status review finding-shadow-badge">shadow</span></h3>' +
+      var head = '<div class="detail-block llm-judge-block"><h3>Разбор модели: три вопроса <span class="status review finding-shadow-badge">черновик</span></h3>' +
         '<p class="card-sub">' + esc(metaLine || "Врач и дата не указаны") +
         ' · полнота · диагноз · рекомендации</p>';
       if (!judge || !judge.available) {
@@ -1021,11 +1065,12 @@
         '<div class="llm-judge-split"><div><h5>Подтверждает</h5>' +
         judgeList(diagnosis.supported_by, "Нет опор") + '</div><div><h5>Не закрыто диагнозом</h5>' +
         judgeList(diagnosis.not_supported_by, "Пробелов не отмечено") + '</div></div></section>';
+      var outcomeRu = { ok: "ок", contradiction: "противоречие", gap: "пробел", missing: "нет связи" };
       var chainHtml = (diagnosis.chain || []).length ? '<section class="llm-judge-slot"><h4>Цепочка клиника → диагноз</h4>' +
         (diagnosis.chain || []).map(function (link) {
           return '<div class="llm-judge-chain"><span class="status ' +
             (link.outcome === "ok" ? "good" : (link.outcome === "contradiction" ? "critical" : "review")) +
-            '">' + esc(link.outcome || "?") + '</span> ' +
+            '">' + esc(outcomeRu[link.outcome] || link.outcome || "?") + '</span> ' +
             esc((link.from || "") + " → " + (link.to || "")) +
             (link.note ? '<small>' + esc(link.note) + '</small>' : "") + '</div>';
         }).join("") + '</section>' : "";
@@ -1043,13 +1088,15 @@
         '<div class="llm-judge-split"><div><h5>Назначения</h5>' + judgeList(treatment.present, "Пусто") +
         '</div><div><h5>Риски</h5>' + judgeList(treatment.concerns, "Без замечаний") +
         '</div></div></section>' +
-        '<section class="llm-judge-slot"><h4>Follow-up ' + esc(score(follow.score_pct)) +
+        '<section class="llm-judge-slot"><h4>Наблюдение / явка ' + esc(score(follow.score_pct)) +
         ' · ' + esc(statusLabel(follow.verdict || "") || follow.kind || "") + '</h4><p>' +
         esc(follow.summary_ru || "-") + '</p></section>';
       var findingsHtml = (conclusions.findings || []).slice(0, 10).map(function (finding) {
+        var stageRu = finding.stage === "a" || finding.stage === "A" ? "этап A (диагноз)" :
+          (finding.stage === "b" || finding.stage === "B" ? "этап B (план)" : ("этап " + (finding.stage || "?")));
         return '<div class="llm-judge-finding"><span class="status ' +
           (finding.severity === "P0" ? "critical" : "review") + '">' + esc(finding.severity || "P?") +
-          '</span> <span class="card-sub">этап ' + esc(finding.stage || "?") + '</span> ' +
+          '</span> <span class="card-sub">' + esc(stageRu) + '</span> ' +
           esc(finding.text_ru || finding.code || "") +
           (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
           '</div>';
@@ -1059,10 +1106,8 @@
         (judge.queue_severity ? " · " : "") + esc(judge.queue_reason) + '</p>' : "";
       var footerMeta = [
         conclusions.needs_human ? "нужен разбор методиста" : "можно закрыть после проверки",
-        conclusions.confidence_a != null ? ("conf A " + Math.round(Number(conclusions.confidence_a) * 100) + "%") : "",
-        conclusions.confidence_b != null ? ("conf B " + Math.round(Number(conclusions.confidence_b) * 100) + "%") : "",
-        (judge.models && judge.models.a) ? ("model " + judge.models.a) : "",
-        "engine " + (judge.engine || "mo_llm_action_judge_v1")
+        conclusions.confidence_a != null ? ("уверенность A " + Math.round(Number(conclusions.confidence_a) * 100) + "%") : "",
+        conclusions.confidence_b != null ? ("уверенность B " + Math.round(Number(conclusions.confidence_b) * 100) + "%") : ""
       ].filter(Boolean).join(" · ");
       return head + queueNote +
         '<div class="drawer-grid llm-judge-kpis">' +
@@ -1075,14 +1120,47 @@
         '<div class="llm-judge-compare">' +
         '<div><h4>Реальное МО</h4>' + (moSlots || '<p class="empty">Клинический текст недоступен</p>') + '</div>' +
         '<div><h4>Разбор модели</h4>' + dxWhy + chainHtml + planWhy +
-        (findingsHtml ? '<div class="llm-judge-findings"><h4>Замечания LLM</h4>' + findingsHtml + '</div>' : "") +
+        (findingsHtml ? '<div class="llm-judge-findings"><h4>Замечания модели</h4>' + findingsHtml + '</div>' : "") +
         ((conclusions.stage_a_ru || conclusions.stage_b_ru) ?
           '<section class="llm-judge-slot"><h4>Итог этапов</h4>' +
-          (conclusions.stage_a_ru ? '<p><b>A:</b> ' + esc(conclusions.stage_a_ru) + '</p>' : "") +
-          (conclusions.stage_b_ru ? '<p><b>B:</b> ' + esc(conclusions.stage_b_ru) + '</p>' : "") +
+          (conclusions.stage_a_ru ? '<p><b>A (диагноз):</b> ' + esc(conclusions.stage_a_ru) + '</p>' : "") +
+          (conclusions.stage_b_ru ? '<p><b>B (план):</b> ' + esc(conclusions.stage_b_ru) + '</p>' : "") +
           '</section>' : "") +
         '</div></div>' +
-        '<p class="card-sub">Shadow · не меняет warehouse overall · ' + esc(footerMeta) + '</p></div>';
+        '<p class="card-sub">Черновик модели · не меняет итоговый балл витрины · ' + esc(footerMeta) + '</p></div>';
+    }
+    function verdictLabelRu(value) {
+      return ({ unreviewed: "не проверено", agree: "согласен", partial: "частично", disagree: "не согласен" })[value] || value || "-";
+    }
+    function renderProtocolSuggest(suggest) {
+      state.protocolSuggest = suggest || null;
+      if (!suggest || !suggest.available) {
+        return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ РБ к случаю</h3>' +
+          '<p class="empty">' + esc((suggest && suggest.reason) || "Подбор протоколов пока недоступен для этого случая.") +
+          '</p><p class="card-sub">Это не оценка оформления МО, а подсказка клинических протоколов.</p></div>';
+      }
+      var items = (suggest.items || []).map(function (item, index) {
+        var pid = item.protocol_id || ("idx-" + index);
+        var reasons = (item.reasons || []).slice(0, 2).map(function (reason) {
+          return '<li>' + esc(reason.text || reason.code || "") + '</li>';
+        }).join("");
+        var open = item.viewer_url || (item.source_path ? ("/proto?path=" + encodeURIComponent(item.source_path)) : "");
+        return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '">' +
+          '<div><b>' + (index + 1) + ". " + esc(item.title || "Протокол") + '</b></div>' +
+          '<div class="protocol-suggest-meta"><span class="status review">' +
+          esc(item.match_kind_label || item.match_kind || "клиника") + '</span><span>' +
+          esc(item.score != null ? (Math.round(Number(item.score)) + " баллов") : "") +
+          '</span>' + (open ? '<a class="button secondary compact" href="' + esc(open) + '" target="_blank" rel="noopener">Открыть КП</a>' : "") +
+          '</div>' + (reasons ? '<ul class="llm-judge-bullets">' + reasons + '</ul>' : "") +
+          '<div class="protocol-suggest-rates" role="radiogroup" aria-label="Релевантность протокола">' +
+          [['relevant','да'],['partial','частично'],['irrelevant','нет'],['unreviewed','не оценил']].map(function (pair) {
+            return '<label><input type="radio" name="proto-rate-' + esc(pid) + '" value="' + pair[0] + '"' +
+              (pair[0] === "unreviewed" ? " checked" : "") + '> ' + pair[1] + '</label>';
+          }).join("") + '</div></article>';
+      }).join("");
+      return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ РБ к случаю</h3>' +
+        '<p class="card-sub">Подбор по МКБ, жалобам и замечаниям. Оцените релевантность - это пойдёт в обучение подбора.</p>' +
+        items + '</div>';
     }
     function verdictSelect(id, current) {
       var options = [
@@ -1104,11 +1182,11 @@
         var summary = pack.decision_summary || {};
         return '<article class="review-pack-item"><div><b>v' + (packs.length - index) + '</b> · ' +
           esc(new Date(pack.created_at).toLocaleString("ru-RU")) + ' · ' + esc(pack.actor || "методист") +
-          (pack.training_use ? ' · <span class="status good">gold</span>' : "") +
+          (pack.training_use ? ' · <span class="status good">для обучения</span>' : "") +
           '</div><div class="card-sub">' +
-          esc(["Полнота: " + (summary.verdict_completeness || "-"),
-            "Диагноз: " + (summary.verdict_diagnosis || "-"),
-            "Рек.: " + (summary.verdict_recommendations || "-")].join(" · ")) +
+          esc(["Полнота: " + verdictLabelRu(summary.verdict_completeness),
+            "Диагноз: " + verdictLabelRu(summary.verdict_diagnosis),
+            "Рек.: " + verdictLabelRu(summary.verdict_recommendations)].join(" · ")) +
           '</div>' + (summary.summary_ru ? '<p>' + esc(summary.summary_ru) + '</p>' : "") +
           '<div class="row-actions"><button class="button secondary compact" type="button" data-load-pack="' +
           esc(pack.pack_id) + '">Открыть / исправить</button></div></article>';
@@ -1150,7 +1228,7 @@
         var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
         var linked = finding.linked_fields || [];
         var shadowBadge = (finding.is_shadow || finding.shadow) ?
-          '<span class="status review finding-shadow-badge">shadow</span> ' : "";
+          '<span class="status review finding-shadow-badge">черновик</span> ' : "";
         var linkHint = finding.link_hint_ru ?
           '<p class="finding-link-hint">' + esc(finding.link_hint_ru) +
           (linked.length ? ' · поля: ' + linked.map(function (field) {
@@ -1174,27 +1252,25 @@
       }).join("") : '<p>Критических замечаний не найдено.</p>') + '</div>';
       var decisionHtml =
         '<div class="methodist-decision-panel"><h3>Решение методиста</h3>' +
+        '<div class="decision-meta-row">' +
         '<label class="filter"><span>Статус</span><select class="control" id="drawer-status">' + statusOptions +
         '</select></label><label class="filter"><span>Ответственный</span><input class="control" id="drawer-assignee" maxlength="120" value="' +
         esc(crm.assignee || "") + '"></label><label class="filter"><span>Срок</span><input class="control" id="drawer-due" type="date" value="' +
         esc(crm.due_date || "") + '"></label><label class="filter"><span>Метки через запятую</span><input class="control" id="drawer-tags" maxlength="500" value="' +
-        esc((crm.tags || []).join(", ")) + '"></label>' +
-        '<p class="card-sub" style="margin-top:10px">Согласие с LLM по трём вопросам</p>' +
+        esc((crm.tags || []).join(", ")) + '"></label></div>' +
+        '<p class="card-sub" style="margin-top:10px">Согласие с разбором модели по трём вопросам</p>' +
         '<div class="verdict-row">' +
         '<label class="filter"><span>Полнота</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
         '<label class="filter"><span>Диагноз</span>' + verdictSelect("drawer-verdict-d", "unreviewed") + '</label>' +
         '<label class="filter"><span>Рекомендации</span>' + verdictSelect("drawer-verdict-r", "unreviewed") + '</label>' +
         '</div>' +
-        '<p class="card-sub">Корректировка % (shadow, необязательно)</p>' +
-        '<div class="corrected-row">' +
-        '<label class="filter"><span>Полнота %</span><input class="control" id="drawer-score-c" type="number" min="0" max="100" step="1" placeholder="-"></label>' +
-        '<label class="filter"><span>Диагноз %</span><input class="control" id="drawer-score-d" type="number" min="0" max="100" step="1" placeholder="-"></label>' +
-        '<label class="filter"><span>Рек. %</span><input class="control" id="drawer-score-r" type="number" min="0" max="100" step="1" placeholder="-"></label>' +
-        '</div>' +
-        '<label class="filter"><span>Развёрнутый разбор</span><textarea class="control" id="drawer-summary" rows="6" maxlength="4000" placeholder="Что подтвердили, что отклонили, что исправить врачу"></textarea></label>' +
-        '<label class="filter" style="margin-top:8px"><span><input type="checkbox" id="drawer-training-use" checked> Можно в gold / обучение</span></label>' +
+        '<label class="filter"><span>Развёрнутый разбор</span><textarea class="control" id="drawer-summary" rows="14" maxlength="12000" placeholder="1) С чем согласен / не согласен по полноте&#10;2) Диагноз: подтверждён / сомнителен - почему&#10;3) План: что добавить / убрать&#10;4) Что сказать врачу (1-2 предложения)"></textarea></label>' +
+        '<div class="protocol-suggest-rates" style="margin-top:8px" id="drawer-summary-chips">' +
+        [["Ложное срабатывание","Ложное срабатывание модели. "],["Не хватает осмотра","Не хватает данных осмотра. "],["Диагноз не обоснован","Диагноз не обоснован жалобами/осмотром. "],["План неполный","План обследования/лечения неполный. "]].map(function (pair) {
+          return '<button class="button secondary compact" type="button" data-summary-chip="' + esc(pair[1]) + '">' + esc(pair[0]) + '</button>';
+        }).join("") + '</div>' +
+        '<label class="filter" style="margin-top:8px"><span><input type="checkbox" id="drawer-training-use" checked> Можно использовать для обучения</span></label>' +
         '<p><button class="button" id="drawer-save" type="button">Сохранить пакет разбора</button> ' +
-        '<a class="button secondary" href="/doctor/review?source=mo&amp;case=' + encodeURIComponent(item.id) + '">Анализ документа</a> ' +
         '<button class="button secondary" type="button" data-open-pdf="/api/methodist/mo/cases/' + encodeURIComponent(item.id) + '/pdf" data-open-name="mo-' + encodeURIComponent(item.id) + '.pdf">МО в PDF</button></p></div>';
       $("drawer-body").innerHTML =
         '<div class="case-workspace-grid">' +
@@ -1202,7 +1278,7 @@
         renderClinicalDocument(sourceDocument, findings) +
         '<details class="detail-block mo-secondary-details"><summary>Подробнее: итоговая оценка, оси, рубрика МЗ</summary>' +
         '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
-        kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "shadow · «Как оценивать»") +
+        kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "черновик · «Как оценивать»") +
         kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
         kpi("Полнота проверки", score(coverageInfo.value), coverageInfo.estimated ? "оценка по доступным полям" : "доступность исходных данных") +
         kpi("Надёжность", score(confidenceInfo.value), confidenceInfo.estimated ? "оценка по доступным полям" : "устойчивость результата") + '</div>' +
@@ -1214,6 +1290,7 @@
         '</details></div>' +
         '<div class="case-workspace-decision">' +
         renderLlmActionJudge(llmJudge, sourceDocument, item) +
+        '<div id="protocol-suggest-host"><div class="skeleton"></div></div>' +
         findingsHtml +
         decisionHtml +
         renderReviewPackHistory(packs) +
@@ -1222,6 +1299,16 @@
         }).join("") : '<p class="empty">Событий пока нет.</p>') + '</div>' +
         '</div></div>';
       $("drawer-save").addEventListener("click", saveCaseDecision);
+      updateDrawerNav();
+      loadProtocolSuggestIntoCase(item.id);
+      $("drawer-body").querySelectorAll("[data-summary-chip]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var area = $("drawer-summary");
+          if (!area) return;
+          area.value = (area.value || "") + button.getAttribute("data-summary-chip");
+          area.focus();
+        });
+      });
       $("drawer-body").querySelectorAll("[data-focus-clinical]").forEach(function (button) {
         button.addEventListener("click", function () {
           var field = button.getAttribute("data-focus-clinical");
@@ -1258,10 +1345,6 @@
         if ($("drawer-verdict-c")) $("drawer-verdict-c").value = decision.verdict_completeness || "unreviewed";
         if ($("drawer-verdict-d")) $("drawer-verdict-d").value = decision.verdict_diagnosis || "unreviewed";
         if ($("drawer-verdict-r")) $("drawer-verdict-r").value = decision.verdict_recommendations || "unreviewed";
-        var scores = decision.corrected_scores || {};
-        if ($("drawer-score-c") && scores.completeness != null) $("drawer-score-c").value = scores.completeness;
-        if ($("drawer-score-d") && scores.diagnosis != null) $("drawer-score-d").value = scores.diagnosis;
-        if ($("drawer-score-r") && scores.recommendations != null) $("drawer-score-r").value = scores.recommendations;
         if ($("drawer-summary")) $("drawer-summary").value = decision.summary_ru || "";
         if ($("drawer-training-use")) $("drawer-training-use").checked = decision.training_use !== false;
         Object.keys(decision.finding_decisions || {}).forEach(function (code) {
@@ -1292,7 +1375,7 @@
         dynamics: "Динамика", regulatory: "Регламент"
       };
       var rows = (rubric.criteria || []).map(function (item) {
-        var label = item.score_label == null ? "n/a" : String(item.score_label);
+        var label = item.score_label == null ? "нет данных" : String(item.score_label);
         var tone = label === "1" ? "good" : (label === "0.5" ? "review" : (label === "0" ? "critical" : "muted"));
         var focus = state.rubricCriterion && state.rubricCriterion === item.id ? " rubric-row--focus" : "";
         return '<tr class="rubric-row rubric-row--' + tone + focus + '"' +
@@ -1310,9 +1393,9 @@
       return '<div class="detail-block"><h3>Рубрика МЗ («Как оценивать»)</h3>' + focusNote +
         '<p class="card-sub">Shadow · ' + esc(rubric.scorer_version || "mz-rubric") +
         ' · оценено ' + esc(rubric.scored_n != null ? rubric.scored_n : " - ") +
-        ', n/a ' + esc(rubric.na_n != null ? rubric.na_n : " - ") +
+        ', нет данных ' + esc(rubric.na_n != null ? rubric.na_n : " - ") +
         ' · итог ' + esc(score(rubric.rubric_pct)) +
-        (rubric.prior_available ? ' · prior ' + esc(rubric.prior_visit_date || "") : ' · prior n/a') +
+        (rubric.prior_available ? ' · предыдущий визит ' + esc(rubric.prior_visit_date || "") : ' · предыдущий визит: нет') +
         '</p>' +
         '<div class="table-wrap"><table class="rubric-table"><thead><tr>' +
         '<th>Оценка</th><th>Параметр</th><th>Пояснение</th></tr></thead><tbody>' +
@@ -1355,19 +1438,59 @@
       if (!response.ok) throw new Error("Не удалось сохранить изменения.");
       return response.json();
     }
+    function collectProtocolRatings() {
+      var ratings = [];
+      document.querySelectorAll(".protocol-suggest-item[data-protocol-id]").forEach(function (node) {
+        var pid = node.getAttribute("data-protocol-id");
+        var checked = node.querySelector('input[type="radio"]:checked');
+        var titleEl = node.querySelector("b");
+        ratings.push({
+          protocol_id: pid,
+          title: titleEl ? titleEl.textContent.replace(/^\d+\.\s*/, "") : "",
+          relevance: checked ? checked.value : "unreviewed"
+        });
+      });
+      return ratings;
+    }
+    async function loadProtocolSuggestIntoCase(caseId) {
+      var host = $("protocol-suggest-host");
+      if (!host || !caseId) return;
+      try {
+        var q = query();
+        q.set("month", q.get("month") || minskDateKey(0).slice(0, 7));
+        var response = await request(
+          "/cases/" + encodeURIComponent(caseId) + "/protocol-suggest?" + q.toString()
+        );
+        if (!response.ok) throw new Error("suggest_failed");
+        host.innerHTML = renderProtocolSuggest(await response.json());
+      } catch (e) {
+        host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
+      }
+    }
+    function updateDrawerNav() {
+      var ids = state.caseNavIds || [];
+      var idx = ids.indexOf(state.openCaseId);
+      var prev = $("drawer-prev");
+      var next = $("drawer-next");
+      if (!prev || !next) return;
+      if (idx < 0 || ids.length < 2) {
+        prev.hidden = true; next.hidden = true; return;
+      }
+      prev.hidden = idx <= 0;
+      next.hidden = idx >= ids.length - 1;
+      prev.disabled = idx <= 0;
+      next.disabled = idx >= ids.length - 1;
+    }
     async function saveCaseDecision() {
       try {
         var findingDecisions = {};
         document.querySelectorAll("[data-finding-code]").forEach(function (select) {
           findingDecisions[select.getAttribute("data-finding-code")] = select.value;
         });
-        var corrected = {};
-        [["completeness", "drawer-score-c"], ["diagnosis", "drawer-score-d"], ["recommendations", "drawer-score-r"]].forEach(function (pair) {
-          var el = $(pair[1]);
-          if (!el || el.value === "") return;
-          var n = Number(el.value);
-          if (!isNaN(n) && n >= 0 && n <= 100) corrected[pair[0]] = Math.round(n);
-        });
+        var summaryText = ($("drawer-summary") && $("drawer-summary").value) || "";
+        if (summaryText.trim().length && summaryText.trim().length < 80) {
+          if (!window.confirm("Развёрнутый разбор короткий (меньше 80 символов). Сохранить всё равно?")) return;
+        }
         var decision = {
           status: $("drawer-status").value,
           assignee: $("drawer-assignee").value.trim(),
@@ -1377,9 +1500,10 @@
           verdict_completeness: ($("drawer-verdict-c") && $("drawer-verdict-c").value) || "unreviewed",
           verdict_diagnosis: ($("drawer-verdict-d") && $("drawer-verdict-d").value) || "unreviewed",
           verdict_recommendations: ($("drawer-verdict-r") && $("drawer-verdict-r").value) || "unreviewed",
-          corrected_scores: corrected,
-          summary_ru: ($("drawer-summary") && $("drawer-summary").value) || "",
-          training_use: !($("drawer-training-use") && !$("drawer-training-use").checked)
+          summary_ru: summaryText,
+          training_use: !($("drawer-training-use") && !$("drawer-training-use").checked),
+          protocol_ratings: collectProtocolRatings(),
+          protocol_suggest: state.protocolSuggest || null
         };
         var body = { decision: decision };
         if (state.supersedesPackId) body.supersedes_pack_id = state.supersedesPackId;
@@ -2057,7 +2181,7 @@
         button.addEventListener("click", function () {
           var day = button.getAttribute("data-report-date");
           if (!day) return;
-          applyDrill({ label: "Отчёт " + day, period: "custom", dateFrom: day, dateTo: day, page: "yesterday" });
+          applyDrill({ label: "Таблица за " + day, period: "custom", dateFrom: day, dateTo: day, page: "documents" });
         });
       });
     }
@@ -2608,6 +2732,16 @@
         }
       });
       $("drawer-close").addEventListener("click", closeDrawer); $("drawer-backdrop").addEventListener("click", closeDrawer);
+      if ($("drawer-prev")) $("drawer-prev").addEventListener("click", function () {
+        var ids = state.caseNavIds || [];
+        var idx = ids.indexOf(state.openCaseId);
+        if (idx > 0) openCase(ids[idx - 1], state.trigger);
+      });
+      if ($("drawer-next")) $("drawer-next").addEventListener("click", function () {
+        var ids = state.caseNavIds || [];
+        var idx = ids.indexOf(state.openCaseId);
+        if (idx >= 0 && idx < ids.length - 1) openCase(ids[idx + 1], state.trigger);
+      });
       document.addEventListener("keydown", function (event) {
         if ((event.metaKey || event.ctrlKey) && event.key.toLowerCase() === "k") {
           event.preventDefault();
