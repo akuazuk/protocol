@@ -1,12 +1,13 @@
 # МО: workspace «Разбор случая» + обучение + протоколы МЗ (v2)
 
 Дата: 2026-08-05  
-Статус: active (план готов, **ждём команду «приступать»**)  
+Статус: active (W0-W3 в проде: PR #20, `2026-08-05-r19-mo-case-review-workspace`)  
 Преемник: заменяет `2026-08-05-mo-case-review-workspace-v1.md`  
 Связанные: `2026-08-05-mo-methodist-review-pack-v1.md` (хранение пакетов - уже в проде),
 `2026-08-05-mo-case-protocol-suggest-v1.md` (движок подбора КП),
 `2026-08-05-mo-llm-action-queue-judge-v1.md`,
 `2026-08-05-mo-expert-reviewer-portal-v1.md`.
+Handoff: `docs/handoff/2026-08-06-next-agent-mo-review.md`.
 
 ---
 
@@ -327,11 +328,11 @@ Match badges: Клиника / Только код / Дифдиагноз / Сп
 - [x] Endpoint `GET .../cases/{id}/protocol-suggest`.
 - [x] UI-блок + radio relevance + запись в pack.
 - [x] Feature flag `CASE_PROTOCOL_SUGGEST` (default on).
-- [ ] Smoke на проде после deploy (утро).
+- [x] Smoke на проде: `/api/version` = r19; endpoint protocol-suggest отвечает 403 без токена (жив).
 
 ### Фаза W3 - ship
 
-- [x] Тесты API/UI; BUILD_VERSION r19; PR + merge + deploy.
+- [x] Тесты API/UI; BUILD_VERSION r19; PR #20 squash-merge; Render release live (`c6bc7046`).
 
 ---
 
@@ -369,7 +370,9 @@ Match badges: Клиника / Только код / Дифдиагноз / Сп
 
 ---
 
-## 13. Ожидание
+## 13. Статус после ship (2026-08-05 вечер)
 
-План v2 готов к согласованию. **Код не меняем**, пока не будет команды «приступать»
-или правок к этому документу.
+Задеплоено. Осталось из плана: метрики после первого gold export (нужны packs с
+`training_use`), улучшения suggest (audience/DDx) - в связанном плане protocol-suggest.
+LLM August night-queue продолжает крутиться на Render (не убивать без нужды;
+после deploy - перезапуск supervisor).
