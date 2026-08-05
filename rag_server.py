@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-05-r4-mo-concordance-e2"
+BUILD_VERSION = "2026-08-05-r5-mo-concordance-e3"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11502,6 +11502,23 @@ def api_methodist_mo_case_detail(
             "source_state": document.get("source_state") or "unknown",
             "source_format": document.get("source_format"),
         }
+        # E3: live shadow concordance в case detail (даже до re-pipeline дня).
+        try:
+            from clinical_knowledge.mo_concordance_findings import (
+                clinical_case_from_document,
+                merge_concordance_into_findings,
+            )
+
+            live_case = clinical_case_from_document(
+                result.get("document"),
+                result.get("record") if isinstance(result.get("record"), dict) else {},
+            )
+            result["findings"] = merge_concordance_into_findings(
+                result.get("findings") if isinstance(result.get("findings"), list) else [],
+                live_case,
+            )
+        except Exception:  # noqa: BLE001
+            pass
     try:
         from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
         from clinical_knowledge.mo_rubric_mz import evaluate_mo_rubric_mz

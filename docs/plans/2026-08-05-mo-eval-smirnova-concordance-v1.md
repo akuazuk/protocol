@@ -112,9 +112,10 @@
 
 ### Этап E3 - UI / очередь (1-2 дня)
 
-- [ ] Русские title в dim_finding / finding labels.
-- [ ] Попадание P1 в очередь «Вчера» / action queue как сейчас для P0/P1.
-- [ ] В case detail: явная связка «находка ↔ пробел в диагнозе».
+- [x] Русские title в dim_finding / `mo_finding_labels_ru.py`.
+- [x] Попадание P1 shadow в очередь «Вчера» / action queue (`fact_mo_finding.is_shadow`, без смены primary overall).
+- [x] В case detail: связка «находка ↔ пробел в диагнозе» (`linked_fields` + highlight в UI).
+- [x] L1 batch сохраняет `shadow_findings` в `case.deep`; live merge в case detail API.
 
 ### Этап E4 - рубрика МЗ и suggest (параллельно, не блокер E1)
 
@@ -147,9 +148,12 @@
 ## 7. Владение файлами
 
 - `clinical_knowledge/mo_case_signals.py` (новый) - E1/E2 done
-- `clinical_knowledge/mo_concordance_findings.py` (новый) - E1/E2 done
+- `clinical_knowledge/mo_concordance_findings.py` (новый) - E1/E2/E3 done
+- `clinical_knowledge/mo_finding_labels_ru.py` - E3 labels
+- `clinical_knowledge/mo_daily.py` / `mo_backend.py` - E3 warehouse + queue
+- `frontend/web/shared/mo-app.js` / `mo-ui.css` - E3 case detail link
 - `clinical_knowledge/kz_deep_eval.py` - hook `shadow_findings` - E1 done
-- `tests/test_mo_concordance_smirnova.py` - E1/E2 done
+- `tests/test_mo_concordance_*.py` - E1/E2/E3 done
 - `scripts/calibrate_mo_concordance.py` - E2 done
 - `eval/mo_concordance/` - E0/E2 done
 - `docs/reports/2026-08-05-mo-concordance-calibration-e2.md` - E2 done

@@ -26,6 +26,34 @@ def concordance_primary_enabled() -> bool:
     return raw in {"1", "true", "yes", "on"}
 
 
+_LINKED: dict[str, tuple[list[str], str]] = {
+    "finding_not_in_diagnosis": (
+        ["objective_status", "exam_data", "clinical_diagnosis", "mkb_code_main"],
+        "Сверьте находку в статусе/обследованиях с формулировкой диагноза и МКБ",
+    ),
+    "anamnesis_thin_for_duration": (
+        ["complaints", "anamnesis_doctor", "anamnesis_auto"],
+        "Сверьте длительность жалобы с полнотой анамнеза",
+    ),
+    "underworkup_chronic_red_flag": (
+        ["complaints", "objective_status", "exam_recommendations", "treatment_recommendations"],
+        "Сверьте red-flag презентацию с планом обследования и контролем",
+    ),
+    "plan_laterality_mismatch": (
+        ["complaints", "objective_status", "treatment_recommendations"],
+        "Сверьте сторону жалобы/статуса с латеральностью плана",
+    ),
+    "icd_weakly_supported": (
+        ["clinical_diagnosis", "objective_status", "complaints"],
+        "Сверьте код МКБ с клинической картиной",
+    ),
+    "pediatric_limp_ddx_not_addressed": (
+        ["complaints", "clinical_diagnosis", "exam_recommendations"],
+        "Сверьте длительную хромоту у ребёнка с DDx и планом исключения",
+    ),
+}
+
+
 def _finding(
     code: str,
     axis: str,
@@ -35,6 +63,7 @@ def _finding(
     detail: str = "",
     evidence: str = "",
 ) -> dict[str, Any]:
+    linked, hint = _LINKED.get(code, ([], ""))
     return {
         "code": code,
         "axis": axis,
@@ -47,7 +76,67 @@ def _finding(
         "needs_human": False,
         "shadow": True,
         "engine": ENGINE,
+        "linked_fields": list(linked),
+        "link_hint_ru": hint,
     }
+
+
+def merge_concordance_into_findings(
+    findings: list[dict[str, Any]] | None,
+    case: dict[str, Any] | None,
+) -> list[dict[str, Any]]:
+    """Добавить shadow concordance в список findings case detail (без дублей по code)."""
+    out = [dict(item) for item in (findings or []) if isinstance(item, dict)]
+    if not concordance_findings_enabled() or not case:
+        return out
+    existing = {str(item.get("code") or item.get("finding_code") or "") for item in out}
+    try:
+        shadow = evaluate_mo_concordance(case)
+    except Exception:  # noqa: BLE001
+        return out
+    for item in shadow:
+        code = str(item.get("code") or "")
+        if not code or code in existing:
+            continue
+        out.append({**item, "is_shadow": True})
+        existing.add(code)
+    # P0/P1 сначала, затем shadow concordance рядом с primary
+    order = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+    out.sort(key=lambda f: (order.get(str(f.get("severity") or ""), 9), str(f.get("code") or "")))
+    return out
+
+
+def clinical_case_from_document(document: dict[str, Any] | None, record: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Собрать case dict из payload документа + record для live concordance."""
+    clinical = {}
+    if isinstance(document, dict):
+        clinical = document.get("clinical") if isinstance(document.get("clinical"), dict) else {}
+    record = record if isinstance(record, dict) else {}
+    case: dict[str, Any] = {}
+    for key in (
+        "complaints",
+        "anamnesis_doctor",
+        "anamnesis_auto",
+        "objective_status",
+        "exam_data",
+        "clinical_diagnosis",
+        "diagnosis_main_text",
+        "diagnosis_list",
+        "mkb_code_main",
+        "treatment_recommendations",
+        "exam_recommendations",
+        "patient_age_years",
+    ):
+        val = clinical.get(key)
+        if val in (None, "") and key in record:
+            val = record.get(key)
+        if val not in (None, ""):
+            case[key] = val
+    if "mkb_code_main" not in case and record.get("diagnosis_code"):
+        case["mkb_code_main"] = record.get("diagnosis_code")
+    if "patient_age_years" not in case and record.get("patient_age_years") is not None:
+        case["patient_age_years"] = record.get("patient_age_years")
+    return case
 
 
 def evaluate_mo_concordance(case: dict[str, Any]) -> list[dict[str, Any]]:
