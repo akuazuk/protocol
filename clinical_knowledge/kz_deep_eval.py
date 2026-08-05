@@ -524,6 +524,22 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
     except Exception:  # noqa: BLE001
         pass
 
+    shadow_findings: list[dict] = []
+    try:
+        from .mo_concordance_findings import (
+            concordance_findings_enabled,
+            concordance_primary_enabled,
+            evaluate_mo_concordance,
+        )
+
+        if concordance_findings_enabled():
+            shadow_findings = evaluate_mo_concordance(case)
+            if concordance_primary_enabled() and shadow_findings:
+                # Только при явном флаге: влияет на overall / risk-gate.
+                findings.extend({**item, "shadow": False} for item in shadow_findings)
+    except Exception:  # noqa: BLE001 - мягкая деградация
+        shadow_findings = []
+
     # overall: среднее доступных осей (объективность - без штрафа за отсутствие протокола)
     present_axes = [v for k, v in axes.items() if v is not None]
     overall = round(sum(present_axes) / len(present_axes), 1) if present_axes else None
@@ -537,6 +553,7 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
         "overall_pct": overall,
         "overall_status": status,
         "findings": findings,
+        "shadow_findings": shadow_findings,
         "n_findings": sum(1 for f in findings if not f["passed"]),
         "n_by_severity": n_by_sev,
         "has_potential_harm": n_by_sev["P0"] > 0,
