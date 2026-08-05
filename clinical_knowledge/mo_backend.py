@@ -806,12 +806,23 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         "overall": "overall_pct",
         "priority": "p0",
         "updated_at": "updated_at",
+        "doctor": "doctor_fio",
+        "specialty": "specialty",
+        "filial": "filial",
+        "status": "status",
+        "visit_id": "visit_id",
+        "patient_id": "patient_id",
     }
     sort_field = sort_map.get(str(params.get("sort_by") or ""), "date")
     reverse = str(params.get("sort_dir") or "desc").lower() == "desc"
     filtered.sort(key=lambda r: (r.get(sort_field) is None, r.get(sort_field) or ""), reverse=reverse)
     page = max(1, int(params.get("page") or 1))
-    page_size = max(1, min(200, int(params.get("page_size") or 50)))
+    # Дневной срез: по умолчанию больше строк, чтобы таблица дня была «полной».
+    default_page = 100 if (
+        str(params.get("date_from") or "")
+        and str(params.get("date_from") or "") == str(params.get("date_to") or "")
+    ) else 50
+    page_size = max(1, min(500, int(params.get("page_size") or default_page)))
     start = (page - 1) * page_size
     rows = []
     for rec in filtered[start : start + page_size]:

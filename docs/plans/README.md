@@ -18,6 +18,8 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-05-mo-case-review-workspace-v2.md](2026-08-05-mo-case-review-workspace-v2.md) | Разбор случая: UI + хранение gold + протоколы МЗ + обучение точности | active |
+| [2026-08-05-mo-case-review-workspace-v1.md](2026-08-05-mo-case-review-workspace-v1.md) | Разбор случая: sticky МО + scroll разбора, форма решения, RU, таблица дня | archived (преемник: case-review-workspace-v2) |
 | [2026-08-05-mo-llm-action-queue-judge-v1.md](2026-08-05-mo-llm-action-queue-judge-v1.md) | LLM-судья A/B только для action-очереди МО (диагноз, затем план) | active |
 | [2026-08-05-mo-methodist-review-pack-v1.md](2026-08-05-mo-methodist-review-pack-v1.md) | Отчёты: ID визита/пациента + fullscreen-разбор + пакет решения методиста для обучения | active |
 | [2026-08-05-mo-expert-reviewer-portal-v1.md](2026-08-05-mo-expert-reviewer-portal-v1.md) | Кабинет врача-эксперта (логин/пароль), отчёты со вчера, gold из review pack | active |

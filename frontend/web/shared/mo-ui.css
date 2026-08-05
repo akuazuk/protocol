@@ -607,24 +607,79 @@ tbody tr:hover td, tbody tr:focus-within td { background: var(--accent-soft); }
 .drawer.case-workspace {
   left: 0; width: 100%; max-width: none; box-shadow: none;
 }
+.drawer.case-workspace .drawer-body {
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  min-height: 0;
+  padding: 0;
+}
+.drawer.case-workspace .drawer-head {
+  flex: 0 0 auto;
+}
 .case-workspace-grid {
-  display: grid; grid-template-columns: minmax(280px, 1.05fr) minmax(320px, 1fr);
-  gap: 16px; align-items: start;
+  display: grid;
+  grid-template-columns: minmax(300px, 1.05fr) minmax(340px, 1fr);
+  gap: 0;
+  flex: 1;
+  min-height: 0;
+  height: 100%;
+  align-items: stretch;
 }
 .case-workspace-clinical,
 .case-workspace-decision {
   min-width: 0;
+  min-height: 0;
+  overflow: auto;
+  padding: 16px 18px 28px;
+  -webkit-overflow-scrolling: touch;
+}
+.case-workspace-clinical {
+  border-right: 1px solid var(--line);
+  background: var(--surface-solid);
+}
+.case-workspace-decision {
+  background: color-mix(in srgb, var(--surface-2) 55%, var(--surface-solid));
 }
 .case-workspace-decision .methodist-decision-panel {
-  position: sticky; top: 0;
-  padding: 12px; border: 1px solid var(--line); border-radius: 12px;
+  position: static;
+  padding: 14px 14px 16px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
   background: var(--surface-2);
 }
 .methodist-decision-panel .verdict-row {
   display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 10px 0;
 }
-.methodist-decision-panel .corrected-row {
-  display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin: 8px 0 12px;
+.methodist-decision-panel .decision-meta-row {
+  display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 12px;
+}
+.methodist-decision-panel #drawer-summary {
+  min-height: 220px;
+  resize: vertical;
+  font-size: 14px;
+  line-height: 1.45;
+}
+.protocol-suggest-block { margin-top: 0; }
+.protocol-suggest-item {
+  display: grid; gap: 6px; margin: 0 0 10px; padding: 10px 12px;
+  border: 1px solid var(--line-soft); border-radius: 10px; background: var(--surface-solid);
+}
+.protocol-suggest-item .protocol-suggest-meta {
+  display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px;
+}
+.protocol-suggest-rates {
+  display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; margin-top: 4px;
+}
+.protocol-suggest-rates label { display: inline-flex; gap: 4px; align-items: center; cursor: pointer; }
+.drawer-nav-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; }
+.sortable-th { cursor: pointer; user-select: none; white-space: nowrap; }
+.sortable-th[aria-sort="ascending"]::after { content: " ↑"; }
+.sortable-th[aria-sort="descending"]::after { content: " ↓"; }
+.day-table-banner {
+  margin: 0 0 12px; padding: 10px 12px; border-radius: 10px;
+  border: 1px solid var(--line); background: var(--surface-2); font-size: 13px;
 }
 .review-pack-history { margin-top: 12px; }
 .review-pack-item {
@@ -841,10 +896,13 @@ kbd {
   .daily-split, .daily-split > div { grid-template-columns: 1fr; }
   .drawer-grid { grid-template-columns: 1fr; }
   .llm-judge-kpis, .llm-judge-compare, .llm-judge-split { grid-template-columns: 1fr; }
-  .case-workspace-grid { grid-template-columns: 1fr; }
+  .drawer.case-workspace .drawer-body { overflow: auto; }
+  .case-workspace-grid { grid-template-columns: 1fr; height: auto; }
+  .case-workspace-clinical,
+  .case-workspace-decision { overflow: visible; border-right: 0; }
   .case-workspace-decision .methodist-decision-panel { position: static; }
   .methodist-decision-panel .verdict-row,
-  .methodist-decision-panel .corrected-row { grid-template-columns: 1fr; }
+  .methodist-decision-panel .decision-meta-row { grid-template-columns: 1fr; }
   .control, .filter-pop summary { max-width: none; }
 }
 @media (max-width: 390px) {

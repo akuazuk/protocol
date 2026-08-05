@@ -22,6 +22,7 @@ from .mo_case_document import (
 from .mo_llm_action_judge import load_llm_action_judge_for_case
 
 VERDICT_TRIPLE = frozenset({"agree", "partial", "disagree", "unreviewed"})
+PROTOCOL_RELEVANCE = frozenset({"relevant", "partial", "irrelevant", "unreviewed"})
 
 REVIEW_PACK_SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS crm_review_pack (
@@ -239,12 +240,15 @@ def _normalize_decision(raw: dict[str, Any] | None) -> dict[str, Any]:
         "verdict_diagnosis": "unreviewed",
         "verdict_recommendations": "unreviewed",
         "corrected_scores": {},
-        "summary_ru": str(data.get("summary_ru") or data.get("comment") or "").strip()[:4000],
+        "summary_ru": str(data.get("summary_ru") or data.get("comment") or "").strip()[:12000],
         "training_use": bool(data.get("training_use", True)),
+        "protocol_ratings": [],
+        "protocol_suggest": None,
     }
     for key in ("verdict_completeness", "verdict_diagnosis", "verdict_recommendations"):
         value = str(data.get(key) or "unreviewed").strip().lower()
         out[key] = value if value in VERDICT_TRIPLE else "unreviewed"
+    # Поля % в UI сняты; старые клиенты всё ещё могут прислать scores.
     corrected = data.get("corrected_scores") if isinstance(data.get("corrected_scores"), dict) else {}
     for axis in ("completeness", "diagnosis", "recommendations"):
         try:
@@ -258,6 +262,33 @@ def _normalize_decision(raw: dict[str, Any] | None) -> dict[str, Any]:
         d = str(decision).strip()
         if d in {"confirmed", "false_positive", "needs_more_data", "unreviewed"}:
             out["finding_decisions"][str(code)[:120]] = d
+    ratings_raw = data.get("protocol_ratings")
+    if isinstance(ratings_raw, list):
+        for item in ratings_raw[:20]:
+            if not isinstance(item, dict):
+                continue
+            pid = str(item.get("protocol_id") or "").strip()[:160]
+            if not pid:
+                continue
+            relevance = str(item.get("relevance") or "unreviewed").strip().lower()
+            if relevance not in PROTOCOL_RELEVANCE:
+                relevance = "unreviewed"
+            out["protocol_ratings"].append(
+                {
+                    "protocol_id": pid,
+                    "relevance": relevance,
+                    "rank_ok": bool(item.get("rank_ok")) if item.get("rank_ok") is not None else None,
+                    "note_ru": str(item.get("note_ru") or "").strip()[:500],
+                    "title": str(item.get("title") or "").strip()[:240],
+                }
+            )
+    suggest = data.get("protocol_suggest")
+    if isinstance(suggest, dict) and suggest.get("items") is not None:
+        out["protocol_suggest"] = {
+            "engine": str(suggest.get("engine") or "case_protocol_suggest_v1")[:80],
+            "generated_at": str(suggest.get("generated_at") or "")[:40],
+            "items": list(suggest.get("items") or [])[:8],
+        }
     return out
 
 
@@ -342,6 +373,20 @@ def save_review_pack(
     except Exception:  # noqa: BLE001
         clinical = {}
     judge = load_llm_action_judge_for_case(cid, visit_date=visit_date)
+    protocol_suggest = decision_norm.pop("protocol_suggest", None)
+    if not isinstance(protocol_suggest, dict):
+        try:
+            from .case_protocol_suggest import suggest_protocols_for_case
+
+            protocol_suggest = suggest_protocols_for_case(
+                clinical=clinical,
+                record=record,
+                findings=detail.get("findings") or [],
+                llm_judge=judge if isinstance(judge, dict) else {},
+                limit=3,
+            )
+        except Exception:  # noqa: BLE001
+            protocol_suggest = {"ok": False, "items": [], "available": False}
     system_snapshot = {
         "overall_pct": detail.get("deep_overall_pct")
         if detail.get("deep_overall_pct") is not None
@@ -351,6 +396,7 @@ def save_review_pack(
         "axes": detail.get("axes") or {},
         "rubric_mz": detail.get("rubric_mz") or {},
         "llm_action_judge": judge,
+        "protocol_suggest": protocol_suggest,
         "captured_at": datetime.now(timezone.utc).isoformat(),
     }
     pack_id = str(uuid.uuid4())

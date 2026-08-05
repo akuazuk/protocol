@@ -72,6 +72,18 @@ def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     assert 'data-quick-period=' in SOURCE
 
 
+def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
+    assert "case-workspace-clinical" in JS
+    assert "case-workspace-decision" in JS
+    assert 'id="drawer-summary"' in JS
+    assert "maxlength=\"12000\"" in JS or "maxlength=\\\"12000\\\"" in JS or "maxlength=\"12000\"" in SOURCE
+    assert "drawer-score-c" not in JS
+    assert "Полнота %" not in JS
+    assert "protocol-suggest" in JS
+    assert "data-sort-key" in HTML
+    assert 'id="drawer-prev"' in HTML
+
+
 def test_mo_search_and_filters_have_explicit_apply_actions() -> None:
     assert 'id="case-search-form"' in HTML
     assert 'id="case-search-submit"' in HTML
