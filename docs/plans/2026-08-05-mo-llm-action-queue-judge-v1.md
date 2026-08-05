@@ -15,10 +15,24 @@
 Нужен **узкий** Gemini-прогон не на все ~500 МО дня, а только на
 **action-очередь «Вчера»** (обычно ≤20 кейсов: P0/P1 + shadow).
 
-Два этапа на кейс:
+### Главный вопрос продукта (приоритет)
 
-1. **A - диагноз:** возраст, жалобы, анамнез, обследования ↔ правильность диагноза.
-2. **B - план:** рекомендации по обследованию и лечению ↔ адекватность плану на базе A.
+Методисту на карточке нужно ответить на **три вещи**, ничего лишнего:
+
+1. **Полнота заполнения МО** - все ли нужные блоки есть и достаточно ли текста
+   (жалобы, анамнез, статус, обследования, диагноз, рекомендации).
+2. **Правильность диагноза** - следует ли Dx (+МКБ) из возраста, жалоб, анамнеза,
+   статуса и обследований.
+3. **Правильность рекомендаций** - адекватны ли назначения по **обследованию** и
+   **лечению** (и follow-up) этому диагнозу и клинике.
+
+Всё остальное (drug-interaction детали, рубрика МЗ, suggest КП) - вторично и не
+должно заслонять эти три ответа в UI.
+
+Этапы модели:
+
+1. **A - полнота + диагноз:** сначала completeness блоков, затем diagnosis fit.
+2. **B - рекомендации:** exam + treatment (+ follow-up) на базе итога A.
 
 Результат - shadow JSON для методиста. **Не** меняет primary `overall_pct` / warehouse
 score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (в v1 выключен).
@@ -30,6 +44,7 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
 | Метрика | Было | Цель v1 |
 |--|--|--|
 | Охват batch | нет | только `action_cases.items` дня |
+| UI отвечает на 3 вопроса (полнота / Dx / рекомендации) | нет | да, без лишних блоков |
 | Время на очередь ~10 кейсов (3.6-flash, 2 этапа) | н/д | < 15 мин wall |
 | Стоимость на очередь ~10 кейсов | н/д | < $1 на 3.6-flash |
 | Валидный JSON A и B | н/д | 100% parse после retry×1 |
@@ -48,7 +63,11 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
 - цитаты `evidence` - короткие фрагменты из КЗ (≤200 символов), не выдумывать;
 - если данных нет: `unknown`, не фантазировать возраст/обследования.
 
-### 3.1 Этап A - диагноз (`stage: "A"`)
+### 3.1 Этап A - полнота + диагноз (`stage: "A"`)
+
+Сначала `completeness`, потом `diagnosis_assessment`. Если полнота критически
+низкая (нет жалоб/статуса/диагноза), диагноз помечается `unknown`/`poor` с явным
+`blocked_by_incomplete: true` - не «угадывать» Dx из пустоты.
 
 ```json
 {
@@ -63,16 +82,25 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
     "audience": "pediatric",
     "age_source": "visit_meta|text|unknown"
   },
-  "inputs_used": {
-    "complaints": true,
-    "anamnesis": true,
-    "exams": false,
-    "objective_status": true,
-    "diagnosis": true
+  "completeness": {
+    "score_pct": 70,
+    "verdict": "review",
+    "blocks": {
+      "complaints": {"present": true, "adequate": true, "note": ""},
+      "anamnesis": {"present": true, "adequate": false, "note": "нет динамики/длительности"},
+      "objective_status": {"present": true, "adequate": true, "note": ""},
+      "exam_data": {"present": false, "adequate": false, "note": "пусто"},
+      "diagnosis": {"present": true, "adequate": true, "note": ""},
+      "exam_recommendations": {"present": true, "adequate": true, "note": ""},
+      "treatment_recommendations": {"present": true, "adequate": true, "note": ""}
+    },
+    "missing_blocks": ["exam_data"],
+    "summary_ru": "Клиника заполнена; блок данных обследований пуст."
   },
   "diagnosis_assessment": {
     "score_pct": 35,
     "verdict": "poor",
+    "blocked_by_incomplete": false,
     "summary_ru": "Диагноз M60 не закрывает отёк колена и хроническую хромоту.",
     "supported_by": ["болезненность прямой мышцы бедра"],
     "not_supported_by": ["отёк правого колена", "хромота 3 месяца"],
@@ -82,20 +110,6 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
       "fit": "weak|adequate|strong|unknown"
     }
   },
-  "chain": [
-    {
-      "from": "complaints",
-      "to": "diagnosis",
-      "outcome": "gap",
-      "note": "Хромота/отёк сустава не отражены в Dx"
-    },
-    {
-      "from": "exams",
-      "to": "diagnosis",
-      "outcome": "unknown",
-      "note": "Обследований в КЗ нет"
-    }
-  ],
   "findings": [
     {
       "code": "finding_not_in_diagnosis",
@@ -104,14 +118,13 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
       "evidence": "отёк правого коленного сустава"
     }
   ],
-  "conclusion_ru": "Диагноз слабо согласован с клиникой; нужен DDx суставной патологии.",
+  "conclusion_ru": "Полнота средняя; диагноз слабо согласован с клиникой.",
   "confidence": 0.78,
   "needs_human": true
 }
 ```
 
-Допустимые `verdict`: `good` | `acceptable` | `review` | `poor` | `critical`.  
-Допустимые `outcome`: `ok` | `gap` | `contradiction` | `unknown`.
+Допустимые `verdict`: `good` | `acceptable` | `review` | `poor` | `critical`.
 
 ### 3.2 Этап B - план (`stage: "B"`)
 
@@ -238,18 +251,35 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 
 ---
 
-## 5. Шаги реализации
+## 5. UI в МО Аналитика (фокус на 3 ответах)
+
+В case detail - три крупных KPI + сравнение с текстом МО:
+
+```text
+Полнота 72% (review)   |   Диагноз 35% (poor)   |   Рекомендации 25% (poor)
+ФИО врача · специальность · дата
+────────────────────────────────────────────
+Реальное МО (слоты)     ↔     Почему такая оценка (краткое conclusion + evidence)
+```
+
+Не тащить в первый экран оси deep, drug-interaction списки, suggest КП.
+Их можно оставить ниже/в «подробнее».
+
+## 6. Шаги реализации
 
 - [x] Зафиксировать JSON-контракт A/B и batch-команду в этом плане.
+- [x] Зафиксировать продуктный фокус: полнота / диагноз / рекомендации.
 - [x] Чистый модуль validate/prompt: `clinical_knowledge/mo_llm_action_judge.py`.
 - [x] CLI `scripts/run_mo_action_queue_llm_judge.py` (dry-run + execute).
 - [x] Unit-тесты на parse/validate.
+- [ ] Обновить validate/prompt под блок `completeness` в этапе A.
+- [ ] Починить ФИО/специальность в action queue.
 - [ ] Пилотный прогон на очереди одного дня (Render), отчёт методисту.
-- [ ] UI: блок «LLM-судья A/B» в case detail (только чтение JSONL/API) - отдельная итерация.
+- [ ] UI: 3 KPI + сравнение с текстом МО в case detail.
 
 ---
 
-## 6. Риски
+## 7. Риски
 
 | Риск | Митигация |
 |--|--|
