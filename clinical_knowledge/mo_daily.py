@@ -1320,6 +1320,34 @@ def doctor_key_for(doctor_fio: Any) -> str:
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20] if normalized else ""
 
 
+_VERSIONISH_ORG = re.compile(
+    r"^(?:v?\d+(?:\.\d+){1,3}(?:-?[a-z0-9._]+)?|deep-v\d|not-applicable)",
+    re.I,
+)
+
+
+def sanitize_mo_org_label(
+    value: Any,
+    *,
+    scorer_version: str = "",
+    schema_version: str = "",
+) -> str:
+    """Убрать из specialty/filial мусор вроде scorer_version (`v4.0.0`) / schema (`4.0`)."""
+    text = str(value or "").strip()
+    if not text or text in {"-", "—", "–", "Не указано", "не указано"}:
+        return ""
+    if scorer_version and text == str(scorer_version).strip():
+        return ""
+    if schema_version and text == str(schema_version).strip():
+        return ""
+    if _VERSIONISH_ORG.match(text):
+        return ""
+    low = text.lower()
+    if "scorer" in low or low.startswith("deep-"):
+        return ""
+    return text
+
+
 _TEMPLATE_TEXT_FIELDS = (
     "complaints",
     "anamnesis_doctor",
@@ -1461,10 +1489,8 @@ def upsert_warehouse(
                 continue
             seen_ids.append(mis_id)
             case = case_by_id.get(mis_id) or case_by_visit.get(str(raw.get("visit_id") or "")) or {}
-            doctor_fio = str(raw.get("doctor_fio") or "")
+            doctor_fio = str(raw.get("doctor_fio") or "").strip()
             doctor_key = doctor_key_for(doctor_fio)
-            specialty = str(raw.get("doctor_specialization") or "")
-            filial = str(raw.get("filial") or "")
             visit_date = str(raw.get("visit_date") or "")[:10] or day_key
             score = case_overall_pct(case)
             evaluation_v4 = (
@@ -1484,6 +1510,16 @@ def upsert_warehouse(
             if not scorer_version:
                 scorer_version = "not-applicable-v4"
             score_schema_version = str(evaluation_v4.get("schema_version") or "")
+            specialty = sanitize_mo_org_label(
+                raw.get("doctor_specialization"),
+                scorer_version=scorer_version,
+                schema_version=score_schema_version,
+            )
+            filial = sanitize_mo_org_label(
+                raw.get("filial"),
+                scorer_version=scorer_version,
+                schema_version=score_schema_version,
+            )
             llm_cost = _safe_number(case.get("llm_cost_usd")) or 0.0
             diagnosis_codes = _split_multi(raw.get("mkb_codes")) or _split_multi(
                 raw.get("mkb_code_main")

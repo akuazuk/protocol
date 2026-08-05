@@ -17,7 +17,7 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo
 
-from .mo_daily import CRM_SCHEMA_SQL, initialize_warehouse, migrate_crm
+from .mo_daily import CRM_SCHEMA_SQL, initialize_warehouse, migrate_crm, sanitize_mo_org_label
 from .mo_metrics import (
     METRICS,
     SCHEMA_VERSION,
@@ -549,6 +549,18 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
             diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
         ) or "Не указан"
         diagnosis_code_public = diagnosis_code if _is_valid_icd_code(diagnosis_code) else ""
+        scorer_version = str(item.get("scorer_version") or "")
+        schema_version = str(item.get("score_schema_version") or "")
+        specialization = sanitize_mo_org_label(
+            item.get("doctor_specialty") or item.get("specialty"),
+            scorer_version=scorer_version,
+            schema_version=schema_version,
+        )
+        filial = sanitize_mo_org_label(
+            item.get("doctor_filial") or item.get("filial"),
+            scorer_version=scorer_version,
+            schema_version=schema_version,
+        )
         output.append(
             {
                 "case_id": str(item.get("visit_id") or item["mis_id"]),
@@ -556,8 +568,8 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "visit_id": str(item.get("visit_id") or ""),
                 "date": item["visit_date"],
                 "doctor_fio": item.get("doctor_fio") or "",
-                "specialization": item.get("doctor_specialty") or item.get("specialty") or "",
-                "filial": item.get("doctor_filial") or item.get("filial") or "",
+                "specialization": specialization,
+                "filial": filial,
                 "document_kind": item.get("document_kind") or "unknown",
                 "document_kind_label": {
                     "medical_exam": "Медицинский осмотр",
@@ -988,8 +1000,11 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         action_raw = conn.execute(
             """SELECT c.mis_id, c.visit_id, c.filial, c.specialty, c.diagnosis_code,
                       c.overall_pct, c.document_kind,
+                      c.scorer_version, c.score_schema_version,
                       COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
                       COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
+                      COALESCE(NULLIF(d.specialty,''), c.specialty, '') AS doctor_specialty,
+                      COALESCE(NULLIF(d.filial,''), c.filial, '') AS doctor_filial,
                       f.finding_code, f.severity,
                       """
             + _finding_shadow_select("f")
@@ -1228,14 +1243,28 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         reason = f"{row['severity']}: {finding_title}"
         if is_shadow:
             reason = f"{reason} (shadow concordance)"
+        scorer_version = str(row["scorer_version"] or "") if "scorer_version" in row.keys() else ""
+        schema_version = (
+            str(row["score_schema_version"] or "") if "score_schema_version" in row.keys() else ""
+        )
+        specialty_raw = (
+            row["doctor_specialty"] if "doctor_specialty" in row.keys() else row["specialty"]
+        )
+        filial_raw = row["doctor_filial"] if "doctor_filial" in row.keys() else row["filial"]
+        specialty = sanitize_mo_org_label(
+            specialty_raw, scorer_version=scorer_version, schema_version=schema_version
+        )
+        branch = sanitize_mo_org_label(
+            filial_raw, scorer_version=scorer_version, schema_version=schema_version
+        )
         action_cases.append(
             {
                 "case_id": case_id,
                 "mis_id": str(row["mis_id"]),
                 "severity": str(row["severity"]),
                 "doctor": str(row["doctor"]),
-                "specialty": str(row["specialty"] or ""),
-                "branch": str(row["filial"] or ""),
+                "specialty": specialty or "Специальность не указана",
+                "branch": branch or "Филиал не указан",
                 "diagnosis": str(row["diagnosis"] or "Диагноз не указан"),
                 "diagnosis_code": str(row["diagnosis_code"] or ""),
                 "overall_pct": float(score) if score is not None else None,
@@ -1250,6 +1279,19 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         )
         if len(action_cases) >= 100:
             break
+    try:
+        from .mo_llm_action_judge import load_llm_action_judge_index
+
+        judge_index = load_llm_action_judge_index(day)
+    except Exception:  # noqa: BLE001
+        judge_index = {}
+    if judge_index:
+        for item in action_cases:
+            judge = judge_index.get(str(item.get("case_id") or "")) or judge_index.get(
+                str(item.get("mis_id") or "")
+            )
+            if judge:
+                item["llm_action_judge"] = judge
     action_contract = {
         "available": bool(action_cases),
         "items": action_cases,
@@ -2435,14 +2477,26 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                 ]
                 document_kind = str(item.get("document_kind") or "unknown")
                 score = item.get("overall_pct")
+                scorer_version = str(item.get("scorer_version") or "")
+                schema_version = str(item.get("score_schema_version") or "")
+                specialization = sanitize_mo_org_label(
+                    item.get("doctor_specialty") or item.get("specialty"),
+                    scorer_version=scorer_version,
+                    schema_version=schema_version,
+                )
+                filial = sanitize_mo_org_label(
+                    item.get("doctor_filial") or item.get("filial"),
+                    scorer_version=scorer_version,
+                    schema_version=schema_version,
+                )
                 record = {
                     "case_id": str(item.get("visit_id") or mis_id),
                     "mis_id": mis_id,
                     "visit_id": str(item.get("visit_id") or ""),
                     "date": item.get("visit_date"),
                     "doctor_fio": item.get("doctor_fio") or "",
-                    "specialization": item.get("doctor_specialty") or item.get("specialty") or "",
-                    "filial": item.get("doctor_filial") or item.get("filial") or "",
+                    "specialization": specialization,
+                    "filial": filial,
                     "document_kind": document_kind,
                     "document_kind_label": DOCUMENT_KIND_LABELS.get(document_kind, document_kind),
                     "diagnosis_code": item.get("diagnosis_code") or "",
@@ -2546,6 +2600,18 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
                 ) or "Не указан"
                 score = item.get("overall_pct")
+                scorer_version = str(item.get("scorer_version") or "")
+                schema_version = str(item.get("score_schema_version") or "")
+                specialization = sanitize_mo_org_label(
+                    item.get("doctor_specialty") or item.get("specialty"),
+                    scorer_version=scorer_version,
+                    schema_version=schema_version,
+                )
+                filial = sanitize_mo_org_label(
+                    item.get("doctor_filial") or item.get("filial"),
+                    scorer_version=scorer_version,
+                    schema_version=schema_version,
+                )
                 detail = {
                     "ok": True,
                     "record": {
@@ -2554,8 +2620,8 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         "mis_id": str(item.get("mis_id") or ""),
                         "date": str(item.get("visit_date") or ""),
                         "doctor_fio": item.get("doctor_fio") or "",
-                        "specialization": item.get("doctor_specialty") or item.get("specialty") or "",
-                        "filial": item.get("doctor_filial") or item.get("filial") or "",
+                        "specialization": specialization,
+                        "filial": filial,
                         "document_kind": item.get("document_kind") or "unknown",
                         "document_kind_label": {
                             "medical_exam": "Медицинский осмотр",
