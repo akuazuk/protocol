@@ -67,7 +67,7 @@ def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
         assert f'data-filter="{key}"' in SOURCE
     for api_key in ("periods", "filials", "specializations", "doctors", "document_kinds", "statuses"):
         assert f'"{api_key}"' in SOURCE
-    assert "state.selected[key].join" in SOURCE
+    assert 'state.selected[key].join("|")' in SOURCE
     assert 'id="case-search"' in SOURCE
     assert 'data-quick-period=' in SOURCE
 

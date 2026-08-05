@@ -155,3 +155,12 @@ def test_dimension_routes_require_authentication(monkeypatch, tmp_path: Path) ->
     response = client.get(path, headers={"X-Methodist-Token": "test-token"})
     assert response.status_code == 200
     assert response.json()["ranking_metric"] == "expected_delta"
+
+
+def test_filter_values_keep_filial_commas_and_split_on_pipe() -> None:
+    assert mo_backend._values("ул. Захарова, 50Д") == ["ул. Захарова, 50Д"]
+    assert mo_backend._values("ул. Захарова, 50Д|пр-т Победителей,45") == [
+        "ул. Захарова, 50Д",
+        "пр-т Победителей,45",
+    ]
+    assert mo_backend._values(["Гинеколог", "Терапевт"]) == ["Гинеколог", "Терапевт"]

@@ -302,10 +302,19 @@ def _selected_months(params: dict[str, Any]) -> list[str]:
 
 
 def _values(value: Any) -> list[str]:
+    """Разбор multi-select. UI шлёт значения через `|` (адреса филиалов содержат запятые)."""
     if value is None:
         return []
-    raw = value if isinstance(value, (list, tuple, set)) else str(value).split(",")
-    return [str(v).strip() for v in raw if str(v).strip()]
+    if isinstance(value, (list, tuple, set)):
+        return [str(v).strip() for v in value if str(v).strip()]
+    text = str(value).strip()
+    if not text:
+        return []
+    if "|" in text:
+        return [part.strip() for part in text.split("|") if part.strip()]
+    # Одно значение целиком (в т.ч. «ул. Захарова, 50Д»). Legacy CSV только если
+    # нет запятой внутри единственного токена-адреса - см. UI join("|").
+    return [text]
 
 
 def _medical_exam_roots() -> list[Path]:

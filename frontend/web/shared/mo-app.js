@@ -157,7 +157,8 @@
       q.set("sort_by", state.sortBy);
       q.set("sort_dir", state.sortDir);
       Object.keys(state.selected).forEach(function (key) {
-        if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join(","));
+        // `|` - не запятая: адреса филиалов содержат "," и ломали split на API
+        if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join("|"));
       });
       if (state.selected.months.length) q.set("month", state.selected.months[0]);
       return q;
