@@ -78,3 +78,14 @@ curl -fsS https://protocol-bimy.onrender.com/health/live
 Записать в `docs/reports/YYYY-MM-DD-handoff-<topic>.md`: branch, worktree, base/head SHA,
 PR, тесты, merge SHA, deploy, `BUILD_VERSION`, smoke-test, оставшиеся задачи и одну следующую
 безопасную команду.
+
+### Актуальный handoff (2026-08-04)
+
+Перед работой с МО runtime / «Вчера» / publish / launchd на **другом компьютере** прочитать:
+
+- `docs/reports/2026-08-04-handoff-mo-runtime-stabilization-phase-a.md` - что уже сделано на PC1
+  (reclassify 01-03 + publish, код Phase A) и **точный чеклист merge → Action → smoke** для PC2;
+- `docs/plans/2026-08-04-mo-runtime-stabilization-v1.md` - план фаз A/B/C.
+
+Не повторять reclassify/publish дат 2026-08-01..03 без регресса. Не деплоить task HEAD.
+Прод остаётся на старом SHA, пока PR Phase A не merged в `origin/main`.

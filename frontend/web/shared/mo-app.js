@@ -1084,16 +1084,37 @@
     }
     function renderYesterdayCompleteness(data) {
       var completeness = data.data_completeness || {};
+      var reasonLabels = {
+        scoring_coverage: "оценены не все допущенные записи",
+        scoring_errors: "ошибки оценки",
+        llm_queue_pending: "очередь LLM"
+      };
+      function reasonText(codes) {
+        return (codes || []).map(function (code) {
+          return reasonLabels[code] || code;
+        }).join(", ");
+      }
       if (!completeness.available) {
         $("yesterday-completeness").innerHTML = unavailableBlock(completeness);
       } else {
         var expected = completeness.expected_rows || {};
+        var statusLine = completeness.partial
+          ? "день помечен как неполный" + (completeness.partial_reasons && completeness.partial_reasons.length
+            ? " (" + reasonText(completeness.partial_reasons) + ")"
+            : "")
+          : "день завершён";
+        if (!completeness.partial && completeness.advisory_reasons && completeness.advisory_reasons.length) {
+          statusLine += " · замечание: " + reasonText(completeness.advisory_reasons);
+          if (completeness.llm_queue_pending) {
+            statusLine += " (" + completeness.llm_queue_pending + ")";
+          }
+        }
         $("yesterday-completeness").innerHTML =
           kpi("Получено", completeness.actual_rows, "строк из источника") +
           kpi("Ожидалось", expected.available ? expected.value : "Нет базы", expected.available ? expected.samples + " сопоставимых дней" : expected.reason) +
           notice("Лаг", completeness.lag_days + " дн. · ревизия " + (completeness.revision == null ? "не указана" : completeness.revision) +
-            " · " + (completeness.partial ? "день помечен как неполный" : "день завершён"),
-            completeness.partial ? "critical" : "good") +
+            " · " + statusLine,
+            completeness.partial ? "critical" : (completeness.advisory_reasons && completeness.advisory_reasons.length ? "review" : "good")) +
           (completeness.flags || []).map(function (flag) {
             return notice(flag.level === "blocking" ? "Блокирующий флаг" : "Предупреждение",
               flag.message || flag.code, flag.level === "blocking" ? "critical" : "review");
@@ -1339,6 +1360,21 @@
       var data = await response.json();
       state.data.daily = data;
       $("partial-banner").hidden = !(data.partial || data.quality_status === "blocked");
+      var completeness = data.data_completeness || {};
+      var banner = $("partial-banner");
+      if (!banner.hidden) {
+        var reasons = (completeness.partial_reasons || []).join(", ");
+        banner.textContent = data.quality_status === "blocked"
+          ? "Данные заблокированы проверкой качества. Итоговый отчёт не принимается."
+          : ("Данные неполные" + (reasons ? " (" + reasons + ")" : "") +
+            ". Итог за день доделывается; цифры ниже могут быть неполными.");
+      } else if (completeness.advisory_reasons && completeness.advisory_reasons.length) {
+        banner.hidden = false;
+        banner.textContent = "День принят с замечанием: " +
+          completeness.advisory_reasons.join(", ") +
+          (completeness.llm_queue_pending ? " (" + completeness.llm_queue_pending + ")" : "") +
+          ". Очередь LLM не блокирует итог при достаточном покрытии.";
+      }
       renderYesterday(data);
     }
     function renderEntityPages(summary) {

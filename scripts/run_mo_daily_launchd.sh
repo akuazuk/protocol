@@ -7,12 +7,56 @@ PYTHON_BIN="${MO_PYTHON:-$(command -v python3)}"
 STATE_DIR="$ROOT/data/medical_exams/state"
 STATE_FILE="$STATE_DIR/pipeline.json"
 RUN_LOCK="$STATE_DIR/launchd-run.lock"
+PIPELINE_LOCK="$STATE_DIR/pipeline.lock"
+
+# Секреты не кладём в plist: подхватываем из .env проекта (и PROTOCOL_ENV_FILE).
+load_dotenv_keys() {
+  local env_file="${PROTOCOL_ENV_FILE:-$ROOT/.env}"
+  local key value line
+  if [ ! -f "$env_file" ]; then
+    return 0
+  fi
+  while IFS= read -r line || [ -n "$line" ]; do
+    case "$line" in
+      ''|\#*) continue ;;
+    esac
+    key="${line%%=*}"
+    value="${line#*=}"
+    case "$key" in
+      METHODIST_TOKEN|METHODIST_PIN|TELEGRAM_BOT_TOKEN|TELEGRAM_CHAT_ID|TELEGRAM_NOTIFY)
+        value="${value%\"}"
+        value="${value#\"}"
+        value="${value%\'}"
+        value="${value#\'}"
+        if [ -z "${!key:-}" ]; then
+          export "$key=$value"
+        fi
+        ;;
+    esac
+  done < "$env_file"
+}
+load_dotenv_keys
 
 # The pipeline lock protects scoring only. Keep publication under the same
 # launchd-level lock so retry/hourly jobs cannot VACUUM and upload the warehouse
 # concurrently.
 mkdir -p "$STATE_DIR"
+clear_stale_pid_lock() {
+  local lock_path="$1"
+  local owner=""
+  if [ ! -f "$lock_path" ]; then
+    return 0
+  fi
+  owner="$(tr -d '[:space:]' < "$lock_path" 2>/dev/null || true)"
+  if [ -n "$owner" ] && kill -0 "$owner" 2>/dev/null; then
+    return 0
+  fi
+  rm -f "$lock_path"
+  echo "снят stale lock $lock_path (pid=${owner:-unknown})"
+}
 acquire_run_lock() {
+  clear_stale_pid_lock "$RUN_LOCK"
+  clear_stale_pid_lock "$PIPELINE_LOCK"
   if (set -o noclobber; printf '%s\n' "$$" > "$RUN_LOCK") 2>/dev/null; then
     return 0
   fi
@@ -39,10 +83,18 @@ publish_to_render() {
   if [ "${MO_PUBLISH_TO_RENDER:-1}" != "1" ]; then
     return 0
   fi
+  if [ -z "${METHODIST_TOKEN:-${METHODIST_PIN:-}}" ]; then
+    echo "METHODIST_TOKEN не задан: freshness-check после publish вернёт 403" >&2
+  fi
   "$PYTHON_BIN" "$ROOT/scripts/publish_mo_to_render.py" \
-    --methodist-token "${METHODIST_TOKEN:-}" || {
-    echo "публикация в прод не удалась: данные на месте, повторить вручную" >&2
-    return 1
+    --methodist-token "${METHODIST_TOKEN:-${METHODIST_PIN:-}}" || {
+    local rc=$?
+    echo "публикация в прод не удалась (код $rc): данные на месте, повторить вручную" >&2
+    if [ -n "${TELEGRAM_BOT_TOKEN:-}" ] && [ -n "${TELEGRAM_CHAT_ID:-}" ]; then
+      "$PYTHON_BIN" "$ROOT/scripts/telegram_notify.py" \
+        "МО publish fail mode=$MODE rc=$rc host=$(hostname -s)" >/dev/null 2>&1 || true
+    fi
+    return "$rc"
   }
 }
 

@@ -14,7 +14,7 @@ from contextlib import closing
 from datetime import date, datetime, timedelta, timezone
 from functools import lru_cache
 from pathlib import Path
-from typing import Any, Iterable
+from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo
 
 from .mo_daily import CRM_SCHEMA_SQL, initialize_warehouse, migrate_crm
@@ -1035,6 +1035,25 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         "flags": flags,
         "revision": (stored or {}).get("revision") if stored else (current or {}).get("revision"),
         "partial": bool((stored or {}).get("partial") or (current or {}).get("partial")),
+        "partial_reasons": list(
+            (completeness.get("reasons") if isinstance(completeness, Mapping) else None)
+            or (stored or {}).get("partial_reasons")
+            or (current or {}).get("partial_reasons")
+            or []
+        ),
+        "advisory_reasons": list(
+            (completeness.get("advisory_reasons") if isinstance(completeness, Mapping) else None)
+            or (stored or {}).get("advisory_reasons")
+            or (current or {}).get("advisory_reasons")
+            or []
+        ),
+        "llm_queue_pending": (
+            completeness.get("llm_queue_pending")
+            if isinstance(completeness, Mapping) and completeness.get("llm_queue_pending") is not None
+            else (stored or {}).get("llm_queue_pending")
+            if stored
+            else (current or {}).get("llm_queue_pending")
+        ),
         "quality_status": (
             "blocked" if stored and not quality.get("passed") else (current or {}).get("quality_status")
         ),
@@ -2839,6 +2858,39 @@ def build_mo_health() -> dict[str, Any]:
         reason_codes.append("case_document_source_missing")
     if not _warehouse_available():
         reason_codes.append("warehouse_unavailable")
+
+    yesterday = (datetime.now(ZoneInfo("Europe/Minsk")).date() - timedelta(days=1))
+    yesterday_report = _pipeline_report_for_date(yesterday) or {}
+    yesterday_completeness = (
+        yesterday_report.get("completeness")
+        if isinstance(yesterday_report.get("completeness"), dict)
+        else {}
+    )
+    state_info = freshness.get("state") if isinstance(freshness.get("state"), dict) else {}
+    state_dates = {}
+    if state_info.get("path"):
+        try:
+            state_payload = json.loads(Path(str(state_info["path"])).read_text(encoding="utf-8"))
+            state_dates = state_payload.get("dates") if isinstance(state_payload.get("dates"), dict) else {}
+        except (OSError, json.JSONDecodeError, TypeError):
+            state_dates = {}
+    yesterday_state = state_dates.get(yesterday.isoformat()) if isinstance(state_dates, dict) else None
+    if isinstance(yesterday_state, dict) and isinstance(yesterday_state.get("completeness"), dict):
+        # Состояние пайплайна может быть свежее отчёта до публикации.
+        yesterday_completeness = {**yesterday_completeness, **yesterday_state["completeness"]}
+    yesterday_partial = bool(
+        yesterday_report.get("partial")
+        or yesterday_completeness.get("partial")
+        or (isinstance(yesterday_state, dict) and yesterday_state.get("status") == "partial")
+    )
+    yesterday_reasons = list(yesterday_completeness.get("reasons") or [])
+    yesterday_advisory = list(yesterday_completeness.get("advisory_reasons") or [])
+    if yesterday_partial:
+        status = "degraded" if status == "ok" else status
+        reason_codes.append("yesterday_partial")
+        for code in yesterday_reasons:
+            reason_codes.append(f"yesterday_{code}")
+
     components = {
         "warehouse": {
             "status": "ready" if _warehouse_available() else "missing",
@@ -2860,6 +2912,15 @@ def build_mo_health() -> dict[str, Any]:
             "status": ((freshness.get("state") or {}).get("last_stage") or "unknown"),
             "heartbeat": (freshness.get("state") or {}).get("last_heartbeat"),
         },
+        "yesterday": {
+            "date": yesterday.isoformat(),
+            "partial": yesterday_partial,
+            "reasons": yesterday_reasons,
+            "advisory_reasons": yesterday_advisory,
+            "llm_queue_pending": yesterday_completeness.get("llm_queue_pending"),
+            "coverage_pct": yesterday_completeness.get("coverage_pct"),
+            "pipeline_status": (yesterday_state or {}).get("status") if isinstance(yesterday_state, dict) else None,
+        },
     }
     return {
         "ok": True,
@@ -2871,6 +2932,7 @@ def build_mo_health() -> dict[str, Any]:
         "daily_days": daily_days,
         "freshness": freshness,
         "reconcile": reconcile,
+        "yesterday": components["yesterday"],
         "components": components,
         "features": {
             "case_document": True,

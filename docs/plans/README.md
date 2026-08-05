@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-04-mo-runtime-stabilization-v1.md](2026-08-04-mo-runtime-stabilization-v1.md) | Стабилизация runtime МО: Docker, вынос пайплайна с Mac, опционально GCP | active |
 | [2026-08-04-repo-sections-archive-v2.md](2026-08-04-repo-sections-archive-v2.md) | Карта разделов продукта и безопасная архивация (konkurs, ML dumps, hygiene) | active |
 | [2026-08-03-ci-release-concurrency-v3.md](2026-08-03-ci-release-concurrency-v3.md) | CI baseline 0, обязательный lint и GitHub Actions concurrency для production release | completed |
 | [2026-08-03-mo-filter-actions-ui-v1.md](2026-08-03-mo-filter-actions-ui-v1.md) | МО Аналитика: явный запуск поиска, подтверждение мультифильтров и раскрываемые панели | active |

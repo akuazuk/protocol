@@ -135,3 +135,8 @@ key workflow контролирует Render webhook. Локальный `render
 Не писать «готово», если commit существует только локально, PR не merged или production
 не проверен. Эти состояния отмечаются отдельно.
 
+**Сейчас (2026-08-04):** Phase A runtime - читать
+`docs/reports/2026-08-04-handoff-mo-runtime-stabilization-phase-a.md` перед merge/deploy
+с другого компьютера. Данные 2026-08-01..03 уже reclassify+publish; нужен только
+PR → Action → smoke.
+
