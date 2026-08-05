@@ -1279,6 +1279,19 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         )
         if len(action_cases) >= 100:
             break
+    try:
+        from .mo_llm_action_judge import load_llm_action_judge_index
+
+        judge_index = load_llm_action_judge_index(day)
+    except Exception:  # noqa: BLE001
+        judge_index = {}
+    if judge_index:
+        for item in action_cases:
+            judge = judge_index.get(str(item.get("case_id") or "")) or judge_index.get(
+                str(item.get("mis_id") or "")
+            )
+            if judge:
+                item["llm_action_judge"] = judge
     action_contract = {
         "available": bool(action_cases),
         "items": action_cases,

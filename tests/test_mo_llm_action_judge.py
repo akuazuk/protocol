@@ -97,6 +97,7 @@ def test_summarize_ui_payload_has_three_kpis() -> None:
             "date": "2026-08-04",
             "model_a": "gemini-3.6-flash",
             "model_b": "gemini-3.6-flash",
+            "queue_reason": "P0 test",
             "stage_a": a,
             "stage_b": b,
         }
@@ -106,6 +107,10 @@ def test_summarize_ui_payload_has_three_kpis() -> None:
     assert ui["kpis"]["completeness"]["score_pct"] == 70
     assert ui["kpis"]["diagnosis"]["score_pct"] == 35
     assert ui["kpis"]["recommendations"]["score_pct"] == 25
+    assert ui["detail"]["completeness"]["blocks"]["exam_data"]["present"] is False
+    assert ui["detail"]["diagnosis"]["icd"]["code"] == "M60"
+    assert ui["detail"]["recommendations"]["exam"]["score_pct"] == 20
+    assert ui["conclusions"]["stage_a_ru"]
 
 
 def test_load_llm_action_judge_from_jsonl(tmp_path) -> None:

@@ -276,6 +276,7 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 - [x] Починить specialty/filial в action queue (sanitize `v4.0.0` / `4.0`; пустое ФИО - re-export).
 - [x] Пилотный прогон на очереди одного дня (Render), отчёт методисту (2026-08-04, 8/8).
 - [x] UI: 3 KPI + сравнение с текстом МО в case detail (`llm_action_judge`).
+- [x] UI подробный разбор: блоки полноты, Dx supports/gaps, план exam/treatment/follow-up, chips в очереди «Вчера».
 
 ---
 

@@ -925,10 +925,30 @@
         (payload.summary_ru ? '<p class="llm-judge-kpi-summary">' + esc(payload.summary_ru) + '</p>' : "") +
         '</article>';
     }
+    function judgeBlockChip(name, block) {
+      var present = !!(block && block.present);
+      var adequate = !!(block && block.adequate);
+      var tone = !present ? "critical" : (adequate ? "good" : "review");
+      var label = present ? (adequate ? "есть" : "слабо") : "пусто";
+      return '<li class="llm-judge-block-chip llm-judge-block-chip--' + tone + '"><b>' + esc(name) +
+        '</b><span class="status ' + tone + '">' + esc(label) + '</span>' +
+        (block && block.note ? '<small>' + esc(block.note) + '</small>' : "") + '</li>';
+    }
+    function judgeList(items, emptyText) {
+      if (!(items || []).length) return '<p class="empty">' + esc(emptyText || "Нет данных") + '</p>';
+      return '<ul class="llm-judge-bullets">' + items.map(function (item) {
+        return '<li>' + esc(item) + '</li>';
+      }).join("") + '</ul>';
+    }
     function renderLlmActionJudge(judge, documentData, item) {
       var clinical = (documentData && documentData.clinical) || {};
-      var metaLine = [item.doctor, item.specialty, item.date].filter(Boolean).join(" · ");
-      var head = '<div class="detail-block llm-judge-block"><h3>Три вопроса методиста <span class="status review finding-shadow-badge">shadow LLM</span></h3>' +
+      var patient = (judge && judge.patient) || {};
+      var metaLine = [
+        item.doctor, item.specialty, item.date,
+        patient.age_years != null ? ("возраст " + patient.age_years) : "",
+        patient.audience && patient.audience !== "unknown" ? patient.audience : ""
+      ].filter(Boolean).join(" · ");
+      var head = '<div class="detail-block llm-judge-block"><h3>Разбор LLM: три вопроса <span class="status review finding-shadow-badge">shadow</span></h3>' +
         '<p class="card-sub">' + esc(metaLine || "Врач и дата не указаны") +
         ' · полнота · диагноз · рекомендации</p>';
       if (!judge || !judge.available) {
@@ -938,46 +958,100 @@
       }
       var kpis = judge.kpis || {};
       var conclusions = judge.conclusions || {};
+      var detail = judge.detail || {};
+      var completeness = detail.completeness || {};
+      var diagnosis = detail.diagnosis || {};
+      var recommendations = detail.recommendations || {};
+      var blockLabels = {
+        complaints: "Жалобы", anamnesis: "Анамнез", objective_status: "Статус",
+        exam_data: "Обследования", diagnosis: "Диагноз",
+        exam_recommendations: "Рек. обслед.", treatment_recommendations: "Рек. леч."
+      };
+      var blocks = completeness.blocks || {};
+      var blocksHtml = '<ul class="llm-judge-blocks">' + Object.keys(blockLabels).map(function (key) {
+        return judgeBlockChip(blockLabels[key], blocks[key]);
+      }).join("") + '</ul>';
       var slotPairs = [
-        ["complaints", "Жалобы"], ["anamnesis_doctor", "Анамнез"],
+        ["complaints", "Жалобы"], ["anamnesis_doctor", "Анамнез"], ["anamnesis_auto", "Анамнез (авто)"],
         ["objective_status", "Объективный статус"], ["exam_data", "Обследования"],
         ["clinical_diagnosis", "Диагноз"], ["exam_recommendations", "Рек. по обследованию"],
         ["treatment_recommendations", "Рек. по лечению"]
       ];
       var moSlots = slotPairs.filter(function (pair) { return clinical[pair[0]]; }).map(function (pair) {
         return '<section class="llm-judge-slot"><h4>' + esc(pair[1]) + '</h4><p>' +
-          esc(String(clinical[pair[0]]).slice(0, 420)) +
-          (String(clinical[pair[0]]).length > 420 ? "…" : "") + '</p></section>';
+          esc(String(clinical[pair[0]]).slice(0, 520)) +
+          (String(clinical[pair[0]]).length > 520 ? "…" : "") + '</p></section>';
       }).join("");
-      var why = [
-        ["Полнота", conclusions.completeness_ru],
-        ["Диагноз", conclusions.diagnosis_ru],
-        ["Рекомендации", conclusions.recommendations_ru]
-      ].filter(function (row) { return row[1]; }).map(function (row) {
-        return '<section class="llm-judge-slot"><h4>' + esc(row[0]) + '</h4><p>' + esc(row[1]) + '</p></section>';
-      }).join("");
-      var findingsHtml = (conclusions.findings || []).slice(0, 6).map(function (finding) {
+      var icd = diagnosis.icd || {};
+      var dxWhy = '<section class="llm-judge-slot"><h4>Диагноз</h4><p>' +
+        esc(diagnosis.summary_ru || conclusions.diagnosis_ru || "Нет вывода") + '</p>' +
+        (icd.code || icd.text ? '<p class="card-sub">МКБ: ' + esc([icd.code, icd.text, icd.fit].filter(Boolean).join(" · ")) + '</p>' : "") +
+        (diagnosis.blocked_by_incomplete ? '<p class="inline-note">Оценка Dx ограничена пустыми блоками</p>' : "") +
+        '<div class="llm-judge-split"><div><h5>Подтверждает</h5>' +
+        judgeList(diagnosis.supported_by, "Нет опор") + '</div><div><h5>Не закрыто диагнозом</h5>' +
+        judgeList(diagnosis.not_supported_by, "Пробелов не отмечено") + '</div></div></section>';
+      var chainHtml = (diagnosis.chain || []).length ? '<section class="llm-judge-slot"><h4>Цепочка клиника → диагноз</h4>' +
+        (diagnosis.chain || []).map(function (link) {
+          return '<div class="llm-judge-chain"><span class="status ' +
+            (link.outcome === "ok" ? "good" : (link.outcome === "contradiction" ? "critical" : "review")) +
+            '">' + esc(link.outcome || "?") + '</span> ' +
+            esc((link.from || "") + " → " + (link.to || "")) +
+            (link.note ? '<small>' + esc(link.note) + '</small>' : "") + '</div>';
+        }).join("") + '</section>' : "";
+      var exam = recommendations.exam || {};
+      var treatment = recommendations.treatment || {};
+      var follow = recommendations.follow_up || {};
+      var planWhy =
+        '<section class="llm-judge-slot"><h4>Обследование ' + esc(score(exam.score_pct)) +
+        ' · ' + esc(statusLabel(exam.verdict || "")) + '</h4><p>' + esc(exam.summary_ru || "-") + '</p>' +
+        '<div class="llm-judge-split"><div><h5>Назначено</h5>' + judgeList(exam.present, "Пусто") +
+        '</div><div><h5>Не хватает</h5>' + judgeList(exam.missing_suggested, "Не указано") +
+        '</div></div></section>' +
+        '<section class="llm-judge-slot"><h4>Лечение ' + esc(score(treatment.score_pct)) +
+        ' · ' + esc(statusLabel(treatment.verdict || "")) + '</h4><p>' + esc(treatment.summary_ru || "-") + '</p>' +
+        '<div class="llm-judge-split"><div><h5>Назначения</h5>' + judgeList(treatment.present, "Пусто") +
+        '</div><div><h5>Риски</h5>' + judgeList(treatment.concerns, "Без замечаний") +
+        '</div></div></section>' +
+        '<section class="llm-judge-slot"><h4>Follow-up ' + esc(score(follow.score_pct)) +
+        ' · ' + esc(statusLabel(follow.verdict || "") || follow.kind || "") + '</h4><p>' +
+        esc(follow.summary_ru || "-") + '</p></section>';
+      var findingsHtml = (conclusions.findings || []).slice(0, 10).map(function (finding) {
         return '<div class="llm-judge-finding"><span class="status ' +
           (finding.severity === "P0" ? "critical" : "review") + '">' + esc(finding.severity || "P?") +
-          '</span> ' + esc(finding.text_ru || finding.code || "") +
+          '</span> <span class="card-sub">этап ' + esc(finding.stage || "?") + '</span> ' +
+          esc(finding.text_ru || finding.code || "") +
           (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
           '</div>';
       }).join("");
-      var missing = (conclusions.missing_blocks || []).length ?
-        '<p class="inline-note">Пустые блоки: ' + esc(conclusions.missing_blocks.join(", ")) + '</p>' : "";
-      return head +
+      var queueNote = judge.queue_reason ?
+        '<p class="inline-note">Почему в очереди: ' + esc(judge.queue_severity || "") +
+        (judge.queue_severity ? " · " : "") + esc(judge.queue_reason) + '</p>' : "";
+      var footerMeta = [
+        conclusions.needs_human ? "нужен разбор методиста" : "можно закрыть после проверки",
+        conclusions.confidence_a != null ? ("conf A " + Math.round(Number(conclusions.confidence_a) * 100) + "%") : "",
+        conclusions.confidence_b != null ? ("conf B " + Math.round(Number(conclusions.confidence_b) * 100) + "%") : "",
+        (judge.models && judge.models.a) ? ("model " + judge.models.a) : "",
+        "engine " + (judge.engine || "mo_llm_action_judge_v1")
+      ].filter(Boolean).join(" · ");
+      return head + queueNote +
         '<div class="drawer-grid llm-judge-kpis">' +
-        judgeKpiCard("Полнота", kpis.completeness) +
-        judgeKpiCard("Диагноз", kpis.diagnosis) +
-        judgeKpiCard("Рекомендации", kpis.recommendations) +
-        '</div>' + missing +
+        judgeKpiCard("1. Полнота", kpis.completeness) +
+        judgeKpiCard("2. Диагноз", kpis.diagnosis) +
+        judgeKpiCard("3. Рекомендации", kpis.recommendations) +
+        '</div>' +
+        '<div class="llm-judge-section"><h4>Полнота блоков МО</h4>' + blocksHtml +
+        (conclusions.completeness_ru ? '<p>' + esc(conclusions.completeness_ru) + '</p>' : "") + '</div>' +
         '<div class="llm-judge-compare">' +
         '<div><h4>Реальное МО</h4>' + (moSlots || '<p class="empty">Клинический текст недоступен</p>') + '</div>' +
-        '<div><h4>Почему такая оценка</h4>' + (why || '<p class="empty">Нет кратких выводов</p>') +
-        (findingsHtml ? '<div class="llm-judge-findings">' + findingsHtml + '</div>' : "") +
+        '<div><h4>Разбор модели</h4>' + dxWhy + chainHtml + planWhy +
+        (findingsHtml ? '<div class="llm-judge-findings"><h4>Замечания LLM</h4>' + findingsHtml + '</div>' : "") +
+        ((conclusions.stage_a_ru || conclusions.stage_b_ru) ?
+          '<section class="llm-judge-slot"><h4>Итог этапов</h4>' +
+          (conclusions.stage_a_ru ? '<p><b>A:</b> ' + esc(conclusions.stage_a_ru) + '</p>' : "") +
+          (conclusions.stage_b_ru ? '<p><b>B:</b> ' + esc(conclusions.stage_b_ru) + '</p>' : "") +
+          '</section>' : "") +
         '</div></div>' +
-        '<p class="card-sub">Не меняет итоговую оценку warehouse · engine ' +
-        esc(judge.engine || "mo_llm_action_judge_v1") + '</p></div>';
+        '<p class="card-sub">Shadow · не меняет warehouse overall · ' + esc(footerMeta) + '</p></div>';
     }
     function renderCase(data) {
       var record = data.record || data.case || data;
@@ -1385,6 +1459,20 @@
       });
       $("yesterday-doctor-note").innerHTML = '<p class="inline-note">' + esc(section.rule) + "</p>";
     }
+    function llmJudgeMini(item) {
+      var judge = item.llm_action_judge || {};
+      if (!judge.available || !judge.kpis) return "";
+      var k = judge.kpis;
+      function chip(label, payload) {
+        var pct = payload && payload.score_pct;
+        var tone = verdictTone(payload && payload.verdict);
+        return '<span class="status ' + tone + ' llm-mini-chip" title="' + esc(label) + '">' +
+          esc(label[0]) + " " + esc(pct == null ? "-" : Math.round(Number(pct)) + "%") + '</span>';
+      }
+      return '<div class="llm-mini-kpis">' +
+        chip("Полнота", k.completeness) + chip("Диагноз", k.diagnosis) + chip("Рекомендации", k.recommendations) +
+        '</div>';
+    }
     function renderYesterdayActions(data) {
       var section = data.action_cases || {}, items = section.items || [];
       $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
@@ -1392,7 +1480,8 @@
         return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
           (item.severity === "P0" ? "critical" : "review") + '">' + esc(item.severity) +
           "</span></td><td><b>" + esc(item.doctor) + "</b><br><small>" + esc(item.specialty) +
-          "</small></td><td>" + esc(item.branch) + "</td><td>" + esc(item.diagnosis) +
+          "</small>" + llmJudgeMini(item) +
+          "</td><td>" + esc(item.branch) + "</td><td>" + esc(item.diagnosis) +
           "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b>" +
           (item.is_shadow ? ' <span class="status review finding-shadow-badge">shadow</span>' : "") +
           "<br><small>" + esc(item.reason) +

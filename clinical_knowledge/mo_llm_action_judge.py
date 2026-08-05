@@ -635,13 +635,35 @@ def load_llm_action_judge_row(
 def _kpi_payload(score_pct: Any, verdict: Any, summary_ru: Any) -> dict[str, Any]:
     return {
         "score_pct": _as_pct(score_pct),
-        "verdict": str(verdict or "").strip() or None,
+        "verdict": _normalize_verdict(verdict) if str(verdict or "").strip() else None,
         "summary_ru": _clip(str(summary_ru or ""), 400),
     }
 
 
+def _plan_block_ui(block: Any) -> dict[str, Any]:
+    if not isinstance(block, dict):
+        return {
+            "score_pct": None,
+            "verdict": None,
+            "summary_ru": "",
+            "present": [],
+            "missing_suggested": [],
+            "concerns": [],
+            "kind": None,
+        }
+    return {
+        "score_pct": _as_pct(block.get("score_pct")),
+        "verdict": _normalize_verdict(block.get("verdict")) if block.get("verdict") else None,
+        "summary_ru": _clip(str(block.get("summary_ru") or ""), 400),
+        "present": [_clip(str(x), 120) for x in (block.get("present") or [])[:10]],
+        "missing_suggested": [_clip(str(x), 120) for x in (block.get("missing_suggested") or [])[:10]],
+        "concerns": [_clip(str(x), 80) for x in (block.get("concerns") or [])[:10]],
+        "kind": str(block.get("kind") or "").strip() or None,
+    }
+
+
 def summarize_llm_action_judge_for_ui(row: dict[str, Any] | None) -> dict[str, Any]:
-    """Компактный payload для case detail: 3 KPI + выводы (shadow)."""
+    """Payload для case detail: 3 KPI + разбор полноты/Dx/плана (shadow)."""
     if not row:
         return {
             "available": False,
@@ -666,8 +688,22 @@ def summarize_llm_action_judge_for_ui(row: dict[str, Any] | None) -> dict[str, A
         else {}
     )
     plan = stage_b.get("plan_assessment") if isinstance(stage_b.get("plan_assessment"), dict) else {}
+    patient = stage_a.get("patient") if isinstance(stage_a.get("patient"), dict) else {}
+    icd = diagnosis.get("icd") if isinstance(diagnosis.get("icd"), dict) else {}
+    blocks_in = completeness.get("blocks") if isinstance(completeness.get("blocks"), dict) else {}
+    blocks_out: dict[str, Any] = {}
+    for name in COMPLETENESS_BLOCKS:
+        block = blocks_in.get(name) if isinstance(blocks_in.get(name), dict) else {}
+        blocks_out[name] = {
+            "present": bool(block.get("present")),
+            "adequate": bool(block.get("adequate")),
+            "note": _clip(str(block.get("note") or ""), 160),
+        }
     findings: list[dict[str, Any]] = []
-    for src in (stage_a.get("findings") or [], stage_b.get("findings") or []):
+    for stage_label, src in (
+        ("A", stage_a.get("findings") or []),
+        ("B", stage_b.get("findings") or []),
+    ):
         for item in src:
             if not isinstance(item, dict):
                 continue
@@ -677,13 +713,48 @@ def summarize_llm_action_judge_for_ui(row: dict[str, Any] | None) -> dict[str, A
                     "severity": str(item.get("severity") or "none")[:8],
                     "text_ru": _clip(str(item.get("text_ru") or ""), 240),
                     "evidence": _clip(str(item.get("evidence") or ""), 160),
+                    "stage": stage_label,
                 }
             )
-            if len(findings) >= 8:
+            if len(findings) >= 12:
                 break
-        if len(findings) >= 8:
+        if len(findings) >= 12:
+            break
+    chain = []
+    for link in stage_a.get("chain") or []:
+        if not isinstance(link, dict):
+            continue
+        chain.append(
+            {
+                "from": str(link.get("from") or "")[:40],
+                "to": str(link.get("to") or "")[:40],
+                "outcome": str(link.get("outcome") or "unknown")[:20],
+                "note": _clip(str(link.get("note") or ""), 240),
+            }
+        )
+        if len(chain) >= 12:
             break
     missing = [_clip(str(x), 40) for x in (completeness.get("missing_blocks") or [])[:8]]
+    exam_block = _plan_block_ui(plan.get("exam_recommendations"))
+    treatment_block = _plan_block_ui(plan.get("treatment_recommendations"))
+    follow_block = _plan_block_ui(plan.get("follow_up"))
+    kpis = {
+        "completeness": _kpi_payload(
+            completeness.get("score_pct"),
+            completeness.get("verdict"),
+            completeness.get("summary_ru"),
+        ),
+        "diagnosis": _kpi_payload(
+            diagnosis.get("score_pct"),
+            diagnosis.get("verdict"),
+            diagnosis.get("summary_ru"),
+        ),
+        "recommendations": _kpi_payload(
+            plan.get("score_pct"),
+            plan.get("verdict"),
+            plan.get("summary_ru") or exam_block.get("summary_ru") or treatment_block.get("summary_ru"),
+        ),
+    }
     return {
         "available": True,
         "shadow": True,
@@ -691,42 +762,108 @@ def summarize_llm_action_judge_for_ui(row: dict[str, Any] | None) -> dict[str, A
         "case_id": str(row.get("case_id") or row.get("visit_id") or "").strip(),
         "mis_id": str(row.get("mis_id") or "").strip(),
         "date": str(row.get("date") or "").strip()[:10],
+        "queue_reason": _clip(str(row.get("queue_reason") or ""), 240),
+        "queue_severity": str(row.get("queue_severity") or "").strip(),
         "models": {"a": row.get("model_a"), "b": row.get("model_b")},
-        "kpis": {
-            "completeness": _kpi_payload(
-                completeness.get("score_pct"),
-                completeness.get("verdict"),
-                completeness.get("summary_ru"),
-            ),
-            "diagnosis": _kpi_payload(
-                diagnosis.get("score_pct"),
-                diagnosis.get("verdict"),
-                diagnosis.get("summary_ru"),
-            ),
-            "recommendations": _kpi_payload(
-                plan.get("score_pct"),
-                plan.get("verdict"),
-                plan.get("summary_ru")
-                or (
-                    (plan.get("exam_recommendations") or {}).get("summary_ru")
-                    if isinstance(plan.get("exam_recommendations"), dict)
-                    else ""
-                ),
-            ),
+        "latency_ms": {"a": row.get("latency_ms_a"), "b": row.get("latency_ms_b")},
+        "patient": {
+            "age_years": patient.get("age_years"),
+            "audience": str(patient.get("audience") or "unknown"),
+            "age_source": str(patient.get("age_source") or "unknown"),
+        },
+        "kpis": kpis,
+        "detail": {
+            "completeness": {
+                "blocks": blocks_out,
+                "missing_blocks": missing,
+                "summary_ru": _clip(str(completeness.get("summary_ru") or ""), 400),
+            },
+            "diagnosis": {
+                "summary_ru": _clip(str(diagnosis.get("summary_ru") or ""), 500),
+                "supported_by": [_clip(str(x), 120) for x in (diagnosis.get("supported_by") or [])[:8]],
+                "not_supported_by": [
+                    _clip(str(x), 120) for x in (diagnosis.get("not_supported_by") or [])[:8]
+                ],
+                "blocked_by_incomplete": bool(diagnosis.get("blocked_by_incomplete")),
+                "icd": {
+                    "code": _clip(str(icd.get("code") or ""), 16),
+                    "text": _clip(str(icd.get("text") or ""), 200),
+                    "fit": str(icd.get("fit") or "unknown"),
+                },
+                "chain": chain,
+            },
+            "recommendations": {
+                "exam": exam_block,
+                "treatment": treatment_block,
+                "follow_up": follow_block,
+            },
         },
         "conclusions": {
             "completeness_ru": _clip(str(completeness.get("summary_ru") or ""), 400),
-            "diagnosis_ru": _clip(str(diagnosis.get("summary_ru") or stage_a.get("conclusion_ru") or ""), 400),
+            "diagnosis_ru": _clip(
+                str(diagnosis.get("summary_ru") or stage_a.get("conclusion_ru") or ""),
+                400,
+            ),
             "recommendations_ru": _clip(
                 str(plan.get("summary_ru") or stage_b.get("conclusion_ru") or ""),
                 400,
             ),
+            "stage_a_ru": _clip(str(stage_a.get("conclusion_ru") or ""), 600),
+            "stage_b_ru": _clip(str(stage_b.get("conclusion_ru") or ""), 600),
             "missing_blocks": missing,
             "blocked_by_incomplete": bool(diagnosis.get("blocked_by_incomplete")),
             "findings": findings,
+            "needs_human": bool(stage_a.get("needs_human", True) or stage_b.get("needs_human", True)),
+            "confidence_a": _as_conf(stage_a.get("confidence")),
+            "confidence_b": _as_conf(stage_b.get("confidence")),
         },
         "error": _clip(str(row.get("error") or ""), 240) or None,
     }
+
+
+def load_llm_action_judge_index(
+    day: str,
+    *,
+    roots: list[Path] | None = None,
+) -> dict[str, dict[str, Any]]:
+    """Индекс case_id -> краткие KPI за день (для очереди «Вчера»)."""
+    day_s = str(day or "").strip()[:10]
+    if len(day_s) != 10:
+        return {}
+    index: dict[str, dict[str, Any]] = {}
+    for root in roots or _judge_data_roots():
+        path = judge_jsonl_path(day_s, root=root)
+        if not path.is_file():
+            continue
+        try:
+            with path.open(encoding="utf-8") as fh:
+                for line in fh:
+                    line = line.strip()
+                    if not line:
+                        continue
+                    row = json.loads(line)
+                    if not isinstance(row, dict):
+                        continue
+                    ui = summarize_llm_action_judge_for_ui(row)
+                    if not ui.get("available"):
+                        continue
+                    cid = str(ui.get("case_id") or row.get("case_id") or "").strip()
+                    if not cid:
+                        continue
+                    index[cid] = {
+                        "available": True,
+                        "kpis": ui.get("kpis") or {},
+                        "queue_severity": ui.get("queue_severity"),
+                        "needs_human": bool((ui.get("conclusions") or {}).get("needs_human")),
+                    }
+                    mis = str(ui.get("mis_id") or row.get("mis_id") or "").strip()
+                    if mis:
+                        index[mis] = index[cid]
+        except (OSError, json.JSONDecodeError):
+            continue
+        if index:
+            break
+    return index
 
 
 def load_llm_action_judge_for_case(
