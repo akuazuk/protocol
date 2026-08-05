@@ -1,0 +1,249 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Кабинет врача-эксперта - отчёт за вчера и дневные отчёты МО">
+  <meta name="mo-api-root" content="/api/methodist/mo">
+  <meta name="mo-legacy-route" content="/api/methodist/mis-kz-quality">
+  <meta name="mo-audience" content="expert">
+  <title>Врач-эксперт | Protocol</title>
+  <link rel="icon" href="/protocol-logo-mini.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/mo-tokens.css">
+  <link rel="stylesheet" href="/mo-ui.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">К содержанию</a>
+  <div class="app" id="dashboard" hidden>
+    <aside class="sidebar" aria-label="МО Аналитика">
+      <a class="brand" href="/methodist/expert" aria-label="Кабинет врача-эксперта">
+        <img src="/protocol-logo-mini.svg" alt="">
+        <span class="brand-copy">Врач-эксперт<small>разбор МО и отчёты</small></span>
+      </a>
+      <nav>
+        <ul class="nav-list" id="app-nav">
+          <li class="nav-section-label">Работа эксперта</li>
+          <li><button class="nav-button" data-page="yesterday" aria-current="page"><span class="nav-icon">В</span><span class="nav-text">Отчёт за вчера</span></button></li>
+          <li><button class="nav-button" data-page="reports"><span class="nav-icon">⇩</span><span class="nav-text">Отчёты с августа</span></button></li>
+          <li hidden><button class="nav-button" data-page="overview"><span class="nav-icon">◫</span><span class="nav-text">Обзор</span></button></li>
+          <li hidden><button class="nav-button" data-page="safety"><span class="nav-icon">+</span><span class="nav-text">Безопасность</span></button></li>
+          <li hidden><button class="nav-button" data-page="queue"><span class="nav-icon">!</span><span class="nav-text">Очередь разбора</span></button></li>
+          <li hidden><button class="nav-button" data-page="documents"><span class="nav-icon">≡</span><span class="nav-text">Все случаи</span></button></li>
+          <li hidden><button class="nav-button" data-page="doctors"><span class="nav-icon">Вр</span><span class="nav-text">Врачи</span></button></li>
+          <li hidden><button class="nav-button" data-page="doctor-cabinet"><span class="nav-icon">ЛК</span><span class="nav-text">Кабинет врача</span></button></li>
+          <li hidden><button class="nav-button" data-page="specialties"><span class="nav-icon">Сп</span><span class="nav-text">Специальности</span></button></li>
+          <li hidden><button class="nav-button" data-page="diagnoses"><span class="nav-icon">D</span><span class="nav-text">Диагнозы и МКБ</span></button></li>
+          <li hidden><button class="nav-button" data-page="data-quality"><span class="nav-icon">✓</span><span class="nav-text">Качество данных</span></button></li>
+          <li hidden><button class="nav-button" data-page="access-log"><span class="nav-icon">Ж</span><span class="nav-text">Журнал доступа</span></button></li>
+          <li hidden><button class="nav-button" data-page="settings"><span class="nav-icon">⚙</span><span class="nav-text">Настройки</span></button></li>
+        </ul>
+      </nav>
+      <div class="sidebar-foot">
+        <span id="expert-user-label">Эксперт</span>
+        <button class="button secondary" id="expert-logout" type="button">Выйти</button>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="context-bar" aria-label="Поиск и глобальные фильтры">
+        <div class="context-top">
+          <form class="case-search-form" id="case-search-form" role="search">
+            <label class="filter search-field"><span>Поиск по случаям</span><input class="control" id="case-search" type="search" placeholder="Врач, диагноз или МКБ" autocomplete="off" aria-controls="search-suggestions" aria-expanded="false"><span class="suggestions" id="search-suggestions" role="listbox" hidden></span></label>
+            <button class="button" id="case-search-submit" type="submit">Найти</button>
+            <button class="button secondary" id="case-search-clear" type="button" hidden>Очистить</button>
+          </form>
+          <div class="context-top-actions">
+            <details class="toolbar-section" id="filters-panel">
+              <summary><span>Фильтры</span><b id="filter-total">Без дополнительных фильтров</b></summary>
+              <div class="toolbar-panel">
+                <div class="context-main context-main--filters">
+                  <label class="filter"><span>Период</span>
+                    <select class="control" id="period">
+                      <option value="yesterday">Вчера</option>
+                      <option value="7d">Последние 7 дней</option>
+                      <option value="month" selected>Текущий месяц</option>
+                      <option value="custom">Произвольный</option>
+                    </select>
+                  </label>
+                  <label class="filter" id="date-from-wrap" hidden><span>С даты</span><input class="control" id="date-from" type="date"></label>
+                  <label class="filter" id="date-to-wrap" hidden><span>По дату</span><input class="control" id="date-to" type="date"></label>
+                  <label class="filter"><span>Сравнение</span>
+                    <select class="control" id="compare">
+                      <option value="previous">Предыдущий период</option>
+                      <option value="weekday">Тот же день недели</option>
+                      <option value="none">Без сравнения</option>
+                    </select>
+                  </label>
+                  <div class="toolbar-inline" aria-label="Быстрый выбор периода">
+                    <button class="button secondary" type="button" data-quick-period="yesterday">Вчера</button>
+                    <button class="button secondary" type="button" data-quick-period="7d">7 дней</button>
+                    <button class="button secondary" type="button" data-quick-period="month">Месяц</button>
+                  </div>
+                  <details class="filter-pop" data-filter="months"><summary>Месяцы <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="branches"><summary>Филиалы <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="doctors"><summary>Врачи <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="document_types"><summary>Тип документа <b>Все</b></summary><div class="filter-menu"></div></details>
+                  <details class="filter-pop" data-filter="statuses"><summary>Статусы <b>Все</b></summary><div class="filter-menu"></div></details>
+                </div>
+                <div class="toolbar-panel-actions">
+                  <span class="panel-help">Откройте группу, отметьте значения и нажмите «Применить».</span>
+                  <button class="button secondary" id="reset-filters" type="button">Сбросить фильтры</button>
+                </div>
+              </div>
+            </details>
+            <details class="toolbar-section toolbar-section--views" id="views-panel">
+              <summary><span>Представления</span><b>Текущий срез и действия</b></summary>
+              <div class="toolbar-panel toolbar-panel--views">
+                <label class="filter"><span>Сохранённое представление</span><select class="control" id="saved-view"><option value="">Текущий срез</option></select></label>
+                <div class="toolbar-panel-actions">
+                  <button class="button" id="save-view" type="button">Сохранить срез</button>
+                  <button class="button secondary" id="share-view" type="button">Скопировать ссылку</button>
+                </div>
+              </div>
+            </details>
+            <button class="button secondary" id="command-open" type="button" aria-haspopup="dialog">Команды <kbd>⌘K</kbd></button>
+            <button class="button secondary icon" id="theme-toggle" type="button" aria-pressed="false" aria-label="Включить тёмную тему">◐</button>
+          </div>
+        </div>
+        <div class="chips" id="filter-chips" aria-live="polite"></div>
+        <div class="analysis-rail" id="analysis-rail" aria-live="polite">
+          <div class="analysis-head">
+            <strong>Маршрут анализа</strong>
+            <div class="row-actions">
+              <button class="button secondary compact" id="analysis-back" type="button">Шаг назад</button>
+              <button class="button secondary compact" id="analysis-clear" type="button">Сбросить</button>
+            </div>
+          </div>
+          <div class="analysis-path" id="analysis-path">Переходите в графики и нажимайте на точки для drill-down.</div>
+          <p class="card-sub" id="analysis-note">Текущие фильтры применяются ко всем экранам и таблицам.</p>
+        </div>
+      </header>
+
+      <main id="main" class="content" tabindex="-1">
+        <nav class="breadcrumbs" id="breadcrumbs" aria-label="Путь по разделу"><ol><li>МО Аналитика</li><li aria-current="page">Обзор МО</li></ol></nav>
+        <div id="global-error" class="banner" role="alert" hidden></div>
+        <section class="page" id="page-overview" data-page="overview" aria-labelledby="title-overview">
+          <div class="page-head"><div><h1 id="title-overview">Месяц</h1><p id="month-period-label">С начала месяца по последний доступный день, часовой пояс Europe/Minsk.</p></div><span class="freshness" id="freshness">Проверяем свежесть</span></div>
+          <div id="month-reconciliation" class="banner" hidden></div>
+          <div class="kpis" id="month-kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
+          <div class="grid">
+            <article class="card span-12"><h2>Прогноз и сравнение</h2><p class="card-sub">Линейный темп до конца месяца, равный период прошлого месяца и тот же период прошлого года</p><div class="month-compare" id="month-forecast"></div><div id="month-compare"></div></article>
+            <article class="card span-12"><h2>Четыре индекса и объём</h2><p class="card-sub">Динамика по дням, масштабирование и маркеры аномального объёма</p><div id="month-trend-chart"></div></article>
+            <article class="card span-7"><h2>Специальность × глава МКБ</h2><p class="card-sub">Цвет - средняя оценка, значение - объём; клик фильтрует случаи</p><div id="month-heatmap-chart"></div></article>
+            <article class="card span-5"><h2>Врачи с поправкой на состав случаев</h2><p class="card-sub">Дельта к специальности, 95% ДИ и порог выборки</p><div id="month-doctor-chart"></div><div id="month-doctor-note"></div></article>
+            <article class="card span-7"><h2>Парето замечаний</h2><p class="card-sub">Число случаев и накопленная доля; клик открывает связанные случаи</p><div id="month-pareto-chart"></div></article>
+            <article class="card span-5"><h2>Воронка месяца</h2><p class="card-sub">От источника до закрытия работы методиста</p><div id="month-funnel-chart"></div></article>
+            <article class="card span-6"><h2>Прогресс CRM</h2><p class="card-sub">Рабочие статусы случаев с рассчитанной оценкой</p><div id="month-crm-chart"></div></article>
+            <article class="card span-6"><h2>Соответствие постановлению №55</h2><p class="card-sub">Показывается только при наличии проверенной метрики</p><div id="month-reg55"></div></article>
+            <article class="card span-12"><h2>Рубрика МЗ («Как оценивать»)</h2><p class="card-sub">Shadow-сводка по выборке защищённых срезов: доля 0 и 0.5 по критериям</p><div id="month-rubric-mz"></div></article>
+          </div>
+        </section>
+
+        <section class="page" id="page-yesterday" data-page="yesterday" hidden aria-labelledby="title-yesterday">
+          <div class="page-head"><div><h1 id="title-yesterday">Отчёт за вчера</h1><p id="yesterday-date">Итоги последнего полного календарного дня.</p></div><span class="freshness">Ежедневный отчёт</span></div>
+          <div id="partial-banner" class="banner" hidden>Данные неполные. Публикация итогового отчёта заблокирована до завершения проверки.</div>
+          <div class="section-actions"><button class="button" data-action="download">Скачать отчёт</button><button class="button secondary" data-go="queue">Открыть очередь</button><button class="button secondary" id="share-yesterday">Поделиться ссылкой на срез</button></div>
+          <div class="grid">
+            <article class="card span-12"><h2>Полнота данных и воронка</h2><p class="card-sub">Факт против медианы того же дня недели, лаг, ревизия и путь записей до оценки</p><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
+            <article class="card span-12"><h2>Четыре индекса</h2><p class="card-sub">Сравнение со вчерашним значением и средним того же дня недели за 8 недель</p><div class="kpis index-kpis" id="yesterday-index-cards"></div><div id="yesterday-index-chart"></div></article>
+            <article class="card span-6"><h2>Топ замечаний</h2><p class="card-sub">Число затронутых случаев и приоритет; клик открывает список случаев</p><div id="yesterday-findings-chart"></div><div id="yesterday-findings-list"></div></article>
+            <article class="card span-6"><h2>Врачи ниже ожидаемого</h2><p class="card-sub">Ожидаемое по специальности, дельта ниже -10 п.п., за день n не меньше 5</p><div id="yesterday-doctor-chart"></div><div id="yesterday-doctor-note"></div></article>
+            <article class="card span-12"><h2>P0/P1 случаи для работы</h2><p class="card-sub">ID визита и пациента, дата, врач, специальность, филиал, причина и МО на одном экране</p><div class="table-wrap sticky-first"><table><thead><tr><th>Приоритет</th><th>Визит</th><th>Пациент</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>Действие / МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
+            <article class="card span-7"><h2>Структура потока и изменения</h2><p class="card-sub">Специальности, филиалы и типы документов против предыдущего дня</p><label class="filter"><span>Разрез потока</span><select class="control" id="yesterday-flow-dimension"><option value="specialty">Специальности</option><option value="branch">Филиалы</option><option value="document_kind">Типы документов</option></select></label><div id="yesterday-flow-chart"></div><div id="yesterday-flow-note"></div></article>
+            <article class="card span-5"><h2>Качество источника</h2><p class="card-sub">Распознавание, заполненность ключевых полей и расхождение дат</p><div id="yesterday-source-quality"></div></article>
+          </div>
+        </section>
+
+        <section class="page" id="page-queue" data-page="queue" hidden aria-labelledby="title-queue">
+          <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Назначение ответственных, контроль срока и фиксация решения по каждому случаю.</p></div></div>
+          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button><button class="button secondary" id="queue-critical-only" type="button">Только критические</button><button class="button secondary" id="queue-open-pdf-selected" type="button">PDF выбранных</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
+          <div class="card"><div class="table-wrap sticky-first"><table><caption class="sr-only">Очередь случаев для разбора методистом</caption><thead><tr><th scope="col"><span class="sr-only">Выбрать</span></th><th scope="col">Приоритет</th><th scope="col">Визит</th><th scope="col">Пациент</th><th scope="col">Дата</th><th scope="col">Филиал</th><th scope="col">Врач / специальность</th><th scope="col">Диагноз</th><th scope="col">Итог</th><th scope="col">Причина</th><th scope="col">Ответственный</th><th scope="col">Срок</th><th scope="col">Статус</th><th scope="col">МО</th></tr></thead><tbody id="queue-rows"></tbody></table></div></div>
+        </section>
+
+        <section class="page" id="page-documents" data-page="documents" hidden aria-labelledby="title-documents">
+          <div class="page-head"><div><h1 id="title-documents">Все случаи</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
+          <div class="section-actions"><button class="button secondary" id="columns-button" aria-pressed="false">Колонки таблиц</button><label class="filter"><span>Сортировка</span><select class="control" id="sort-by"><option value="date">По дате</option><option value="overall">По баллу</option><option value="priority">По приоритету</option></select></label><label class="filter"><span>Порядок</span><select class="control" id="sort-dir"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select></label><button class="button secondary" data-action="export">Экспорт всей выборки</button></div><div class="card" id="columns-manager" hidden><h2>Видимость колонок</h2><p class="card-sub">Настройка для экранов «Все случаи» и «Очередь разбора».</p><div class="grid"><article class="span-6" id="columns-manager-doc"></article><article class="span-6" id="columns-manager-queue"></article></div></div>
+          <div class="card"><div class="table-wrap sticky-first"><table><caption class="sr-only">Все медицинские документы выбранного среза</caption><thead><tr><th scope="col">Визит</th><th scope="col">Пациент</th><th scope="col">Дата</th><th scope="col">Врач / специальность</th><th scope="col">Филиал</th><th scope="col">Диагноз</th><th scope="col">Тип документа</th><th scope="col">Итог</th><th scope="col">Полнота</th><th scope="col">Надёжность</th><th scope="col">Статус</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
+        </section>
+
+        <section class="page" id="page-doctors" data-page="doctors" hidden aria-labelledby="title-doctors"><div class="page-head"><div><h1 id="title-doctors">Врачи</h1><p>Объём против дельты к ожидаемой оценке. Размер точки - число P0; рейтинг доступен только при n не меньше 20.</p></div></div><div class="grid"><article class="card span-9"><h2>Объём и дельта к ожидаемой</h2><p class="card-sub">Рамкой выделите врачей для группового действия; клик открывает кабинет врача</p><div id="doctor-scatter-chart"></div></article><article class="card span-3"><h2>Выбранные врачи</h2><div id="doctor-selection-flow" class="empty">Выделите точки рамкой. Действие не выполняется автоматически.</div></article></div><div class="card"><div class="table-wrap"><table><thead><tr><th>Врач</th><th>Специальность</th><th>n</th><th>Дельта</th><th>95% ДИ</th><th>P0</th></tr></thead><tbody id="doctor-rows"></tbody></table></div></div></section>
+        <section class="page" id="page-specialties" data-page="specialties" hidden aria-labelledby="title-specialties"><div class="page-head"><div><h1 id="title-specialties">Специальности</h1><p>Распределение оценок внутри сопоставимых групп; клик переходит к врачам специальности.</p></div></div><div class="card"><h2>Диапазон оценок по специальностям</h2><div id="specialty-boxplot-chart"></div></div><div id="specialty-attention"></div></section>
+        <section class="page" id="page-diagnoses" data-page="diagnoses" hidden aria-labelledby="title-diagnoses"><div class="page-head"><div><h1 id="title-diagnoses">Диагнозы и МКБ</h1><p>Площадь - объём, цвет - средняя оценка. Клик по коду открывает связанные случаи.</p></div></div><div class="card"><h2>Главы и коды МКБ</h2><div id="icd-treemap-chart"></div></div><div id="diagnosis-findings"></div></section>
+        <section class="page" id="page-safety" data-page="safety" hidden aria-labelledby="title-safety"><div class="page-head"><div><h1 id="title-safety">Безопасность</h1><p>Динамика замечаний по приоритету и маркеры инцидентов P0.</p></div></div><div class="kpis" id="safety-kpis"></div><div class="card"><h2>Приоритеты по дням</h2><p class="card-sub">Автоматическое замечание не является медицинским решением</p><div id="safety-severity-chart"></div><div id="safety-list"></div></div></section>
+        <section class="page" id="page-doctor-cabinet" data-page="doctor-cabinet" hidden aria-labelledby="title-doctor-cabinet"><div class="page-head"><div><h1 id="title-doctor-cabinet">Кабинет врача</h1><p>Свои записи, замечания с источниками, рекомендации по исправлению и оспаривание.</p></div></div><div id="doctor-cabinet-unavailable" class="card">Выберите врача на диаграмме. Прямой вход врача доступен только при настроенной доверенной серверной идентификации.</div><div id="doctor-cabinet-content" hidden><div class="kpis" id="doctor-cabinet-kpis"></div><div class="grid"><article class="card span-7"><h2>Записи и замечания</h2><div id="doctor-cabinet-records"></div></article><article class="card span-5"><h2>Что исправить</h2><div id="doctor-cabinet-actions"></div><h2>Шаблонные пары</h2><div id="doctor-template-pairs"></div></article></div></div></section>
+        <section class="page" id="page-access-log" data-page="access-log" hidden aria-labelledby="title-access-log"><div class="page-head"><div><h1 id="title-access-log">Журнал доступа</h1><p>Открытие персональных кабинетов и выгрузок. Доступно только администратору.</p></div></div><div class="card" id="access-log-content">Для просмотра требуется роль администратора.</div></section>
+        <section class="page" id="page-data-quality" data-page="data-quality" hidden aria-labelledby="title-data-quality"><div class="page-head"><div><h1 id="title-data-quality">Качество данных</h1><p>Свежесть, полнота, дубли, расхождения дат и состояние повторной обработки.</p></div></div><div class="kpis" id="quality-kpis"></div><div class="grid"><article class="card span-7"><h2>Показатели загрузки</h2><div class="bars" id="quality-chart"></div></article><article class="card span-5"><h2>Предупреждения</h2><div id="quality-warnings"></div></article><article class="card span-12"><h2>Готовность компонентов</h2><p class="card-sub">Витрина, отчёты, pipeline и источник клинического текста проверяются независимо</p><div class="health-components" id="health-components"></div></article></div></section>
+        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports">
+          <div class="page-head"><div><h1 id="title-reports">Отчёты</h1><p>Ежедневные отчёты, свежесть данных и быстрый переход к разбору.</p></div></div>
+          <div class="section-actions">
+            <button class="button" data-action="export-aggregates">Создать сводку</button>
+            <button class="button secondary" data-action="export">Экспорт данных</button>
+            <button class="button secondary" id="print-report">Печать / PDF</button>
+            <button class="button secondary" id="open-briefing-html">Брифинг HTML</button>
+            <button class="button secondary" data-go="yesterday">Открыть вчера</button>
+          </div>
+          <div class="kpis" id="report-kpis"></div>
+          <div class="card"><h2>Готовые ежедневные отчёты</h2><p class="card-sub">Клик открывает отчёт за выбранный день на экране «Вчера»</p><div class="report-grid" id="report-list"></div></div>
+        </section>
+        <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">
+          <div class="page-head"><div><h1 id="title-settings">Настройки и методика</h1><p>Рабочие представления, отображение таблиц и прозрачные правила оценки.</p></div></div>
+          <div class="grid">
+            <article class="card span-6"><h2>Сохранённые представления</h2><p class="card-sub">Личные представления хранят текущие фильтры и страницу.</p><div id="view-manager"></div></article>
+            <article class="card span-6">
+              <h2>Интерфейс</h2>
+              <div class="settings-stack">
+                <label class="filter"><span>Методика на графиках</span><select class="control" id="methodology"><option value="v3" selected>v3 - текущая</option><option value="v4">v4 - проверка</option></select></label>
+                <p class="card-sub">v4 станет основной после двойной экспертной разметки и приёмки.</p>
+                <label class="filter"><span>Плотность таблиц</span><select class="control" id="density"><option value="comfortable">Комфортная</option><option value="compact">Компактная</option></select></label>
+                <div>
+                  <h2>Администратор</h2>
+                  <p class="card-sub">Отдельный токен хранится только до закрытия вкладки.</p>
+                  <label class="filter"><span>Админ-токен</span><input class="control" id="admin-token-input" type="password" autocomplete="off"></label>
+                  <button class="button secondary" id="admin-token-save" type="button">Сохранить для сессии</button>
+                </div>
+              </div>
+            </article>
+            <article class="card span-12"><h2>Как определяется оценка</h2><p class="card-sub">Оси, пороги и правила приоритета клинического риска</p><div id="scoring-method"><div class="skeleton"></div></div></article>
+            <article class="card span-12"><h2>Расходы AI</h2><p class="card-sub">Токены, стоимость и задержка каждого ночного прогона</p><div id="llm-costs"><div class="skeleton"></div></div></article>
+          </div>
+        </section>
+      </main>
+    </div>
+  </div>
+
+  <section class="auth" id="auth" hidden aria-labelledby="auth-title">
+    <h1 id="auth-title">Вход врача-эксперта</h1>
+    <p>Доступны отчёт за вчера и дневные отчёты с августа 2026. Решения сохраняются для обучения модели.</p>
+    <label for="expert-login-input">Логин</label>
+    <input id="expert-login-input" type="text" autocomplete="username">
+    <label for="expert-password-input">Пароль</label>
+    <input id="expert-password-input" type="password" autocomplete="current-password">
+    <button class="button" id="expert-login-submit" type="button">Войти</button>
+    <label for="token-input" hidden>Токен методиста</label>
+    <input id="token-input" type="password" autocomplete="off" hidden>
+    <button class="button" id="token-submit" type="button" hidden>Войти</button>
+    <p id="auth-error" role="alert"></p>
+  </section>
+
+  <div class="drawer-backdrop" id="drawer-backdrop" hidden></div>
+  <aside class="drawer case-workspace" id="case-drawer" role="dialog" aria-modal="true" aria-labelledby="drawer-title" hidden>
+    <header class="drawer-head"><div><h2 id="drawer-title">Разбор случая</h2><div class="card-sub" id="drawer-subtitle"></div></div><button class="button secondary icon" id="drawer-close" aria-label="Закрыть разбор">×</button></header>
+    <div class="drawer-body" id="drawer-body" tabindex="0"></div>
+  </aside>
+  <div class="dialog-backdrop" id="command-backdrop" hidden></div>
+  <section class="command-palette" id="command-palette" role="dialog" aria-modal="true" aria-labelledby="command-title" hidden>
+    <h2 id="command-title">Быстрые команды</h2>
+    <label class="sr-only" for="command-search">Найти команду</label>
+    <input class="control" id="command-search" type="search" placeholder="Экран, период или представление" autocomplete="off">
+    <div id="command-results" role="listbox" aria-label="Доступные команды"></div>
+  </section>
+  <div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>
+  <div class="sr-only" id="announcer" aria-live="polite"></div>
+
+  <script src="/mo-api.js" defer></script>
+  <script src="/vendor/echarts.min.js" defer></script>
+  <script src="/mo-charts.js" defer></script>
+  <script src="/mo-app.js" defer></script>
+</body>
+</html>

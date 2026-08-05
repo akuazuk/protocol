@@ -10,6 +10,12 @@
     var request = MO.api.request;
     var token = MO.api.token;
     var headers = MO.api.headers;
+    var isExpertMode = function () { return !!(MO.api.isExpertAudience && MO.api.isExpertAudience()); };
+    var hasSession = function () {
+      if (isExpertMode()) return !!(MO.api.expertToken && MO.api.expertToken());
+      return !!token();
+    };
+    var EXPERT_PAGES = { yesterday: true, reports: true };
     var state = {
       page: "overview", period: "month", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       sortBy: "date", sortDir: "desc",
@@ -17,7 +23,8 @@
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
       caseDetail: null, supersedesPackId: "",
       drillTrail: [], drillSnapshot: null,
-      columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false
+      columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false,
+      expertDisplayName: ""
     };
     var PAGE_TITLES = {
       overview: "Обзор МО", yesterday: "Отчёт за вчера", queue: "Очередь разбора",
@@ -52,10 +59,12 @@
       if (theme) document.documentElement.dataset.theme = theme;
       else delete document.documentElement.dataset.theme;
       document.documentElement.dataset.density = density;
-      $("density").value = density;
+      if ($("density")) $("density").value = density;
       var dark = theme === "dark" || (!theme && window.matchMedia("(prefers-color-scheme: dark)").matches);
-      $("theme-toggle").setAttribute("aria-pressed", dark ? "true" : "false");
-      $("theme-toggle").setAttribute("aria-label", dark ? "Включить светлую тему" : "Включить тёмную тему");
+      if ($("theme-toggle")) {
+        $("theme-toggle").setAttribute("aria-pressed", dark ? "true" : "false");
+        $("theme-toggle").setAttribute("aria-label", dark ? "Включить светлую тему" : "Включить тёмную тему");
+      }
     }
     function esc(value) {
       return String(value == null ? "" : value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
@@ -531,17 +540,29 @@
     function syncUrl(replace) {
       var q = query();
       q.set("page", state.page);
-      var path = state.page === "yesterday" ? "/methodist/mo/yesterday" :
-        (state.page === "queue" || state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
+      var path;
+      if (isExpertMode()) {
+        path = state.page === "reports" ? "/methodist/expert/reports" : "/methodist/expert/yesterday";
+      } else {
+        path = state.page === "yesterday" ? "/methodist/mo/yesterday" :
+          (state.page === "queue" || state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
+      }
       var url = path + "?" + q.toString();
       history[replace ? "replaceState" : "pushState"]({ page: state.page }, "", url);
     }
     function readUrl() {
       var q = new URLSearchParams(location.search);
-      var pathPage = location.pathname.endsWith("/yesterday") ? "yesterday" :
-        (location.pathname.endsWith("/cases") ? "documents" : "overview");
+      var pathPage;
+      if (isExpertMode()) {
+        pathPage = location.pathname.indexOf("/reports") >= 0 ? "reports" : "yesterday";
+      } else {
+        pathPage = location.pathname.endsWith("/yesterday") ? "yesterday" :
+          (location.pathname.endsWith("/cases") ? "documents" : "overview");
+      }
       state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : pathPage;
-      state.period = q.get("period") || "month"; state.compare = q.get("compare_period") || "previous";
+      if (isExpertMode() && !EXPERT_PAGES[state.page]) state.page = "yesterday";
+      state.period = q.get("period") || (isExpertMode() ? "yesterday" : "month");
+      state.compare = q.get("compare_period") || "previous";
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
       state.search = q.get("q") || "";
       state.findingCode = q.get("finding_codes") || "";
@@ -550,13 +571,15 @@
       Object.keys(state.selected).forEach(function (key) {
         state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(",").filter(Boolean);
       });
-      $("period").value = state.period; $("compare").value = state.compare;
-      $("date-from").value = state.dateFrom; $("date-to").value = state.dateTo;
-      $("case-search").value = state.search;
-      $("sort-by").value = state.sortBy;
-      $("sort-dir").value = state.sortDir;
-      $("date-from-wrap").hidden = state.period !== "custom";
-      $("date-to-wrap").hidden = state.period !== "custom";
+      if ($("period")) $("period").value = state.period;
+      if ($("compare")) $("compare").value = state.compare;
+      if ($("date-from")) $("date-from").value = state.dateFrom;
+      if ($("date-to")) $("date-to").value = state.dateTo;
+      if ($("case-search")) $("case-search").value = state.search;
+      if ($("sort-by")) $("sort-by").value = state.sortBy;
+      if ($("sort-dir")) $("sort-dir").value = state.sortDir;
+      if ($("date-from-wrap")) $("date-from-wrap").hidden = state.period !== "custom";
+      if ($("date-to-wrap")) $("date-to-wrap").hidden = state.period !== "custom";
       updateFilterSummary();
     }
     function filtersChanged() {
@@ -569,7 +592,8 @@
       renderAnalysisRail();
     }
     function switchPage(page, push) {
-      if (!PAGE_TITLES[page]) page = "overview";
+      if (!PAGE_TITLES[page]) page = isExpertMode() ? "yesterday" : "overview";
+      if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
       state.page = page;
       document.querySelectorAll(".page").forEach(function (section) { section.hidden = section.getAttribute("data-page") !== page; });
       document.querySelectorAll(".nav-button").forEach(function (button) {
@@ -1955,14 +1979,38 @@
             button.closest("li").hidden = capabilities.pages[page] === false;
           }
         });
+        document.querySelectorAll(".nav-section-label").forEach(function (label) {
+          var anyVisible = false;
+          var next = label.nextElementSibling;
+          while (next && !next.classList.contains("nav-section-label")) {
+            if (!next.hidden) anyVisible = true;
+            next = next.nextElementSibling;
+          }
+          label.hidden = !anyVisible;
+        });
+        if (isExpertMode()) {
+          document.querySelectorAll('[data-go="queue"]').forEach(function (el) { el.hidden = true; });
+          document.querySelectorAll('[data-action="export-aggregates"], [data-action="export"], #print-report, #open-briefing-html').forEach(function (el) {
+            el.hidden = true;
+          });
+          var minDate = capabilities.reports_min_date;
+          if (minDate && $("title-reports")) {
+            var sub = $("page-reports") && $("page-reports").querySelector(".page-head p");
+            if (sub) sub.textContent = "Ежедневные отчёты с " + minDate + ". Клик открывает день на экране «Вчера».";
+          }
+          if ($("expert-user-label")) {
+            $("expert-user-label").textContent = state.expertDisplayName || capabilities.role || "Эксперт";
+          }
+        }
       } catch (error) {}
     }
     async function loadReports() {
-      var responses = await Promise.all([
+      var jobs = [
         request("/reports", "/dynamics"),
-        request("/freshness?" + query().toString(), "/dynamics"),
-        request("/month-report?" + query().toString(), "__root__")
-      ]);
+        request("/freshness?" + query().toString(), "/dynamics")
+      ];
+      if (!isExpertMode()) jobs.push(request("/month-report?" + query().toString(), "__root__"));
+      var responses = await Promise.all(jobs);
       var response = responses[0], freshnessResponse = responses[1], monthResponse = responses[2];
       if (!response.ok) throw new Error("Не удалось загрузить список отчётов.");
       var data = await response.json(), items = data.items || [];
@@ -1974,9 +2022,11 @@
           kpi("Свежесть", freshness.status === "fresh" ? "Актуально" : (freshness.status || "Нет данных"),
             "лаг " + (freshness.lag_days == null ? "н/д" : freshness.lag_days + " дн.")) +
           kpi("Данные до", freshness.data_through || "н/д", "Europe/Minsk") +
-          kpi("Отчётов в списке", items.length, "ежедневные готовые срезы") +
-          kpi("Оценено за месяц", ((month.kpi || {}).evaluated != null ? month.kpi.evaluated : "н/д"),
-            score((month.kpi || {}).avg_score));
+          kpi("Отчётов в списке", items.length, isExpertMode() ? ("с " + (data.min_date || "2026-08-01")) : "ежедневные готовые срезы") +
+          (isExpertMode()
+            ? kpi("Роль", "Эксперт", "разбор и обучение")
+            : kpi("Оценено за месяц", ((month.kpi || {}).evaluated != null ? month.kpi.evaluated : "н/д"),
+              score((month.kpi || {}).avg_score)));
       }
       if (!items.length) {
         $("report-list").innerHTML = '<div class="empty">Готовых отчётов пока нет. Дождитесь утреннего приёма данных.</div>';
@@ -2573,12 +2623,63 @@
           else if (!event.shiftKey && document.activeElement === last) { event.preventDefault(); first.focus(); }
         }
       });
-      $("token-submit").addEventListener("click", function () {
-        var value = $("token-input").value.trim();
-        if (!value) { $("auth-error").textContent = "Введите токен."; return; }
-        try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
-        setAuth(false); loadCapabilities(); loadPage(state.page);
-      });
+      if ($("token-submit")) {
+        $("token-submit").addEventListener("click", function () {
+          var value = $("token-input").value.trim();
+          if (!value) { $("auth-error").textContent = "Введите токен."; return; }
+          try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
+          setAuth(false); loadCapabilities(); loadPage(state.page);
+        });
+      }
+      if ($("expert-login-submit")) {
+        $("expert-login-submit").addEventListener("click", async function () {
+          var login = ($("expert-login-input") && $("expert-login-input").value || "").trim();
+          var password = ($("expert-password-input") && $("expert-password-input").value || "").trim();
+          if (!login || !password) {
+            $("auth-error").textContent = "Введите логин и пароль.";
+            return;
+          }
+          $("auth-error").textContent = "";
+          try {
+            var response = await fetch("/api/expert/login", {
+              method: "POST",
+              headers: { Accept: "application/json", "Content-Type": "application/json" },
+              body: JSON.stringify({ login: login, password: password })
+            });
+            var data = await response.json().catch(function () { return {}; });
+            if (!response.ok) {
+              $("auth-error").textContent = data.detail || "Неверный логин или пароль.";
+              return;
+            }
+            MO.api.setExpertToken(data.session_token || "");
+            state.expertDisplayName = data.display_name || data.login || login;
+            if ($("expert-password-input")) $("expert-password-input").value = "";
+            setAuth(false);
+            await loadCapabilities();
+            switchPage(state.page || "yesterday", false);
+          } catch (error) {
+            $("auth-error").textContent = "Не удалось войти. Проверьте сеть и повторите.";
+          }
+        });
+        if ($("expert-password-input")) {
+          $("expert-password-input").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") $("expert-login-submit").click();
+          });
+        }
+      }
+      if ($("expert-logout")) {
+        $("expert-logout").addEventListener("click", async function () {
+          try {
+            await fetch("/api/expert/logout", {
+              method: "POST",
+              headers: headers()
+            });
+          } catch (error) {}
+          MO.api.clearExpertToken();
+          state.expertDisplayName = "";
+          setAuth(true, "Сессия завершена.");
+        });
+      }
       window.addEventListener("popstate", function () { readUrl(); renderChips(); switchPage(state.page, false); });
       renderSavedViews(); refreshSavedViews();
     }
@@ -2588,9 +2689,27 @@
       renderChips();
       renderAnalysisRail();
       ensureColumnState();
-      $("columns-manager").hidden = true;
-      if (!token()) setAuth(true);
-      else { setAuth(false); await loadCapabilities(); switchPage(state.page, false); }
+      if ($("columns-manager")) $("columns-manager").hidden = true;
+      if (!hasSession()) setAuth(true);
+      else {
+        setAuth(false);
+        if (isExpertMode()) {
+          try {
+            var statusResponse = await fetch("/api/expert/status", { headers: headers() });
+            if (statusResponse.ok) {
+              var status = await statusResponse.json();
+              if (status.authenticated) state.expertDisplayName = status.display_name || status.login || "";
+              else {
+                MO.api.clearExpertToken();
+                setAuth(true);
+                return;
+              }
+            }
+          } catch (error) {}
+        }
+        await loadCapabilities();
+        switchPage(state.page, false);
+      }
     }
     MO.app = Object.freeze({ init: init, switchPage: switchPage, showToast: showToast });
     init();

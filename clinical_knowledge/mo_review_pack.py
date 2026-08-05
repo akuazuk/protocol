@@ -320,6 +320,13 @@ def save_review_pack(
     if not cid:
         raise ValueError("case_id_required")
     decision_norm = _normalize_decision(decision)
+    if role == "expert":
+        decision_norm["source"] = "expert"
+        decision_norm["training_use"] = True
+        if not str(actor or "").startswith("expert:"):
+            actor = f"expert:{actor}"
+    else:
+        decision_norm.setdefault("source", "methodist")
     detail = build_case_detail(cid, month=month)
     if not detail.get("ok"):
         raise ValueError("case_not_found")
