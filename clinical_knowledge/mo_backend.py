@@ -1362,7 +1362,10 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         {**row, "statistically_distinct": (row.get("delta_ci95") or {}).get("high") is not None
          and float(row["delta_ci95"]["high"]) < 0}
         for row in doctor_rows
-        if row.get("enough_data") and row.get("delta") is not None and float(row["delta"]) < -10
+        if row.get("enough_data")
+        and row.get("case_mix_reliable")
+        and row.get("delta") is not None
+        and float(row["delta"]) < -10
     ][:50]
     doctor_contract = {
         "available": bool(outliers),
@@ -3289,7 +3292,13 @@ def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
         for item in items:
             item["p0_cases"] = p0.get(str(item["key"]), 0) if not item.get("suppressed") else None
             item["drilldown"] = {"level": "doctor", "id": item["key"]}
-        ranked = [item for item in items if item.get("enough_data") and not item.get("suppressed")]
+        ranked = [
+            item
+            for item in items
+            if item.get("enough_data")
+            and item.get("case_mix_reliable")
+            and not item.get("suppressed")
+        ]
         ranked.sort(key=lambda item: float(item["delta"]))
         result.update(
             {
