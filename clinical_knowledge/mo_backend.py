@@ -3842,8 +3842,69 @@ def get_export(*, actor: str, job_id: str) -> Path:
     return path
 
 
+def _llm_night_coverage(date_from: date, date_to: date) -> list[dict[str, Any]]:
+    """Покрытие night-queue и action-judge по дням (из артефактов на диске)."""
+    rows: list[dict[str, Any]] = []
+    day = date_from
+    while day <= date_to:
+        y, m, d = day.isoformat()[:4], day.isoformat()[5:7], day.isoformat()[8:10]
+        queue_n = grades_ok = grades_err = judges = 0
+        for root in _medical_exam_roots():
+            secure = root / "secure_cases" / y / m
+            queue_path = secure / f"kz_l1_{day.isoformat()}_llm_queue.json"
+            grades_path = secure / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
+            judge_path = root / "llm_action_judge" / y / m / d / "judges.jsonl"
+            if queue_path.is_file():
+                try:
+                    payload = json.loads(queue_path.read_text(encoding="utf-8"))
+                except (OSError, json.JSONDecodeError):
+                    payload = {}
+                if isinstance(payload, dict):
+                    ids = payload.get("visit_ids") or payload.get("queue") or []
+                    queue_n = max(queue_n, len(ids) if isinstance(ids, list) else int(payload.get("n") or 0))
+                elif isinstance(payload, list):
+                    queue_n = max(queue_n, len(payload))
+            if grades_path.is_file():
+                ok = err = 0
+                try:
+                    for line in grades_path.read_text(encoding="utf-8").splitlines():
+                        if not line.strip():
+                            continue
+                        if '"_error"' in line or '"error"' in line:
+                            err += 1
+                        else:
+                            ok += 1
+                except OSError:
+                    ok = err = 0
+                grades_ok = max(grades_ok, ok)
+                grades_err = max(grades_err, err)
+            if judge_path.is_file():
+                try:
+                    judges = max(
+                        judges,
+                        sum(1 for line in judge_path.read_text(encoding="utf-8").splitlines() if line.strip()),
+                    )
+                except OSError:
+                    pass
+        pending = max(0, queue_n - grades_ok)
+        rows.append(
+            {
+                "date": day.isoformat(),
+                "queue": queue_n,
+                "grades_ok": grades_ok,
+                "grades_error": grades_err,
+                "pending": pending,
+                "action_judges": judges,
+                "night_complete": queue_n > 0 and pending == 0,
+            }
+        )
+        day += timedelta(days=1)
+    return rows
+
+
 def build_llm_costs(params: dict[str, Any]) -> dict[str, Any]:
     resolved = _resolve_request_period(params)
+    coverage = _llm_night_coverage(resolved.current.date_from, resolved.current.date_to)
     with closing(_read_connection()) as conn:
         table_exists = conn.execute(
             "SELECT 1 FROM sqlite_master WHERE type='table' AND name='fact_llm_usage'"
@@ -3857,6 +3918,7 @@ def build_llm_costs(params: dict[str, Any]) -> dict[str, Any]:
                 "total_usd": 0.0,
                 "calls": 0,
                 "items": [],
+                "coverage": coverage,
             }
         date_values = (
             resolved.current.date_from.isoformat(),
@@ -3894,6 +3956,14 @@ def build_llm_costs(params: dict[str, Any]) -> dict[str, Any]:
         "total_usd": total,
         "cost_per_case_usd": round(total / cases, 6) if cases else None,
         "items": [dict(row) for row in rows],
+        "coverage": coverage,
+        "coverage_summary": {
+            "days": len(coverage),
+            "night_complete_days": sum(1 for row in coverage if row.get("night_complete")),
+            "grades_ok": sum(int(row.get("grades_ok") or 0) for row in coverage),
+            "pending": sum(int(row.get("pending") or 0) for row in coverage),
+            "action_judges": sum(int(row.get("action_judges") or 0) for row in coverage),
+        },
     }
 
 

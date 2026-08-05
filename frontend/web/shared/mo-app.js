@@ -2100,14 +2100,26 @@
           "</td><td>$" + Number(item.cost_usd || 0).toFixed(4) + "</td><td>" +
           fmt(item.avg_latency_ms) + " мс</td></tr>";
       }).join("");
+      var cov = costs.coverage_summary || {};
+      var covRows = (costs.coverage || []).map(function (item) {
+        return "<tr><td>" + esc(item.date) + "</td><td>" + fmt(item.queue) +
+          "</td><td>" + fmt(item.grades_ok) + "</td><td>" + fmt(item.grades_error) +
+          "</td><td>" + fmt(item.pending) + "</td><td>" + fmt(item.action_judges) +
+          "</td><td>" + (item.night_complete ? "да" : "нет") + "</td></tr>";
+      }).join("");
       $("llm-costs").innerHTML =
         '<div class="kpi-row"><div class="kpi"><span>Вызовы</span><b>' + fmt(costs.calls) +
         '</b></div><div class="kpi"><span>Случаи</span><b>' + fmt(costs.cases) +
         '</b></div><div class="kpi"><span>Итого</span><b>$' +
         Number(costs.total_usd || 0).toFixed(4) + '</b></div><div class="kpi"><span>На случай</span><b>$' +
         Number(costs.cost_per_case_usd || 0).toFixed(4) +
+        '</b></div><div class="kpi"><span>Night OK</span><b>' + fmt(cov.grades_ok) +
+        '</b></div><div class="kpi"><span>В очереди</span><b>' + fmt(cov.pending) +
+        '</b></div><div class="kpi"><span>Action-judge</span><b>' + fmt(cov.action_judges) +
         '</b></div></div><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Тир</th><th>Модель</th><th>Вызовы</th><th>Токены вход / выход</th><th>Стоимость</th><th>Задержка</th></tr></thead><tbody>' +
         (rows || '<tr><td colspan="7">LLM-вызовов за период не было.</td></tr>') +
+        '</tbody></table></div><h3>Покрытие night LLM и action-judge</h3><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Очередь</th><th>OK</th><th>Ошибки</th><th>Осталось</th><th>Judge</th><th>Готово</th></tr></thead><tbody>' +
+        (covRows || '<tr><td colspan="7">Нет артефактов night LLM за период.</td></tr>') +
         '</tbody></table></div>';
     }
     async function loadPage(page) {

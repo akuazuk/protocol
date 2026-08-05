@@ -350,11 +350,15 @@ def main() -> int:
                 if args.warehouse:
                     from clinical_knowledge.mo_llm_usage import record_llm_usage
 
+                    visit_day = str(
+                        c.get("visit_date") or c.get("date") or ""
+                    ).strip()[:10] or None
                     for call in res.get("_llm_calls") or []:
                         record_llm_usage(
                             args.warehouse,
                             run_id=args.run_id or f"llm-{args.out.stem}",
                             case_id=vid,
+                            usage_date=visit_day,
                             **call,
                         )
                 fout.write(json.dumps(res, ensure_ascii=False) + "\n")

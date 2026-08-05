@@ -52,7 +52,8 @@
 - [x] P3: action-judge batch 2026-08-01..04 на Render disk
 - [x] P4: continuous: `run_mo_render_llm_backfill.sh` + post-step launchd `llm-yesterday`
 - [x] P5: doctor charts: `enough_data` без жёсткого R²; фильтры facets на месте
-- [ ] P6: BUILD_VERSION r15, PR, merge; дождаться night LLM backfill 08-01..04
+- [x] P5b: `usage_date` = visit_date; таблица покрытия night/action-judge в «Расходы AI»
+- [ ] P6: BUILD_VERSION r16, PR #17 merge; night LLM backfill 08-01..04 на Render (в процессе)
 
 ---
 
