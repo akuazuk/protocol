@@ -40,10 +40,28 @@ _GAP_SKIP_PREFIXES = (
 
 # Жёсткий блок путей каталога по специальности случая.
 _SPECIALTY_PATH_BLOCK: dict[str, tuple[str, ...]] = {
-    "urolog": ("stomatolog", "chelust", "челюст", "zabolevaniya_chelust", "zub"),
-    "уролог": ("stomatolog", "chelust", "челюст", "zabolevaniya_chelust", "zub"),
-    "neurolog": ("stomatolog", "chelust", "akusher", "ginekolog"),
-    "невролог": ("stomatolog", "chelust", "akusher", "ginekolog"),
+    "urolog": (
+        "stomatolog",
+        "chelust",
+        "челюст",
+        "zabolevaniya_chelust",
+        "zub",
+        "области рта",
+        "область рта",
+        "члх",
+    ),
+    "уролог": (
+        "stomatolog",
+        "chelust",
+        "челюст",
+        "zabolevaniya_chelust",
+        "zub",
+        "области рта",
+        "область рта",
+        "члх",
+    ),
+    "neurolog": ("stomatolog", "chelust", "akusher", "ginekolog", "челюст", "члх"),
+    "невролог": ("stomatolog", "chelust", "akusher", "ginekolog", "челюст", "члх"),
 }
 
 
@@ -150,6 +168,10 @@ def build_case_fact_graph(
         record.get("specialty")
         or record.get("specialization")
         or record.get("doctor_specialty")
+        or record.get("doctor_specialization")
+        or clinical.get("doctor_specialization")
+        or clinical.get("specialty")
+        or clinical.get("specialization")
         or ""
     ).strip()
     specialty_slug = None

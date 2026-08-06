@@ -33,7 +33,8 @@ _PAREN_NSAID_LIST = re.compile(
 )
 _TOPICAL_NEAR = re.compile(
     r"(?:гель|мазь|крем|спрей|пластырь|смазывать|местно|наружно|"
-    r"\bgel\b|\bcream\b|\bointment\b|\btopical\b)",
+    r"свеч(?:и|а|е|ей)?|суппозитор|"
+    r"\bgel\b|\bcream\b|\bointment\b|\btopical\b|\bsuppositor)",
     re.I,
 )
 

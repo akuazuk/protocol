@@ -113,8 +113,9 @@ def test_suggest_blocks_stomatology_for_urologist(monkeypatch) -> None:
             "clinical_diagnosis": "Состояние после циркумцизио",
             "complaints": "боль в ране",
             "treatment_recommendations": 'Ибупрофен ("Кетопрофен" и т.п.)',
+            "doctor_specialization": "Уролог",
         },
-        record={"visit_id": "3650612", "specialty": "Уролог"},
+        record={"visit_id": "3650612"},
         findings=[{"code": "C_nsaid_dup", "title_ru": "Одновременно ≥2 НПВП"}],
         limit=3,
     )
