@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-06-055135Z-case-findings-clarity"
+BUILD_VERSION = "2026-08-06-063204Z-protocol-suggest-titles"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -12136,7 +12136,7 @@ def api_methodist_patient_quality_refresh(request: "Request") -> dict:
 def api_methodist_protocol_search(
     request: "Request",
     q: str = Query("", min_length=2, max_length=120),
-    limit: int = Query(10, ge=1, le=20),
+    limit: int = Query(10, ge=1, le=30),
 ) -> dict:
     """Autocomplete протоколов каталога для разметки retrieval_fix (methodist only)."""
     _require_methodist_auth(request)

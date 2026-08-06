@@ -4,6 +4,7 @@ from clinical_knowledge.case_protocol_suggest import (
     build_case_fact_graph,
     suggest_protocols_for_case,
 )
+from clinical_knowledge.protocol_links import protocol_display_name, title_looks_truncated
 
 
 def test_build_case_fact_graph_extracts_icd_and_complaints() -> None:
@@ -14,12 +15,28 @@ def test_build_case_fact_graph_extracts_icd_and_complaints() -> None:
             "exam_recommendations": "УЗИ",
         },
         record={"visit_id": "v1", "specialty": "Ортопед"},
-        findings=[{"code": "X1", "title_ru": "Нет обоснования диагноза"}],
+        findings=[
+            {"code": "B_dx_no_support", "title_ru": "Нет обоснования диагноза"},
+            {"code": "D_reg55_p0", "title_ru": "Критический дефект по №55"},
+        ],
     )
     assert graph["case_id"] == "v1"
     assert any(d.get("icd", "").startswith("M60") for d in graph["diagnoses"])
     assert "боль в колене" in graph["complaints"]
-    assert graph["gaps"]
+    assert any(g.get("code") == "B_dx_no_support" for g in graph["gaps"])
+    assert not any(str(g.get("code") or "").startswith("D_reg55") for g in graph["gaps"])
+    assert graph["specialty"]["slug"] == "travmatologiya-ortopediya"
+
+
+def test_truncated_registry_title_uses_filename() -> None:
+    assert title_looks_truncated('клинический протокол «Диагностика и лечение')
+    title = protocol_display_name(
+        "minzdrav_protocols/urologiya/KP_cystitis_adult.pdf",
+        registry_title='клинический протокол «Диагностика и лечение',
+        prefer_filename_if_truncated=True,
+    )
+    assert "cystitis" in title.lower() or "KP" in title or "цист" in title.lower() or len(title) > 10
+    assert "Диагностика и лечение" not in title or "»" in title
 
 
 def test_suggest_protocols_returns_contract(monkeypatch) -> None:
@@ -29,11 +46,12 @@ def test_suggest_protocols_returns_contract(monkeypatch) -> None:
         return [
             {
                 "protocol_id": "p1",
-                "title": "Тестовый КП",
-                "source_path": "minzdrav_protocols/test.pdf",
+                "title": 'клинический протокол «Диагностика и лечение',
+                "source_path": "minzdrav_protocols/travmatologiya-ortopediya/KP_myositis.pdf",
                 "match_score": 77.0,
                 "icd_fit": [{"code": "M60", "weight": 1.0}],
                 "icd_fit_label": "M60 (1.00)",
+                "specialty_slug": "travmatologiya-ortopediya",
             }
         ]
 
@@ -42,17 +60,20 @@ def test_suggest_protocols_returns_contract(monkeypatch) -> None:
         _fake_match,
     )
     result = suggest_protocols_for_case(
-        clinical={"clinical_diagnosis": "M60", "complaints": "боль"},
-        record={"visit_id": "v2", "specialty": "Терапевт"},
-        findings=[],
+        clinical={"clinical_diagnosis": "M60 миозит", "complaints": "боль"},
+        record={"visit_id": "v2", "specialty": "Ортопед"},
+        findings=[{"code": "D_reg55_p0", "title_ru": "Критический дефект по №55"}],
         limit=3,
     )
     assert result["ok"] is True
     assert result["available"] is True
-    assert result["engine"] == "case_protocol_suggest_v1"
-    assert result["items"][0]["protocol_id"] == "p1"
-    assert result["items"][0]["match_kind_label"]
-    assert result["items"][0]["reasons"]
-    assert result["items"][0]["viewer_url"].startswith("/proto-viewer.html?path=")
-    assert "minzdrav_protocols" in result["items"][0]["viewer_url"]
-    assert "/proto?" not in result["items"][0]["viewer_url"]
+    assert result["engine"] == "case_protocol_suggest_v2"
+    item = result["items"][0]
+    assert item["protocol_id"] == "p1"
+    assert item["match_kind_label"]
+    assert item["reasons"]
+    assert not any("Критический дефект" in (r.get("text") or "") for r in item["reasons"])
+    assert item["viewer_url"].startswith("/proto-viewer.html?path=")
+    assert item["search_url"].startswith("/doctor/search?q=")
+    assert "Диагностика и лечение" not in item["title"] or "»" in item["title"]
+    assert "/proto?" not in item["viewer_url"]

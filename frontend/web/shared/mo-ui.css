@@ -705,6 +705,14 @@ tbody tr:hover td, tbody tr:focus-within td { background: var(--accent-soft); }
 .protocol-suggest-item .protocol-suggest-meta {
   display: flex; flex-wrap: wrap; gap: 6px; align-items: center; font-size: 12px;
 }
+.protocol-suggest-title { font-size: 14px; line-height: 1.35; }
+.protocol-suggest-title-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-color: color-mix(in srgb, var(--accent) 55%, transparent);
+  text-underline-offset: 2px;
+}
+.protocol-suggest-title-link:hover { color: var(--accent); }
 .protocol-suggest-rates {
   display: flex; flex-wrap: wrap; gap: 10px; font-size: 12px; margin-top: 4px;
 }
