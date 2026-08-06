@@ -1386,12 +1386,13 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
     doctor_rows = _doctor_breakdown(
         DateRange(chosen, chosen), max(5, SUPPRESSION_N), {}
     )
+    # За один день R² case-mix почти всегда < 0.30 - это не повод прятать график.
+    # Порог: enough_data (n) + delta < -10; надёжность case-mix - мягкий флаг в карточке.
     outliers = [
         {**row, "statistically_distinct": (row.get("delta_ci95") or {}).get("high") is not None
          and float(row["delta_ci95"]["high"]) < 0}
         for row in doctor_rows
         if row.get("enough_data")
-        and row.get("case_mix_reliable")
         and row.get("delta") is not None
         and float(row["delta"]) < -10
     ][:50]
@@ -1399,8 +1400,14 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         "available": bool(outliers),
         "items": outliers,
         "sample_gate": max(5, SUPPRESSION_N),
-        "rule": "Дельта ниже -10 п.п.; ожидаемое по специальности; n за день не меньше 5",
+        "rule": "Ожидаемое по специальности, дельта ниже -10 п.п., за день n не меньше 5",
+        "case_mix_soft": True,
     }
+    if outliers and not any(row.get("case_mix_reliable") for row in outliers):
+        doctor_contract["note"] = (
+            "Модель case-mix за день слабая (R² < 0.30) - ожидаемое упрощено до средней "
+            "по специальности; ранжирование ориентировочное"
+        )
     if not outliers:
         doctor_contract["reason"] = "Нет врачей, прошедших порог отклонения и размера выборки"
 

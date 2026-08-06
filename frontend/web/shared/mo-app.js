@@ -1737,6 +1737,9 @@
         $("yesterday-doctor-note").innerHTML = "";
         return;
       }
+      $("yesterday-doctor-note").innerHTML = section.note
+        ? notice("Ожидаемое", section.note, "review")
+        : "";
       var chart = MO.moChart($("yesterday-doctor-chart"), {
         tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, formatter: function (params) {
           var item = items[params[0].dataIndex], ci = item.delta_ci95 || {};
