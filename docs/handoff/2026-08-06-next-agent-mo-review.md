@@ -1,5 +1,9 @@
 # Handoff для следующего агента (другой компьютер)
 
+> **Устарело как точка входа.** Актуальный handoff:
+> [`docs/handoff/2026-08-06-afternoon-next-agent.md`](2026-08-06-afternoon-next-agent.md)
+> (ICD full-document #32, doctor outliers #31, Gemini Render #30, merge runbook).
+
 **Обновлено:** 2026-08-06 ~06:45 UTC+3 (Mac владельца уходит в сон после этого пуша).  
 **Статус сессии на этом Mac:** работа по контуру МО Aug 5-6 **закрыта**; можно `git pull` и продолжать с gaps ниже.  
 Репо: `akuazuk/protocol`. Прод: `https://protocol-bimy.onrender.com`.  
