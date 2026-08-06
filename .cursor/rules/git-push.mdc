@@ -10,6 +10,6 @@ alwaysApply: true
 - Если пользователь попросил коммит: после успешного коммита сразу `git push` без дополнительного вопроса.
 - Никогда не push напрямую в `main` из агентской сессии. Обычный путь: task-ветка -> PR -> merge.
 - Не переиспользуй общую `codex/main-sync` для новых задач.
-- Перед push осмысленных изменений **всегда** поднимай `BUILD_VERSION` в `rag_server.py` (формат `YYYY-MM-DD-rN-описание`, N++), чтобы в футере и `/api/version` была новая версия после деплоя.
+- Перед push осмысленных изменений **всегда** поднимай `BUILD_VERSION` в `rag_server.py` (формат `YYYY-MM-DD-HHMMSSZ` или `…Z-slug`, UTC; см. `build-version.mdc` / `scripts/ops/bump_build_version.sh`), чтобы в футере и `/api/version` была новая версия после деплоя.
 - Если deploy идёт в Render из `main`, release-координатор берёт точный SHA после PR merge из `origin/main` и контролирует именно эту сборку. Прямой promote task-HEAD в `main` - только явно согласованная аварийная процедура.
 - Не считать deploy завершённым, пока `/api/version` в проде не совпал с локальным `BUILD_VERSION`.

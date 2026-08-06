@@ -138,7 +138,8 @@ Gold: packs=0 → export не запускали (только маркер
 
 1. **Не пушить в `main` напрямую** - branch protection. Всегда `cursor/<тема>` + PR.
 2. Перед осмысленным коммитом:
-   - bump `BUILD_VERSION` в `rag_server.py` → `YYYY-MM-DD-rN-kebab` (N++ в рамках даты);
+   - bump `BUILD_VERSION`: `scripts/ops/bump_build_version.sh [slug]`
+     → формат `YYYY-MM-DD-HHMMSSZ[-slug]` (UTC до секунды; старый `rN` не использовать);
    - обновить активный план в `docs/plans/`;
    - UI-тексты: `python3 scripts/normalize_ui_dashes.py` **только на нужные файлы**.
 3. Commit через HEREDOC, без `--no-verify`, без amend чужих коммитов.
