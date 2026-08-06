@@ -477,11 +477,13 @@ def score_regulatory(case: dict) -> tuple[float | None, float, list[EvaluationFi
         worst = "P1" if any(i.get("severity") == "P1" for i in non_p0) else "P2"
         findings.append(EvaluationFinding(
             code="D_reg55_gap", axis="regulatory", severity=worst,
-            kind="regulatory_gap", passed=False,
+            kind="regulatory_defect", passed=False,
             title_ru="Невыполненные критерии качества по постановлению МЗ № 55",
             detail_ru=format_failed_criteria_ru(non_p0),
             source_ref="Пост. №55", trust_level=TRUST_A,
-            penalty_applied=worst == "P1",
+            # Не штрафуем overall: ось regulatory уже отражает долю критериев.
+            # Замечание нужно методисту для разбора, без второго штрафа.
+            penalty_applied=False,
             needs_human=True,
         ))
     coverage = 1.0 if score is not None else 0.0
