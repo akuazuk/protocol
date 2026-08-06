@@ -74,26 +74,68 @@ def beautify_protocol_title(raw: str | None) -> str:
     return expand_protocol_title_abbreviations(name)
 
 
+_RE_GENERIC_DIAG_TX = re.compile(
+    r"(?is)^клинический\s+протокол\s*«?\s*диагностика\s+и\s+лечение\b"
+)
+
+
+def title_looks_truncated(title: str | None) -> bool:
+    """OCR/первая строка карточки без полного названия заболевания."""
+    text = str(title or "").strip()
+    if not text:
+        return True
+    if text.count("«") != text.count("»"):
+        return True
+    if text.endswith(("«", "(", ",", ";", "-", "–", "—")):
+        return True
+    if _RE_GENERIC_DIAG_TX.match(text) and ("пациент" in text.lower() or "»" not in text):
+        # Общий заголовок без нозологии или обрезок.
+        if len(text) < 90 or "»" not in text:
+            return True
+    return False
+
+
 def protocol_display_name(
     local_path: str | None,
     fallback: str = "",
     *,
     registry_title: str | None = None,
+    prefer_filename_if_truncated: bool = False,
 ) -> str:
     """Читаемое название протокола для ссылки в UI."""
-    if registry_title and str(registry_title).strip():
-        t = beautify_protocol_title(registry_title)
-        if len(t) >= 6 and t.lower() not in ("протокол", "protocol"):
-            return t
+    file_pretty = ""
     if local_path:
         name = str(local_path).replace("\\", "/").split("/")[-1]
-        pretty = beautify_protocol_title(name)
-        if len(pretty) >= 6:
-            return pretty
-    fb = beautify_protocol_title(fallback) if fallback else ""
-    if len(fb) >= 6:
-        return fb
-    return fb or "Протокол"
+        file_pretty = beautify_protocol_title(name)
+    reg_pretty = beautify_protocol_title(registry_title) if registry_title else ""
+    fb_pretty = beautify_protocol_title(fallback) if fallback else ""
+
+    if prefer_filename_if_truncated:
+        if file_pretty and (
+            title_looks_truncated(reg_pretty)
+            or title_looks_truncated(registry_title)
+            or not reg_pretty
+        ):
+            return file_pretty
+        if reg_pretty and not title_looks_truncated(reg_pretty):
+            return reg_pretty
+        if file_pretty:
+            return file_pretty
+        if fb_pretty:
+            return fb_pretty
+        return "Протокол"
+
+    if registry_title and str(registry_title).strip():
+        t = reg_pretty
+        if len(t) >= 6 and t.lower() not in ("протокол", "protocol"):
+            if prefer_filename_if_truncated and title_looks_truncated(t) and file_pretty:
+                return file_pretty
+            return t
+    if file_pretty and len(file_pretty) >= 6:
+        return file_pretty
+    if len(fb_pretty) >= 6:
+        return fb_pretty
+    return fb_pretty or "Протокол"
 
 
 def normalize_protocol_path(local_path: str | None) -> str | None:

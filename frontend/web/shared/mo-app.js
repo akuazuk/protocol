@@ -1141,18 +1141,29 @@
       }
       var items = (suggest.items || []).map(function (item, index) {
         var pid = item.protocol_id || ("idx-" + index);
-        var reasons = (item.reasons || []).slice(0, 2).map(function (reason) {
+        var reasons = (item.reasons || []).slice(0, 3).map(function (reason) {
           return '<li>' + esc(reason.text || reason.code || "") + '</li>';
         }).join("");
-        var open = item.viewer_url || (item.source_path ? ("/proto-viewer.html?path=" + encodeURIComponent(item.source_path)) : "");
-        if (open.indexOf("/proto?") === 0) {
-          open = "/proto-viewer.html?" + open.slice("/proto?".length);
-        }        return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '">' +
-          '<div><b>' + (index + 1) + ". " + esc(item.title || "Протокол") + '</b></div>' +
+        var viewer = item.viewer_url || (item.source_path ? ("/proto-viewer.html?path=" + encodeURIComponent(item.source_path)) : "");
+        if (viewer.indexOf("/proto?") === 0) {
+          viewer = "/proto-viewer.html?" + viewer.slice("/proto?".length);
+        }
+        var searchUrl = item.search_url || suggest.search_url ||
+          ("/doctor/search?q=" + encodeURIComponent(item.search_query || suggest.search_query || item.title || ""));
+        var titleHtml = viewer
+          ? ('<a class="protocol-suggest-title-link" href="' + esc(viewer) + '" target="_blank" rel="noopener">' +
+            esc(item.title || "Протокол") + '</a>')
+          : esc(item.title || "Протокол");
+        return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '">' +
+          '<div class="protocol-suggest-title"><b>' + (index + 1) + ". " + titleHtml + '</b></div>' +
           '<div class="protocol-suggest-meta"><span class="status review">' +
           esc(item.match_kind_label || item.match_kind || "клиника") + '</span><span>' +
           esc(item.score != null ? (Math.round(Number(item.score)) + " баллов") : "") +
-          '</span>' + (open ? '<a class="button secondary compact" href="' + esc(open) + '" target="_blank" rel="noopener">Открыть КП</a>' : "") +
+          '</span>' +
+          (searchUrl ? '<a class="button secondary compact" href="' + esc(searchUrl) +
+            '" target="_blank" rel="noopener">Открыть КП</a>' : "") +
+          (viewer ? '<a class="button secondary compact" href="' + esc(viewer) +
+            '" target="_blank" rel="noopener">Карточка</a>' : "") +
           '</div>' + (reasons ? '<ul class="llm-judge-bullets">' + reasons + '</ul>' : "") +
           '<div class="protocol-suggest-rates" role="radiogroup" aria-label="Релевантность протокола">' +
           [['relevant','да'],['partial','частично'],['irrelevant','нет'],['unreviewed','не оценил']].map(function (pair) {
@@ -1161,7 +1172,7 @@
           }).join("") + '</div></article>';
       }).join("");
       return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ РБ к случаю</h3>' +
-        '<p class="card-sub">Подбор по МКБ, жалобам и замечаниям. Оцените релевантность - это пойдёт в обучение подбора.</p>' +
+        '<p class="card-sub">Подбор по МКБ, жалобам и клиническим разрывам. Название - прямая ссылка на протокол; «Открыть КП» - поиск по каталогу.</p>' +
         items + '</div>';
     }
     function verdictSelect(id, current) {
