@@ -15,6 +15,8 @@ production. Cursor дополнительно загружает `.cursor/rules/
   источником настроек production.
 - Данные МО production: `/var/data/medical_exams`. Клинические тексты, токены и ID не
   печатать в логах, PR, handoff и ответах.
+- **Gemini / night LLM для МО** - только через Render
+  (`scripts/run_mo_render_llm_backfill.sh`), не с Mac. Перед SSH: VanyaVPN `ensure-off`.
 
 ## 2. Обязательный preflight каждой сессии
 
