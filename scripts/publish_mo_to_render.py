@@ -115,9 +115,13 @@ class Publisher:
             return None
         quoted_db = shlex.quote(remote_db)
         # PRAGMA через sqlite3 CLI: "cid|name|type|..."
+        # Без nested f-string с \" - иначе SyntaxError на Python 3.11 / ruff.
+        pragma = 'PRAGMA table_info("{}");'.format(table)
         script = (
-            f"if [ ! -f {quoted_db} ]; then exit 0; fi; "
-            f"sqlite3 {quoted_db} {shlex.quote(f'PRAGMA table_info(\"{table}\");')}"
+            "if [ ! -f {db} ]; then exit 0; fi; sqlite3 {db} {pragma}".format(
+                db=quoted_db,
+                pragma=shlex.quote(pragma),
+            )
         )
         try:
             out = self.ssh(script, capture=True)
