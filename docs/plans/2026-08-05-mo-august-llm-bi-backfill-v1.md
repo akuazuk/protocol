@@ -56,6 +56,9 @@
 - [x] P6: BUILD_VERSION r16, PR #17 merge + deploy; night LLM backfill 08-01..04 на Render (DONE 80/день)
 - [x] P7: фильтр филиала - `|` + heuristic CSV; r17 (#18)
 - [x] P8: grades 01-04 DONE; recompute fix `2026-08-06-r1-recompute-no-pandas`
+- [ ] P9: день **2026-08-05+** на Render disk (сейчас нет secure/report за 05)
+- [ ] P10: repair **июльского** warehouse (bad doctor_key ~11902/13591)
+- [ ] P11: gold export после ≥50 `training_use` packs (сейчас 0)
 
 ---
 
