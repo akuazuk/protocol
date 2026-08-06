@@ -1,15 +1,19 @@
 #!/usr/bin/env python3
 """Пересобрать отчёты и витрину МО из уже сохранённых артефактов дня.
 
-Без обращения к МИС и без повторной оценки: берём сохранённую партицию
-`raw/YYYY/MM/mo_YYYY-MM-DD.parquet` и оценки
+Без обращения к МИС и без повторной оценки: берём дневной срез
+(`secure_cases/.../mo_YYYY-MM-DD.csv` или parquet / raw parquet) и оценки
 `secure_cases/YYYY/MM/kz_l1_YYYY-MM-DD_cases.jsonl`. Нужен, когда меняется
 методика агрегации (шкала балла, оси, покрытие) и историю надо привести к ней
 же, не тратя выгрузку и LLM.
+
+Production Render не ставит pandas: CSV-путь работает без него. Parquet -
+опциональный fallback, если pandas/pyarrow доступны.
 """
 from __future__ import annotations
 
 import argparse
+import csv
 import json
 import sys
 from datetime import date, timedelta
@@ -21,10 +25,11 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from clinical_knowledge.mo_daily import (  # noqa: E402
-    add_document_taxonomy,
+    SCORED_DOCUMENT_KINDS,
     assess_completeness,
     build_daily_report,
     case_overall_pct,
+    classify_document_kind,
     initialize_warehouse,
     load_jsonl,
     upsert_warehouse,
@@ -81,6 +86,49 @@ def _llm_queue_pending(secure_dir: Path, day: date) -> int:
     return len(queued - graded)
 
 
+def resolve_partition(data_root: Path, day: date) -> Path | None:
+    """Найти дневной срез: CSV на Render, иначе parquet."""
+    secure_dir = data_root / "secure_cases" / f"{day:%Y}" / f"{day:%m}"
+    candidates = [
+        secure_dir / f"mo_{day.isoformat()}.csv",
+        secure_dir / f"mo_{day.isoformat()}.parquet",
+        data_root / "raw" / f"{day:%Y}" / f"{day:%m}" / f"mo_{day.isoformat()}.parquet",
+        data_root / "raw" / f"{day:%Y}" / f"{day:%m}" / f"mo_{day.isoformat()}.csv",
+    ]
+    for path in candidates:
+        if path.is_file():
+            return path
+    return None
+
+
+def _load_rows(path: Path) -> list[dict[str, Any]]:
+    suffix = path.suffix.lower()
+    if suffix == ".csv":
+        with path.open("r", encoding="utf-8-sig", newline="") as handle:
+            rows = [dict(row) for row in csv.DictReader(handle)]
+    elif suffix == ".parquet":
+        try:
+            import pandas as pd
+        except ImportError as exc:
+            raise RuntimeError(
+                f"parquet_requires_pandas:{path} (use secure_cases CSV on Render)"
+            ) from exc
+        rows = pd.read_parquet(path).to_dict(orient="records")
+    else:
+        raise RuntimeError(f"unsupported_partition:{path}")
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        item = {key: value for key, value in row.items() if key != "result_raw"}
+        kind, reason = classify_document_kind(item)
+        item["document_kind"] = kind
+        item["document_kind_reason"] = reason
+        item["mo_score_eligible"] = kind in SCORED_DOCUMENT_KINDS
+        if not item.get("visit_date"):
+            item["visit_date"] = str(item.get("date") or item.get("visit_date_iso_db") or "")[:10]
+        out.append(item)
+    return out
+
+
 def recompute_day(
     day: date,
     *,
@@ -88,15 +136,18 @@ def recompute_day(
     warehouse: Path,
     write_reports: bool = True,
 ) -> dict[str, Any]:
-    import pandas as pd
-
-    partition = data_root / "raw" / f"{day:%Y}" / f"{day:%m}" / f"mo_{day.isoformat()}.parquet"
     secure_dir = data_root / "secure_cases" / f"{day:%Y}" / f"{day:%m}"
     cases_path = secure_dir / f"kz_l1_{day.isoformat()}_cases.jsonl"
-    if not partition.is_file():
+    partition = resolve_partition(data_root, day)
+    if partition is None:
         return {"date": day.isoformat(), "status": "missing_partition"}
-    frame = add_document_taxonomy(pd.read_parquet(partition))
-    raw_rows = frame.drop(columns=["result_raw"], errors="ignore").to_dict(orient="records")
+    if not cases_path.is_file():
+        return {
+            "date": day.isoformat(),
+            "status": "missing_cases",
+            "partition": str(partition),
+        }
+    raw_rows = _load_rows(partition)
     cases = load_jsonl(cases_path)
     report_path = data_root / "reports" / f"{day:%Y}" / f"{day:%m}" / f"{day:%d}" / "report.json"
     previous: dict[str, Any] = {}
@@ -113,7 +164,7 @@ def recompute_day(
         cases,
         day=day,
         run_id=str(previous.get("run_id") or f"recompute-{day.isoformat()}"),
-        revision=int(previous.get("revision") or 1),
+        revision=int(previous.get("revision") or 1) + (1 if write_reports else 0),
         quality=dict(previous.get("quality") or {"passed": True, "recomputed": True}),
         month_to_date=previous.get("month_to_date"),
         comparisons=previous.get("comparisons"),
@@ -126,12 +177,15 @@ def recompute_day(
     return {
         "date": day.isoformat(),
         "status": "success",
+        "partition": str(partition),
         "rows": len(raw_rows),
         "cases": len(cases),
         "avg_score": round(sum(scores) / len(scores), 1) if scores else None,
         "coverage_pct": completeness["coverage_pct"],
         "partial": completeness["partial"],
+        "llm_queue_pending": completeness.get("llm_queue_pending"),
         "was_avg_score": (previous.get("summary") or {}).get("avg_score"),
+        "was_llm_queue_pending": (previous.get("completeness") or {}).get("llm_queue_pending"),
     }
 
 
@@ -175,7 +229,8 @@ def main(argv: list[str] | None = None) -> int:
         for day in _days(args.first_date, args.last_date)
     ]
     print(json.dumps(results, ensure_ascii=False, indent=2))
-    return 0 if all(item["status"] in {"success", "missing_partition"} for item in results) else 1
+    ok = {"success", "missing_partition", "missing_cases"}
+    return 0 if all(item["status"] in ok for item in results) else 1
 
 
 if __name__ == "__main__":
