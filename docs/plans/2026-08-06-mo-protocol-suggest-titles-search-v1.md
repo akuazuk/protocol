@@ -52,30 +52,30 @@ Pending не сбрасывается, пока нет успешных grades +
 
 ### A. LLM catch-up 2026-08-05
 
-- [ ] A1. Local `grade_kz_llm.py` с VanyaVPN (Render Gemini blocked)
+- [ ] A1. Local `grade_kz_llm.py` с VanyaVPN (Render Gemini blocked) - **blocked**: Render `User location is not supported`; local SSL/IPv6 к Gemini
 - [ ] A2. rsync grades → Render secure_cases
 - [ ] A3. `recompute_mo_days.py` на Render / local+publish
 - [ ] A4. Smoke: yesterday advisory без pending или pending=0
 
 ### B. Suggest titles + ranking
 
-- [ ] B1. `suggest_title_ru()`: filename/beautify, если registry title truncated/generic
-- [ ] B2. `specialty_to_rubric` → передавать slug в match (без жёсткого фильтра-only)
-- [ ] B3. Gaps-фильтр: только B_/C_/concordance clinical; не D_reg55*, E_template*
-- [ ] B4. Не ставить specialty-only в top-3, если есть ICD-матчи; поднять limit кандидатов
-- [ ] B5. `viewer_url` + `search_url` + `search_query` в API
+- [x] B1. `suggest_title_ru()`: filename/beautify, если registry title truncated/generic
+- [x] B2. `specialty_to_rubric` → передавать slug в match (с fallback без фильтра)
+- [x] B3. Gaps-фильтр: только клинические; не D_reg55*, E_template*
+- [x] B4. Не ставить specialty-only в top-3, если есть ICD-матчи
+- [x] B5. `viewer_url` + `search_url` + `search_query` в API
 
 ### C. UI
 
-- [ ] C1. Title = ссылка на viewer
-- [ ] C2. Кнопка «Открыть КП» → search_url (`/doctor/search?q=` или index `#search`)
-- [ ] C3. Подпись кнопки уточнить: «Найти в каталоге» (или оставить «Открыть КП» = поиск по ТЗ)
+- [x] C1. Title = ссылка на viewer
+- [x] C2. Кнопка «Открыть КП» → search_url (`/doctor/search?q=`)
+- [x] C3. Доп. кнопка «Карточка» на viewer
 
 ### D. Поиск каталога (methodist_protocol_search)
 
-- [ ] D1. Полные `protocol_display_name` в выдаче
-- [ ] D2. Учитывать МКБ / токены диагноза; больше limit; viewer_url в items
-- [ ] D3. Тесты
+- [x] D1. Полные `protocol_display_name` в выдаче
+- [x] D2. Токены/МКБ; limit до 30; viewer_url в items
+- [x] D3. Тесты suggest
 
 ---
 
