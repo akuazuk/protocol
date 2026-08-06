@@ -1759,7 +1759,10 @@ def upsert_warehouse(
                 )
                 title = str(finding.get("title_ru") or code)
                 detail = str(finding.get("detail_ru") or "").strip()
-                why = detail or f"Замечание «{title}» влияет на полноту и безопасность медицинской записи."
+                why = detail or (
+                    f"«{title}»: автоматическое замечание по правилам оценки МО. "
+                    "Откройте цитату и источник, затем подтвердите или отклоните."
+                )
                 db.execute(
                     """INSERT INTO dim_finding
                        (finding_code,title_ru,why_important_ru,source_ref,axis,
@@ -1923,8 +1926,8 @@ def upsert_warehouse(
                     """INSERT OR IGNORE INTO dim_finding
                        (finding_code,title_ru,why_important_ru,source_ref,axis,
                         default_severity,updated_at)
-                       VALUES ('E_template_copy','Высокая шаблонность записи',
-                        'Требует проверки, что индивидуальные данные пациента отражены полностью.',
+                       VALUES ('E_template_copy','Подозрение на копирование шаблона между случаями',
+                        'Текст МО почти совпадает с другим случаем. Проверьте, что жалобы, статус, диагноз и план индивидуализированы, а не скопированы из шаблона.',
                         'advisory:exact_jaccard_5_shingles_v1','documentation','P2',?)""",
                     (now,),
                 )
@@ -1935,7 +1938,7 @@ def upsert_warehouse(
                 default_severity,updated_at)
                SELECT finding_code,
                       COALESCE(MAX(NULLIF(title_ru,'')),finding_code),
-                      'Замечание требует проверки полноты, согласованности или безопасности медицинской записи.',
+                      'Автоматическое замечание по правилам оценки МО: откройте цитату и источник, затем подтвердите или отклоните.',
                       COALESCE(MAX(source_ref),''),
                       COALESCE(MAX(axis),''),
                       COALESCE(MAX(severity),''),

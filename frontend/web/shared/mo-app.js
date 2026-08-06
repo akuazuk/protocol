@@ -1144,8 +1144,10 @@
         var reasons = (item.reasons || []).slice(0, 2).map(function (reason) {
           return '<li>' + esc(reason.text || reason.code || "") + '</li>';
         }).join("");
-        var open = item.viewer_url || (item.source_path ? ("/proto?path=" + encodeURIComponent(item.source_path)) : "");
-        return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '">' +
+        var open = item.viewer_url || (item.source_path ? ("/proto-viewer.html?path=" + encodeURIComponent(item.source_path)) : "");
+        if (open.indexOf("/proto?") === 0) {
+          open = "/proto-viewer.html?" + open.slice("/proto?".length);
+        }        return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '">' +
           '<div><b>' + (index + 1) + ". " + esc(item.title || "Протокол") + '</b></div>' +
           '<div class="protocol-suggest-meta"><span class="status review">' +
           esc(item.match_kind_label || item.match_kind || "клиника") + '</span><span>' +
@@ -1223,32 +1225,47 @@
         item.date, item.doctor, item.specialty, item.branch
       ].filter(Boolean).join(" · ");
       var rubric = data.rubric_mz || {};
-      var findingsHtml = '<div class="detail-block"><h3>Выявленные замечания</h3>' + (findings.length ? findings.map(function (finding) {
+      var findingsHtml = '<div class="detail-block"><h3>Выявленные замечания</h3>' +
+        '<p class="card-sub">P0 - риск вреда / критический дефект; P1 - клинически важно; P2 - оформление. ' +
+        'Каждое замечание можно подтвердить или отклонить.</p>' +
+        (findings.length ? findings.map(function (finding) {
         var title = finding.title_ru || finding.title || finding.code || "Замечание";
         var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
         var linked = finding.linked_fields || [];
+        var sevLabel = finding.severity_label_ru || finding.severity || "Проверить";
+        var sevTone = finding.severity === "P0" ? "critical" : (finding.severity === "P1" ? "review" : "review");
         var shadowBadge = (finding.is_shadow || finding.shadow) ?
-          '<span class="status review finding-shadow-badge">черновик</span> ' : "";
+          '<span class="status review finding-shadow-badge">черновик</span>' : "";
         var linkHint = finding.link_hint_ru ?
           '<p class="finding-link-hint">' + esc(finding.link_hint_ru) +
           (linked.length ? ' · поля: ' + linked.map(function (field) {
             return '<button type="button" class="linkish" data-focus-clinical="' + esc(field) + '">' +
               esc(clinicalFieldLabel(field)) + '</button>';
           }).join(", ") : "") + '</p>' : "";
-        return notice(finding.severity || "Проверить", shadowBadge + (title || finding.detail_ru || finding.detail || "Требуется ручная проверка"),
-          finding.severity === "P0" ? "critical" : "review") +
-          ((finding.detail_ru || finding.detail) ? '<p>' + esc(finding.detail_ru || finding.detail) + '</p>' : "") +
+        var detailText = finding.detail_ru || finding.detail || "";
+        var sourceText = finding.source_ref_ru || finding.source_ref || "";
+        return '<article class="finding-card">' +
+          '<div class="finding-card-head"><span class="status ' + esc(sevTone) + '">' + esc(sevLabel) + '</span>' +
+          shadowBadge + '</div>' +
+          '<div class="finding-card-title">' + esc(title) + '</div>' +
+          (finding.severity_hint_ru ? '<p class="card-sub finding-sev-hint">' + esc(finding.severity_hint_ru) + '</p>' : "") +
+          (detailText ? '<p class="finding-detail">' + esc(detailText) + '</p>' : "") +
           linkHint +
           (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
           (finding.evidence_span ? '<p class="card-sub">Поле ' + esc(finding.evidence_span.field) +
             ', символы ' + esc(finding.evidence_span.start) + '-' + esc(finding.evidence_span.end) + '</p>' : "") +
-          (finding.source_ref ? '<details><summary>Источник</summary><p>' + esc(finding.source_ref) + "</p></details>" : "") +
-          (finding.code ? '<label class="filter"><span>Решение по замечанию</span><select class="control" data-finding-code="' +
+          (sourceText ? '<details class="finding-source"><summary>Источник и методика</summary><p>' +
+            esc(sourceText) + '</p>' +
+            (finding.source_ref && finding.source_ref !== sourceText ?
+              '<p class="card-sub">Технический код: ' + esc(finding.source_ref) + '</p>' : "") +
+            '</details>' : "") +
+          (finding.code ? '<label class="filter finding-decision"><span>Решение по замечанию</span><select class="control" data-finding-code="' +
             esc(finding.code) + '"><option value="unreviewed"' + (decision === "unreviewed" ? " selected" : "") +
             '>Не проверено</option><option value="confirmed"' + (decision === "confirmed" ? " selected" : "") +
             '>Подтверждено</option><option value="false_positive"' + (decision === "false_positive" ? " selected" : "") +
             '>Отклонено</option><option value="needs_more_data"' + (decision === "needs_more_data" ? " selected" : "") +
-            '>Нужны данные</option></select></label>' : "");
+            '>Нужны данные</option></select></label>' : "") +
+          '</article>';
       }).join("") : '<p>Критических замечаний не найдено.</p>') + '</div>';
       var decisionHtml =
         '<div class="methodist-decision-panel"><h3>Решение методиста</h3>' +
@@ -1264,7 +1281,7 @@
         '<label class="filter"><span>Диагноз</span>' + verdictSelect("drawer-verdict-d", "unreviewed") + '</label>' +
         '<label class="filter"><span>Рекомендации</span>' + verdictSelect("drawer-verdict-r", "unreviewed") + '</label>' +
         '</div>' +
-        '<label class="filter"><span>Развёрнутый разбор</span><textarea class="control" id="drawer-summary" rows="14" maxlength="12000" placeholder="1) С чем согласен / не согласен по полноте&#10;2) Диагноз: подтверждён / сомнителен - почему&#10;3) План: что добавить / убрать&#10;4) Что сказать врачу (1-2 предложения)"></textarea></label>' +
+        '<label class="filter decision-summary-field"><span>Развёрнутый разбор</span><textarea class="control" id="drawer-summary" rows="14" maxlength="12000" placeholder="1) С чем согласен / не согласен по полноте&#10;2) Диагноз: подтверждён / сомнителен - почему&#10;3) План: что добавить / убрать&#10;4) Что сказать врачу (1-2 предложения)"></textarea></label>' +
         '<div class="protocol-suggest-rates" style="margin-top:8px" id="drawer-summary-chips">' +
         [["Ложное срабатывание","Ложное срабатывание модели. "],["Не хватает осмотра","Не хватает данных осмотра. "],["Диагноз не обоснован","Диагноз не обоснован жалобами/осмотром. "],["План неполный","План обследования/лечения неполный. "]].map(function (pair) {
           return '<button class="button secondary compact" type="button" data-summary-chip="' + esc(pair[1]) + '">' + esc(pair[0]) + '</button>';

@@ -112,9 +112,11 @@ def evaluate_reg55(case: dict) -> dict:
                 "title": crit.get("title"),
                 "point": crit.get("point"),
                 "severity": crit.get("severity"),
+                "check": crit.get("check"),
+                "how_checked_ru": _how_checked_ru(crit),
             }
             failed.append(item)
-            if crit.get("severity") in ("P0", "P1"):
+            if crit.get("severity") == "P0":
                 critical_failed.append(item)
 
     pct = round(100.0 * passed / total, 1) if total else None
@@ -128,6 +130,50 @@ def evaluate_reg55(case: dict) -> dict:
         "has_p0_defect": any(f.get("severity") == "P0" for f in failed),
         "by_group": by_group,
     }
+
+
+def _how_checked_ru(crit: dict) -> str:
+    check = crit.get("check")
+    if check == "field_present":
+        field = crit.get("field") or "поле"
+        return f"Проверяется наличие заполненного поля «{field}» в МО/КЗ."
+    if check == "icd10_present":
+        return "В тексте диагноза ищется код МКБ-10 (буква + 2 цифры)."
+    if check == "diagnosis_substantiated":
+        return (
+            "Диагноз считается обоснованным, если есть диагноз и жалобы, "
+            "плюс анамнез или объективный статус."
+        )
+    if check == "alignment_min":
+        return (
+            f"Доля совпадения блока «{crit.get('block')}» с протоколом "
+            "не ниже порога из методики."
+        )
+    if check == "no_manual_review":
+        return (
+            "Проверяется, не направлен ли случай в очередь ручной проверки "
+            "из-за неопределённости модели (это не доказанный red flag)."
+        )
+    return "Автоматическая проверка по правилам постановления № 55."
+
+
+def format_failed_criteria_ru(items: list[dict], *, limit: int = 6) -> str:
+    """Список невыполненных критериев для detail_ru замечания."""
+    lines: list[str] = []
+    for item in (items or [])[:limit]:
+        title = str(item.get("title") or item.get("id") or "критерий")
+        point = str(item.get("point") or "").strip()
+        sev = str(item.get("severity") or "").strip()
+        how = str(item.get("how_checked_ru") or "").strip()
+        bit = title
+        if sev:
+            bit += f" [{sev}]"
+        if point:
+            bit += f" · {point}"
+        if how:
+            bit += f" · {how}"
+        lines.append(bit)
+    return "; ".join(lines)
 
 
 def regulation_meta() -> dict:

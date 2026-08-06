@@ -458,14 +458,33 @@ def score_regulatory(case: dict) -> tuple[float | None, float, list[EvaluationFi
         return None, 0.0, findings
     score = reg55.get("regulatory_compliance_pct")
     if reg55.get("has_p0_defect"):
+        from .reg55_criteria import format_failed_criteria_ru
+
         findings.append(EvaluationFinding(
             code="D_reg55_p0", axis="regulatory", severity="P0",
             kind="regulatory_defect", passed=False,
-            title_ru="Критический дефект по №55",
-            detail_ru="; ".join(
-                f.get("title", "") for f in (reg55.get("critical_failed") or [])[:4]
-            ),
+            title_ru="Критический дефект по постановлению МЗ № 55",
+            detail_ru=format_failed_criteria_ru(reg55.get("critical_failed") or []),
             source_ref="Пост. №55", trust_level=TRUST_A, penalty_applied=True,
+        ))
+    non_p0 = [
+        item for item in (reg55.get("failed") or [])
+        if item.get("severity") != "P0"
+    ]
+    if non_p0:
+        from .reg55_criteria import format_failed_criteria_ru
+
+        worst = "P1" if any(i.get("severity") == "P1" for i in non_p0) else "P2"
+        findings.append(EvaluationFinding(
+            code="D_reg55_gap", axis="regulatory", severity=worst,
+            kind="regulatory_defect", passed=False,
+            title_ru="Невыполненные критерии качества по постановлению МЗ № 55",
+            detail_ru=format_failed_criteria_ru(non_p0),
+            source_ref="Пост. №55", trust_level=TRUST_A,
+            # Не штрафуем overall: ось regulatory уже отражает долю критериев.
+            # Замечание нужно методисту для разбора, без второго штрафа.
+            penalty_applied=False,
+            needs_human=True,
         ))
     coverage = 1.0 if score is not None else 0.0
     return score, coverage, findings

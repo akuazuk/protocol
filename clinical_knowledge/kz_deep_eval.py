@@ -515,11 +515,27 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
         reg55 = evaluate_reg55(case)
         axes["regulatory"] = reg55.get("regulatory_compliance_pct")
         if reg55.get("has_p0_defect"):
+            from .reg55_criteria import format_failed_criteria_ru
+
             findings.append(_finding(
                 "D_reg55_p0", "regulatory", "P0", False,
-                "Критический дефект по №55", detail="; ".join(
-                    f.get("title", "") for f in (reg55.get("critical_failed") or [])[:4]
-                ), source_ref="Пост. №55",
+                "Критический дефект по постановлению МЗ № 55",
+                detail=format_failed_criteria_ru(reg55.get("critical_failed") or []),
+                source_ref="Пост. №55",
+            ))
+        non_p0 = [
+            item for item in (reg55.get("failed") or [])
+            if item.get("severity") != "P0"
+        ]
+        if non_p0:
+            from .reg55_criteria import format_failed_criteria_ru
+
+            worst = "P1" if any(i.get("severity") == "P1" for i in non_p0) else "P2"
+            findings.append(_finding(
+                "D_reg55_gap", "regulatory", worst, False,
+                "Невыполненные критерии качества по постановлению МЗ № 55",
+                detail=format_failed_criteria_ru(non_p0),
+                source_ref="Пост. №55",
             ))
     except Exception:  # noqa: BLE001
         pass
