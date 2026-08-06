@@ -1,0 +1,16 @@
+---
+description: Gemini / LLM для МО только через Render SSH, не с Mac
+alwaysApply: true
+---
+
+# Gemini для МО - только Render
+
+Для night LLM, action-judge, grade_kz_llm, backfill и любых вызовов Gemini
+по данным МО/КЗ:
+
+1. **Не запускать** `grade_kz_llm.py` / judge локально на Mac.
+2. **Всегда** через Render: `bash scripts/run_mo_render_llm_backfill.sh YYYY-MM-DD [YYYY-MM-DD]`.
+3. Перед SSH к Render: `~/CURSOR/bin/vanya_vpn.sh ensure-off` (БД/SSH стабильнее без VanyaVPN).
+4. После grades - `recompute_mo_days` уже внутри backfill-скрипта.
+
+Локальный Mac даёт geo/SSL сбои; на Render `GOOGLE_API_KEY` и модели flash доступны.
