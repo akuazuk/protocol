@@ -21,15 +21,30 @@ MATCH_KIND_LABELS = {
     "specialty": "Специальность",
 }
 
-# Замечания, которые не должны попадать в reasons «Учитывает замечание».
+# Замечания, которые не должны попадать в reasons / gaps suggest
+# (safety/doc gaps тащат чужие КП, напр. ЧЛХ по C_nsaid_dup).
 _GAP_SKIP_PREFIXES = (
     "D_reg55",
     "E_template",
     "A_missing_",
+    "C_nsaid",
+    "C_ddi",
+    "C_high_alert",
+    "C_drug",
+    "B_icd",
+    "MED_",
     "completeness_ru",
     "stage_a_ru",
     "stage_b_ru",
 )
+
+# Жёсткий блок путей каталога по специальности случая.
+_SPECIALTY_PATH_BLOCK: dict[str, tuple[str, ...]] = {
+    "urolog": ("stomatolog", "chelust", "челюст", "zabolevaniya_chelust", "zub"),
+    "уролог": ("stomatolog", "chelust", "челюст", "zabolevaniya_chelust", "zub"),
+    "neurolog": ("stomatolog", "chelust", "akusher", "ginekolog"),
+    "невролог": ("stomatolog", "chelust", "akusher", "ginekolog"),
+}
 
 
 def suggest_enabled() -> bool:
@@ -197,10 +212,33 @@ def _match_kind(item: dict[str, Any], graph: dict[str, Any]) -> str:
     return "specialty"
 
 
+def _specialty_tokens(graph: dict[str, Any]) -> list[str]:
+    label = str((graph.get("specialty") or {}).get("label") or "").lower()
+    slug = str((graph.get("specialty") or {}).get("slug") or "").lower()
+    return [token for token in (label, slug) if token]
+
+
+def _path_blocked_for_specialty(row: dict[str, Any], graph: dict[str, Any]) -> bool:
+    blob = (
+        str(row.get("source_path") or "")
+        + " "
+        + str(row.get("title") or "")
+        + " "
+        + str(row.get("specialty_slug") or "")
+    ).lower()
+    for token in _specialty_tokens(graph):
+        for key, blocked in _SPECIALTY_PATH_BLOCK.items():
+            if key in token:
+                if any(part in blob for part in blocked):
+                    return True
+    return False
+
+
 def _rank_rows(matched: list[dict[str, Any]], graph: dict[str, Any], limit: int) -> list[dict[str, Any]]:
     """Предпочесть ICD/clinical матчи; specialty-only - только добивка."""
+    filtered = [row for row in matched if not _path_blocked_for_specialty(row, graph)]
     decorated: list[tuple[int, float, dict[str, Any]]] = []
-    for row in matched:
+    for row in filtered:
         kind = _match_kind(row, graph)
         tier = {"clinical": 0, "code_only": 1, "ddx": 2, "specialty": 3}.get(kind, 4)
         decorated.append((tier, -float(row.get("match_score") or 0), row))
@@ -264,14 +302,21 @@ def suggest_protocols_for_case(
     }
     specialty_label = str((graph.get("specialty") or {}).get("label") or "")
     specialty_slug = (graph.get("specialty") or {}).get("slug")
-    # Сначала с рубрикой специальности (hard filter), при пусто - без фильтра.
+    # Сначала с рубрикой специальности; добивка без рубрики, но с path-block.
     matched: list[dict[str, Any]] = []
     if specialty_slug:
         matched = match_protocol_cards(
             facts, specialty_slug=str(specialty_slug), limit=max(12, limit * 4)
         )
     if len(matched) < limit:
-        matched = match_protocol_cards(facts, specialty_slug=None, limit=max(12, limit * 4))
+        extra = match_protocol_cards(facts, specialty_slug=None, limit=max(12, limit * 4))
+        seen_ids = {str(row.get("protocol_id") or row.get("source_path") or "") for row in matched}
+        for row in extra:
+            pid = str(row.get("protocol_id") or row.get("source_path") or "")
+            if pid in seen_ids or _path_blocked_for_specialty(row, graph):
+                continue
+            matched.append(row)
+            seen_ids.add(pid)
 
     ranked = _rank_rows(matched, graph, limit=limit)
     search_query = _search_query(graph)

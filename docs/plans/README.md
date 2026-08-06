@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-06-mo-gold-pack-error-sweep-v1.md](2026-08-06-mo-gold-pack-error-sweep-v1.md) | Волна фиксов по gold packs 3650612/3643304: NSAID, suggest, МКБ, re-score, UX | active |
 | [2026-08-06-mo-icd-full-document-search-v1.md](2026-08-06-mo-icd-full-document-search-v1.md) | МКБ в оценке МО: искать по всему документу, не только графа «Диагноз» | active |
 | [2026-08-06-mo-protocol-suggest-titles-search-v1.md](2026-08-06-mo-protocol-suggest-titles-search-v1.md) | Полные названия КП, поиск из разбора, LLM catch-up 05.08 | active |
 | [2026-08-06-mo-case-findings-clarity-v1.md](2026-08-06-mo-case-findings-clarity-v1.md) | Разбор случая: КП 404, ширина разбора, P0 №55 и RU-источники замечаний | active |

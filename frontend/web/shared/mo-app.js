@@ -1519,6 +1519,16 @@
         if (summaryText.trim().length && summaryText.trim().length < 80) {
           if (!window.confirm("Развёрнутый разбор короткий (меньше 80 символов). Сохранить всё равно?")) return;
         }
+        var trainingUse = !($("drawer-training-use") && !$("drawer-training-use").checked);
+        var findingValues = Object.keys(findingDecisions).map(function (key) { return findingDecisions[key]; });
+        var allFindingsUnreviewed = findingValues.length > 0 && findingValues.every(function (value) {
+          return !value || value === "unreviewed";
+        });
+        if (trainingUse && allFindingsUnreviewed) {
+          if (!window.confirm(
+            "Для обучения отмечены все замечания как «не просмотрено». Сохранить с флагом обучения всё равно?"
+          )) return;
+        }
         var decision = {
           status: $("drawer-status").value,
           assignee: $("drawer-assignee").value.trim(),
@@ -1529,7 +1539,7 @@
           verdict_diagnosis: ($("drawer-verdict-d") && $("drawer-verdict-d").value) || "unreviewed",
           verdict_recommendations: ($("drawer-verdict-r") && $("drawer-verdict-r").value) || "unreviewed",
           summary_ru: summaryText,
-          training_use: !($("drawer-training-use") && !$("drawer-training-use").checked),
+          training_use: trainingUse,
           protocol_ratings: collectProtocolRatings(),
           protocol_suggest: state.protocolSuggest || null
         };
