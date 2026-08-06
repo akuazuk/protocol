@@ -109,7 +109,14 @@ def build_case_fact_graph(
         for key in ("clinical_diagnosis", "mis_diagnos")
         if clinical.get(key)
     ).strip()
-    icd = _extract_icd(diag_text)
+    # МКБ по всему МО (не только графа диагноза) - plan mo-icd-full-document-search.
+    from clinical_knowledge.mo_icd_resolve import resolve_icd_codes_from_mo
+
+    icd_blob = {**record, **{k: v for k, v in clinical.items() if v}}
+    icd = list(resolve_icd_codes_from_mo(icd_blob).get("all") or [])
+    for code in _extract_icd(diag_text):
+        if code not in icd:
+            icd.append(code)
     for key in ("diagnosis_code", "mkb_code_main", "icd10"):
         value = record.get(key)
         if isinstance(value, str) and value.strip():
