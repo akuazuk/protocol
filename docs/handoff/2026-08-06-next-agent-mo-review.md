@@ -1,148 +1,86 @@
 # Handoff для агента на 2026-08-06 (МО review workspace + LLM backfill)
 
-Писал агент вечером **2026-08-05**. Владелец спал; работа шла без остановок.
-Обновлено после merge/deploy ~19:55 UTC.
+Писал агент вечером **2026-08-05**, утром **2026-08-06** добил recompute.
 
-## 1. Что сделано сегодня (в git / прод)
+## 1. Что в проде
 
-### Merged и в проде
 | PR | Тема | Версия |
 |--|--|--|
 | #17 | Named-column warehouse merge; August repair + LLM/BI path | r15-r16 |
 | #18 | Filial filter: `|` + comma heuristic (`ул. Захарова, 50Д`) | r17 |
-| #19 | Durable Render LLM backfill (`run_mo_render_llm_backfill.sh`) | r18 |
-| **#20** | Case review workspace + protocol suggest + gold export | **r19** |
-
-Прод сейчас:
-```text
-https://protocol-bimy.onrender.com/api/version
-→ 2026-08-05-r19-mo-case-review-workspace  (commit c6bc7046)
-```
-
-План: `docs/plans/2026-08-05-mo-case-review-workspace-v2.md` (W0-W3 shipped).
-
-### Содержимое #20
-1. **UI разбора:** два scroll-pane (МО слева, разбор справа); убраны поля `%`;
-   крупный «Развёрнутый разбор» (rows=14 / 12000); RU-лейблы; prev/next; чипы фраз.
-2. **Таблица дня:** клик по отчёту → `documents` за день; sort по `th[data-sort-key]`;
-   `page_size=100` для single-day (API до 500).
-3. **Протоколы МЗ:** `clinical_knowledge/case_protocol_suggest.py` +
-   `GET /api/methodist/mo/cases/{id}/protocol-suggest`; UI с оценкой релевантности;
-   сохранение в `crm_review_pack` (`protocol_ratings` + snapshot suggest).
-4. **Gold:** `scripts/export_mo_review_gold.py`, `scripts/eval_mo_review_gold.py`.
-5. Flag `CASE_PROTOCOL_SUGGEST` (default on).
-
-## 2. LLM backfill на Render (НЕ УБИВАТЬ без нужды)
-
-Supervisor на Render disk:
+| #19 | Durable Render LLM backfill | r18 |
+| #20 | Case review workspace + protocol suggest + gold export | r19 |
+| #21 | Handoff / plan status | r20 |
+| **recompute PR** | `recompute_mo_days` без pandas, CSV из secure_cases | **r1 2026-08-06** |
 
 ```text
-/var/data/medical_exams/logs/run_august_llm.sh
-лог: /var/data/medical_exams/logs/mo_llm_august_backfill.log
-скрипт репо: scripts/run_mo_render_llm_backfill.sh
+curl -s https://protocol-bimy.onrender.com/api/version
 ```
 
-Диапазон: `2026-08-01` … `2026-08-04` (night grade ~80/день + action-judge ≤20 + recompute).
+План workspace: `docs/plans/2026-08-05-mo-case-review-workspace-v2.md`  
+План backfill: `docs/plans/2026-08-05-mo-august-llm-bi-backfill-v1.md` (P2 закрыт).
 
-**Снимок после deploy r19 (~19:55 UTC):**
-- 08-01: **80**/80 DONE (+ judge DONE)
-- 08-02: **34**/80 in progress (resume)
-- 08-03: **82** (уже было)
-- 08-04: **80** (уже было)
+## 2. LLM August 01-04 - DONE
 
-После **любого deploy** web-сервиса grade на том же инстансе **умирает**.
-Сразу проверить и при необходимости перезапустить:
+| День | Grades | Action-judge | llm_queue_pending после recompute |
+|--|--|--|--|
+| 08-01 | 80 | ok | **0** (было 80) |
+| 08-02 | 80 | ok | **0** |
+| 08-03 | 80 | ok | **0** |
+| 08-04 | 80 | ok | **0** |
+
+Лог: `/var/data/medical_exams/logs/mo_llm_august_backfill.log`  
+Активного grade сейчас нет. После deploy проверять процессы не обязательно, пока не стартуют новые дни.
+
+Корневая проблема recompute: на Render **нет** `raw/*.parquet` и **нет pandas** в venv.
+Источник - `secure_cases/YYYY/MM/mo_YYYY-MM-DD.csv`. Скрипт `scripts/recompute_mo_days.py`
+теперь читает CSV без pandas.
+
+Повтор:
+```bash
+ssh … 'cd /opt/render/project/src && .venv/bin/python scripts/recompute_mo_days.py \
+  --data-root /var/data/medical_exams --first-date 2026-08-01 --last-date 2026-08-04 \
+  --warehouse /var/data/medical_exams/warehouse/mo_analytics.sqlite'
+```
+
+## 3. Как коммитить / мержить / деплоить
+
+1. Не в `main` напрямую - feature branch + PR.
+2. Bump `BUILD_VERSION` (`YYYY-MM-DD-rN-kebab`).
+3. Обновить активный план в `docs/plans/`.
+4. `git push -u origin HEAD` → CI green → `gh pr merge --squash --delete-branch`.
+5. Дождаться `/api/version`. Если mid-LLM - перезапустить supervisor.
+6. Не коммитить `.env`, PDF из `minzdrav_protocols/`, секреты.
+
+## 4. Smoke checklist
+
+1. Dual-pane: CSS `mo-case-panes` / `mo-pane-clinical` / `mo-pane-decision`.
+2. Нет полей «Полнота % / Диагноз % / Рек. %» в HTML.
+3. Блок protocol-suggest + API `GET .../cases/{id}/protocol-suggest`.
+4. Filial `ул. Захарова, 50Д` за 01-04.08 даёт большой total (~700).
+5. Reports: `llm_queue_pending=0` за 01-04.
+
+## 5. Gold export - ещё рано
+
+На 2026-08-06: `crm_review_pack` = **0** строк, `training_use=0`.
+Первый export только при ≥50 packs с `training_use=1`:
 
 ```bash
-ssh srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com \
-  'ps aux | grep "[.]venv/bin/python scripts/grade_kz"; tail -20 /var/data/medical_exams/logs/mo_llm_august_backfill.log'
-
-# если python grade нет:
-ssh … 'nohup bash /var/data/medical_exams/logs/run_august_llm.sh >/dev/null 2>&1 &'
-# или с Mac (безопасно: ALREADY_RUNNING если жив):
-bash scripts/run_mo_render_llm_backfill.sh 2026-08-01 2026-08-04
+ssh … '.venv/bin/python scripts/export_mo_review_gold.py \
+  --warehouse /var/data/medical_exams/warehouse/mo_analytics.sqlite \
+  --out /var/data/medical_exams/gold_review/YYYY-MM-DD'
 ```
 
-Важно: `ps aux | grep grade_kz` без якоря может ложно матчить саму команду SSH.
-Ищи именно `.venv/bin/python scripts/grade_kz`.
-
-## 3. Как правильно коммитить / мержить / деплоить в этом репо
-
-1. **Не коммить в `main` напрямую** - branch protection. Всегда feature branch + PR.
-2. Перед коммитом осмысленных изменений:
-   - поднять `BUILD_VERSION` в `rag_server.py` (`YYYY-MM-DD-rN-kebab`, N++);
-   - обновить активный план в `docs/plans/` (индекс `docs/plans/README.md`);
-   - UI-тексты: `python3 scripts/normalize_ui_dashes.py` **только на нужные файлы**
-     (глобальный прогон портит archive/md).
-3. Коммит через HEREDOC, без `--no-verify`, без amend чужих коммитов.
-4. `git push -u origin HEAD` → `gh pr create` → дождаться CI green →
-   `gh pr merge --squash --delete-branch`.
-5. После merge дождаться Render auto-deploy:
-   `curl -s https://protocol-bimy.onrender.com/api/version`
-   Workflow: `Production Render release` на push в `main`.
-6. **Сразу после deploy** - проверить LLM supervisor (п.2) и перезапустить при необходимости.
-7. **VPN «Дядя Ваня»:** для SQL MIS - `ensure-off`; для сильных моделей - `ensure-on`.
-   Gemini с Mac часто geo-blocked → LLM на Render.
-8. Не коммитить `.env`, пароли, сырые ПДн, случайные PDF из `minzdrav_protocols/`.
-
-### Шаблон утреннего цикла
+## 6. Быстрый старт
 
 ```bash
 cd ~/Cursor_Folders/Protocol
-caffeinate -dims &
 git fetch origin && git checkout main && git pull origin main
-git checkout -b cursor/<короткая-тема>
-# … правки …
-# bump BUILD_VERSION
-git add -A && git commit -m "$(cat <<'EOF'
-MO: краткое why-сообщение.
-
-EOF
-)"
-git push -u origin HEAD
-gh pr create --title "…" --body "…"
-# ждать CI
-gh pr checks
-gh pr merge --squash --delete-branch
-# ждать version
-# перезапуск LLM если grade умер
-```
-
-## 4. Что проверить утром (smoke UI)
-
-1. `/api/version` содержит `r19` (или новее).
-2. Разбор случая: МО слева свой scroll; справа разбор скроллится отдельно.
-3. Нет полей «Полнота % / Диагноз % / Рек. %».
-4. Блок «Протоколы МЗ РБ»; radio релевантности сохраняется в pack.
-5. Отчёты → клик по дню → таблица «Все случаи» + sort по заголовку.
-6. Фильтр филиала `ул. Захарова, 50Д` даёт ~700 за 01-04 августа.
-7. LLM: 01=80; 02→80; 03/04 уже есть; в логе `recompute_mo_days` после DONE.
-
-## 5. Что ещё не закрыто / можно продолжить
-
-- Накопить ≥50 `training_use` packs → первый `export_mo_review_gold.py` + eval.
-- Улучшить suggest (audience pediatric, DDx seeds) по `mo-case-protocol-suggest-v1`.
-- Repair **июльских** строк warehouse (колоночный сдвиг был и до августа) - опционально.
-- GCE europe-north1 host - deferred в review-pack плане.
-- Документировать метрики «было/стало» после первого gold export (чекбокс в плане v2).
-
-## 6. Корневой баг BI (уже починен для августа)
-
-`merge_sql` раньше делал `INSERT … SELECT *` → сдвиг колонок →
-`doctor_key`/`specialty`/`filial` битые. August 1-4 repaired на Render warehouse.
-Июль - ещё может быть битый; не путать с «фильтр сломан».
-
-## 7. Команды быстрого старта
-
-```bash
-cd ~/Cursor_Folders/Protocol
-caffeinate -dims &
-git fetch origin && git checkout main && git pull origin main
-git status -sb
-gh pr list --state open
 curl -s https://protocol-bimy.onrender.com/api/version | python3 -m json.tool | head
-bash scripts/run_mo_render_llm_backfill.sh 2026-08-01 2026-08-04
+ssh srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com \
+  'wc -l /var/data/medical_exams/secure_cases/2026/08/kz_l1_2026-08-0*_llm_grades.jsonl; \
+   python3 -c "import json;from pathlib import Path;\
+[print(d, json.loads(Path(f\"/var/data/medical_exams/reports/2026/08/0{d}/report.json\").read_text())[\"completeness\"].get(\"llm_queue_pending\")) for d in range(1,5)]"'
 ```
 
-SSH Render: `srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com` (ключ `~/.ssh/id_ed25519`).
-Repo: `akuazuk/protocol`. Mac не должен засыпать на долгих сессиях: `caffeinate -dims`.
+SSH: `srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com`. Repo: `akuazuk/protocol`.
