@@ -18,6 +18,7 @@ def test_build_case_fact_graph_extracts_icd_and_complaints() -> None:
         findings=[
             {"code": "B_dx_no_support", "title_ru": "Нет обоснования диагноза"},
             {"code": "D_reg55_p0", "title_ru": "Критический дефект по №55"},
+            {"code": "C_nsaid_dup", "title_ru": "Одновременно ≥2 НПВП"},
         ],
     )
     assert graph["case_id"] == "v1"
@@ -25,6 +26,7 @@ def test_build_case_fact_graph_extracts_icd_and_complaints() -> None:
     assert "боль в колене" in graph["complaints"]
     assert any(g.get("code") == "B_dx_no_support" for g in graph["gaps"])
     assert not any(str(g.get("code") or "").startswith("D_reg55") for g in graph["gaps"])
+    assert not any(str(g.get("code") or "").startswith("C_nsaid") for g in graph["gaps"])
     assert graph["specialty"]["slug"] == "travmatologiya-ortopediya"
 
 
@@ -77,3 +79,45 @@ def test_suggest_protocols_returns_contract(monkeypatch) -> None:
     assert item["search_url"].startswith("/doctor/search?q=")
     assert "Диагностика и лечение" not in item["title"] or "»" in item["title"]
     assert "/proto?" not in item["viewer_url"]
+
+
+def test_suggest_blocks_stomatology_for_urologist(monkeypatch) -> None:
+    monkeypatch.setenv("CASE_PROTOCOL_SUGGEST", "1")
+
+    def _fake_match(facts, specialty_slug=None, limit=8):
+        return [
+            {
+                "protocol_id": "bad",
+                "title": "Заболевания челюстно-лицевой области",
+                "source_path": "minzdrav_protocols/stomatologiya/chelust.pdf",
+                "match_score": 90.0,
+                "icd_fit": [],
+                "specialty_slug": "stomatologiya",
+            },
+            {
+                "protocol_id": "good",
+                "title": "Урология взрослых",
+                "source_path": "minzdrav_protocols/urologiya/kp_urology.pdf",
+                "match_score": 70.0,
+                "icd_fit": [],
+                "specialty_slug": "urologiya",
+            },
+        ]
+
+    monkeypatch.setattr(
+        "clinical_knowledge.protocol_match.match_protocol_cards",
+        _fake_match,
+    )
+    result = suggest_protocols_for_case(
+        clinical={
+            "clinical_diagnosis": "Состояние после циркумцизио",
+            "complaints": "боль в ране",
+            "treatment_recommendations": 'Ибупрофен ("Кетопрофен" и т.п.)',
+        },
+        record={"visit_id": "3650612", "specialty": "Уролог"},
+        findings=[{"code": "C_nsaid_dup", "title_ru": "Одновременно ≥2 НПВП"}],
+        limit=3,
+    )
+    ids = [item.get("protocol_id") for item in result.get("items") or []]
+    assert "bad" not in ids
+    assert "good" in ids

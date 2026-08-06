@@ -334,14 +334,14 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
     inns = [d["inn"] for d in drugs if d.get("inn")]
     low_conf = [d for d in drugs if 0 < d.get("confidence", 0) < 0.86]
 
-    # C2: дублирование НПВП (быстрый детерминированный сигнал)
-    from .medication_safety import nsaid_labels_in_text
+    # C2: дублирование системных НПВП (не скобки-альтернативы, не гель+таблетка)
+    from .medication_safety import concurrent_systemic_nsaids
 
-    nsaids = set(nsaid_labels_in_text(treatment))
+    nsaids = concurrent_systemic_nsaids(treatment)
     if len(nsaids) >= 2:
         findings.append(_finding(
             "C_nsaid_dup", "safety", "P1", False,
-            "Одновременно ≥2 НПВП", detail=", ".join(sorted(nsaids)[:6]),
+            "Одновременно ≥2 НПВП", detail=", ".join(nsaids[:6]),
             evidence=treatment, source_ref="ISMP/клин.практика",
         ))
         penalty += 20
@@ -360,9 +360,13 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
                 lvl = pairs.get(key)
                 if lvl in ("Major", "Moderate"):
                     sev = "P1" if lvl == "Major" else "P2"
+                    evidence = f"{inns[i]} + {inns[j]}"
+                    if treatment:
+                        evidence = f"{evidence}. Фрагмент плана: {treatment[:280]}"
                     findings.append(_finding(
                         "C_ddi", "safety", sev, False,
                         f"Лекарственное взаимодействие ({lvl}): {inns[i]} + {inns[j]}",
+                        evidence=evidence,
                         source_ref="DDInter", needs_human=True,
                     ))
                     penalty += 20 if lvl == "Major" else 10

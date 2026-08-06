@@ -45,18 +45,18 @@ def classify_medication_findings(
     drugs = _drugs(treatment)
     has_dose = bool(_DOSE_RE.search(treatment))
 
-    # safety: дубль НПВП (детерминированный куратор-сигнал)
+    # safety: дубль системных НПВП (не скобки-альтернативы, не гель+таблетка)
     try:
-        from .medication_safety import nsaid_labels_in_text
+        from .medication_safety import concurrent_systemic_nsaids
 
-        nsaids = set(nsaid_labels_in_text(treatment))
+        nsaids = concurrent_systemic_nsaids(treatment)
     except Exception:  # noqa: BLE001
-        nsaids = set()
+        nsaids = []
     if len(nsaids) >= 2:
         findings.append(EvaluationFinding(
             code="MED_nsaid_dup", axis="safety", severity="P1", kind="safety_warning",
             passed=False, title_ru="Одновременно ≥2 НПВП",
-            detail_ru=", ".join(sorted(nsaids)[:6]), evidence=treatment,
+            detail_ru=", ".join(nsaids[:6]), evidence=treatment,
             source_ref="ISMP/клин.практика", trust_level=TRUST_B, penalty_applied=True,
         ))
 

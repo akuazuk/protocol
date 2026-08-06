@@ -30,6 +30,9 @@ MO_ICD_TEXT_KEYS: tuple[str, ...] = (
     "diagnosis_main_text",
     "diagnosis_short",
     "diagnosis_text",
+    "mis_diagnos",
+    "mis_diagnosis",
+    "diagnosis_mis",
     "complaints",
     "anamnesis_doctor",
     "anamnesis_auto",
@@ -53,6 +56,8 @@ _EXPLICIT_CODE_KEYS: tuple[str, ...] = (
     "diagnosis_code",
     "icd10",
     "mkb_code",
+    "mis_diagnos",
+    "mis_diagnosis",
 )
 
 
@@ -173,6 +178,8 @@ def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
                     "diagnosis_main_text",
                     "diagnosis_short",
                     "diagnosis_text",
+                    "mis_diagnos",
+                    "mis_diagnosis",
                 )
             ):
                 continue
