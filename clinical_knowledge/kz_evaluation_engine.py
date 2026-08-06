@@ -312,8 +312,13 @@ def score_concordance(
             penalty_applied=True,
         ))
 
-    # B2 icd valid form
-    code = str(case.get("mkb_code_main") or "").strip()
+    # B2 icd valid form - весь МО, не только графа «Диагноз»
+    from .mo_icd_resolve import resolve_icd_codes_from_mo
+
+    icd_resolved = resolve_icd_codes_from_mo(case)
+    code = str(icd_resolved.get("main") or "").strip()
+    if not code and icd_resolved.get("all"):
+        code = str(icd_resolved["all"][0]).strip()
     icd_ok = bool(code) and bool(_MKB_RE.match(code))
     scored.append(100.0 if icd_ok else 0.0)
     if not icd_ok:

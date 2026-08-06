@@ -10,17 +10,12 @@ stdlib-only: модуль импортируется батч-скриптом �
 from __future__ import annotations
 
 import json
-import re
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 REG_PATH = ROOT / "data" / "regulations" / "mz_2021_55.json"
-
-# МКБ-10: латинская буква + 2 цифры (+ опционально .цифра[цифра])
-_ICD10_RE = re.compile(r"\b[A-TV-Z][0-9]{2}(?:\.[0-9]{1,2})?\b")
-
 
 @lru_cache(maxsize=1)
 def _load_reg() -> dict[str, Any]:
@@ -44,8 +39,10 @@ def _block_score(case: dict, block: str) -> float | None:
 
 
 def _icd10_present(case: dict) -> bool:
-    txt = str(case.get("diagnosis_short") or "")
-    return bool(_ICD10_RE.search(txt))
+    # Весь МО/КЗ, не только графа «Диагноз» (план mo-icd-full-document-search).
+    from .mo_icd_resolve import resolve_icd_codes_from_mo
+
+    return bool(resolve_icd_codes_from_mo(case).get("present"))
 
 
 def _diagnosis_substantiated(case: dict) -> bool:
@@ -138,7 +135,10 @@ def _how_checked_ru(crit: dict) -> str:
         field = crit.get("field") or "поле"
         return f"Проверяется наличие заполненного поля «{field}» в МО/КЗ."
     if check == "icd10_present":
-        return "В тексте диагноза ищется код МКБ-10 (буква + 2 цифры)."
+        return (
+            "Код МКБ-10 (буква + 2 цифры) ищется по всему тексту МО/КЗ, "
+            "не только в графе «Диагноз»."
+        )
     if check == "diagnosis_substantiated":
         return (
             "Диагноз считается обоснованным, если есть диагноз и жалобы, "
