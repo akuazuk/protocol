@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-06-mo-case-findings-clarity-v1.md](2026-08-06-mo-case-findings-clarity-v1.md) | Разбор случая: КП 404, ширина разбора, P0 №55 и RU-источники замечаний | active |
 | [2026-08-05-mo-case-review-workspace-v2.md](2026-08-05-mo-case-review-workspace-v2.md) | Разбор случая: UI + gold + протоколы МЗ (W0-W3 в проде; gaps в handoff 08-06) | active |
 | [2026-08-05-mo-case-review-workspace-v1.md](2026-08-05-mo-case-review-workspace-v1.md) | Разбор случая: sticky МО + scroll разбора, форма решения, RU, таблица дня | archived (преемник: case-review-workspace-v2) |
 | [2026-08-05-mo-llm-action-queue-judge-v1.md](2026-08-05-mo-llm-action-queue-judge-v1.md) | LLM-судья A/B только для action-очереди МО (диагноз, затем план) | active |

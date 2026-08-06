@@ -53,3 +53,6 @@ def test_suggest_protocols_returns_contract(monkeypatch) -> None:
     assert result["items"][0]["protocol_id"] == "p1"
     assert result["items"][0]["match_kind_label"]
     assert result["items"][0]["reasons"]
+    assert result["items"][0]["viewer_url"].startswith("/proto-viewer.html?path=")
+    assert "minzdrav_protocols" in result["items"][0]["viewer_url"]
+    assert "/proto?" not in result["items"][0]["viewer_url"]

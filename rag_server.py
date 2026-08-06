@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-06-053445Z-no-ai-vendor-attribution"
+BUILD_VERSION = "2026-08-06-055135Z-case-findings-clarity"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11609,6 +11609,13 @@ def api_methodist_mo_case_detail(
                 result.get("findings") if isinstance(result.get("findings"), list) else [],
                 live_case,
             )
+            from clinical_knowledge.mo_backend import _normalize_finding_row
+
+            result["findings"] = [
+                _normalize_finding_row(item)
+                for item in (result.get("findings") or [])
+                if isinstance(item, dict)
+            ]
         except Exception:  # noqa: BLE001
             pass
     try:

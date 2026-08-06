@@ -10,6 +10,8 @@ import re
 from datetime import datetime, timezone
 from typing import Any
 
+from clinical_knowledge.protocol_links import protocol_nav_api_path
+
 ENGINE = "case_protocol_suggest_v1"
 MATCH_KIND_LABELS = {
     "clinical": "Клиника",
@@ -210,7 +212,7 @@ def suggest_protocols_for_case(
                 "covered_gaps": [g.get("code") for g in (graph.get("gaps") or [])[:3] if g.get("code")],
                 "warnings": [],
                 "viewer_url": (
-                    "/proto?path=" + str(row.get("source_path") or "")
+                    protocol_nav_api_path(str(row.get("source_path") or ""))
                     if row.get("source_path")
                     else None
                 ),

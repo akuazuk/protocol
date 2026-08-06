@@ -2494,12 +2494,31 @@ def build_data_quality(params: dict[str, Any]) -> dict[str, Any]:
 
 def _normalize_finding_row(finding_row: Mapping[str, Any]) -> dict[str, Any]:
     """Нормализовать строку fact_mo_finding для case detail / API."""
-    from .mo_finding_labels_ru import finding_label_ru
+    from .mo_finding_labels_ru import (
+        enrich_finding_detail_ru,
+        finding_label_ru,
+        severity_hint_ru,
+        severity_label_ru,
+        source_ref_display_ru,
+    )
 
     finding = dict(finding_row)
     code = str(finding.get("code") or finding.get("finding_code") or "")
     finding["code"] = code
     finding["title_ru"] = finding_label_ru(code, str(finding.get("title_ru") or ""))
+    source_ref = str(finding.get("source_ref") or "")
+    finding["source_ref"] = source_ref
+    finding["source_ref_ru"] = source_ref_display_ru(source_ref)
+    severity = str(finding.get("severity") or "").strip()
+    finding["severity"] = severity
+    finding["severity_label_ru"] = severity_label_ru(severity)
+    finding["severity_hint_ru"] = severity_hint_ru(severity)
+    finding["detail_ru"] = enrich_finding_detail_ru(
+        code=code,
+        detail=str(finding.get("detail_ru") or finding.get("detail") or ""),
+        source_ref=source_ref,
+        title_ru=str(finding.get("title_ru") or ""),
+    )
     is_shadow = bool(int(finding.get("is_shadow") or 0))
     finding["is_shadow"] = is_shadow
     finding["shadow"] = is_shadow
