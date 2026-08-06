@@ -57,6 +57,8 @@
 - [x] P7: фильтр филиала - `|` + heuristic CSV; r17 (#18)
 - [x] P8: grades 01-04 DONE; recompute fix `2026-08-06-r1-recompute-no-pandas`
 - [ ] P9: день **2026-08-05+** на Render disk (сейчас нет secure/report за 05)
+- [ ] P9b: лаунчер backfill - static `mo_llm_range_runner.sh` (nested heredoc схлопывал `$DATA`); false ALREADY_RUNNING от pgrep
+- [ ] P9c: «Врачи ниже ожидаемого» - убрать жёсткий `case_mix_reliable` за день (R² < 0.30 почти всегда)
 - [ ] P10: repair **июльского** warehouse (bad doctor_key ~11902/13591)
 - [ ] P11: gold export после ≥50 `training_use` packs (сейчас 0)
 

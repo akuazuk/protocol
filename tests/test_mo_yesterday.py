@@ -210,8 +210,13 @@ def test_yesterday_contract_combines_bounded_warehouse_and_report(monkeypatch, t
     assert len(payload["action_cases"]["items"]) == 6
     assert all(item["reason"] and item["case_id"] for item in payload["action_cases"]["items"])
     assert all("C_red_flag" not in item["finding_title"] for item in payload["action_cases"]["items"])
-    assert payload["doctor_outliers"]["available"] is False
-    assert payload["doctor_outliers"]["items"] == []
+    # Seed: «Врач Ниже Ожидания» n=6 score=50 vs specialty peers 90 → delta < -10.
+    # R² за день слабый - раньше жёсткий case_mix_reliable прятал весь блок.
+    assert payload["doctor_outliers"]["available"] is True
+    assert payload["doctor_outliers"]["items"]
+    assert payload["doctor_outliers"]["items"][0]["label"] == "Врач Ниже Ожидания"
+    assert float(payload["doctor_outliers"]["items"][0]["delta"]) < -10
+    assert payload["doctor_outliers"].get("case_mix_soft") is True
     assert payload["flow_changes"]["dimensions"]["branch"]
     assert payload["source_quality"]["available"] is True
     drilldown = mo_backend.build_cases(
