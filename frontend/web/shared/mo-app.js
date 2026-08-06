@@ -1426,7 +1426,7 @@
       var sourceLabel = documentData.source_format === "secure_csv" ? "защищённый дневной срез" :
         (documentData.source_format === "parquet" ? "дневной parquet" : "источник не определён");
       return '<div class="detail-block"><h3>Исходное МО</h3>' + reason +
-        (content || '<div class="empty"><b>Клинический текст недоступен</b><div>Проверены опубликованные источники за дату визита. Откройте визит в МИС.</div></div>') +
+        (content || '<div class="empty"><b>Клинический текст недоступен</b><div>Нет опубликованного secure CSV/parquet за дату визита (оценка могла приехать из warehouse раньше). Повторите publish или откройте визит в МИС.</div></div>') +
         '<p class="card-sub">Источник: ' + esc(sourceLabel) + '</p>' +
         '<p class="card-sub">Жалобы и анамнез → статус → диагноз → МКБ → обследования → лечение → наблюдение</p></div>';
     }
