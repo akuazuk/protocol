@@ -7,7 +7,8 @@
 `2026-08-05-mo-case-protocol-suggest-v1.md` (движок подбора КП),
 `2026-08-05-mo-llm-action-queue-judge-v1.md`,
 `2026-08-05-mo-expert-reviewer-portal-v1.md`.
-Handoff: `docs/handoff/2026-08-06-next-agent-mo-review.md`.
+Handoff: `docs/handoff/2026-08-06-afternoon-next-agent.md`
+(предыдущий утренний: `docs/handoff/2026-08-06-next-agent-mo-review.md`).
 
 ---
 
