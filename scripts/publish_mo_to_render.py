@@ -69,20 +69,32 @@ class Publisher:
                     check=True,
                     text=True,
                     stdout=subprocess.PIPE if capture else None,
+                    stderr=subprocess.PIPE,
                 )
                 return (result.stdout or "").strip() if capture else ""
             except subprocess.CalledProcessError as error:
+                stderr = (error.stderr or "").strip()
+                stdout = (error.stdout or "").strip()
+                detail = stderr or stdout or f"exit {error.returncode}"
+                # Перепаковываем, чтобы Telegram/логи видели текст sqlite, а не только rc=1.
+                error = subprocess.CalledProcessError(
+                    error.returncode,
+                    error.cmd,
+                    output=error.output,
+                    stderr=detail,
+                )
+                error.args = (error.returncode, error.cmd, detail)
                 last_error = error
                 if attempt == attempts:
                     break
                 delay = 10 * attempt
                 print(
-                    f"попытка {attempt}/{attempts} не удалась (код {error.returncode}), "
-                    f"повтор через {delay} с",
+                    f"попытка {attempt}/{attempts} не удалась (код {error.returncode}): {detail[:300]}",
                     file=sys.stderr,
                 )
                 time.sleep(delay)
-        raise last_error  # type: ignore[misc]
+        assert last_error is not None
+        raise last_error
 
     def ssh(self, script: str, *, capture: bool = False) -> str:
         return self._run(["ssh", *SSH_OPTS, self.ssh_host, script], capture=capture)
@@ -96,6 +108,27 @@ class Publisher:
         if mirror:
             command.append("--delete-after")
         self._run([*command, f"{source}/", f"{target}/"])
+
+    def remote_table_columns(self, remote_db: str, table: str) -> list[str] | None:
+        """Колонки таблицы на Render; None если файла/таблицы ещё нет."""
+        if self.dry_run:
+            return None
+        quoted_db = shlex.quote(remote_db)
+        # PRAGMA через sqlite3 CLI: "cid|name|type|..."
+        script = (
+            f"if [ ! -f {quoted_db} ]; then exit 0; fi; "
+            f"sqlite3 {quoted_db} {shlex.quote(f'PRAGMA table_info(\"{table}\");')}"
+        )
+        try:
+            out = self.ssh(script, capture=True)
+        except subprocess.CalledProcessError:
+            return None
+        columns: list[str] = []
+        for line in out.splitlines():
+            parts = line.split("|")
+            if len(parts) >= 2 and parts[1]:
+                columns.append(parts[1])
+        return columns
 
     def upload_file(self, source: Path, remote_path: str) -> None:
         """Поток gzip через ssh: scp и rsync на больших файлах Render обрывает.
@@ -204,13 +237,35 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
         dry_run=args.dry_run,
     )
     report: dict[str, Any] = {"remote_root": publisher.remote_root, "dry_run": args.dry_run}
+    warehouse_error: Exception | None = None
 
+    if args.skip_warehouse:
+        report["warehouse"] = "skipped"
+    else:
+        try:
+            _publish_warehouse(publisher, warehouse, report)
+        except Exception as error:  # noqa: BLE001 - файлы всё равно публикуем
+            warehouse_error = error
+            report["warehouse_error"] = str(error)
+            print(
+                f"warehouse merge failed, продолжаем publish файлов (secure CSV/отчёты): {error}",
+                file=sys.stderr,
+            )
+
+    # Secure CSV / reports нельзя блокировать падением merge: иначе в UI
+    # «Оценено», а «Исходное МО» пустое (клинический текст только из secure_cases).
+    _publish_files(publisher, data_root, args, report)
+    if warehouse_error is not None:
+        raise warehouse_error
+    return report
+
+
+def _publish_warehouse(
+    publisher: "Publisher",
+    warehouse: Path,
+    report: dict[str, Any],
+) -> None:
     with tempfile.TemporaryDirectory() as tmp:
-        if args.skip_warehouse:
-            report["warehouse"] = "skipped"
-            _publish_files(publisher, data_root, args, report)
-            return report
-
         snapshot = Path(tmp) / "mo_analytics.publish.sqlite"
         report["tables"] = build_publish_snapshot(warehouse, snapshot)
         report["snapshot"] = snapshot_summary(snapshot)
@@ -231,14 +286,26 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
         merge_path = Path(tmp) / "merge.sql"
         import sqlite3
 
+        # Колонки только из пересечения prod ∩ snapshot, в порядке prod.
+        # Иначе старый SELECT * / полный список колонок снапшота ломает merge:
+        # "table fact_mo_finding has 15 columns but 12 values were supplied".
         with sqlite3.connect(snapshot) as snap_db:
-            column_map = {
-                table: [row[1] for row in snap_db.execute(f'PRAGMA table_info("{table}")')]
-                for table in sorted(report["tables"])
-            }
+            column_map: dict[str, list[str]] = {}
+            for table in sorted(report["tables"]):
+                snap_cols = [row[1] for row in snap_db.execute(f'PRAGMA table_info("{table}")')]
+                remote_cols = publisher.remote_table_columns(remote_warehouse, table)
+                if remote_cols:
+                    snap_set = set(snap_cols)
+                    columns = [col for col in remote_cols if col in snap_set]
+                else:
+                    columns = snap_cols
+                if columns:
+                    column_map[table] = columns
+        if not column_map:
+            raise RuntimeError("merge column_map пуст: нечего публиковать в warehouse")
         merge_path.write_text(
             merge_sql(
-                sorted(report["tables"]),
+                sorted(column_map),
                 snapshot_path=remote_snapshot,
                 column_map=column_map,
             ),
@@ -247,6 +314,7 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
         remote_merge = f"{publisher.remote_root}/warehouse/merge.sql"
         publisher.upload_file(merge_path, remote_merge)
         # Если продовой витрины ещё нет, снапшот и есть витрина: CRM-таблицы создаст API.
+        # При ошибке sqlite stderr попадёт в CalledProcessError (см. Publisher._run).
         script = (
             f"set -e; if [ -f {shlex.quote(remote_warehouse)} ]; then "
             f"sqlite3 {shlex.quote(remote_warehouse)} < {shlex.quote(remote_merge)}; "
@@ -257,9 +325,8 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
             f"|| ' through=' || (SELECT MAX(visit_date) FROM fact_mo_daily) FROM fact_mo_daily;\""
         )
         report["remote_warehouse"] = publisher.ssh(script, capture=True)
-
-    _publish_files(publisher, data_root, args, report)
-    return report
+        report["merge_tables"] = sorted(column_map)
+        report["merge_mode"] = "named_columns_intersect_remote"
 
 
 def _publish_files(
@@ -379,8 +446,13 @@ def main(argv: list[str] | None = None) -> int:
     try:
         report = publish(args)
     except Exception as error:  # noqa: BLE001
-        _notify_publish_failure(f"МО publish failed: {type(error).__name__}: {error}")
-        print(json.dumps({"ok": False, "error": str(error)}, ensure_ascii=False, indent=2))
+        detail = str(error)
+        if isinstance(error, subprocess.CalledProcessError):
+            stderr = (getattr(error, "stderr", None) or "").strip()
+            if stderr:
+                detail = f"{error} | stderr: {stderr[:800]}"
+        _notify_publish_failure(f"МО publish failed: {type(error).__name__}: {detail}")
+        print(json.dumps({"ok": False, "error": detail}, ensure_ascii=False, indent=2))
         return 1
     print(json.dumps(report, ensure_ascii=False, indent=2))
     if args.dry_run or not args.verify:

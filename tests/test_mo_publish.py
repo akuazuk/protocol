@@ -158,6 +158,45 @@ def test_merge_named_columns_survives_legacy_column_order(tmp_path: Path) -> Non
     assert row == ("abc123doctor", "Офтальмолог", "Захарова", "review", 77.6)
 
 
+def test_merge_star_fails_when_prod_has_extra_finding_columns(tmp_path: Path) -> None:
+    """Регрессия 2026-08-06: SELECT * при 15 vs 12 колонках fact_mo_finding."""
+    snapshot = tmp_path / "snap.sqlite"
+    with sqlite3.connect(snapshot) as db:
+        db.executescript(
+            """
+            CREATE TABLE fact_mo_finding (
+              mis_id TEXT NOT NULL, finding_code TEXT NOT NULL, severity TEXT,
+              passed INTEGER, evidence TEXT, source_ref TEXT, axis TEXT,
+              title_ru TEXT, detail_ru TEXT, trust_level TEXT,
+              penalty_applied INTEGER DEFAULT 0, needs_human INTEGER DEFAULT 0,
+              PRIMARY KEY (mis_id, finding_code)
+            );
+            """
+        )
+        keep = [row[1] for row in db.execute("PRAGMA table_info(fact_mo_finding)")]
+
+    production = tmp_path / "prod.sqlite"
+    initialize_warehouse(production)
+    with sqlite3.connect(production) as db:
+        prod_cols = [row[1] for row in db.execute("PRAGMA table_info(fact_mo_finding)")]
+        assert "is_shadow" in prod_cols
+        assert len(prod_cols) > len(keep)
+    with sqlite3.connect(production) as db:
+        with pytest.raises(sqlite3.Error):
+            db.executescript(
+                merge_sql(["fact_mo_finding"], snapshot_path=str(snapshot), column_map=None)
+            )
+    with sqlite3.connect(production) as db:
+        intersect = [c for c in prod_cols if c in set(keep)]
+        db.executescript(
+            merge_sql(
+                ["fact_mo_finding"],
+                snapshot_path=str(snapshot),
+                column_map={"fact_mo_finding": intersect},
+            )
+        )
+
+
 def test_published_tables_cover_facts_and_dimensions(tmp_path: Path) -> None:
     warehouse = tmp_path / "mo_analytics.sqlite"
     initialize_warehouse(warehouse)
