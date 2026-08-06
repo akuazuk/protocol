@@ -1,7 +1,7 @@
 # МО: устранение ошибок по gold review packs (v1)
 
 Дата: 2026-08-06  
-Статус: active (волна в работе / код S1-S4)  
+Статус: active (код #34 в main; hotfix #35 + ops recovery; ждём CI merge)  
 Источник: 2 пакета в `crm_review_pack` (`3650612` уролог, `3643304` невролог) + ops gaps.  
 Связанные:  
 `2026-08-06-mo-icd-full-document-search-v1.md` (P0-P2 done; P3/P4 open),  
@@ -116,7 +116,7 @@ handoff: `docs/handoff/2026-08-06-afternoon-next-agent.md`.
 
 - [x] C1: `mis_diagnos` в `mo_icd_resolve`.
 - [ ] C3/C4 warehouse soft-fill + LLM prompts - residual (не блокер волны).
-- [ ] На Render: `rescore_mo_deep_days.py` + `recompute_mo_days` Aug 01-05 - после deploy.
+- [x] На Render: rescore с CSV join + recompute Aug 01-05 (`llm_queue_pending=0`, avg~80).
 
 ### Фаза S4 - UX pack + july repair
 
@@ -127,9 +127,10 @@ handoff: `docs/handoff/2026-08-06-afternoon-next-agent.md`.
 
 ### Фаза S5 - приёмка
 
-- [ ] Deploy + rescore/recompute на Render.
-- [ ] Smoke 3650612 / 3643304.
-- [ ] Обновить handoff.
+- [x] Deploy #34 + rescore/recompute (после hotfix CSV).
+- [x] Smoke 3650612 / 3643304 на Render (hotpatch #35).
+- [x] Handoff: `docs/handoff/2026-08-06-evening-gold-wave.md`.
+- [ ] Merge/deploy #35 в git main (CI Actions queue).
 
 ---
 

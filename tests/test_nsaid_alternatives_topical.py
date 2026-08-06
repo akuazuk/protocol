@@ -57,8 +57,10 @@ def test_mis_diagnos_counts_as_icd_present():
 def test_uro_case_like_no_nsaid_dup_in_deep():
     treatment = (
         "- При болях \"Ибупрофен\" (\"Кетопрофен\", \"Найз\" и т.п.) в возрастной дозировке\n"
-        "- Местное лечение: Левомеколь"
+        "- Местное лечение: Левомеколь\n"
+        "свечи Дикловит № 10 по 1 свече на ночь"
     )
+    assert concurrent_systemic_nsaids(treatment) == []
     deep = evaluate_kz_deep(
         {
             "treatment_recommendations": treatment,
