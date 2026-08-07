@@ -212,7 +212,9 @@ $MO_DATA_ROOT/
 - [x] B3. LLM jobs на том же GCP (`gcp-llm`); убрать зависимость night grade от Render SSH.
   - `deploy/gcp-llm/run_on_gce.sh` (+ shared `mo_llm_range_runner.sh`); smoke live grade ok=1 с GCE.
   - Render `run_mo_render_llm_backfill.sh` оставлен legacy, пока Render = warehouse leader.
-- [ ] B4. Mac launchd: режим `extract-upload-only` → GCS `inbound/extract`; score/recompute на GCP.
+- [x] B4. Mac launchd: режим `extract-upload-only` → GCS `inbound/extract`; score/recompute на GCP.
+  - package+upload: `deploy/mac-bridge/extract_upload_day.sh`; pull: `deploy/gcp-app/pull_inbound_from_gcs.sh --remote`.
+  - smoke: `mo_2026-08-06` → GCS → GCE inbound (10344 rows). Score-from-inbound-only на GCP - следующий harden (пока CSV из secure_cases).
 - [ ] B5. DNS/домен с Render на GCP (или временный hostname).
 - [ ] B6. Rollback: Render snapshot + старый publish path.
 
@@ -366,7 +368,6 @@ thin CLI `services.mis_bridge` / `services.llm_worker`.
 | Gemini | сейчас AI Studio key (`google-generativeai`) - регион VM важен для latency/ops; smoke LLM с GCE до cutover |
 | APIs | compute, storage, secretmanager, artifactregistry, iam, cloudresourcemanager |
 
-**B1-B3 done (staging):** VM + warehouse copy + night LLM runner на GCE
-(`deploy/gcp-llm/run_on_gce.sh`; Gemini live ok с Warsaw). Render SSH LLM = legacy.
-Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`.
-Следующий шаг: **B4** Mac extract→GCS; Secret Manager; HTTPS temp host (B5 lite).
+**B1-B4 done (staging):** VM + warehouse + GCE LLM + Mac→GCS→GCE inbound path.
+Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`, `deploy/mac-bridge/README.md`.
+Следующий шаг: Secret Manager + HTTPS (B5 lite); score-from-inbound на GCP без Mac score; B5 DNS позже.
