@@ -12,6 +12,7 @@ COPY requirements.txt requirements-rag.txt ./
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY rag_server.py ./
+COPY env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py ./
 COPY backend/ backend/
 COPY frontend/ frontend/
 COPY clinical_knowledge/ clinical_knowledge/
