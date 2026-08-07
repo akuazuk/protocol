@@ -47,6 +47,28 @@ jobs:
       - name: Repo layout smoke (scripts wrappers)
         run: bash scripts/ops/smoke_repo_layout.sh
 
+  docker-images:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build protocol-gcp-app
+        run: docker build -f deploy/gcp-app/Dockerfile -t protocol-gcp-app:ci .
+
+      - name: Build protocol-gcp-llm
+        run: docker build -f deploy/gcp-llm/Dockerfile -t protocol-gcp-llm:ci .
+
+      - name: Build protocol-mis-bridge
+        run: docker build -f deploy/mac-bridge/Dockerfile -t protocol-mis-bridge:ci .
+
+      - name: Build protocol-by-home (stub)
+        run: docker build -f deploy/by-home/Dockerfile -t protocol-by-home:ci .
+
   manifest-mode:
     runs-on: ubuntu-latest
     timeout-minutes: 12

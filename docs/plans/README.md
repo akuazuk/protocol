@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-07-by-home-gcp-llm-split-v1.md](2026-08-07-by-home-gcp-llm-split-v1.md) | E1: всё на GCP, МИС-мост с Mac → E2 МИС с GCP → E3 BY+LLM на GCP; Docker-границы | active |
 | [2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md](2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md) | КП по тексту диагноза (без МКБ); отдельная оценка диагноза ↔ справочник МКБ | active |
 | [2026-08-07-mo-auto-llm-on-disk-v1.md](2026-08-07-mo-auto-llm-on-disk-v1.md) | Night LLM сразу после upload secure_cases на Render (не ждать launchd/merge) | active |
 | [2026-08-06-mo-gold-pack-error-sweep-v1.md](2026-08-06-mo-gold-pack-error-sweep-v1.md) | Волна фиксов по gold packs 3650612/3643304: NSAID, suggest, МКБ, re-score, UX | completed (residuals в night handoff 07.08) |
@@ -32,7 +33,7 @@
 | [2026-08-05-mo-august-llm-bi-backfill-v1.md](2026-08-05-mo-august-llm-bi-backfill-v1.md) | LLM backfill с августа, continuous на Render, починка merge/BI врачей | active |
 | [2026-08-05-mo-eval-smirnova-concordance-v1.md](2026-08-05-mo-eval-smirnova-concordance-v1.md) | Оценка МО: findings согласованности по кейсу Смирнова (статус↔диагноз↔план) | active |
 | [2026-08-05-mo-case-protocol-suggest-v1.md](2026-08-05-mo-case-protocol-suggest-v1.md) | Case → Protocol Suggest: подбор КП МЗ по МО/КЗ отдельно от L1 scorer | active |
-| [2026-08-04-mo-runtime-stabilization-v1.md](2026-08-04-mo-runtime-stabilization-v1.md) | Стабилизация runtime МО: Docker, вынос пайплайна с Mac, опционально GCP | active |
+| [2026-08-04-mo-runtime-stabilization-v1.md](2026-08-04-mo-runtime-stabilization-v1.md) | Стабилизация runtime МО: Docker, вынос пайплайна с Mac; фаза C GCP → [by-home-gcp-llm-split-v1](2026-08-07-by-home-gcp-llm-split-v1.md) | active (C уточнён преемником) |
 | [2026-08-04-repo-sections-archive-v2.md](2026-08-04-repo-sections-archive-v2.md) | Карта разделов продукта и безопасная архивация (konkurs, ML dumps, hygiene) | active |
 | [2026-08-03-ci-release-concurrency-v3.md](2026-08-03-ci-release-concurrency-v3.md) | CI baseline 0, обязательный lint и GitHub Actions concurrency для production release | completed |
 | [2026-08-03-mo-filter-actions-ui-v1.md](2026-08-03-mo-filter-actions-ui-v1.md) | МО Аналитика: явный запуск поиска, подтверждение мультифильтров и раскрываемые панели | active |
