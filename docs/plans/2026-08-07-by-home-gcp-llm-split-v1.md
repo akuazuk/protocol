@@ -206,9 +206,9 @@ $MO_DATA_ROOT/
 
 - [x] B1. GCP project + GCE (проще для SQLite disk) или Cloud Run+Filestore; регион с рабочим Gemini.
   - project `protocol-home-e1`, VM `protocol-app` e2-standard-2, PD 50GB, zone `europe-central2-a`, IP `34.118.21.47`, bucket `gs://protocol-home-e1-inbound` (см. `deploy/gcp-app/INVENTORY.md`).
-- [~] B2. Перенос Render `medical_exams` → GCP PD/GCS; web на GCP; `/api/version` smoke.
-  - web staging live: `http://34.118.21.47:8000` (`deploy_to_gce.sh`); `/api/version` ok.
-  - migrate warehouse/secure_cases с Render - ещё нет.
+- [x] B2. Перенос Render `medical_exams` → GCP PD/GCS; web на GCP; `/api/version` smoke.
+  - web staging: `http://34.118.21.47:8000`; `/api/version` + `/api/methodist/mo/meta` ok.
+  - warehouse/secure_cases/reports скопированы (234 MB; `fact_mo_case=97284` = Render).
 - [ ] B3. LLM jobs на том же GCP (`gcp-llm`); убрать зависимость night grade от Render SSH.
 - [ ] B4. Mac launchd: режим `extract-upload-only` → GCS `inbound/extract`; score/recompute на GCP.
 - [ ] B5. DNS/домен с Render на GCP (или временный hostname).
