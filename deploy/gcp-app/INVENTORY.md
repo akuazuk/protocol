@@ -14,7 +14,8 @@
 | Static IP | `34.118.21.47` (`protocol-app-ip`) |
 | Temp URL | `http://34.118.21.47:8000` |
 | Container | `protocol-web` · image `protocol-gcp-app:staging` · restart unless-stopped |
-| Smoke (2026-08-07) | `/health/live` ok · `/api/version` = `2026-08-07-143243Z-by-gcp-llm-split-a` |
+| Smoke (2026-08-07) | `/health/live` ok · `/api/version` ok · `/api/methodist/mo/meta` ok |
+| Data migrate | Render `/var/data/medical_exams` → GCE (234 MB); `fact_mo_case=97284` match |
 | Firewall | `protocol-allow-web` · tcp 80/443/8000 · tag `protocol-app` |
 | GCS inbound | `gs://protocol-home-e1-inbound` (`EUROPE-CENTRAL2`) |
 | Startup | `deploy/gcp-app/startup-protocol-app.sh` (Docker + mount) |

@@ -16,6 +16,7 @@ COPY env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pi
 COPY backend/ backend/
 COPY frontend/ frontend/
 COPY clinical_knowledge/ clinical_knowledge/
+COPY corpus_pipeline/ corpus_pipeline/
 COPY config/ config/
 COPY services/__init__.py services/__init__.py
 COPY services/README.md services/README.md

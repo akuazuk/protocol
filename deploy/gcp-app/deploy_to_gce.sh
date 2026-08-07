@@ -99,7 +99,7 @@ echo "[3/5] sync sources to VM"
 tar czf - \
   rag_server.py env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py \
   requirements.txt requirements-rag.txt \
-  backend frontend clinical_knowledge config scripts data/catalog services \
+  backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog services \
   deploy/gcp-app/Dockerfile .dockerignore \
   | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR'"
 
