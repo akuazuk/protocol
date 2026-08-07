@@ -216,10 +216,10 @@ $MO_DATA_ROOT/
   - package+upload: `deploy/mac-bridge/extract_upload_day.sh`; pull: `deploy/gcp-app/pull_inbound_from_gcs.sh --remote`.
   - smoke: `mo_2026-08-06` → GCS → GCE inbound (10344 rows).
   - score-from-inbound: `deploy/gcp-app/score_inbound_day.sh` (L1+deep+recompute, no MariaDB).
-- [~] B5. DNS/домен + HTTPS на GCP.
+- [x] B5. DNS/домен + HTTPS на GCP.
   - Caddy на `protocol-app`: `deploy/gcp-app/Caddyfile` + `setup_https_caddy.sh --remote`.
-  - Цель: `https://protocol.kravira.by` → `127.0.0.1:8000`.
-  - Блокер: DNS ещё CNAME→Render (`216.24.57.7`); нужен **A** → `34.118.21.47`, потом restart Caddy / LE.
+  - `https://protocol.kravira.by` → `127.0.0.1:8000`; LE CN=`protocol.kravira.by`.
+  - DNS hoster.by: **A** → `34.118.21.47` (CNAME на Render снят).
 - [ ] B6. Rollback: Render snapshot + старый publish path.
 
 Критерий B: «Вчера» с GCP без Render disk; Mac ночью только extract.
@@ -373,6 +373,6 @@ thin CLI `services.mis_bridge` / `services.llm_worker`.
 | APIs | compute, storage, secretmanager, artifactregistry, iam, cloudresourcemanager |
 
 **B1-B4 done (staging):** VM + warehouse + GCE LLM + Mac→GCS→inbound + score_inbound_day.
-**B5 lite:** Caddy установлен; ждёт DNS A → GCE для LE.
+**B5 done (staging hostname):** HTTPS `https://protocol.kravira.by` на GCE (Caddy+LE).
 Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`, `deploy/mac-bridge/README.md`.
-Следующий шаг: flip DNS + LE smoke; Secret Manager; выключить Mac score в launchd.
+Следующий шаг: Secret Manager; выключить Mac score в launchd; B6 rollback doc.

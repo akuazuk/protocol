@@ -8,20 +8,21 @@
 - PR: open from this branch
 
 ## Done
-- Caddy 2.11.4 installed on `protocol-app`, enabled, proxy to `:8000`
-- Repo: `deploy/gcp-app/Caddyfile`, `setup_https_caddy.sh`, inventory + plan B5 notes
-- `BUILD_VERSION` bumped (`gce-https-caddy`)
+- Caddy 2.11.4 on `protocol-app` → `:8000`
+- DNS A at hoster.by → `34.118.21.47` (CNAME removed)
+- LE cert issued (CN=`protocol.kravira.by`, YE2, ~90 days)
+- Smoke via GCE IP / 8.8.8.8: `/health/live` + `/api/version` ok
+- PR #46
 
 ## Not done
-- Public DNS still points `protocol.kravira.by` → Render (CNAME chain)
-- Let's Encrypt not issued until **A** `protocol.kravira.by` → `34.118.21.47`
+- Some resolvers still cache old CNAME→Render (TTL up to ~1h); flush or wait
 - Secret Manager still open
+- Render remains at `https://protocol-bimy.onrender.com`
 
-## Next command (after DNS flip)
+## Verify
 ```bash
-cd /private/tmp/protocol-task-gce-https-caddy-pc1
-dig +short protocol.kravira.by A   # must be 34.118.21.47
-bash deploy/gcp-app/setup_https_caddy.sh --remote
+dig @u1.hoster.by +short protocol.kravira.by A   # 34.118.21.47
+dig @8.8.8.8 +short protocol.kravira.by A
 curl -fsS https://protocol.kravira.by/health/live
 curl -fsS https://protocol.kravira.by/api/version
 ```

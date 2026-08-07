@@ -13,9 +13,9 @@
 | MO root on VM | `/var/data/medical_exams` (`inbound/extract`, warehouse, llm_*) |
 | Static IP | `34.118.21.47` (`protocol-app-ip`) |
 | Direct app | `http://34.118.21.47:8000` (Docker; keep for debug) |
-| HTTPS (target) | `https://protocol.kravira.by` → Caddy → `127.0.0.1:8000` |
-| TLS | Caddy 2 + Let's Encrypt (`deploy/gcp-app/setup_https_caddy.sh --remote`) |
-| DNS cutover | `protocol.kravira.by` **A** → `34.118.21.47` (сейчас ещё CNAME→Render; LE ждёт flip) |
+| HTTPS | `https://protocol.kravira.by` → Caddy → `127.0.0.1:8000` |
+| TLS | Caddy 2 + Let's Encrypt (CN=`protocol.kravira.by`, YE2; setup: `setup_https_caddy.sh --remote`) |
+| DNS | hoster.by **A** `protocol.kravira.by` → `34.118.21.47` (CNAME снят; TTL 3600) |
 | Container | `protocol-web` · image `protocol-gcp-app:staging` · restart unless-stopped |
 | Smoke (2026-08-07) | `/health/live` ok · `/api/version` ok · `/api/methodist/mo/meta` ok |
 | Data migrate | Render `/var/data/medical_exams` → GCE (234 MB); `fact_mo_case=97284` match |
@@ -39,4 +39,5 @@ gcloud compute instances start protocol-app --zone=europe-central2-a
 bash deploy/gcp-app/deploy_to_gce.sh
 ```
 
-Следующее: flip DNS A `protocol.kravira.by` → `34.118.21.47`, затем `setup_https_caddy.sh --remote`; Secret Manager.
+Smoke HTTPS (2026-08-07): `/health/live` + `/api/version` via `34.118.21.47` ok.
+Следующее: Secret Manager; выключить Mac score в launchd.
