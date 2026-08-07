@@ -37,6 +37,12 @@ load_dotenv_keys() {
 }
 load_dotenv_keys
 
+# Night LLM только на Render (Gemini geo-block на Mac). Локальный grade_kz_llm
+# в orchestrator отключаем, если не задано явно иначе.
+if [ -z "${MO_LLM_NIGHT_ENABLED+x}" ]; then
+  export MO_LLM_NIGHT_ENABLED=0
+fi
+
 # The pipeline lock protects scoring only. Keep publication under the same
 # launchd-level lock so retry/hourly jobs cannot VACUUM and upload the warehouse
 # concurrently.
@@ -115,11 +121,19 @@ catch_up_needed() {
   fi
   local yesterday
   yesterday="$(TZ=Europe/Minsk date -v-1d +%F)"
-  # Mirrors the cheap part of PipelineState selection. Avoid importing the
-  # scoring stack every hour when yesterday is already settled.
-  jq -e --arg day "$yesterday" '
-    (.dates[$day].status != "success")
+  # success | partial(attempts<4) | зависший scoring/export (нет heartbeat > 2ч)
+  # | вчера отсутствует в state.
+  jq -e --arg day "$yesterday" --argjson now "$(date -u +%s)" '
+    (.dates[$day] == null)
+    or (.dates[$day].status != "success")
     or any(.dates[]; .status == "partial" and ((.attempts // 0) < 4))
+    or any(.dates[];
+        (.status == "scoring" or .status == "export" or .status == "running")
+        and (
+          ((.heartbeat // .started_at // "") | fromdateiso8601? // 0) as $hb
+          | ($now - $hb) > 7200
+        )
+      )
   ' "$STATE_FILE" >/dev/null 2>&1
 }
 run_pipeline() {
@@ -140,7 +154,7 @@ publish_if_changed() {
   fi
 }
 
-# Gemini с Mac часто geo-block - night LLM и action-judge гоняем на Render после publish.
+# Gemini с Mac часто geo-block - night LLM на Render сразу после появления данных на диске.
 run_render_llm_for_yesterday() {
   local day
   day="$(TZ=Europe/Minsk date -v-1d +%Y-%m-%d 2>/dev/null || TZ=Europe/Minsk date -d yesterday +%Y-%m-%d)"
@@ -156,6 +170,24 @@ run_render_llm_for_yesterday() {
     || echo "МО: remote LLM backfill завершился с ошибкой (день уже опубликован)" >&2
 }
 
+# Скан Render disk: любой день с cases+queue без полного grades → старт runner.
+# Не ждёт «вчера» и не зависит от успеха warehouse merge (publish уже кладёт CSV).
+trigger_render_llm_pending() {
+  if [ "${MO_RENDER_LLM_AFTER_PUBLISH:-1}" = "0" ]; then
+    echo "МО: pending LLM trigger отключён"
+    return 0
+  fi
+  local script="$ROOT/scripts/trigger_mo_render_llm_pending.sh"
+  if [ ! -f "$script" ]; then
+    echo "МО: нет $script" >&2
+    return 0
+  fi
+  chmod +x "$script" 2>/dev/null || true
+  echo "МО: проверка pending night LLM на Render disk"
+  bash "$script" --days "${MO_RENDER_LLM_PENDING_DAYS:-5}" \
+    || echo "МО: pending LLM trigger завершился с ошибкой" >&2
+}
+
 case "$MODE" in
   main)
     # Основной приём ~06:00 Europe/Minsk: вчера + catch-up + reconcile 3 дней.
@@ -166,44 +198,46 @@ case "$MODE" in
     fi
     run_pipeline "${MAIN_ARGS[@]}"
     publish_if_changed
-    if [ "$PIPELINE_CHANGED" = "1" ]; then
-      run_render_llm_for_yesterday
-    fi
+    # LLM: publish сам триггерит pending; дублируем на случай publish skip.
+    trigger_render_llm_pending
     ;;
   retry)
     if catch_up_needed; then
       run_pipeline --catch-up
       publish_if_changed
-      if [ "$PIPELINE_CHANGED" = "1" ]; then
-        run_render_llm_for_yesterday
-      fi
     else
-      echo "МО: catch-up не требуется, retry пропущен"
+      echo "МО: catch-up не требуется, retry → только pending LLM"
     fi
+    trigger_render_llm_pending
     ;;
   hourly)
     if catch_up_needed; then
       run_pipeline --catch-up --catch-up-limit 31
       publish_if_changed
-      if [ "$PIPELINE_CHANGED" = "1" ]; then
-        run_render_llm_for_yesterday
-      fi
     else
-      echo "МО: catch-up не требуется, hourly пропущен"
+      echo "МО: catch-up не требуется, hourly → только pending LLM"
     fi
+    # Даже без локального scoring: если CSV уже на Render - стартовать grade.
+    trigger_render_llm_pending
     ;;
   weekly)
     # Страховка понедельника: явная перезапись прошлой недели (если утренний main не успел).
     run_pipeline --previous-week
     publish_if_changed
+    trigger_render_llm_pending
     ;;
   publish)
     # Только публикация: пригодится после ручного пересчёта истории.
+    # publish_mo_to_render.py сам вызовет pending LLM после upload secure_cases.
     publish_to_render
     ;;
   llm-yesterday)
     # Ручной/страховочный прогон LLM на Render за вчера.
     run_render_llm_for_yesterday
+    ;;
+  drain-llm)
+    # Только скан Render disk → старт grade (без локального scoring).
+    trigger_render_llm_pending
     ;;
   *)
     echo "unknown mode: $MODE" >&2

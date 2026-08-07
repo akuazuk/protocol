@@ -170,7 +170,12 @@ python3 scripts/publish_mo_to_render.py --dry-run --no-verify
  Render обрывает («Connection closed by remote host»), поток с повторами - нет;
 - месячные файлы заменяются с резервной копией рядом (`*_cases.pre_deep_YYYYMMDD.jsonl`);
 - launchd-обёртка публикует автоматически после каждого прогона
- (`MO_PUBLISH_TO_RENDER=0` отключает, `bash scripts/run_mo_daily_launchd.sh publish` - только публикация).
+ (`MO_PUBLISH_TO_RENDER=0` отключает, `bash scripts/run_mo_daily_launchd.sh publish` - только публикация);
+- **сразу после upload `secure_cases` на Render** стартует night LLM
+ (`publish_mo_to_render.py` → `trigger_mo_render_llm_pending.sh`), даже если warehouse
+ merge потом упал. Hourly/retry тоже вызывают drain pending LLM.
+ Отключить: `MO_RENDER_LLM_AFTER_PUBLISH=0` или `publish --no-trigger-llm`.
+ Режим только LLM: `bash scripts/run_mo_daily_launchd.sh drain-llm`.
 
 Проверка после публикации:
 
