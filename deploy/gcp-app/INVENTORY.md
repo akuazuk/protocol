@@ -23,6 +23,7 @@
 | Night LLM | `bash deploy/gcp-llm/run_on_gce.sh <day>` (smoke: `--smoke`) |
 | Inbound GCS | `gs://protocol-home-e1-inbound/inbound/extract/` ← `extract_upload_day.sh` |
 | Inbound on VM | `/var/data/medical_exams/inbound/extract/` ← `pull_inbound_from_gcs.sh --remote` |
+| Score inbound | `bash deploy/gcp-app/score_inbound_day.sh <day> --remote` (no MIS) |
 
 ## Ops
 
