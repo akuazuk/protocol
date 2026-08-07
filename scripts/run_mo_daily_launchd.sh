@@ -239,6 +239,15 @@ case "$MODE" in
     # Только скан Render disk → старт grade (без локального scoring).
     trigger_render_llm_pending
     ;;
+  extract-upload-only)
+    # B4: package yesterday CSV → GCS (score/recompute на GCP). Не publish на Render.
+    # Требует уже существующий secure_cases/mo_DAY.csv (после обычного extract/score)
+    # или отдельный MIS extract; полный cutover score-on-GCP - следующий шаг.
+    day="$(TZ=Europe/Minsk date -v-1d +%Y-%m-%d 2>/dev/null || TZ=Europe/Minsk date -d yesterday +%Y-%m-%d)"
+    echo "МО: extract-upload-only day=$day → GCS"
+    bash "$ROOT/deploy/mac-bridge/extract_upload_day.sh" "$day" --pull-gce \
+      || echo "МО: extract-upload-only завершился с ошибкой" >&2
+    ;;
   *)
     echo "unknown mode: $MODE" >&2
     exit 2

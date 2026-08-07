@@ -21,6 +21,8 @@
 | Startup | `deploy/gcp-app/startup-protocol-app.sh` (Docker + mount) |
 | Redeploy | `bash deploy/gcp-app/deploy_to_gce.sh` (нужен локальный `.env`) |
 | Night LLM | `bash deploy/gcp-llm/run_on_gce.sh <day>` (smoke: `--smoke`) |
+| Inbound GCS | `gs://protocol-home-e1-inbound/inbound/extract/` ← `extract_upload_day.sh` |
+| Inbound on VM | `/var/data/medical_exams/inbound/extract/` ← `pull_inbound_from_gcs.sh --remote` |
 
 ## Ops
 

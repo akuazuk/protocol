@@ -27,6 +27,22 @@ def test_extract_day_writes_meta(tmp_path: Path, monkeypatch) -> None:
     assert data["day"] == "2026-08-06"
 
 
+def test_extract_day_packages_from_secure_csv(tmp_path: Path, monkeypatch) -> None:
+    monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path))
+    secure = tmp_path / "secure_cases" / "2026" / "08"
+    secure.mkdir(parents=True)
+    src = secure / "mo_2026-08-06.csv"
+    src.write_text("visit_id,note\n1,a\n2,b\n", encoding="utf-8")
+    assert extract_main(["--day", "2026-08-06", "--from-secure", "--run-host", "mac"]) == 0
+    out = tmp_path / "inbound" / "extract" / "mo_2026-08-06.csv"
+    meta = tmp_path / "inbound" / "extract" / "mo_2026-08-06.meta.json"
+    assert out.is_file()
+    data = json.loads(meta.read_text(encoding="utf-8"))
+    assert data["row_count"] == 2
+    assert len(data["checksum_sha256"]) == 64
+    assert "a" in out.read_text(encoding="utf-8")
+
+
 def test_llm_grade_day_dry_run(tmp_path: Path) -> None:
     outbox = tmp_path / "llm_outbox" / "fixture-run-1"
     outbox.mkdir(parents=True)
