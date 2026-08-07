@@ -204,8 +204,11 @@ $MO_DATA_ROOT/
 
 ### Фаза B - E1 cutover на GCP (приложение), Mac = только МИС-мост - 1-3 недели
 
-- [ ] B1. GCP project + GCE (проще для SQLite disk) или Cloud Run+Filestore; регион с рабочим Gemini.
-- [ ] B2. Перенос Render `medical_exams` → GCP PD/GCS; web на GCP; `/api/version` smoke.
+- [x] B1. GCP project + GCE (проще для SQLite disk) или Cloud Run+Filestore; регион с рабочим Gemini.
+  - project `protocol-home-e1`, VM `protocol-app` e2-standard-2, PD 50GB, zone `europe-central2-a`, IP `34.118.21.47`, bucket `gs://protocol-home-e1-inbound` (см. `deploy/gcp-app/INVENTORY.md`).
+- [~] B2. Перенос Render `medical_exams` → GCP PD/GCS; web на GCP; `/api/version` smoke.
+  - web staging live: `http://34.118.21.47:8000` (`deploy_to_gce.sh`); `/api/version` ok.
+  - migrate warehouse/secure_cases с Render - ещё нет.
 - [ ] B3. LLM jobs на том же GCP (`gcp-llm`); убрать зависимость night grade от Render SSH.
 - [ ] B4. Mac launchd: режим `extract-upload-only` → GCS `inbound/extract`; score/recompute на GCP.
 - [ ] B5. DNS/домен с Render на GCP (или временный hostname).
@@ -347,5 +350,22 @@ scripts/ops/git_task_start.sh by-gcp-llm-split --pc=pc1 \
 План обновлён: E1 GCP-first + МИС с Mac; **добавлены §8 (мусор/гигиена) и §9 (агенты/PC)**.  
 **Фаза A закрыта в репо:** services READMEs, контракты+fixtures, split requirements,  
 Dockerfiles (`gcp-app` / `gcp-llm` / `mis-bridge` / `by-home` stub), CI `docker-images`,  
-thin CLI `services.mis_bridge` / `services.llm_worker`.  
-Следующий шаг - **фаза B** (GCP project + cutover), не смешивать с product suggest/ICD.
+thin CLI `services.mis_bridge` / `services.llm_worker`.
+
+### Решения владельца (фаза B, 2026-08-07)
+
+| Вопрос | Решение |
+|--|--|
+| GCP project | **создан** `protocol-home-e1` (аккаунт `aicoursesus@gmail.com`; не reuse `gen-lang-client-*`) |
+| Billing | linked `01D5C2-ECFF77-88FFEC` (`My Billing Account`) |
+| Хост | **GCE + persistent disk** (не Cloud Run) |
+| Регион | **EU ближе к Минску** → канон: `europe-central2` (Warsaw); запасной `europe-north1` (Finland, уже в methodist-плане) |
+| Домен | сначала **временный hostname** GCP (IP / `*.nip.io` / Cloud DNS temp); Render DNS не трогать |
+| Gemini | сейчас AI Studio key (`google-generativeai`) - регион VM важен для latency/ops; smoke LLM с GCE до cutover |
+| APIs | compute, storage, secretmanager, artifactregistry, iam, cloudresourcemanager |
+
+**B1 done:** VM `protocol-app` RUNNING, `/var/data` mounted, Docker installed, GCS inbound bucket.
+**B2 partial:** web staging live `http://34.118.21.47:8000` (`deploy_to_gce.sh`); env via
+`.env.gcp-staging` (см. `deploy/gcp-app/ENV-MIGRATION.md`). Warehouse с Render ещё не мигрирован.
+Инвентарь: `deploy/gcp-app/INVENTORY.md`.
+Следующий шаг: migrate `medical_exams` Render → PD; Secret Manager для ключей; HTTPS temp host.
