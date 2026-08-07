@@ -216,7 +216,10 @@ $MO_DATA_ROOT/
   - package+upload: `deploy/mac-bridge/extract_upload_day.sh`; pull: `deploy/gcp-app/pull_inbound_from_gcs.sh --remote`.
   - smoke: `mo_2026-08-06` → GCS → GCE inbound (10344 rows).
   - score-from-inbound: `deploy/gcp-app/score_inbound_day.sh` (L1+deep+recompute, no MariaDB).
-- [ ] B5. DNS/домен с Render на GCP (или временный hostname).
+- [~] B5. DNS/домен + HTTPS на GCP.
+  - Caddy на `protocol-app`: `deploy/gcp-app/Caddyfile` + `setup_https_caddy.sh --remote`.
+  - Цель: `https://protocol.kravira.by` → `127.0.0.1:8000`.
+  - Блокер: DNS ещё CNAME→Render (`216.24.57.7`); нужен **A** → `34.118.21.47`, потом restart Caddy / LE.
 - [ ] B6. Rollback: Render snapshot + старый publish path.
 
 Критерий B: «Вчера» с GCP без Render disk; Mac ночью только extract.
@@ -365,10 +368,11 @@ thin CLI `services.mis_bridge` / `services.llm_worker`.
 | Billing | linked `01D5C2-ECFF77-88FFEC` (`My Billing Account`) |
 | Хост | **GCE + persistent disk** (не Cloud Run) |
 | Регион | **EU ближе к Минску** → канон: `europe-central2` (Warsaw); запасной `europe-north1` (Finland, уже в methodist-плане) |
-| Домен | сначала **временный hostname** GCP (IP / `*.nip.io` / Cloud DNS temp); Render DNS не трогать |
+| Домен | **`protocol.kravira.by`** → GCE `34.118.21.47` (A, не CNAME); Render остаётся на `protocol-bimy.onrender.com` до полного cutover |
 | Gemini | сейчас AI Studio key (`google-generativeai`) - регион VM важен для latency/ops; smoke LLM с GCE до cutover |
 | APIs | compute, storage, secretmanager, artifactregistry, iam, cloudresourcemanager |
 
 **B1-B4 done (staging):** VM + warehouse + GCE LLM + Mac→GCS→inbound + score_inbound_day.
+**B5 lite:** Caddy установлен; ждёт DNS A → GCE для LE.
 Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`, `deploy/mac-bridge/README.md`.
-Следующий шаг: Secret Manager + HTTPS (B5 lite); выключить Mac score в launchd; B5 DNS позже.
+Следующий шаг: flip DNS + LE smoke; Secret Manager; выключить Mac score в launchd.
