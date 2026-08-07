@@ -209,7 +209,9 @@ $MO_DATA_ROOT/
 - [x] B2. Перенос Render `medical_exams` → GCP PD/GCS; web на GCP; `/api/version` smoke.
   - web staging: `http://34.118.21.47:8000`; `/api/version` + `/api/methodist/mo/meta` ok.
   - warehouse/secure_cases/reports скопированы (234 MB; `fact_mo_case=97284` = Render).
-- [ ] B3. LLM jobs на том же GCP (`gcp-llm`); убрать зависимость night grade от Render SSH.
+- [x] B3. LLM jobs на том же GCP (`gcp-llm`); убрать зависимость night grade от Render SSH.
+  - `deploy/gcp-llm/run_on_gce.sh` (+ shared `mo_llm_range_runner.sh`); smoke live grade ok=1 с GCE.
+  - Render `run_mo_render_llm_backfill.sh` оставлен legacy, пока Render = warehouse leader.
 - [ ] B4. Mac launchd: режим `extract-upload-only` → GCS `inbound/extract`; score/recompute на GCP.
 - [ ] B5. DNS/домен с Render на GCP (или временный hostname).
 - [ ] B6. Rollback: Render snapshot + старый publish path.
@@ -364,8 +366,7 @@ thin CLI `services.mis_bridge` / `services.llm_worker`.
 | Gemini | сейчас AI Studio key (`google-generativeai`) - регион VM важен для latency/ops; smoke LLM с GCE до cutover |
 | APIs | compute, storage, secretmanager, artifactregistry, iam, cloudresourcemanager |
 
-**B1 done:** VM `protocol-app` RUNNING, `/var/data` mounted, Docker installed, GCS inbound bucket.
-**B2 partial:** web staging live `http://34.118.21.47:8000` (`deploy_to_gce.sh`); env via
-`.env.gcp-staging` (см. `deploy/gcp-app/ENV-MIGRATION.md`). Warehouse с Render ещё не мигрирован.
-Инвентарь: `deploy/gcp-app/INVENTORY.md`.
-Следующий шаг: migrate `medical_exams` Render → PD; Secret Manager для ключей; HTTPS temp host.
+**B1-B3 done (staging):** VM + warehouse copy + night LLM runner на GCE
+(`deploy/gcp-llm/run_on_gce.sh`; Gemini live ok с Warsaw). Render SSH LLM = legacy.
+Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`.
+Следующий шаг: **B4** Mac extract→GCS; Secret Manager; HTTPS temp host (B5 lite).

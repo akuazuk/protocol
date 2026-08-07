@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
-# Прогон night LLM + action-judge ТОЛЬКО на Render (единственный рабочий Gemini egress).
+# Прогон night LLM + action-judge на Render (legacy, пока Render = warehouse leader).
+# Предпочтительный путь E1 staging: deploy/gcp-llm/run_on_gce.sh
 # Не запускать grade_kz_llm локально на Mac. Перед вызовом: vanya_vpn ensure-off.
 # Пример:
 #   bash scripts/run_mo_render_llm_backfill.sh 2026-08-01 2026-08-04
 #   bash scripts/run_mo_render_llm_backfill.sh 2026-08-01 2026-08-04 --foreground
+#   bash deploy/gcp-llm/run_on_gce.sh 2026-08-06
 set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/.." && pwd)"
 if [[ -x "$HOME/CURSOR/bin/vanya_vpn.sh" ]]; then

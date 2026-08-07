@@ -15,10 +15,9 @@ production. Cursor дополнительно загружает `.cursor/rules/
   источником настроек production.
 - Данные МО production: `/var/data/medical_exams`. Клинические тексты, токены и ID не
   печатать в логах, PR, handoff и ответах.
-- **Gemini / night LLM для МО** - только через Render
-  (`scripts/run_mo_render_llm_backfill.sh`), не с Mac. Перед SSH: VanyaVPN `ensure-off`.
-  Долевая цель контуров: `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`
-  (`services/`, `deploy/gcp-*`, образ `protocol-gcp-llm`). Не смешивать MIS DSN в llm-образ.
+- **Gemini / night LLM для МО** - не с Mac. Staging E1: `deploy/gcp-llm/run_on_gce.sh`.
+  Legacy Render: `scripts/run_mo_render_llm_backfill.sh` (VanyaVPN `ensure-off` перед SSH).
+  План контуров: `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`. Не смешивать MIS DSN в llm-образ.
 
 ## 2. Обязательный preflight каждой сессии
 
