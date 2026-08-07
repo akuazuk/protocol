@@ -1,7 +1,7 @@
 # Case → Protocol Suggest (v1)
 
 Дата: 2026-08-05  
-Статус: active  
+Статус: active (recall по МКБ superseded: `2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md`)  
 Автор: агент + владелец (по разбору МО Смирнова / KZ)  
 Связанные:
 

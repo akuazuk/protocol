@@ -80,6 +80,7 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "drawer-score-c" not in JS
     assert "Полнота %" not in JS
     assert "protocol-suggest" in JS
+    assert "Подбор по установленному диагнозу" in JS
     assert "data-sort-key" in HTML
     assert 'id="drawer-prev"' in HTML
 
