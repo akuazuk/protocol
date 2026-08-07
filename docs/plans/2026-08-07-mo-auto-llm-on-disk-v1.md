@@ -26,6 +26,9 @@ warehouse merge. Данные (secure CSV/cases) могут уже лежать 
 | `publish_mo_to_render.py` вызывает trigger **после** upload secure_cases (даже если warehouse merge потом падает) | done |
 | launchd `hourly`/`retry`/`main`: всегда `drain` pending LLM; режим `drain-llm` | done |
 | catch_up: учитывать зависший `scoring` (>2ч без heartbeat) | done |
+| Action-judge: вся очередь (`limit=0`), fallback `action_queue`, source=local | done (2026-08-07) |
+
+На Render за 2026-08-06 вручную догнано: **155/155** judges.jsonl.
 
 ---
 
@@ -42,6 +45,10 @@ python3 scripts/publish_mo_to_render.py --days 14
 ```
 
 Отключить: `MO_RENDER_LLM_AFTER_PUBLISH=0`.
+
+Action-judge после night grade: `MO_ACTION_JUDGE_LIMIT` (default **0** = вся
+action-очередь дня из `report.json` / `action_queue`). Не ставить 20 - иначе в UI
+«LLM-оценка action-очереди ещё не готова» на остальных кейсах.
 
 ---
 
