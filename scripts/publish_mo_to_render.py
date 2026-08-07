@@ -259,9 +259,45 @@ def publish(args: argparse.Namespace) -> dict[str, Any]:
     # Secure CSV / reports нельзя блокировать падением merge: иначе в UI
     # «Оценено», а «Исходное МО» пустое (клинический текст только из secure_cases).
     _publish_files(publisher, data_root, args, report)
+    # Как только secure_cases на диске Render - сразу night LLM (не ждать успешного merge).
+    report["llm_trigger"] = _trigger_render_llm_pending(args)
     if warehouse_error is not None:
         raise warehouse_error
     return report
+
+
+def _trigger_render_llm_pending(args: argparse.Namespace) -> dict[str, Any]:
+    """Старт grade на Render для дней с cases/queue без полного grades."""
+    if args.dry_run:
+        return {"skipped": True, "reason": "dry_run"}
+    if not bool(getattr(args, "trigger_llm", True)):
+        return {"skipped": True, "reason": "flag_off"}
+    env_flag = (os.environ.get("MO_RENDER_LLM_AFTER_PUBLISH") or "1").strip()
+    if env_flag in {"0", "false", "no", "off"}:
+        return {"skipped": True, "reason": "MO_RENDER_LLM_AFTER_PUBLISH=0"}
+    script = ROOT / "scripts" / "trigger_mo_render_llm_pending.sh"
+    if not script.is_file():
+        return {"ok": False, "error": "trigger script missing"}
+    days = max(3, min(31, int(getattr(args, "llm_pending_days", 14) or 14)))
+    try:
+        result = subprocess.run(
+            ["bash", str(script), "--days", str(days)],
+            check=False,
+            text=True,
+            capture_output=True,
+            timeout=180,
+        )
+    except Exception as error:  # noqa: BLE001
+        print(f"LLM trigger after publish failed: {error}", file=sys.stderr)
+        return {"ok": False, "error": str(error)}
+    out = ((result.stdout or "") + (result.stderr or "")).strip()
+    if out:
+        print(out)
+    return {
+        "ok": result.returncode == 0,
+        "exit_code": result.returncode,
+        "output": out[-2000:],
+    }
 
 
 def _publish_warehouse(
@@ -445,6 +481,25 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--no-verify", dest="verify", action="store_false")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument(
+        "--trigger-llm",
+        dest="trigger_llm",
+        action="store_true",
+        default=True,
+        help="после upload secure_cases сразу стартовать night LLM на Render (default on)",
+    )
+    parser.add_argument(
+        "--no-trigger-llm",
+        dest="trigger_llm",
+        action="store_false",
+        help="не запускать LLM после publish",
+    )
+    parser.add_argument(
+        "--llm-pending-days",
+        type=int,
+        default=14,
+        help="сколько последних дней сканировать на незавершённый night LLM",
+    )
     args = parser.parse_args(argv)
     args.methodist_token = _resolve_methodist_token(args)
     try:
