@@ -1,7 +1,8 @@
 # Handoff следующему агенту (после ICD + eval fixes, 06.08 день)
 
-**Актуальный handoff** (заменяет утренний
-`docs/handoff/2026-08-06-next-agent-mo-review.md` как точку входа).  
+> **Устарело как точка входа.** Актуальный handoff:
+> [`docs/handoff/2026-08-07-night-next-agent.md`](2026-08-07-night-next-agent.md)
+
 **Когда:** 2026-08-06 ~14:30 UTC+3.  
 **Репо:** `akuazuk/protocol`. **Прод:** `https://protocol-bimy.onrender.com`.  
 **SSH Render:** `srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com`  

@@ -1,14 +1,14 @@
 # МО: устранение ошибок по gold review packs (v1)
 
 Дата: 2026-08-06  
-Статус: active (код #34 в main; hotfix #35 + ops recovery; ждём CI merge)  
+Статус: completed (волна S0-S5 в проде #34+#35; residuals C3/C4, D2/D3, july, suggest ranking)  
 Источник: 2 пакета в `crm_review_pack` (`3650612` уролог, `3643304` невролог) + ops gaps.  
 Связанные:  
 `2026-08-06-mo-icd-full-document-search-v1.md` (P0-P2 done; P3/P4 open),  
 `2026-08-05-mo-case-protocol-suggest-v1.md`,  
 `2026-08-06-mo-case-findings-clarity-v1.md`,  
 `2026-08-05-mo-august-llm-bi-backfill-v1.md`,  
-handoff: `docs/handoff/2026-08-06-afternoon-next-agent.md`.
+handoff: `docs/handoff/2026-08-07-night-next-agent.md`.
 
 Цель одной волны: закрыть **все подтверждённые ошибки оценки/UI/данных** из экспертных
 разборов и связанный stale-state (pending LLM, старые findings), чтобы повторный
@@ -130,7 +130,7 @@ handoff: `docs/handoff/2026-08-06-afternoon-next-agent.md`.
 - [x] Deploy #34 + rescore/recompute (после hotfix CSV).
 - [x] Smoke 3650612 / 3643304 на Render (hotpatch #35).
 - [x] Handoff: `docs/handoff/2026-08-06-evening-gold-wave.md`.
-- [ ] Merge/deploy #35 в git main (CI Actions queue).
+- [x] Merge/deploy #35 в git main (`cf2ea739`, prod `2026-08-06-172103Z-evening-handoff`).
 
 ---
 
@@ -183,5 +183,6 @@ handoff: `docs/handoff/2026-08-06-afternoon-next-agent.md`.
 
 ## 9. Статус
 
-Волна запущена по команде «делай всю волну». Код S1-S4 в PR; ops rescore/recompute
-на Render - сразу после merge/deploy.
+Волна закрыта: #34+#35 в `main`, прод `2026-08-06-172103Z-evening-handoff`,
+Aug 01-05 LLM ok + deep rescore (CSV join) + recompute `llm_queue_pending=0`.
+Дальше - residuals (ICD P3/P4, july repair, suggest ranking) в night handoff.
