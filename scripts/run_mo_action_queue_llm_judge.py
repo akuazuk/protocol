@@ -3,7 +3,7 @@
 
 Примеры:
   python3 scripts/run_mo_action_queue_llm_judge.py --date 2026-08-04 --source render --dry-run
-  python3 scripts/run_mo_action_queue_llm_judge.py --date yesterday --stages ab --source render --limit 20
+  python3 scripts/run_mo_action_queue_llm_judge.py --date yesterday --stages ab --source local --limit 0
 
 ПДн: out только под data/medical_exams/ или /var/data/medical_exams/ (не коммитить).
 """
@@ -89,11 +89,14 @@ def load_action_items_render(day: str, *, base_url: str) -> list[dict[str, Any]]
         token=token,
     )
     block = report.get("action_cases") or {}
-    items = block.get("items") if isinstance(block, dict) else None
-    if not isinstance(items, list):
-        # fallback: action_queue list
+    items: list[Any] = []
+    if isinstance(block, dict):
+        raw = block.get("items")
+        if isinstance(raw, list) and raw:
+            items = list(raw)
+    if not items:
+        # fallback: action_queue list (часто единственный источник в report.json)
         queue = report.get("action_queue") or []
-        items = []
         for q in queue:
             if not isinstance(q, dict):
                 continue
@@ -124,10 +127,21 @@ def load_action_items_local(day: str, *, medical_root: Path) -> list[dict[str, A
         raise SystemExit(f"нет локального отчёта: {path}")
     report = json.loads(path.read_text(encoding="utf-8"))
     block = report.get("action_cases") or {}
-    items = block.get("items") if isinstance(block, dict) else report.get("action_queue") or []
-    if not isinstance(items, list):
-        return []
-    return [it for it in items if isinstance(it, dict) and (it.get("case_id") or it.get("visit_id"))]
+    items: list[Any] = []
+    if isinstance(block, dict):
+        raw = block.get("items")
+        if isinstance(raw, list) and raw:
+            items = list(raw)
+    if not items:
+        # fallback: action_queue (report часто пишет очередь сюда, а action_cases=null)
+        fallback = report.get("action_queue") or []
+        if isinstance(fallback, list):
+            items = list(fallback)
+    return [
+        it
+        for it in items
+        if isinstance(it, dict) and (it.get("case_id") or it.get("visit_id") or it.get("mis_id"))
+    ]
 
 
 def fetch_case_document(case_id: str, *, base_url: str) -> dict[str, Any]:
@@ -333,7 +347,12 @@ def main() -> int:
     ap.add_argument("--stages", default="ab", help="a | b | ab")
     ap.add_argument("--model", default=os.environ.get("MO_LLM_ACTION_JUDGE_MODEL") or "gemini-3.6-flash")
     ap.add_argument("--concurrency", type=int, default=3)
-    ap.add_argument("--limit", type=int, default=20)
+    ap.add_argument(
+        "--limit",
+        type=int,
+        default=0,
+        help="макс. число кейсов из action-очереди; 0 = все",
+    )
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--self-check", action="store_true", help="validate example fixtures and exit")
     ap.add_argument("--out", type=Path, default=None)
@@ -355,7 +374,8 @@ def main() -> int:
     else:
         items = load_action_items_local(day, medical_root=args.medical_exams_root)
 
-    items = items[: max(0, args.limit)]
+    if args.limit and args.limit > 0:
+        items = items[: args.limit]
     print(f"date={day} source={args.source} action_items={len(items)} stages={stages} dry_run={args.dry_run}")
     if not items:
         print("очередь пуста - нечего прогонять")

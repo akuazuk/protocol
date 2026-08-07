@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-07-052650Z-auto-llm-on-disk"
+BUILD_VERSION = "2026-08-07-064522Z-action-judge-full-queue"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""

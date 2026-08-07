@@ -32,8 +32,10 @@ for d in "${days[@]}"; do
     --escalate --resume --retry-errors >>"$LOG" 2>&1
   echo "grade_exit_$d=$?" | tee -a "$LOG"
   mkdir -p "$DATA/llm_action_judge/$y/$m/$day"
+  # limit=0 → вся action-очередь дня (раньше 20 → в UI «ещё не готова» на остальных)
+  JUDGE_LIMIT="${MO_ACTION_JUDGE_LIMIT:-0}"
   .venv/bin/python scripts/run_mo_action_queue_llm_judge.py \
-    --date "$d" --source render --stages ab --concurrency 2 --limit 20 \
+    --date "$d" --source local --stages ab --concurrency 3 --limit "$JUDGE_LIMIT" \
     --medical-exams-root "$DATA" \
     --out "$DATA/llm_action_judge/$y/$m/$day/judges.jsonl" >>"$LOG" 2>&1
   echo "judge_exit_$d=$?" | tee -a "$LOG"

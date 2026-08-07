@@ -45,9 +45,10 @@ score, пока нет явного флага `MO_LLM_ACTION_JUDGE_PRIMARY=1` (
 |--|--|--|--|
 | Контракт A с `completeness` | нет | validate + prompt + tests | ok |
 | Specialty/filial без `v4.0.0` | мусор в UI | sanitize на read/upsert | ok после деплоя |
-| Охват batch | нет | CLI dry-run | только `action_cases.items` дня |
+| Охват batch | нет | CLI dry-run | вся action-очередь дня (`limit=0`) |
 | UI отвечает на 3 вопроса | нет | case detail: 3 KPI + compare | ok после деплоя + jsonl |
 | Пилот Gemini на очереди дня | нет | 8/8 на 2026-08-04 (Render jsonl) | ok |
+| Full day без trunc (fix) | hard `--limit 20` + пустой `action_cases` | `limit=0` + fallback `action_queue`; 155/155 на 2026-08-06 | ok после деплоя |
 | Primary overall меняется | - | - | нет (shadow only) |
 
 ---
@@ -225,14 +226,16 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 ```bash
 python3 scripts/run_mo_action_queue_llm_judge.py \
   --date 2026-08-04 \
-  --source render \
+  --source local \
   --stages ab \
   --model gemini-3.6-flash \
   --concurrency 3 \
-  --limit 20 \
-  --out data/medical_exams/llm_action_judge/2026/08/04/judges.jsonl
+  --limit 0 \
+  --medical-exams-root /var/data/medical_exams \
+  --out /var/data/medical_exams/llm_action_judge/2026/08/04/judges.jsonl
 ```
 
+`--limit 0` (default) = вся action-очередь; `MO_ACTION_JUDGE_LIMIT` в `mo_llm_range_runner.sh` - то же. Не ставить 20.
 Только этап A:
 
 ```bash
@@ -277,6 +280,7 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 - [x] Пилотный прогон на очереди одного дня (Render), отчёт методисту (2026-08-04, 8/8).
 - [x] UI: 3 KPI + сравнение с текстом МО в case detail (`llm_action_judge`).
 - [x] UI подробный разбор: блоки полноты, Dx supports/gaps, план exam/treatment/follow-up, chips в очереди «Вчера».
+- [x] Full-queue fix: `--limit` default 0; runner `MO_ACTION_JUDGE_LIMIT`; fallback `action_queue` при пустом `action_cases`; source=local на Render.
 
 ---
 
@@ -289,6 +293,7 @@ python3 scripts/run_mo_action_queue_llm_judge.py \
 | Путают с primary score | `engine` id + shadow-only |
 | Раздувание промпта PDF КП | v1 без полного PDF; только слоты КЗ + digest A |
 | Двойной смысл с `grade_kz_llm` | другой CLI, только action queue |
+| Truncation `--limit 20` → UI «ещё не готова» | default 0 = вся очередь; env override only |
 
 ---
 
