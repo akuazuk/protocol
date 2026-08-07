@@ -1,7 +1,8 @@
 # Handoff (вечер 06.08): gold error sweep + rescore recovery
 
-**Актуальный handoff** (заменяет afternoon
-`docs/handoff/2026-08-06-afternoon-next-agent.md`).  
+> **Устарело как точка входа.** Актуальный handoff:
+> [`docs/handoff/2026-08-07-night-next-agent.md`](2026-08-07-night-next-agent.md)
+
 **Когда:** 2026-08-06 ~20:20 UTC+3.  
 **Репо:** `akuazuk/protocol`. **Прод:** `https://protocol-bimy.onrender.com`.  
 **SSH Render:** `srv-d78he6h5pdvs73b1kufg@ssh.oregon.render.com`.
