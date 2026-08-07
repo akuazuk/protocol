@@ -36,7 +36,7 @@
 | `kz_deep_eval` B2 / `kz_evaluation_engine` | `mkb_code_main` | resolve: main → extract по полному тексту МО |
 | `mo_daily` / export `diagnosis_code` | слот диагноза МИС | optional fill из full-text, если слот пуст |
 | LLM action-judge / промпты | часто смотрит блок диагноза | явно: «МКБ может быть в любом разделе» |
-| Protocol Suggest / concordance | `mkb_code_main` | тот же resolver |
+| Protocol Suggest | раньше тянул ICD в match | **не для suggest** - см. `2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md`; full-doc только для оценки кода |
 
 Вспомогательное уже есть: `extract_icd10` / `extract_mkb_code` / consult_parser
 по полному тексту - переиспользовать, не плодить regex.

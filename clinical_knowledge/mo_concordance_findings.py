@@ -120,6 +120,7 @@ def clinical_case_from_document(document: dict[str, Any] | None, record: dict[st
         "objective_status",
         "exam_data",
         "clinical_diagnosis",
+        "mis_diagnos",
         "diagnosis_main_text",
         "diagnosis_list",
         "mkb_code_main",

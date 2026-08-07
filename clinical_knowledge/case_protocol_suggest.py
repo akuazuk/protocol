@@ -1,7 +1,9 @@
 """Подбор протоколов МЗ РБ к случаю МО (не L1-балл оформления).
 
 См. docs/plans/2026-08-05-mo-case-protocol-suggest-v1.md и
-docs/plans/2026-08-06-mo-protocol-suggest-titles-search-v1.md.
+docs/plans/2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md.
+
+Suggest ищет КП по установленному диагнозу (текст), не по МКБ.
 """
 from __future__ import annotations
 
@@ -13,10 +15,9 @@ from urllib.parse import quote
 
 from clinical_knowledge.protocol_links import protocol_display_name, protocol_nav_api_path
 
-ENGINE = "case_protocol_suggest_v2"
+ENGINE = "case_protocol_suggest_v3"
 MATCH_KIND_LABELS = {
     "clinical": "Клиника",
-    "code_only": "Только код",
     "ddx": "Дифдиагноз",
     "specialty": "Специальность",
 }
@@ -70,21 +71,6 @@ def suggest_enabled() -> bool:
     return raw not in {"0", "false", "no", "off"}
 
 
-def _icd_root(code: str) -> str:
-    text = (code or "").upper().strip()
-    return text[:3] if len(text) >= 3 else text
-
-
-def _extract_icd(text: str) -> list[str]:
-    found = re.findall(r"\b([A-ZА-Я]\d{2}(?:\.\d{1,2})?)\b", text or "", flags=re.I)
-    out: list[str] = []
-    for item in found:
-        code = item.upper().replace("А", "A").replace("В", "B").replace("С", "C")
-        if code not in out:
-            out.append(code)
-    return out
-
-
 def _gap_allowed(code: str) -> bool:
     cid = str(code or "").strip()
     if not cid:
@@ -101,17 +87,22 @@ def _suggest_title(source_path: str | None, registry_title: str | None) -> str:
     )
 
 
+def _diagnosis_text(clinical: dict[str, Any]) -> str:
+    return " ".join(
+        str(clinical.get(key) or "")
+        for key in ("clinical_diagnosis", "mis_diagnos", "diagnosis_main_text", "diagnosis_short")
+        if clinical.get(key)
+    ).strip()
+
+
 def _search_query(graph: dict[str, Any]) -> str:
     parts: list[str] = []
     for item in graph.get("diagnoses") or []:
         text = str(item.get("text") or "").strip()
-        icd = str(item.get("icd") or "").strip()
         if text:
-            parts.append(text[:120])
-        elif icd:
-            parts.append(icd)
+            parts.append(text[:160])
     for complaint in (graph.get("complaints") or [])[:2]:
-        if complaint:
+        if complaint and not parts:
             parts.append(str(complaint)[:80])
     specialty = str((graph.get("specialty") or {}).get("label") or "").strip()
     if specialty and not parts:
@@ -131,37 +122,16 @@ def build_case_fact_graph(
     findings: list[dict[str, Any]] | None = None,
     llm_judge: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Нормализованные факты случая для suggest (без сырого result)."""
+    """Нормализованные факты случая для suggest (без сырого result).
+
+    МКБ в diagnoses не сеем - подбор КП только по тексту диагноза.
+    """
     clinical = clinical if isinstance(clinical, dict) else {}
     record = record if isinstance(record, dict) else {}
     findings = findings if isinstance(findings, list) else []
-    llm_judge = llm_judge if isinstance(llm_judge, dict) else {}
+    _ = llm_judge  # reserved for future DDx hints
 
-    diag_text = " ".join(
-        str(clinical.get(key) or "")
-        for key in ("clinical_diagnosis", "mis_diagnos")
-        if clinical.get(key)
-    ).strip()
-    # МКБ по всему МО (не только графа диагноза) - plan mo-icd-full-document-search.
-    from clinical_knowledge.mo_icd_resolve import resolve_icd_codes_from_mo
-
-    icd_blob = {**record, **{k: v for k, v in clinical.items() if v}}
-    icd = list(resolve_icd_codes_from_mo(icd_blob).get("all") or [])
-    for code in _extract_icd(diag_text):
-        if code not in icd:
-            icd.append(code)
-    for key in ("diagnosis_code", "mkb_code_main", "icd10"):
-        value = record.get(key)
-        if isinstance(value, str) and value.strip():
-            for code in _extract_icd(value):
-                if code not in icd:
-                    icd.append(code)
-        elif isinstance(value, list):
-            for item in value:
-                for code in _extract_icd(str(item)):
-                    if code not in icd:
-                        icd.append(code)
-
+    diag_text = _diagnosis_text(clinical)
     complaints_raw = str(clinical.get("complaints") or "")
     complaints = [part.strip() for part in re.split(r"[;\n]+", complaints_raw) if part.strip()][:12]
     specialty = str(
@@ -193,15 +163,16 @@ def build_case_fact_graph(
         if code or title:
             gaps.append({"code": code or "finding", "detail": title[:240]})
 
+    diagnoses: list[dict[str, Any]] = []
+    if diag_text:
+        diagnoses.append({"text": diag_text, "role": "primary"})
+
     return {
         "case_id": str(record.get("visit_id") or record.get("case_id") or record.get("mis_id") or ""),
         "audience": "unknown",
         "specialty": {"label": specialty, "slug": specialty_slug},
         "complaints": complaints,
-        "diagnoses": [
-            {"icd": code, "text": diag_text, "role": "primary" if i == 0 else "secondary"}
-            for i, code in enumerate(icd[:6])
-        ],
+        "diagnoses": diagnoses,
         "plan": {
             "exam": str(clinical.get("exam_recommendations") or "")[:500],
             "treatment": str(clinical.get("treatment_recommendations") or "")[:500],
@@ -212,23 +183,29 @@ def build_case_fact_graph(
     }
 
 
+def _diag_overlap(item: dict[str, Any], graph: dict[str, Any]) -> float:
+    diag = " ".join(str(d.get("text") or "") for d in (graph.get("diagnoses") or [])).lower()
+    if not diag.strip():
+        return 0.0
+    blob = (
+        str(item.get("title") or "")
+        + " "
+        + str(item.get("source_path") or "")
+        + " "
+        + str(item.get("matched_condition") or "")
+    ).lower()
+    tokens = [t for t in re.findall(r"[а-яa-z]{4,}", diag) if len(t) >= 4][:12]
+    if not tokens:
+        return 0.0
+    hits = sum(1 for token in tokens if token in blob)
+    return min(1.0, hits / max(3, len(tokens) * 0.4))
+
+
 def _match_kind(item: dict[str, Any], graph: dict[str, Any]) -> str:
-    fit = item.get("icd_fit") or []
     score = float(item.get("match_score") or 0)
-    has_icd = bool(fit)
-    complaints = " ".join(graph.get("complaints") or []).lower()
-    title = str(item.get("title") or "").lower()
-    path = str(item.get("source_path") or "").lower()
-    blob = title + " " + path
-    clinical_overlap = bool(complaints) and any(
-        token and token in blob for token in re.findall(r"[а-яa-z]{4,}", complaints)[:8]
-    )
-    if has_icd and clinical_overlap:
+    overlap = _diag_overlap(item, graph)
+    if overlap >= 0.35 or (overlap > 0 and score >= 50):
         return "clinical"
-    if has_icd and score < 45:
-        return "code_only"
-    if has_icd:
-        return "clinical" if score >= 50 else "code_only"
     if graph.get("gaps") and score >= 55:
         return "ddx"
     return "specialty"
@@ -257,19 +234,19 @@ def _path_blocked_for_specialty(row: dict[str, Any], graph: dict[str, Any]) -> b
 
 
 def _rank_rows(matched: list[dict[str, Any]], graph: dict[str, Any], limit: int) -> list[dict[str, Any]]:
-    """Предпочесть ICD/clinical матчи; specialty-only - только добивка."""
+    """Предпочесть clinical по тексту Dx; specialty - только добивка."""
     filtered = [row for row in matched if not _path_blocked_for_specialty(row, graph)]
     decorated: list[tuple[int, float, dict[str, Any]]] = []
     for row in filtered:
         kind = _match_kind(row, graph)
-        tier = {"clinical": 0, "code_only": 1, "ddx": 2, "specialty": 3}.get(kind, 4)
+        tier = {"clinical": 0, "ddx": 1, "specialty": 2}.get(kind, 3)
         decorated.append((tier, -float(row.get("match_score") or 0), row))
     decorated.sort(key=lambda item: (item[0], item[1]))
-    strong = [row for tier, _, row in decorated if tier <= 1]
+    strong = [row for tier, _, row in decorated if tier == 0]
     if len(strong) >= limit:
         return strong[:limit]
     out = strong[:]
-    for tier, _, row in decorated:
+    for _, _, row in decorated:
         if row in out:
             continue
         out.append(row)
@@ -286,7 +263,7 @@ def suggest_protocols_for_case(
     llm_judge: dict[str, Any] | None = None,
     limit: int = 3,
 ) -> dict[str, Any]:
-    """Top-K протоколов МЗ с reasons (детерминированно, без LLM)."""
+    """Top-K протоколов МЗ по тексту диагноза (детерминированно, без LLM и без МКБ)."""
     if not suggest_enabled():
         return {
             "ok": True,
@@ -297,7 +274,7 @@ def suggest_protocols_for_case(
             "gaps": [],
         }
 
-    from .protocol_match import match_protocol_cards
+    from .protocol_match import match_protocol_cards_by_diagnosis_text
 
     graph = build_case_fact_graph(
         clinical=clinical,
@@ -305,33 +282,28 @@ def suggest_protocols_for_case(
         findings=findings,
         llm_judge=llm_judge,
     )
-    icd_list = [
-        str(item.get("icd") or "").upper()
-        for item in (graph.get("diagnoses") or [])
-        if item.get("icd")
-    ]
+    diag_text = " ".join(str(item.get("text") or "") for item in (graph.get("diagnoses") or [])).strip()
     facts = {
         "patient_context": {"adult_or_child": graph.get("audience") or "unknown"},
         "consultation": {
-            "icd10": icd_list,
-            "diagnosis_text": " ".join(
-                str(item.get("text") or "") for item in (graph.get("diagnoses") or [])
-            ),
+            "icd10": [],  # намеренно пусто: КП не ищем по МКБ
+            "diagnosis_text": diag_text,
             "complaints": list(graph.get("complaints") or []),
-            "conditions_hint": [],
+            "conditions_hint": [diag_text] if diag_text else [],
             "performed_exams": [],
         },
     }
     specialty_label = str((graph.get("specialty") or {}).get("label") or "")
     specialty_slug = (graph.get("specialty") or {}).get("slug")
-    # Сначала с рубрикой специальности; добивка без рубрики, но с path-block.
     matched: list[dict[str, Any]] = []
     if specialty_slug:
-        matched = match_protocol_cards(
+        matched = match_protocol_cards_by_diagnosis_text(
             facts, specialty_slug=str(specialty_slug), limit=max(12, limit * 4)
         )
     if len(matched) < limit:
-        extra = match_protocol_cards(facts, specialty_slug=None, limit=max(12, limit * 4))
+        extra = match_protocol_cards_by_diagnosis_text(
+            facts, specialty_slug=None, limit=max(12, limit * 4)
+        )
         seen_ids = {str(row.get("protocol_id") or row.get("source_path") or "") for row in matched}
         for row in extra:
             pid = str(row.get("protocol_id") or row.get("source_path") or "")
@@ -348,14 +320,15 @@ def suggest_protocols_for_case(
         kind = _match_kind(row, graph)
         title = _suggest_title(row.get("source_path"), row.get("title"))
         reasons: list[dict[str, str]] = []
-        if row.get("icd_fit_label"):
-            reasons.append({"code": "icd_fit", "text": f"Совпадение МКБ: {row['icd_fit_label']}"})
+        if diag_text and kind == "clinical":
+            short = diag_text[:120] + ("…" if len(diag_text) > 120 else "")
+            reasons.append({"code": "diagnosis_fit", "text": f"Совпадение с диагнозом: {short}"})
         if specialty_label and kind == "specialty":
             reasons.append({"code": "specialty", "text": f"Специальность случая: {specialty_label}"})
         elif specialty_label and specialty_slug and str(row.get("specialty_slug") or "") == specialty_slug:
             reasons.append({"code": "specialty", "text": f"Рубрика: {specialty_label}"})
         for gap in (graph.get("gaps") or [])[:2]:
-            if gap.get("detail"):
+            if gap.get("detail") and kind == "ddx":
                 reasons.append(
                     {
                         "code": f"gap_{(gap.get('code') or 'x')[:40]}",
@@ -363,7 +336,12 @@ def suggest_protocols_for_case(
                     }
                 )
         if not reasons:
-            reasons.append({"code": "lexical", "text": "Совпадение по тексту диагноза или жалоб"})
+            reasons.append(
+                {
+                    "code": "lexical",
+                    "text": "Совпадение по тексту диагноза или специальности",
+                }
+            )
         source_path = str(row.get("source_path") or "")
         items.append(
             {
@@ -391,5 +369,5 @@ def suggest_protocols_for_case(
         "search_url": search_url,
         "items": items,
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
-        "reason": None if items else "Не удалось подобрать протоколы по МКБ и тексту случая",
+        "reason": None if items else "Не удалось подобрать протоколы по тексту диагноза",
     }

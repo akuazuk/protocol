@@ -127,23 +127,29 @@ def compute_match_score(
     diag_text: str,
     complaints: list[str],
     performed_exams: list[str],
+    use_icd: bool = True,
 ) -> float:
-    """Нормализованный 0-100 match score."""
+    """Нормализованный 0-100 match score.
+
+    use_icd=False: путь МО Suggest - только текст диагноза (+ слабые жалобы/specialty),
+    без recall/гейтов по МКБ.
+    """
     card_icd = [str(x).upper() for x in (card.get("icd10_all") or card.get("icd10_primary") or [])]
-    icd_roots = {_icd_root(c) for c in icd_list if not is_symptom_code(c)}
-    card_roots = {_icd_root(c) for c in card_icd}
     icd_part = 0.0
-    overlap = icd_roots & card_roots
-    if overlap:
-        icd_part = min(1.0, 0.6 + 0.1 * len(overlap))
-    elif icd_list and card_icd:
-        for c in icd_list:
-            if is_symptom_code(c):
-                continue
-            for cc in card_icd:
-                if c.startswith(_icd_root(cc)) or cc.startswith(_icd_root(c)):
-                    icd_part = 0.5
-                    break
+    if use_icd:
+        icd_roots = {_icd_root(c) for c in icd_list if not is_symptom_code(c)}
+        card_roots = {_icd_root(c) for c in card_icd}
+        overlap = icd_roots & card_roots
+        if overlap:
+            icd_part = min(1.0, 0.6 + 0.1 * len(overlap))
+        elif icd_list and card_icd:
+            for c in icd_list:
+                if is_symptom_code(c):
+                    continue
+                for cc in card_icd:
+                    if c.startswith(_icd_root(cc)) or cc.startswith(_icd_root(c)):
+                        icd_part = 0.5
+                        break
 
     pop_mult = _population_match(card, audience)
     if pop_mult == 0:
@@ -158,10 +164,11 @@ def compute_match_score(
 
     title_low = (card.get("title") or "").lower()
     path_low = (card.get("source_path") or "").lower()
-    blob = title_low + " " + path_low
+    cond_low = (card.get("condition_label") or "").lower()
+    blob = title_low + " " + path_low + " " + cond_low
     hint_score = 0.0
     for hint in hints:
-        hint_score += score_card_for_hint(str(hint), blob, icd_list) / 100.0
+        hint_score += score_card_for_hint(str(hint), blob, icd_list if use_icd else []) / 100.0
     hint_score = min(1.0, hint_score)
 
     diag_part = _diag_text_overlap(diag_text, card)
@@ -172,26 +179,31 @@ def compute_match_score(
         cb = " ".join(complaints).lower()
         compl_part = 0.4 if any(w in blob for w in cb.split() if len(w) > 5) else 0.0
 
+    # Suggest: вес МКБ переносится на текст диагноза.
+    w_icd = _WEIGHT_ICD if use_icd else 0.0
+    w_diag = _WEIGHT_DIAG_TEXT + (_WEIGHT_ICD if not use_icd else 0.0)
+    w_compl = _WEIGHT_COMPLAINTS + (0.05 if not use_icd else 0.0)
+
     raw = (
-        _WEIGHT_ICD * icd_part
-        + _WEIGHT_DIAG_TEXT * max(diag_part, hint_score * 0.5)
+        w_icd * icd_part
+        + w_diag * max(diag_part, hint_score * 0.5)
         + _WEIGHT_SPECIALTY * spec_part
         + _WEIGHT_POPULATION * pop_part
         + _WEIGHT_DEMO * (1.0 if pop_part > 0 else 0.0)
         + _WEIGHT_EXAMS * exam_part
-        + _WEIGHT_COMPLAINTS * compl_part
+        + w_compl * compl_part
     )
     if (card.get("status") or "active") != "active":
         raw *= 0.7
 
-    if _is_venous_icd(icd_list):
+    if use_icd and _is_venous_icd(icd_list):
         rel = _card_venous_relevance(card)
         if rel >= 0.9:
             raw = min(1.0, raw * 1.15)
         elif rel <= 0.1:
             raw *= 0.12
 
-    if _is_spine_icd(icd_list):
+    if use_icd and _is_spine_icd(icd_list):
         rel = _card_spine_bladder_relevance(card, icd_list)
         if rel >= 0.9:
             raw = min(1.0, raw * 1.12)
@@ -206,15 +218,24 @@ def match_protocol_cards(
     *,
     specialty_slug: str | None = None,
     limit: int = 8,
+    use_icd: bool = True,
 ) -> list[dict[str, Any]]:
-    """Ранжированный список protocol_id по МКБ, популяции, нозологии."""
+    """Ранжированный список protocol_id.
+
+    use_icd=True (consult/default): МКБ + популяция + нозология.
+    use_icd=False (МО Suggest): текст диагноза, без поиска по МКБ.
+    """
     cards = load_protocol_cards_registry()
     if specialty_slug:
         cards = [c for c in cards if c.get("specialty_slug") == specialty_slug]
 
     ctx = consult_facts.get("patient_context") or {}
     cons = consult_facts.get("consultation") or {}
-    icd_list = prioritize_codes([str(x).upper() for x in (cons.get("icd10") or []) if x])
+    icd_list = (
+        prioritize_codes([str(x).upper() for x in (cons.get("icd10") or []) if x])
+        if use_icd
+        else []
+    )
     audience = ctx.get("adult_or_child")
     hints = set(cons.get("conditions_hint") or [])
     diag_text = str(cons.get("diagnosis_text") or "")
@@ -234,22 +255,24 @@ def match_protocol_cards(
             diag_text=diag_text,
             complaints=complaints,
             performed_exams=performed,
+            use_icd=use_icd,
         )
         if score <= 0:
             continue
-        score = round(
-            min(
-                100.0,
-                score
-                * clinical_relevance_multiplier(
-                    card,
-                    icd_codes=icd_list,
-                    complaints=complaints,
-                    ambulatory=True,
+        if use_icd:
+            score = round(
+                min(
+                    100.0,
+                    score
+                    * clinical_relevance_multiplier(
+                        card,
+                        icd_codes=icd_list,
+                        complaints=complaints,
+                        ambulatory=True,
+                    ),
                 ),
-            ),
-            2,
-        )
+                2,
+            )
         if score > 0:
             scored.append((score, card))
 
@@ -266,14 +289,14 @@ def match_protocol_cards(
         if appl == "not_applicable":
             continue
         seen_keys.add(key)
-        icd_fit = icd_fit_for_card(card, icd_list)
+        icd_fit = icd_fit_for_card(card, icd_list) if use_icd else []
         out.append(
             {
                 "protocol_id": card.get("protocol_id"),
                 "title": card.get("title"),
                 "source_path": card.get("source_path"),
                 "population": card.get("population"),
-                "icd10_primary": card.get("icd10_primary"),
+                "icd10_primary": card.get("icd10_primary") if use_icd else [],
                 "match_score": round(sc, 2),
                 "icd_fit": icd_fit,
                 "icd_fit_label": ", ".join(
@@ -303,6 +326,21 @@ def match_protocol_cards(
     except Exception:
         pass
     return out
+
+
+def match_protocol_cards_by_diagnosis_text(
+    consult_facts: dict[str, Any],
+    *,
+    specialty_slug: str | None = None,
+    limit: int = 8,
+) -> list[dict[str, Any]]:
+    """МО Suggest: подбор КП только по тексту диагноза (без МКБ)."""
+    return match_protocol_cards(
+        consult_facts,
+        specialty_slug=specialty_slug,
+        limit=limit,
+        use_icd=False,
+    )
 
 
 def match_protocol_cards_for_diagnoses(

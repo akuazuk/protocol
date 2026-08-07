@@ -574,6 +574,22 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
     except Exception:  # noqa: BLE001 - мягкая деградация
         shadow_findings = []
 
+    try:
+        from .mo_icd_directory_eval import (
+            evaluate_mo_icd_directory,
+            icd_directory_eval_enabled,
+            icd_directory_primary_enabled,
+        )
+
+        if icd_directory_eval_enabled():
+            dir_shadow = evaluate_mo_icd_directory(case)
+            if dir_shadow:
+                shadow_findings = list(shadow_findings) + list(dir_shadow)
+                if icd_directory_primary_enabled():
+                    findings.extend({**item, "shadow": False} for item in dir_shadow)
+    except Exception:  # noqa: BLE001
+        pass
+
     # overall: среднее доступных осей (объективность - без штрафа за отсутствие протокола)
     present_axes = [v for k, v in axes.items() if v is not None]
     overall = round(sum(present_axes) / len(present_axes), 1) if present_axes else None
