@@ -20,6 +20,7 @@
 | GCS inbound | `gs://protocol-home-e1-inbound` (`EUROPE-CENTRAL2`) |
 | Startup | `deploy/gcp-app/startup-protocol-app.sh` (Docker + mount) |
 | Redeploy | `bash deploy/gcp-app/deploy_to_gce.sh` (нужен локальный `.env`) |
+| Night LLM | `bash deploy/gcp-llm/run_on_gce.sh <day>` (smoke: `--smoke`) |
 
 ## Ops
 
