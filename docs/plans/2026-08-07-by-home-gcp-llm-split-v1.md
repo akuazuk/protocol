@@ -214,7 +214,8 @@ $MO_DATA_ROOT/
   - Render `run_mo_render_llm_backfill.sh` оставлен legacy, пока Render = warehouse leader.
 - [x] B4. Mac launchd: режим `extract-upload-only` → GCS `inbound/extract`; score/recompute на GCP.
   - package+upload: `deploy/mac-bridge/extract_upload_day.sh`; pull: `deploy/gcp-app/pull_inbound_from_gcs.sh --remote`.
-  - smoke: `mo_2026-08-06` → GCS → GCE inbound (10344 rows). Score-from-inbound-only на GCP - следующий harden (пока CSV из secure_cases).
+  - smoke: `mo_2026-08-06` → GCS → GCE inbound (10344 rows).
+  - score-from-inbound: `deploy/gcp-app/score_inbound_day.sh` (L1+deep+recompute, no MariaDB).
 - [ ] B5. DNS/домен с Render на GCP (или временный hostname).
 - [ ] B6. Rollback: Render snapshot + старый publish path.
 
@@ -368,6 +369,6 @@ thin CLI `services.mis_bridge` / `services.llm_worker`.
 | Gemini | сейчас AI Studio key (`google-generativeai`) - регион VM важен для latency/ops; smoke LLM с GCE до cutover |
 | APIs | compute, storage, secretmanager, artifactregistry, iam, cloudresourcemanager |
 
-**B1-B4 done (staging):** VM + warehouse + GCE LLM + Mac→GCS→GCE inbound path.
+**B1-B4 done (staging):** VM + warehouse + GCE LLM + Mac→GCS→inbound + score_inbound_day.
 Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`, `deploy/mac-bridge/README.md`.
-Следующий шаг: Secret Manager + HTTPS (B5 lite); score-from-inbound на GCP без Mac score; B5 DNS позже.
+Следующий шаг: Secret Manager + HTTPS (B5 lite); выключить Mac score в launchd; B5 DNS позже.

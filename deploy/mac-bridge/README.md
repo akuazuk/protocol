@@ -7,6 +7,9 @@
 ```bash
 # package secure_cases CSV + upload (+ optional pull on GCE)
 bash deploy/mac-bridge/extract_upload_day.sh 2026-08-06 --pull-gce
+# + score on GCE (no MIS):
+bash deploy/mac-bridge/extract_upload_day.sh 2026-08-06 --score-limit 5
+bash deploy/mac-bridge/extract_upload_day.sh 2026-08-06 --score
 
 # pieces
 PYTHONPATH=. python3 -m services.mis_bridge.extract_day --day 2026-08-06 --from-secure --run-host mac
