@@ -21,7 +21,7 @@
 ## Не сделано
 
 - Полная текстовая сверка плана с PDF КП
-- Production smoke 3605554 после merge/deploy
+- Primary GCP smoke 3605554 после merge + `deploy_to_gce.sh`
 
 ## Тесты
 
@@ -33,7 +33,13 @@ pytest tests/test_mo_dx_episode.py tests/test_mo_kp_suggest_golden.py \
 
 ## Следующая команда
 
-После merge: release Action + smoke case detail protocol-suggest на ортопедии/плосковальгус.
+После merge PR (не Render Action):
+
+```bash
+bash deploy/gcp-app/deploy_to_gce.sh
+curl -fsS https://protocol.kravira.by/api/version
+# smoke: case detail → protocol-suggest, плосковальгус / ортопедия
+```
 
 ## Не трогать параллельно
 

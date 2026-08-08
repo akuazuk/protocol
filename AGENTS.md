@@ -120,14 +120,10 @@ curl -fsS https://protocol.kravira.by/api/version   # version + ожидаемы
 Автодеплоя на GCE после merge **пока нет** (нужны SA в GitHub Secrets, concurrency,
 2–3 стабильные ночи). Не включать, пока ночной extract→score→LLM на GCP не стабилен.
 
-**Backup (Render):** Action `Production Render release` по-прежнему может обновлять
-`protocol-bimy.onrender.com` после merge. Это не отменяет GCP primary; Render - rollback.
-Контроль:
-
-```bash
-gh run list --repo akuazuk/protocol --workflow=render-production-deploy.yml --limit=1
-gh run watch --repo akuazuk/protocol <run-id>
-```
+**Backup (Render):** Action `Production Render release` может обновлять
+`protocol-bimy.onrender.com` после merge. Это **не** primary path. Агентам **запрещено**
+предлагать «дождаться Render deploy» как следующий шаг после merge feature - следующий
+шаг primary всегда `deploy_to_gce.sh` + smoke на `protocol.kravira.by`.
 
 Нельзя параллельно менять Render env / GCE `/var/data` без координатора. Прямой push в
 `main` запрещён. Старые `render_promote_main.sh` / promote task-HEAD отключены.

@@ -110,7 +110,7 @@ case.protocol_suggest + (позже) reg55 KP criteria 39.2/39.5/39.8
 - [x] Env `MO_KP_EPISODE_FROM_HISTORY` (default on)
 - [x] Рубрика МЗ plan: reason/score учитывает clinical-hit suggest
 - [ ] Полная текстовая сверка плана с PDF КП (после merge)
-- [x] BUILD_VERSION + PR (smoke 3605554 после merge)
+- [x] BUILD_VERSION + PR (smoke 3605554 на **GCP** после merge + `deploy_to_gce.sh`)
 
 ### Фаза C - расширение golden
 

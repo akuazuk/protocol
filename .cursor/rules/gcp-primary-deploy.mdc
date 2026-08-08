@@ -1,0 +1,36 @@
+---
+description: Primary runtime = GCP (protocol.kravira.by). Не предлагать Render как основной деплой.
+alwaysApply: true
+---
+
+# Primary deploy = Google (GCE), не Render
+
+С 2026-08-08 источник истины для UI/МО - **GCP**, не Render.
+
+## Канон
+
+| | |
+|--|--|
+| Primary UI | `https://protocol.kravira.by` |
+| Deploy app | `bash deploy/gcp-app/deploy_to_gce.sh` (после merge в `origin/main`) |
+| Smoke | `/api/version` + `/health/live` на `protocol.kravira.by` |
+| Данные МО | `/var/data/medical_exams` на GCE PD |
+| LLM/night | `deploy/gcp-llm/run_on_gce.sh` |
+
+Render (`protocol-bimy.onrender.com`, Action `Production Render release`) - **только backup/rollback**.
+
+## Запрещено агентам в ответах и handoff
+
+- Писать «следующий шаг = дождаться Render deploy / Production Render release» как primary path.
+- Считать деплой завершённым по Render `/api/version`.
+- Путать legacy Gemini-via-Render с primary runtime (см. `gemini-via-render.mdc`: GCE предпочтителен).
+
+## После merge feature-PR (обычный next step)
+
+1. Merge PR в `origin/main`.
+2. Координатор: `bash deploy/gcp-app/deploy_to_gce.sh`.
+3. Smoke на `https://protocol.kravira.by` (version = `BUILD_VERSION`, feature check).
+4. Render Action можно игнорировать для primary, пока не просят синхронизировать backup.
+
+Подробности: `AGENTS.md` §1 и §6, `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`,
+`docs/reports/2026-08-08-handoff-gcp-primary.md`.
