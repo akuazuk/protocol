@@ -539,10 +539,13 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                COALESCE(NULLIF(dx.diagnosis_label, ''), '') AS diagnosis_label,
                COALESCE(f.p0, 0) AS p0, COALESCE(f.p1, 0) AS p1,
                COALESCE(f.p2, 0) AS p2, COALESCE(f.p3, 0) AS p3,
-               COALESCE(f.finding_codes, '') AS finding_codes
+               COALESCE(f.finding_codes, '') AS finding_codes,
+               ax_reg.score AS reg55_pct
         FROM fact_mo_case c
         LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
         LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+        LEFT JOIN fact_mo_score_axis ax_reg
+               ON ax_reg.mis_id = c.mis_id AND ax_reg.axis = 'regulatory'
         LEFT JOIN (
           SELECT mis_id,
                  SUM(severity='P0') p0, SUM(severity='P1') p1,
@@ -606,6 +609,11 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "history_prior_n": int(item.get("history_prior_n") or 0),
                 "history_tier": str(item.get("history_tier") or ""),
                 "overall_pct": score,
+                "reg55_pct": (
+                    float(item["reg55_pct"])
+                    if isinstance(item.get("reg55_pct"), (int, float))
+                    else None
+                ),
                 "score_reason": (
                     None
                     if isinstance(score, (int, float))
@@ -808,6 +816,7 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     sort_map = {
         "date": "date",
         "overall": "overall_pct",
+        "reg55": "reg55_pct",
         "priority": "p0",
         "updated_at": "updated_at",
         "doctor": "doctor_fio",

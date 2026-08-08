@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-110638Z-gce-protocol-cards"
+BUILD_VERSION = "2026-08-08-113512Z-reg55-day-column"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11725,6 +11725,25 @@ def api_methodist_mo_case_detail(
         result["rubric_mz"] = rubric
     except Exception:
         result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
+    try:
+        from clinical_knowledge.reg55_criteria import attach_reg55_to_detail
+
+        result = attach_reg55_to_detail(
+            result,
+            clinical=clinical if isinstance(clinical, dict) else {},
+            block_scores=result.get("block_scores")
+            if isinstance(result.get("block_scores"), dict)
+            else {},
+        )
+    except Exception:
+        if isinstance(result, dict) and not result.get("reg55"):
+            axes = result.get("axes") if isinstance(result.get("axes"), dict) else {}
+            result["reg55"] = {
+                "regulatory_compliance_pct": axes.get("regulatory"),
+                "criteria": [],
+                "failed": [],
+                "note_ru": "Подробный разбор №55 временно недоступен; показан процент оси regulatory.",
+            }
     try:
         from clinical_knowledge.mo_llm_action_judge import load_llm_action_judge_for_case
 
