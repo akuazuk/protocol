@@ -2652,6 +2652,8 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     ),
                     "status": item.get("status") or "",
                 }
+                if isinstance(axes.get("regulatory"), (int, float)):
+                    record["reg55_pct"] = float(axes["regulatory"])
                 detail = {
                     "ok": True,
                     "record": record,

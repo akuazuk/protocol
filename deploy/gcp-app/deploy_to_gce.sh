@@ -112,6 +112,7 @@ tar czf - \
   data/icd_reference/icd10_ru_mkb10su.meta.json \
   data/icd_reference/dx_aliases_ru.json \
   data/icd_reference/icd10_who_2016_terminal_codes.json \
+  data/regulations \
   output/registry/protocol_cards.jsonl \
   services \
   deploy/gcp-app/Dockerfile .dockerignore \

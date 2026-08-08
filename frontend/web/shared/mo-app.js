@@ -887,17 +887,23 @@
       var tone = (tier === "first_contact" || tier === "new_for_profile") ? "review" : "good";
       return ' <span class="status ' + tone + ' history-visit-chip" title="История пациента до этого визита">' + esc(label) + "</span>";
     }
-    function renderReg55(reg55) {
-      if (!reg55 || (reg55.regulatory_compliance_pct == null && !(reg55.criteria || []).length)) {
-        return '<div class="detail-block"><h3>Постановление МЗ №55</h3><p class="empty">Оценка по №55 недоступна для этого случая.</p></div>';
+    function renderReg55(reg55, fallbackPct) {
+      var pct = null;
+      if (reg55 && reg55.regulatory_compliance_pct != null && reg55.regulatory_compliance_pct !== "") {
+        pct = Number(reg55.regulatory_compliance_pct);
+      } else if (fallbackPct != null && fallbackPct !== "") {
+        pct = Number(fallbackPct);
       }
-      var pct = reg55.regulatory_compliance_pct;
-      var head = "Итого: " + (pct == null ? "-" : (Math.round(Number(pct)) + "%"));
-      if (reg55.passed != null && reg55.total != null) {
-        head += " · выполнено " + reg55.passed + " из " + reg55.total + " применимых";
+      if ((pct == null || !Number.isFinite(pct)) && !(reg55 && (reg55.criteria || []).length)) {
+        return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3><p class="empty">Нет данных для этого случая.</p></div>';
       }
-      if (reg55.na) head += " · не применимо: " + reg55.na;
-      var criteria = reg55.criteria || [];
+      var head = "Средний балл по формуле: <b style=\"font-size:1.35rem\">" +
+        (pct == null || !Number.isFinite(pct) ? "-" : (Math.round(pct) + "%")) + "</b>";
+      if (reg55 && reg55.passed != null && reg55.total != null && reg55.total > 0) {
+        head += "<br>выполнено " + esc(reg55.passed) + " из " + esc(reg55.total) + " применимых критериев";
+      }
+      if (reg55 && reg55.na) head += " · не применимо: " + esc(reg55.na);
+      var criteria = (reg55 && reg55.criteria) || [];
       var rows = criteria.length ? criteria.map(function (item) {
         var verdict = item.verdict || "";
         var tone = verdict === "pass" ? "good" : (verdict === "fail" ? "critical" : "review");
@@ -915,11 +921,14 @@
       }).join("") : "";
       var table = rows ?
         '<div class="table-wrap compact-table"><table><thead><tr><th>Вердикт</th><th>Оценка</th><th>Пункт</th><th>Критерий и пояснение</th></tr></thead><tbody>' +
-        rows + "</tbody></table></div>" : "<p class=\"empty\">Список критериев пуст.</p>";
-      return '<div class="detail-block reg55-block"><h3>Постановление МЗ №55</h3>' +
-        '<p class="card-sub">' + esc(head) + "</p>" +
-        (reg55.formula_ru ? ('<p class="card-sub">' + esc(reg55.formula_ru) + "</p>") : "") +
-        (reg55.note_ru ? ('<p class="card-sub">' + esc(reg55.note_ru) + "</p>") : "") +
+        rows + "</tbody></table></div>" :
+        "<p class=\"card-sub\">Детализация пунктов появится после загрузки критериев №55.</p>";
+      var formula = (reg55 && reg55.formula_ru) ||
+        "Средний балл = 100 × (число выполненных) / (число применимых; na не в знаменателе)";
+      return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3>' +
+        '<p>' + head + "</p>" +
+        '<p class="card-sub">' + esc(formula) + "</p>" +
+        (reg55 && reg55.note_ru ? ('<p class="card-sub">' + esc(reg55.note_ru) + "</p>") : "") +
         table + "</div>";
     }
     function renderPatientHistory(bundle) {
@@ -960,7 +969,7 @@
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) +         '</td><td>' + esc(item.diagnosis) +
         icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
-        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td><b title="Пост. МЗ №55, доля выполненных критериев">' +
+        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td><b title="Средний балл №55 = 100 × выполненные / применимые">' +
         esc(score(item.reg55)) + '</b></td><td>' + esc(score(item.coverage)) +
         '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
         esc(statusLabel(item.status)) + "</span></td></tr>";
@@ -1032,8 +1041,8 @@
         if (isSingleDayPeriod()) {
           banner.hidden = false;
           banner.innerHTML = "<b>Таблица за " + esc(state.dateFrom) + "</b> · всего " +
-            esc(data.total || rows.length) + " записей. Колонка «№55» - доля критериев пост. МЗ №55. " +
-            "Откройте случай: в блоке «Подробнее» - пункты, вердикты и пояснения.";
+            esc(data.total || rows.length) + " записей. Колонка «Балл №55» - средний % по формуле пост. МЗ №55. " +
+            "Прокрутите таблицу вправо после «Итог». Откройте случай - блок балла №55 сразу под текстом МО.";
         } else {
           banner.hidden = true;
           banner.innerHTML = "";
@@ -1396,13 +1405,17 @@
         '<label class="filter" style="margin-top:8px"><span><input type="checkbox" id="drawer-training-use" checked> Можно использовать для обучения</span></label>' +
         '<p><button class="button" id="drawer-save" type="button">Сохранить пакет разбора</button> ' +
         '<button class="button secondary" type="button" data-open-pdf="/api/methodist/mo/cases/' + encodeURIComponent(item.id) + '/pdf" data-open-name="mo-' + encodeURIComponent(item.id) + '.pdf">МО в PDF</button></p></div>';
+      var reg55Pct = (data.reg55 || {}).regulatory_compliance_pct;
+      if (reg55Pct == null) reg55Pct = item.reg55;
+      if (reg55Pct == null) reg55Pct = axes.regulatory;
       $("drawer-body").innerHTML =
         '<div class="case-workspace-grid">' +
         '<div class="case-workspace-clinical">' +
         renderClinicalDocument(sourceDocument, findings) +
+        renderReg55(data.reg55, reg55Pct) +
         '<details class="detail-block mo-secondary-details"><summary>Подробнее: итоговая оценка, оси, рубрика МЗ</summary>' +
-        '<div class="drawer-grid">' +         kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
-        kpi("№55", score((data.reg55 || {}).regulatory_compliance_pct != null ? (data.reg55 || {}).regulatory_compliance_pct : item.reg55), "доля выполненных критериев пост. МЗ №55") +
+        '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
+        kpi("Балл №55", score(reg55Pct), "средний балл = 100 × выполненные / применимые") +
         kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "черновик · «Как оценивать»") +
         kpi(
           "МКБ / диагноз",
@@ -1416,7 +1429,6 @@
           var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика (№55)" };
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
         }).join("") + '</div>' +
-        renderReg55(data.reg55) +
         renderRubricMz(rubric) +
         '</details></div>' +
         '<div class="case-workspace-decision">' +
@@ -2553,7 +2565,7 @@
       options[current].focus();
     }
     var COLUMN_MAP = {
-      documents: ["Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "№55", "Полнота", "Надёжность", "Статус"],
+      documents: ["Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "Балл №55", "Полнота", "Надёжность", "Статус"],
       queue: ["Выбор", "Приоритет", "Визит", "Пациент", "Дата", "Филиал", "Врач / специальность", "Диагноз", "Итог", "Причина", "Ответственный", "Срок", "Статус", "МО"]
     };
     function ensureColumnState() {
