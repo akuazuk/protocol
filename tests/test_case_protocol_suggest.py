@@ -26,7 +26,7 @@ def test_build_case_fact_graph_uses_diagnosis_text_not_icd() -> None:
     assert graph["case_id"] == "v1"
     assert graph["diagnoses"]
     assert "Миозит" in graph["diagnoses"][0]["text"]
-    assert "icd" not in graph["diagnoses"][0]
+    assert "M60" in (graph["diagnoses"][0].get("icd10") or [])
     assert "боль в колене" in graph["complaints"]
     assert graph["audience"] == "child"
     assert any(g.get("code") == "B_dx_no_support" for g in graph["gaps"])
@@ -114,7 +114,8 @@ def test_suggest_protocols_returns_contract(monkeypatch) -> None:
     )
     assert result["ok"] is True
     assert result["available"] is True
-    assert result["engine"] == "case_protocol_suggest_v4"
+    assert result["engine"] == "case_protocol_suggest_v5"
+    assert result["mode"] == "text"
     assert captured["facts"]["consultation"]["icd10"] == []
     item = result["items"][0]
     assert item["protocol_id"] == "p1"
@@ -128,8 +129,13 @@ def test_suggest_protocols_returns_contract(monkeypatch) -> None:
 
 
 def test_suggest_prefers_diagnosis_text_over_wrong_icd_seed(monkeypatch) -> None:
-    """Чужой код в тексте не должен определять подбор - матч идёт по формулировке Dx."""
+    """Чужой код + противоречащий текст → text-path, не ICD-first по M60."""
     monkeypatch.setenv("CASE_PROTOCOL_SUGGEST", "1")
+    monkeypatch.setattr(
+        "icd_mkb.is_code_in_ru_reference",
+        lambda code: str(code).upper().startswith("M60"),
+    )
+    monkeypatch.setattr("icd_mkb.ru_title", lambda code: "Миозит")
 
     def _fake_match(facts, specialty_slug=None, limit=8):
         assert facts["consultation"]["icd10"] == []
@@ -166,6 +172,7 @@ def test_suggest_prefers_diagnosis_text_over_wrong_icd_seed(monkeypatch) -> None
         record={"visit_id": "smirnova", "specialty": "Педиатр"},
         limit=2,
     )
+    assert result["mode"] == "text"
     assert result["items"][0]["protocol_id"] == "jra"
     assert not any(r.get("code") == "icd_fit" for r in result["items"][0]["reasons"])
 
@@ -211,3 +218,34 @@ def test_suggest_blocks_stomatology_for_urologist(monkeypatch) -> None:
     ids = [item.get("protocol_id") for item in result.get("items") or []]
     assert "bad" not in ids
     assert "good" in ids
+
+
+def test_suggest_f41_2_psychotherapist_icd_first() -> None:
+    """F41.2 code-only + психотерапевт → КП невротические/стресс, не вены."""
+    import os
+
+    os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
+    result = suggest_protocols_for_case(
+        clinical={
+            "clinical_diagnosis": "F41.2",
+            "mis_diagnos": "F41.2",
+            "patient_age_years": 34,
+        },
+        record={"visit_id": "f41-psych", "specialty": "Психотерапевт"},
+        limit=3,
+    )
+    assert result["available"] is True
+    assert result["mode"] == "icd_first"
+    assert result["engine"] == "case_protocol_suggest_v5"
+    top = result["items"][0]
+    path = (top.get("source_path") or "").lower()
+    title = (top.get("title") or "").lower()
+    assert top["match_kind"] == "clinical"
+    assert top["score"] >= 40
+    assert "psikhiatriya" in path
+    assert "неврот" in path or "стресс" in path or "неврот" in title or "стресс" in title
+    assert "вен" not in path and "тромбофил" not in path and "многоплод" not in path
+    blob = " ".join(
+        str(r.get("text") or "") for r in (top.get("reasons") or [])
+    ).lower()
+    assert "мкб" in blob or any(r.get("code") == "icd_fit" for r in top.get("reasons") or [])

@@ -232,6 +232,8 @@ def _score_plan(
     aligned_f = float(aligned) if isinstance(aligned, (int, float)) else None
     kp = _clinical_kp_from_suggest(protocol_suggest)
     kp_title = str((kp or {}).get("title") or "")[:80]
+    # Полный балл только при clinical KP по диагнозу + alignment блока.
+    # Без КП нельзя ставить 1.0: иначе оценка «по чужому» / specialty-filler.
     if text and aligned_f is not None and aligned_f >= 60 and kp:
         return _item(
             crit,
@@ -239,8 +241,13 @@ def _score_plan(
             reason=f"План есть, КП по диагнозу найден, alignment блока OK ({kp_title})",
             evidence=text,
         )
-    if text and aligned_f is not None and aligned_f >= 60:
-        return _item(crit, score=1.0, reason="План есть и согласован с протоколом", evidence=text)
+    if text and aligned_f is not None and aligned_f >= 60 and not kp:
+        return _item(
+            crit,
+            score=0.5,
+            reason="План согласован с блоком, но КП по диагнозу не подтверждён",
+            evidence=text,
+        )
     if text and kp and (aligned_f is None or aligned_f >= 40):
         return _item(
             crit,
@@ -265,8 +272,14 @@ def _score_plan(
             reason="План указан без подтверждённого alignment / КП",
             evidence=text,
         )
-    if aligned_f is not None and aligned_f >= 60:
+    if aligned_f is not None and aligned_f >= 60 and kp:
         return _item(crit, score=0.5, reason="Alignment есть, текст плана не найден")
+    if aligned_f is not None and aligned_f >= 60:
+        return _item(
+            crit,
+            score=0.5,
+            reason="Alignment есть, но КП по диагнозу не подтверждён",
+        )
     return _item(crit, score=0.0, reason="План не указан")
 
 

@@ -276,10 +276,16 @@ def compute_match_score(
     card_icd = [str(x).upper() for x in (card.get("icd10_all") or card.get("icd10_primary") or [])]
     icd_part = 0.0
     if use_icd:
-        icd_roots = {_icd_root(c) for c in icd_list if not is_symptom_code(c)}
+        case_codes = [c for c in icd_list if c and not is_symptom_code(c)]
+        card_set = set(card_icd)
+        exact_n = sum(1 for c in case_codes if c in card_set)
+        icd_roots = {_icd_root(c) for c in case_codes}
         card_roots = {_icd_root(c) for c in card_icd}
         overlap = icd_roots & card_roots
-        if overlap:
+        # Exact code on card must beat root-only (F41.2 vs соседний F41.0)
+        if exact_n:
+            icd_part = min(1.0, 0.88 + 0.04 * exact_n)
+        elif overlap:
             icd_part = min(1.0, 0.6 + 0.1 * len(overlap))
         elif icd_list and card_icd:
             for c in icd_list:

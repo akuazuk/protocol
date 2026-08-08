@@ -225,6 +225,8 @@ _SPECIALTY_STEM_TO_RUBRIC: list[tuple[str, str]] = [
     ("оториноларинголог", "otorinolaringologiya"),
     ("лор", "otorinolaringologiya"),
     ("психиатр", "psikhiatriya-narkologiya"),
+    ("психотерапевт", "psikhiatriya-narkologiya"),
+    ("психолог", "psikhiatriya-narkologiya"),
     ("нарколог", "psikhiatriya-narkologiya"),
     ("акушер", "akusherstvo-ginekologiya"),
     ("гинеколог", "akusherstvo-ginekologiya"),
