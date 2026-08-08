@@ -1,6 +1,9 @@
-"""Разрешение кодов МКБ-10 по всему тексту МО/КЗ (не только графа «Диагноз»).
+"""Разрешение кода МКБ и текста диагноза только из слотов диагноза МО.
 
-Правило: docs/plans/2026-08-06-mo-icd-full-document-search-v1.md
+Правило: docs/plans/2026-08-08-mo-icd-diag-slots-only-v1.md
+
+Ищем в «Клинический диагноз» / «Диагноз МИС» (+ явные колонки кода).
+Не сканируем жалобы, анамнез, статус, план - оттуда подтягивались чужие коды.
 stdlib-only - можно импортировать из reg55_criteria.
 """
 from __future__ import annotations
@@ -24,40 +27,32 @@ _PLACEHOLDER_LINE = re.compile(
     re.I,
 )
 
-# Клинические слоты МО + запасные имена из export / deep / review pack.
-MO_ICD_TEXT_KEYS: tuple[str, ...] = (
+# Только слоты, которые UI показывает как «Клинический диагноз» / «Диагноз МИС»
+# (+ короткие алиасы витрины, которые пишутся из этих же слотов).
+MO_DIAGNOSIS_SLOT_KEYS: tuple[str, ...] = (
     "clinical_diagnosis",
-    "diagnosis_main_text",
-    "diagnosis_short",
-    "diagnosis_text",
     "mis_diagnos",
     "mis_diagnosis",
     "diagnosis_mis",
-    "complaints",
-    "anamnesis_doctor",
-    "anamnesis_auto",
-    "anamnesis",
-    "objective_status",
-    "exam_data",
-    "exam_recommendations",
-    "treatment_recommendations",
-    "recommendations_exam",
-    "recommendations_treatment",
-    "manipulations",
-    "service_names",
-    "result",
-    "raw_text",
-    "full_text",
-    "document_text",
+    "diagnosis_main_text",
+    "diagnosis_short",
+    "diagnosis_text",
 )
+
+# Совместимость со старым именем (раньше - полный документ).
+MO_ICD_TEXT_KEYS: tuple[str, ...] = MO_DIAGNOSIS_SLOT_KEYS
 
 _EXPLICIT_CODE_KEYS: tuple[str, ...] = (
     "mkb_code_main",
     "diagnosis_code",
     "icd10",
     "mkb_code",
-    "mis_diagnos",
-    "mis_diagnosis",
+)
+
+_DIAG_SLOT_KEYS: tuple[str, ...] = MO_DIAGNOSIS_SLOT_KEYS
+
+_DIAG_LABEL_LINE = re.compile(
+    r"(?i)(?:клинический\s+)?диагноз\s*[:：\-–—]?\s*(.+)",
 )
 
 
@@ -100,7 +95,6 @@ def _codes_in_text(text: str) -> list[str]:
     out: list[str] = []
     seen: set[str] = set()
     for match in _ICD_RE.finditer(scanned):
-        # отрезок строки вокруг матча - отсечь «см. МКБ …»
         start = max(0, match.start() - 24)
         end = min(len(scanned), match.end() + 12)
         window = scanned[start:end]
@@ -114,8 +108,8 @@ def _codes_in_text(text: str) -> list[str]:
     return out
 
 
-def _iter_text_fields(case: dict[str, Any]) -> list[tuple[str, str]]:
-    """(source_key, text) по кейсу и вложенному clinical*."""
+def _iter_diagnosis_fields(case: dict[str, Any]) -> list[tuple[str, str]]:
+    """(source_key, text) только по слотам диагноза и вложенному clinical*."""
     blobs: list[tuple[str, str]] = []
     seen_keys: set[str] = set()
 
@@ -131,52 +125,61 @@ def _iter_text_fields(case: dict[str, Any]) -> list[tuple[str, str]]:
         seen_keys.add(full_key)
         blobs.append((full_key, text))
 
-    for key in MO_ICD_TEXT_KEYS:
+    for key in MO_DIAGNOSIS_SLOT_KEYS:
         add("", key, case.get(key))
 
     for nested_key in ("clinical", "clinical_json", "fields", "document"):
         nested = case.get(nested_key)
         if isinstance(nested, dict):
-            for key in MO_ICD_TEXT_KEYS:
+            for key in MO_DIAGNOSIS_SLOT_KEYS:
                 add(f"{nested_key}.", key, nested.get(key))
 
     return blobs
 
 
-_DIAG_SLOT_KEYS: tuple[str, ...] = (
-    "clinical_diagnosis",
-    "mis_diagnos",
-    "mis_diagnosis",
-    "diagnosis_main_text",
-    "diagnosis_short",
-    "diagnosis_text",
-    "diagnosis_mis",
-)
-
-_DIAG_LABEL_LINE = re.compile(
-    r"(?i)(?:клинический\s+)?диагноз\s*[:：\-–—]?\s*(.+)",
-)
+# Alias для старых импортов / тестов.
+def _iter_text_fields(case: dict[str, Any]) -> list[tuple[str, str]]:
+    return _iter_diagnosis_fields(case)
 
 
 def _diagnosis_slots_text(case: dict[str, Any]) -> str:
+    """Клинический диагноз предпочтительнее Диагноза МИС."""
+    preferred = (
+        "clinical_diagnosis",
+        "diagnosis_main_text",
+        "diagnosis_short",
+        "diagnosis_text",
+        "mis_diagnos",
+        "mis_diagnosis",
+        "diagnosis_mis",
+    )
     parts: list[str] = []
-    for key in _DIAG_SLOT_KEYS:
-        val = case.get(key)
-        if isinstance(val, str) and val.strip():
-            parts.append(val.strip())
+    seen: set[str] = set()
+
+    def take(key: str, value: Any) -> None:
+        if not isinstance(value, str):
+            return
+        text = value.strip()
+        if not text or text.lower() in {"nan", "none", "null"}:
+            return
+        if text in seen:
+            return
+        seen.add(text)
+        parts.append(text)
+
+    for key in preferred:
+        take(key, case.get(key))
     for nested_key in ("clinical", "clinical_json", "fields", "document"):
         nested = case.get(nested_key)
         if not isinstance(nested, dict):
             continue
-        for key in _DIAG_SLOT_KEYS:
-            val = nested.get(key)
-            if isinstance(val, str) and val.strip():
-                parts.append(val.strip())
+        for key in preferred:
+            take(key, nested.get(key))
     return " ".join(parts).strip()
 
 
 def _snippet_near_code(text: str, code: str, *, before: int = 80, after: int = 120) -> str:
-    """Короткий фрагмент вокруг кода МКБ (для name_only, если графа Dx пуста)."""
+    """Короткий фрагмент вокруг кода МКБ внутри слота диагноза."""
     want = _normalize_code(code)
     if not text or not want:
         return ""
@@ -186,10 +189,8 @@ def _snippet_near_code(text: str, code: str, *, before: int = 80, after: int = 1
         start = max(0, match.start() - before)
         end = min(len(text), match.end() + after)
         chunk = text[start:end]
-        # обрезать по переносам, чтобы не тащить соседние абзацы целиком
         chunk = re.sub(r"[\r\n]+", " ", chunk)
         chunk = re.sub(r"\s+", " ", chunk).strip()
-        # убрать сам код - для сверки названия
         chunk = _ICD_RE.sub(" ", chunk)
         chunk = re.sub(r"\s+", " ", chunk).strip(" .;,:|-")
         return chunk[:220]
@@ -211,7 +212,7 @@ def _labeled_diagnosis_lines(text: str) -> list[str]:
 
 
 def resolve_diagnosis_text_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
-    """Текст диагноза: слоты → строка «Диагноз: …» → фрагмент у кода в полном МО.
+    """Текст диагноза только из слотов clinical_diagnosis / mis_diagnos.
 
     Returns:
         text, source (slots|label_line|near_code|empty), used_fallback, codes
@@ -229,8 +230,8 @@ def resolve_diagnosis_text_from_mo(case: dict[str, Any] | None) -> dict[str, Any
             "main": resolved.get("main") or "",
         }
 
-    # 1) явная строка «Диагноз: …» в любом слоте документа
-    for field, text in _iter_text_fields(case):
+    # Только внутри слотов диагноза (если слот пуст как join, но label внутри поля).
+    for field, text in _iter_diagnosis_fields(case):
         labeled = _labeled_diagnosis_lines(text)
         if labeled:
             return {
@@ -241,14 +242,12 @@ def resolve_diagnosis_text_from_mo(case: dict[str, Any] | None) -> dict[str, Any
                 "main": resolved.get("main") or "",
             }
 
-    # 2) фрагмент рядом с основным / любым кодом
     main = str(resolved.get("main") or "")
     probe_codes = [main] + [c for c in codes if c != main] if main else codes
     for code in probe_codes:
         if not code:
             continue
-        for field, text in _iter_text_fields(case):
-            # слоты диагноза уже пусты; берём любой текст с кодом
+        for field, text in _iter_diagnosis_fields(case):
             snippet = _snippet_near_code(text, code)
             if len(snippet) >= 3:
                 return {
@@ -302,7 +301,7 @@ def _explicit_raw_icd_token(case: dict[str, Any]) -> str:
 def assess_icd_code_requirement(case: dict[str, Any] | None) -> dict[str, Any]:
     """Правило кодирования МКБ для findings / штрафа.
 
-    - валидный код в МО → ok;
+    - валидный код в слотах диагноза / явной колонке → ok;
     - кода нет, но есть формулировка диагноза → ok (не дефект);
     - указан невалидный код → defect (format);
     - нет ни кода, ни диагноза → defect (missing_both).
@@ -360,14 +359,13 @@ def assess_icd_code_requirement(case: dict[str, Any] | None) -> dict[str, Any]:
 
 
 def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
-    """Найти коды МКБ по всему МО.
+    """Найти коды МКБ только в слотах диагноза + явных колонках кода.
 
     Returns:
-        main: str - основной код (слот диагноза / явный mkb_code_main, иначе первый
-              валидный по документу)
+        main: str - mkb_code_main / код из clinical_diagnosis / mis_diagnos
         all: list[str] - уникальные коды в порядке обнаружения
-        sources: list[{code, field}] - откуда взяли
-        present: bool - есть ли хотя бы один валидный код
+        sources: list[{code, field}]
+        present: bool
     """
     case = case if isinstance(case, dict) else {}
     sources: list[dict[str, str]] = []
@@ -383,7 +381,7 @@ def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
             seen.add(code)
             all_codes.append(code)
 
-    # 1) явные колонки экспорта
+    # 1) явные колонки экспорта кода
     for key in _EXPLICIT_CODE_KEYS:
         raw = case.get(key)
         if isinstance(raw, (list, tuple)):
@@ -392,8 +390,8 @@ def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
         elif raw:
             add_code(str(raw), key)
 
-    # 2) полный текст по слотам (диагнозные ключи раньше остальных за счёт порядка)
-    for field, text in _iter_text_fields(case):
+    # 2) только слоты диагноза (порядок: clinical → mis)
+    for field, text in _iter_diagnosis_fields(case):
         for code in _codes_in_text(text):
             add_code(code, field)
 
@@ -409,19 +407,7 @@ def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
             main = candidate
             break
     if not main:
-        for field, text in _iter_text_fields(case):
-            if not any(
-                field == k or field.endswith(f".{k}")
-                for k in (
-                    "clinical_diagnosis",
-                    "diagnosis_main_text",
-                    "diagnosis_short",
-                    "diagnosis_text",
-                    "mis_diagnos",
-                    "mis_diagnosis",
-                )
-            ):
-                continue
+        for field, text in _iter_diagnosis_fields(case):
             found = _codes_in_text(text)
             if found:
                 main = found[0]
@@ -437,14 +423,16 @@ def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
     }
 
 
-# Warehouse / KPI soft-fill (фаза 5). Не трогает mkb_code_agreement (слот экспорта).
+# Warehouse / KPI soft-fill. Не трогает mkb_code_agreement (слот экспорта).
 SOURCE_SLOT = "slot"
-SOURCE_SOFT_FILL_FULL_DOC = "soft_fill_full_doc"
+SOURCE_SOFT_FILL_DIAG_SLOTS = "soft_fill_diag_slots"
+# Совместимость со старым именем в тестах / отчётах.
+SOURCE_SOFT_FILL_FULL_DOC = SOURCE_SOFT_FILL_DIAG_SLOTS
 SOURCE_EMPTY = "empty"
 
 
 def _slot_mkb_codes(case: dict[str, Any]) -> list[str]:
-    """Коды только из слотов экспорта mkb_codes / mkb_code_main (без full-doc)."""
+    """Коды только из слотов экспорта mkb_codes / mkb_code_main."""
     out: list[str] = []
     seen: set[str] = set()
     for raw in (case.get("mkb_codes"), case.get("mkb_code_main")):
@@ -464,10 +452,10 @@ def _slot_mkb_codes(case: dict[str, Any]) -> list[str]:
 
 
 def soft_fill_mkb_for_warehouse(case: dict[str, Any] | None) -> dict[str, Any]:
-    """Код для KPI/UI витрины: слот, иначе full-doc soft-fill.
+    """Код для KPI/UI витрины: явный слот кода, иначе код из слотов диагноза.
 
     Returns:
-        code, codes, source (slot|soft_fill_full_doc|empty), slot_code
+        code, codes, source (slot|soft_fill_diag_slots|empty), slot_code
     Не мутирует case и не предназначен для mkb_code_agreement.
     """
     case = case if isinstance(case, dict) else {}
@@ -481,7 +469,6 @@ def soft_fill_mkb_for_warehouse(case: dict[str, Any] | None) -> dict[str, Any]:
             "slot_code": slot_main,
         }
 
-    # resolve по полному МО; слот пуст - explicit keys не дадут main
     resolved = resolve_icd_codes_from_mo(case)
     fill = str(resolved.get("main") or "").strip()
     if fill and is_valid_icd_format(fill):
@@ -491,7 +478,7 @@ def soft_fill_mkb_for_warehouse(case: dict[str, Any] | None) -> dict[str, Any]:
         return {
             "code": fill,
             "codes": all_codes,
-            "source": SOURCE_SOFT_FILL_FULL_DOC,
+            "source": SOURCE_SOFT_FILL_DIAG_SLOTS,
             "slot_code": "",
         }
     return {

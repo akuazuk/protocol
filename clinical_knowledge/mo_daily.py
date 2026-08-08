@@ -1762,8 +1762,8 @@ def upsert_warehouse(
                 score = None
                 previous_score = None
             else:
-                # Soft-fill МКБ для KPI/UI: слот → иначе full-doc. Agreement не трогаем
-                # (raw.mkb_code_agreement остаётся на исходном слоте экспорта).
+                # Soft-fill МКБ для KPI/UI: явный слот кода → иначе слоты диагноза.
+                # Agreement не трогаем (raw.mkb_code_agreement на исходном слоте экспорта).
                 from clinical_knowledge.mo_icd_resolve import soft_fill_mkb_for_warehouse
 
                 resolve_case = dict(raw)
@@ -1772,14 +1772,10 @@ def upsert_warehouse(
                         "clinical_diagnosis",
                         "diagnosis_main_text",
                         "diagnosis_short",
+                        "diagnosis_text",
                         "mis_diagnos",
-                        "complaints",
-                        "anamnesis_doctor",
-                        "objective_status",
-                        "exam_data",
-                        "exam_recommendations",
-                        "treatment_recommendations",
-                        "manipulations",
+                        "mis_diagnosis",
+                        "diagnosis_mis",
                     ):
                         if not resolve_case.get(key) and case.get(key):
                             resolve_case[key] = case.get(key)

@@ -21,6 +21,7 @@
 | [2026-08-08-mo-consultation-legacy-score-v1.md](2026-08-08-mo-consultation-legacy-score-v1.md) | Legacy consultation снова в оценке (рубрика МЗ / №55 / KP) | active |
 | [2026-08-08-mo-action-queue-precise-signals-v2.md](2026-08-08-mo-action-queue-precise-signals-v2.md) | Очередь разбора: whitelist точных сигналов (safety/Dx), без №55-тикетов | active |
 | [2026-08-08-mo-icd-absent-ok-with-dx-v1.md](2026-08-08-mo-icd-absent-ok-with-dx-v1.md) | Нет кода МКБ при тексте Dx - не дефект; страшно только без Dx и без кода | active |
+| [2026-08-08-mo-icd-diag-slots-only-v1.md](2026-08-08-mo-icd-diag-slots-only-v1.md) | МКБ/диагноз только из «Клинический диагноз» и «Диагноз МИС» (не весь МО) | active |
 | [2026-08-08-mo-history-scores-catalog-v1.md](2026-08-08-mo-history-scores-catalog-v1.md) | Вернуть историю пациента в разборе + каталог всех оценок МО для дашбордов | active |
 | [2026-08-08-mo-nonclinical-exclude-hard-v1.md](2026-08-08-mo-nonclinical-exclude-hard-v1.md) | Non-clinical вне таблиц и любых оценок/КП/LLM | active |
 | [2026-08-08-mo-action-priority-formula-ru-v1.md](2026-08-08-mo-action-priority-formula-ru-v1.md) | Очередь: приоритет по формуле; P0-P3 → русские слова и цвета; demote stale №55 P0 | archived (преемник: mo-action-queue-precise-signals-v2) |
@@ -37,7 +38,7 @@
 | [2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md](2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md) | КП по тексту диагноза (без МКБ); directory helper v1 | archived (преемник: mo-icd-dx-matching-pipeline-v3; helpers остаются) |
 | [2026-08-07-mo-auto-llm-on-disk-v1.md](2026-08-07-mo-auto-llm-on-disk-v1.md) | Night LLM сразу после upload secure_cases на Render (не ждать launchd/merge) | active |
 | [2026-08-06-mo-gold-pack-error-sweep-v1.md](2026-08-06-mo-gold-pack-error-sweep-v1.md) | Волна фиксов по gold packs 3650612/3643304: NSAID, suggest, МКБ, re-score, UX | completed (residuals в night handoff 07.08) |
-| [2026-08-06-mo-icd-full-document-search-v1.md](2026-08-06-mo-icd-full-document-search-v1.md) | МКБ в оценке МО: искать по всему документу, не только графа «Диагноз» | active |
+| [2026-08-06-mo-icd-full-document-search-v1.md](2026-08-06-mo-icd-full-document-search-v1.md) | МКБ по всему документу | archived (преемник: mo-icd-diag-slots-only-v1 - откат по решению владельца) |
 | [2026-08-06-mo-protocol-suggest-titles-search-v1.md](2026-08-06-mo-protocol-suggest-titles-search-v1.md) | Полные названия КП, поиск из разбора, LLM catch-up 05.08 | active |
 | [2026-08-06-mo-case-findings-clarity-v1.md](2026-08-06-mo-case-findings-clarity-v1.md) | Разбор случая: КП 404, ширина разбора, P0 №55 и RU-источники замечаний | active |
 | [2026-08-05-mo-case-review-workspace-v2.md](2026-08-05-mo-case-review-workspace-v2.md) | Разбор случая: UI + gold + протоколы МЗ (W0-W3 в проде; gaps в handoff 08-06) | active |
