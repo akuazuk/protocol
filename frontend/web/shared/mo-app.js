@@ -898,6 +898,20 @@
       return map[value] || value || "Не указан";
     }
     function statusClass(value) { return /critical|confirmed/.test(value) ? "critical" : /good|resolved|closed|acceptable/.test(value) ? "good" : "review"; }
+    function severityTone(item) {
+      if (item && item.severity_tone) return String(item.severity_tone);
+      var sev = String((item && item.severity) || "");
+      if (sev === "P0") return "critical";
+      if (sev === "P1") return "important";
+      if (sev === "P2") return "check";
+      if (sev === "P3") return "formal";
+      return "review";
+    }
+    function severityLabel(item) {
+      return (item && (item.severity_label_ru || item.priority_label_ru)) ||
+        ({ P0: "Критично", P1: "Важно", P2: "Оформление", P3: "Формально" }[item && item.severity] ||
+          (item && item.severity) || "Проверить");
+    }
     function icdVisitChip(row) {
       var st = (row && (row.icd_visit_status || (row.raw && row.raw.icd_visit_status))) || "";
       if (!st || st === "unknown") return "";
@@ -1014,16 +1028,19 @@
         esc(statusLabel(item.status)) + "</span></td></tr>";
     }
     function queueRow(item) {
-      var priority = Number(item.raw.p0 || 0) > 0 ? "P0" : Number(item.raw.p1 || 0) > 0 ? "P1" : "Низкий балл";
-      var crm = item.raw.crm || {};
-      var pdfUrl = item.raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
+      var raw = item.raw || {};
+      var priority = raw.severity_label_ru || severityLabel(raw) ||
+        (Number(raw.p0 || 0) > 0 ? "Критично" : Number(raw.p1 || 0) > 0 ? "Важно" : "Низкий балл");
+      var tone = raw.severity_tone || severityTone(raw) || statusClass(item.status);
+      var crm = raw.crm || {};
+      var pdfUrl = raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
-        statusClass(item.status) + '">' + esc(priority) + '</span></td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
+        esc(tone) + '">' + esc(priority) + '</span></td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
         '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
-        esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
-        esc(item.raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(item.raw.due_date || crm.due_date || "Сегодня") +
+        esc(raw.reason || raw.comment || "Требует ручной проверки") + '</td><td>' +
+        esc(raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(raw.due_date || crm.due_date || "Сегодня") +
         '</td><td>' + esc(statusLabel(item.status)) +
         '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.id) + '.pdf">МО в PDF</button></td></tr>';
     }
@@ -1241,7 +1258,7 @@
         var stageRu = finding.stage === "a" || finding.stage === "A" ? "этап A (диагноз)" :
           (finding.stage === "b" || finding.stage === "B" ? "этап B (план)" : ("этап " + (finding.stage || "?")));
         return '<div class="llm-judge-finding"><span class="status ' +
-          (finding.severity === "P0" ? "critical" : "review") + '">' + esc(finding.severity || "P?") +
+          esc(severityTone(finding)) + '">' + esc(severityLabel(finding)) +
           '</span> <span class="card-sub">' + esc(stageRu) + '</span> ' +
           esc(finding.text_ru || finding.code || "") +
           (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
@@ -1383,14 +1400,14 @@
       ].filter(Boolean).join(" · ");
       var rubric = data.rubric_mz || {};
       var findingsHtml = '<div class="detail-block"><h3>Выявленные замечания</h3>' +
-        '<p class="card-sub">P0 - риск вреда / критический дефект; P1 - клинически важно; P2 - оформление. ' +
+        '<p class="card-sub">Критично - риск вреда; Важно - клинический дефект; Оформление - документирование. ' +
         'Каждое замечание можно подтвердить или отклонить.</p>' +
         (findings.length ? findings.map(function (finding) {
         var title = finding.title_ru || finding.title || finding.code || "Замечание";
         var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
         var linked = finding.linked_fields || [];
-        var sevLabel = finding.severity_label_ru || finding.severity || "Проверить";
-        var sevTone = finding.severity === "P0" ? "critical" : (finding.severity === "P1" ? "review" : "review");
+        var sevLabel = finding.severity_label_ru || severityLabel(finding) || "Проверить";
+        var sevTone = finding.severity_tone || severityTone(finding);
         var shadowBadge = (finding.is_shadow || finding.shadow) ?
           '<span class="status review finding-shadow-badge">черновик</span>' : "";
         var linkHint = finding.link_hint_ru ?
@@ -1958,8 +1975,10 @@
       $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
         var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.case_id) + "/pdf");
         var visitId = item.visit_id || item.case_id || "-";
+        var scoreTxt = item.overall_pct != null ? Math.round(Number(item.overall_pct)) + "%" : "-";
+        var regTxt = item.reg55_pct != null ? " · №55 " + Math.round(Number(item.reg55_pct)) + "%" : "";
         return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
-          (item.severity === "P0" ? "critical" : "review") + '">' + esc(item.severity) +
+          esc(severityTone(item)) + '">' + esc(severityLabel(item)) +
           '</span></td><td class="id-cell">' + esc(visitId) +
           '</td><td class="id-cell">' + esc(item.patient_id || "-") +
           '</td><td>' + esc(item.visit_date || data.date || "-") +
@@ -1968,13 +1987,14 @@
           "</td><td>" + esc(item.filial || item.branch) + "</td><td>" + esc(item.diagnosis) +
           "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b>" +
           (item.is_shadow ? ' <span class="status review finding-shadow-badge">shadow</span>' : "") +
+          (item.demoted_stale_reg55_p0 ? ' <span class="status check finding-shadow-badge">не P0</span>' : "") +
           "<br><small>" + esc(item.reason) +
-          (item.overall_pct != null ? " · оценка " + Math.round(Number(item.overall_pct)) + "%" : "") +
+          " · по формуле " + esc(scoreTxt) + esc(regTxt) +
           '</small></td><td class="row-actions"><button class="button secondary compact" type="button" data-take-case="' +
           esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
           (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") +
           '</button> <button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">МО в PDF</button></td></tr>';
-      }).join("") : '<tr><td colspan="9">' + unavailableBlock(section, "P0/P1 случаев нет.") + "</td></tr>";
+      }).join("") : '<tr><td colspan="9">' + unavailableBlock(section, "Случаев для разбора нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
     }
     function renderYesterdayFlow(data, dimension) {

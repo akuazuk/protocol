@@ -1125,7 +1125,11 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             + _finding_shadow_select("f")
             + """,
                       COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS finding_title,
-                      COALESCE(s.status, 'new') AS crm_status
+                      COALESCE(s.status, 'new') AS crm_status,
+                      ax_doc.score AS axis_documentation,
+                      ax_clin.score AS axis_clinical_concordance,
+                      ax_safe.score AS axis_safety,
+                      ax_reg.score AS axis_regulatory
                FROM fact_mo_case c
                JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
@@ -1133,11 +1137,19 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                LEFT JOIN crm_case_state s
                  ON s.case_id=COALESCE(NULLIF(c.visit_id,''), c.mis_id)
+               LEFT JOIN fact_mo_score_axis ax_doc
+                 ON ax_doc.mis_id=c.mis_id AND ax_doc.axis='documentation'
+               LEFT JOIN fact_mo_score_axis ax_clin
+                 ON ax_clin.mis_id=c.mis_id AND ax_clin.axis='clinical_concordance'
+               LEFT JOIN fact_mo_score_axis ax_safe
+                 ON ax_safe.mis_id=c.mis_id AND ax_safe.axis='safety'
+               LEFT JOIN fact_mo_score_axis ax_reg
+                 ON ax_reg.mis_id=c.mis_id AND ax_reg.axis='regulatory'
                WHERE c.visit_date=?
                  AND c.document_kind = 'clinical_visit'
                  AND f.severity IN ('P0','P1')
                  AND COALESCE(f.passed, 0) = 0
-               ORDER BY CASE f.severity WHEN 'P0' THEN 0 ELSE 1 END, c.mis_id
+               ORDER BY CASE f.severity WHEN 'P0' THEN 0 ELSE 1 END, c.overall_pct ASC, c.mis_id
                LIMIT 500""",
             (day,),
         ).fetchall()
@@ -1299,7 +1311,12 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             }
         )
 
-    from .mo_finding_labels_ru import finding_label_ru
+    from .mo_finding_labels_ru import (
+        demote_stale_reg55_p0,
+        finding_label_ru,
+        queue_priority_for_case,
+        severity_label_ru,
+    )
 
     samples_by_key: dict[tuple[str, str], list[dict[str, str]]] = {}
     for row in sample_rows:
@@ -1359,9 +1376,37 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         seen_cases.add(case_id)
         score = row["overall_pct"]
         code = str(row["finding_code"])
-        finding_title = finding_label_ru(code, str(row["finding_title"] or ""))
+        demoted = demote_stale_reg55_p0(
+            code=code,
+            severity=str(row["severity"] or ""),
+            title_ru=str(row["finding_title"] or ""),
+        )
+        finding_title = str(demoted["title_ru"])
+        finding_sev = str(demoted["severity"])
         is_shadow = bool(int(row["is_shadow"] or 0)) if "is_shadow" in row.keys() else False
-        reason = f"{row['severity']}: {finding_title}"
+        axes = {
+            "documentation": row["axis_documentation"]
+            if "axis_documentation" in row.keys()
+            else None,
+            "clinical_concordance": row["axis_clinical_concordance"]
+            if "axis_clinical_concordance" in row.keys()
+            else None,
+            "safety": row["axis_safety"] if "axis_safety" in row.keys() else None,
+            "regulatory": row["axis_regulatory"] if "axis_regulatory" in row.keys() else None,
+        }
+        prio = queue_priority_for_case(
+            finding_severity=finding_sev,
+            score_pct=float(score) if isinstance(score, (int, float)) else None,
+            axes=axes,
+            demoted_stale_reg55_p0=bool(demoted.get("demoted_stale_reg55_p0")),
+        )
+        formula_pct = prio.get("formula_pct")
+        display_score = (
+            float(formula_pct)
+            if isinstance(formula_pct, (int, float))
+            else (float(score) if isinstance(score, (int, float)) else None)
+        )
+        reason = f"{severity_label_ru(finding_sev)}: {finding_title}"
         if is_shadow:
             reason = f"{reason} (shadow concordance)"
         scorer_version = str(row["scorer_version"] or "") if "scorer_version" in row.keys() else ""
@@ -1409,7 +1454,12 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "patient_id": patient_id,
                 "doctor_id": doctor_id,
                 "visit_date": visit_date,
-                "severity": str(row["severity"]),
+                # priority* - по формуле; severity* - нормализованная тяжесть finding
+                "severity": str(prio["severity"]),
+                "severity_label_ru": str(prio["label_ru"]),
+                "severity_tone": str(prio["tone"]),
+                "finding_severity": finding_sev,
+                "finding_severity_label_ru": severity_label_ru(finding_sev),
                 "doctor": doctor_name or "Врач не указан",
                 "doctor_fio": doctor_name or "Врач не указан",
                 "specialty": specialty or "Специальность не указана",
@@ -1417,10 +1467,17 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "filial": branch or "Филиал не указан",
                 "diagnosis": str(row["diagnosis"] or "Диагноз не указан"),
                 "diagnosis_code": str(row["diagnosis_code"] or ""),
-                "overall_pct": float(score) if score is not None else None,
+                "overall_pct": display_score,
+                "overall_pct_stored": float(score) if isinstance(score, (int, float)) else None,
+                "reg55_pct": (
+                    float(axes["regulatory"])
+                    if isinstance(axes.get("regulatory"), (int, float))
+                    else None
+                ),
                 "finding_code": code,
                 "finding_title": finding_title,
                 "is_shadow": is_shadow,
+                "demoted_stale_reg55_p0": bool(demoted.get("demoted_stale_reg55_p0")),
                 "reason": reason,
                 "crm_status": str(row["crm_status"]),
                 "document_url": f"/api/methodist/mo/cases/{case_id}/document",
@@ -1429,6 +1486,17 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         )
         if len(action_cases) >= 100:
             break
+    # Сортировка очереди по формуле (хуже сверху), затем по коду уровня
+    _rank = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
+    action_cases.sort(
+        key=lambda item: (
+            _rank.get(str(item.get("severity") or ""), 9),
+            float(item["overall_pct"])
+            if isinstance(item.get("overall_pct"), (int, float))
+            else 999.0,
+            str(item.get("case_id") or ""),
+        )
+    )
     try:
         from .mo_llm_action_judge import load_llm_action_judge_index
 
@@ -1448,7 +1516,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         "limit": 100,
     }
     if not action_cases:
-        action_contract["reason"] = "P0/P1 случаи за день не найдены"
+        action_contract["reason"] = "Случаев для разбора за день не найдено"
 
     doctor_rows = _doctor_breakdown(
         DateRange(chosen, chosen), max(5, SUPPRESSION_N), {}
@@ -2569,24 +2637,30 @@ def build_data_quality(params: dict[str, Any]) -> dict[str, Any]:
 def _normalize_finding_row(finding_row: Mapping[str, Any]) -> dict[str, Any]:
     """Нормализовать строку fact_mo_finding для case detail / API."""
     from .mo_finding_labels_ru import (
+        demote_stale_reg55_p0,
         enrich_finding_detail_ru,
-        finding_label_ru,
-        severity_hint_ru,
-        severity_label_ru,
+        severity_tone_css,
         source_ref_display_ru,
     )
 
     finding = dict(finding_row)
     code = str(finding.get("code") or finding.get("finding_code") or "")
     finding["code"] = code
-    finding["title_ru"] = finding_label_ru(code, str(finding.get("title_ru") or ""))
+    demoted = demote_stale_reg55_p0(
+        code=code,
+        severity=str(finding.get("severity") or ""),
+        title_ru=str(finding.get("title_ru") or ""),
+    )
+    finding["title_ru"] = str(demoted["title_ru"])
     source_ref = str(finding.get("source_ref") or "")
     finding["source_ref"] = source_ref
     finding["source_ref_ru"] = source_ref_display_ru(source_ref)
-    severity = str(finding.get("severity") or "").strip()
+    severity = str(demoted["severity"] or "").strip()
     finding["severity"] = severity
-    finding["severity_label_ru"] = severity_label_ru(severity)
-    finding["severity_hint_ru"] = severity_hint_ru(severity)
+    finding["severity_label_ru"] = str(demoted["severity_label_ru"])
+    finding["severity_hint_ru"] = str(demoted["severity_hint_ru"])
+    finding["severity_tone"] = str(demoted.get("severity_tone") or severity_tone_css(severity))
+    finding["demoted_stale_reg55_p0"] = bool(demoted.get("demoted_stale_reg55_p0"))
     finding["detail_ru"] = enrich_finding_detail_ru(
         code=code,
         detail=str(finding.get("detail_ru") or finding.get("detail") or ""),
@@ -2659,6 +2733,17 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                 ]
                 document_kind = str(item.get("document_kind") or "unknown")
                 score = item.get("overall_pct")
+                # Снять ложный hard-cap 40%: если единственный «P0» был stale №55
+                if any(f.get("demoted_stale_reg55_p0") for f in findings):
+                    still_p0 = any(
+                        str(f.get("severity") or "").upper() == "P0" for f in findings
+                    )
+                    if not still_p0:
+                        from .mo_finding_labels_ru import recompute_overall_from_axes
+
+                        axis_score = recompute_overall_from_axes(axes)
+                        if axis_score is not None:
+                            score = axis_score
                 scorer_version = str(item.get("scorer_version") or "")
                 schema_version = str(item.get("score_schema_version") or "")
                 specialization = sanitize_mo_org_label(
