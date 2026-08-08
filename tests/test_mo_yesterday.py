@@ -77,9 +77,33 @@ def _seed_yesterday(path: Path, report_root: Path) -> None:
             if index < 6:
                 conn.execute(
                     """INSERT INTO fact_mo_finding
-                       (mis_id,finding_code,severity,passed,evidence,source_ref)
-                       VALUES (?,?,?,?,?,?)""",
-                    (mis_id, "C_red_flag", "P1", 0, "private evidence", "private source"),
+                       (mis_id,finding_code,severity,passed,evidence,source_ref,title_ru)
+                       VALUES (?,?,?,?,?,?,?)""",
+                    (
+                        mis_id,
+                        "C_red_flag",
+                        "P1",
+                        0,
+                        "private evidence",
+                        "private source",
+                        "Красный флаг без маршрутизации",
+                    ),
+                )
+            if index == 0:
+                # №55 P1 не должен попадать в очередь разбора (только точные сигналы).
+                conn.execute(
+                    """INSERT INTO fact_mo_finding
+                       (mis_id,finding_code,severity,passed,evidence,source_ref,title_ru)
+                       VALUES (?,?,?,?,?,?,?)""",
+                    (
+                        mis_id,
+                        "D_reg55_gap",
+                        "P1",
+                        0,
+                        "no dx slot",
+                        "Пост. №55",
+                        "Невыполненный критерий качества по постановлению МЗ № 55",
+                    ),
                 )
         for index in range(10):
             conn.execute(
@@ -210,6 +234,9 @@ def test_yesterday_contract_combines_bounded_warehouse_and_report(monkeypatch, t
     assert len(payload["action_cases"]["items"]) == 6
     assert all(item["reason"] and item["case_id"] for item in payload["action_cases"]["items"])
     assert all("C_red_flag" not in item["finding_title"] for item in payload["action_cases"]["items"])
+    assert all(item.get("finding_code") != "D_reg55_gap" for item in payload["action_cases"]["items"])
+    assert all("P0" not in str(item.get("reason") or "") for item in payload["action_cases"]["items"])
+    assert all(item.get("severity_label_ru") in {"Критично", "Важно"} for item in payload["action_cases"]["items"])
     # Seed: «Врач Ниже Ожидания» n=6 score=50 vs specialty peers 90 → delta < -10.
     # R² за день слабый - раньше жёсткий case_mix_reliable прятал весь блок.
     assert payload["doctor_outliers"]["available"] is True

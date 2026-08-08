@@ -1125,6 +1125,13 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                LIMIT 400""",
             (day,),
         ).fetchall()
+        from .mo_action_queue_select import sql_finding_code_in_clause
+
+        detail_select = (
+            "COALESCE(NULLIF(f.detail_ru,''), '') AS detail_ru"
+            if _warehouse_has_column(str(_db_path()), "fact_mo_finding", "detail_ru")
+            else "'' AS detail_ru"
+        )
         action_raw = conn.execute(
             """SELECT c.mis_id, c.visit_id, c.visit_date, c.filial, c.specialty, c.diagnosis_code,
                       c.overall_pct, c.document_kind,
@@ -1138,6 +1145,10 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             + _finding_shadow_select("f")
             + """,
                       COALESCE(NULLIF(f.title_ru,''), NULLIF(df.title_ru,''), f.finding_code) AS finding_title,
+                      COALESCE(NULLIF(f.evidence,''), '') AS evidence,
+                      """
+            + detail_select
+            + """,
                       COALESCE(s.status, 'new') AS crm_status,
                       ax_doc.score AS axis_documentation,
                       ax_clin.score AS axis_clinical_concordance,
@@ -1160,10 +1171,12 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                  ON ax_reg.mis_id=c.mis_id AND ax_reg.axis='regulatory'
                WHERE c.visit_date=?
                  AND c.document_kind = 'clinical_visit'
-                 AND f.severity IN ('P0','P1')
+                 AND """
+            + sql_finding_code_in_clause("f")
+            + """
                  AND COALESCE(f.passed, 0) = 0
-               ORDER BY CASE f.severity WHEN 'P0' THEN 0 ELSE 1 END, c.overall_pct ASC, c.mis_id
-               LIMIT 500""",
+               ORDER BY c.overall_pct ASC, c.mis_id
+               LIMIT 800""",
             (day,),
         ).fetchall()
         flow_rows: dict[str, list[sqlite3.Row]] = {}
@@ -1324,11 +1337,19 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             }
         )
 
+    from .mo_action_queue_select import (
+        BAND_LABEL_RU,
+        BAND_TO_INTERNAL,
+        finding_eligible_for_action_queue,
+        pick_primary_queue_finding,
+        queue_reason_ru,
+        signal_band_for_finding,
+        strip_pn_tokens,
+    )
     from .mo_finding_labels_ru import (
         demote_stale_reg55_p0,
         finding_label_ru,
-        queue_priority_for_case,
-        severity_label_ru,
+        severity_tone_css,
     )
 
     samples_by_key: dict[tuple[str, str], list[dict[str, str]]] = {}
@@ -1376,6 +1397,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
 
     action_cases = []
     seen_cases: set[str] = set()
+    findings_by_case: dict[str, list[dict[str, Any]]] = {}
     try:
         from .mo_review_pack import visit_identity_map_for_day
 
@@ -1384,19 +1406,38 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         identity_map = {}
     for row in action_raw:
         case_id = str(row["visit_id"] or row["mis_id"])
-        if case_id in seen_cases:
+        is_shadow = bool(int(row["is_shadow"] or 0)) if "is_shadow" in row.keys() else False
+        finding_row = {
+            "finding_code": str(row["finding_code"] or ""),
+            "severity": str(row["severity"] or ""),
+            "finding_title": str(row["finding_title"] or ""),
+            "evidence": str(row["evidence"] or "") if "evidence" in row.keys() else "",
+            "detail_ru": str(row["detail_ru"] or "") if "detail_ru" in row.keys() else "",
+            "is_shadow": is_shadow,
+            "_case_row": row,
+        }
+        if not finding_eligible_for_action_queue(finding_row):
             continue
-        seen_cases.add(case_id)
+        findings_by_case.setdefault(case_id, []).append(finding_row)
+
+    for case_id, findings in findings_by_case.items():
+        primary = pick_primary_queue_finding(findings)
+        if not primary:
+            continue
+        row = primary.get("_case_row") or findings[0].get("_case_row")
+        if row is None:
+            continue
         score = row["overall_pct"]
-        code = str(row["finding_code"])
+        code = str(primary.get("finding_code") or "")
         demoted = demote_stale_reg55_p0(
             code=code,
-            severity=str(row["severity"] or ""),
-            title_ru=str(row["finding_title"] or ""),
+            severity=str(primary.get("severity") or ""),
+            title_ru=str(primary.get("finding_title") or ""),
         )
-        finding_title = str(demoted["title_ru"])
-        finding_sev = str(demoted["severity"])
-        is_shadow = bool(int(row["is_shadow"] or 0)) if "is_shadow" in row.keys() else False
+        finding_title = strip_pn_tokens(str(demoted["title_ru"]))
+        band = signal_band_for_finding(primary) or "important"
+        finding_sev = BAND_TO_INTERNAL.get(band, "P1")
+        is_shadow = bool(primary.get("is_shadow"))
         axes = {
             "documentation": row["axis_documentation"]
             if "axis_documentation" in row.keys()
@@ -1407,21 +1448,10 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             "safety": row["axis_safety"] if "axis_safety" in row.keys() else None,
             "regulatory": row["axis_regulatory"] if "axis_regulatory" in row.keys() else None,
         }
-        prio = queue_priority_for_case(
-            finding_severity=finding_sev,
-            score_pct=float(score) if isinstance(score, (int, float)) else None,
-            axes=axes,
-            demoted_stale_reg55_p0=bool(demoted.get("demoted_stale_reg55_p0")),
+        display_score = float(score) if isinstance(score, (int, float)) else None
+        reason = strip_pn_tokens(
+            queue_reason_ru(band=band, finding_title=finding_title, finding_code=code)
         )
-        formula_pct = prio.get("formula_pct")
-        display_score = (
-            float(formula_pct)
-            if isinstance(formula_pct, (int, float))
-            else (float(score) if isinstance(score, (int, float)) else None)
-        )
-        reason = f"{severity_label_ru(finding_sev)}: {finding_title}"
-        if is_shadow:
-            reason = f"{reason} (shadow concordance)"
         scorer_version = str(row["scorer_version"] or "") if "scorer_version" in row.keys() else ""
         schema_version = (
             str(row["score_schema_version"] or "") if "score_schema_version" in row.keys() else ""
@@ -1459,6 +1489,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             )
         if (not doctor_name or doctor_name == "Врач не указан") and doctor_id:
             doctor_name = f"ID врача: {doctor_id}"
+        seen_cases.add(case_id)
         action_cases.append(
             {
                 "case_id": case_id,
@@ -1467,12 +1498,12 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "patient_id": patient_id,
                 "doctor_id": doctor_id,
                 "visit_date": visit_date,
-                # priority* - по формуле; severity* - нормализованная тяжесть finding
-                "severity": str(prio["severity"]),
-                "severity_label_ru": str(prio["label_ru"]),
-                "severity_tone": str(prio["tone"]),
+                "severity": finding_sev,
+                "severity_label_ru": BAND_LABEL_RU.get(band, "Важно"),
+                "severity_tone": severity_tone_css(finding_sev),
+                "queue_band": band,
                 "finding_severity": finding_sev,
-                "finding_severity_label_ru": severity_label_ru(finding_sev),
+                "finding_severity_label_ru": BAND_LABEL_RU.get(band, "Важно"),
                 "doctor": doctor_name or "Врач не указан",
                 "doctor_fio": doctor_name or "Врач не указан",
                 "specialty": specialty or "Специальность не указана",
@@ -1490,16 +1521,21 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "finding_code": code,
                 "finding_title": finding_title,
                 "is_shadow": is_shadow,
-                "demoted_stale_reg55_p0": bool(demoted.get("demoted_stale_reg55_p0")),
+                "demoted_stale_reg55_p0": False,
                 "reason": reason,
                 "crm_status": str(row["crm_status"]),
                 "document_url": f"/api/methodist/mo/cases/{case_id}/document",
                 "pdf_url": f"/api/methodist/mo/cases/{case_id}/pdf",
+                "formula_note_ru": (
+                    f"справка: формула {round(display_score)}%"
+                    if isinstance(display_score, (int, float))
+                    else ""
+                ),
             }
         )
         if len(action_cases) >= 100:
             break
-    # Сортировка очереди по формуле (хуже сверху), затем по коду уровня
+    # Сортировка: Критично → Важно → ниже формула.
     _rank = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
     action_cases.sort(
         key=lambda item: (

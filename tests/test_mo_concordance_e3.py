@@ -101,7 +101,5 @@ def test_warehouse_writes_shadow_p1_for_yesterday_queue(tmp_path: Path, monkeypa
     report = mo_backend.build_daily_report(day)
     items = (report.get("action_cases") or {}).get("items") or []
     codes = {item.get("finding_code") for item in items}
-    assert "finding_not_in_diagnosis" in codes
-    shadow_item = next(item for item in items if item["finding_code"] == "finding_not_in_diagnosis")
-    assert shadow_item.get("is_shadow") is True
-    assert "Находка в статусе" in shadow_item.get("finding_title", "")
+    # Shadow concordance остаётся в warehouse, но не создаёт тикет очереди разбора.
+    assert "finding_not_in_diagnosis" not in codes
