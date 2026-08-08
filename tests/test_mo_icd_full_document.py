@@ -158,9 +158,8 @@ def test_deep_b_icd_invalid_when_neither_diagnosis_nor_code() -> None:
         "treatment_recommendations": "Наблюдение",
         "mkb_code_main": "",
     }
-    deep = evaluate_kz_deep(case)
-    codes = {f["code"] for f in deep.get("findings") or []}
     # без Dx ось concordance может не ставить B_icd; assess - дефект missing_both
+    _ = evaluate_kz_deep(case)
     assess = assess_icd_code_requirement(case)
     assert assess["ok"] is False
     assert assess["status"] == "missing_both"
