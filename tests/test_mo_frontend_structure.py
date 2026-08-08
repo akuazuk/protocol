@@ -73,6 +73,9 @@ def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     assert 'id="score-eligible-only"' in SOURCE
     assert "score_eligible_only" in SOURCE
     assert 'document_types: ["clinical_visit"]' in SOURCE
+    assert 'id="score-eligible-only" checked disabled' in HTML
+    assert 'q.set("score_eligible_only", "1")' in SOURCE
+    assert "URL score_eligible_only=0" in SOURCE or "score_eligible_only=0" in SOURCE
 
 
 def test_case_workspace_has_dual_scroll_and_large_summary() -> None:

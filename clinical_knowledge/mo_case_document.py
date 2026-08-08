@@ -21,8 +21,10 @@ import re
 ROOT = Path(__file__).resolve().parents[1]
 
 DOCUMENT_KIND_LABELS = {
-    "medical_exam": "Медицинский осмотр",
-    "consultation": "Консультативное заключение",
+    "clinical_visit": "Клинический приём",
+    "procedure_session": "Манипуляция / процедура",
+    "medical_exam": "Профосмотр / медосмотр",
+    "consultation": "Клинический приём (legacy)",
     "certificate": "Справка",
     "diagnostic": "Диагностическое исследование",
     "non_clinical": "Неклинический документ",
@@ -43,9 +45,16 @@ CLINICAL_FIELDS = (
     ("treatment_recommendations", "Рекомендации по лечению"),
 )
 
-SCORED_KINDS = frozenset({"medical_exam", "consultation"})
+try:
+    from clinical_knowledge.mo_daily import SCORED_DOCUMENT_KINDS as SCORED_KINDS
+except Exception:  # noqa: BLE001
+    SCORED_KINDS = frozenset({"clinical_visit"})
 _HEX_ID_RX = re.compile(r"^[a-f0-9]{32,64}$", re.IGNORECASE)
 _ICD_CODE_RX = re.compile(r"^[A-Za-zА-Яа-я]\d{2}(?:\.\d{1,2})?$")
+_NONCLINICAL_SCORE_REASON = (
+    "Не оценивается: не клинический приём "
+    "(процедура / диагностика / профосмотр / стоматология)"
+)
 
 
 def _esc(value: Any) -> str:
@@ -105,7 +114,7 @@ def _chrome_bin() -> str | None:
 def score_reason(*, document_kind: str, overall_pct: Any, status: str = "") -> str:
     kind = str(document_kind or "unknown")
     if kind not in SCORED_KINDS:
-        return f"Не оценивается: {DOCUMENT_KIND_LABELS.get(kind, kind)}"
+        return _NONCLINICAL_SCORE_REASON
     if overall_pct is None or overall_pct == "":
         if status == "scoring_error":
             return "Ошибка оценки - требуется повторный прогон"
