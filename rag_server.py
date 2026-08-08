@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-093931Z-patient-history-schema"
+BUILD_VERSION = "2026-08-08-095533Z-patient-history-ui-wire"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11772,6 +11772,34 @@ def api_methodist_mo_case_detail(
             if not str(record.get("doctor_fio") or "").strip():
                 record["doctor_fio"] = f"ID врача: {doctor_id}"
         result["record"] = record
+        # История пациента - после identity lookup (нужен patient_id / doctor_id)
+        try:
+            from clinical_knowledge.mo_patient_history_bundle import (
+                merge_patient_history_into_findings,
+                public_bundle_for_ui,
+            )
+
+            hist_case = {
+                "patient_id": patient_id,
+                "patient_key": str(record.get("patient_key") or ""),
+                "visit_date": visit_date,
+                "doctor_id": doctor_id or str(record.get("doctor_id") or ""),
+                "doctor_key": str(record.get("doctor_key") or ""),
+                "doctor_fio": str(record.get("doctor_fio") or ""),
+                "specialty": str(record.get("specialization") or record.get("specialty") or ""),
+                "diagnosis_code": str(
+                    record.get("diagnosis_code") or record.get("mkb_code_main") or ""
+                ),
+                "mis_id": str(record.get("mis_id") or case_id),
+                "visit_id": str(record.get("visit_id") or ""),
+            }
+            result["findings"] = merge_patient_history_into_findings(
+                result.get("findings") if isinstance(result.get("findings"), list) else [],
+                hist_case,
+            )
+            result["patient_history"] = public_bundle_for_ui(hist_case.get("_patient_history"))
+        except Exception:  # noqa: BLE001
+            pass
         try:
             from clinical_knowledge.mo_backend import record_access
 
