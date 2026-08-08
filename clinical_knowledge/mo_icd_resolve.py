@@ -120,6 +120,131 @@ def _iter_text_fields(case: dict[str, Any]) -> list[tuple[str, str]]:
     return blobs
 
 
+_DIAG_SLOT_KEYS: tuple[str, ...] = (
+    "clinical_diagnosis",
+    "mis_diagnos",
+    "mis_diagnosis",
+    "diagnosis_main_text",
+    "diagnosis_short",
+    "diagnosis_text",
+    "diagnosis_mis",
+)
+
+_DIAG_LABEL_LINE = re.compile(
+    r"(?i)(?:клинический\s+)?диагноз\s*[:：\-–—]?\s*(.+)",
+)
+
+
+def _diagnosis_slots_text(case: dict[str, Any]) -> str:
+    parts: list[str] = []
+    for key in _DIAG_SLOT_KEYS:
+        val = case.get(key)
+        if isinstance(val, str) and val.strip():
+            parts.append(val.strip())
+    for nested_key in ("clinical", "clinical_json", "fields", "document"):
+        nested = case.get(nested_key)
+        if not isinstance(nested, dict):
+            continue
+        for key in _DIAG_SLOT_KEYS:
+            val = nested.get(key)
+            if isinstance(val, str) and val.strip():
+                parts.append(val.strip())
+    return " ".join(parts).strip()
+
+
+def _snippet_near_code(text: str, code: str, *, before: int = 80, after: int = 120) -> str:
+    """Короткий фрагмент вокруг кода МКБ (для name_only, если графа Dx пуста)."""
+    want = _normalize_code(code)
+    if not text or not want:
+        return ""
+    for match in _ICD_RE.finditer(text):
+        if _normalize_code(match.group(1)) != want:
+            continue
+        start = max(0, match.start() - before)
+        end = min(len(text), match.end() + after)
+        chunk = text[start:end]
+        # обрезать по переносам, чтобы не тащить соседние абзацы целиком
+        chunk = re.sub(r"[\r\n]+", " ", chunk)
+        chunk = re.sub(r"\s+", " ", chunk).strip()
+        # убрать сам код - для сверки названия
+        chunk = _ICD_RE.sub(" ", chunk)
+        chunk = re.sub(r"\s+", " ", chunk).strip(" .;,:|-")
+        return chunk[:220]
+    return ""
+
+
+def _labeled_diagnosis_lines(text: str) -> list[str]:
+    out: list[str] = []
+    for line in re.split(r"[\r\n]+", text or ""):
+        m = _DIAG_LABEL_LINE.search(line.strip())
+        if not m:
+            continue
+        frag = m.group(1).strip()
+        frag = _ICD_RE.sub(" ", frag)
+        frag = re.sub(r"\s+", " ", frag).strip(" .;,:|-")
+        if len(frag) >= 3:
+            out.append(frag[:220])
+    return out
+
+
+def resolve_diagnosis_text_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
+    """Текст диагноза: слоты → строка «Диагноз: …» → фрагмент у кода в полном МО.
+
+    Returns:
+        text, source (slots|label_line|near_code|empty), used_fallback, codes
+    """
+    case = case if isinstance(case, dict) else {}
+    slots = _diagnosis_slots_text(case)
+    resolved = resolve_icd_codes_from_mo(case)
+    codes = list(resolved.get("all") or [])
+    if slots:
+        return {
+            "text": slots,
+            "source": "slots",
+            "used_fallback": False,
+            "codes": codes,
+            "main": resolved.get("main") or "",
+        }
+
+    # 1) явная строка «Диагноз: …» в любом слоте документа
+    for field, text in _iter_text_fields(case):
+        labeled = _labeled_diagnosis_lines(text)
+        if labeled:
+            return {
+                "text": labeled[0],
+                "source": f"label_line:{field}",
+                "used_fallback": True,
+                "codes": codes,
+                "main": resolved.get("main") or "",
+            }
+
+    # 2) фрагмент рядом с основным / любым кодом
+    main = str(resolved.get("main") or "")
+    probe_codes = [main] + [c for c in codes if c != main] if main else codes
+    for code in probe_codes:
+        if not code:
+            continue
+        for field, text in _iter_text_fields(case):
+            # слоты диагноза уже пусты; берём любой текст с кодом
+            snippet = _snippet_near_code(text, code)
+            if len(snippet) >= 3:
+                return {
+                    "text": snippet,
+                    "source": f"near_code:{field}:{code}",
+                    "used_fallback": True,
+                    "codes": codes,
+                    "main": main or code,
+                }
+
+    return {
+        "text": "",
+        "source": "empty",
+        "used_fallback": False,
+        "codes": codes,
+        "main": main,
+    }
+
+
 def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
     """Найти коды МКБ по всему МО.
 

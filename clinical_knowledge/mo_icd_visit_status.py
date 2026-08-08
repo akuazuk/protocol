@@ -48,19 +48,24 @@ CHIP_TITLE_RU = {
 def diagnosis_text_from_case(case: dict[str, Any] | None) -> str:
     if not isinstance(case, dict):
         return ""
-    parts: list[str] = []
-    for key in (
-        "clinical_diagnosis",
-        "mis_diagnos",
-        "mis_diagnosis",
-        "diagnosis_main_text",
-        "diagnosis_short",
-        "diagnosis_text",
-    ):
-        val = case.get(key)
-        if isinstance(val, str) and val.strip():
-            parts.append(val.strip())
-    return " ".join(parts).strip()
+    try:
+        from clinical_knowledge.mo_icd_resolve import resolve_diagnosis_text_from_mo
+
+        return str(resolve_diagnosis_text_from_mo(case).get("text") or "").strip()
+    except Exception:  # noqa: BLE001
+        parts: list[str] = []
+        for key in (
+            "clinical_diagnosis",
+            "mis_diagnos",
+            "mis_diagnosis",
+            "diagnosis_main_text",
+            "diagnosis_short",
+            "diagnosis_text",
+        ):
+            val = case.get(key)
+            if isinstance(val, str) and val.strip():
+                parts.append(val.strip())
+        return " ".join(parts).strip()
 
 
 def chip_label_ru(status: str) -> str:
