@@ -242,30 +242,32 @@ def evaluate_diagnosis_against_icd_directory(
 
 
 def evaluate_mo_icd_directory(case: dict[str, Any] | None) -> list[dict[str, Any]]:
-    """Shadow findings из case dict (слоты МО)."""
+    """Shadow findings из case dict (слоты МО + fallback полного текста)."""
     if not icd_directory_eval_enabled() or not isinstance(case, dict):
         return []
-    diag = " ".join(
-        str(case.get(key) or "")
-        for key in (
-            "clinical_diagnosis",
-            "mis_diagnos",
-            "diagnosis_main_text",
-            "diagnosis_short",
-            "diagnosis_text",
-        )
-        if case.get(key)
-    ).strip()
+    diag = ""
     codes: list[str] = []
     try:
-        from clinical_knowledge.mo_icd_resolve import resolve_icd_codes_from_mo
+        from clinical_knowledge.mo_icd_resolve import resolve_diagnosis_text_from_mo
 
-        resolved = resolve_icd_codes_from_mo(case)
-        codes = list(resolved.get("all") or [])
-        main = resolved.get("main")
+        resolved_dx = resolve_diagnosis_text_from_mo(case)
+        diag = str(resolved_dx.get("text") or "").strip()
+        codes = list(resolved_dx.get("codes") or [])
+        main = resolved_dx.get("main")
         if main and main not in codes:
             codes.insert(0, str(main))
     except Exception:  # noqa: BLE001
+        diag = " ".join(
+            str(case.get(key) or "")
+            for key in (
+                "clinical_diagnosis",
+                "mis_diagnos",
+                "diagnosis_main_text",
+                "diagnosis_short",
+                "diagnosis_text",
+            )
+            if case.get(key)
+        ).strip()
         for key in ("mkb_code_main", "diagnosis_code", "icd10"):
             val = case.get(key)
             if isinstance(val, str) and val.strip():

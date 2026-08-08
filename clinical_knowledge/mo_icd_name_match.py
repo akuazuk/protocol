@@ -60,17 +60,22 @@ def _finding(
 
 
 def _diag_text_from_case(case: dict[str, Any]) -> str:
-    return " ".join(
-        str(case.get(key) or "")
-        for key in (
-            "clinical_diagnosis",
-            "mis_diagnos",
-            "diagnosis_main_text",
-            "diagnosis_short",
-            "diagnosis_text",
-        )
-        if case.get(key)
-    ).strip()
+    try:
+        from clinical_knowledge.mo_icd_resolve import resolve_diagnosis_text_from_mo
+
+        return str(resolve_diagnosis_text_from_mo(case).get("text") or "").strip()
+    except Exception:  # noqa: BLE001
+        return " ".join(
+            str(case.get(key) or "")
+            for key in (
+                "clinical_diagnosis",
+                "mis_diagnos",
+                "diagnosis_main_text",
+                "diagnosis_short",
+                "diagnosis_text",
+            )
+            if case.get(key)
+        ).strip()
 
 
 def _suggest_candidates(diag_text: str, *, max_results: int = 12) -> list[dict[str, Any]]:
