@@ -1524,38 +1524,78 @@
     function verdictLabelRu(value) {
       return ({ unreviewed: "не проверено", agree: "согласен", partial: "частично", disagree: "не согласен" })[value] || value || "-";
     }
+    function protocolViewerUrl(item) {
+      if (!item) return "";
+      var viewer = item.viewer_url || (item.source_path ? ("/proto-viewer.html?path=" + encodeURIComponent(item.source_path)) : "");
+      if (viewer.indexOf("/proto?") === 0) {
+        viewer = "/proto-viewer.html?" + viewer.slice("/proto?".length);
+      }
+      return viewer;
+    }
+    function bindProtocolSuggestHost(host) {
+      if (!host) return;
+      var expand = host.querySelector("#protocol-suggest-expand");
+      if (expand) {
+        expand.addEventListener("click", function () {
+          host.querySelectorAll("[data-protocol-extra]").forEach(function (node) {
+            node.hidden = false;
+          });
+          expand.hidden = true;
+        });
+      }
+      host.querySelectorAll("[data-retry-protocol-suggest]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          if (state.openCaseId) loadProtocolSuggestIntoCase(state.openCaseId);
+        });
+      });
+    }
     function renderProtocolSuggest(suggest) {
       state.protocolSuggest = suggest || null;
       if (!suggest || !suggest.available) {
-        return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ РБ к случаю</h3>' +
+        return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
           '<p class="empty">' + esc((suggest && suggest.reason) || "Подбор протоколов пока недоступен для этого случая.") +
-          '</p><p class="card-sub">Это не оценка оформления МО, а подсказка клинических протоколов.</p></div>';
+          '</p><p class="card-sub">Без подобранного протокола план не штрафуем за несоответствие протоколу.</p>' +
+          '<button type="button" class="button secondary compact" data-retry-protocol-suggest>Повторить подбор</button></div>';
       }
-      var items = (suggest.items || []).map(function (item, index) {
+      var list = suggest.items || [];
+      if (!list.length) {
+        return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
+          '<p class="empty">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
+      }
+      var top = list[0];
+      var topViewer = protocolViewerUrl(top);
+      var topSearch = top.search_url || suggest.search_url ||
+        ("/doctor/search?q=" + encodeURIComponent(top.search_query || suggest.search_query || top.title || ""));
+      var topBar = '<div class="protocol-suggest-top"><span>Протокол:</span><b>' +
+        esc(top.title || "без названия") + '</b>' +
+        (topViewer ? '<a class="button compact" href="' + esc(topViewer) + '" target="_blank" rel="noopener">Открыть</a>' : "") +
+        (topSearch ? '<a class="button secondary compact" href="' + esc(topSearch) + '" target="_blank" rel="noopener">Поиск КП</a>' : "") +
+        (list.length > 1 ? '<button type="button" class="linkish" id="protocol-suggest-expand">ещё ' +
+          (list.length - 1) + '</button>' : "") +
+        '</div>';
+      var items = list.map(function (item, index) {
         var pid = item.protocol_id || ("idx-" + index);
         var reasons = (item.reasons || []).slice(0, 3).map(function (reason) {
           return '<li>' + esc(reason.text || reason.code || "") + '</li>';
         }).join("");
-        var viewer = item.viewer_url || (item.source_path ? ("/proto-viewer.html?path=" + encodeURIComponent(item.source_path)) : "");
-        if (viewer.indexOf("/proto?") === 0) {
-          viewer = "/proto-viewer.html?" + viewer.slice("/proto?".length);
-        }
+        var viewer = protocolViewerUrl(item);
         var searchUrl = item.search_url || suggest.search_url ||
           ("/doctor/search?q=" + encodeURIComponent(item.search_query || suggest.search_query || item.title || ""));
         var titleHtml = viewer
           ? ('<a class="protocol-suggest-title-link" href="' + esc(viewer) + '" target="_blank" rel="noopener">' +
             esc(item.title || "Протокол") + '</a>')
           : esc(item.title || "Протокол");
-        return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '">' +
+        return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '"' +
+          (index > 0 ? ' hidden data-protocol-extra="1"' : "") + '>' +
           '<div class="protocol-suggest-title"><b>' + (index + 1) + ". " + titleHtml + '</b></div>' +
           '<div class="protocol-suggest-meta"><span class="status review">' +
           esc(item.match_kind_label || item.match_kind || "клиника") + '</span><span>' +
           esc(item.score != null ? (Math.round(Number(item.score)) + " баллов") : "") +
           '</span>' +
           (searchUrl ? '<a class="button secondary compact" href="' + esc(searchUrl) +
-            '" target="_blank" rel="noopener">Открыть КП</a>' : "") +
+            '" target="_blank" rel="noopener">Поиск</a>' : "") +
           (viewer ? '<a class="button secondary compact" href="' + esc(viewer) +
-            '" target="_blank" rel="noopener">Карточка</a>' : "") +
+            '" target="_blank" rel="noopener">Открыть</a>' : "") +
           '</div>' + (reasons ? '<ul class="llm-judge-bullets">' + reasons + '</ul>' : "") +
           '<div class="protocol-suggest-rates" role="radiogroup" aria-label="Релевантность протокола">' +
           [['relevant','да'],['partial','частично'],['irrelevant','нет'],['unreviewed','не оценил']].map(function (pair) {
@@ -1563,16 +1603,16 @@
               (pair[0] === "unreviewed" ? " checked" : "") + '> ' + pair[1] + '</label>';
           }).join("") + '</div></article>';
       }).join("");
-      return '<div class="detail-block protocol-suggest-block"><h3>Клинические протоколы для оценки плана</h3>' +
-        '<p class="card-sub">Если протокол не подобран - план не штрафуем за несоответствие протоколу.</p>' +
-        items + '</div>';
+      return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
+        '<p class="card-sub">Нужны, чтобы оценить план по протоколу. Это не оценка оформления МО.</p>' +
+        topBar + items + '</div>';
     }
     function verdictSelect(id, current) {
       var options = [
         ["unreviewed", "Не проверено"],
-        ["agree", "Согласен"],
-        ["partial", "Частично"],
-        ["disagree", "Не согласен"]
+        ["agree", "Ок"],
+        ["partial", "Замечание"],
+        ["disagree", "Не применимо"]
       ];
       return '<select class="control" id="' + id + '">' + options.map(function (option) {
         return '<option value="' + option[0] + '"' + (option[0] === (current || "unreviewed") ? " selected" : "") + ">" +
@@ -1728,21 +1768,33 @@
         item.date, item.doctor, item.specialty, item.diagnosis || ""
       ].filter(Boolean).join(" · ");
       var rubric = data.rubric_mz || {};
+      var pdfPath = "/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf";
+      var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
-        '<div class="methodist-decision-panel"><h3>Решение методиста</h3>' +
-        '<label class="filter"><span>Статус разбора</span><select class="control" id="drawer-status">' + statusOptions + '</select></label>' +
+        '<div class="methodist-decision-panel methodist-decision-panel--dock"><h3>Решение методиста</h3>' +
         '<div class="verdict-row">' +
         '<label class="filter"><span>Оформление</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
         '<label class="filter"><span>Диагноз</span>' + verdictSelect("drawer-verdict-d", "unreviewed") + '</label>' +
         '<label class="filter"><span>План по протоколу</span>' + verdictSelect("drawer-verdict-r", "unreviewed") + '</label>' +
         '</div>' +
-        '<label class="filter decision-summary-field"><span>Комментарий</span><textarea class="control" id="drawer-summary" rows="5" maxlength="12000" placeholder="Коротко: что не так и что сказать врачу"></textarea></label>' +
+        '<label class="filter decision-summary-field"><span>Комментарий врачу</span><textarea class="control" id="drawer-summary" rows="3" maxlength="12000" placeholder="Коротко: что не так и что исправить"></textarea></label>' +
+        '<label class="filter"><span>Статус разбора</span><select class="control" id="drawer-status">' + statusOptions + '</select></label>' +
         '<input type="hidden" id="drawer-assignee" value="' + esc(crm.assignee || "") + '">' +
         '<input type="hidden" id="drawer-due" value="' + esc(crm.due_date || "") + '">' +
         '<input type="hidden" id="drawer-tags" value="' + esc((crm.tags || []).join(", ")) + '">' +
-        '<label class="filter" style="margin-top:8px"><span><input type="checkbox" id="drawer-training-use" checked> Можно использовать для обучения</span></label>' +
-        '<p><button class="button" id="drawer-save" type="button">Сохранить</button> ' +
-        '<button class="button secondary" type="button" data-open-pdf="/api/methodist/mo/cases/' + encodeURIComponent(item.id) + '/pdf" data-open-name="mo-' + encodeURIComponent(item.id) + '.pdf">МО в PDF</button></p></div>';
+        '<details class="mo-secondary-details decision-more"><summary>Дополнительно</summary>' +
+        '<label class="filter"><span><input type="checkbox" id="drawer-training-use" checked> Можно использовать для обучения</span></label>' +
+        '</details>' +
+        '<div class="decision-actions">' +
+        '<button class="button" id="drawer-save" type="button">Сохранить</button>' +
+        '<button class="button secondary" type="button" data-open-pdf="' + esc(pdfPath) + '" data-open-name="' + esc(pdfName) + '">МО в PDF</button>' +
+        '</div></div>';
+      var drawerPdf = $("drawer-pdf");
+      if (drawerPdf) {
+        drawerPdf.hidden = false;
+        drawerPdf.setAttribute("data-open-pdf", pdfPath);
+        drawerPdf.setAttribute("data-open-name", pdfName);
+      }
       var reg55Pct = (data.reg55 || {}).regulatory_compliance_pct;
       if (reg55Pct == null) reg55Pct = item.reg55;
       if (reg55Pct == null) reg55Pct = axes.regulatory;
@@ -1761,65 +1813,94 @@
       if (useZonesUi) {
         $("drawer-body").innerHTML =
           '<div class="case-workspace-grid case-workspace-grid--zones">' +
-          '<div class="case-workspace-main">' + renderZonesHero(zones) +
-          renderFindingsCompact(findings, crm, llmJudge) +
+          '<div class="case-workspace-clinical" id="case-clinical-pane">' +
           renderClinicalDocument(sourceDocument, findings) +
+          '</div>' +
+          '<div class="case-workspace-decision">' +
+          '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
+          renderZonesHero(zones) +
+          renderFindingsCompact(findings, crm, llmJudge) +
           renderHistoryCompact(data.patient_history) +
-          '<div id="protocol-suggest-host" class="protocol-suggest-host--compact"><div class="skeleton"></div></div>' +
-          renderZonesCriteriaDetails(zones) + serviceHtml +
-          '</div><div class="case-workspace-decision">' + decisionHtml + '</div></div>';
+          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
+          renderZonesCriteriaDetails(zones) +
+          serviceHtml +
+          '</div>' +
+          decisionHtml +
+          '</div></div>';
       } else {
         $("drawer-body").innerHTML =
-          '<div class="case-workspace-grid"><div class="case-workspace-clinical">' +
+          '<div class="case-workspace-grid"><div class="case-workspace-clinical" id="case-clinical-pane">' +
           renderClinicalDocument(sourceDocument, findings) + serviceHtml +
           '</div><div class="case-workspace-decision">' +
+          '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderPatientHistory(data.patient_history) +
           renderLlmActionJudge(llmJudge, sourceDocument, item) +
-          '<div id="protocol-suggest-host"><div class="skeleton"></div></div>' +
-          renderFindingsCompact(findings, crm, llmJudge) + decisionHtml + '</div></div>';
+          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
+          renderFindingsCompact(findings, crm, llmJudge) +
+          '</div>' + decisionHtml + '</div></div>';
       }
-      $("drawer-save").addEventListener("click", saveCaseDecision);
+      bindCaseWorkspaceInteractions();
       updateDrawerNav();
       loadProtocolSuggestIntoCase(item.id);
-      $("drawer-body").querySelectorAll("[data-finding-zone]").forEach(function (button) {
+    }
+    function bindCaseWorkspaceInteractions() {
+      var saveBtn = $("drawer-save");
+      if (saveBtn) saveBtn.addEventListener("click", saveCaseDecision);
+      var body = $("drawer-body");
+      if (!body) return;
+      body.querySelectorAll("[data-finding-zone]").forEach(function (button) {
         button.addEventListener("click", function () {
-          var zone = button.getAttribute("data-finding-zone");
-          $("drawer-body").querySelectorAll("[data-finding-zone]").forEach(function (b) {
+          var zone = button.getAttribute("data-finding-zone") || "all";
+          body.querySelectorAll("[data-finding-zone]").forEach(function (b) {
             b.classList.toggle("is-active", b === button);
           });
-          $("drawer-body").querySelectorAll("[data-finding-zone-item]").forEach(function (card) {
+          body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
+            card.classList.toggle("is-active", card.getAttribute("data-zone-filter") === zone);
+          });
+          body.querySelectorAll("[data-finding-zone-item]").forEach(function (card) {
             card.hidden = zone !== "all" && card.getAttribute("data-finding-zone-item") !== zone;
           });
+          var findingsBlock = body.querySelector(".findings-compact-list");
+          if (findingsBlock) findingsBlock.scrollIntoView({ block: "nearest", behavior: "smooth" });
         });
       });
-      $("drawer-body").querySelectorAll("[data-zone-filter]").forEach(function (card) {
+      body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
         card.addEventListener("click", function () {
-          var btn = $("drawer-body").querySelector('[data-finding-zone="' + card.getAttribute("data-zone-filter") + '"]');
+          var zone = card.getAttribute("data-zone-filter");
+          var btn = body.querySelector('[data-finding-zone="' + zone + '"]');
           if (btn) btn.click();
         });
       });
-      $("drawer-body").querySelectorAll("[data-focus-clinical]").forEach(function (button) {
+      body.querySelectorAll("[data-focus-clinical]").forEach(function (button) {
         button.addEventListener("click", function () {
           var field = button.getAttribute("data-focus-clinical");
-          var target = $("drawer-body").querySelector('[data-clinical-field="' + field + '"]');
-          if (!target) return;
-          $("drawer-body").querySelectorAll(".clinical-field--linked").forEach(function (node) {
+          var target = body.querySelector('[data-clinical-field="' + field + '"]');
+          if (!target) {
+            showToast("Поле в тексте МО не найдено");
+            return;
+          }
+          body.querySelectorAll(".clinical-field").forEach(function (node) {
             node.classList.remove("clinical-field--focus");
           });
           target.classList.add("clinical-field--focus");
-          target.scrollIntoView({ block: "nearest", behavior: "smooth" });
+          target.scrollIntoView({ block: "center", behavior: "smooth" });
         });
       });
-      $("drawer-body").querySelectorAll(".patient-history-block [data-case]").forEach(function (button) {
+      body.querySelectorAll(".patient-history-block [data-case]").forEach(function (button) {
         button.addEventListener("click", function (event) {
           event.preventDefault();
           var cid = button.getAttribute("data-case");
           if (cid) openCase(cid);
         });
       });
-      $("drawer-body").querySelectorAll("[data-load-pack]").forEach(function (button) {
+      body.querySelectorAll("[data-load-pack]").forEach(function (button) {
         button.addEventListener("click", function () {
           loadReviewPackIntoForm(button.getAttribute("data-load-pack"));
+        });
+      });
+      body.querySelectorAll("[data-retry-protocol-suggest]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          if (state.openCaseId) loadProtocolSuggestIntoCase(state.openCaseId);
         });
       });
     }
@@ -1924,10 +2005,11 @@
       var reason = documentData.score_reason ? '<p class="inline-note">' + esc(documentData.score_reason) + '</p>' : "";
       var sourceLabel = documentData.source_format === "secure_csv" ? "защищённый дневной срез" :
         (documentData.source_format === "parquet" ? "дневной parquet" : "источник не определён");
-      return '<div class="detail-block"><h3>Исходное МО</h3>' + reason +
-        (content || '<div class="empty"><b>Клинический текст недоступен</b><div>Нет опубликованного secure CSV/parquet за дату визита (оценка могла приехать из warehouse раньше). Повторите publish или откройте визит в МИС.</div></div>') +
-        '<p class="card-sub">Источник: ' + esc(sourceLabel) + '</p>' +
-        '<p class="card-sub">Жалобы и анамнез → статус → диагноз → МКБ → обследования → лечение → наблюдение</p></div>';
+      return '<div class="detail-block clinical-mo-block"><h3>Текст МО</h3>' +
+        '<p class="card-sub">Слева читаете запись. Справа - оценки и решение. Подсветка «↔ замечание» связана с блоком «Что не так».</p>' +
+        reason +
+        (content || '<div class="empty"><b>Клинический текст недоступен</b><div>Нет опубликованного secure CSV/parquet за дату визита. Повторите publish или откройте визит в МИС.</div></div>') +
+        '<p class="card-sub">Источник: ' + esc(sourceLabel) + '</p></div>';
     }
     async function postCaseChanges(caseIds, changes, comment) {
       var response = await request("/cases/bulk-action", "/cases/bulk-action", {
@@ -1954,6 +2036,7 @@
     async function loadProtocolSuggestIntoCase(caseId) {
       var host = $("protocol-suggest-host");
       if (!host || !caseId) return;
+      host.innerHTML = '<div class="detail-block"><p class="card-sub">Подбираем протоколы…</p></div>';
       try {
         var q = query();
         q.set("month", q.get("month") || minskDateKey(0).slice(0, 7));
@@ -1962,26 +2045,11 @@
         );
         if (!response.ok) throw new Error("suggest_failed");
         var suggest = await response.json();
-        if (host.classList.contains("protocol-suggest-host--compact")) {
-          var top = ((suggest || {}).items || [])[0];
-          if (top) {
-            var more = ((suggest.items || []).length - 1);
-            host.innerHTML = '<div class="detail-block"><p><b>Протокол:</b> ' +
-              esc(top.title || "без названия") +
-              (more > 0 ? ' <button type="button" class="linkish" id="protocol-suggest-expand">ещё ' + more + '</button>' : "") +
-              '</p></div>';
-            var expand = $("protocol-suggest-expand");
-            if (expand) expand.addEventListener("click", function () {
-              host.innerHTML = renderProtocolSuggest(suggest);
-            });
-          } else {
-            host.innerHTML = '<div class="detail-block"><p class="card-sub">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
-          }
-        } else {
-          host.innerHTML = renderProtocolSuggest(suggest);
-        }
+        host.innerHTML = renderProtocolSuggest(suggest);
+        bindProtocolSuggestHost(host);
       } catch (e) {
         host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
+        bindProtocolSuggestHost(host);
       }
     }
     function updateDrawerNav() {
@@ -2062,6 +2130,7 @@
     }
     function closeDrawer() {
       $("case-drawer").hidden = true; $("drawer-backdrop").hidden = true; document.body.style.overflow = "";
+      if ($("drawer-pdf")) $("drawer-pdf").hidden = true;
       if (state.trigger) state.trigger.focus();
     }
     function unavailableBlock(section, fallback) {
