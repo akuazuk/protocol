@@ -57,6 +57,143 @@
 
 ---
 
+## 0. Точно: как МО «объединяются» и где хранится история
+
+### 0.1 Что значит «объединить» (и чего это НЕ значит)
+
+| Не так | Так |
+|--|--|
+| Склеить все старые замечания в одно finding текущего визита | У каждого визита свои МО (`fact_mo_finding` как сейчас) |
+| Отдельная SQL-таблица на каждый `patient_id` | **Одна** общая таблица визитов + ключ пациента |
+| При оценке заново читать все CSV месяца | При оценке: `SELECT` по `patient_key` → собрать бандл в памяти |
+
+**Объединение** = на момент оценки текущего визита **прочитать** историю пациента из склада, разложить по полкам (этот врач / другие специальности), получить один объект `patient_history_bundle` и из него:
+
+1. одно историческое МО для текущего случая;
+2. вход для остальных анализаторов.
+
+Старые визиты **не пересчитываются** и их findings не переписываются. Меняется только оценка **текущего** визита с учётом прошлого.
+
+```text
+Склад (постоянно):
+  визит_1 → свои scores + findings
+  визит_2 → свои scores + findings
+  визит_N (текущий) → считается сейчас
+
+При оценке визит_N:
+  история = все визиты пациента с date < N
+  бандл = история разложенная по полкам
+  МО_N = f(текст_N, бандл)     ← здесь «объединение»
+```
+
+### 0.2 Отдельная таблица на каждого пациента? Нет
+
+Плохо:
+
+```text
+patient_12345_history
+patient_67890_history
+... десятки/сотни тысяч таблиц
+```
+
+Почему нельзя:
+
+- нельзя нормально индексировать и обновлять при дневном upsert;
+- нельзя сделать один SQL «все пациенты специальности»;
+- `patient_id` в имени таблицы = утечка идентификатора;
+- миграции и бэкапы ломаются.
+
+**Правильно - общие таблицы, строки различаются ключом пациента.**
+
+### 0.3 Целевая схема склада (две таблицы, не N)
+
+Сейчас в `fact_mo_case` **нет** `patient_id` / `patient_key` - это главный пробел.
+
+**A. Лента визитов (источник правды по истории)** - расширяем существующий `fact_mo_case` или добавляем узкую таблицу:
+
+```sql
+-- вариант: колонки в fact_mo_case (предпочтительно)
+ALTER ... ADD patient_key TEXT;   -- hash(patient_id), не сырой id
+ALTER ... ADD doctor_id TEXT;     -- стабильный MIS id врача (если есть)
+
+CREATE INDEX idx_case_patient_date
+  ON fact_mo_case(patient_key, visit_date);
+CREATE INDEX idx_case_patient_doctor
+  ON fact_mo_case(patient_key, doctor_key, visit_date);
+CREATE INDEX idx_case_patient_specialty
+  ON fact_mo_case(patient_key, specialty, visit_date);
+```
+
+Каждая строка = один документ/случай МО (как сейчас `mis_id`).  
+Findings по-прежнему в `fact_mo_finding(mis_id, …)`.
+
+**B. Опциональный кэш бандла (не обязательно в v1 кода)** - одна строка на пациента (или на пациента+день пересчёта), не таблица на пациента:
+
+```sql
+fact_mo_patient_history_cache (
+  patient_key TEXT PRIMARY KEY,
+  lookback_days INTEGER NOT NULL,
+  as_of_date TEXT NOT NULL,          -- до какой даты собран
+  summary_json TEXT NOT NULL,        -- counts, codes_by_doctor, codes_by_specialty
+  visit_index_json TEXT NOT NULL,    -- список {mis_id, date, doctor_key, specialty, diagnosis_code, overall_pct}
+  updated_at TEXT NOT NULL
+)
+```
+
+Кэш обновляется при `upsert_warehouse` дня (для затронутых `patient_key`) или лениво при первом запросе case detail.
+
+Тексты жалоб/плана в кэш **не обязаны** лежать целиком: для тяжёлых анализаторов при необходимости дочитываем secure row по `mis_id` из индекса.
+
+### 0.4 Что происходит при оценке (псевдокод)
+
+```text
+evaluate(current_case):
+  patient_key = hash(current_case.patient_id)   # наружу не отдаём
+  rows = SELECT mis_id, visit_date, doctor_key, doctor_id, specialty,
+                diagnosis_code, overall_pct
+         FROM fact_mo_case
+         WHERE patient_key = ?
+           AND visit_date < current_case.visit_date
+           AND visit_date >= current_case.visit_date - lookback
+         ORDER BY visit_date
+
+  bundle.same_doctor    = [r for r in rows if same doctor]
+  bundle.same_specialty = [r for r in rows if same specialty and other doctor]
+  bundle.other          = [r for r in rows if else]
+  bundle.summary        = aggregate(bundle)
+
+  history_finding = one_mo_from(bundle, current_case.diagnosis_code)  # 0 или 1
+
+  # остальные анализаторы только читают bundle.summary (+ при нужде тексты)
+  name_only = ...
+  concordance = ...
+  return findings including history_finding
+```
+
+Если кэш есть и `as_of_date` свежий - вместо SELECT по ленте читаем `summary_json` / `visit_index_json`.
+
+### 0.5 Как «вся история» попадает в таблицу
+
+Не отдельный ручной ввод, а побочный эффект дневного пайплайна:
+
+1. Пришёл день → score → `upsert_warehouse` пишет/обновляет строки в `fact_mo_case` (+ `patient_key`).
+2. Findings дня - в `fact_mo_finding`.
+3. (Опционально) инвалидация/пересчёт `fact_mo_patient_history_cache` для patient_key этого дня.
+
+История = накопленные строки склада за месяцы, не отдельный «архив на пациента».
+
+### 0.6 Итог решения по хранению
+
+| Вопрос | Ответ |
+|--|--|
+| Таблица на каждый patient_id? | **Нет** |
+| Где вся история? | Строки в общей `fact_mo_case` (+ findings) с `patient_key` |
+| Нужна ли ещё таблица? | Позже кэш `fact_mo_patient_history_cache` - **одна строка на patient_key** |
+| Когда объединяем МО? | Только в момент оценки текущего визита, в памяти → бандл |
+| Переписываем старые МО? | Нет |
+
+---
+
 ## 1. Что такое «объединить МО по истории»
 
 Не «склеить все замечания в одну строку», а:
@@ -216,11 +353,13 @@ INDEX (patient_key, specialty, visit_date)
 
 | # | Шаг | Статус |
 |--|--|--|
-| 0 | Зафиксировать порядок: бандл → одно МО → анализаторы | сделано (этот план) |
-| A1 | `patient_key` в warehouse + индексы | дальше |
-| A2 | `build_patient_history_bundle` + тесты на фикстурах | дальше |
+| 0 | Зафиксировать порядок: бандл → одно МО → анализаторы | сделано |
+| 0b | Зафиксировать хранение: общие таблицы + patient_key, не table-per-patient | сделано (§0) |
+| A1 | `patient_key` (+ опц. `doctor_id`) в `fact_mo_case` + индексы; писать при upsert | дальше |
+| A2 | `build_patient_history_bundle` из SQL ленты + тесты | дальше |
 | A3 | Одно shadow МО `B_patient_history_context` + UI label | дальше |
 | A4 | Wire в deep_eval и case detail (бандл один раз) | дальше |
+| A5 | (Опц.) `fact_mo_patient_history_cache` - 1 строка на patient_key | дальше |
 | B1 | Name-only читает summary (веса) | дальше |
 | B2 | Section-align / concordance читают prior слоты | дальше |
 | B3 | LLM judge + очередь по tier | дальше |
