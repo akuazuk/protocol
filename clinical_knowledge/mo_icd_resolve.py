@@ -66,21 +66,44 @@ def is_valid_icd_format(code: str | None) -> bool:
 
 
 def _normalize_code(raw: str) -> str:
-    return str(raw or "").strip().upper().replace(" ", "")
+    """К латинице H52.1: кириллица Н/К/…, пробелы («Н 52.1»), запятая."""
+    token = str(raw or "").strip()
+    if not token:
+        return ""
+    try:
+        import icd_mkb
+
+        canon = icd_mkb._canonicalize_icd_like_token(token)
+        if canon:
+            return canon
+        scanned = icd_mkb.normalize_text_for_icd_scan(token)
+        match = icd_mkb.ICD10_CODE_RE.search(scanned)
+        if match:
+            return icd_mkb.normalize_icd_code(match.group(1))
+        return icd_mkb.normalize_icd_code(scanned)
+    except Exception:  # noqa: BLE001
+        return token.upper().replace(" ", "")
 
 
 def _codes_in_text(text: str) -> list[str]:
     if not text or not str(text).strip():
         return []
-    if _PLACEHOLDER_LINE.search(text) and not _ICD_RE.search(text):
+    raw = str(text)
+    try:
+        import icd_mkb
+
+        scanned = icd_mkb.normalize_text_for_icd_scan(raw)
+    except Exception:  # noqa: BLE001
+        scanned = raw
+    if _PLACEHOLDER_LINE.search(scanned) and not _ICD_RE.search(scanned):
         return []
     out: list[str] = []
     seen: set[str] = set()
-    for match in _ICD_RE.finditer(text):
+    for match in _ICD_RE.finditer(scanned):
         # отрезок строки вокруг матча - отсечь «см. МКБ …»
         start = max(0, match.start() - 24)
-        end = min(len(text), match.end() + 12)
-        window = text[start:end]
+        end = min(len(scanned), match.end() + 12)
+        window = scanned[start:end]
         if _PLACEHOLDER_LINE.search(window) and "см." in window.lower():
             continue
         code = _normalize_code(match.group(1))
