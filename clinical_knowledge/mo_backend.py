@@ -2766,6 +2766,9 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         "mkb_code_main_slot": str(item.get("mkb_code_main_slot") or ""),
                         "diagnosis_short": diagnosis_short,
                         "diagnosis_text": str(item.get("diagnosis_text") or "")[:200],
+                        "patient_key": str(item.get("patient_key") or ""),
+                        "doctor_id": str(item.get("doctor_id") or ""),
+                        "doctor_key": str(item.get("doctor_key") or ""),
                         "history_prior_n": int(item.get("history_prior_n") or 0),
                         "history_tier": str(item.get("history_tier") or ""),
                         "overall_pct": score,
@@ -2898,6 +2901,28 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
     # patient_id только по явному флагу в API (methodist+); по умолчанию скрыт.
     if patient_id_raw:
         detail["_patient_id_hint"] = patient_id_raw
+    # Черновой бандл; case detail API пересоберёт после identity lookup.
+    try:
+        from clinical_knowledge.mo_patient_history_bundle import (
+            attach_bundle_to_case,
+            public_bundle_for_ui,
+        )
+
+        hist_case = {
+            "patient_id": patient_id_raw or "",
+            "patient_key": str(record.get("patient_key") or ""),
+            "visit_date": str(record.get("date") or record.get("visit_date") or "")[:10],
+            "doctor_id": str(record.get("doctor_id") or ""),
+            "doctor_key": str(record.get("doctor_key") or ""),
+            "doctor_fio": str(record.get("doctor_fio") or ""),
+            "specialty": str(record.get("specialization") or record.get("specialty") or ""),
+            "diagnosis_code": str(record.get("diagnosis_code") or record.get("mkb_code_main") or ""),
+            "mis_id": str(record.get("mis_id") or case_id),
+            "visit_id": str(record.get("visit_id") or ""),
+        }
+        detail["patient_history"] = public_bundle_for_ui(attach_bundle_to_case(hist_case))
+    except Exception:  # noqa: BLE001
+        pass
     return detail
 
 
