@@ -98,7 +98,7 @@ def test_warehouse_preserves_v3_and_visit_denominators(tmp_path):
         "id": "m1",
         "visit_id": "v1",
         "visit_date": "2026-07-29",
-        "document_kind": "consultation",
+        "document_kind": "clinical_visit",
         "doctor_fio": "Иванов И.И.",
         "doctor_specialization": "Терапевт",
         "patient_id": "p1",

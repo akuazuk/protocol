@@ -44,7 +44,7 @@ def _seed_month(path: Path) -> None:
                         doctor_key,specialty,filial,diagnosis_code,icd_chapter,content_hash,updated_at)
                        VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                     (
-                        mis_id, visit_id, day, "consultation", score, "needs_review" if score < 70 else "good",
+                        mis_id, visit_id, day, "clinical_visit", score, "needs_review" if score < 70 else "good",
                         doctor[0], specialty, doctor[3], "I10", chapter, f"hash-{global_index}", now,
                     ),
                 )
@@ -96,7 +96,7 @@ def _seed_month(path: Path) -> None:
                    VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
                 (
                     f"jun-{index}", f"jun-visit-{index}", f"2026-06-{index // 10 + 1:02d}",
-                    "consultation", 70.0, "good", doctors[1][0], "Терапия", "Центр",
+                    "clinical_visit", 70.0, "good", doctors[1][0], "Терапия", "Центр",
                     "I10", "IX", f"jun-hash-{index}", now,
                 ),
             )

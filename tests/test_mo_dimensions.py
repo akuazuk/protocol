@@ -37,7 +37,7 @@ def _seed(path: Path) -> tuple[str, str]:
                     mis_id,
                     f"visit-{index}",
                     f"2026-07-{20 + index % 5:02d}",
-                    "consultation",
+                    "clinical_visit",
                     score,
                     "review",
                     doctor_key,

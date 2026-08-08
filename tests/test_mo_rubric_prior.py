@@ -25,7 +25,7 @@ def test_load_prior_clinical_finds_earlier_day(tmp_path: Path, monkeypatch) -> N
                 "date": "2026-08-01",
                 "exam_recommendations": "УЗИ",
                 "treatment_recommendations": "Старое лечение",
-                "document_kind": "consultation",
+                "document_kind": "clinical_visit",
             }
         )
     monkeypatch.setattr(

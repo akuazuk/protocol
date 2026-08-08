@@ -23,8 +23,8 @@ def _record(case_id: str, *, patient_id: str = "secret", specialty: str = "Те�
         "specialization": specialty,
         "filial": "Филиал 1",
         "kz_kind": "kz",
-        "document_kind": "medical_exam",
-        "document_kind_label": "Медицинский осмотр",
+        "document_kind": "clinical_visit",
+        "document_kind_label": "Клинический приём",
         "mkb_code_main": "Z00.0",
         "icd_chapter": "XXI",
         "icd_chapter_label": "Z00-Z99 Факторы здоровья",
@@ -80,7 +80,7 @@ def test_cases_hide_patient_id_and_suppress_small_groups(monkeypatch, tmp_path) 
     assert result["total"] == 2
     assert "patient_id" not in result["rows"][0]
     assert result["rows"][0]["kz_kind"] == "kz"
-    assert result["rows"][0]["document_kind"] == "medical_exam"
+    assert result["rows"][0]["document_kind"] == "clinical_visit"
     assert result["aggregate"]["by_specialty"][0]["suppressed"] is True
     assert result["aggregate"]["by_specialty"][0]["n"] is None
     overview = mo_backend.build_overview({})
@@ -214,7 +214,7 @@ def test_case_detail_falls_back_to_warehouse_and_sanitizes_hash_diagnosis(monkey
                 "hx-9001",
                 "hx-91001",
                 "2026-08-02",
-                "consultation",
+                "clinical_visit",
                 77.0,
                 "review",
                 doctor,
@@ -299,7 +299,7 @@ def test_mo_api_uses_methodist_auth_and_no_store(monkeypatch, tmp_path) -> None:
     monkeypatch.setattr(
         mo_backend,
         "build_case_detail",
-        lambda case_id, month=None: {"ok": True, "case_id": case_id, "record": {"kz_kind": "kz", "document_kind": "consultation"}},
+        lambda case_id, month=None: {"ok": True, "case_id": case_id, "record": {"kz_kind": "kz", "document_kind": "clinical_visit"}},
     )
     monkeypatch.setattr(
         mo_backend,
@@ -377,7 +377,7 @@ def _seed_analytics_warehouse(path: Path) -> None:
                         str(mis_id),
                         str(mis_id),
                         "2026-07-15",
-                        "consultation",
+                        "clinical_visit",
                         score,
                         "good",
                         key,

@@ -79,12 +79,12 @@ def test_yesterday_is_calculated_in_minsk() -> None:
     ("changes", "expected"),
     [
         ({"service_names": "Периодический медицинский осмотр"}, "medical_exam"),
-        ({"kz_kind": "kz"}, "consultation"),
+        ({"kz_kind": "kz"}, "clinical_visit"),
         ({"service_names": "Справка в бассейн"}, "certificate"),
         ({"doctor_specialization": "Врач УЗИ"}, "diagnostic"),
         ({"doctor_specialization": "Медицинская сестра"}, "non_clinical"),
         ({"complaints": "", "clinical_diagnosis": ""}, "empty"),
-        ({"kz_kind": "", "doctor_specialization": "Неизвестно"}, "unknown"),
+        ({"kz_kind": "", "doctor_specialization": "Неизвестно"}, "clinical_visit"),
     ],
 )
 def test_document_taxonomy(changes: dict, expected: str) -> None:
