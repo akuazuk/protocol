@@ -192,6 +192,7 @@ def evaluate_reg55(case: dict) -> dict:
     reg = _load_reg()
     criteria = reg.get("criteria") or []
     thresholds = reg.get("thresholds") or {}
+    missing_file = not criteria and not REG_PATH.is_file()
 
     passed = 0
     total = 0
@@ -262,8 +263,15 @@ def evaluate_reg55(case: dict) -> dict:
         "regulation_id": meta.get("regulation_id"),
         "regulation_title": meta.get("regulation_title"),
         "note_ru": (
-            "Прокси case-level по адаптированным пунктам прил. 2 пост. МЗ № 55; "
-            "не полная официальная экспертиза организации."
+            (
+                "Файл критериев не найден в образе: data/regulations/mz_2021_55.json. "
+                "Процент оси regulatory со склада может быть доступен отдельно."
+            )
+            if missing_file
+            else (
+                "Прокси case-level по адаптированным пунктам прил. 2 пост. МЗ № 55; "
+                "не полная официальная экспертиза организации."
+            )
         ),
     }
 
@@ -322,17 +330,28 @@ def attach_reg55_to_detail(
         case.setdefault("block_scores", {})
     case.setdefault("status", record.get("status") or out.get("deep_status") or "")
     reg = evaluate_reg55(case)
-    out["reg55"] = reg
+    axes = dict(out.get("axes") or {})
     pct = reg.get("regulatory_compliance_pct")
+    # Fallback: warehouse axis / record, если JSON критериев не в образе
+    # или live-пересчёт дал пусто (не затираем уже известный %).
+    if not isinstance(pct, (int, float)):
+        for candidate in (
+            record.get("reg55_pct"),
+            axes.get("regulatory"),
+        ):
+            if isinstance(candidate, (int, float)):
+                pct = float(candidate)
+                reg["regulatory_compliance_pct"] = pct
+                reg.setdefault(
+                    "note_ru",
+                    "Показан процент оси regulatory со склада; детализация критериев "
+                    "доступна при наличии data/regulations/mz_2021_55.json.",
+                )
+                break
     if isinstance(pct, (int, float)):
         record["reg55_pct"] = float(pct)
-        out["record"] = record
-        axes = dict(out.get("axes") or {})
         axes["regulatory"] = float(pct)
-        out["axes"] = axes
-    elif isinstance(record.get("reg55_pct"), (int, float)):
-        out["record"] = record
-    elif isinstance((out.get("axes") or {}).get("regulatory"), (int, float)):
-        record["reg55_pct"] = float((out.get("axes") or {})["regulatory"])
-        out["record"] = record
+    out["record"] = record
+    out["axes"] = axes
+    out["reg55"] = reg
     return out
