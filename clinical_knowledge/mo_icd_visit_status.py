@@ -123,11 +123,7 @@ def compute_icd_visit_status(
     *,
     findings: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
-    """Посчитать статус визита: из findings или живой оценкой."""
-    from clinical_knowledge.mo_icd_directory_eval import evaluate_diagnosis_against_icd_directory
-    from clinical_knowledge.mo_icd_name_match import evaluate_diagnosis_name_only
-    from clinical_knowledge.mo_icd_resolve import resolve_icd_codes_from_mo
-
+    """Посчитать статус визита: из findings или пайплайна v3."""
     codes_from_findings: list[str] = []
     for item in findings or []:
         if isinstance(item, dict) and item.get("code"):
@@ -139,6 +135,26 @@ def compute_icd_visit_status(
 
     if not isinstance(case, dict):
         return status_payload("unknown")
+
+    try:
+        from clinical_knowledge.mo_icd_match_pipeline import evaluate_mo_icd_match
+
+        pipe = evaluate_mo_icd_match(case)
+        chip = pipe.get("chip") if isinstance(pipe.get("chip"), dict) else None
+        if chip and chip.get("status"):
+            return {
+                "status": chip["status"],
+                "label_ru": chip.get("label_ru") or chip_label_ru(chip["status"]),
+                "title_ru": chip.get("title_ru") or chip_title_ru(chip["status"]),
+                "finding_codes": list(chip.get("finding_codes") or []),
+            }
+    except Exception:  # noqa: BLE001
+        pass
+
+    # fallback без пайплайна
+    from clinical_knowledge.mo_icd_directory_eval import evaluate_diagnosis_against_icd_directory
+    from clinical_knowledge.mo_icd_name_match import evaluate_diagnosis_name_only
+    from clinical_knowledge.mo_icd_resolve import resolve_icd_codes_from_mo
 
     text = diagnosis_text_from_case(case)
     resolved = resolve_icd_codes_from_mo(case)
@@ -154,7 +170,6 @@ def compute_icd_visit_status(
     }
     merged_findings = list(dir_result.get("findings") or []) + list(name_result.get("findings") or [])
     if not text.strip() and not code_list:
-        # directory already emits B_dx_absent
         status = status_from_finding_codes([f.get("code") for f in merged_findings])
         if status == "unknown":
             status = "missing_dx"

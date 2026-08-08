@@ -15,9 +15,10 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 # ICD-10: первая буква категории + две цифры + необязательный подуровень (без U).
-# Для парсинга допускаем типовые OCR/наборные варианты: пробелы, запятая/дефис/слэш.
+# Для парсинга допускаем типовые OCR/наборные варианты: пробелы, запятая/дефис/слэш,
+# а также compact без точки (K293) - доканоникализация в _canonicalize_icd_like_token.
 ICD10_CODE_RE = re.compile(
-    r"\b([A-TV-Z]\s*\d{2}(?:[.,/\-]\s*\d{1,4})?)\b",
+    r"\b([A-TV-Z]\s*\d{2}(?:[.,/\-]?\s*\d{1,4})?)\b",
     re.IGNORECASE,
 )
 ICD10_TERMINAL_RU_RE = re.compile(r"^[A-TV-Z]\d{2}(?:\.\d{1,4})?$", re.IGNORECASE)
@@ -41,13 +42,16 @@ _ICD_CYR_TO_LAT = {
 }
 _ICD_CYR_LEAD = "".join(_ICD_CYR_TO_LAT.keys())
 _ICD_CAND_RE = re.compile(
-    rf"(?<![A-Za-zА-Яа-яЁё0-9])([A-TV-Z{_ICD_CYR_LEAD}]\s*\d{{2}}(?:\s*[.,/\-]\s*\d{{1,4}})?)(?![A-Za-zА-Яа-яЁё0-9])",
+    rf"(?<![A-Za-zА-Яа-яЁё0-9])([A-TV-Z{_ICD_CYR_LEAD}]\s*\d{{2}}(?:\s*[.,/\-]?\s*\d{{1,4}})?)(?![A-Za-zА-Яа-яЁё0-9])",
     re.IGNORECASE,
 )
 
 
 def _canonicalize_icd_like_token(token: str) -> str | None:
-    """Нормализует похожий на ICD токен к виду K64.9; None если невалидный."""
+    """Нормализует похожий на ICD токен к виду K64.9; None если невалидный.
+
+    Compact без точки (K293) → K29.3 только если код есть в RU-справочнике.
+    """
     if not token:
         return None
     t = token.strip().upper()
@@ -61,9 +65,19 @@ def _canonicalize_icd_like_token(token: str) -> str | None:
     rest = re.sub(r"\s+", "", rest)
     rest = rest.replace(",", ".").replace("/", ".").replace("-", ".")
     rest = re.sub(r"\.+", ".", rest).strip(".")
-    if not re.match(r"^\d{2}(?:\.\d{1,4})?$", rest):
+    if re.match(r"^\d{2}(?:\.\d{1,4})?$", rest):
+        return lead + rest
+    # Compact: letter + 3–6 digits → insert '.' after category digits
+    compact = re.match(r"^(\d{2})(\d{1,4})$", rest)
+    if not compact:
         return None
-    return lead + rest
+    candidate = f"{lead}{compact.group(1)}.{compact.group(2)}"
+    try:
+        if is_code_in_ru_reference(candidate):
+            return candidate
+    except Exception:  # noqa: BLE001
+        return None
+    return None
 
 
 def normalize_text_for_icd_scan(text: str) -> str:

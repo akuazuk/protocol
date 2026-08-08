@@ -272,6 +272,23 @@ def evaluate_mo_icd_directory(case: dict[str, Any] | None) -> list[dict[str, Any
             val = case.get(key)
             if isinstance(val, str) and val.strip():
                 codes.append(val.strip().upper())
+    try:
+        from clinical_knowledge.mo_icd_aliases import match_query
+
+        diag = match_query(diag) or diag
+    except Exception:  # noqa: BLE001
+        pass
+    if not codes:
+        try:
+            from clinical_knowledge.mo_icd_resolve import resolve_icd_codes_from_mo
+
+            resolved = resolve_icd_codes_from_mo(case)
+            codes = list(resolved.get("all") or [])
+            main = resolved.get("main")
+            if main and str(main) not in codes:
+                codes.insert(0, str(main))
+        except Exception:  # noqa: BLE001
+            pass
     result = evaluate_diagnosis_against_icd_directory(diag, codes)
     return list(result.get("findings") or [])
 
