@@ -385,9 +385,19 @@ MIS: `diagnosis_list` через `|`, main index в `##[3]`.
 
 ### Фаза 4 - LLM серая зона (P2)
 
-- [ ] Контракт judge + интеграция в action-queue / night на GCE
-- [ ] Флаг `MO_ICD_LLM_REVIEW=0` default off
-- [ ] Не включать в overall, пока нет ≥30 размеченных review-кейсов
+- [x] Контракт judge + интеграция в action-queue / night на GCE
+- [x] Флаг `MO_ICD_LLM_REVIEW=0` default off
+- [x] Не включать в overall, пока нет ≥30 размеченных review-кейсов
+
+Решение 2026-08-08:
+
+- Модуль `mo_icd_llm_review.py` + batch `scripts/run_mo_icd_llm_review.py`.
+- Night: `mo_llm_range_runner.sh` вызывает batch только при `MO_ICD_LLM_REVIEW=1`.
+- Findings `B_icd_llm_review_{yes,partial,no}` всегда shadow; clear-weak только
+  при `MO_ICD_LLM_CLEAR_WEAK=1` (default off).
+- Живой Gemini - только GCE (`deploy/gcp-llm/run_on_gce.sh`), не Mac.
+- Включить batch на день: на VM/container `MO_ICD_LLM_REVIEW=1` +
+  `MO_ICD_LLM_REVIEW_LIMIT=50` перед range-runner.
 
 ### Фаза 5 - soft-fill warehouse (P2, координация)
 

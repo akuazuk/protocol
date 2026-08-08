@@ -41,21 +41,27 @@ gcloud compute scp \
   "$ROOT/scripts/mo_llm_range_runner.sh" \
   "$ROOT/scripts/grade_kz_llm.py" \
   "$ROOT/scripts/run_mo_action_queue_llm_judge.py" \
+  "$ROOT/scripts/run_mo_icd_llm_review.py" \
   "$ROOT/scripts/recompute_mo_days.py" \
+  "$ROOT/clinical_knowledge/mo_icd_llm_review.py" \
   "${VM}:/tmp/" --zone="$ZONE" --quiet
 
 gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
 set -euo pipefail
-sudo mkdir -p /opt/protocol/scripts '${DATA}/logs'
+sudo mkdir -p /opt/protocol/scripts /opt/protocol/clinical_knowledge '${DATA}/logs'
 sudo cp /tmp/mo_llm_range_runner.sh /tmp/grade_kz_llm.py \
-  /tmp/run_mo_action_queue_llm_judge.py /tmp/recompute_mo_days.py \
+  /tmp/run_mo_action_queue_llm_judge.py /tmp/run_mo_icd_llm_review.py \
+  /tmp/recompute_mo_days.py \
   /opt/protocol/scripts/
+sudo cp /tmp/mo_icd_llm_review.py /opt/protocol/clinical_knowledge/
 sudo chmod +x /opt/protocol/scripts/mo_llm_range_runner.sh
 if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/scripts/mo_llm_range_runner.sh '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/grade_kz_llm.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/run_mo_action_queue_llm_judge.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/run_mo_icd_llm_review.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/recompute_mo_days.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/clinical_knowledge/mo_icd_llm_review.py '${CONTAINER}':/app/clinical_knowledge/
 fi
 "
 
@@ -94,6 +100,8 @@ sudo docker exec \
   -e SRC_ROOT=/app -e DATA='${DATA}' \
   -e PYTHON=python -e RUN_HOST=gcp -e RUN_ID_PREFIX=gcp-llm \
   -e MO_ACTION_JUDGE_LIMIT='${MO_ACTION_JUDGE_LIMIT:-0}' \
+  -e MO_ICD_LLM_REVIEW='${MO_ICD_LLM_REVIEW:-0}' \
+  -e MO_ICD_LLM_REVIEW_LIMIT='${MO_ICD_LLM_REVIEW_LIMIT:-50}' \
   '${CONTAINER}' bash /app/scripts/mo_llm_range_runner.sh
 "
 else
@@ -109,6 +117,8 @@ sudo docker exec -d \
   -e SRC_ROOT=/app -e DATA='${DATA}' \
   -e PYTHON=python -e RUN_HOST=gcp -e RUN_ID_PREFIX=gcp-llm \
   -e MO_ACTION_JUDGE_LIMIT='${MO_ACTION_JUDGE_LIMIT:-0}' \
+  -e MO_ICD_LLM_REVIEW='${MO_ICD_LLM_REVIEW:-0}' \
+  -e MO_ICD_LLM_REVIEW_LIMIT='${MO_ICD_LLM_REVIEW_LIMIT:-50}' \
   '${CONTAINER}' bash /app/scripts/mo_llm_range_runner.sh
 sleep 2
 sudo docker exec '${CONTAINER}' pgrep -af 'mo_llm_range_runner|grade_kz_llm' | head -5 || true

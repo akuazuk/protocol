@@ -12,6 +12,8 @@
 - staging defaults: `MO_DATA_ROOT`, `RAG_STARTUP_MODE=manifest`, …
 - ICD (фаза 3): `MO_ICD_NAME_IN_PRIMARY=1`, `MO_ICD_DIR_IN_PRIMARY=0`,
   `MO_ICD_PIPELINE_IN_PRIMARY=0` (см. calibration report)
+- ICD LLM (фаза 4): `MO_ICD_LLM_REVIEW=0`, `MO_ICD_LLM_CLEAR_WEAK=0`
+  (night batch только если явно `MO_ICD_LLM_REVIEW=1` на runner)
 
 ## Канон дальше (ближе к прод-cutover)
 
