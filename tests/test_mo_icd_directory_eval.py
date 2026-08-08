@@ -79,6 +79,23 @@ def test_directory_eval_text_mismatch(monkeypatch) -> None:
     assert any(f["code"] == "B_icd_dir_text_mismatch" for f in result["findings"])
 
 
+def test_directory_eval_code_only_valid_no_mismatch(monkeypatch) -> None:
+    """Валидный код в справочнике без free-text → ok, без B_icd_dir_text_mismatch."""
+    monkeypatch.setattr(
+        "icd_mkb.is_code_in_ru_reference",
+        lambda code: str(code).upper().startswith("F41"),
+    )
+    monkeypatch.setattr(
+        "icd_mkb.ru_title",
+        lambda code: "Смешанное тревожное и депрессивное расстройство",
+    )
+    monkeypatch.setattr("icd_mkb.suggest_icd_from_russian", lambda text, max_results=8: [])
+    result = evaluate_diagnosis_against_icd_directory("F41.2", ["F41.2"])
+    assert result["code_in_directory"] is True
+    assert result["verdict"] == "ok"
+    assert not any(f["code"] == "B_icd_dir_text_mismatch" for f in result["findings"])
+
+
 def test_merge_icd_directory_shadow_default(monkeypatch) -> None:
     monkeypatch.setenv("MO_ICD_DIRECTORY_EVAL", "1")
     monkeypatch.setenv("MO_ICD_DIR_IN_PRIMARY", "0")
@@ -101,12 +118,16 @@ def test_merge_icd_directory_shadow_default(monkeypatch) -> None:
 
 
 def test_p2_calibration_three_etalons_directory(monkeypatch) -> None:
-    """P2: три эталона - цистит ok, мусор fail, код без текста review/mismatch."""
+    """P2: цистит ok, мусор fail, contradiction mismatch; code-only валидный код = ok."""
     def _ref(code: str) -> bool:
-        return code.upper() in {"N30.0", "I21.0"}
+        return code.upper() in {"N30.0", "I21.0", "F41.2"}
 
     def _title(code: str) -> str | None:
-        return {"N30.0": "Острый цистит", "I21.0": "Острый инфаркт миокарда"}.get(code.upper())
+        return {
+            "N30.0": "Острый цистит",
+            "I21.0": "Острый инфаркт миокарда",
+            "F41.2": "Смешанное тревожное и депрессивное расстройство",
+        }.get(code.upper())
 
     monkeypatch.setattr("icd_mkb.is_code_in_ru_reference", _ref)
     monkeypatch.setattr("icd_mkb.ru_title", _title)
@@ -127,3 +148,7 @@ def test_p2_calibration_three_etalons_directory(monkeypatch) -> None:
 
     mismatch = evaluate_diagnosis_against_icd_directory("Хронический тонзиллит", ["I21.0"])
     assert any(f["code"] == "B_icd_dir_text_mismatch" for f in mismatch["findings"])
+
+    code_only = evaluate_diagnosis_against_icd_directory("F41.2", ["F41.2"])
+    assert code_only["verdict"] == "ok"
+    assert not any(f["code"] == "B_icd_dir_text_mismatch" for f in code_only["findings"])
