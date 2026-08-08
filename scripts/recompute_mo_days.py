@@ -25,7 +25,6 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from clinical_knowledge.mo_daily import (  # noqa: E402
-    SCORED_DOCUMENT_KINDS,
     is_scored_document_kind,
     assess_completeness,
     build_daily_report,
