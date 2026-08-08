@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-060056Z-handoff-gcp-primary"
+BUILD_VERSION = "2026-08-08-073045Z-ci-fix-icd-shadow"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11601,6 +11601,7 @@ def api_methodist_mo_case_detail(
                 merge_concordance_into_findings,
             )
             from clinical_knowledge.mo_icd_directory_eval import merge_icd_directory_into_findings
+            from clinical_knowledge.mo_icd_name_match import merge_icd_name_match_into_findings
 
             live_case = clinical_case_from_document(
                 result.get("document"),
@@ -11614,13 +11615,22 @@ def api_methodist_mo_case_detail(
                 result.get("findings") if isinstance(result.get("findings"), list) else [],
                 live_case,
             )
+            result["findings"] = merge_icd_name_match_into_findings(
+                result.get("findings") if isinstance(result.get("findings"), list) else [],
+                live_case,
+            )
             from clinical_knowledge.mo_backend import _normalize_finding_row
+            from clinical_knowledge.mo_icd_visit_status import compute_icd_visit_status
 
             result["findings"] = [
                 _normalize_finding_row(item)
                 for item in (result.get("findings") or [])
                 if isinstance(item, dict)
             ]
+            result["icd_visit_status"] = compute_icd_visit_status(
+                live_case,
+                findings=result.get("findings") if isinstance(result.get("findings"), list) else [],
+            )
         except Exception:  # noqa: BLE001
             pass
     try:

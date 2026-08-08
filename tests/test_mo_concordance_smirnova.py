@@ -126,5 +126,7 @@ def test_shadow_findings_do_not_change_overall_by_default(monkeypatch) -> None:
 
 def test_flag_off_skips_shadow(monkeypatch) -> None:
     monkeypatch.setenv("MO_CONCORDANCE_FINDINGS", "0")
+    monkeypatch.setenv("MO_ICD_DIRECTORY_EVAL", "0")
+    monkeypatch.setenv("MO_ICD_NAME_MATCH", "0")
     deep = evaluate_kz_deep(SMIRNOVA_CASE, protocol_ctx=None, drug_ctx={})
     assert deep.get("shadow_findings") == []

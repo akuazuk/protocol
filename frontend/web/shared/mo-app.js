@@ -862,10 +862,23 @@
       return map[value] || value || "Не указан";
     }
     function statusClass(value) { return /critical|confirmed/.test(value) ? "critical" : /good|resolved|closed|acceptable/.test(value) ? "good" : "review"; }
+    function icdVisitChip(row) {
+      var st = (row && (row.icd_visit_status || (row.raw && row.raw.icd_visit_status))) || "";
+      if (!st || st === "unknown") return "";
+      var label = (row && (row.icd_visit_status_label_ru || (row.raw && row.raw.icd_visit_status_label_ru))) || "";
+      var title = (row && (row.icd_visit_status_title_ru || (row.raw && row.raw.icd_visit_status_title_ru))) || "";
+      if (!label) {
+        label = st === "ok" ? "МКБ ✓" : st === "missing_dx" ? "нет Dx" : st === "not_in_directory" ? "не в МКБ" : st === "weak_name" ? "слабо МКБ" : "";
+      }
+      if (!label) return "";
+      var tone = st === "ok" ? "good" : (st === "weak_name" ? "review" : "critical");
+      return ' <span class="status ' + tone + ' icd-visit-chip" title="' + esc(title || label) + '">' + esc(label) + "</span>";
+    }
     function documentRow(item) {
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
+        icdVisitChip(item.raw || item) +
         '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td>' + esc(score(item.coverage)) +
         '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
         esc(statusLabel(item.status)) + "</span></td></tr>";
@@ -878,7 +891,7 @@
         statusClass(item.status) + '">' + esc(priority) + '</span></td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
-        '</small></td><td>' + esc(item.diagnosis) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
+        '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
         esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
         esc(item.raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(item.raw.due_date || crm.due_date || "Сегодня") +
         '</td><td>' + esc(statusLabel(item.status)) +
@@ -1307,6 +1320,11 @@
         '<details class="detail-block mo-secondary-details"><summary>Подробнее: итоговая оценка, оси, рубрика МЗ</summary>' +
         '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
         kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "черновик · «Как оценивать»") +
+        kpi(
+          "МКБ / диагноз",
+          ((data.icd_visit_status || {}).label_ru) || (item.raw && item.raw.icd_visit_status_label_ru) || "-",
+          ((data.icd_visit_status || {}).title_ru) || "Диагноз есть и есть в справочнике МКБ"
+        ) +
         kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
         kpi("Полнота проверки", score(coverageInfo.value), coverageInfo.estimated ? "оценка по доступным полям" : "доступность исходных данных") +
         kpi("Надёжность", score(confidenceInfo.value), confidenceInfo.estimated ? "оценка по доступным полям" : "устойчивость результата") + '</div>' +
