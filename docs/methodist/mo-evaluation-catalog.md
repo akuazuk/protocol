@@ -1,7 +1,10 @@
 # Каталог оценок МО (источник для дашбордов)
 
 Дата: 2026-08-08  
-Код: `origin/main` + план `docs/plans/2026-08-08-mo-history-scores-catalog-v1.md`
+Планы: `docs/plans/2026-08-08-mo-analytics-mz-sheet-layers-v2.md`,
+`docs/plans/2026-08-08-mo-analytics-ui-target-v2.md`,
+`docs/plans/2026-08-08-mo-analytics-implementation-blueprint-v1.md`,
+`docs/plans/2026-08-08-mo-history-scores-catalog-v1.md`
 
 Этот документ перечисляет **все** виды оценок / метрик Medical Oversight в Protocol.
 Его нужно использовать при переделке дашбордов, таблиц, фильтров и диаграмм:
@@ -10,6 +13,44 @@
 Гейт по умолчанию: оценки только для `document_kind ∈ {clinical_visit, consultation}`
 (`score_eligible` / `mo_score_eligible`). Остальные виды документов в таблицы скоринга
 не попадают.
+
+**Канон дашборда МО Аналитика (с 2026-08-08):** hero и таблицы опираются на
+**зоны** (§Z). Deep overall / оси A–D / №55 binary остаются в каталоге как
+приложения и блоки «Подробнее», не как главная шкала экранов.
+
+---
+
+## Z. Зоны дашборда (канон UI)
+
+| ID | RU | Смысл | Warehouse / API |
+|--|--|--|--|
+| `zone1` | Оформление | Полнота №127 без требования КП | `zone1_pct`, `zone1_band` |
+| `zone2a` | Диагноз | Текст Dx / МКБ / согласованность (слоты диагноза) | `zone2a_pct`, `zone2a_band` |
+| `zone2b` | План по протоколу | Рекомендации vs подобранный КП | `zone2b_pct`, `zone2b_band`, `zone2b_kp_status` |
+| `attention_primary` | Внимание / риск | Какой раздел тянет случай в очередь | `attention_primary`, `attention_reason_ru` |
+
+### Метод
+
+- Код: `clinical_knowledge/mo_zone_scores.py` + `config/mo_rubric_mz.yaml` (`zone`,
+  `requires_protocol`) + `config/mo_zone_bands.yaml`.
+- Шкала критериев рубрики: 0 / 0.5 / 1 → среднее зоны × 100.
+- Bands: `bad` &lt; 50, `weak` 50–84, `ok` ≥ 85, `na` если зона не применима.
+- Без matched KP нельзя писать «не по протоколу» на жалобы/осмотр (`zone1`);
+  для `zone2b` без КП → `na` / `kp_status=unmatched`, не 0.
+- Коррекции плана без prior history → `n/a`, не 0.
+- Flag записи: `MO_ZONE_SCORES` (default on после деплоя движка).
+
+### UI
+
+| Экран | Использование |
+|--|--|
+| Сегодня / Период | полоса внимания (плохо по зонам), тренд avg % |
+| Очередь / Все случаи | колонки Оформление / Диагноз / План; фильтры `zone`, `zone_band`, `attention_only`, `kp_status`, `history_tier` |
+| Врачи | % плохо по зонам + полосы; клик → случаи врача с `zone_band=bad` |
+| Разбор | три карточки зон → «Что не так» → текст МО; №55/deep/CRM в «Подробнее» |
+
+LLM night/judge/overlay **не** перезаписывает warehouse `%` зон; overlay рядом
+как калибровка / текст.
 
 ---
 
@@ -61,11 +102,14 @@
 
 ---
 
-## 1. Primary / итоговые баллы случая
+## 1. Primary / итоговые баллы случая (приложение к зонам)
+
+С 2026-08-08 **не** являются hero дашборда. Колонки «Итог» / deep-оси скрыты
+по умолчанию; доступны в «Подробнее» и для совместимости API.
 
 ### 1.1 `overall_pct` (витрина)
 
-- **UI:** «Итоговая оценка», колонки дня/очереди/месяца.
+- **UI:** колонка «Итог» (скрыта по умолчанию), secondary KPI.
 - **Код:** `mo_daily.case_overall_pct` → `fact_mo_case.overall_pct`.
 - **Метод:** приоритет: `evaluation_v4.score_pct` (если primary) → `deep.overall_pct` →
   `evaluation_v3.score_pct` → L1 `overall_pct` / `core_overall_pct`. Шкала 0–100.
@@ -76,7 +120,7 @@
 
 - **Код:** `kz_deep_eval.evaluate_kz_deep`.
 - **Метод:** среднее доступных осей A/B/C/(D=№55), затем risk-gate по findings.
-- **UI:** KPI в разборе («по доступным данным»).
+- **UI:** блок «Подробнее» / классические оси (не hero «Сегодня»/«Период»).
 
 ### 1.3 Scorer v3 (`evaluation_v3.score_pct`)
 
@@ -114,8 +158,9 @@ Warehouse: `fact_mo_score_axis(mis_id, axis, score)`.
 | Код | `reg55_criteria.evaluate_reg55` ← `data/regulations/mz_2021_55.json` |
 | Метод | pass/fail/na по пунктам; **100 × passed / applicable**; `na` и `score_eligible:false` вне знаменателя |
 | Findings | `D_reg55_p0`, `D_reg55_gap` |
-| UI | колонка «Балл №55», блок критериев в разборе, KPI месяца |
+| UI | колонка «Балл №55» (скрыта по умолчанию), критерии в «Служебное» разбора |
 | История | нет |
+| Очередь | **не** создаёт тикет сама по себе (whitelist action-queue v2) |
 
 ---
 
@@ -198,39 +243,44 @@ Warehouse: `fact_mo_score_axis(mis_id, axis, score)`.
 
 ## 10. Агрегаты BI (не отдельные scorers)
 
-Средние `avg_overall`, `avg_coverage`, `avg_confidence`, `avg_rubric_pct`, средние осей,
-частоты findings, heatmap врачей/специальностей/диагнозов - всё это производные от
-case-level полей выше, с фильтром `score_eligible`.
+**Hero дашборда:** `zone*_bad` / `zone*_bad_pct`, `zone*_avg`, `zone_trends`,
+`attention` strip, доли плохого по врачам (`dimensions/doctors`).
+
+Secondary: средние `avg_overall`, `avg_coverage`, `avg_confidence`, `avg_rubric_pct`,
+средние осей deep, частоты findings, heatmap - производные case-level с фильтром
+`score_eligible`.
 
 ---
 
 ## 11. Рекомендуемые колонки/фильтры для новых дашбордов
 
 **Primary (одна «главная» метрика на таблицу):** `overall_pct`  
-**Regulatory:** `reg55_pct`  
+**Зоны (канон):** `zone1_band` / `zone2a_band` / `zone2b_band` (+ `attention_reason_ru`)  
+**Regulatory (secondary):** `reg55_pct`  
 **Shadow depth:** `rubric_mz.rubric_pct`  
-**Axes (развернуть):** documentation / concordance / safety / regulatory  
+**Axes (развернуть в Подробнее):** documentation / concordance / safety / regulatory  
 **Meta:** coverage_pct, confidence_pct  
 **Context chips:** `icd_visit_status`, `history_tier` (+ `history_prior_n`)  
-**Queue:** action band / whitelist reason (не сырой P0–P3)  
-**LLM (отдельная вкладка):** night grader + action judge (не смешивать с primary %)
+**Queue:** `attention_primary` + whitelist reason (не сырой P0–P3)  
+**LLM (не в hero %):** night grader + action judge; overlay рядом с зонами
 
 Фильтры, которые стоит сохранить/добавить:
 
 - `document_kinds` / `score_eligible_only` (жёстко clinical+consultation)
+- `zone` / `zone_band` / `attention_only` / `kp_status`
 - `history_tier`
 - `icd_visit_status`
 - `rubric` criterion fail
-- `reg55` critical fail
 - action-queue reason codes
-- оси ниже порога
 
 ---
 
 ## 12. Что не смешивать в одном KPI
 
-1. Рубрика МЗ (0/0.5/1, №127) ≠ №55 (pass/fail).
-2. Night LLM / action judge ≠ warehouse `overall_pct`.
-3. История пациента ≠ «оценка врача»; это контекст + shadow finding.
-4. L1 block_scores ≠ итоговая deep/v4 оценка.
-5. Protocol suggest score ≠ compliance / оформление.
+1. Зоны дашборда (§Z) ≠ deep overall / v4 `overall_pct`.
+2. Рубрика МЗ (0/0.5/1, №127) ≠ №55 (pass/fail).
+3. Night LLM / action judge ≠ warehouse `zone*_pct` / `overall_pct`.
+4. История пациента ≠ «оценка врача»; это контекст + shadow finding.
+5. L1 block_scores ≠ итоговая deep/v4 оценка.
+6. Protocol suggest score ≠ compliance / оформление.
+7. Без matched KP нельзя считать «не по протоколу» оформление (жалобы/осмотр).

@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-162248Z-icd-diag-slots-only"
+BUILD_VERSION = "2026-08-08-173841Z-mo-zones-ci-fix"
 
 
 def _app_version() -> str:
@@ -11507,6 +11507,11 @@ def api_methodist_mo_cases(
     q: str = Query("", max_length=200),
     queue_only: bool = Query(False),
     score_eligible_only: str = Query("1", max_length=16),
+    zone: str = Query("", max_length=32),
+    zone_band: str = Query("", max_length=16),
+    attention_only: bool = Query(False),
+    kp_status: str = Query("", max_length=32),
+    history_tier: str = Query("", max_length=64),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
     sort_by: str = Query("date"),
@@ -11637,6 +11642,20 @@ def api_methodist_mo_case_detail(
             "reason": skip_ru,
         }
         result["protocol_suggest"] = {"ok": True, "available": False, "items": [], "reason": skip_ru}
+        result["zones"] = {
+            "ok": True,
+            "engine": "mo_zones_v1",
+            "skipped": True,
+            "reason": skip_ru,
+            "zone1": None,
+            "zone2a": None,
+            "zone2b": None,
+            "safety": {"band": "none", "codes": []},
+            "attention_primary": "none",
+            "attention_reason_ru": "",
+            "criteria": [],
+            "llm_overlay": None,
+        }
     # E3: live analyzers только для clinical_visit.
     if score_eligible and document.get("ok"):
         try:
@@ -11905,6 +11924,81 @@ def api_methodist_mo_case_detail(
             pass
     else:
         result.pop("_patient_id_hint", None)
+    # Зоны Оформление / Диагноз / План (live; склад может быть ещё без колонок).
+    if score_eligible and isinstance(result, dict) and not result.get("zones"):
+        try:
+            from clinical_knowledge.mo_zone_scores import (
+                compute_mo_zone_scores,
+                zones_api_payload,
+                zones_scores_enabled,
+            )
+
+            if zones_scores_enabled():
+                record_z = result.get("record") if isinstance(result.get("record"), dict) else {}
+                prior_clinical = None
+                try:
+                    from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
+
+                    prior_pack = resolve_prior_clinical_for_case(
+                        case_id,
+                        visit_date=str(
+                            record_z.get("date") or record_z.get("visit_date") or ""
+                        )[:10]
+                        or None,
+                    )
+                    if isinstance(prior_pack, dict):
+                        prior_clinical = prior_pack.get("clinical")
+                except Exception:  # noqa: BLE001
+                    prior_clinical = None
+                zones = compute_mo_zone_scores(
+                    {
+                        "clinical": clinical if isinstance(clinical, dict) else {},
+                        "meta": {
+                            "visit_date": str(
+                                record_z.get("date") or record_z.get("visit_date") or ""
+                            )[:10],
+                            "visit_time": record_z.get("visit_time"),
+                            "diagnosis_code": record_z.get("diagnosis_code")
+                            or record_z.get("mkb_code_main"),
+                            "mkb_code_main": record_z.get("mkb_code_main")
+                            or record_z.get("diagnosis_code"),
+                            "diagnosis_short": record_z.get("diagnosis_short"),
+                        },
+                        "block_scores": result.get("block_scores")
+                        if isinstance(result.get("block_scores"), dict)
+                        else {},
+                        "findings": result.get("findings")
+                        if isinstance(result.get("findings"), list)
+                        else [],
+                        "patient_history": result.get("patient_history")
+                        if isinstance(result.get("patient_history"), dict)
+                        else None,
+                        "prior_clinical": prior_clinical
+                        if isinstance(prior_clinical, dict)
+                        else None,
+                        "protocol_suggest": result.get("protocol_suggest")
+                        if isinstance(result.get("protocol_suggest"), dict)
+                        else None,
+                        "llm_action_judge": result.get("llm_action_judge")
+                        if isinstance(result.get("llm_action_judge"), dict)
+                        else None,
+                        "document_kind": record_z.get("document_kind"),
+                        "score_eligible": True,
+                    }
+                )
+                result["zones"] = zones_api_payload(zones)
+                # Дублируем плоские поля на record для таблиц (UI flag ещё выключен).
+                if isinstance(result.get("record"), dict):
+                    result["record"]["zone1_band"] = zones.get("zone1_band")
+                    result["record"]["zone2a_band"] = zones.get("zone2a_band")
+                    result["record"]["zone2b_band"] = zones.get("zone2b_band")
+                    result["record"]["zone1_pct"] = zones.get("zone1_pct")
+                    result["record"]["zone2a_pct"] = zones.get("zone2a_pct")
+                    result["record"]["zone2b_pct"] = zones.get("zone2b_pct")
+                    result["record"]["attention_primary"] = zones.get("attention_primary")
+                    result["record"]["attention_reason_ru"] = zones.get("attention_reason_ru")
+        except Exception:  # noqa: BLE001
+            result["zones"] = {"ok": False, "engine": "mo_zones_v1", "error": "zones_unavailable"}
     return result
 
 

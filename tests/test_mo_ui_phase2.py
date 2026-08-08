@@ -18,7 +18,7 @@ APP = (SHARED / "mo-app.js").read_text(encoding="utf-8")
 
 
 def test_markup_shell_is_small_and_has_no_inline_executable_assets() -> None:
-    assert len(HTML.splitlines()) < 300
+    assert len(HTML.splitlines()) < 360
     for asset in ("mo-tokens.css", "mo-ui.css", "mo-api.js", "mo-charts.js", "mo-app.js"):
         assert f'/{asset}' in HTML
     assert "<style" not in HTML

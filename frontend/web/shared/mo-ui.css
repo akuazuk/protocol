@@ -1018,3 +1018,34 @@ kbd {
   font-size: 12px;
   line-height: 1.4;
 }
+
+
+/* Zones case review (ui-target-v2) */
+.zones-hero { margin-bottom: 12px; }
+.zones-hero-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
+.zones-hero-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.zone-card { border: 1px solid var(--border, #d0d7de); border-radius: 8px; padding: 10px 12px; cursor: pointer; background: var(--surface, #fff); }
+.zone-card-label { font-weight: 600; margin-bottom: 4px; }
+.zone-card-why { margin: 6px 0 0; font-size: 0.85rem; opacity: 0.85; }
+.zone-card--bad { border-color: #c62828; }
+.zone-card--weak { border-color: #ef6c00; }
+.zone-card--ok { border-color: #2e7d32; }
+.zone-finding-filters { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
+.zone-finding-filters .is-active { outline: 2px solid currentColor; }
+.zones-criteria-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+.zones-criteria-table th, .zones-criteria-table td { border-bottom: 1px solid var(--border, #ddd); padding: 6px 8px; text-align: left; vertical-align: top; }
+.case-workspace-grid--zones .case-workspace-decision { position: sticky; top: 0; align-self: start; }
+.status.muted { opacity: 0.7; }
+@media (max-width: 960px) {
+  .zones-hero-grid { grid-template-columns: 1fr; }
+  .case-workspace-grid--zones .case-workspace-decision { position: static; }
+}
+
+.attention-strip { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 8px; margin: 12px 0 16px; }
+.attention-tile { text-align: left; border: 1px solid var(--border, #d0d7de); border-radius: 8px; padding: 12px; background: var(--surface, #fff); cursor: pointer; }
+.attention-tile:hover { border-color: #1565c0; }
+.zone-presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 12px; }
+.doctor-zone-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
+.doctor-zone-toggle [aria-pressed="true"] { border-color: #1565c0; color: #0d47a1; font-weight: 600; }
+.kpis--ops .kpi { opacity: 0.92; }
+@media (max-width: 1100px) { .attention-strip { grid-template-columns: repeat(2, minmax(0, 1fr)); } }

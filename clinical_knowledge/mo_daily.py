@@ -1457,7 +1457,28 @@ def initialize_warehouse(path: Path) -> None:
                 "doctor_id": "TEXT",
                 "history_prior_n": "INTEGER DEFAULT 0",
                 "history_tier": "TEXT",
+                "zone1_pct": "REAL",
+                "zone2a_pct": "REAL",
+                "zone2b_pct": "REAL",
+                "zone1_band": "TEXT",
+                "zone2a_band": "TEXT",
+                "zone2b_band": "TEXT",
+                "zone2b_kp_status": "TEXT",
+                "attention_primary": "TEXT",
+                "attention_reason_ru": "TEXT",
+                "rubric_json": "TEXT",
+                "rubric_pct": "REAL",
+                "layer_engine": "TEXT",
+                "layer_updated_at": "TEXT",
             },
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_attention "
+            "ON fact_mo_case(attention_primary, visit_date)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_zone_bands "
+            "ON fact_mo_case(zone1_band, zone2a_band, zone2b_band, visit_date)"
         )
         db.execute(
             """CREATE TABLE IF NOT EXISTS fact_mo_patient_history_cache (
@@ -1757,6 +1778,21 @@ def upsert_warehouse(
             diagnosis_text = ""
             history_prior_n = 0
             history_tier = ""
+            zone_cols: dict[str, Any] = {
+                "zone1_pct": None,
+                "zone2a_pct": None,
+                "zone2b_pct": None,
+                "zone1_band": None,
+                "zone2a_band": None,
+                "zone2b_band": None,
+                "zone2b_kp_status": None,
+                "attention_primary": "none",
+                "attention_reason_ru": "",
+                "rubric_json": None,
+                "rubric_pct": None,
+                "layer_engine": None,
+                "layer_updated_at": None,
+            }
             if not eligible_document:
                 # Не клинический приём: без МКБ/истории/баллов (в таблице не показываем).
                 score = None
@@ -1845,6 +1881,49 @@ def upsert_warehouse(
                     if isinstance(finding, Mapping)
                 ):
                     eligible_attention_ids.add(selected_case_id or mis_id)
+                try:
+                    from clinical_knowledge.mo_zone_scores import (
+                        clinical_slots_from_mapping,
+                        compute_mo_zone_scores,
+                        zones_scores_enabled,
+                        warehouse_zone_columns,
+                    )
+
+                    if zones_scores_enabled():
+                        block_scores = {}
+                        if isinstance(case, Mapping):
+                            if isinstance(case.get("block_scores"), Mapping):
+                                block_scores = dict(case.get("block_scores") or {})
+                            elif isinstance(evaluation_v4.get("block_scores"), Mapping):
+                                block_scores = dict(evaluation_v4.get("block_scores") or {})
+                        suggest = None
+                        if isinstance(case, Mapping) and isinstance(case.get("protocol_suggest"), Mapping):
+                            suggest = case.get("protocol_suggest")
+                        zones = compute_mo_zone_scores(
+                            {
+                                "clinical": clinical_slots_from_mapping(raw, case if isinstance(case, Mapping) else None),
+                                "meta": {
+                                    "visit_date": visit_date,
+                                    "visit_time": raw.get("visit_time") or (case.get("visit_time") if isinstance(case, Mapping) else None),
+                                    "diagnosis_code": diagnosis_code,
+                                    "mkb_code_main": diagnosis_code,
+                                    "diagnosis_short": diagnosis_text,
+                                },
+                                "block_scores": block_scores,
+                                "findings": [*primary_findings, *shadow_findings],
+                                "patient_history": (
+                                    case.get("_patient_history")
+                                    if isinstance(case, Mapping)
+                                    else None
+                                ),
+                                "protocol_suggest": suggest,
+                                "document_kind": raw.get("document_kind"),
+                                "score_eligible": True,
+                            }
+                        )
+                        zone_cols.update(warehouse_zone_columns(zones))
+                except Exception:  # noqa: BLE001
+                    pass
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             db.execute(
                 """INSERT INTO fact_mo_case
@@ -1855,8 +1934,13 @@ def upsert_warehouse(
                     diagnosis_code, diagnosis_text, icd_chapter,
                     mkb_code_main_source, mkb_code_main_slot,
                     history_prior_n, history_tier,
+                    zone1_pct, zone2a_pct, zone2b_pct,
+                    zone1_band, zone2a_band, zone2b_band, zone2b_kp_status,
+                    attention_primary, attention_reason_ru,
+                    rubric_json, rubric_pct, layer_engine, layer_updated_at,
                     content_hash, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
+                           ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(mis_id) DO UPDATE SET
                    visit_id=excluded.visit_id, visit_date=excluded.visit_date,
                    document_kind=excluded.document_kind, overall_pct=excluded.overall_pct,
@@ -1874,6 +1958,16 @@ def upsert_warehouse(
                    mkb_code_main_slot=excluded.mkb_code_main_slot,
                    history_prior_n=excluded.history_prior_n,
                    history_tier=excluded.history_tier,
+                   zone1_pct=excluded.zone1_pct, zone2a_pct=excluded.zone2a_pct,
+                   zone2b_pct=excluded.zone2b_pct,
+                   zone1_band=excluded.zone1_band, zone2a_band=excluded.zone2a_band,
+                   zone2b_band=excluded.zone2b_band,
+                   zone2b_kp_status=excluded.zone2b_kp_status,
+                   attention_primary=excluded.attention_primary,
+                   attention_reason_ru=excluded.attention_reason_ru,
+                   rubric_json=excluded.rubric_json, rubric_pct=excluded.rubric_pct,
+                   layer_engine=excluded.layer_engine,
+                   layer_updated_at=excluded.layer_updated_at,
                    content_hash=excluded.content_hash, updated_at=excluded.updated_at""",
                 (
                     mis_id,
@@ -1898,6 +1992,19 @@ def upsert_warehouse(
                     mkb_code_main_slot,
                     history_prior_n,
                     history_tier,
+                    zone_cols.get("zone1_pct"),
+                    zone_cols.get("zone2a_pct"),
+                    zone_cols.get("zone2b_pct"),
+                    zone_cols.get("zone1_band"),
+                    zone_cols.get("zone2a_band"),
+                    zone_cols.get("zone2b_band"),
+                    zone_cols.get("zone2b_kp_status"),
+                    zone_cols.get("attention_primary"),
+                    zone_cols.get("attention_reason_ru"),
+                    zone_cols.get("rubric_json"),
+                    zone_cols.get("rubric_pct"),
+                    zone_cols.get("layer_engine"),
+                    zone_cols.get("layer_updated_at"),
                     hashlib.sha256(payload.encode("utf-8")).hexdigest(),
                     now,
                 ),

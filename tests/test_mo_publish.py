@@ -14,6 +14,7 @@ if str(ROOT) not in sys.path:
 from clinical_knowledge.mo_daily import CRM_TABLES, initialize_warehouse  # noqa: E402
 from clinical_knowledge.mo_publish import (  # noqa: E402
     build_publish_snapshot,
+    common_columns,
     merge_sql,
     published_tables,
     snapshot_summary,
@@ -125,7 +126,6 @@ def test_merge_named_columns_survives_legacy_column_order(tmp_path: Path) -> Non
             " '4.0', 0.0, 'abc123doctor', 'Офтальмолог', 'Захарова', 'H52.1', 'VII', 'hash', 'now')"
         )
         db.commit()
-        columns = [row[1] for row in db.execute("PRAGMA table_info(fact_mo_case)")]
 
     production = tmp_path / "prod_legacy.sqlite"
     with sqlite3.connect(production) as db:
@@ -152,6 +152,11 @@ def test_merge_named_columns_survives_legacy_column_order(tmp_path: Path) -> Non
             ALTER TABLE fact_mo_case ADD COLUMN history_tier TEXT;
             """
         )
+        # Как publish: только prod ∩ snapshot (новые zone_* появятся после DDL на проде).
+        with sqlite3.connect(snapshot) as snap_db:
+            columns = common_columns(db, snap_db, "fact_mo_case")
+        assert "doctor_key" in columns
+        assert "zone1_pct" not in columns
         db.executescript(
             merge_sql(
                 ["fact_mo_case"],

@@ -43,6 +43,7 @@ def _visible_text(html: str) -> str:
 
 
 def test_mo_dashboard_has_complete_crm_navigation() -> None:
+    # Канон меню ui-target-v2: 6 видимых пунктов; остальные страницы остаются в DOM (hidden).
     for page in (
         "overview",
         "yesterday",
@@ -57,9 +58,11 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "settings",
     ):
         assert f'data-page="{page}"' in SOURCE
-    for section in ("Мониторинг", "Работа", "Аналитика", "Управление"):
-        assert f'<li class="nav-section-label">{section}</li>' in HTML
+    for label in ("Сегодня", "Период", "Очередь", "Все случаи", "Врачи", "Отчёты"):
+        assert label in HTML
     assert 'id="breadcrumbs"' in HTML
+    assert 'id="doctor-zone-chart"' in HTML
+    assert 'data-zone-preset="dx"' in HTML
 
 
 def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
@@ -86,12 +89,16 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "drawer-score-c" not in JS
     assert "Полнота %" not in JS
     assert "protocol-suggest" in JS
-    assert "Подбор по установленному диагнозу" in JS
+    assert "Протоколы МЗ РБ к случаю" in JS or "Клинические протоколы для оценки плана" in JS
+    assert "zone-card" in JS
+    assert "Что не так" in JS
     assert "data-sort-key" in HTML
     assert 'id="drawer-prev"' in HTML
     assert "renderPatientHistory" in JS
     assert "Как история влияет на оценки" in JS
     assert "historyTierLabelRu" in JS
+    assert "zoneFilter" in JS
+    assert "ZONE_PRESETS" in JS
 
 
 def test_mo_search_and_filters_have_explicit_apply_actions() -> None:
@@ -162,8 +169,8 @@ def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
     assert 'data-finding-code="' in JS
     assert "История разборов" in JS
     assert "История CRM" in JS
-    assert "Сохранить пакет разбора" in JS
     assert "/review-pack" in JS
+    assert "review-pack" in JS
     assert '$("sort-by").addEventListener("change"' in JS
     assert '$("sort-dir").addEventListener("change"' in JS
 
