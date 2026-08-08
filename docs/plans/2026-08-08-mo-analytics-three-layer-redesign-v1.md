@@ -1,16 +1,11 @@
 # МО Аналитика: трёхслойная модель оценок + дашборд «только внимание»
 
-Статус: **active** (план, код не меняем до согласования фаз)  
+Статус: **archived**  
+Преемник: `2026-08-08-mo-analytics-mz-sheet-layers-v2.md`  
+(роль КП уточнена по официальной таблице «Как оценивать»: КП только где Протокол=Да).  
 Дата: 2026-08-08  
 Владелец продуктового требования: пользователь (сессия 2026-08-08)  
-База кода: `origin/main` @ `a34b6070`  
-Связанные:  
-`docs/methodist/mo-evaluation-catalog.md`,  
-`docs/plans/2026-08-03-mo-rubric-mz-scoring-viz-v1.md`,  
-`docs/plans/2026-08-08-mo-action-queue-precise-signals-v2.md`,  
-`docs/plans/2026-08-08-mo-patient-history-bundle-v2.md`,  
-`docs/plans/2026-08-08-mo-icd-diag-slots-only-v1.md`,  
-`docs/plans/2026-08-05-mo-llm-action-queue-judge-v1.md`.
+База кода: `origin/main` @ `a34b6070`.
 
 ---
 
