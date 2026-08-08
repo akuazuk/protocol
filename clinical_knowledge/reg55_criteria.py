@@ -25,9 +25,88 @@ def _load_reg() -> dict[str, Any]:
         return {}
 
 
+def _nonempty(*values: Any) -> bool:
+    for value in values:
+        if value is None:
+            continue
+        if isinstance(value, (int, float)) and not isinstance(value, bool):
+            return True
+        if str(value).strip():
+            return True
+    return False
+
+
+def fields_present_from_case(case: dict[str, Any] | None) -> dict[str, bool]:
+    """Вывести заполненность разделов МО из case / clinical / fields_present."""
+    raw = case if isinstance(case, dict) else {}
+    existing = raw.get("fields_present")
+    if isinstance(existing, dict) and existing:
+        # нормализуем к bool; недостающие ключи добираем из текста
+        base = {str(k): bool(v) for k, v in existing.items()}
+    else:
+        base = {}
+    clinical = raw.get("clinical") if isinstance(raw.get("clinical"), dict) else {}
+
+    def _pick(*keys: str) -> bool:
+        for key in keys:
+            if _nonempty(raw.get(key)) or _nonempty(clinical.get(key)):
+                return True
+        return False
+
+    out = {
+        "complaints": bool(base.get("complaints")) or _pick("complaints"),
+        "anamnesis": bool(base.get("anamnesis"))
+        or _pick("anamnesis", "anamnesis_doctor", "anamnesis_auto"),
+        "objective_status": bool(base.get("objective_status")) or _pick("objective_status"),
+        "exams": bool(base.get("exams"))
+        or _pick("exam_recommendations", "exam_data", "exams"),
+        "treatment": bool(base.get("treatment"))
+        or _pick("treatment_recommendations", "treatment"),
+        "diagnosis": bool(base.get("diagnosis"))
+        or _pick(
+            "clinical_diagnosis",
+            "diagnosis_main_text",
+            "diagnosis_short",
+            "diagnosis_list",
+            "diagnosis",
+        ),
+        "follow_up": bool(base.get("follow_up"))
+        or _pick("dispensary_info", "return_date", "follow_up"),
+    }
+    return out
+
+
+def prepare_case_for_reg55(case: dict[str, Any] | None) -> dict[str, Any]:
+    """Подготовить case для evaluate_reg55 (fields_present + clinical keys)."""
+    raw = dict(case or {})
+    clinical = raw.get("clinical") if isinstance(raw.get("clinical"), dict) else {}
+    for key in (
+        "complaints",
+        "anamnesis_doctor",
+        "anamnesis_auto",
+        "objective_status",
+        "exam_recommendations",
+        "exam_data",
+        "treatment_recommendations",
+        "clinical_diagnosis",
+        "diagnosis_main_text",
+        "diagnosis_short",
+        "dispensary_info",
+        "return_date",
+        "mkb_code_main",
+        "mis_diagnos",
+    ):
+        if not _nonempty(raw.get(key)) and _nonempty(clinical.get(key)):
+            raw[key] = clinical.get(key)
+    raw["fields_present"] = fields_present_from_case(raw)
+    return raw
+
+
 def _fields_present(case: dict) -> dict:
     fp = case.get("fields_present")
-    return fp if isinstance(fp, dict) else {}
+    if isinstance(fp, dict) and fp:
+        return fp
+    return fields_present_from_case(case)
 
 
 def _block_score(case: dict, block: str) -> float | None:
@@ -74,61 +153,6 @@ def _eval_criterion(crit: dict, case: dict, thresholds: dict) -> str:
     return "na"
 
 
-def evaluate_reg55(case: dict) -> dict:
-    """Оценка одного КЗ по критериям № 55.
-
-    Возвращает regulatory_compliance_pct (доля выполненных из применимых),
-    списки passed/failed, критические (P0) дефекты и разбивку по группам.
-    """
-    reg = _load_reg()
-    criteria = reg.get("criteria") or []
-    thresholds = reg.get("thresholds") or {}
-
-    passed = 0
-    total = 0
-    na = 0
-    failed: list[dict] = []
-    critical_failed: list[dict] = []
-    by_group: dict[str, dict[str, int]] = {}
-
-    for crit in criteria:
-        group = str(crit.get("group") or "прочее")
-        g = by_group.setdefault(group, {"passed": 0, "total": 0})
-        verdict = _eval_criterion(crit, case, thresholds)
-        if verdict == "na":
-            na += 1
-            continue
-        total += 1
-        g["total"] += 1
-        if verdict == "pass":
-            passed += 1
-            g["passed"] += 1
-        else:
-            item = {
-                "id": crit.get("id"),
-                "title": crit.get("title"),
-                "point": crit.get("point"),
-                "severity": crit.get("severity"),
-                "check": crit.get("check"),
-                "how_checked_ru": _how_checked_ru(crit),
-            }
-            failed.append(item)
-            if crit.get("severity") == "P0":
-                critical_failed.append(item)
-
-    pct = round(100.0 * passed / total, 1) if total else None
-    return {
-        "regulatory_compliance_pct": pct,
-        "passed": passed,
-        "total": total,
-        "na": na,
-        "failed": failed,
-        "critical_failed": critical_failed,
-        "has_p0_defect": any(f.get("severity") == "P0" for f in failed),
-        "by_group": by_group,
-    }
-
-
 def _how_checked_ru(crit: dict) -> str:
     check = crit.get("check")
     if check == "field_present":
@@ -155,6 +179,93 @@ def _how_checked_ru(crit: dict) -> str:
             "из-за неопределённости модели (это не доказанный red flag)."
         )
     return "Автоматическая проверка по правилам постановления № 55."
+
+
+def evaluate_reg55(case: dict) -> dict:
+    """Оценка одного КЗ по критериям № 55.
+
+    Возвращает regulatory_compliance_pct (доля выполненных из применимых),
+    списки passed/failed, критические (P0) дефекты, разбивку по группам
+    и полный `criteria` (каждый пункт: verdict, point, пояснение).
+    """
+    prepared = prepare_case_for_reg55(case if isinstance(case, dict) else {})
+    reg = _load_reg()
+    criteria = reg.get("criteria") or []
+    thresholds = reg.get("thresholds") or {}
+
+    passed = 0
+    total = 0
+    na = 0
+    failed: list[dict] = []
+    critical_failed: list[dict] = []
+    by_group: dict[str, dict[str, int]] = {}
+    criteria_detail: list[dict] = []
+
+    for crit in criteria:
+        group = str(crit.get("group") or "прочее")
+        g = by_group.setdefault(group, {"passed": 0, "total": 0, "na": 0})
+        verdict = _eval_criterion(crit, prepared, thresholds)
+        how = _how_checked_ru(crit)
+        detail = {
+            "id": crit.get("id"),
+            "title": crit.get("title"),
+            "point": crit.get("point"),
+            "severity": crit.get("severity"),
+            "check": crit.get("check"),
+            "group": group,
+            "verdict": verdict,
+            "verdict_ru": {"pass": "выполнен", "fail": "не выполнен", "na": "не применим"}.get(
+                verdict, verdict
+            ),
+            "how_checked_ru": how,
+            "score": 1.0 if verdict == "pass" else (0.0 if verdict == "fail" else None),
+        }
+        criteria_detail.append(detail)
+        if verdict == "na":
+            na += 1
+            g["na"] = int(g.get("na") or 0) + 1
+            continue
+        total += 1
+        g["total"] += 1
+        if verdict == "pass":
+            passed += 1
+            g["passed"] += 1
+        else:
+            item = {
+                "id": crit.get("id"),
+                "title": crit.get("title"),
+                "point": crit.get("point"),
+                "severity": crit.get("severity"),
+                "check": crit.get("check"),
+                "how_checked_ru": how,
+            }
+            failed.append(item)
+            if crit.get("severity") == "P0":
+                critical_failed.append(item)
+
+    pct = round(100.0 * passed / total, 1) if total else None
+    meta = regulation_meta()
+    return {
+        "regulatory_compliance_pct": pct,
+        "passed": passed,
+        "total": total,
+        "na": na,
+        "failed": failed,
+        "critical_failed": critical_failed,
+        "has_p0_defect": any(f.get("severity") == "P0" for f in failed),
+        "by_group": by_group,
+        "criteria": criteria_detail,
+        "formula_ru": (
+            "regulatory_compliance_pct = 100 × (число выполненных) / "
+            "(число применимых; na не входят в знаменатель)"
+        ),
+        "regulation_id": meta.get("regulation_id"),
+        "regulation_title": meta.get("regulation_title"),
+        "note_ru": (
+            "Прокси case-level по адаптированным пунктам прил. 2 пост. МЗ № 55; "
+            "не полная официальная экспертиза организации."
+        ),
+    }
 
 
 def format_failed_criteria_ru(items: list[dict], *, limit: int = 6) -> str:
@@ -184,3 +295,44 @@ def regulation_meta() -> dict:
         "regulation_source": reg.get("source") or "",
         "criteria_total": len(reg.get("criteria") or []),
     }
+
+
+def attach_reg55_to_detail(
+    detail: dict[str, Any] | None,
+    *,
+    clinical: dict[str, Any] | None = None,
+    block_scores: dict[str, Any] | None = None,
+    live_case: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Добавить в case-detail полный разбор №55 и pct в record/axes."""
+    out = detail if isinstance(detail, dict) else {"ok": False}
+    record = dict(out.get("record") or {})
+    case: dict[str, Any] = {}
+    if isinstance(live_case, dict):
+        case.update(live_case)
+    case.update(record)
+    if isinstance(clinical, dict):
+        case["clinical"] = clinical
+    if isinstance(block_scores, dict) and block_scores:
+        case["block_scores"] = block_scores
+    elif isinstance(case.get("block_scores"), dict):
+        pass
+    else:
+        # alignment-критерии останутся na без L1 block_scores - это честно
+        case.setdefault("block_scores", {})
+    case.setdefault("status", record.get("status") or out.get("deep_status") or "")
+    reg = evaluate_reg55(case)
+    out["reg55"] = reg
+    pct = reg.get("regulatory_compliance_pct")
+    if isinstance(pct, (int, float)):
+        record["reg55_pct"] = float(pct)
+        out["record"] = record
+        axes = dict(out.get("axes") or {})
+        axes["regulatory"] = float(pct)
+        out["axes"] = axes
+    elif isinstance(record.get("reg55_pct"), (int, float)):
+        out["record"] = record
+    elif isinstance((out.get("axes") or {}).get("regulatory"), (int, float)):
+        record["reg55_pct"] = float((out.get("axes") or {})["regulatory"])
+        out["record"] = record
+    return out

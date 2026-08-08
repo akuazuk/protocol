@@ -851,7 +851,8 @@
         branch: row.filial || row.branch || "", diagnosis: diagnosis, total: total, status: status,
         kind: row.document_kind_label || row.kz_kind_label || row.kz_kind || "Не указан",
         coverage: firstNumeric([row.coverage_pct, row.coverage, row.deep_coverage_pct]),
-        confidence: firstNumeric([row.confidence_pct, row.confidence, row.deep_confidence_pct]) };
+        confidence: firstNumeric([row.confidence_pct, row.confidence, row.deep_confidence_pct]),
+        reg55: firstNumeric([row.reg55_pct, row.axis_regulatory, (row.axes || {}).regulatory]) };
     }
     function statusLabel(value) {
       var map = { new:"Новый", assigned:"Назначен", in_review:"На разборе", confirmed_issue:"Подтверждено",
@@ -885,6 +886,41 @@
       else if (tier === "new_for_profile") label = "новый код";
       var tone = (tier === "first_contact" || tier === "new_for_profile") ? "review" : "good";
       return ' <span class="status ' + tone + ' history-visit-chip" title="История пациента до этого визита">' + esc(label) + "</span>";
+    }
+    function renderReg55(reg55) {
+      if (!reg55 || (reg55.regulatory_compliance_pct == null && !(reg55.criteria || []).length)) {
+        return '<div class="detail-block"><h3>Постановление МЗ №55</h3><p class="empty">Оценка по №55 недоступна для этого случая.</p></div>';
+      }
+      var pct = reg55.regulatory_compliance_pct;
+      var head = "Итого: " + (pct == null ? "-" : (Math.round(Number(pct)) + "%"));
+      if (reg55.passed != null && reg55.total != null) {
+        head += " · выполнено " + reg55.passed + " из " + reg55.total + " применимых";
+      }
+      if (reg55.na) head += " · не применимо: " + reg55.na;
+      var criteria = reg55.criteria || [];
+      var rows = criteria.length ? criteria.map(function (item) {
+        var verdict = item.verdict || "";
+        var tone = verdict === "pass" ? "good" : (verdict === "fail" ? "critical" : "review");
+        var label = item.verdict_ru || verdict || "-";
+        var scoreBit = item.score == null ? "n/a" : String(item.score);
+        return '<tr>' +
+          '<td><span class="status ' + tone + '">' + esc(label) + "</span></td>" +
+          '<td>' + esc(scoreBit) + "</td>" +
+          '<td>' + esc(item.point || "-") + "</td>" +
+          '<td><b>' + esc(item.title || item.id || "критерий") + "</b>" +
+          (item.severity ? (' <span class="card-sub">[' + esc(item.severity) + "]</span>") : "") +
+          (item.group ? ('<br><small>' + esc(item.group) + "</small>") : "") +
+          (item.how_checked_ru ? ('<br><small>' + esc(item.how_checked_ru) + "</small>") : "") +
+          "</td></tr>";
+      }).join("") : "";
+      var table = rows ?
+        '<div class="table-wrap compact-table"><table><thead><tr><th>Вердикт</th><th>Оценка</th><th>Пункт</th><th>Критерий и пояснение</th></tr></thead><tbody>' +
+        rows + "</tbody></table></div>" : "<p class=\"empty\">Список критериев пуст.</p>";
+      return '<div class="detail-block reg55-block"><h3>Постановление МЗ №55</h3>' +
+        '<p class="card-sub">' + esc(head) + "</p>" +
+        (reg55.formula_ru ? ('<p class="card-sub">' + esc(reg55.formula_ru) + "</p>") : "") +
+        (reg55.note_ru ? ('<p class="card-sub">' + esc(reg55.note_ru) + "</p>") : "") +
+        table + "</div>";
     }
     function renderPatientHistory(bundle) {
       if (!bundle || !bundle.summary) {
@@ -924,7 +960,8 @@
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) +         '</td><td>' + esc(item.diagnosis) +
         icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
-        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td>' + esc(score(item.coverage)) +
+        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td><b title="Пост. МЗ №55, доля выполненных критериев">' +
+        esc(score(item.reg55)) + '</b></td><td>' + esc(score(item.coverage)) +
         '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
         esc(statusLabel(item.status)) + "</span></td></tr>";
     }
@@ -995,14 +1032,15 @@
         if (isSingleDayPeriod()) {
           banner.hidden = false;
           banner.innerHTML = "<b>Таблица за " + esc(state.dateFrom) + "</b> · всего " +
-            esc(data.total || rows.length) + " записей. Фильтры и сортировка по колонкам применяются к этому дню.";
+            esc(data.total || rows.length) + " записей. Колонка «№55» - доля критериев пост. МЗ №55. " +
+            "Откройте случай: в блоке «Подробнее» - пункты, вердикты и пояснения.";
         } else {
           banner.hidden = true;
           banner.innerHTML = "";
         }
       }
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
-        '<tr><td colspan="' + (queue ? 14 : 11) + '" class="empty"><b>' +
+        '<tr><td colspan="' + (queue ? 14 : 12) + '" class="empty"><b>' +
         esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
         esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
       bindCaseRows(body);
@@ -1363,7 +1401,8 @@
         '<div class="case-workspace-clinical">' +
         renderClinicalDocument(sourceDocument, findings) +
         '<details class="detail-block mo-secondary-details"><summary>Подробнее: итоговая оценка, оси, рубрика МЗ</summary>' +
-        '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
+        '<div class="drawer-grid">' +         kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
+        kpi("№55", score((data.reg55 || {}).regulatory_compliance_pct != null ? (data.reg55 || {}).regulatory_compliance_pct : item.reg55), "доля выполненных критериев пост. МЗ №55") +
         kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "черновик · «Как оценивать»") +
         kpi(
           "МКБ / диагноз",
@@ -1374,9 +1413,10 @@
         kpi("Полнота проверки", score(coverageInfo.value), coverageInfo.estimated ? "оценка по доступным полям" : "доступность исходных данных") +
         kpi("Надёжность", score(confidenceInfo.value), confidenceInfo.estimated ? "оценка по доступным полям" : "устойчивость результата") + '</div>' +
         '<div class="detail-block"><h3>Оси оценки</h3>' + ["documentation","clinical_concordance","safety","regulatory"].map(function (key) {
-          var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика" };
+          var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика (№55)" };
           return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
         }).join("") + '</div>' +
+        renderReg55(data.reg55) +
         renderRubricMz(rubric) +
         '</details></div>' +
         '<div class="case-workspace-decision">' +
@@ -2513,12 +2553,16 @@
       options[current].focus();
     }
     var COLUMN_MAP = {
-      documents: ["Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "Полнота", "Надёжность", "Статус"],
+      documents: ["Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "№55", "Полнота", "Надёжность", "Статус"],
       queue: ["Выбор", "Приоритет", "Визит", "Пациент", "Дата", "Филиал", "Врач / специальность", "Диагноз", "Итог", "Причина", "Ответственный", "Срок", "Статус", "МО"]
     };
     function ensureColumnState() {
-      if (!state.columnVisible.documents.length) state.columnVisible.documents = COLUMN_MAP.documents.map(function () { return true; });
-      if (!state.columnVisible.queue.length) state.columnVisible.queue = COLUMN_MAP.queue.map(function () { return true; });
+      if (!state.columnVisible.documents.length || state.columnVisible.documents.length !== COLUMN_MAP.documents.length) {
+        state.columnVisible.documents = COLUMN_MAP.documents.map(function () { return true; });
+      }
+      if (!state.columnVisible.queue.length || state.columnVisible.queue.length !== COLUMN_MAP.queue.length) {
+        state.columnVisible.queue = COLUMN_MAP.queue.map(function () { return true; });
+      }
     }
     function applyColumnVisibility(key) {
       ensureColumnState();
