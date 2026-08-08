@@ -62,6 +62,24 @@ def title_match_score(diagnosis_text: str, ru_title: str | None) -> float:
     return len(dt & rt) / max(len(rt), 1)
 
 
+def free_text_is_substantive(diagnosis_text: str) -> bool:
+    """Есть ли осмысленная формулировка сверх токенов кода МКБ.
+
+    Code-only / «F41.2» не считаем текстом для mismatch: валидный код в справочнике
+    уже задаёт рубрику.
+    """
+    raw = (diagnosis_text or "").strip()
+    if not raw:
+        return False
+    try:
+        from clinical_knowledge.dx_query_expand import strip_icd_tokens
+
+        cleaned = strip_icd_tokens(raw)
+    except Exception:  # noqa: BLE001
+        cleaned = raw
+    return len(_norm_tokens(cleaned)) >= 2
+
+
 def _finding(
     code: str,
     *,
@@ -211,7 +229,14 @@ def evaluate_diagnosis_against_icd_directory(
             )
         )
 
-    if any_code_in_dir and text and text_rubric_fit < thr_review:
+    # Правило: валидный код в справочнике + пустой/code-only текст → согласовано.
+    # Mismatch только когда есть substantive free text и он плохо перекрывает title.
+    substantive_text = free_text_is_substantive(text)
+    if (
+        any_code_in_dir
+        and substantive_text
+        and text_rubric_fit < thr_review
+    ):
         findings.append(
             _finding(
                 "B_icd_dir_text_mismatch",
@@ -234,6 +259,10 @@ def evaluate_diagnosis_against_icd_directory(
         else:
             verdict = "review"
             score_pct = 60
+    elif any_code_in_dir and not substantive_text:
+        # Код есть в справочнике; формулировки сверх кода нет - рубрика задана кодом.
+        verdict = "ok"
+        score_pct = 92
     elif text_rubric_fit >= thr_ok or (directory_hit and not uniq_codes):
         verdict = "ok"
         score_pct = 95 if text_rubric_fit >= thr_ok else 85

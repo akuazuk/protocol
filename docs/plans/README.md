@@ -19,10 +19,11 @@
 | Файл | Тема | Статус |
 |------|------|--------|
 | [2026-08-08-mo-action-priority-formula-ru-v1.md](2026-08-08-mo-action-priority-formula-ru-v1.md) | Очередь: приоритет по формуле; P0-P3 → русские слова и цвета; demote stale №55 P0 | active |
+| [2026-08-08-mo-icd-first-kp-suggest-v1.md](2026-08-08-mo-icd-first-kp-suggest-v1.md) | КП ICD-first при валидном коде; mismatch только на substantive text; plan 1.0 только с clinical KP | active |
 | [2026-08-08-mo-clinical-visit-only-v1.md](2026-08-08-mo-clinical-visit-only-v1.md) | Оценка только clinical_visit; процедуры/стоматология вне score; №55 по пунктам | active |
 | [2026-08-08-mo-reg55-day-column-v1.md](2026-08-08-mo-reg55-day-column-v1.md) | Таблица дня: колонка №55 + разбор пунктов при раскрытии | active |
 | [2026-08-08-mo-kp-history-episode-suggest-v1.md](2026-08-08-mo-kp-history-episode-suggest-v1.md) | КП по эпизоду Dx из истории визитов + golden верно/неверно | active |
-| [2026-08-08-mo-kp-suggest-dx-accuracy-v1.md](2026-08-08-mo-kp-suggest-dx-accuracy-v1.md) | Suggest v4: точный КП по тексту Dx (bridge text→ICD, clinical-only) | active |
+| [2026-08-08-mo-kp-suggest-dx-accuracy-v1.md](2026-08-08-mo-kp-suggest-dx-accuracy-v1.md) | Suggest v4: точный КП по тексту Dx (bridge text→ICD, clinical-only) | archived (преемник: mo-icd-first-kp-suggest-v1; text-path остаётся без кода) |
 | [2026-08-07-by-home-gcp-llm-split-v1.md](2026-08-07-by-home-gcp-llm-split-v1.md) | E1: всё на GCP, МИС-мост с Mac → E2 МИС с GCP → E3 BY+LLM на GCP; Docker-границы | active |
 | [2026-08-08-mo-icd-dx-matching-pipeline-v3.md](2026-08-08-mo-icd-dx-matching-pipeline-v3.md) | Полный пайплайн Dx↔МКБ: оркестратор, aliases, compact-коды, калибровка→primary, LLM review | active |
 | [2026-08-08-mo-patient-history-bundle-v2.md](2026-08-08-mo-patient-history-bundle-v2.md) | Сначала бандл истории пациента (врач + специальность), потом одно МО и анализаторы | active |
