@@ -1987,9 +1987,9 @@
           "</td><td>" + esc(item.filial || item.branch) + "</td><td>" + esc(item.diagnosis) +
           "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b>" +
           (item.is_shadow ? ' <span class="status review finding-shadow-badge">shadow</span>' : "") +
-          (item.demoted_stale_reg55_p0 ? ' <span class="status check finding-shadow-badge">не P0</span>' : "") +
           "<br><small>" + esc(item.reason) +
-          " · по формуле " + esc(scoreTxt) + esc(regTxt) +
+          (scoreTxt !== "-" ? " · справка: формула " + esc(scoreTxt) : "") +
+          esc(regTxt) +
           '</small></td><td class="row-actions"><button class="button secondary compact" type="button" data-take-case="' +
           esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
           (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") +

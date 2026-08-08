@@ -540,7 +540,7 @@ h1{{margin:0;font-size:26px}}h2{{margin:22px 0 10px;font-size:18px}}h3{{margin:0
   <a class="button secondary" href="/doctor/review?source=mo&amp;case={_esc(payload.get('visit_id'))}">Открыть в разборе</a>
 </div>
 {"<div class='banner'>" + _esc(payload.get('score_reason')) + "</div>" if payload.get("overall_pct") is None else ""}
-{"<div class='banner critical'>Есть замечания P0/P1 - сверьте текст записи с оценкой ниже.</div>" if any(str(f.get('severity')) in {'P0','P1'} for f in findings) else ""}
+{"<div class='banner critical'>Есть критичные или важные замечания - сверьте текст записи с оценкой ниже.</div>" if any(str(f.get('severity')) in {'P0','P1'} for f in findings) else ""}
 <div class="card kpis">
   <div class="kpi"><span>Врач</span><b>{_esc(payload.get('doctor_fio'))}</b></div>
   <div class="kpi"><span>Специальность</span><b>{_esc(payload.get('specialty') or '—')}</b></div>
