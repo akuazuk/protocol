@@ -76,6 +76,28 @@ def test_follow_up_interval_scores_full() -> None:
     assert by_id["follow_up"]["score"] == 1.0
 
 
+def test_plan_mentions_clinical_kp_when_suggest_hit() -> None:
+    suggest = {
+        "items": [
+            {
+                "match_kind": "clinical",
+                "score": 90.0,
+                "title": "01КП детское население ортопедо-травматологической патологией",
+                "source_path": "minzdrav_protocols/travmatologiya-ortopediya/01КП_det.pdf",
+            }
+        ]
+    }
+    result = evaluate_mo_rubric_mz(
+        clinical={"treatment_recommendations": "ЛФК, ортопедическая обувь"},
+        meta={"visit_date": "2026-08-02"},
+        protocol_suggest=suggest,
+    )
+    by_id = {c["id"]: c for c in result["criteria"]}
+    assert result["kp_suggest_clinical"] is True
+    assert by_id["treatment_plan"]["score"] == 0.5
+    assert "КП по диагнозу найден" in (by_id["treatment_plan"]["reason"] or "")
+
+
 def test_summarize_rubric_batch_ranks_failures() -> None:
     from clinical_knowledge.mo_rubric_mz import summarize_rubric_batch
 

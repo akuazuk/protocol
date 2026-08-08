@@ -376,14 +376,18 @@ def save_review_pack(
     protocol_suggest = decision_norm.pop("protocol_suggest", None)
     if not isinstance(protocol_suggest, dict):
         try:
-            from .case_protocol_suggest import suggest_protocols_for_case
+            from .case_protocol_suggest import suggest_protocols_for_mo_case
 
-            protocol_suggest = suggest_protocols_for_case(
+            if patient_id and not record.get("patient_id"):
+                record = dict(record)
+                record["patient_id"] = patient_id
+            protocol_suggest = suggest_protocols_for_mo_case(
                 clinical=clinical,
                 record=record,
                 findings=detail.get("findings") or [],
                 llm_judge=judge if isinstance(judge, dict) else {},
                 limit=3,
+                attach_history=True,
             )
         except Exception:  # noqa: BLE001
             protocol_suggest = {"ok": False, "items": [], "available": False}

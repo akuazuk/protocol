@@ -96,26 +96,164 @@ def _card_venous_relevance(card: dict[str, Any]) -> float:
 
 def _population_match(card: dict[str, Any], consult_audience: str | None) -> float:
     cp = infer_card_population(card)
-    ca = (consult_audience or "").lower()
-    if not ca or cp == "any":
+    ca = (consult_audience or "").lower().strip()
+    # unknown / пусто - не обнуляем детские КП (иначе suggest теряет pediatric)
+    if not ca or ca in {"unknown", "any", "na", "n/a"} or cp == "any":
         return 1.0
     if cp == ca:
         return 1.0
     return 0.0
 
 
-def _diag_text_overlap(diag_text: str, card: dict[str, Any]) -> float:
+_CARD_BLOB_CACHE: dict[str, str] = {}
+_LEAD_CODE_RE = re.compile(r"^\s*[A-Za-z]\d{2}(?:\.\d{1,4})?\s*[-:–—]\s*")
+
+
+def _card_match_blob(
+    card: dict[str, Any],
+    *,
+    focus_codes: set[str] | None = None,
+) -> str:
+    """Текст карточки для lexical Dx-match: title, label, path + RU-названия кодов карточки.
+
+    Коды на карточке - источник русских формулировок (не gate по коду случая).
+    focus_codes: если заданы (text→ICD bridge), раскрываем titles только для
+    пересечения с карточкой - быстро и точно на omnibus-КП.
+    """
+    focus_key = ",".join(sorted(focus_codes)) if focus_codes else "*"
+    cache_key = "|".join(
+        [
+            str(card.get("source_path") or ""),
+            str(card.get("protocol_id") or ""),
+            str(card.get("title") or "")[:96],
+            str(card.get("condition_label") or "")[:64],
+            focus_key,
+        ]
+    )
+    cached = _CARD_BLOB_CACHE.get(cache_key)
+    if cached is not None:
+        return cached
+
+    title = str(card.get("title") or "")
+    cond = str(card.get("condition_label") or "")
+    path = str(card.get("source_path") or "")
+    path_words = re.sub(r"[_\-/]+", " ", path.split("/")[-1] if path else "")
+    path_words = re.sub(r"\.(pdf|json|html?)$", "", path_words, flags=re.IGNORECASE)
+    parts = [title, cond, path, path_words]
+    all_codes = [
+        str(x).strip().upper()
+        for x in list(card.get("icd10_primary") or []) + list(card.get("icd10_all") or [])
+        if x
+    ]
+    if focus_codes:
+        focus_roots = {_icd_root(c) for c in focus_codes}
+        codes = [c for c in all_codes if c in focus_codes or _icd_root(c) in focus_roots]
+    else:
+        # без focus - все коды (consult path / тесты); иначе M21 за top-N теряется
+        codes = all_codes
+    seen: set[str] = set()
+    try:
+        import icd_mkb
+    except Exception:  # noqa: BLE001
+        icd_mkb = None  # type: ignore[assignment]
+    for code in codes:
+        if not code or code in seen:
+            continue
+        seen.add(code)
+        parts.append(code)
+        if icd_mkb is None:
+            continue
+        try:
+            title_ru = icd_mkb.ru_title(code)
+        except Exception:  # noqa: BLE001
+            title_ru = None
+        if title_ru:
+            parts.append(_LEAD_CODE_RE.sub("", str(title_ru)).strip())
+    blob = " ".join(parts).lower()
+    if len(_CARD_BLOB_CACHE) > 8000:
+        _CARD_BLOB_CACHE.clear()
+    _CARD_BLOB_CACHE[cache_key] = blob
+    return blob
+
+
+def _diag_text_overlap(
+    diag_text: str,
+    card: dict[str, Any],
+    *,
+    focus_codes: set[str] | None = None,
+) -> float:
     if not diag_text:
         return 0.0
-    title = (card.get("title") or "").lower()
-    cond = (card.get("condition_label") or "").lower()
-    words = [w for w in re.split(r"\W+", diag_text.lower()) if len(w) > 4][:12]
+    from clinical_knowledge.dx_query_expand import diagnosis_tokens, token_weight
+
+    words = diagnosis_tokens(diag_text, min_len=3, limit=28)
     if not words:
         return 0.0
-    blob = title + " " + cond
-    hits = sum(1 for w in words if w in blob)
-    return min(1.0, hits / max(3, len(words) * 0.4))
+    blob = _card_match_blob(card, focus_codes=focus_codes)
+    if not blob.strip():
+        return 0.0
+    hit_w = 0.0
+    total_w = 0.0
+    strong_hit = False
+    for word in words:
+        weight = token_weight(word)
+        total_w += weight
+        if word in blob:
+            hit_w += weight
+            if weight >= 1.25:
+                strong_hit = True
+    if total_w <= 0:
+        return 0.0
+    raw = hit_w / max(3.0, total_w * 0.4)
+    if not strong_hit and raw < 0.55:
+        # только короткие/общие токены - не считаем клиническим попаданием
+        raw *= 0.45
+    return min(1.0, raw)
 
+
+def _text_icd_bridge_score(
+    diag_text: str,
+    card: dict[str, Any],
+    *,
+    bridge_cands: list[dict[str, Any]] | None = None,
+) -> float:
+    """Soft-bridge: text→ICD (справочник) ↔ коды на карточке КП.
+
+    Не использует код МКБ из случая (mis_diagnos). Нужен для omnibus-КП,
+    где title/path не содержат нозологию, а M21.* есть в icd10_all.
+    """
+    if bridge_cands is None:
+        if not diag_text:
+            return 0.0
+        from clinical_knowledge.dx_query_expand import bridge_icd_candidates
+
+        bridge_cands = bridge_icd_candidates(diag_text)
+    if not bridge_cands:
+        return 0.0
+    card_codes = {
+        str(x).strip().upper()
+        for x in list(card.get("icd10_primary") or []) + list(card.get("icd10_all") or [])
+        if x
+    }
+    if not card_codes:
+        return 0.0
+    card_roots = {_icd_root(c) for c in card_codes}
+    exact = 0
+    root_only = 0
+    for item in bridge_cands:
+        code = str(item.get("code") or "").strip().upper()
+        if not code:
+            continue
+        if code in card_codes:
+            exact += 1
+        elif _icd_root(code) in card_roots:
+            root_only += 1
+    if exact:
+        return min(1.0, 0.62 + 0.12 * exact)
+    # root-only слишком шумный на omnibus/соседних рубриках (Q66 vs Q67)
+    if root_only:
+        return min(0.45, 0.22 + 0.08 * root_only)
+    return 0.0
 
 def compute_match_score(
     card: dict[str, Any],
@@ -128,11 +266,12 @@ def compute_match_score(
     complaints: list[str],
     performed_exams: list[str],
     use_icd: bool = True,
+    bridge_cands: list[dict[str, Any]] | None = None,
 ) -> float:
     """Нормализованный 0-100 match score.
 
     use_icd=False: путь МО Suggest - только текст диагноза (+ слабые жалобы/specialty),
-    без recall/гейтов по МКБ.
+    без recall/гейтов по МКБ случая. text→ICD bridge - отдельный soft-сигнал.
     """
     card_icd = [str(x).upper() for x in (card.get("icd10_all") or card.get("icd10_primary") or [])]
     icd_part = 0.0
@@ -171,7 +310,20 @@ def compute_match_score(
         hint_score += score_card_for_hint(str(hint), blob, icd_list if use_icd else []) / 100.0
     hint_score = min(1.0, hint_score)
 
-    diag_part = _diag_text_overlap(diag_text, card)
+    focus_codes: set[str] | None = None
+    if not use_icd and bridge_cands:
+        focus_codes = {
+            str(item.get("code") or "").strip().upper()
+            for item in bridge_cands
+            if item.get("code")
+        }
+    diag_part = _diag_text_overlap(diag_text, card, focus_codes=focus_codes)
+    if not use_icd:
+        # МО Suggest: lexical + text→ICD bridge (не код из случая)
+        diag_part = max(
+            diag_part,
+            _text_icd_bridge_score(diag_text, card, bridge_cands=bridge_cands),
+        )
     exam_blob = " ".join(performed_exams).lower()
     exam_part = 0.3 if exam_blob and any(x in exam_blob for x in title_low.split()[:3]) else 0.0
     compl_part = 0.0
@@ -241,6 +393,11 @@ def match_protocol_cards(
     diag_text = str(cons.get("diagnosis_text") or "")
     complaints = list(cons.get("complaints") or [])
     performed = list(cons.get("performed_exams") or [])
+    bridge_cands: list[dict[str, Any]] = []
+    if not use_icd and diag_text.strip():
+        from clinical_knowledge.dx_query_expand import bridge_icd_candidates
+
+        bridge_cands = bridge_icd_candidates(diag_text)
 
     scored: list[tuple[float, dict[str, Any]]] = []
     for card in cards:
@@ -256,6 +413,7 @@ def match_protocol_cards(
             complaints=complaints,
             performed_exams=performed,
             use_icd=use_icd,
+            bridge_cands=bridge_cands,
         )
         if score <= 0:
             continue
@@ -290,13 +448,16 @@ def match_protocol_cards(
             continue
         seen_keys.add(key)
         icd_fit = icd_fit_for_card(card, icd_list) if use_icd else []
+        # icd10_* карточки оставляем и при use_icd=False: это метаданные КП для
+        # lexical bridge (RU title кода на карточке), не gate по коду случая.
         out.append(
             {
                 "protocol_id": card.get("protocol_id"),
                 "title": card.get("title"),
                 "source_path": card.get("source_path"),
                 "population": card.get("population"),
-                "icd10_primary": card.get("icd10_primary") if use_icd else [],
+                "icd10_primary": list(card.get("icd10_primary") or [])[:16],
+                "icd10_all": list(card.get("icd10_all") or [])[:24],
                 "match_score": round(sc, 2),
                 "icd_fit": icd_fit,
                 "icd_fit_label": ", ".join(
