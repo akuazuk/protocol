@@ -490,8 +490,24 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
         if str(row.get("parse_ok", "1")).strip() == "0":
             n_corrupt += 1
             continue
+        # МО: при известном document_kind - только clinical_visit (is_scored_document_kind).
+        # Fallback kz/certificate - только если kind документа не определён.
         mo_eligible_raw = str(row.get("mo_score_eligible") or "").strip().lower()
-        if mo_eligible_raw:
+        if document_kind:
+            try:
+                from clinical_knowledge.mo_daily import is_scored_document_kind
+
+                mo_eligible = is_scored_document_kind(document_kind)
+            except Exception:  # noqa: BLE001
+                mo_eligible = document_kind == "clinical_visit"
+            row["mo_score_eligible"] = bool(mo_eligible)
+            if mo_eligible:
+                scored.append(row)
+                continue
+            excluded_kind = document_kind or kind
+            spec = (row.get("doctor_specialization") or "").strip() or " - "
+            by_spec[excluded_kind][spec] += 1
+        elif mo_eligible_raw:
             mo_eligible = mo_eligible_raw in {"1", "true", "yes", "on"}
             if mo_eligible:
                 scored.append(row)
@@ -515,8 +531,8 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
             for kind, spec in by_spec.items()
         },
         "rule_ru": (
-            "В МО-контуре применяется явный признак mo_score_eligible; для старых "
-            "выгрузок совместимо используются kz/certificate. Диагностические, "
+            "В МО-контуре при известном document_kind оценивается только clinical_visit; "
+            "для старых выгрузок без document_kind - совместимо kz/certificate. "
             "неклинические, пустые и битые ::-строки исключаются. Неполный клинический "
             "документ не считается мусором и получает соответствующую низкую оценку."
         ),

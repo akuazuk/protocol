@@ -316,6 +316,6 @@ def test_case_document_prefers_medical_exam_source_and_sanitizes_hash(monkeypatc
     payload = build_case_document_payload("93001")
     assert payload["ok"] is True
     assert payload["document_kind"] == "medical_exam"
-    assert payload["document_kind_label"] == "Медицинский осмотр"
+    assert payload["document_kind_label"] == "Профосмотр / медосмотр"
     assert payload["diagnosis_code"] == "J35.0"
     assert payload["clinical"]["complaints"] == "Боль в горле"

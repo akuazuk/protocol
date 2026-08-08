@@ -799,20 +799,33 @@ def _crm_states(case_ids: list[str]) -> dict[str, dict[str, Any]]:
 
 
 def _apply_score_eligible_default(params: dict[str, Any]) -> dict[str, Any]:
-    """Для таблицы случаев: по умолчанию только clinical_visit.
+    """Таблица случаев: только clinical_visit (жёстко).
 
-    Процедуры / профосмотры / диагностика не попадают в строки и агрегаты таблицы,
-    пока пользователь явно не снимет фильтр (score_eligible_only=0 или другой document_kinds).
+    Процедуры / профосмотры / диагностика / стоматология не попадают в строки.
+    Opt-out через score_eligible_only=0 и чужие document_kinds игнорируются.
     """
     out = dict(params or {})
-    if _values(out.get("document_kinds")):
-        return out
-    score_flag = str(out.get("score_eligible_only") or "").strip().lower()
-    if score_flag in {"0", "false", "no", "all"}:
-        return out
-    out["document_kinds"] = "clinical_visit"
+    requested = [str(v).strip() for v in _values(out.get("document_kinds")) if str(v).strip()]
+    # Разрешаем только clinical_visit; прочие типы из фильтра выкидываем.
+    allowed = [v for v in requested if v == "clinical_visit"]
+    out["document_kinds"] = "clinical_visit" if not allowed else "|".join(dict.fromkeys(allowed))
     out["score_eligible_only"] = "1"
     return out
+
+
+def is_case_score_eligible(record: Mapping[str, Any] | None = None, *, document_kind: str | None = None) -> bool:
+    """Единый гейт: оцениваем / показываем в таблице только clinical_visit."""
+    kind = str(
+        document_kind
+        or (record or {}).get("document_kind")
+        or ""
+    ).strip()
+    try:
+        from .mo_daily import is_scored_document_kind
+
+        return bool(is_scored_document_kind(kind))
+    except Exception:  # noqa: BLE001
+        return kind == "clinical_visit"
 
 
 def build_cases(params: dict[str, Any]) -> dict[str, Any]:

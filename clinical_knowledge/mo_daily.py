@@ -1747,76 +1747,82 @@ def upsert_warehouse(
                 schema_version=score_schema_version,
             )
             llm_cost = _safe_number(case.get("llm_cost_usd")) or 0.0
-            # Soft-fill МКБ для KPI/UI: слот → иначе full-doc. Agreement не трогаем
-            # (raw.mkb_code_agreement остаётся на исходном слоте экспорта).
-            from clinical_knowledge.mo_icd_resolve import soft_fill_mkb_for_warehouse
-
-            resolve_case = dict(raw)
-            if isinstance(case, Mapping):
-                for key in (
-                    "clinical_diagnosis",
-                    "diagnosis_main_text",
-                    "diagnosis_short",
-                    "mis_diagnos",
-                    "complaints",
-                    "anamnesis_doctor",
-                    "objective_status",
-                    "exam_data",
-                    "exam_recommendations",
-                    "treatment_recommendations",
-                    "manipulations",
-                ):
-                    if not resolve_case.get(key) and case.get(key):
-                        resolve_case[key] = case.get(key)
-            mkb_fill = soft_fill_mkb_for_warehouse(resolve_case)
-            diagnosis_codes = list(mkb_fill.get("codes") or [])
-            diagnosis_code = str(mkb_fill.get("code") or "")
-            mkb_code_main_source = str(mkb_fill.get("source") or "empty")
-            mkb_code_main_slot = str(mkb_fill.get("slot_code") or "")
-            diagnosis_chapter = icd_chapter(diagnosis_code)
-            from clinical_knowledge.mo_patient_history_bundle import (
-                attach_bundle_to_case,
-                short_diagnosis_text_for_warehouse,
-                upsert_history_cache,
-            )
-
-            diagnosis_text = short_diagnosis_text_for_warehouse(resolve_case)
+            eligible_document = is_scored_document_kind(raw.get("document_kind"))
+            diagnosis_codes: list[str] = []
+            diagnosis_code = ""
+            mkb_code_main_source = "empty"
+            mkb_code_main_slot = ""
+            diagnosis_chapter = ""
+            diagnosis_text = ""
             history_prior_n = 0
             history_tier = ""
-            if patient_key:
-                hist_case = {
-                    "patient_key": patient_key,
-                    "patient_id": raw.get("patient_id") or "",
-                    "visit_date": visit_date,
-                    "doctor_id": doctor_id,
-                    "doctor_key": doctor_key,
-                    "doctor_fio": doctor_fio,
-                    "specialty": specialty,
-                    "diagnosis_code": diagnosis_code,
-                    "mis_id": mis_id,
-                    "visit_id": str(raw.get("visit_id") or ""),
-                }
-                try:
-                    hist_bundle = attach_bundle_to_case(hist_case, warehouse=db)
-                    history_prior_n = int((hist_bundle.get("summary") or {}).get("n_visits") or 0)
-                    history_tier = str(hist_bundle.get("tier") or "")
-                    upsert_history_cache(
-                        db,
-                        patient_key=patient_key,
-                        as_of_date=visit_date,
-                        bundle=hist_bundle,
-                    )
-                    if isinstance(case, dict):
-                        case["_patient_history"] = hist_bundle
-                except Exception:  # noqa: BLE001
-                    history_prior_n = 0
-                    history_tier = ""
-            eligible_document = is_scored_document_kind(raw.get("document_kind"))
             if not eligible_document:
-                # Не клинический приём: тип помечаем, балл в витрине не храним.
+                # Не клинический приём: без МКБ/истории/баллов (в таблице не показываем).
                 score = None
                 previous_score = None
-            if eligible_document:
+            else:
+                # Soft-fill МКБ для KPI/UI: слот → иначе full-doc. Agreement не трогаем
+                # (raw.mkb_code_agreement остаётся на исходном слоте экспорта).
+                from clinical_knowledge.mo_icd_resolve import soft_fill_mkb_for_warehouse
+
+                resolve_case = dict(raw)
+                if isinstance(case, Mapping):
+                    for key in (
+                        "clinical_diagnosis",
+                        "diagnosis_main_text",
+                        "diagnosis_short",
+                        "mis_diagnos",
+                        "complaints",
+                        "anamnesis_doctor",
+                        "objective_status",
+                        "exam_data",
+                        "exam_recommendations",
+                        "treatment_recommendations",
+                        "manipulations",
+                    ):
+                        if not resolve_case.get(key) and case.get(key):
+                            resolve_case[key] = case.get(key)
+                mkb_fill = soft_fill_mkb_for_warehouse(resolve_case)
+                diagnosis_codes = list(mkb_fill.get("codes") or [])
+                diagnosis_code = str(mkb_fill.get("code") or "")
+                mkb_code_main_source = str(mkb_fill.get("source") or "empty")
+                mkb_code_main_slot = str(mkb_fill.get("slot_code") or "")
+                diagnosis_chapter = icd_chapter(diagnosis_code)
+                from clinical_knowledge.mo_patient_history_bundle import (
+                    attach_bundle_to_case,
+                    short_diagnosis_text_for_warehouse,
+                    upsert_history_cache,
+                )
+
+                diagnosis_text = short_diagnosis_text_for_warehouse(resolve_case)
+                if patient_key:
+                    hist_case = {
+                        "patient_key": patient_key,
+                        "patient_id": raw.get("patient_id") or "",
+                        "visit_date": visit_date,
+                        "doctor_id": doctor_id,
+                        "doctor_key": doctor_key,
+                        "doctor_fio": doctor_fio,
+                        "specialty": specialty,
+                        "diagnosis_code": diagnosis_code,
+                        "mis_id": mis_id,
+                        "visit_id": str(raw.get("visit_id") or ""),
+                    }
+                    try:
+                        hist_bundle = attach_bundle_to_case(hist_case, warehouse=db)
+                        history_prior_n = int((hist_bundle.get("summary") or {}).get("n_visits") or 0)
+                        history_tier = str(hist_bundle.get("tier") or "")
+                        upsert_history_cache(
+                            db,
+                            patient_key=patient_key,
+                            as_of_date=visit_date,
+                            bundle=hist_bundle,
+                        )
+                        if isinstance(case, dict):
+                            case["_patient_history"] = hist_bundle
+                    except Exception:  # noqa: BLE001
+                        history_prior_n = 0
+                        history_tier = ""
                 eligible_rows_count += 1
                 if score is not None:
                     eligible_scores.append(score)
