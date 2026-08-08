@@ -1275,11 +1275,6 @@ def initialize_warehouse(path: Path) -> None:
             CREATE INDEX IF NOT EXISTS idx_case_date ON fact_mo_case(visit_date);
             CREATE INDEX IF NOT EXISTS idx_case_org ON fact_mo_case(filial, specialty);
             CREATE INDEX IF NOT EXISTS idx_case_doctor ON fact_mo_case(doctor_key, visit_date);
-            CREATE INDEX IF NOT EXISTS idx_case_patient_date ON fact_mo_case(patient_key, visit_date);
-            CREATE INDEX IF NOT EXISTS idx_case_patient_doctor
-              ON fact_mo_case(patient_key, doctor_key, visit_date);
-            CREATE INDEX IF NOT EXISTS idx_case_patient_specialty
-              ON fact_mo_case(patient_key, specialty, visit_date);
             CREATE INDEX IF NOT EXISTS idx_case_date_document ON fact_mo_case(visit_date, document_kind);
             CREATE INDEX IF NOT EXISTS idx_case_date_specialty ON fact_mo_case(visit_date, specialty);
             CREATE INDEX IF NOT EXISTS idx_case_date_filial ON fact_mo_case(visit_date, filial);
