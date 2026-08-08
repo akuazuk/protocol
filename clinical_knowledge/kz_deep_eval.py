@@ -534,6 +534,15 @@ def resolve_protocol_ctx(case: dict) -> dict | None:
 
 def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None, icd_client=None) -> dict:
     """Главная точка входа. См. модульную документацию."""
+    # Бандл истории один раз на case - до concordance / name_only (читают summary)
+    try:
+        from .mo_patient_history_bundle import attach_bundle_to_case, patient_history_enabled
+
+        if patient_history_enabled() and isinstance(case, dict):
+            attach_bundle_to_case(case)
+    except Exception:  # noqa: BLE001
+        pass
+
     a_score, a_find = _axis_documentation(case)
     b_score, b_find = _axis_concordance(case, protocol_ctx, icd_client)
     c_score, c_find = _axis_safety(case, protocol_ctx, drug_ctx)
@@ -644,6 +653,23 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
                     shadow_findings = list(shadow_findings) + list(name_shadow)
                     if icd_name_match_primary_enabled():
                         findings.extend({**item, "shadow": False} for item in name_shadow)
+    except Exception:  # noqa: BLE001
+        pass
+
+    # История пациента (бандл + одно shadow МО); patient_id наружу не отдаём
+    try:
+        from .mo_patient_history_bundle import (
+            evaluate_mo_patient_history,
+            patient_history_enabled,
+            patient_history_primary_enabled,
+        )
+
+        if patient_history_enabled():
+            hist_shadow = evaluate_mo_patient_history(case)
+            if hist_shadow:
+                shadow_findings = list(shadow_findings) + list(hist_shadow)
+                if patient_history_primary_enabled():
+                    findings.extend({**item, "shadow": False} for item in hist_shadow)
     except Exception:  # noqa: BLE001
         pass
 

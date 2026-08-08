@@ -204,6 +204,16 @@ def evaluate_mo_icd_match(case: dict[str, Any] | None) -> dict[str, Any]:
     needs_llm = pipeline_verdict == "review" or any(
         str(f.get("code") or "") == "B_icd_dir_text_mismatch" for f in ad_findings
     )
+    # B3: первый контакт / новый код для профиля - выше приоритет LLM-очереди
+    history_queue_boost = 0
+    try:
+        hist = case.get("_patient_history_summary") if isinstance(case, dict) else None
+        tier = str((hist or {}).get("tier") or "")
+        if tier in {"first_contact", "new_for_profile"}:
+            history_queue_boost = 1
+            needs_llm = True
+    except Exception:  # noqa: BLE001
+        history_queue_boost = 0
 
     all_findings = list(ad_findings)
     # MIS - ось E, не в chip
@@ -239,6 +249,7 @@ def evaluate_mo_icd_match(case: dict[str, Any] | None) -> dict[str, Any]:
         "pipeline_verdict": pipeline_verdict,
         "score_pct": score_pct,
         "needs_llm_review": needs_llm,
+        "history_queue_boost": history_queue_boost,
         "findings": all_findings,
         "seed_codes": list(alias.get("seed_codes") or []),
         "alias": alias,
