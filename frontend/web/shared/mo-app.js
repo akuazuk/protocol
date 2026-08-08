@@ -298,7 +298,7 @@
         branches: values(rawFacets.branches || rawFacets.filials || summary.branches, ["value","filial","branch"]),
         specialties: values(rawFacets.specialties || summary.specialties, ["value","specialization","specialty"]),
         doctors: values(rawFacets.doctors || summary.doctors, ["value","doctor_fio","doctor"]),
-        document_types: values(rawFacets.document_types || rawFacets.document_kinds || rawFacets.kz_kind || ["medical_exam","consultation","certificate","diagnostic"], ["value"]),
+        document_types: values(rawFacets.document_types || rawFacets.document_kinds || rawFacets.kz_kind || ["clinical_visit","procedure_session","medical_exam","diagnostic","non_clinical"], ["value"]),
         statuses: values(rawFacets.statuses || ["Хорошо","Требует внимания","Критично","Недостаточно данных"], ["value"])
       };
       document.querySelectorAll(".filter-pop").forEach(renderFilter);
@@ -895,36 +895,40 @@
         pct = Number(fallbackPct);
       }
       if ((pct == null || !Number.isFinite(pct)) && !(reg55 && (reg55.criteria || []).length)) {
-        return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3><p class="empty">Нет данных для этого случая.</p></div>';
+        return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3><p class="empty">' +
+          esc((reg55 && reg55.note_ru) || "Нет данных для этого случая (оцениваются только клинические приёмы).") +
+          "</p></div>";
       }
       var head = "Средний балл по формуле: <b style=\"font-size:1.35rem\">" +
         (pct == null || !Number.isFinite(pct) ? "-" : (Math.round(pct) + "%")) + "</b>";
       if (reg55 && reg55.passed != null && reg55.total != null && reg55.total > 0) {
-        head += "<br>выполнено " + esc(reg55.passed) + " из " + esc(reg55.total) + " применимых критериев";
+        head += "<br>выполнено " + esc(reg55.passed) + " из " + esc(reg55.total) + " применимых пунктов";
       }
-      if (reg55 && reg55.na) head += " · не применимо: " + esc(reg55.na);
+      if (reg55 && reg55.na) head += " · не применимо (вне знаменателя): " + esc(reg55.na);
       var criteria = (reg55 && reg55.criteria) || [];
       var rows = criteria.length ? criteria.map(function (item) {
         var verdict = item.verdict || "";
         var tone = verdict === "pass" ? "good" : (verdict === "fail" ? "critical" : "review");
-        var label = item.verdict_ru || verdict || "-";
         var scoreBit = item.score == null ? "n/a" : String(item.score);
+        var point = item.point_no || item.point || "-";
+        var wrong = item.whats_wrong_ru || (verdict === "fail" ? (item.how_checked_ru || "не выполнен") : "");
         return '<tr>' +
-          '<td><span class="status ' + tone + '">' + esc(label) + "</span></td>" +
-          '<td>' + esc(scoreBit) + "</td>" +
-          '<td>' + esc(item.point || "-") + "</td>" +
-          '<td><b>' + esc(item.title || item.id || "критерий") + "</b>" +
+          '<td><b>' + esc(point) + "</b></td>" +
+          '<td>' + esc(item.title || item.id || "критерий") +
           (item.severity ? (' <span class="card-sub">[' + esc(item.severity) + "]</span>") : "") +
           (item.group ? ('<br><small>' + esc(item.group) + "</small>") : "") +
-          (item.how_checked_ru ? ('<br><small>' + esc(item.how_checked_ru) + "</small>") : "") +
-          "</td></tr>";
+          "</td>" +
+          '<td><span class="status ' + tone + '">' + esc(item.verdict_ru || verdict || "-") +
+          "</span> · " + esc(scoreBit) + "</td>" +
+          '<td>' + (wrong ? esc(wrong) : (verdict === "na" ? "не учитывается в формуле" : " - ")) + "</td>" +
+          "</tr>";
       }).join("") : "";
       var table = rows ?
-        '<div class="table-wrap compact-table"><table><thead><tr><th>Вердикт</th><th>Оценка</th><th>Пункт</th><th>Критерий и пояснение</th></tr></thead><tbody>' +
+        '<div class="table-wrap compact-table"><table><thead><tr><th>Пункт</th><th>Описание</th><th>Оценка</th><th>Что не так</th></tr></thead><tbody>' +
         rows + "</tbody></table></div>" :
         "<p class=\"card-sub\">Детализация пунктов появится после загрузки критериев №55.</p>";
       var formula = (reg55 && reg55.formula_ru) ||
-        "Средний балл = 100 × (число выполненных) / (число применимых; na не в знаменателе)";
+        "Средний балл №55 = 100 × (выполненные) / (применимые; «не применим» не в знаменателе)";
       return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3>' +
         '<p>' + head + "</p>" +
         '<p class="card-sub">' + esc(formula) + "</p>" +

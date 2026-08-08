@@ -32,7 +32,7 @@ def _seed(path: Path) -> str:
                 "9001",
                 "91001",
                 "2026-08-01",
-                "consultation",
+                "clinical_visit",
                 48.0,
                 "review",
                 doctor,
@@ -110,7 +110,7 @@ def test_case_source_falls_back_to_secure_daily_csv(monkeypatch, tmp_path: Path)
     csv_path = secure_dir / "mo_2026-08-02.csv"
     csv_path.write_text(
         "id,visit_id,document_kind,complaints,anamnesis_doctor,clinical_diagnosis\n"
-        "9007,91007,consultation,Боль в горле,Болеет три дня,Тонзиллит\n",
+        "9007,91007,clinical_visit,Боль в горле,Болеет три дня,Тонзиллит\n",
         encoding="utf-8",
     )
     monkeypatch.setenv("MO_DATA_ROOT", str(tmp_path / "medical_exams"))
@@ -145,7 +145,7 @@ def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> Non
                 "complaints": "Не тот документ визита", "clinical_diagnosis": "Диагностика",
             },
             {
-                "id": "9001", "visit_id": "91001", "document_kind": "consultation",
+                "id": "9001", "visit_id": "91001", "document_kind": "clinical_visit",
                 "complaints": "Боль в горле", "anamnesis_doctor": "Болеет три дня",
                 "objective_status": "Зев гиперемирован", "clinical_diagnosis": "Тонзиллит",
                 "exam_recommendations": "Общий анализ крови",
@@ -285,7 +285,7 @@ def test_case_document_prefers_medical_exam_source_and_sanitizes_hash(monkeypatc
                 "9301",
                 "93001",
                 "2026-08-02",
-                "consultation",
+                "clinical_visit",
                 40.0,
                 "review",
                 doctor,

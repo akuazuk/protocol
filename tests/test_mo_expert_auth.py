@@ -21,7 +21,7 @@ def _seed_case(db: Path, *, visit_id: str = "3646270", day: str = "2026-08-04") 
                 "898517",
                 visit_id,
                 day,
-                "consultation",
+                "clinical_visit",
                 62.0,
                 "review",
                 "v3",

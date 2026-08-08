@@ -41,11 +41,23 @@ from .mis_kz_quality import (
 ROOT = Path(__file__).resolve().parent.parent
 SUPPRESSION_N = max(2, int(os.environ.get("MO_SUPPRESSION_N", "5")))
 DOCUMENT_KINDS = frozenset(
-    {"medical_exam", "consultation", "certificate", "diagnostic", "non_clinical", "empty", "unknown"}
+    {
+        "clinical_visit",
+        "procedure_session",
+        "medical_exam",
+        "consultation",
+        "certificate",
+        "diagnostic",
+        "non_clinical",
+        "empty",
+        "unknown",
+    }
 )
 DOCUMENT_KIND_LABELS = {
-    "medical_exam": "Медицинский осмотр",
-    "consultation": "Консультативное заключение",
+    "clinical_visit": "Клинический приём",
+    "procedure_session": "Манипуляция / процедура",
+    "medical_exam": "Профосмотр / медосмотр",
+    "consultation": "Клинический приём (legacy)",
     "certificate": "Справка",
     "diagnostic": "Диагностическое исследование",
     "non_clinical": "Неклинический документ",
@@ -591,15 +603,10 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "specialization": specialization,
                 "filial": filial,
                 "document_kind": item.get("document_kind") or "unknown",
-                "document_kind_label": {
-                    "medical_exam": "Медицинский осмотр",
-                    "consultation": "Консультативное заключение",
-                    "certificate": "Справка",
-                    "diagnostic": "Диагностическое исследование",
-                    "non_clinical": "Неклинический документ",
-                    "empty": "Пустой документ",
-                    "unknown": "Не определён",
-                }.get(str(item.get("document_kind") or "unknown"), str(item.get("document_kind") or "")),
+                "document_kind_label": DOCUMENT_KIND_LABELS.get(
+                    str(item.get("document_kind") or "unknown"),
+                    str(item.get("document_kind") or ""),
+                ),
                 "diagnosis_code": diagnosis_code_public,
                 "diagnosis_short": diagnosis_short,
                 "mkb_code_main": diagnosis_code_public,
@@ -618,9 +625,9 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                     None
                     if isinstance(score, (int, float))
                     else (
-                        "Не оценивается: диагностика / неклинический документ"
+                        "Не оценивается: не клинический приём (процедура / диагностика / профосмотр / стоматология)"
                         if str(item.get("document_kind") or "")
-                        not in {"medical_exam", "consultation"}
+                        not in {"clinical_visit"}
                         else "Оценка ещё не рассчитана"
                     )
                 ),
@@ -929,7 +936,7 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
     states = _crm_states([r["case_id"] for r in filtered])
     agg = _filtered_agg(filtered)
     kinds = Counter(r.get("document_kind") or "unknown" for r in filtered)
-    eligible = sum(kinds.get(k, 0) for k in ("medical_exam", "consultation"))
+    eligible = sum(kinds.get(k, 0) for k in ("clinical_visit",))
     small_slice = len(filtered) < SUPPRESSION_N
     return {
         "ok": True,
@@ -1020,8 +1027,8 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         kind_rows = conn.execute(
             """SELECT c.document_kind, COALESCE(k.label, c.document_kind) AS label,
                       COUNT(*) AS source,
-                      SUM(c.document_kind IN ('medical_exam','consultation')) AS eligible,
-                      SUM(c.document_kind IN ('medical_exam','consultation')
+                      SUM(c.document_kind = 'clinical_visit') AS eligible,
+                      SUM(c.document_kind = 'clinical_visit'
                           AND c.overall_pct IS NOT NULL) AS evaluated
                FROM fact_mo_case c
                LEFT JOIN dim_document_kind k ON k.document_kind=c.document_kind
@@ -1041,7 +1048,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                JOIN fact_mo_case c ON c.mis_id=f.mis_id
                LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                WHERE c.visit_date=?
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND f.severity IN ('P0','P1','P2','P3')
                  AND COALESCE(f.passed, 0) = 0
                GROUP BY f.finding_code, f.severity
@@ -1059,7 +1066,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                JOIN fact_mo_case c ON c.mis_id=f.mis_id
                LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
                WHERE c.visit_date=?
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND f.severity IN ('P0','P1','P2','P3')
                  AND COALESCE(f.passed, 0) = 0
                ORDER BY CASE f.severity WHEN 'P0' THEN 0 WHEN 'P1' THEN 1
@@ -1089,7 +1096,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                LEFT JOIN crm_case_state s
                  ON s.case_id=COALESCE(NULLIF(c.visit_id,''), c.mis_id)
                WHERE c.visit_date=?
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND f.severity IN ('P0','P1')
                  AND COALESCE(f.passed, 0) = 0
                ORDER BY CASE f.severity WHEN 'P0' THEN 0 ELSE 1 END, c.mis_id
@@ -1686,10 +1693,10 @@ def _sql_summary(period: DateRange, params: dict[str, Any] | None = None) -> dic
     with closing(_read_connection()) as conn:
         row = conn.execute(
             f"""SELECT COUNT(*) AS source_records,
-                      SUM(document_kind IN ('medical_exam','consultation')) AS eligible,
-                      SUM(document_kind IN ('medical_exam','consultation')
+                      SUM(document_kind = 'clinical_visit') AS eligible,
+                      SUM(document_kind = 'clinical_visit'
                           AND {score_expr} IS NOT NULL) AS evaluated,
-                      AVG(CASE WHEN document_kind IN ('medical_exam','consultation')
+                      AVG(CASE WHEN document_kind = 'clinical_visit'
                           THEN {score_expr} END) AS avg_score
                FROM fact_mo_case c
                WHERE {where}""",
@@ -1699,7 +1706,7 @@ def _sql_summary(period: DateRange, params: dict[str, Any] | None = None) -> dic
             """SELECT COUNT(DISTINCT c.mis_id)
                FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                WHERE """ + where + """
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND f.passed=0 AND f.severity IN ('P0','P1')""",
             values,
         ).fetchone()[0]
@@ -1707,7 +1714,7 @@ def _sql_summary(period: DateRange, params: dict[str, Any] | None = None) -> dic
             """SELECT COUNT(DISTINCT c.mis_id)
                FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                WHERE """ + where + """
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND f.passed=0 AND f.severity='P0'""",
             values,
         ).fetchone()[0]
@@ -1717,7 +1724,7 @@ def _sql_summary(period: DateRange, params: dict[str, Any] | None = None) -> dic
                 """SELECT a.axis, AVG(a.score)
                    FROM fact_mo_score_axis a JOIN fact_mo_case c ON c.mis_id=a.mis_id
                    WHERE """ + where + """
-                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND c.document_kind = 'clinical_visit'
                    GROUP BY a.axis""",
                 values,
             )
@@ -1748,7 +1755,7 @@ def _fallback_summary(period: DateRange, params: dict[str, Any] | None = None) -
     }
     rows = _filter_records(_jsonl_records(filters), filters)
     eligible_rows = [
-        row for row in rows if row.get("document_kind") in {"medical_exam", "consultation"}
+        row for row in rows if row.get("document_kind") in {"clinical_visit"}
     ]
     scores = [
         float(row["overall_pct"])
@@ -1958,7 +1965,7 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
                JOIN fact_mo_case c ON c.mis_id=f.mis_id
                LEFT JOIN dim_finding df ON df.finding_code=f.finding_code
                WHERE """ + where + """
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND COALESCE(f.passed, 0) = 0
                GROUP BY f.finding_code, f.severity
                ORDER BY cases DESC, f.finding_code
@@ -1970,7 +1977,7 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
                 """SELECT COUNT(DISTINCT c.mis_id)
                    FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                    WHERE """ + where + """
-                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND c.document_kind = 'clinical_visit'
                      AND COALESCE(f.passed, 0) = 0""",
                 values,
             ).fetchone()[0]
@@ -1981,7 +1988,7 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
                LEFT JOIN crm_case_state s
                  ON s.case_id=COALESCE(NULLIF(c.visit_id,''), c.mis_id)
                WHERE """ + where + """
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND c.overall_pct IS NOT NULL
                GROUP BY COALESCE(s.status, 'new')""",
             values,
@@ -2122,13 +2129,13 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
                 dict(row)
                 for row in conn.execute(
                     f"""SELECT {bucket} AS date, COUNT(*) AS volume,
-                               SUM(c.document_kind IN ('medical_exam','consultation')
+                               SUM(c.document_kind = 'clinical_visit'
                                    AND {score_expr} IS NOT NULL) AS evaluated,
-                               ROUND(AVG(CASE WHEN c.document_kind IN ('medical_exam','consultation')
+                               ROUND(AVG(CASE WHEN c.document_kind = 'clinical_visit'
                                    THEN {score_expr} END), 2) AS overall,
-                               ROUND(SUM(c.document_kind IN ('medical_exam','consultation')
+                               ROUND(SUM(c.document_kind = 'clinical_visit'
                                    AND {score_expr} IS NOT NULL) * 100.0 /
-                                   NULLIF(SUM(c.document_kind IN ('medical_exam','consultation')), 0), 2)
+                                   NULLIF(SUM(c.document_kind = 'clinical_visit'), 0), 2)
                                    AS coverage,
                                0 AS critical
                         FROM fact_mo_case c WHERE {where}
@@ -2142,7 +2149,7 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
                     FROM fact_mo_score_axis a
                     JOIN fact_mo_case c ON c.mis_id=a.mis_id
                     WHERE {where}
-                      AND c.document_kind IN ('medical_exam','consultation')
+                      AND c.document_kind = 'clinical_visit'
                     GROUP BY {bucket}, a.axis""",
                 values,
             ):
@@ -2154,7 +2161,7 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
                     FROM fact_mo_case c
                     JOIN fact_mo_finding f ON f.mis_id=c.mis_id
                     WHERE {where}
-                      AND c.document_kind IN ('medical_exam','consultation')
+                      AND c.document_kind = 'clinical_visit'
                       AND f.severity='P0'
                     GROUP BY {bucket}""",
                 values,
@@ -2222,7 +2229,7 @@ def _doctor_breakdown(
                       c.specialty, c.icd_chapter, c.overall_pct
                FROM fact_mo_case c LEFT JOIN dim_doctor d ON d.doctor_key=c.doctor_key
                WHERE """ + where + """ AND c.doctor_key <> ''
-                 AND c.document_kind IN ('medical_exam','consultation')
+                 AND c.document_kind = 'clinical_visit'
                  AND c.overall_pct IS NOT NULL""",
             values,
         ).fetchall()
@@ -2339,7 +2346,7 @@ def build_breakdown(params: dict[str, Any]) -> dict[str, Any]:
                            )) AS needs_attention
                     FROM fact_mo_case c {joins}
                     WHERE {where}
-                      AND c.document_kind IN ('medical_exam','consultation')
+                      AND c.document_kind = 'clinical_visit'
                     GROUP BY {key_sql}, {label_sql} ORDER BY n DESC""",
                 values,
             ).fetchall()
@@ -2384,7 +2391,7 @@ def build_heatmap(params: dict[str, Any]) -> dict[str, Any]:
                            COUNT(*) AS n, AVG(c.overall_pct) AS avg_score
                     FROM fact_mo_case c
                     WHERE {where}
-                      AND c.document_kind IN ('medical_exam','consultation')
+                      AND c.document_kind = 'clinical_visit'
                       AND c.icd_chapter <> ''
                     GROUP BY c.specialty, c.icd_chapter
                     ORDER BY n DESC""",
@@ -2454,7 +2461,7 @@ def build_findings(params: dict[str, Any]) -> dict[str, Any]:
                 """SELECT f.finding_code, f.severity, COUNT(DISTINCT f.mis_id) AS cases
                    FROM fact_mo_finding f JOIN fact_mo_case c ON c.mis_id=f.mis_id
                    WHERE """ + where + """
-                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND c.document_kind = 'clinical_visit'
                    GROUP BY f.finding_code, f.severity ORDER BY cases DESC""",
                 values,
             ).fetchall()
@@ -2579,7 +2586,7 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                    FROM fact_mo_case c
                    LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
                    WHERE c.visit_id = ? OR c.mis_id = ?
-                   ORDER BY CASE WHEN c.document_kind IN ('medical_exam','consultation') THEN 0 ELSE 1 END
+                   ORDER BY CASE WHEN c.document_kind = 'clinical_visit' THEN 0 ELSE 1 END
                    LIMIT 1""",
                 (case_id, case_id),
             ).fetchone()
@@ -2645,8 +2652,8 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         None
                         if isinstance(score, (int, float))
                         else (
-                            "Не оценивается: диагностика / неклинический документ"
-                            if document_kind not in {"medical_exam", "consultation"}
+                            "Не оценивается: не клинический приём (процедура / диагностика / профосмотр / стоматология)"
+                            if document_kind not in {"clinical_visit"}
                             else "Оценка ещё не рассчитана"
                         )
                     ),
@@ -2698,8 +2705,10 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                    LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
                    WHERE c.visit_id = ? OR c.mis_id = ?
                    ORDER BY CASE
-                            WHEN c.document_kind='medical_exam' THEN 0
-                            WHEN c.document_kind='consultation' THEN 1
+                            WHEN c.document_kind='clinical_visit' THEN 0
+                            WHEN c.document_kind='procedure_session' THEN 1
+                            WHEN c.document_kind='medical_exam' THEN 2
+                            WHEN c.document_kind='consultation' THEN 3
                             ELSE 2
                           END
                    LIMIT 1""",
@@ -2763,8 +2772,10 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         "filial": filial,
                         "document_kind": item.get("document_kind") or "unknown",
                         "document_kind_label": {
-                            "medical_exam": "Медицинский осмотр",
-                            "consultation": "Консультативное заключение",
+                            "clinical_visit": "Клинический приём",
+                            "procedure_session": "Манипуляция / процедура",
+                            "medical_exam": "Профосмотр / медосмотр",
+                            "consultation": "Клинический приём (legacy)",
                             "certificate": "Справка",
                             "diagnostic": "Диагностическое исследование",
                             "non_clinical": "Неклинический документ",
@@ -2788,8 +2799,8 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                             None
                             if isinstance(score, (int, float))
                             else (
-                                "Не оценивается: диагностика / неклинический документ"
-                                if str(item.get("document_kind") or "") not in {"medical_exam", "consultation"}
+                                "Не оценивается: не клинический приём (процедура / диагностика / профосмотр / стоматология)"
+                                if str(item.get("document_kind") or "") not in {"clinical_visit"}
                                 else "Оценка ещё не рассчитана"
                             )
                         ),
@@ -3423,7 +3434,7 @@ def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
             rows = conn.execute(
                 """SELECT c.specialty, c.overall_pct
                    FROM fact_mo_case c WHERE """ + where + """
-                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND c.document_kind = 'clinical_visit'
                      AND c.overall_pct IS NOT NULL
                    ORDER BY c.specialty LIMIT 20000""",
                 values,
@@ -3457,7 +3468,7 @@ def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
                 """SELECT c.icd_chapter, c.diagnosis_code, COUNT(*) n,
                           ROUND(AVG(c.overall_pct),2) avg_score
                    FROM fact_mo_case c WHERE """ + where + """
-                     AND c.document_kind IN ('medical_exam','consultation')
+                     AND c.document_kind = 'clinical_visit'
                      AND c.icd_chapter <> '' AND c.overall_pct IS NOT NULL
                    GROUP BY c.icd_chapter,c.diagnosis_code
                    ORDER BY n DESC LIMIT 500""",
@@ -3654,7 +3665,7 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str, include_unsc
             """SELECT mis_id,visit_id,visit_date,overall_pct,status,diagnosis_code,
                       document_kind,specialty,filial,scorer_version
                FROM fact_mo_case WHERE doctor_key=?
-               ORDER BY visit_date DESC, CASE WHEN document_kind IN ('medical_exam','consultation') THEN 0 ELSE 1 END
+               ORDER BY visit_date DESC, CASE WHEN document_kind = 'clinical_visit' THEN 0 ELSE 1 END
                LIMIT 500""",
             (doctor_key,),
         ).fetchall()
@@ -3693,16 +3704,8 @@ def build_doctor_cabinet(*, doctor_key: str, actor: str, role: str, include_unsc
                  )""",
             (doctor_key,),
         ).fetchone()
-    kind_labels = {
-        "medical_exam": "Медицинский осмотр",
-        "consultation": "Консультативное заключение",
-        "certificate": "Справка",
-        "diagnostic": "Диагностическое исследование",
-        "non_clinical": "Неклинический документ",
-        "empty": "Пустой документ",
-        "unknown": "Не определён",
-    }
-    scored_kinds = {"medical_exam", "consultation"}
+    kind_labels = dict(DOCUMENT_KIND_LABELS)
+    scored_kinds = {"clinical_visit"}
     case_items = []
     for row in cases:
         item = dict(row)

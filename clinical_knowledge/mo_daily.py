@@ -27,11 +27,46 @@ from typing import Any, Iterable, Iterator, Mapping, Sequence
 from zoneinfo import ZoneInfo
 
 MINSK = ZoneInfo("Europe/Minsk")
+# clinical_visit - единственный тип для клинической оценки (L1/deep/№55/LLM).
+# consultation сохранён как legacy-алиас в витрине до recompute.
 DOCUMENT_KINDS = frozenset(
-    {"medical_exam", "consultation", "certificate", "diagnostic", "non_clinical", "empty", "unknown"}
+    {
+        "clinical_visit",
+        "procedure_session",
+        "medical_exam",
+        "consultation",
+        "certificate",
+        "diagnostic",
+        "non_clinical",
+        "empty",
+        "unknown",
+    }
 )
-SCORED_DOCUMENT_KINDS = frozenset({"medical_exam", "consultation"})
+SCORED_DOCUMENT_KINDS = frozenset({"clinical_visit"})
+# SQL-фрагмент для KPI/очередей (без legacy consultation/medical_exam).
+SCORED_KIND_SQL = "document_kind = 'clinical_visit'"
 EMPTY_TOKENS = frozenset({"", "0", "1", "on", "off", "nan", "none", "null"})
+_PROCEDURE_COMPLAINT_RE = re.compile(
+    r"(?:яв\w*\s+)?на\s+(?:промыван|процедур|манипуляц|инъекц|перевяз|физиотерап|массаж|дренаж)",
+    re.IGNORECASE,
+)
+_STOMATOLOGY_RE = re.compile(
+    r"стоматолог|зубн(?:ой|ая|ые|ого)|ортодонт|пародонтолог",
+    re.IGNORECASE,
+)
+_PROCEDURE_SERVICE_TOKENS = (
+    "промывание",
+    "инъекц",
+    "перевяз",
+    "вакуумный дренаж",
+    "физиотерап",
+    "массаж",
+    "блокад",
+    "пункц",
+    "инстилляц",
+    "электрофорез",
+    "дренаж по",
+)
 PII_FIELDS = frozenset(
     {
         "patient_id",
@@ -212,8 +247,56 @@ def sha256_file(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _text_nonempty(row: Mapping[str, Any], *keys: str) -> bool:
+    for key in keys:
+        value = str(row.get(key) or "").strip().lower()
+        if value and value not in EMPTY_TOKENS:
+            return True
+    return False
+
+
+def is_scored_document_kind(kind: str | None) -> bool:
+    """Оцениваем только clinical_visit (полноценный клинический приём)."""
+    return str(kind or "").strip() in SCORED_DOCUMENT_KINDS
+
+
+def scored_kind_sql(alias: str | None = "c") -> str:
+    """SQL-условие для витрины: только clinical_visit."""
+    col = f"{alias}.document_kind" if alias else "document_kind"
+    return f"{col} = 'clinical_visit'"
+
+
+def _is_procedure_session(row: Mapping[str, Any]) -> bool:
+    """Короткий процедурный визит: манипуляция + слабый осмотр / «на промывание»."""
+    has_manip = _text_nonempty(row, "manipulations")
+    complaints = str(row.get("complaints") or "").strip()
+    has_objective = _text_nonempty(row, "objective_status")
+    has_anamnesis = _text_nonempty(row, "anamnesis_doctor", "anamnesis_auto")
+    has_rich_exam = has_objective and (bool(complaints) or has_anamnesis)
+    if has_rich_exam:
+        return False
+    services = str(row.get("service_names") or "").lower()
+    has_proc_service = any(token in services for token in _PROCEDURE_SERVICE_TOKENS)
+    has_consult_service = "консультац" in services
+    procedure_complaint = bool(complaints) and bool(_PROCEDURE_COMPLAINT_RE.search(complaints))
+    thin_note = not has_objective and not has_anamnesis
+    if has_manip and thin_note and (not complaints or procedure_complaint):
+        return True
+    if procedure_complaint and has_manip and not has_objective:
+        return True
+    if has_proc_service and not has_consult_service and thin_note:
+        return True
+    if has_manip and thin_note and has_proc_service:
+        return True
+    return False
+
+
 def classify_document_kind(row: Mapping[str, Any], rules: Mapping[str, Any] | None = None) -> tuple[str, str]:
-    """Детерминированная taxonomy для продуктового контура МО."""
+    """Детерминированная taxonomy для продуктового контура МО.
+
+    В клинический score идёт только ``clinical_visit``. Стоматология, процедуры,
+    профосмотры, диагностика и справки помечаются, но не оцениваются.
+    """
     rules = rules or {}
     text_fields = (
         "complaints",
@@ -226,38 +309,84 @@ def classify_document_kind(row: Mapping[str, Any], rules: Mapping[str, Any] | No
         "exam_recommendations",
         "treatment_recommendations",
     )
-    has_content = any(str(row.get(key) or "").strip().lower() not in EMPTY_TOKENS for key in text_fields)
-    if not has_content:
+    has_clinical = any(
+        str(row.get(key) or "").strip().lower() not in EMPTY_TOKENS for key in text_fields
+    )
+    has_manip = _text_nonempty(row, "manipulations")
+    has_services = _text_nonempty(row, "service_names", "service_codes")
+    if not has_clinical and not has_manip and not has_services:
         return "empty", "нет клинического содержания"
 
+    spec = str(row.get("doctor_specialization") or "")
+    services_l = str(row.get("service_names") or "").lower()
     haystack = " ".join(
         str(row.get(key) or "").lower()
-        for key in ("doctor_specialization", "service_codes", "service_names", "clinical_diagnosis")
+        for key in (
+            "doctor_specialization",
+            "service_codes",
+            "service_names",
+            "clinical_diagnosis",
+            "pay_type_label",
+        )
     )
     custom = rules.get("keywords") if isinstance(rules.get("keywords"), Mapping) else {}
-    keywords = {
-        "diagnostic": ("узи", "ультразвук", "рентген", "эндоскоп", "лаборатор", "диагност"),
-        "non_clinical": ("медсестр", "медицинская сестра", "регистратор", "логопед"),
-        "certificate": ("справк", "выписк"),
-        "medical_exam": ("профосмотр", "медосмотр", "предрейсов", "периодическ", "предварительн"),
-    }
-    for kind, defaults in keywords.items():
-        configured = custom.get(kind, defaults)
-        if any(str(token).lower() in haystack for token in configured):
-            return kind, f"признак taxonomy: {kind}"
+
+    if _STOMATOLOGY_RE.search(spec) or "стоматолог" in haystack:
+        return "non_clinical", "стоматология вне клинической оценки МО"
+    non_clinical_tokens = tuple(
+        custom.get(
+            "non_clinical",
+            ("медсестр", "медицинская сестра", "регистратор", "логопед", "стоматолог"),
+        )
+    )
+    if any(str(token).lower() in haystack for token in non_clinical_tokens):
+        return "non_clinical", "признак taxonomy: non_clinical"
+
+    if _is_procedure_session(row):
+        return "procedure_session", "манипуляция / короткий процедурный визит"
+
+    diagnostic_tokens = tuple(
+        custom.get(
+            "diagnostic",
+            ("узи", "ультразвук", "рентген", "эндоскоп", "лаборатор", "диагност"),
+        )
+    )
+    has_consult_service = "консультац" in services_l
+    legacy = str(row.get("kz_kind") or "").strip()
+    if legacy == "diagnostic" or (
+        any(str(token).lower() in haystack for token in diagnostic_tokens) and not has_consult_service
+    ):
+        return "diagnostic", "диагностическое исследование"
+
+    medical_exam_tokens = tuple(
+        custom.get(
+            "medical_exam",
+            (
+                "профосмотр",
+                "медосмотр",
+                "медицинский осмотр",
+                "предрейсов",
+                "периодическ",
+                "предварительн",
+            ),
+        )
+    )
+    if any(str(token).lower() in haystack for token in medical_exam_tokens):
+        return "medical_exam", "признак taxonomy: medical_exam"
     pay_type = str(row.get("pay_type") or "").strip().removesuffix(".0")
     if pay_type in {str(v) for v in rules.get("medical_exam_pay_types", ["12"])}:
-        return "medical_exam", f"тип оплаты {pay_type}"
+        return "medical_exam", f"тип оплаты {pay_type} (профосмотр/справка)"
 
-    legacy = str(row.get("kz_kind") or "").strip()
-    if legacy == "diagnostic":
-        return "diagnostic", "совместимая классификация kz_kind"
+    certificate_tokens = tuple(custom.get("certificate", ("справк", "выписк")))
+    if any(str(token).lower() in haystack for token in certificate_tokens):
+        return "certificate", "справка без подтверждённого признака медосмотра"
+
     if legacy == "non_clinical":
         return "non_clinical", "совместимая классификация kz_kind"
     if legacy == "certificate":
         return "certificate", "справка без подтверждённого признака медосмотра"
-    if legacy == "kz":
-        return "consultation", "консультативная запись"
+    if legacy == "kz" or has_clinical:
+        return "clinical_visit", "клинический приём врача"
     return "unknown", "недостаточно признаков для taxonomy"
 
 
@@ -266,7 +395,7 @@ def add_document_taxonomy(frame: Any, rules: Mapping[str, Any] | None = None) ->
     result = frame.copy()
     result["document_kind"] = [item[0] for item in classified]
     result["document_kind_reason"] = [item[1] for item in classified]
-    result["mo_score_eligible"] = result["document_kind"].isin(SCORED_DOCUMENT_KINDS)
+    result["mo_score_eligible"] = result["document_kind"].map(is_scored_document_kind)
     return result
 
 
@@ -584,7 +713,7 @@ def assess_completeness(
     Очередь LLM сама по себе - advisory: при coverage >= цели и без scoring_errors
     день может быть `success`, а `llm_queue_pending` остаётся в advisory_reasons.
     """
-    eligible = [row for row in raw_rows if row.get("document_kind") in SCORED_DOCUMENT_KINDS]
+    eligible = [row for row in raw_rows if is_scored_document_kind(row.get("document_kind"))]
     failures = [row for row in scored_cases if row.get("error")]
     # Считаем оценённым только случай с оценкой: пустой результат без ошибки тоже пробел.
     scored_ok = sum(
@@ -675,7 +804,7 @@ def build_daily_report(
     scores = [score for row in scored_cases if (score := case_overall_pct(row)) is not None]
     kinds = Counter(str(row.get("document_kind") or "unknown") for row in raw_rows)
     failures = [row for row in scored_cases if row.get("error")]
-    eligible_rows = [row for row in raw_rows if row.get("document_kind") in SCORED_DOCUMENT_KINDS]
+    eligible_rows = [row for row in raw_rows if is_scored_document_kind(row.get("document_kind"))]
     eligible_visits = {
         str(row.get("visit_id") or row.get("id") or "")
         for row in eligible_rows
@@ -1006,8 +1135,10 @@ ul{{padding-left:20px}}li{{margin:7px 0}}li.blocking{{color:#a93245}}li.warning{
 
 
 DOCUMENT_KIND_LABELS = {
-    "medical_exam": "Медицинский осмотр",
-    "consultation": "Консультативное заключение",
+    "clinical_visit": "Клинический приём",
+    "procedure_session": "Манипуляция / процедура",
+    "medical_exam": "Профосмотр / медосмотр",
+    "consultation": "Клинический приём (legacy)",
     "certificate": "Справка",
     "diagnostic": "Диагностическое исследование",
     "non_clinical": "Неклинический документ",
@@ -1680,7 +1811,7 @@ def upsert_warehouse(
                 except Exception:  # noqa: BLE001
                     history_prior_n = 0
                     history_tier = ""
-            eligible_document = str(raw.get("document_kind") or "") in SCORED_DOCUMENT_KINDS
+            eligible_document = is_scored_document_kind(raw.get("document_kind"))
             if eligible_document:
                 eligible_rows_count += 1
                 if score is not None:

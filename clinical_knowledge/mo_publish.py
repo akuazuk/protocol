@@ -118,7 +118,7 @@ def snapshot_summary(snapshot: Path) -> dict[str, object]:
         ).fetchone()
         eligible_gaps = db.execute(
             """SELECT COUNT(*) FROM fact_mo_case
-               WHERE overall_pct IS NULL AND document_kind IN ('medical_exam', 'consultation')"""
+               WHERE overall_pct IS NULL AND document_kind = 'clinical_visit'"""
         ).fetchone()[0]
         crm_rows = sum(
             db.execute(f"SELECT COUNT(*) FROM {table}").fetchone()[0]

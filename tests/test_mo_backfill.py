@@ -47,11 +47,11 @@ def test_propagate_visit_scores_only_when_visit_score_is_unambiguous(tmp_path) -
     warehouse = tmp_path / "warehouse.sqlite"
     initialize_warehouse(warehouse)
     rows = [
-        ("1", "same", "2026-07-01", "consultation", 88, "good"),
-        ("2", "same", "2026-07-03", "consultation", None, ""),
-        ("3", "mixed", "2026-07-01", "consultation", 70, "review"),
-        ("4", "mixed", "2026-07-02", "consultation", 90, "good"),
-        ("5", "mixed", "2026-07-03", "consultation", None, ""),
+        ("1", "same", "2026-07-01", "clinical_visit", 88, "good"),
+        ("2", "same", "2026-07-03", "clinical_visit", None, ""),
+        ("3", "mixed", "2026-07-01", "clinical_visit", 70, "review"),
+        ("4", "mixed", "2026-07-02", "clinical_visit", 90, "good"),
+        ("5", "mixed", "2026-07-03", "clinical_visit", None, ""),
         ("6", "same", "2026-07-03", "diagnostic", None, ""),
     ]
     with sqlite3.connect(warehouse) as db:
@@ -88,7 +88,7 @@ def test_refresh_daily_case_aggregates_uses_only_eligible_documents(tmp_path) ->
                 doctor_key, specialty, filial, content_hash, updated_at)
                VALUES (?, ?, '2026-07-01', ?, ?, 'good', '', '', '', ?, 'now')""",
             [
-                ("1", "1", "consultation", 80.0, "h1"),
+                ("1", "1", "clinical_visit", 80.0, "h1"),
                 ("2", "2", "medical_exam", 60.0, "h2"),
                 ("3", "3", "diagnostic", 100.0, "h3"),
             ],
@@ -101,11 +101,11 @@ def test_refresh_daily_case_aggregates_uses_only_eligible_documents(tmp_path) ->
         db.execute(
             """INSERT INTO fact_mo_finding
                (mis_id,finding_code,severity,passed,evidence,source_ref)
-               VALUES ('2','B_clinical_gap','P1',0,'','test')"""
+               VALUES ('1','B_clinical_gap','P1',0,'','test')"""
         )
     assert refresh_daily_case_aggregates(warehouse) == 1
     with sqlite3.connect(warehouse) as db:
         assert db.execute(
             """SELECT eligible_rows,scored_rows,avg_score,needs_attention,coverage_pct
                FROM fact_mo_daily WHERE visit_date='2026-07-01'"""
-        ).fetchone() == (2, 2, 70.0, 1, 100.0)
+        ).fetchone() == (1, 1, 80.0, 1, 100.0)

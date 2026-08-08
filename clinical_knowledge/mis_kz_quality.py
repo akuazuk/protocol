@@ -505,8 +505,10 @@ _AXIS_RU = {
 }
 
 _DOCUMENT_KIND_LABELS = {
-    "medical_exam": "Медицинский осмотр",
-    "consultation": "Консультация",
+    "clinical_visit": "Клинический приём",
+    "procedure_session": "Манипуляция / процедура",
+    "medical_exam": "Профосмотр / медосмотр",
+    "consultation": "Клинический приём (legacy)",
     "certificate": "Справка",
     "diagnostic": "Диагностика",
     "non_clinical": "Неклиническая запись",
@@ -516,11 +518,12 @@ _DOCUMENT_KIND_LABELS = {
 
 _DOCUMENT_TAXONOMY_PATH = ROOT / "config" / "mo_document_kind_rules.json"
 _DOCUMENT_TAXONOMY_DEFAULTS = {
+    "clinical_visit": ["консультац", "прием врача", "приём врача"],
+    "procedure_session": ["промывание", "инъекц", "перевяз", "манипуляц"],
     "medical_exam": ["профосмотр", "проф осмотр", "медосмотр", "медицинский осмотр"],
     "certificate": ["справк", "медкомис", "водительск"],
     "diagnostic": ["узи", "рентген", "мрт", "кт ", "томограф", "лаборатор", "анализ крови"],
-    "non_clinical": ["администратор", "регистратор", "кассир"],
-    "consultation": ["консультац", "прием врача", "приём врача"],
+    "non_clinical": ["администратор", "регистратор", "кассир", "стоматолог", "логопед"],
 }
 
 
@@ -541,39 +544,47 @@ def _document_taxonomy_rules() -> dict[str, list[str]]:
 def classify_document_kind(row: dict[str, Any], case: dict[str, Any] | None = None) -> str:
     """Аддитивная классификация записи МО без изменения legacy ``kz_kind``.
 
-    Сначала принимается уже рассчитанное каноническое значение. Эвристика нужна для
-    исторических CSV/cases и намеренно возвращает ``unknown`` для неоднозначных строк.
+    Канон - ``mo_daily.classify_document_kind``. Explicit ``consultation`` из старых
+    витрин читается как ``clinical_visit``.
     """
     case = case or {}
     explicit = str((row or {}).get("document_kind") or case.get("document_kind") or "").strip().lower()
+    if explicit == "consultation":
+        return "clinical_visit"
     if explicit in _DOCUMENT_KIND_LABELS:
         return explicit
+    merged: dict[str, Any] = {}
+    if isinstance(row, dict):
+        merged.update(row)
+    if isinstance(case, dict):
+        for key, value in case.items():
+            if key not in merged or not merged.get(key):
+                merged[key] = value
+    # dashboard cases often carry clinical flags without full CSV fields
+    # (не "1"/"on" - они в EMPTY_TOKENS канонического классификатора)
     fields = case.get("fields_present") if isinstance(case.get("fields_present"), dict) else {}
+    if fields.get("objective_status") and not merged.get("objective_status"):
+        merged["objective_status"] = "заполнено"
+    if fields.get("complaints") and not merged.get("complaints"):
+        merged["complaints"] = "заполнено"
+    if fields.get("diagnosis") and not merged.get("clinical_diagnosis"):
+        merged["clinical_diagnosis"] = str(case.get("diagnosis_short") or "заполнено")
     text_len = case.get("text_len")
-    clinical_present = any(bool(v) for v in fields.values()) or bool(
-        (row or {}).get("clinical_diagnosis") or case.get("diagnosis_short")
-    )
-    if (text_len == 0 or text_len == "0") and not clinical_present:
+    if (text_len == 0 or text_len == "0") and not any(
+        str(merged.get(k) or "").strip()
+        for k in (
+            "complaints",
+            "objective_status",
+            "clinical_diagnosis",
+            "manipulations",
+            "anamnesis_doctor",
+        )
+    ):
         return "empty"
+    from clinical_knowledge.mo_daily import classify_document_kind as classify_canonical
 
-    services = (row or {}).get("service_names") or case.get("service_names") or []
-    if isinstance(services, str):
-        services = services.split("|")
-    hay = " ".join(
-        [
-            str((row or {}).get("pay_type_label") or case.get("pay_type_label") or ""),
-            str((row or {}).get("kz_kind") or ""),
-            str((row or {}).get("doctor_specialization") or case.get("doctor_specialization") or ""),
-            " ".join(str(item) for item in services),
-        ]
-    ).lower()
-    rules = _document_taxonomy_rules()
-    for kind in ("medical_exam", "certificate", "diagnostic", "non_clinical"):
-        if any(token in hay for token in rules[kind]):
-            return kind
-    if any(token in hay for token in rules["consultation"]) and clinical_present:
-        return "consultation"
-    return "consultation" if clinical_present else "unknown"
+    kind, _reason = classify_canonical(merged)
+    return kind
 
 
 def document_kind_label(kind: str) -> str:

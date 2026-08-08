@@ -25,7 +25,7 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from clinical_knowledge.mo_daily import (  # noqa: E402
-    SCORED_DOCUMENT_KINDS,
+    is_scored_document_kind,
     assess_completeness,
     build_daily_report,
     case_overall_pct,
@@ -122,7 +122,7 @@ def _load_rows(path: Path) -> list[dict[str, Any]]:
         kind, reason = classify_document_kind(item)
         item["document_kind"] = kind
         item["document_kind_reason"] = reason
-        item["mo_score_eligible"] = kind in SCORED_DOCUMENT_KINDS
+        item["mo_score_eligible"] = is_scored_document_kind(kind)
         if not item.get("visit_date"):
             item["visit_date"] = str(item.get("date") or item.get("visit_date_iso_db") or "")[:10]
         out.append(item)

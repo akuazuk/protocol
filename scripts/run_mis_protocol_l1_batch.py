@@ -479,7 +479,8 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
 
                 document_kind, _reason = classify_document_kind(row)
                 row["document_kind"] = document_kind
-                row["mo_score_eligible"] = document_kind in {"medical_exam", "consultation"}
+                from clinical_knowledge.mo_daily import is_scored_document_kind
+                row["mo_score_eligible"] = is_scored_document_kind(document_kind)
             except Exception:  # noqa: BLE001
                 document_kind = ""
         by_kind[kind] += 1
