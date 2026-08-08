@@ -157,11 +157,18 @@ def _axis_documentation(case: dict) -> tuple[float, list[dict]]:
 # ---------------------------------------------------------------------------
 def icd_validate(code: str, dx_text: str, icd_client=None) -> tuple[bool, str]:
     """Локальная проверка формы кода МКБ. icd_client (опц.) - вторичная сверка."""
-    code = (code or "").strip()
+    raw = (code or "").strip()
+    # Кириллица Н/К + пробел («Н 52.1») → H52.1 до проверки формата
+    try:
+        from clinical_knowledge.mo_icd_resolve import _normalize_code
+
+        code = _normalize_code(raw) if raw else ""
+    except Exception:  # noqa: BLE001
+        code = raw.upper().replace(" ", "")
     if not code:
         return False, "нет кода МКБ"
-    if not _MKB_RE.match(code):
-        return False, f"код «{code}» не соответствует формату МКБ-10"
+    if not _MKB_RE.match(code) and not re.match(r"^[A-TV-Z]\d{2}(?:\.\d{1,2})?$", code, re.I):
+        return False, f"код «{raw or code}» не соответствует формату МКБ-10"
     if icd_client is not None:
         try:
             ok = bool(icd_client.validate(code))  # duck-typed

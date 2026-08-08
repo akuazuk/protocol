@@ -58,6 +58,37 @@ def test_resolve_empty_when_no_code_anywhere() -> None:
     assert resolved["all"] == []
 
 
+def test_resolve_cyrillic_h_with_space_myopia_visit() -> None:
+    """Визит 3644142: «Н 52.1» / «Н 52.2» - кириллица + пробел, не «нет кода»."""
+    text = (
+        "Н 52.1 Миопия слабой степени обоих глаз.\r\n"
+        "Н 52.2 Миопический астигматизм обоих глаз."
+    )
+    resolved = resolve_icd_codes_from_mo({"clinical_diagnosis": text, "mkb_code_main": ""})
+    assert resolved["present"] is True
+    assert resolved["main"] == "H52.1"
+    assert "H52.1" in resolved["all"]
+    assert "H52.2" in resolved["all"]
+
+
+def test_deep_no_b_icd_invalid_on_cyrillic_h_codes() -> None:
+    case = {
+        "clinical_diagnosis": (
+            "Н 52.1 Миопия слабой степени обоих глаз.\r\n"
+            "Н 52.2 Миопический астигматизм обоих глаз."
+        ),
+        "mkb_code_main": "",
+        "complaints": "Снижение зрения",
+        "anamnesis_doctor": "Длительно",
+        "objective_status": "OU миопия",
+        "exam_recommendations": "Контроль",
+        "treatment_recommendations": "Коррекция",
+    }
+    deep = evaluate_kz_deep(case, protocol_ctx=None, drug_ctx={})
+    codes = {f["code"] for f in (deep.get("findings") or [])}
+    assert "B_icd_invalid" not in codes
+
+
 def test_reg55_icd10_present_scans_full_mo() -> None:
     assert _icd10_present({"diagnosis_short": ""}) is False
     assert _icd10_present({"diagnosis_short": "", "objective_status": "N47.1 после операции"}) is True
