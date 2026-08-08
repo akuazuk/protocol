@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-08-mo-consultation-legacy-score-v1.md](2026-08-08-mo-consultation-legacy-score-v1.md) | Legacy consultation снова в оценке (рубрика МЗ / №55 / KP) | active |
 | [2026-08-08-mo-action-queue-precise-signals-v2.md](2026-08-08-mo-action-queue-precise-signals-v2.md) | Очередь разбора: whitelist точных сигналов (safety/Dx), без №55-тикетов | active |
 | [2026-08-08-mo-icd-absent-ok-with-dx-v1.md](2026-08-08-mo-icd-absent-ok-with-dx-v1.md) | Нет кода МКБ при тексте Dx - не дефект; страшно только без Dx и без кода | active |
 | [2026-08-08-mo-nonclinical-exclude-hard-v1.md](2026-08-08-mo-nonclinical-exclude-hard-v1.md) | Non-clinical вне таблиц и любых оценок/КП/LLM | active |
