@@ -1,7 +1,8 @@
 # Рубрика оценки МО по методике МЗ («Как оценивать»).
-# Shadow layer поверх deep/v4. Шкала: 0 | 0.5 | 1 | n/a.
-schema_version: "1.0"
-scorer_version: "mz-rubric-1.0.0"
+# zone: documentation | diagnosis | plan (для дашборда зон).
+# requires_protocol: сверка с КП только где Протокол=Да в таблице МЗ.
+schema_version: "1.1"
+scorer_version: "mz-rubric-1.1.0"
 primary: false
 scale: [0, 0.5, 1]
 groups:
@@ -9,6 +10,10 @@ groups:
   clinical: Клиника
   dynamics: Динамика
   regulatory: Регламент
+zones:
+  documentation: Оформление
+  diagnosis: Диагноз
+  plan: План по протоколу
 
 criteria:
   - id: mo_complete
@@ -17,6 +22,9 @@ criteria:
     regulation: mz_2015_127
     scored_by_55: true
     group: documentation
+    zone: documentation
+    requires_protocol: false
+    optional: false
     rule: core_fields_completeness
     fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
 
@@ -26,6 +34,9 @@ criteria:
     regulation: mz_2015_127
     scored_by_55: false
     group: documentation
+    zone: documentation
+    requires_protocol: false
+    optional: false
     rule: datetime_present
     fields: [visit_date, visit_time]
 
@@ -35,6 +46,9 @@ criteria:
     regulation: mz_2015_127
     scored_by_55: false
     group: clinical
+    zone: documentation
+    requires_protocol: false
+    optional: false
     rule: text_detailed
     fields: [complaints]
     detail_markers: [локал, характер, длительн, интенсив, беспоко, боль, слабост, кашел]
@@ -45,6 +59,9 @@ criteria:
     regulation: mz_2015_127
     scored_by_55: false
     group: clinical
+    zone: documentation
+    requires_protocol: false
+    optional: false
     rule: text_sufficient
     fields: [anamnesis_doctor, anamnesis_auto]
     min_chars_partial: 40
@@ -56,6 +73,9 @@ criteria:
     regulation: mz_2015_127
     scored_by_55: false
     group: clinical
+    zone: documentation
+    requires_protocol: false
+    optional: false
     rule: risk_factors_present
     fields: [anamnesis_doctor, anamnesis_auto, complaints]
     markers: [фактор риска, курен, алкогол, ожирен, гипертенз, сахарн, наследств, профвред, аллерго]
@@ -66,6 +86,9 @@ criteria:
     regulation: mz_2015_127
     scored_by_55: false
     group: clinical
+    zone: documentation
+    requires_protocol: false
+    optional: false
     rule: objective_complete
     fields: [objective_status]
     markers: [состоян, кожн, дыхани, сердц, живот, давлен, чсс, чд, а/д, температура, статус]
@@ -76,6 +99,9 @@ criteria:
     regulation: mz_2021_55
     scored_by_55: true
     group: clinical
+    zone: documentation
+    requires_protocol: false
+    optional: true
     rule: exam_data_optional
     fields: [exam_data]
 
@@ -85,6 +111,9 @@ criteria:
     regulation: mz_2021_55
     scored_by_55: true
     group: clinical
+    zone: diagnosis
+    requires_protocol: true
+    optional: false
     rule: diagnosis_chain_icd
     fields: [clinical_diagnosis, mis_diagnos, complaints, anamnesis_doctor, objective_status]
 
@@ -94,6 +123,9 @@ criteria:
     regulation: mz_2021_55
     scored_by_55: true
     group: regulatory
+    zone: plan
+    requires_protocol: true
+    optional: false
     rule: plan_present_or_aligned
     fields: [exam_recommendations]
     block_score_key: exams
@@ -104,6 +136,9 @@ criteria:
     regulation: mz_2021_55
     scored_by_55: true
     group: regulatory
+    zone: plan
+    requires_protocol: true
+    optional: false
     rule: plan_present_or_aligned
     fields: [treatment_recommendations]
     block_score_key: treatment
@@ -114,6 +149,9 @@ criteria:
     regulation: mz_2021_55
     scored_by_55: true
     group: dynamics
+    zone: plan
+    requires_protocol: true
+    optional: false
     rule: dynamics_correction
     requires_prior_visit: true
     fields: [exam_recommendations]
@@ -124,6 +162,9 @@ criteria:
     regulation: mz_2021_55
     scored_by_55: true
     group: dynamics
+    zone: plan
+    requires_protocol: true
+    optional: false
     rule: dynamics_correction
     requires_prior_visit: true
     fields: [treatment_recommendations]
@@ -134,6 +175,9 @@ criteria:
     regulation: mz_2021_55
     scored_by_55: true
     group: regulatory
+    zone: plan
+    requires_protocol: true
+    optional: false
     rule: follow_up_present
     fields: [treatment_recommendations, exam_recommendations]
     markers: [явк, наблюден, контроль, повторн, через, через , кратност, диспансер]

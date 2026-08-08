@@ -615,6 +615,27 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "icd_chapter": item.get("icd_chapter") or "",
                 "history_prior_n": int(item.get("history_prior_n") or 0),
                 "history_tier": str(item.get("history_tier") or ""),
+                "zone1_pct": (
+                    float(item["zone1_pct"])
+                    if isinstance(item.get("zone1_pct"), (int, float))
+                    else None
+                ),
+                "zone2a_pct": (
+                    float(item["zone2a_pct"])
+                    if isinstance(item.get("zone2a_pct"), (int, float))
+                    else None
+                ),
+                "zone2b_pct": (
+                    float(item["zone2b_pct"])
+                    if isinstance(item.get("zone2b_pct"), (int, float))
+                    else None
+                ),
+                "zone1_band": str(item.get("zone1_band") or "") or None,
+                "zone2a_band": str(item.get("zone2a_band") or "") or None,
+                "zone2b_band": str(item.get("zone2b_band") or "") or None,
+                "zone2b_kp_status": str(item.get("zone2b_kp_status") or "") or None,
+                "attention_primary": str(item.get("attention_primary") or "") or None,
+                "attention_reason_ru": str(item.get("attention_reason_ru") or "") or None,
                 "overall_pct": score,
                 "reg55_pct": (
                     float(item["reg55_pct"])
@@ -731,6 +752,39 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
         if str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}:
             if not _needs_review(rec):
                 continue
+        zone = str(params.get("zone") or "").strip().lower()
+        zone_band = str(params.get("zone_band") or "").strip().lower()
+        if zone in {"zone1", "documentation"}:
+            if zone_band and str(rec.get("zone1_band") or "").lower() != zone_band:
+                continue
+        elif zone in {"zone2a", "diagnosis"}:
+            if zone_band and str(rec.get("zone2a_band") or "").lower() != zone_band:
+                continue
+        elif zone in {"zone2b", "plan"}:
+            if zone_band and str(rec.get("zone2b_band") or "").lower() != zone_band:
+                continue
+        elif zone in {"safety"}:
+            if str(rec.get("attention_primary") or "") != "safety":
+                continue
+        elif zone_band:
+            # band без zone - любое из трёх
+            bands = {
+                str(rec.get("zone1_band") or "").lower(),
+                str(rec.get("zone2a_band") or "").lower(),
+                str(rec.get("zone2b_band") or "").lower(),
+            }
+            if zone_band not in bands:
+                continue
+        if str(params.get("attention_only") or "").lower() in {"1", "true", "yes"}:
+            primary = str(rec.get("attention_primary") or "none")
+            if primary in {"", "none"}:
+                continue
+        kp_status = str(params.get("kp_status") or "").strip().lower()
+        if kp_status and str(rec.get("zone2b_kp_status") or "").lower() != kp_status:
+            continue
+        history_tier = str(params.get("history_tier") or "").strip()
+        if history_tier and str(rec.get("history_tier") or "") != history_tier:
+            continue
         out.append(rec)
     return out
 
@@ -874,6 +928,10 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         "status": "status",
         "visit_id": "visit_id",
         "patient_id": "patient_id",
+        "zone1": "zone1_pct",
+        "zone2a": "zone2a_pct",
+        "zone2b": "zone2b_pct",
+        "attention": "attention_primary",
     }
     sort_field = sort_map.get(str(params.get("sort_by") or ""), "date")
     reverse = str(params.get("sort_dir") or "desc").lower() == "desc"
@@ -992,6 +1050,103 @@ def build_facets(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any] | None:
+    """Агрегаты зон для overview (без UI-флага; клиент может игнорировать)."""
+    date_from = str(params.get("date_from") or "")[:10]
+    date_to = str(params.get("date_to") or "")[:10]
+    if not date_from or not date_to:
+        return None
+    try:
+        with closing(_read_connection()) as conn:
+            cols = {row[1] for row in conn.execute("PRAGMA table_info(fact_mo_case)")}
+            if "zone1_band" not in cols:
+                return None
+            row = conn.execute(
+                """SELECT
+                     COUNT(*) AS n_evaluated,
+                     SUM(CASE WHEN zone1_band='bad' THEN 1 ELSE 0 END) AS zone1_bad,
+                     SUM(CASE WHEN zone2a_band='bad' THEN 1 ELSE 0 END) AS zone2a_bad,
+                     SUM(CASE WHEN zone2b_band='bad' THEN 1 ELSE 0 END) AS zone2b_bad,
+                     SUM(CASE WHEN attention_primary='safety' THEN 1 ELSE 0 END) AS safety_critical,
+                     AVG(zone1_pct) AS zone1_avg,
+                     AVG(zone2a_pct) AS zone2a_avg,
+                     AVG(zone2b_pct) AS zone2b_avg
+                   FROM fact_mo_case
+                   WHERE visit_date BETWEEN ? AND ?
+                     AND document_kind IN ('clinical_visit', 'consultation')
+                     AND layer_engine IS NOT NULL""",
+                (date_from, date_to),
+            ).fetchone()
+            trend = conn.execute(
+                """SELECT visit_date AS date,
+                          AVG(zone1_pct) AS zone1_avg,
+                          AVG(zone2a_pct) AS zone2a_avg,
+                          AVG(zone2b_pct) AS zone2b_avg,
+                          SUM(CASE WHEN attention_primary='safety' THEN 1 ELSE 0 END) AS safety_critical
+                   FROM fact_mo_case
+                   WHERE visit_date BETWEEN ? AND ?
+                     AND document_kind IN ('clinical_visit', 'consultation')
+                     AND layer_engine IS NOT NULL
+                   GROUP BY visit_date
+                   ORDER BY visit_date""",
+                (date_from, date_to),
+            ).fetchall()
+    except Exception:  # noqa: BLE001
+        return None
+    if not row:
+        return None
+    n = int(row["n_evaluated"] or 0)
+    if n <= 0:
+        return {
+            "n_evaluated": 0,
+            "zone1_bad": 0,
+            "zone1_bad_pct": 0.0,
+            "zone2a_bad": 0,
+            "zone2a_bad_pct": 0.0,
+            "zone2b_bad": 0,
+            "zone2b_bad_pct": 0.0,
+            "safety_critical": 0,
+            "queue_critical": None,
+            "queue_important": None,
+            "zone_avgs": {"zone1": None, "zone2a": None, "zone2b": None},
+            "zone_trends": [],
+        }
+
+    def _pct(bad: int) -> float:
+        return round(100.0 * bad / n, 1)
+
+    z1_bad = int(row["zone1_bad"] or 0)
+    z2a_bad = int(row["zone2a_bad"] or 0)
+    z2b_bad = int(row["zone2b_bad"] or 0)
+    return {
+        "n_evaluated": n,
+        "zone1_bad": z1_bad,
+        "zone1_bad_pct": _pct(z1_bad),
+        "zone2a_bad": z2a_bad,
+        "zone2a_bad_pct": _pct(z2a_bad),
+        "zone2b_bad": z2b_bad,
+        "zone2b_bad_pct": _pct(z2b_bad),
+        "safety_critical": int(row["safety_critical"] or 0),
+        "queue_critical": None,
+        "queue_important": None,
+        "zone_avgs": {
+            "zone1": round(float(row["zone1_avg"]), 1) if row["zone1_avg"] is not None else None,
+            "zone2a": round(float(row["zone2a_avg"]), 1) if row["zone2a_avg"] is not None else None,
+            "zone2b": round(float(row["zone2b_avg"]), 1) if row["zone2b_avg"] is not None else None,
+        },
+        "zone_trends": [
+            {
+                "date": str(t["date"]),
+                "zone1_avg": round(float(t["zone1_avg"]), 1) if t["zone1_avg"] is not None else None,
+                "zone2a_avg": round(float(t["zone2a_avg"]), 1) if t["zone2a_avg"] is not None else None,
+                "zone2b_avg": round(float(t["zone2b_avg"]), 1) if t["zone2b_avg"] is not None else None,
+                "safety_critical": int(t["safety_critical"] or 0),
+            }
+            for t in trend
+        ],
+    }
+
+
 def build_overview(params: dict[str, Any]) -> dict[str, Any]:
     all_records = _records(params)
     filtered = _filter_records(all_records, params)
@@ -1000,6 +1155,7 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
     kinds = Counter(r.get("document_kind") or "unknown" for r in filtered)
     eligible = sum(kinds.get(k, 0) for k in ("clinical_visit", "consultation"))
     small_slice = len(filtered) < SUPPRESSION_N
+    attention = None if small_slice else _overview_attention_from_warehouse(params)
     return {
         "ok": True,
         "namespace": "mo",
@@ -1016,6 +1172,8 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
             "critical": None if small_slice else sum(1 for r in filtered if int(r.get("p0") or 0) > 0),
             "suppressed": small_slice,
         },
+        "attention": attention,
+        "zone_trends": (attention or {}).get("zone_trends") if attention else None,
         "document_kind_distribution": {} if small_slice else dict(kinds),
         "data_through": max((str(r.get("date") or "") for r in filtered), default=""),
         "axis_means": None if small_slice else agg.get("axis_means"),
@@ -1143,10 +1301,20 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             if _warehouse_has_column(str(_db_path()), "fact_mo_finding", "detail_ru")
             else "'' AS detail_ru"
         )
+        _zone_select = (
+            "c.zone1_band, c.zone2a_band, c.zone2b_band, c.zone2b_kp_status, "
+            "c.attention_primary, c.attention_reason_ru,"
+            if _warehouse_has_column(str(_db_path()), "fact_mo_case", "zone1_band")
+            else "NULL AS zone1_band, NULL AS zone2a_band, NULL AS zone2b_band, "
+            "NULL AS zone2b_kp_status, NULL AS attention_primary, NULL AS attention_reason_ru,"
+        )
         action_raw = conn.execute(
             """SELECT c.mis_id, c.visit_id, c.visit_date, c.filial, c.specialty, c.diagnosis_code,
                       c.overall_pct, c.document_kind,
                       c.scorer_version, c.score_schema_version,
+                      """
+            + _zone_select
+            + """
                       COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
                       COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
                       COALESCE(NULLIF(d.specialty,''), c.specialty, '') AS doctor_specialty,
@@ -1501,6 +1669,17 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         if (not doctor_name or doctor_name == "Врач не указан") and doctor_id:
             doctor_name = f"ID врача: {doctor_id}"
         seen_cases.add(case_id)
+        attention_primary = (
+            str(row["attention_primary"] or "")
+            if "attention_primary" in row.keys()
+            else ""
+        )
+        layer_ru = {
+            "safety": "Риск",
+            "zone1": "Оформление",
+            "zone2a": "Диагноз",
+            "zone2b": "План по протоколу",
+        }.get(attention_primary, "")
         action_cases.append(
             {
                 "case_id": case_id,
@@ -1515,6 +1694,32 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "queue_band": band,
                 "finding_severity": finding_sev,
                 "finding_severity_label_ru": BAND_LABEL_RU.get(band, "Важно"),
+                "attention_primary": attention_primary or None,
+                "attention_reason_ru": (
+                    str(row["attention_reason_ru"] or "")
+                    if "attention_reason_ru" in row.keys()
+                    else ""
+                )
+                or None,
+                "layer_ru": layer_ru or None,
+                "zone1_band": (
+                    str(row["zone1_band"] or "") if "zone1_band" in row.keys() else ""
+                )
+                or None,
+                "zone2a_band": (
+                    str(row["zone2a_band"] or "") if "zone2a_band" in row.keys() else ""
+                )
+                or None,
+                "zone2b_band": (
+                    str(row["zone2b_band"] or "") if "zone2b_band" in row.keys() else ""
+                )
+                or None,
+                "zone2b_kp_status": (
+                    str(row["zone2b_kp_status"] or "")
+                    if "zone2b_kp_status" in row.keys()
+                    else ""
+                )
+                or None,
                 "doctor": doctor_name or "Врач не указан",
                 "doctor_fio": doctor_name or "Врач не указан",
                 "specialty": specialty or "Специальность не указана",
@@ -1675,6 +1880,9 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         for items in flow_dimensions.values()
         for item in items
     )
+    attention = _overview_attention_from_warehouse(
+        {"date_from": day, "date_to": day}
+    )
     return {
         "data_completeness": data_completeness,
         "funnel": funnel,
@@ -1683,6 +1891,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             "reason": None if indices_available else "Четыре оси не записаны за выбранный день",
             "items": indices,
         },
+        "attention": attention,
         "top_findings": findings_contract,
         "action_cases": action_contract,
         "doctor_outliers": doctor_contract,
