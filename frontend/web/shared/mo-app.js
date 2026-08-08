@@ -17,7 +17,7 @@
     };
     var EXPERT_PAGES = { yesterday: true, reports: true };
     var state = {
-      page: "overview", period: "month", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
+      page: "yesterday", period: "yesterday", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       sortBy: "date", sortDir: "desc",
       caseNavIds: [],
       protocolSuggest: null,
@@ -30,7 +30,7 @@
       expertDisplayName: ""
     };
     var PAGE_TITLES = {
-      overview: "Обзор МО", yesterday: "Отчёт за вчера", queue: "Очередь разбора",
+      overview: "Период", yesterday: "Сегодня", queue: "Очередь",
       documents: "Все случаи", doctors: "Врачи", specialties: "Специальности",
       diagnoses: "Диагнозы и МКБ", safety: "Безопасность", "data-quality": "Качество данных",
       "doctor-cabinet": "Кабинет врача", "access-log": "Журнал доступа",
@@ -632,7 +632,7 @@
       renderAnalysisRail();
     }
     function switchPage(page, push) {
-      if (!PAGE_TITLES[page]) page = isExpertMode() ? "yesterday" : "overview";
+      if (!PAGE_TITLES[page]) page = "yesterday";
       if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
       state.page = page;
       document.querySelectorAll(".page").forEach(function (section) { section.hidden = section.getAttribute("data-page") !== page; });
@@ -766,20 +766,84 @@
       { label:"Прогресс CRM по статусам",description:"Количество оценённых случаев в каждом рабочем статусе.",
         fallback:function (target) { target.innerHTML=keys.map(function (key) { return notice(statusLabel(key),statuses[key]+" случаев","good"); }).join(""); } });
     }
+    function renderAttentionStrip(hostId, attention, opts) {
+      var host = $(hostId);
+      if (!host) return;
+      opts = opts || {};
+      var a = attention || {};
+      if (!a || (!a.n_evaluated && a.n_evaluated !== 0)) {
+        host.innerHTML = '<p class="card-sub">Оценки зон ещё не посчитаны за период (нужен recompute после деплоя движка).</p>';
+        return;
+      }
+      function tile(label, value, meta, go) {
+        return '<button type="button" class="attention-tile" data-attention-go="' + esc(go || "") + '">' +
+          '<div class="kpi-label">' + esc(label) + '</div>' +
+          '<div class="kpi-value">' + esc(value == null ? "-" : value) + '</div>' +
+          (meta ? '<div class="kpi-meta">' + esc(meta) + '</div>' : "") +
+          '</button>';
+      }
+      host.innerHTML =
+        tile("Критично в очереди", a.queue_critical != null ? a.queue_critical : "-", "открыть очередь", "queue:critical") +
+        tile("Важно в очереди", a.queue_important != null ? a.queue_important : "-", "открыть очередь", "queue:important") +
+        tile("Оформление плохо", a.zone1_bad, (a.zone1_bad_pct != null ? a.zone1_bad_pct + "%" : ""), "zone1:bad") +
+        tile("Диагноз плохо", a.zone2a_bad, (a.zone2a_bad_pct != null ? a.zone2a_bad_pct + "%" : ""), "zone2a:bad") +
+        tile("План плохо", a.zone2b_bad, (a.zone2b_bad_pct != null ? a.zone2b_bad_pct + "%" : ""), "zone2b:bad");
+      host.querySelectorAll("[data-attention-go]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var go = btn.getAttribute("data-attention-go") || "";
+          if (go.indexOf("queue:") === 0) {
+            switchPage("queue");
+            return;
+          }
+          if (go.indexOf("zone") === 0) {
+            var parts = go.split(":");
+            state.zoneFilter = parts[0];
+            state.zoneBandFilter = parts[1] || "bad";
+            switchPage("documents");
+          }
+        });
+      });
+    }
+    function renderZoneTrendHost(hostId, trends) {
+      var host = $(hostId);
+      if (!host) return;
+      trends = trends || [];
+      if (!trends.length) {
+        host.innerHTML = '<p class="empty">Нет тренда зон за период.</p>';
+        return;
+      }
+      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Оформление</th><th>Диагноз</th><th>План</th><th>Риск</th></tr></thead><tbody>' +
+        trends.slice(-14).map(function (row) {
+          return "<tr><td>" + esc(row.date) + "</td><td>" + esc(score(row.zone1_avg)) +
+            "</td><td>" + esc(score(row.zone2a_avg)) + "</td><td>" + esc(score(row.zone2b_avg)) +
+            "</td><td>" + esc(row.safety_critical || 0) + "</td></tr>";
+        }).join("") + "</tbody></table></div>";
+    }
     function renderOverview(data) {
       if (!data.available) { showError(data.reason || "Данные месяца недоступны."); return; }
       var summary=normalizeSummary(data), k=data.kpi || {}, forecast=data.forecast || {};
       state.data.summary=summary;
-      $("month-period-label").textContent=(data.period_label || "MTD")+" с "+data.period.date_from+" по "+data.data_through+
+      $("month-period-label").textContent=(data.period_label || "Период")+" с "+data.period.date_from+" по "+data.data_through+
         ". Дней: "+data.days_elapsed+" из "+data.days_in_month+". Europe/Minsk.";
       $("freshness").textContent="Данные по "+data.data_through;
-      $("month-kpis").innerHTML=kpi("Записи MTD",k.source_records,"из БД МИС")+
-        kpi("Оценено",k.evaluated,score(k.coverage_pct)+" от допущенных")+
-        kpi("Итоговая оценка",score(k.avg_score),"deep / по оценённым")+
-        kpi("Рубрика МЗ",score((data.rubric_mz || {}).avg_rubric_pct),"shadow · «Как оценивать»")+
-        kpi("Требует внимания",k.needs_attention,(k.needs_attention_pct || 0)+"% оценённых")+
-        kpi("Критические",k.critical,"P0 случаи")+
+      $("month-kpis").innerHTML=kpi("Записи",k.source_records,"объём")+
+        kpi("Оценено",k.evaluated,score(k.coverage_pct)+" покрытие")+
+        kpi("Свежесть", $("freshness") ? $("freshness").textContent : "-", "склад")+
         kpi("Прогноз объёма",forecast.projected_source,"к концу месяца");
+      // overview API may nest attention on month-report or separate overview call
+      var attention = data.attention || (data.overview && data.overview.attention) || null;
+      if (!attention && state.data.overviewAttention) attention = state.data.overviewAttention;
+      renderAttentionStrip("month-attention", attention);
+      renderZoneTrendHost("month-zone-trend", (attention && attention.zone_trends) || data.zone_trends || []);
+      var look = $("month-look-where");
+      if (look) {
+        var docs = (data.by_doctor || []).slice(0, 8);
+        look.innerHTML = docs.length ? '<div class="table-wrap"><table><thead><tr><th>Врач</th><th>Случаев</th><th>Ниже нормы</th></tr></thead><tbody>' +
+          docs.map(function (row) {
+            return "<tr><td>" + esc(row.doctor_fio || row.doctor || "") + "</td><td>" + esc(row.n) +
+              "</td><td>" + esc(row.bad_pct != null ? row.bad_pct + "%" : "-") + "</td></tr>";
+          }).join("") + "</tbody></table></div>" : '<p class="empty">Недостаточно данных.</p>';
+      }
       $("month-forecast").innerHTML=kpi("Прогноз записей",forecast.projected_source,forecast.method)+
         kpi("Прогноз оценённых",forecast.projected_evaluated,"при текущем темпе")+
         kpi("Прогноз оценки",score(forecast.projected_avg_score),"без изменения среднего");
@@ -855,9 +919,10 @@
       var responses = await Promise.all([
         request("/month-report" + suffix, "__root__"),
         request("/facets" + suffix, "/cases" + suffix),
-        request("/rubric-summary?" + rubricQuery.toString())
+        request("/rubric-summary?" + rubricQuery.toString()),
+        request("/overview" + suffix)
       ]);
-      var response = responses[0], facetsResponse = responses[1], rubricResponse = responses[2];
+      var response = responses[0], facetsResponse = responses[1], rubricResponse = responses[2], overviewResponse = responses[3];
       if (response.status === 401 || response.status === 403) { setAuth(true); return; }
       if (!response.ok) throw new Error("Не удалось загрузить отчёт месяца.");
       var raw = await response.json();
@@ -869,6 +934,12 @@
         raw.rubric_mz = await rubricResponse.json();
       } else {
         raw.rubric_mz = { available: false, reason: "Сводка рубрики МЗ недоступна" };
+      }
+      if (overviewResponse && overviewResponse.ok) {
+        var ov = await overviewResponse.json();
+        raw.attention = ov.attention || null;
+        raw.zone_trends = ov.zone_trends || (ov.attention && ov.attention.zone_trends) || [];
+        if (ov.by_doctor) raw.by_doctor = ov.by_doctor;
       }
       renderOverview(raw);
       buildFacets(normalizeSummary(raw), raw.facets);
@@ -1170,6 +1241,8 @@
       q.set("page", state.pageNo);
       q.set("page_size", isSingleDayPeriod() ? "100" : "50");
       if (queue) q.set("queue_only", "1");
+      if (state.zoneFilter) q.set("zone", state.zoneFilter);
+      if (state.zoneBandFilter) q.set("zone_band", state.zoneBandFilter);
       var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
       if (!response.ok) throw new Error("Не удалось загрузить случаи.");
       var data = await response.json();
@@ -2144,26 +2217,20 @@
       $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
         var pdfUrl = item.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.case_id) + "/pdf");
         var visitId = item.visit_id || item.case_id || "-";
-        var scoreTxt = item.overall_pct != null ? Math.round(Number(item.overall_pct)) + "%" : "-";
-        var regTxt = item.reg55_pct != null ? " · №55 " + Math.round(Number(item.reg55_pct)) + "%" : "";
+        var layer = item.layer_ru || layerLabelRu(item.attention_primary) || "-";
+        var reason = item.attention_reason_ru || item.reason || item.finding_title || item.finding_code || "";
         return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
           esc(severityTone(item)) + '">' + esc(severityLabel(item)) +
-          '</span></td><td class="id-cell">' + esc(visitId) +
+          '</span></td><td>' + esc(layer) +
+          '</td><td class="id-cell">' + esc(visitId) +
           '</td><td class="id-cell">' + esc(item.patient_id || "-") +
           '</td><td>' + esc(item.visit_date || data.date || "-") +
           '</td><td><b>' + esc(item.doctor_fio || item.doctor) + "</b><br><small>" + esc(item.specialty) +
-          "</small>" + llmJudgeMini(item) +
+          "</small>" +
           "</td><td>" + esc(item.filial || item.branch) + "</td><td>" + esc(item.diagnosis) +
-          "</td><td><b>" + esc(item.finding_title || item.finding_code) + "</b>" +
-          (item.is_shadow ? ' <span class="status review finding-shadow-badge">shadow</span>' : "") +
-          "<br><small>" + esc(item.reason) +
-          (scoreTxt !== "-" ? " · справка: формула " + esc(scoreTxt) : "") +
-          esc(regTxt) +
-          '</small></td><td class="row-actions"><button class="button secondary compact" type="button" data-take-case="' +
-          esc(item.case_id) + '"' + (item.crm_status === "in_review" ? " disabled" : "") + ">" +
-          (item.crm_status === "in_review" ? "Уже в работе" : "Взять в работу") +
-          '</button> <button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">МО в PDF</button></td></tr>';
-      }).join("") : '<tr><td colspan="9">' + unavailableBlock(section, "Случаев для разбора нет.") + "</td></tr>";
+          "</td><td>" + esc(reason) +
+          '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">МО в PDF</button></td></tr>';
+      }).join("") : '<tr><td colspan="10">' + unavailableBlock(section, "Случаев для разбора нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
     }
     function renderYesterdayFlow(data, dimension) {
@@ -2221,11 +2288,13 @@
       }
     }
     function renderYesterday(data) {
+      renderAttentionStrip("yesterday-attention", data.attention || null);
+      renderZoneTrendHost("yesterday-zone-trend", (data.attention && data.attention.zone_trends) || []);
+      renderYesterdayActions(data);
       renderYesterdayCompleteness(data);
       renderYesterdayIndices(data);
       renderYesterdayFindings(data);
       renderYesterdayDoctors(data);
-      renderYesterdayActions(data);
       renderYesterdayFlow(data, $("yesterday-flow-dimension").value);
       renderYesterdaySourceQuality(data);
     }
