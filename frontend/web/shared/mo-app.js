@@ -1322,7 +1322,7 @@
         kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "черновик · «Как оценивать»") +
         kpi(
           "МКБ / диагноз",
-          ((data.icd_visit_status || {}).label_ru) || (item.raw && item.raw.icd_visit_status_label_ru) || "—",
+          ((data.icd_visit_status || {}).label_ru) || (item.raw && item.raw.icd_visit_status_label_ru) || "-",
           ((data.icd_visit_status || {}).title_ru) || "Диагноз есть и есть в справочнике МКБ"
         ) +
         kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
