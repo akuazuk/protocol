@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-075719Z-icd-cyrillic-h"
+BUILD_VERSION = "2026-08-08-081015Z-icd-match-p12"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11620,6 +11620,7 @@ def api_methodist_mo_case_detail(
                 live_case,
             )
             from clinical_knowledge.mo_backend import _normalize_finding_row
+            from clinical_knowledge.mo_icd_match_pipeline import evaluate_mo_icd_match
             from clinical_knowledge.mo_icd_visit_status import compute_icd_visit_status
 
             result["findings"] = [
@@ -11627,10 +11628,36 @@ def api_methodist_mo_case_detail(
                 for item in (result.get("findings") or [])
                 if isinstance(item, dict)
             ]
-            result["icd_visit_status"] = compute_icd_visit_status(
-                live_case,
-                findings=result.get("findings") if isinstance(result.get("findings"), list) else [],
-            )
+            try:
+                pipe = evaluate_mo_icd_match(live_case)
+                result["icd_match"] = {
+                    "engine": pipe.get("engine"),
+                    "diag_source": pipe.get("diag_source"),
+                    "codes": pipe.get("codes"),
+                    "alias_expanded": pipe.get("alias_expanded"),
+                    "mis_agreement": pipe.get("mis_agreement"),
+                    "pipeline_verdict": pipe.get("pipeline_verdict"),
+                    "score_pct": pipe.get("score_pct"),
+                    "needs_llm_review": pipe.get("needs_llm_review"),
+                    "chip": pipe.get("chip"),
+                }
+                chip = pipe.get("chip") if isinstance(pipe.get("chip"), dict) else None
+                if chip and chip.get("status"):
+                    result["icd_visit_status"] = chip
+                else:
+                    result["icd_visit_status"] = compute_icd_visit_status(
+                        live_case,
+                        findings=result.get("findings")
+                        if isinstance(result.get("findings"), list)
+                        else [],
+                    )
+            except Exception:  # noqa: BLE001
+                result["icd_visit_status"] = compute_icd_visit_status(
+                    live_case,
+                    findings=result.get("findings")
+                    if isinstance(result.get("findings"), list)
+                    else [],
+                )
         except Exception:  # noqa: BLE001
             pass
     try:

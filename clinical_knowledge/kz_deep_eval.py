@@ -238,17 +238,31 @@ def _axis_concordance(case: dict, protocol_ctx, icd_client=None) -> tuple[float 
                 source_ref="МКБ-10",
             ))
 
-    # B3: согласие кода с МИС (mkb_code_agreement из экспорта: 1/0/na)
-    agree = str(case.get("mkb_code_agreement") or "").strip().lower()
-    if agree in ("0", "false", "no"):
+    # B3: согласие кода с МИС (export: match|partial|mismatch|unknown; legacy 0/1)
+    try:
+        from .mo_icd_match_pipeline import normalize_mis_agreement
+
+        agree_norm = normalize_mis_agreement(case.get("mkb_code_agreement"))
+    except Exception:  # noqa: BLE001
+        agree_raw = str(case.get("mkb_code_agreement") or "").strip().lower()
+        if agree_raw in ("0", "false", "no", "mismatch"):
+            agree_norm = "mismatch"
+        elif agree_raw in ("1", "true", "yes", "match"):
+            agree_norm = "match"
+        elif agree_raw in ("partial",):
+            agree_norm = "partial"
+        else:
+            agree_norm = "unknown"
+    if agree_norm == "mismatch":
         findings.append(_finding(
             "B_icd_mismatch_mis", "clinical_concordance", "P2", False,
             "Код МКБ в тексте не совпадает с диагнозом в МИС",
             evidence=f"text={code} vs mis={case.get('mkb_code_mis')}", source_ref="mis_data.diagnos",
         ))
         params.append(0.0)
-    elif agree in ("1", "true", "yes"):
+    elif agree_norm == "match":
         params.append(100.0)
+    # partial / unknown - без finding mismatch
 
     # B4: покрытие обязательных обследований протокола
     req_exams = _as_text_list(_get(protocol_ctx, "required_exams"))
@@ -581,35 +595,55 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
     except Exception:  # noqa: BLE001 - мягкая деградация
         shadow_findings = []
 
+    # ICD pipeline v3: directory + name_match (+ aliases/compact внутри helpers)
     try:
         from .mo_icd_directory_eval import (
-            evaluate_mo_icd_directory,
             icd_directory_eval_enabled,
             icd_directory_primary_enabled,
         )
-
-        if icd_directory_eval_enabled():
-            dir_shadow = evaluate_mo_icd_directory(case)
-            if dir_shadow:
-                shadow_findings = list(shadow_findings) + list(dir_shadow)
-                if icd_directory_primary_enabled():
-                    findings.extend({**item, "shadow": False} for item in dir_shadow)
-    except Exception:  # noqa: BLE001
-        pass
-
-    try:
+        from .mo_icd_match_pipeline import (
+            directory_findings_from_pipeline,
+            evaluate_mo_icd_match,
+            icd_pipeline_enabled,
+            name_findings_from_pipeline,
+        )
         from .mo_icd_name_match import (
-            evaluate_mo_icd_name_match,
             icd_name_match_enabled,
             icd_name_match_primary_enabled,
         )
 
-        if icd_name_match_enabled():
-            name_shadow = evaluate_mo_icd_name_match(case)
-            if name_shadow:
-                shadow_findings = list(shadow_findings) + list(name_shadow)
-                if icd_name_match_primary_enabled():
-                    findings.extend({**item, "shadow": False} for item in name_shadow)
+        if icd_pipeline_enabled() and (
+            icd_directory_eval_enabled() or icd_name_match_enabled()
+        ):
+            pipe = evaluate_mo_icd_match(case)
+            if icd_directory_eval_enabled():
+                dir_shadow = directory_findings_from_pipeline(pipe)
+                if dir_shadow:
+                    shadow_findings = list(shadow_findings) + list(dir_shadow)
+                    if icd_directory_primary_enabled():
+                        findings.extend({**item, "shadow": False} for item in dir_shadow)
+            if icd_name_match_enabled():
+                name_shadow = name_findings_from_pipeline(pipe)
+                if name_shadow:
+                    shadow_findings = list(shadow_findings) + list(name_shadow)
+                    if icd_name_match_primary_enabled():
+                        findings.extend({**item, "shadow": False} for item in name_shadow)
+        else:
+            from .mo_icd_directory_eval import evaluate_mo_icd_directory
+            from .mo_icd_name_match import evaluate_mo_icd_name_match
+
+            if icd_directory_eval_enabled():
+                dir_shadow = evaluate_mo_icd_directory(case)
+                if dir_shadow:
+                    shadow_findings = list(shadow_findings) + list(dir_shadow)
+                    if icd_directory_primary_enabled():
+                        findings.extend({**item, "shadow": False} for item in dir_shadow)
+            if icd_name_match_enabled():
+                name_shadow = evaluate_mo_icd_name_match(case)
+                if name_shadow:
+                    shadow_findings = list(shadow_findings) + list(name_shadow)
+                    if icd_name_match_primary_enabled():
+                        findings.extend({**item, "shadow": False} for item in name_shadow)
     except Exception:  # noqa: BLE001
         pass
 

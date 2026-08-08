@@ -19,10 +19,11 @@
 | Файл | Тема | Статус |
 |------|------|--------|
 | [2026-08-07-by-home-gcp-llm-split-v1.md](2026-08-07-by-home-gcp-llm-split-v1.md) | E1: всё на GCP, МИС-мост с Mac → E2 МИС с GCP → E3 BY+LLM на GCP; Docker-границы | active |
+| [2026-08-08-mo-icd-dx-matching-pipeline-v3.md](2026-08-08-mo-icd-dx-matching-pipeline-v3.md) | Полный пайплайн Dx↔МКБ: оркестратор, aliases, compact-коды, калибровка→primary, LLM review | active |
 | [2026-08-08-mo-patient-history-bundle-v2.md](2026-08-08-mo-patient-history-bundle-v2.md) | Сначала бандл истории пациента (врач + специальность), потом одно МО и анализаторы | active |
-| [2026-08-08-mo-icd-name-match-v2.md](2026-08-08-mo-icd-name-match-v2.md) | МКБ name_only: Dx ↔ title_ru (без кодов); общий text-similarity для будущей клиники | active |
+| [2026-08-08-mo-icd-name-match-v2.md](2026-08-08-mo-icd-name-match-v2.md) | МКБ name_only: Dx ↔ title_ru; шаги 1-4 в проде | archived (преемник: mo-icd-dx-matching-pipeline-v3) |
 | [2026-08-08-mo-prior-dx-usage-baseline-v1.md](2026-08-08-mo-prior-dx-usage-baseline-v1.md) | Prior Dx у врача/специальности (узкий черновик) | archived (преемник: mo-patient-history-bundle-v2) |
-| [2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md](2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md) | КП по тексту диагноза (без МКБ); отдельная оценка диагноза ↔ справочник МКБ | archived (преемник: mo-icd-name-match-v2; v1 helper остаётся) |
+| [2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md](2026-08-07-mo-dx-text-suggest-icd-directory-eval-v1.md) | КП по тексту диагноза (без МКБ); directory helper v1 | archived (преемник: mo-icd-dx-matching-pipeline-v3; helpers остаются) |
 | [2026-08-07-mo-auto-llm-on-disk-v1.md](2026-08-07-mo-auto-llm-on-disk-v1.md) | Night LLM сразу после upload secure_cases на Render (не ждать launchd/merge) | active |
 | [2026-08-06-mo-gold-pack-error-sweep-v1.md](2026-08-06-mo-gold-pack-error-sweep-v1.md) | Волна фиксов по gold packs 3650612/3643304: NSAID, suggest, МКБ, re-score, UX | completed (residuals в night handoff 07.08) |
 | [2026-08-06-mo-icd-full-document-search-v1.md](2026-08-06-mo-icd-full-document-search-v1.md) | МКБ в оценке МО: искать по всему документу, не только графа «Диагноз» | active |

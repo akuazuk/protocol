@@ -214,7 +214,14 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
 def evaluate_mo_icd_name_match(case: dict[str, Any] | None) -> list[dict[str, Any]]:
     if not icd_name_match_enabled() or not isinstance(case, dict):
         return []
-    result = evaluate_diagnosis_name_only(_diag_text_from_case(case))
+    text = _diag_text_from_case(case)
+    try:
+        from clinical_knowledge.mo_icd_aliases import match_query
+
+        text = match_query(text) or text
+    except Exception:  # noqa: BLE001
+        pass
+    result = evaluate_diagnosis_name_only(text)
     return list(result.get("findings") or [])
 
 
