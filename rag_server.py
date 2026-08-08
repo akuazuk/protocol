@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-123522Z-null-unscored-pct"
+BUILD_VERSION = "2026-08-08-134538Z-filter-scored-only"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11505,6 +11505,7 @@ def api_methodist_mo_cases(
     exclude_document_kinds: str = Query("", max_length=500),
     q: str = Query("", max_length=200),
     queue_only: bool = Query(False),
+    score_eligible_only: str = Query("1", max_length=16),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
     sort_by: str = Query("date"),

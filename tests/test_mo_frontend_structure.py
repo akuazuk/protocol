@@ -70,6 +70,9 @@ def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     assert 'state.selected[key].join("|")' in SOURCE
     assert 'id="case-search"' in SOURCE
     assert 'data-quick-period=' in SOURCE
+    assert 'id="score-eligible-only"' in SOURCE
+    assert "score_eligible_only" in SOURCE
+    assert 'document_types: ["clinical_visit"]' in SOURCE
 
 
 def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
