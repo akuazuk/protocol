@@ -14,11 +14,13 @@
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import os
 import sys
 import zipfile
 import xml.etree.ElementTree as ET
+from datetime import datetime, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -28,6 +30,14 @@ if not XLSX.is_absolute():
 OUT = Path(os.environ.get("ICD_RU_JSON") or "data/icd_reference/icd10_ru_mkb10su.json")
 if not OUT.is_absolute():
     OUT = ROOT / OUT
+_meta_env = (os.environ.get("ICD_RU_META") or "").strip()
+if _meta_env:
+    META = Path(_meta_env)
+    if not META.is_absolute():
+        META = ROOT / META
+else:
+    # icd10_ru_mkb10su.json -> icd10_ru_mkb10su.meta.json
+    META = OUT.with_name(f"{OUT.stem}.meta.json")
 
 
 def main() -> int:
@@ -68,8 +78,29 @@ def main() -> int:
         out.append({"code": code, "title_ru": name})
 
     OUT.parent.mkdir(parents=True, exist_ok=True)
-    OUT.write_text(json.dumps(out, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+    payload = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+    OUT.write_text(payload, encoding="utf-8")
+    digest = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+    try:
+        xlsx_rel = str(XLSX.relative_to(ROOT))
+    except ValueError:
+        xlsx_rel = str(XLSX)
+    meta = {
+        "format": "icd10_ru_mkb10su_v1",
+        "row_count": len(out),
+        "sha256": digest,
+        "source_xlsx": xlsx_rel,
+        "json_path": (str(OUT.relative_to(ROOT)) if str(OUT).startswith(str(ROOT)) else str(OUT)),
+        "exported_at_utc": datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"),
+        "fields": ["code", "title_ru"],
+        "notes": (
+            "title_ru may include leading 'CODE - …'; "
+            "name_only match strips that prefix and ICD codes from diagnosis text"
+        ),
+    }
+    META.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     print("OK", len(out), "rows ->", OUT)
+    print("META", META, "sha256", digest[:16] + "…")
     return 0
 
 

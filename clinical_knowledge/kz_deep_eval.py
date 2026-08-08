@@ -590,6 +590,22 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
     except Exception:  # noqa: BLE001
         pass
 
+    try:
+        from .mo_icd_name_match import (
+            evaluate_mo_icd_name_match,
+            icd_name_match_enabled,
+            icd_name_match_primary_enabled,
+        )
+
+        if icd_name_match_enabled():
+            name_shadow = evaluate_mo_icd_name_match(case)
+            if name_shadow:
+                shadow_findings = list(shadow_findings) + list(name_shadow)
+                if icd_name_match_primary_enabled():
+                    findings.extend({**item, "shadow": False} for item in name_shadow)
+    except Exception:  # noqa: BLE001
+        pass
+
     # overall: среднее доступных осей (объективность - без штрафа за отсутствие протокола)
     present_axes = [v for k, v in axes.items() if v is not None]
     overall = round(sum(present_axes) / len(present_axes), 1) if present_axes else None

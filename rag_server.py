@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-060056Z-handoff-gcp-primary"
+BUILD_VERSION = "2026-08-08-064315Z-icd-name-match-v2"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11601,6 +11601,7 @@ def api_methodist_mo_case_detail(
                 merge_concordance_into_findings,
             )
             from clinical_knowledge.mo_icd_directory_eval import merge_icd_directory_into_findings
+            from clinical_knowledge.mo_icd_name_match import merge_icd_name_match_into_findings
 
             live_case = clinical_case_from_document(
                 result.get("document"),
@@ -11611,6 +11612,10 @@ def api_methodist_mo_case_detail(
                 live_case,
             )
             result["findings"] = merge_icd_directory_into_findings(
+                result.get("findings") if isinstance(result.get("findings"), list) else [],
+                live_case,
+            )
+            result["findings"] = merge_icd_name_match_into_findings(
                 result.get("findings") if isinstance(result.get("findings"), list) else [],
                 live_case,
             )
