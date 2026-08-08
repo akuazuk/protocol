@@ -9,13 +9,17 @@ production. Cursor дополнительно загружает `.cursor/rules/
 ## 1. Источники истины
 
 - Код и история: `origin/main` на `https://github.com/akuazuk/protocol.git`.
-- Production: Render service `protocol`, id `srv-d78he6h5pdvs73b1kufg`, домен
-  `https://protocol-bimy.onrender.com`.
+- **Primary runtime (с 2026-08-08): GCP** project `protocol-home-e1`, VM `protocol-app`
+  (`europe-central2-a`), UI `https://protocol.kravira.by` (Caddy → `:8000`).
+  Данные МО: `/var/data/medical_exams` на GCE PD. Инвентарь: `deploy/gcp-app/INVENTORY.md`.
+  Деплой приложения: вручную `bash deploy/gcp-app/deploy_to_gce.sh` (автодеплоя на GCE пока нет).
+- **Backup / rollback: Render** service `protocol`, id `srv-d78he6h5pdvs73b1kufg`, домен
+  `https://protocol-bimy.onrender.com`. Не удалять, пока не стабилизированы ночи на GCP и
+  не готов B6 rollback. Не считать Render UI источником истины для методистов.
 - `render.yaml` описывает другой, приостановленный сервис `protocol-rag`; он не является
-  источником настроек production.
-- Данные МО production: `/var/data/medical_exams`. Клинические тексты, токены и ID не
-  печатать в логах, PR, handoff и ответах.
-- **Gemini / night LLM для МО** - не с Mac. Staging E1: `deploy/gcp-llm/run_on_gce.sh`.
+  источником настроек.
+- Клинические тексты, токены и ID не печатать в логах, PR, handoff и ответах.
+- **Gemini / night LLM для МО** - не с Mac. Primary: `deploy/gcp-llm/run_on_gce.sh`.
   Legacy Render: `scripts/run_mo_render_llm_backfill.sh` (VanyaVPN `ensure-off` перед SSH).
   План контуров: `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`. Не смешивать MIS DSN в llm-образ.
 
@@ -97,34 +101,38 @@ GitHub - единственный общий координационный сл
 
 ## 6. Единственный безопасный production workflow
 
-Обычный путь:
+Обычный путь (код):
 
 1. task-ветка -> PR;
 2. проверки и review;
 3. squash/merge PR в `origin/main`;
-4. release-координатор фиксирует точный merge SHA;
-5. только release-координатор запускает/контролирует Render deploy этого SHA;
-6. проверяются `/api/version`, `/health` и feature-specific smoke-test.
+4. release-координатор фиксирует точный merge SHA.
 
-Нельзя параллельно запускать два deploy, менять Render env или загружать `/var/data`.
-Прямой push в `main` блокируется GitHub branch protection. Старые команды
-`render_promote_main.sh` и `deploy_promote_main_after_push.sh` отключены: task HEAD никогда
-не должен становиться production без PR merge.
+**Primary (GCP):** после merge, если затронуты runtime/UI/MO на GCE, координатор вручную:
 
-После merge GitHub Action `Production Render release` автоматически берёт `github.sha`,
-сверяет его с `origin/main` и запускает canonical wrapper в единственной concurrency group.
-Release-координатор контролирует run:
+```bash
+bash deploy/gcp-app/deploy_to_gce.sh
+# smoke:
+curl -fsS https://protocol.kravira.by/health/live
+curl -fsS https://protocol.kravira.by/api/version   # version + ожидаемый BUILD_VERSION
+```
+
+Автодеплоя на GCE после merge **пока нет** (нужны SA в GitHub Secrets, concurrency,
+2–3 стабильные ночи). Не включать, пока ночной extract→score→LLM на GCP не стабилен.
+
+**Backup (Render):** Action `Production Render release` по-прежнему может обновлять
+`protocol-bimy.onrender.com` после merge. Это не отменяет GCP primary; Render - rollback.
+Контроль:
 
 ```bash
 gh run list --repo akuazuk/protocol --workflow=render-production-deploy.yml --limit=1
 gh run watch --repo akuazuk/protocol <run-id>
 ```
 
-Wrapper отклоняет любой SHA, который не равен текущему HEAD `origin/main`, и берёт
-ожидаемый `BUILD_VERSION` из самого merge commit, а не из локальной рабочей ветки. Без API
-key workflow контролирует Render webhook. Локальный `render_release_main.sh` используется
-только для восстановления после сбоя Action и с тем же точным merge SHA. Production
-подтверждается полями `version` и `git_commit`, health и поведением изменённой функции.
+Нельзя параллельно менять Render env / GCE `/var/data` без координатора. Прямой push в
+`main` запрещён. Старые `render_promote_main.sh` / promote task-HEAD отключены.
+Deploy primary считается завершённым, когда на `https://protocol.kravira.by` совпали
+`version` / `git_commit`, `/health/live` ok и feature smoke.
 
 ## 7. Handoff в конце каждой сессии
 
@@ -138,11 +146,10 @@ key workflow контролирует Render webhook. Локальный `render
 - одна безопасная следующая команда;
 - перечень файлов, которые нельзя трогать параллельно.
 
-Не писать «готово», если commit существует только локально, PR не merged или production
-не проверен. Эти состояния отмечаются отдельно.
+Не писать «готово», если commit существует только локально, PR не merged или primary GCP
+не проверен (`protocol.kravira.by`). Эти состояния отмечаются отдельно.
 
-**Сейчас (2026-08-04):** Phase A runtime - читать
-`docs/reports/2026-08-04-handoff-mo-runtime-stabilization-phase-a.md` перед merge/deploy
-с другого компьютера. Данные 2026-08-01..03 уже reclassify+publish; нужен только
-PR → Action → smoke.
+**Сейчас (2026-08-08):** primary UI/данные - GCP `https://protocol.kravira.by`; Render -
+backup. План: `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`. Перед ночным cutover
+Mac launchd → `extract-upload-only` + score/LLM на GCE.
 

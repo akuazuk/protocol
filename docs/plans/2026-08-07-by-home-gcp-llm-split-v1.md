@@ -373,6 +373,9 @@ thin CLI `services.mis_bridge` / `services.llm_worker`.
 | APIs | compute, storage, secretmanager, artifactregistry, iam, cloudresourcemanager |
 
 **B1-B4 done (staging):** VM + warehouse + GCE LLM + Mac→GCS→inbound + score_inbound_day.
-**B5 done (staging hostname):** HTTPS `https://protocol.kravira.by` на GCE (Caddy+LE).
+**B5 done:** HTTPS `https://protocol.kravira.by` на GCE (Caddy+LE); PR #46 merged.
+**Primary (2026-08-08):** UI/данные = GCP; Render = backup (не удалять). Автодеплой GCE после
+merge пока **выключен** - только `deploy_to_gce.sh`. Зафиксировано в `AGENTS.md`.
 Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`, `deploy/mac-bridge/README.md`.
-Следующий шаг: Secret Manager; выключить Mac score в launchd; B6 rollback doc.
+Следующий шаг: Mac launchd `extract-upload-only`; 2–3 ночи на GCE; B6 rollback; потом решать
+про GitHub Action → GCE.

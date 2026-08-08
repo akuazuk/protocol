@@ -6,7 +6,7 @@ alwaysApply: true
 # Общие правила репозитория и deploy
 
 До любой осмысленной работы полностью прочитай корневой `AGENTS.md` и следуй ему как
-каноническому источнику Git/PR/Render workflow.
+каноническому источнику Git/PR/deploy workflow (primary GCP, Render backup).
 
 Обязательно:
 
@@ -16,8 +16,9 @@ alwaysApply: true
 4. Не используй общую `codex/main-sync` для разработки и не push в `main` напрямую.
 5. Публикуй изменения task-веткой и PR; после merge ветку не переиспользуй.
 6. Перед release-значимым commit подними `BUILD_VERSION`.
-7. Deploy разрешён только одному release-координатору, только для точного merge SHA из
-   `origin/main`, с `/api/version`, health и feature-specific smoke-test.
+7. Deploy primary (GCP) разрешён только одному release-координатору, для merge SHA из
+   `origin/main`, через `deploy_to_gce.sh`, с `/api/version` на `protocol.kravira.by`,
+   health и feature smoke. Render Action - backup, не отмена GCP primary.
 8. В конце оставь handoff по шаблону из `AGENTS.md`.
 
 Если локальное Cursor-правило конфликтует с `AGENTS.md`, применяется более безопасное

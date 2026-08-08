@@ -1,25 +1,29 @@
 ---
-description: Жёсткий release-процесс Protocol: Render получает только merged HEAD origin/main.
+description: Release-процесс Protocol: primary GCP, Render backup; код только через merged origin/main.
 alwaysApply: true
 ---
 
-# Production release: только origin/main
+# Production release: GCP primary, Render backup
 
 Эти правила обязательны для всех агентов, компьютеров и worktree.
 
-1. Task-агент делает только task-ветку -> commit -> push -> PR. Он не запускает production deploy.
-2. Старый SHA в Render не означает ошибку ветки: пока PR не merged, production обязан оставаться
-   на текущем `origin/main`.
-3. `main` меняется только merge PR через GitHub. Прямой push и promote task HEAD запрещены.
-4. После merge production запускает только GitHub Action `Production Render release`.
-5. Action использует только `github.sha`, проверяет его равенство HEAD `origin/main` и
-   сериализуется через `concurrency: production-render`.
-6. Локальный `render_release_main.sh` допустим только для восстановления Action и обязан
-   завершиться ошибкой, если SHA не равен текущему HEAD `origin/main`.
+1. Task-агент делает только task-ветку -> commit -> push -> PR. Он не запускает deploy.
+2. `main` меняется только merge PR через GitHub. Прямой push и promote task HEAD запрещены.
+3. **Primary runtime** - GCP (`https://protocol.kravira.by`, project `protocol-home-e1`).
+   После merge, затрагивающего GCE app, координатор деплоит вручную:
+   `bash deploy/gcp-app/deploy_to_gce.sh`, затем `/api/version` + `/health/live` на
+   `protocol.kravira.by`.
+4. **Автодеплоя на GCE после merge пока нет.** Не добавлять GitHub Action на GCE без
+   явного решения владельца (нужны SA secrets + 2–3 стабильные ночи на GCP).
+5. **Render** (`https://protocol-bimy.onrender.com`) - backup/rollback. Action
+   `Production Render release` может обновлять Render после merge; это не делает Render
+   primary UI. Не удалять Render до B6 rollback + стабильных ночей на GCP.
+6. Action Render использует только `github.sha` = HEAD `origin/main`, concurrency
+   `production-render`. Локальный `render_release_main.sh` - только восстановление Action.
 7. Не использовать `render_promote_main.sh`, `deploy_promote_main_after_push.sh`,
    `render_deploy.sh deploy` или произвольный `ensure-deploy`.
-8. Deploy завершён только когда `/api/version` показывает ожидаемые `version` и `git_commit`,
-   `/health/live` успешен и пройден feature smoke-test.
-9. Если merge SHA изменился до запуска deploy, остановиться и заново определить release scope.
-10. Render env, manual deploy/restart и данные `/var/data` во время release меняет только один
+8. Primary deploy завершён только когда на GCP `/api/version` показывает ожидаемые
+   `version` и `git_commit`, `/health/live` успешен и пройден feature smoke-test.
+9. Если merge SHA изменился до запуска deploy, остановиться и заново определить scope.
+10. Render env, GCE `/var/data` и manual restart во время release меняет только один
     явно назначенный release-координатор.

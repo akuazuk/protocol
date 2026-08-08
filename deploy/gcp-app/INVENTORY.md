@@ -1,6 +1,8 @@
 # GCP inventory: protocol-home-e1 (E1 staging)
 
-Создано 2026-08-07. Render DNS **не** переключали.
+Создано 2026-08-07. С 2026-08-08: **primary UI** = этот GCE (`https://protocol.kravira.by`);
+Render = backup (`https://protocol-bimy.onrender.com`). Автодеплоя после merge нет -
+только `deploy_to_gce.sh`.
 
 | Ресурс | Значение |
 |--|--|
