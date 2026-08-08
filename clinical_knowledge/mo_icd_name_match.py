@@ -117,15 +117,9 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
         "engine": ENGINE,
     }
     if len(norm) < 3:
-        empty["findings"] = [
-            _finding(
-                "B_icd_name_no_match",
-                severity="P2",
-                title="Название диагноза не сопоставлено со справочником МКБ",
-                detail="Слишком короткий или пустой текст диагноза после удаления кодов",
-                evidence=raw[:200],
-            )
-        ]
+        # Пустой/короткий текст без названия - зона B_dx_absent (directory), не дублируем
+        empty["verdict"] = "skip"
+        empty["score_pct"] = None
         return empty
 
     candidates = _suggest_candidates(cleaned or raw)

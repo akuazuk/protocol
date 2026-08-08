@@ -54,6 +54,13 @@ def test_directory_eval_no_match_on_garbage_text(monkeypatch) -> None:
     assert result["verdict"] == "fail"
 
 
+def test_directory_eval_absent_when_no_text_and_no_codes() -> None:
+    result = evaluate_diagnosis_against_icd_directory("", [])
+    assert result["verdict"] == "fail"
+    assert any(f["code"] == "B_dx_absent" for f in result["findings"])
+    assert result["score_pct"] == 0
+
+
 def test_directory_eval_text_mismatch(monkeypatch) -> None:
     monkeypatch.setattr("icd_mkb.is_code_in_ru_reference", lambda code: True)
     monkeypatch.setattr("icd_mkb.ru_title", lambda code: "Инфаркт миокарда")

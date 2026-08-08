@@ -144,16 +144,28 @@ def evaluate_diagnosis_against_icd_directory(
 
     findings: list[dict[str, Any]] = []
     if not text and not uniq_codes:
+        # Главная проверка владельца: диагноз должен быть в МО
+        absent = _finding(
+            "B_dx_absent",
+            severity="P1",
+            title="Диагноз отсутствует в МО",
+            detail=(
+                "Нет формулировки диагноза и кода МКБ в документе "
+                "(слоты диагноза пусты, код не найден по полному тексту)."
+            ),
+            evidence="",
+        )
         return {
             "engine": ENGINE,
             "directory_hit": False,
             "code_in_directory": None,
             "text_rubric_fit": 0.0,
-            "verdict": "skip",
-            "score_pct": None,
-            "findings": [],
+            "verdict": "fail",
+            "score_pct": 0,
+            "findings": [absent],
             "candidates": [],
             "code_checks": [],
+            "thresholds": {"text_fit_ok": TEXT_FIT_OK, "text_fit_review": TEXT_FIT_REVIEW},
         }
 
     if text and not directory_hit and not any_code_in_dir:

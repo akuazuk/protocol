@@ -831,6 +831,15 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         if include_patient_id:
             public["patient_id"] = str(rec.get("patient_id") or "")
             public["visit_id"] = str(rec.get("visit_id") or rec.get("case_id") or "")
+        try:
+            from .mo_icd_visit_status import chip_label_ru, chip_title_ru, status_from_finding_codes
+
+            icd_status = status_from_finding_codes(rec.get("finding_codes"))
+            public["icd_visit_status"] = icd_status
+            public["icd_visit_status_label_ru"] = chip_label_ru(icd_status)
+            public["icd_visit_status_title_ru"] = chip_title_ru(icd_status)
+        except Exception:  # noqa: BLE001
+            pass
         rows.append({**public, "crm": crm})
     if include_patient_id:
         try:

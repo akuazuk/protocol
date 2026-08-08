@@ -51,6 +51,12 @@ def test_name_only_fail_on_garbage(monkeypatch) -> None:
     assert any(f["code"] == "B_icd_name_no_match" for f in result["findings"])
 
 
+def test_name_only_skips_empty_text_for_absent_axis() -> None:
+    result = evaluate_diagnosis_name_only("")
+    assert result["verdict"] == "skip"
+    assert result["findings"] == []
+
+
 def test_name_only_weak_match_typo(monkeypatch) -> None:
     monkeypatch.setattr(
         "icd_mkb.suggest_icd_from_russian",
