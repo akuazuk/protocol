@@ -1,13 +1,17 @@
 """Shared clinical text similarity (foundation for ICD name_only + future section align)."""
 from __future__ import annotations
 
+import os
+
 from clinical_knowledge.clinical_text_similarity import (
     combined_score,
     fuzz_ratio,
+    light_stem,
     normalize_for_match,
     score_against_sections,
     strip_icd_codes,
     strip_leading_code_from_title,
+    token_coverage,
     token_jaccard,
 )
 
@@ -48,3 +52,19 @@ def test_score_against_sections_picks_supporting_slot() -> None:
     # жалобы ближе по смыслу токенов, чем лечение антидепрессантом
     assert profile["by_section"]["complaints"]["combined"] >= 0.0
     assert "best_section" in profile
+
+
+def test_light_stem_zhivot_forms(monkeypatch) -> None:
+    assert light_stem("животе") == "живот"
+    assert light_stem("живота") == "живот"
+    assert light_stem("живот") == "живот"
+    monkeypatch.setenv("MO_ICD_LIGHT_STEM", "0")
+    off = token_coverage("боль в животе", "боли в области живота")
+    monkeypatch.setenv("MO_ICD_LIGHT_STEM", "1")
+    on = token_coverage("боль в животе", "боли в области живота")
+    assert off == 0.0
+    assert on > 0.0
+    assert combined_score("боль в животе", "боли в области живота")["combined"] > 0.25
+    # default path без флага не ломает unrelated
+    monkeypatch.delenv("MO_ICD_LIGHT_STEM", raising=False)
+    assert os.environ.get("MO_ICD_LIGHT_STEM") in (None, "")

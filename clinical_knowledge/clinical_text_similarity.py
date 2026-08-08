@@ -5,9 +5,13 @@
 - позже: диагноз ↔ жалобы / анамнез / обследования / рекомендации / лечение.
 
 Не смешивать с проверкой «код есть в справочнике» (mo_icd_directory_eval).
+
+Лёгкий stem (фаза 6 ICD pipeline): ``MO_ICD_LIGHT_STEM=1`` - отрезание 1-2
+окончаний у токенов ≥6; без pymorphy. Default off.
 """
 from __future__ import annotations
 
+import os
 import re
 from difflib import SequenceMatcher
 from typing import Any
@@ -22,6 +26,52 @@ _LEADING_CODE_TITLE_RE = re.compile(
 _TOKEN_RE = re.compile(r"[а-яёa-z0-9]{3,}", re.IGNORECASE)
 _WS_RE = re.compile(r"\s+")
 _PUNCT_RE = re.compile(r"[^\w\sа-яёА-ЯЁ]", re.UNICODE)
+
+# Только 1-2 символа (план v3 §4.4). Более длинные - сначала, stem ≥4.
+_LIGHT_STEM_ENDINGS: tuple[str, ...] = (
+    "ов",
+    "ев",
+    "ам",
+    "ям",
+    "ом",
+    "ем",
+    "ах",
+    "ях",
+    "ой",
+    "ей",
+    "ий",
+    "ый",
+    "ое",
+    "ее",
+    "ая",
+    "яя",
+    "ые",
+    "ие",
+    "а",
+    "я",
+    "у",
+    "ю",
+    "е",
+    "ы",
+    "и",
+    "о",
+)
+
+
+def light_stem_enabled() -> bool:
+    raw = (os.environ.get("MO_ICD_LIGHT_STEM") or "0").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
+def light_stem(token: str) -> str:
+    """Лёгкий stem без морфологического словаря (животе/живота → живот)."""
+    t = (token or "").replace("ё", "е").replace("Ё", "е").lower()
+    if len(t) < 6:
+        return t
+    for end in _LIGHT_STEM_ENDINGS:
+        if t.endswith(end) and len(t) - len(end) >= 4:
+            return t[: -len(end)]
+    return t
 
 
 def strip_icd_codes(text: str) -> str:
@@ -48,9 +98,14 @@ def normalize_for_match(text: str, *, strip_codes: bool = True) -> str:
     return _WS_RE.sub(" ", raw).strip()
 
 
-def tokens(text: str, *, min_len: int = 3) -> set[str]:
+def tokens(text: str, *, min_len: int = 3, stem: bool | None = None) -> set[str]:
     norm = normalize_for_match(text, strip_codes=True)
-    return {t for t in _TOKEN_RE.findall(norm) if len(t) >= min_len}
+    raw = {t for t in _TOKEN_RE.findall(norm) if len(t) >= min_len}
+    if stem is None:
+        stem = light_stem_enabled()
+    if not stem:
+        return raw
+    return {light_stem(t) for t in raw}
 
 
 def token_jaccard(a: str, b: str, *, min_len: int = 3) -> float:
