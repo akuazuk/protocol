@@ -145,6 +145,28 @@ def evaluate_mo_concordance(case: dict[str, Any]) -> list[dict[str, Any]]:
     sig = extract_mo_case_signals(case)
     out: list[dict[str, Any]] = []
 
+    # B2: мягкий сигнал continuity из бандла истории (не дублирует B_patient_history_context)
+    try:
+        hist = case.get("_patient_history_summary")
+        if isinstance(hist, dict) and str(hist.get("tier") or "") == "new_for_profile":
+            prior_codes = list((hist.get("codes_same_doctor") or {}).keys())[:3]
+            if prior_codes and hist.get("current_code"):
+                out.append(
+                    _finding(
+                        "history_dx_line_break",
+                        "clinical_concordance",
+                        "P3",
+                        title="Диагноз выбивается из линии ведения у этого врача",
+                        detail=(
+                            f"Текущий код {hist.get('current_code')} не встречался у врача по пациенту; "
+                            f"раньше: {', '.join(prior_codes)}"
+                        ),
+                        evidence="",
+                    )
+                )
+    except Exception:  # noqa: BLE001
+        pass
+
     # 1) finding_not_in_diagnosis
     for item in sig.get("joint_edema") or []:
         joint = str(item.get("joint") or "")

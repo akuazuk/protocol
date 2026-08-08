@@ -116,11 +116,21 @@ def _suggest_candidates(diag_text: str, *, max_results: int = 12) -> list[dict[s
     return out
 
 
-def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
+def evaluate_diagnosis_name_only(
+    diag_text: str,
+    *,
+    history_summary: dict[str, Any] | None = None,
+) -> dict[str, Any]:
     """Сверка названия диагноза со справочником (без равенства кодов)."""
     raw = (diag_text or "").strip()
     cleaned = strip_icd_codes(raw)
     norm = normalize_for_match(cleaned)
+    try:
+        from clinical_knowledge.mo_patient_history_bundle import name_match_threshold_delta
+
+        thr_delta = float(name_match_threshold_delta(history_summary))
+    except Exception:  # noqa: BLE001
+        thr_delta = 0.0
     empty = {
         "directory_name_hit": False,
         "best_code": None,
@@ -131,8 +141,12 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
         "findings": [],
         "candidates": [],
         "similarity": None,
-        "thresholds": {"name_ok": _name_ok(), "name_review": _name_review()},
+        "thresholds": {
+            "name_ok": _name_ok(),
+            "name_review": max(0.05, _name_review() + thr_delta),
+        },
         "engine": ENGINE,
+        "history_threshold_delta": thr_delta,
     }
     if len(norm) < 3:
         # Пустой/короткий текст без названия - зона B_dx_absent (directory), не дублируем
@@ -175,7 +189,7 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
 
     name_fit = float(best["score"] or 0)
     thr_ok = _name_ok()
-    thr_review = _name_review()
+    thr_review = max(0.05, _name_review() + thr_delta)
     thr_suggest = _suggest_min()
     # Слабый lex без name fit не считаем hit
     if name_fit < thr_review and float(best.get("lex_score") or 0) < thr_suggest:
@@ -237,7 +251,23 @@ def evaluate_mo_icd_name_match(case: dict[str, Any] | None) -> list[dict[str, An
         text = match_query(text) or text
     except Exception:  # noqa: BLE001
         pass
-    result = evaluate_diagnosis_name_only(text)
+    # B0: resolve_diagnosis_text_from_mo уже даёт near_code fallback
+    hist = case.get("_patient_history_summary")
+    if not isinstance(hist, dict):
+        hist = None
+        try:
+            from clinical_knowledge.mo_patient_history_bundle import (
+                attach_bundle_to_case,
+                history_summary_for_analyzers,
+                patient_history_enabled,
+            )
+
+            if patient_history_enabled() and not case.get("_patient_history"):
+                attach_bundle_to_case(case)
+            hist = history_summary_for_analyzers(case.get("_patient_history"))
+        except Exception:  # noqa: BLE001
+            hist = None
+    result = evaluate_diagnosis_name_only(text, history_summary=hist)
     return list(result.get("findings") or [])
 
 

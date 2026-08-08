@@ -1204,10 +1204,21 @@ def initialize_warehouse(path: Path) -> None:
               document_kind TEXT NOT NULL, overall_pct REAL, overall_pct_v3 REAL,
               status TEXT, scorer_version TEXT, score_schema_version TEXT,
               llm_cost_usd REAL DEFAULT 0,
-              doctor_key TEXT, specialty TEXT, filial TEXT,
-              diagnosis_code TEXT, icd_chapter TEXT,
+              doctor_key TEXT, doctor_id TEXT, specialty TEXT, filial TEXT,
+              patient_key TEXT,
+              diagnosis_code TEXT, diagnosis_text TEXT, icd_chapter TEXT,
               mkb_code_main_source TEXT, mkb_code_main_slot TEXT,
+              history_prior_n INTEGER DEFAULT 0, history_tier TEXT,
               content_hash TEXT NOT NULL, updated_at TEXT NOT NULL
+            );
+            CREATE TABLE IF NOT EXISTS fact_mo_patient_history_cache (
+              patient_key TEXT PRIMARY KEY,
+              lookback_days INTEGER,
+              as_of_date TEXT NOT NULL,
+              n_visits INTEGER NOT NULL,
+              summary_json TEXT NOT NULL,
+              visit_index_json TEXT NOT NULL,
+              updated_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS fact_mo_finding (
               mis_id TEXT NOT NULL, finding_code TEXT NOT NULL, severity TEXT,
@@ -1264,6 +1275,11 @@ def initialize_warehouse(path: Path) -> None:
             CREATE INDEX IF NOT EXISTS idx_case_date ON fact_mo_case(visit_date);
             CREATE INDEX IF NOT EXISTS idx_case_org ON fact_mo_case(filial, specialty);
             CREATE INDEX IF NOT EXISTS idx_case_doctor ON fact_mo_case(doctor_key, visit_date);
+            CREATE INDEX IF NOT EXISTS idx_case_patient_date ON fact_mo_case(patient_key, visit_date);
+            CREATE INDEX IF NOT EXISTS idx_case_patient_doctor
+              ON fact_mo_case(patient_key, doctor_key, visit_date);
+            CREATE INDEX IF NOT EXISTS idx_case_patient_specialty
+              ON fact_mo_case(patient_key, specialty, visit_date);
             CREATE INDEX IF NOT EXISTS idx_case_date_document ON fact_mo_case(visit_date, document_kind);
             CREATE INDEX IF NOT EXISTS idx_case_date_specialty ON fact_mo_case(visit_date, specialty);
             CREATE INDEX IF NOT EXISTS idx_case_date_filial ON fact_mo_case(visit_date, filial);
@@ -1302,6 +1318,7 @@ def initialize_warehouse(path: Path) -> None:
             "fact_mo_case",
             {
                 "diagnosis_code": "TEXT",
+                "diagnosis_text": "TEXT",
                 "icd_chapter": "TEXT",
                 "overall_pct_v3": "REAL",
                 "scorer_version": "TEXT",
@@ -1309,7 +1326,33 @@ def initialize_warehouse(path: Path) -> None:
                 "llm_cost_usd": "REAL DEFAULT 0",
                 "mkb_code_main_source": "TEXT",
                 "mkb_code_main_slot": "TEXT",
+                "patient_key": "TEXT",
+                "doctor_id": "TEXT",
+                "history_prior_n": "INTEGER DEFAULT 0",
+                "history_tier": "TEXT",
             },
+        )
+        db.execute(
+            """CREATE TABLE IF NOT EXISTS fact_mo_patient_history_cache (
+              patient_key TEXT PRIMARY KEY,
+              lookback_days INTEGER,
+              as_of_date TEXT NOT NULL,
+              n_visits INTEGER NOT NULL,
+              summary_json TEXT NOT NULL,
+              visit_index_json TEXT NOT NULL,
+              updated_at TEXT NOT NULL
+            )"""
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_patient_date ON fact_mo_case(patient_key, visit_date)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_patient_doctor "
+            "ON fact_mo_case(patient_key, doctor_key, visit_date)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_patient_specialty "
+            "ON fact_mo_case(patient_key, specialty, visit_date)"
         )
         _ensure_columns(
             db,
@@ -1359,6 +1402,12 @@ def doctor_key_for(doctor_fio: Any) -> str:
     с уже записанными строками витрины и история не разъехалась на два врача.
     """
     normalized = str(doctor_fio or "").strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20] if normalized else ""
+
+
+def patient_key_for(patient_id: Any) -> str:
+    """Hash patient_id для склада (сырой id в fact_mo_case не пишем)."""
+    normalized = str(patient_id or "").strip()
     return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20] if normalized else ""
 
 
@@ -1533,6 +1582,15 @@ def upsert_warehouse(
             case = case_by_id.get(mis_id) or case_by_visit.get(str(raw.get("visit_id") or "")) or {}
             doctor_fio = str(raw.get("doctor_fio") or "").strip()
             doctor_key = doctor_key_for(doctor_fio)
+            doctor_id = str(
+                raw.get("doctor_id")
+                or raw.get("specialist_id_from_visit")
+                or case.get("doctor_id")
+                or ""
+            ).strip()
+            patient_key = patient_key_for(
+                raw.get("patient_id") or case.get("patient_id") or ""
+            )
             visit_date = str(raw.get("visit_date") or "")[:10] or day_key
             score = case_overall_pct(case)
             evaluation_v4 = (
@@ -1590,6 +1648,43 @@ def upsert_warehouse(
             mkb_code_main_source = str(mkb_fill.get("source") or "empty")
             mkb_code_main_slot = str(mkb_fill.get("slot_code") or "")
             diagnosis_chapter = icd_chapter(diagnosis_code)
+            from clinical_knowledge.mo_patient_history_bundle import (
+                attach_bundle_to_case,
+                short_diagnosis_text_for_warehouse,
+                upsert_history_cache,
+            )
+
+            diagnosis_text = short_diagnosis_text_for_warehouse(resolve_case)
+            history_prior_n = 0
+            history_tier = ""
+            if patient_key:
+                hist_case = {
+                    "patient_key": patient_key,
+                    "patient_id": raw.get("patient_id") or "",
+                    "visit_date": visit_date,
+                    "doctor_id": doctor_id,
+                    "doctor_key": doctor_key,
+                    "doctor_fio": doctor_fio,
+                    "specialty": specialty,
+                    "diagnosis_code": diagnosis_code,
+                    "mis_id": mis_id,
+                    "visit_id": str(raw.get("visit_id") or ""),
+                }
+                try:
+                    hist_bundle = attach_bundle_to_case(hist_case, warehouse=db)
+                    history_prior_n = int((hist_bundle.get("summary") or {}).get("n_visits") or 0)
+                    history_tier = str(hist_bundle.get("tier") or "")
+                    upsert_history_cache(
+                        db,
+                        patient_key=patient_key,
+                        as_of_date=visit_date,
+                        bundle=hist_bundle,
+                    )
+                    if isinstance(case, dict):
+                        case["_patient_history"] = hist_bundle
+                except Exception:  # noqa: BLE001
+                    history_prior_n = 0
+                    history_tier = ""
             eligible_document = str(raw.get("document_kind") or "") in SCORED_DOCUMENT_KINDS
             if eligible_document:
                 eligible_rows_count += 1
@@ -1623,10 +1718,12 @@ def upsert_warehouse(
                    (mis_id, visit_id, visit_date, document_kind, overall_pct,
                     overall_pct_v3, status, scorer_version, score_schema_version,
                     llm_cost_usd,
-                    doctor_key, specialty, filial, diagnosis_code, icd_chapter,
+                    doctor_key, doctor_id, specialty, filial, patient_key,
+                    diagnosis_code, diagnosis_text, icd_chapter,
                     mkb_code_main_source, mkb_code_main_slot,
+                    history_prior_n, history_tier,
                     content_hash, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(mis_id) DO UPDATE SET
                    visit_id=excluded.visit_id, visit_date=excluded.visit_date,
                    document_kind=excluded.document_kind, overall_pct=excluded.overall_pct,
@@ -1634,12 +1731,16 @@ def upsert_warehouse(
                    status=excluded.status, scorer_version=excluded.scorer_version,
                    score_schema_version=excluded.score_schema_version,
                    llm_cost_usd=excluded.llm_cost_usd,
-                   doctor_key=excluded.doctor_key,
+                   doctor_key=excluded.doctor_key, doctor_id=excluded.doctor_id,
                    specialty=excluded.specialty, filial=excluded.filial,
+                   patient_key=excluded.patient_key,
                    diagnosis_code=excluded.diagnosis_code,
+                   diagnosis_text=excluded.diagnosis_text,
                    icd_chapter=excluded.icd_chapter,
                    mkb_code_main_source=excluded.mkb_code_main_source,
                    mkb_code_main_slot=excluded.mkb_code_main_slot,
+                   history_prior_n=excluded.history_prior_n,
+                   history_tier=excluded.history_tier,
                    content_hash=excluded.content_hash, updated_at=excluded.updated_at""",
                 (
                     mis_id,
@@ -1653,12 +1754,17 @@ def upsert_warehouse(
                     score_schema_version,
                     llm_cost,
                     doctor_key,
+                    doctor_id,
                     specialty,
                     filial,
+                    patient_key,
                     diagnosis_code,
+                    diagnosis_text,
                     diagnosis_chapter,
                     mkb_code_main_source,
                     mkb_code_main_slot,
+                    history_prior_n,
+                    history_tier,
                     hashlib.sha256(payload.encode("utf-8")).hexdigest(),
                     now,
                 ),

@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-091225Z-icd-light-stem-p6"
+BUILD_VERSION = "2026-08-08-093222Z-patient-history-all"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11619,6 +11619,39 @@ def api_methodist_mo_case_detail(
                 result.get("findings") if isinstance(result.get("findings"), list) else [],
                 live_case,
             )
+            try:
+                from clinical_knowledge.mo_patient_history_bundle import (
+                    merge_patient_history_into_findings,
+                    public_bundle_for_ui,
+                )
+
+                # patient_id из record только внутри live_case; в UI не дублируем
+                record_live = result.get("record") if isinstance(result.get("record"), dict) else {}
+                if not live_case.get("patient_id") and record_live.get("patient_id"):
+                    live_case["patient_id"] = record_live.get("patient_id")
+                if not live_case.get("doctor_id") and record_live.get("doctor_id"):
+                    live_case["doctor_id"] = record_live.get("doctor_id")
+                if not live_case.get("visit_date"):
+                    live_case["visit_date"] = str(
+                        record_live.get("date") or record_live.get("visit_date") or ""
+                    )[:10]
+                if not live_case.get("specialty"):
+                    live_case["specialty"] = record_live.get("specialization") or record_live.get(
+                        "specialty"
+                    )
+                if not live_case.get("diagnosis_code"):
+                    live_case["diagnosis_code"] = record_live.get("diagnosis_code") or record_live.get(
+                        "mkb_code_main"
+                    )
+                if not live_case.get("mis_id"):
+                    live_case["mis_id"] = record_live.get("mis_id") or case_id
+                result["findings"] = merge_patient_history_into_findings(
+                    result.get("findings") if isinstance(result.get("findings"), list) else [],
+                    live_case,
+                )
+                result["patient_history"] = public_bundle_for_ui(live_case.get("_patient_history"))
+            except Exception:  # noqa: BLE001
+                pass
             from clinical_knowledge.mo_backend import _normalize_finding_row
             from clinical_knowledge.mo_icd_match_pipeline import evaluate_mo_icd_match
             from clinical_knowledge.mo_icd_visit_status import compute_icd_visit_status

@@ -145,6 +145,11 @@ def test_merge_named_columns_survives_legacy_column_order(tmp_path: Path) -> Non
             ALTER TABLE fact_mo_case ADD COLUMN llm_cost_usd REAL DEFAULT 0;
             ALTER TABLE fact_mo_case ADD COLUMN mkb_code_main_source TEXT;
             ALTER TABLE fact_mo_case ADD COLUMN mkb_code_main_slot TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN patient_key TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN doctor_id TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN diagnosis_text TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN history_prior_n INTEGER DEFAULT 0;
+            ALTER TABLE fact_mo_case ADD COLUMN history_tier TEXT;
             """
         )
         db.executescript(

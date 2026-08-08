@@ -603,6 +603,8 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "mkb_code_main_source": str(item.get("mkb_code_main_source") or ""),
                 "mkb_code_main_slot": str(item.get("mkb_code_main_slot") or ""),
                 "icd_chapter": item.get("icd_chapter") or "",
+                "history_prior_n": int(item.get("history_prior_n") or 0),
+                "history_tier": str(item.get("history_tier") or ""),
                 "overall_pct": score,
                 "score_reason": (
                     None
@@ -2763,6 +2765,9 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         "mkb_code_main_source": str(item.get("mkb_code_main_source") or ""),
                         "mkb_code_main_slot": str(item.get("mkb_code_main_slot") or ""),
                         "diagnosis_short": diagnosis_short,
+                        "diagnosis_text": str(item.get("diagnosis_text") or "")[:200],
+                        "history_prior_n": int(item.get("history_prior_n") or 0),
+                        "history_tier": str(item.get("history_tier") or ""),
                         "overall_pct": score,
                         "status": item.get("status") or "",
                         "score_reason": (

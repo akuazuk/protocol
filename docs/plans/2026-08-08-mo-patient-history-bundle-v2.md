@@ -450,18 +450,18 @@ INDEX (patient_key, specialty, visit_date)
 | 0 | Зафиксировать порядок: бандл → одно МО → анализаторы | сделано |
 | 0b | Зафиксировать хранение: общие таблицы + patient_key, не table-per-patient | сделано (§0) |
 | 0c | Требование: полная лента визитов на каждый patient_id за весь склад | сделано (подтверждено владельцем) |
-| **Старт реализации ↓** | | |
-| A1 | `patient_key` (+ `doctor_id`) в `fact_mo_case` + индексы; писать при upsert каждый визит; backfill ключей по secure_cases | **начинать здесь** |
-| A2 | При upsert: `diagnosis_code` + короткий `diagnosis_text` (слоты → fallback у кода в full-doc) | дальше |
-| A3 | `build_patient_history_bundle` из SQL ленты + тесты | дальше |
-| A4 | Одно shadow МО + wire deep_eval / case detail | дальше |
-| A5 | UI: блок «История пациента» + бейдж в дне | дальше |
-| A6 | (Опц.) нарастающий кэш | дальше |
-| B0 | Name-only: fallback текста Dx из full-doc около кода (если слоты пусты) | дальше |
-| B1 | Name-only читает summary бандла (веса) | дальше |
-| B2 | Section-align / concordance читают prior слоты | дальше |
-| B3 | LLM judge + очередь по tier | дальше |
-| C | Калибровка lookback/порогов на GCE | дальше |
+| **Реализация 2026-08-08** | | |
+| A1 | `patient_key` (+ `doctor_id`) в `fact_mo_case` + индексы; писать при upsert | **сделано** |
+| A2 | При upsert: `diagnosis_code` + короткий `diagnosis_text` | **сделано** |
+| A3 | `build_patient_history_bundle` из SQL ленты + тесты | **сделано** |
+| A4 | Одно shadow МО + wire deep_eval / case detail | **сделано** |
+| A5 | UI: блок «История пациента» + бейдж в дне | **сделано** |
+| A6 | Нарастающий кэш `fact_mo_patient_history_cache` | **сделано** |
+| B0 | Name-only: fallback текста Dx из full-doc около кода | **сделано** (resolve) |
+| B1 | Name-only читает summary бандла (веса порогов) | **сделано** |
+| B2 | Concordance читает tier/коды бандла (`history_dx_line_break`) | **сделано** |
+| B3 | LLM queue boost по tier first_contact/new_for_profile | **сделано** |
+| C | Калибровка lookback/порогов на GCE | **флаги + отчёт; live-калибровка после recompute** |
 
 ---
 

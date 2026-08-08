@@ -874,11 +874,56 @@
       var tone = st === "ok" ? "good" : (st === "weak_name" ? "review" : "critical");
       return ' <span class="status ' + tone + ' icd-visit-chip" title="' + esc(title || label) + '">' + esc(label) + "</span>";
     }
+    function historyVisitChip(row) {
+      var raw = row && (row.raw || row) || {};
+      var n = Number(raw.history_prior_n || 0);
+      var tier = String(raw.history_tier || "");
+      if (!n && !tier) return "";
+      var label = n > 0 ? ("история: " + n) : "история: 0";
+      if (tier === "first_contact") label = "первый к врачу";
+      else if (tier === "known_to_doctor") label = "код уже был";
+      else if (tier === "new_for_profile") label = "новый код";
+      var tone = (tier === "first_contact" || tier === "new_for_profile") ? "review" : "good";
+      return ' <span class="status ' + tone + ' history-visit-chip" title="История пациента до этого визита">' + esc(label) + "</span>";
+    }
+    function renderPatientHistory(bundle) {
+      if (!bundle || !bundle.summary) {
+        return '<div class="detail-block"><h3>История пациента</h3><p class="empty">Нет данных истории на складе.</p></div>';
+      }
+      var summary = bundle.summary || {};
+      var coverage = bundle.coverage || {};
+      var tier = bundle.tier || "";
+      var head = "Всего " + (summary.n_visits || 0) + " визит(ов) до этого случая";
+      if (coverage.first_date || coverage.last_date) {
+        head += " · " + (coverage.first_date || "?") + " … " + (coverage.last_date || "?");
+      }
+      function shelfHtml(title, rows, collapsed) {
+        rows = rows || [];
+        if (!rows.length) return "";
+        var body = rows.slice(0, 12).map(function (visit) {
+          var pct = visit.overall_pct == null ? "-" : (Math.round(Number(visit.overall_pct)) + "%");
+          var mid = visit.mis_id || visit.visit_id || "";
+          return '<li><button type="button" class="linkish" data-case="' + esc(mid) + '">' +
+            esc(visit.visit_date || "") + "</button> · " + esc(visit.diagnosis_code || "-") +
+            (visit.diagnosis_text ? (" · " + esc(String(visit.diagnosis_text).slice(0, 60))) : "") +
+            " · МО " + esc(pct) + "</li>";
+        }).join("");
+        var open = collapsed ? "" : " open";
+        return "<details" + open + "><summary>" + esc(title) + " (" + rows.length + ")</summary><ul class=\"history-visit-list\">" + body + "</ul></details>";
+      }
+      return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
+        '<p class="card-sub">' + esc(head) +
+        (tier ? (" · " + esc(tier)) : "") + "</p>" +
+        shelfHtml("К этому врачу", bundle.same_doctor, false) +
+        shelfHtml("Другие врачи этой специальности", bundle.same_specialty, false) +
+        shelfHtml("Прочие специальности", bundle.other, true) +
+        "</div>";
+    }
     function documentRow(item) {
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
-        '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
-        icdVisitChip(item.raw || item) +
+        '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) +         '</td><td>' + esc(item.diagnosis) +
+        icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
         '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td>' + esc(score(item.coverage)) +
         '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
         esc(statusLabel(item.status)) + "</span></td></tr>";
@@ -891,7 +936,7 @@
         statusClass(item.status) + '">' + esc(priority) + '</span></td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
-        '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
+        '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
         esc(item.raw.reason || item.raw.comment || "Требует ручной проверки") + '</td><td>' +
         esc(item.raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(item.raw.due_date || crm.due_date || "Сегодня") +
         '</td><td>' + esc(statusLabel(item.status)) +
@@ -1336,6 +1381,7 @@
         '</details></div>' +
         '<div class="case-workspace-decision">' +
         renderLlmActionJudge(llmJudge, sourceDocument, item) +
+        renderPatientHistory(data.patient_history) +
         '<div id="protocol-suggest-host"><div class="skeleton"></div></div>' +
         findingsHtml +
         decisionHtml +
@@ -1365,6 +1411,13 @@
           });
           target.classList.add("clinical-field--focus");
           target.scrollIntoView({ block: "nearest", behavior: "smooth" });
+        });
+      });
+      $("drawer-body").querySelectorAll(".patient-history-block [data-case]").forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          var cid = button.getAttribute("data-case");
+          if (cid) openCase(cid);
         });
       });
       $("drawer-body").querySelectorAll("[data-load-pack]").forEach(function (button) {
