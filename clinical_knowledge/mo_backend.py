@@ -826,6 +826,20 @@ def _organization_groups(
                 and (states or {}).get(r["case_id"], {}).get("status", "new")
                 not in {"false_positive", "resolved", "closed"}
             )
+            z_scored = [r for r in rows if r.get("zone1_band") or r.get("zone2a_band") or r.get("zone2b_band")]
+            n_z = len(z_scored)
+            if n_z:
+                z1 = sum(1 for r in z_scored if str(r.get("zone1_band") or "") == "bad")
+                z2a = sum(1 for r in z_scored if str(r.get("zone2a_band") or "") == "bad")
+                z2b = sum(1 for r in z_scored if str(r.get("zone2b_band") or "") == "bad")
+                item["zone1_bad_pct"] = round(100.0 * z1 / n_z, 1)
+                item["zone2a_bad_pct"] = round(100.0 * z2a / n_z, 1)
+                item["zone2b_bad_pct"] = round(100.0 * z2b / n_z, 1)
+                item["attention_n"] = sum(
+                    1
+                    for r in z_scored
+                    if str(r.get("attention_primary") or "none") not in {"", "none"}
+                )
         output.append(item)
     output.sort(key=lambda row: int(row.get("n") or 0), reverse=True)
     return [_suppressed_group(row) for row in output]
@@ -3798,10 +3812,66 @@ def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
                    GROUP BY c.doctor_key""",
                 values,
             ).fetchall()
+            zone_by_key: dict[str, dict[str, Any]] = {}
+            if _warehouse_has_column(str(_db_path()), "fact_mo_case", "zone1_band"):
+                zone_rows = conn.execute(
+                    """SELECT c.doctor_key,
+                              COUNT(*) AS n_scored,
+                              SUM(CASE WHEN c.zone1_band='bad' THEN 1 ELSE 0 END) AS zone1_bad,
+                              SUM(CASE WHEN c.zone2a_band='bad' THEN 1 ELSE 0 END) AS zone2a_bad,
+                              SUM(CASE WHEN c.zone2b_band='bad' THEN 1 ELSE 0 END) AS zone2b_bad,
+                              SUM(CASE WHEN COALESCE(c.attention_primary, 'none') NOT IN ('', 'none')
+                                       THEN 1 ELSE 0 END) AS attention_n
+                       FROM fact_mo_case c
+                       WHERE """ + where + """
+                         AND c.doctor_key <> ''
+                         AND c.document_kind IN ('clinical_visit', 'consultation')
+                         AND c.layer_engine IS NOT NULL
+                       GROUP BY c.doctor_key""",
+                    values,
+                ).fetchall()
+                for row in zone_rows:
+                    n_scored = int(row["n_scored"] or 0)
+                    z1 = int(row["zone1_bad"] or 0)
+                    z2a = int(row["zone2a_bad"] or 0)
+                    z2b = int(row["zone2b_bad"] or 0)
+
+                    def _bad_pct(bad: int) -> float | None:
+                        if n_scored <= 0:
+                            return None
+                        return round(100.0 * bad / n_scored, 1)
+
+                    zone_by_key[str(row["doctor_key"])] = {
+                        "n_zone_scored": n_scored,
+                        "zone1_bad": z1,
+                        "zone1_bad_pct": _bad_pct(z1),
+                        "zone2a_bad": z2a,
+                        "zone2a_bad_pct": _bad_pct(z2a),
+                        "zone2b_bad": z2b,
+                        "zone2b_bad_pct": _bad_pct(z2b),
+                        "attention_n": int(row["attention_n"] or 0),
+                    }
         p0 = {str(row["doctor_key"]): int(row["p0_cases"]) for row in p0_rows}
         for item in items:
-            item["p0_cases"] = p0.get(str(item["key"]), 0) if not item.get("suppressed") else None
+            key = str(item["key"])
+            item["p0_cases"] = p0.get(key, 0) if not item.get("suppressed") else None
             item["drilldown"] = {"level": "doctor", "id": item["key"]}
+            zones = zone_by_key.get(key) or {}
+            if item.get("suppressed"):
+                item.update(
+                    {
+                        "zone1_bad": None,
+                        "zone1_bad_pct": None,
+                        "zone2a_bad": None,
+                        "zone2a_bad_pct": None,
+                        "zone2b_bad": None,
+                        "zone2b_bad_pct": None,
+                        "attention_n": None,
+                        "n_zone_scored": None,
+                    }
+                )
+            else:
+                item.update(zones)
         ranked = [
             item
             for item in items
@@ -3810,13 +3880,27 @@ def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
             and not item.get("suppressed")
         ]
         ranked.sort(key=lambda item: float(item["delta"]))
+        # ui-target: сортировка по доле плохого выбранного раздела (по умолчанию оформление)
+        zone_ranked = [
+            item
+            for item in items
+            if not item.get("suppressed") and item.get("zone1_bad_pct") is not None
+        ]
+        zone_ranked.sort(
+            key=lambda item: (
+                -(float(item.get("zone1_bad_pct") or 0)),
+                -(int(item.get("n") or 0)),
+            )
+        )
         result.update(
             {
                 "items": items[:250],
                 "ranking": ranked,
+                "zone_ranking": zone_ranked[:50],
                 "ranking_metric": "expected_delta",
                 "sample_gate": max(20, SUPPRESSION_N),
                 "no_raw_score_ranking": True,
+                "zone_metrics": True,
             }
         )
         return result

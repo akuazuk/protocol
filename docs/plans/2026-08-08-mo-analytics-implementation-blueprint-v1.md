@@ -744,7 +744,7 @@ Smoke: SQL counts zone bands; detail JSON has `zones`.
 | A | шаги 2–4: DDL, движок, API, тесты; UI flag off | **сделано** (PR #78) |
 | B | разбор + колонки таблиц (ui-target §9, §6–7) | **сделано** (тот же PR / follow-up commit) |
 | C | Сегодня / Период / Очередь (меню 6 пунктов, attention) | **сделано** |
-| D | Врачи + фильтры URL | дальше |
+| D | Врачи + фильтры URL | **сделано** |
 | E | catalog + handoff | дальше |
 
 ---

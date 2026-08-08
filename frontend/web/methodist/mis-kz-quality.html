@@ -95,6 +95,12 @@
               <summary><span>Представления</span><b>Текущий срез и действия</b></summary>
               <div class="toolbar-panel toolbar-panel--views">
                 <label class="filter"><span>Сохранённое представление</span><select class="control" id="saved-view"><option value="">Текущий срез</option></select></label>
+                <div class="zone-presets" id="zone-view-presets" aria-label="Быстрые срезы по разделам">
+                  <button class="button secondary compact" type="button" data-zone-preset="dx">Внимание: диагноз</button>
+                  <button class="button secondary compact" type="button" data-zone-preset="plan">Внимание: план по КП</button>
+                  <button class="button secondary compact" type="button" data-zone-preset="docs">Оформление слабо</button>
+                  <button class="button secondary compact" type="button" data-zone-preset="first-plan">Первый контакт + слабый план</button>
+                </div>
                 <div class="toolbar-panel-actions">
                   <button class="button" id="save-view" type="button">Сохранить срез</button>
                   <button class="button secondary" id="share-view" type="button">Скопировать ссылку</button>
@@ -177,7 +183,51 @@
           <div class="card"><div class="table-wrap sticky-first"><table><caption class="sr-only">Все медицинские документы выбранного среза</caption><thead><tr><th scope="col" class="sortable-th" data-sort-key="visit_id">Визит</th><th scope="col" class="sortable-th" data-sort-key="patient_id">Пациент</th><th scope="col" class="sortable-th" data-sort-key="date">Дата</th><th scope="col" class="sortable-th" data-sort-key="doctor">Врач / специальность</th><th scope="col" class="sortable-th" data-sort-key="filial">Филиал</th><th scope="col">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="zone1">Оформление</th><th scope="col" class="sortable-th" data-sort-key="zone2a">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="zone2b">План</th><th scope="col">Причина</th><th scope="col" class="sortable-th" data-sort-key="status">Статус</th><th scope="col" class="sortable-th" data-sort-key="overall">Итог</th><th scope="col" class="sortable-th" data-sort-key="reg55">Балл №55</th><th scope="col">Полнота проверки</th><th scope="col">Надёжность</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
         </section>
 
-        <section class="page" id="page-doctors" data-page="doctors" hidden aria-labelledby="title-doctors"><div class="page-head"><div><h1 id="title-doctors">Врачи</h1><p>Объём против дельты к ожидаемой оценке. Размер точки - число P0; рейтинг доступен только при n не меньше 20.</p></div></div><div class="grid"><article class="card span-9"><h2>Объём и дельта к ожидаемой</h2><p class="card-sub">Рамкой выделите врачей для группового действия; клик открывает кабинет врача</p><div id="doctor-scatter-chart"></div></article><article class="card span-3"><h2>Выбранные врачи</h2><div id="doctor-selection-flow" class="empty">Выделите точки рамкой. Действие не выполняется автоматически.</div></article></div><div class="card"><div class="table-wrap"><table><thead><tr><th>Врач</th><th>Специальность</th><th>n</th><th>Дельта</th><th>95% ДИ</th><th>P0</th></tr></thead><tbody id="doctor-rows"></tbody></table></div></div></section>
+        <section class="page" id="page-doctors" data-page="doctors" hidden aria-labelledby="title-doctors">
+          <div class="page-head">
+            <div>
+              <h1 id="title-doctors">Врачи</h1>
+              <p>Кто тянет качество вниз по оформлению, диагнозу и плану. Клик открывает случаи врача с фильтром «плохо».</p>
+            </div>
+          </div>
+          <div class="section-actions doctor-zone-toggle" id="doctor-zone-metric" role="group" aria-label="Раздел для графика">
+            <button class="button secondary compact" type="button" data-doctor-zone="zone1" aria-pressed="true">Оформление</button>
+            <button class="button secondary compact" type="button" data-doctor-zone="zone2a">Диагноз</button>
+            <button class="button secondary compact" type="button" data-doctor-zone="zone2b">План по протоколу</button>
+          </div>
+          <div class="card">
+            <h2>Доля плохого по разделу</h2>
+            <p class="card-sub">Горизонтальные полосы: процент случаев с оценкой «плохо» в выбранном разделе</p>
+            <div id="doctor-zone-chart"></div>
+          </div>
+          <div class="card">
+            <div class="table-wrap">
+              <table>
+                <caption class="sr-only">Врачи по доле плохого в разделах</caption>
+                <thead>
+                  <tr>
+                    <th>Врач</th>
+                    <th>Специальность</th>
+                    <th>Случаев</th>
+                    <th>Оформление плохо %</th>
+                    <th>Диагноз плохо %</th>
+                    <th>План плохо %</th>
+                    <th>В очереди</th>
+                    <th>Открыть</th>
+                  </tr>
+                </thead>
+                <tbody id="doctor-rows"></tbody>
+              </table>
+            </div>
+          </div>
+          <details class="mo-secondary-details">
+            <summary>Подробнее: дельта к ожидаемой (старый scatter)</summary>
+            <div class="grid">
+              <article class="card span-9"><h2>Объём и дельта к ожидаемой</h2><div id="doctor-scatter-chart"></div></article>
+              <article class="card span-3"><h2>Выбранные врачи</h2><div id="doctor-selection-flow" class="empty">Выделите точки рамкой.</div></article>
+            </div>
+          </details>
+        </section>
         <section class="page" id="page-specialties" data-page="specialties" hidden aria-labelledby="title-specialties"><div class="page-head"><div><h1 id="title-specialties">Специальности</h1><p>Распределение оценок внутри сопоставимых групп; клик переходит к врачам специальности.</p></div></div><div class="card"><h2>Диапазон оценок по специальностям</h2><div id="specialty-boxplot-chart"></div></div><div id="specialty-attention"></div></section>
         <section class="page" id="page-diagnoses" data-page="diagnoses" hidden aria-labelledby="title-diagnoses"><div class="page-head"><div><h1 id="title-diagnoses">Диагнозы и МКБ</h1><p>Площадь - объём, цвет - средняя оценка. Клик по коду открывает связанные случаи.</p></div></div><div class="card"><h2>Главы и коды МКБ</h2><div id="icd-treemap-chart"></div></div><div id="diagnosis-findings"></div></section>
         <section class="page" id="page-safety" data-page="safety" hidden aria-labelledby="title-safety"><div class="page-head"><div><h1 id="title-safety">Безопасность</h1><p>Динамика замечаний по приоритету и маркеры инцидентов P0.</p></div></div><div class="kpis" id="safety-kpis"></div><div class="card"><h2>Приоритеты по дням</h2><p class="card-sub">Автоматическое замечание не является медицинским решением</p><div id="safety-severity-chart"></div><div id="safety-list"></div></div></section>

@@ -19,6 +19,8 @@
     var state = {
       page: "yesterday", period: "yesterday", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       sortBy: "date", sortDir: "desc",
+      zoneFilter: "", zoneBandFilter: "", attentionOnly: false, kpStatus: "", historyTier: "",
+      doctorZoneMetric: "zone1",
       caseNavIds: [],
       protocolSuggest: null,
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [] },
@@ -28,6 +30,13 @@
       drillTrail: [], drillSnapshot: null,
       columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false,
       expertDisplayName: ""
+    };
+    var ZONE_LABELS = { zone1: "Оформление", zone2a: "Диагноз", zone2b: "План по протоколу" };
+    var ZONE_PRESETS = {
+      dx: { name: "Внимание: диагноз", zoneFilter: "zone2a", zoneBandFilter: "bad", attentionOnly: true, page: "documents" },
+      plan: { name: "Внимание: план по КП", zoneFilter: "zone2b", zoneBandFilter: "bad", attentionOnly: true, kpStatus: "matched", page: "documents" },
+      docs: { name: "Оформление слабо", zoneFilter: "zone1", zoneBandFilter: "bad", attentionOnly: false, page: "documents" },
+      "first-plan": { name: "Первый контакт + слабый план", zoneFilter: "zone2b", zoneBandFilter: "bad", historyTier: "first_contact", attentionOnly: false, page: "documents" }
     };
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Сегодня", queue: "Очередь",
@@ -166,6 +175,11 @@
       if (state.selected.months.length) q.set("month", state.selected.months[0]);
       // Жёстко: non-clinical вне таблицы; URL не даёт opt-out.
       q.set("score_eligible_only", "1");
+      if (state.zoneFilter) q.set("zone", state.zoneFilter);
+      if (state.zoneBandFilter) q.set("zone_band", state.zoneBandFilter);
+      if (state.attentionOnly) q.set("attention_only", "1");
+      if (state.kpStatus) q.set("kp_status", state.kpStatus);
+      if (state.historyTier) q.set("history_tier", state.historyTier);
       return q;
     }
     function applyScoreEligibleOnly(on, silent) {
@@ -523,6 +537,11 @@
         }
         if (options.dateFrom !== undefined) { state.dateFrom = options.dateFrom; $("date-from").value = state.dateFrom; }
         if (options.dateTo !== undefined) { state.dateTo = options.dateTo; $("date-to").value = state.dateTo; }
+        if (options.zoneFilter !== undefined) state.zoneFilter = options.zoneFilter;
+        if (options.zoneBandFilter !== undefined) state.zoneBandFilter = options.zoneBandFilter;
+        if (options.attentionOnly !== undefined) state.attentionOnly = !!options.attentionOnly;
+        if (options.kpStatus !== undefined) state.kpStatus = options.kpStatus || "";
+        if (options.historyTier !== undefined) state.historyTier = options.historyTier || "";
         renderChips();
         switchPage(options.page || state.page);
       };
@@ -549,6 +568,23 @@
         html.push('<span class="chip">Рубрика МЗ: ' + esc(state.rubricCriterion) +
           '<button type="button" data-clear-rubric aria-label="Удалить фильтр рубрики">×</button></span>');
       }
+      if (state.zoneFilter || state.zoneBandFilter) {
+        html.push('<span class="chip">Раздел: ' +
+          esc((ZONE_LABELS[state.zoneFilter] || state.zoneFilter || "любой") +
+            (state.zoneBandFilter ? " · " + state.zoneBandFilter : "")) +
+          '<button type="button" data-clear-zone aria-label="Удалить фильтр раздела">×</button></span>');
+      }
+      if (state.attentionOnly) {
+        html.push('<span class="chip">Только внимание<button type="button" data-clear-attention aria-label="Снять фильтр внимания">×</button></span>');
+      }
+      if (state.kpStatus) {
+        html.push('<span class="chip">КП: ' + esc(state.kpStatus) +
+          '<button type="button" data-clear-kp aria-label="Удалить фильтр КП">×</button></span>');
+      }
+      if (state.historyTier) {
+        html.push('<span class="chip">История: ' + esc(state.historyTier) +
+          '<button type="button" data-clear-history-tier aria-label="Удалить фильтр истории">×</button></span>');
+      }
       $("filter-chips").innerHTML = html.join("");
       $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -573,6 +609,27 @@
       if (clearRubric) clearRubric.addEventListener("click", function () {
         state.rubricCriterion = "";
         renderChips();
+      });
+      var clearZone = $("filter-chips").querySelector("[data-clear-zone]");
+      if (clearZone) clearZone.addEventListener("click", function () {
+        state.zoneFilter = "";
+        state.zoneBandFilter = "";
+        filtersChanged();
+      });
+      var clearAttention = $("filter-chips").querySelector("[data-clear-attention]");
+      if (clearAttention) clearAttention.addEventListener("click", function () {
+        state.attentionOnly = false;
+        filtersChanged();
+      });
+      var clearKp = $("filter-chips").querySelector("[data-clear-kp]");
+      if (clearKp) clearKp.addEventListener("click", function () {
+        state.kpStatus = "";
+        filtersChanged();
+      });
+      var clearHistoryTier = $("filter-chips").querySelector("[data-clear-history-tier]");
+      if (clearHistoryTier) clearHistoryTier.addEventListener("click", function () {
+        state.historyTier = "";
+        filtersChanged();
       });
     }
     function syncUrl(replace) {
@@ -606,6 +663,11 @@
       state.findingCode = q.get("finding_codes") || "";
       state.sortBy = q.get("sort_by") || "date";
       state.sortDir = q.get("sort_dir") || "desc";
+      state.zoneFilter = q.get("zone") || "";
+      state.zoneBandFilter = q.get("zone_band") || "";
+      state.attentionOnly = q.get("attention_only") === "1" || q.get("attention_only") === "true";
+      state.kpStatus = q.get("kp_status") || "";
+      state.historyTier = q.get("history_tier") || "";
       Object.keys(state.selected).forEach(function (key) {
         state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(/[|,]/).filter(Boolean);
       });
@@ -837,11 +899,17 @@
       renderZoneTrendHost("month-zone-trend", (attention && attention.zone_trends) || data.zone_trends || []);
       var look = $("month-look-where");
       if (look) {
-        var docs = (data.by_doctor || []).slice(0, 8);
-        look.innerHTML = docs.length ? '<div class="table-wrap"><table><thead><tr><th>Врач</th><th>Случаев</th><th>Ниже нормы</th></tr></thead><tbody>' +
+        var docs = (data.by_doctor || []).slice().sort(function (a, b) {
+          var av = Number(a.zone2a_bad_pct != null ? a.zone2a_bad_pct : a.bad_pct) || 0;
+          var bv = Number(b.zone2a_bad_pct != null ? b.zone2a_bad_pct : b.bad_pct) || 0;
+          return bv - av;
+        }).slice(0, 8);
+        look.innerHTML = docs.length ? '<div class="table-wrap"><table><thead><tr><th>Врач</th><th>Случаев</th><th>Оформл. плохо</th><th>Диагноз плохо</th><th>План плохо</th></tr></thead><tbody>' +
           docs.map(function (row) {
             return "<tr><td>" + esc(row.doctor_fio || row.doctor || "") + "</td><td>" + esc(row.n) +
-              "</td><td>" + esc(row.bad_pct != null ? row.bad_pct + "%" : "-") + "</td></tr>";
+              "</td><td>" + esc(pctOrDash(row.zone1_bad_pct != null ? row.zone1_bad_pct : null)) +
+              "</td><td>" + esc(pctOrDash(row.zone2a_bad_pct != null ? row.zone2a_bad_pct : null)) +
+              "</td><td>" + esc(pctOrDash(row.zone2b_bad_pct != null ? row.zone2b_bad_pct : null)) + "</td></tr>";
           }).join("") + "</tbody></table></div>" : '<p class="empty">Недостаточно данных.</p>';
       }
       $("month-forecast").innerHTML=kpi("Прогноз записей",forecast.projected_source,forecast.method)+
@@ -1241,8 +1309,6 @@
       q.set("page", state.pageNo);
       q.set("page_size", isSingleDayPeriod() ? "100" : "50");
       if (queue) q.set("queue_only", "1");
-      if (state.zoneFilter) q.set("zone", state.zoneFilter);
-      if (state.zoneBandFilter) q.set("zone_band", state.zoneBandFilter);
       var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
       if (!response.ok) throw new Error("Не удалось загрузить случаи.");
       var data = await response.json();
@@ -2340,19 +2406,97 @@
       if (!response.ok) throw new Error("Не удалось загрузить интерактивный разрез.");
       return response.json();
     }
+    function pctOrDash(value) {
+      return value == null || value === "" ? "-" : (Number(value).toFixed(1).replace(/\.0$/, "") + "%");
+    }
+    function openDoctorCases(item, zoneKey) {
+      zoneKey = zoneKey || state.doctorZoneMetric || "zone1";
+      applyDrill({
+        label: "Врач " + (item.label || item.key),
+        selected: { doctors: [item.label || item.key] },
+        zoneFilter: zoneKey,
+        zoneBandFilter: "bad",
+        attentionOnly: false,
+        page: "documents"
+      });
+    }
+    function renderDoctorZoneChart(items) {
+      var metric = state.doctorZoneMetric || "zone1";
+      var pctKey = metric + "_bad_pct";
+      var ranked = items.filter(function (x) {
+        return !x.suppressed && x[pctKey] != null && Number(x.n || 0) >= 5;
+      }).slice().sort(function (a, b) {
+        return Number(b[pctKey] || 0) - Number(a[pctKey] || 0);
+      }).slice(0, 20).reverse();
+      var host = $("doctor-zone-chart");
+      if (!host) return;
+      if (!ranked.length) {
+        host.innerHTML = '<p class="empty">Нет данных по зонам за период (нужен recompute после деплоя) или выборка меньше порога.</p>';
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: {
+          trigger: "axis",
+          formatter: function (params) {
+            var p = params && params[0];
+            if (!p) return "";
+            var row = ranked[p.dataIndex];
+            return esc(row.label) + "<br>" + esc(ZONE_LABELS[metric] || metric) +
+              " плохо: " + pctOrDash(row[pctKey]) + "<br>Случаев: " + esc(row.n);
+          }
+        },
+        grid: { left: 160, right: 28, top: 18, bottom: 36 },
+        xAxis: { type: "value", name: "% плохо", max: 100 },
+        yAxis: { type: "category", data: ranked.map(function (x) { return x.label; }) },
+        series: [{
+          type: "bar",
+          barMaxWidth: 16,
+          itemStyle: { borderRadius: [0, 6, 6, 0], color: "#c62828" },
+          data: ranked.map(function (x) { return Number(x[pctKey] || 0); })
+        }]
+      }, {
+        label: "Доля плохого: " + (ZONE_LABELS[metric] || metric),
+        description: "Клик по полосе открывает случаи врача с фильтром «плохо» по выбранному разделу."
+      });
+      if (chart) {
+        chart.on("click", function (params) {
+          var row = ranked[params.dataIndex];
+          if (row) openDoctorCases(row, metric);
+        });
+      }
+      var toggle = $("doctor-zone-metric");
+      if (toggle) {
+        toggle.querySelectorAll("[data-doctor-zone]").forEach(function (btn) {
+          btn.setAttribute("aria-pressed", btn.getAttribute("data-doctor-zone") === metric ? "true" : "false");
+        });
+      }
+    }
     async function loadDoctorsDimension() {
       var data = await dimensionData("doctors"), items = data.items || [];
+      state.data.doctorItems = items;
       $("doctor-rows").innerHTML = items.length ? items.map(function (x) {
-        var ci = x.delta_ci95 || {};
-        return '<tr data-doctor-key="' + esc(x.key) + '"><td><button class="link-button" data-open-doctor="' +
-          esc(x.key) + '"><b>' + esc(x.label) + "</b></button></td><td>" + esc(x.specialty) +
-          "</td><td>" + esc(x.n == null ? x.n_bucket : x.n) + "</td><td>" +
-          esc(x.enough_data ? signed(x.delta) : "Мало данных") + "</td><td>" +
-          esc(x.enough_data ? signed(ci.low) + " - " + signed(ci.high) : "Недоступно") +
-          "</td><td>" + esc(x.p0_cases == null ? "Скрыто" : x.p0_cases) + "</td></tr>";
-      }).join("") : '<tr><td colspan="6" class="empty">Нет данных по врачам.</td></tr>';
+        return '<tr data-doctor-key="' + esc(x.key) + '">' +
+          "<td><b>" + esc(x.label) + "</b></td><td>" + esc(x.specialty) +
+          "</td><td>" + esc(x.n == null ? x.n_bucket : x.n) +
+          "</td><td>" + esc(pctOrDash(x.zone1_bad_pct)) +
+          "</td><td>" + esc(pctOrDash(x.zone2a_bad_pct)) +
+          "</td><td>" + esc(pctOrDash(x.zone2b_bad_pct)) +
+          "</td><td>" + esc(x.attention_n == null ? "-" : x.attention_n) +
+          '</td><td><button class="button secondary compact" type="button" data-open-doctor-cases="' +
+          esc(x.label) + '" data-doctor-key="' + esc(x.key) + '">Открыть случаи</button></td></tr>';
+      }).join("") : '<tr><td colspan="8" class="empty">Нет данных по врачам.</td></tr>';
+      $("doctor-rows").querySelectorAll("[data-open-doctor-cases]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var label = button.getAttribute("data-open-doctor-cases") || "";
+          var key = button.getAttribute("data-doctor-key") || label;
+          openDoctorCases({ label: label, key: key }, state.doctorZoneMetric);
+        });
+      });
+      renderDoctorZoneChart(items);
       var plotted = items.filter(function (x) { return x.enough_data && !x.suppressed && x.delta != null; });
-      var chart = MO.moChart($("doctor-scatter-chart"), {
+      var scatterHost = $("doctor-scatter-chart");
+      if (!scatterHost) return;
+      var chart = MO.moChart(scatterHost, {
         tooltip:{ formatter:function (p) { var x=plotted[p.dataIndex], ci=x.delta_ci95 || {};
           return esc(x.label)+"<br>Объём: "+x.n+"<br>Дельта: "+signed(x.delta)+
             "<br>95% ДИ: "+signed(ci.low)+" - "+signed(ci.high)+"<br>P0: "+(x.p0_cases || 0); } },
@@ -2365,22 +2509,11 @@
           return { value:[x.n,x.delta,Math.max(8,Math.min(42,8+(x.p0_cases || 0)*4))], doctor:x };
         }), symbolSize:function (value) { return value[2]; } }]
       }, { label:"Врачи: объём и дельта к ожидаемой оценке",
-        description:"Каждая точка - врач с выборкой не меньше двадцати записей. Размер означает число P0." });
-      function openDoctor(key) { state.cabinetDoctorKey=key; switchPage("doctor-cabinet"); }
-      $("doctor-rows").querySelectorAll("[data-open-doctor]").forEach(function (button) {
-        button.addEventListener("click",function () {
-          var key = button.getAttribute("data-open-doctor");
-          if (!key) return;
-          pushDrill("Кабинет врача", function () { openDoctor(key); });
-          openDoctor(key);
-        });
-      });
+        description:"Дополнительный разрез. Основной экран - таблица зон и полосы «плохо»." });
       if (chart) {
         chart.on("click",function (params) {
           if (!plotted[params.dataIndex]) return;
-          var key = plotted[params.dataIndex].key;
-          pushDrill("Кабинет врача", function () { openDoctor(key); });
-          openDoctor(key);
+          openDoctorCases(plotted[params.dataIndex], state.doctorZoneMetric);
         });
         chart.on("brushSelected",function (params) {
           var selected=[], batches=(params.batch && params.batch[0] && params.batch[0].selected) || [];
@@ -2390,13 +2523,28 @@
           $("doctor-selection-flow").innerHTML=selected.length ?
             "<p><b>Выбрано врачей: "+selected.length+"</b></p><p>"+selected.map(function (x) { return esc(x.label); }).join(", ")+
             '</p><button class="button" id="open-selected-doctors">Открыть их случаи</button>' :
-            "Выделите точки рамкой. Действие не выполняется автоматически.";
+            "Выделите точки рамкой.";
           var action=$("open-selected-doctors");
           if (action) action.addEventListener("click",function () {
-            applyDrill({ label: "Группа врачей", selected: { doctors: selected.map(function (x) { return x.label; }) }, page: "documents" });
+            applyDrill({ label: "Группа врачей", selected: { doctors: selected.map(function (x) { return x.label; }) },
+              zoneFilter: state.doctorZoneMetric, zoneBandFilter: "bad", page: "documents" });
           });
         });
       }
+    }
+    function applyZonePreset(key) {
+      var preset = ZONE_PRESETS[key];
+      if (!preset) return;
+      state.zoneFilter = preset.zoneFilter || "";
+      state.zoneBandFilter = preset.zoneBandFilter || "";
+      state.attentionOnly = !!preset.attentionOnly;
+      state.kpStatus = preset.kpStatus || "";
+      state.historyTier = preset.historyTier || "";
+      state.pageNo = 1;
+      renderChips();
+      syncUrl(true);
+      switchPage(preset.page || "documents", false);
+      showToast(preset.name);
     }
     async function loadSpecialtiesDimension() {
       var data=await dimensionData("specialties"), items=data.items || [];
@@ -3034,6 +3182,11 @@
         state.findingCode = "";
         state.sortBy = "date";
         state.sortDir = "desc";
+        state.zoneFilter = "";
+        state.zoneBandFilter = "";
+        state.attentionOnly = false;
+        state.kpStatus = "";
+        state.historyTier = "";
         $("period").value = state.period; $("compare").value = state.compare;
         $("case-search").value = "";
         $("sort-by").value = "date";
@@ -3046,6 +3199,20 @@
         filtersChanged();
         showToast("Фильтры сброшены: только клинические приёмы");
       });
+      document.querySelectorAll("[data-zone-preset]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          applyZonePreset(btn.getAttribute("data-zone-preset") || "");
+        });
+      });
+      var doctorMetric = $("doctor-zone-metric");
+      if (doctorMetric) {
+        doctorMetric.querySelectorAll("[data-doctor-zone]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            state.doctorZoneMetric = btn.getAttribute("data-doctor-zone") || "zone1";
+            renderDoctorZoneChart(state.data.doctorItems || []);
+          });
+        });
+      }
       if ($("score-eligible-only")) {
         $("score-eligible-only").checked = true;
         $("score-eligible-only").disabled = true;
