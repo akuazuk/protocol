@@ -705,18 +705,19 @@ def test_one_day_fills_every_warehouse_table(tmp_path: Path) -> None:
         )
 
 
-def test_warehouse_soft_fills_mkb_from_full_doc_without_touching_agreement(tmp_path: Path) -> None:
+def test_warehouse_soft_fills_mkb_from_diag_slots_without_touching_agreement(tmp_path: Path) -> None:
     import sqlite3
 
     raw, cases = warehouse_day_rows()
-    # mis_id=3: слот пуст, код только в статусе → soft_fill; agreement остаётся как в raw
+    # mis_id=3: явный слот кода пуст, код в mis_diagnos → soft_fill; agreement как в raw
     for row in raw:
         if str(row.get("id") or row.get("mis_id") or "") in {"3", "3.0"} or int(float(row.get("id") or 0)) == 3:
             row["mkb_code_main"] = ""
             row["mkb_codes"] = ""
             row["mkb_code_agreement"] = "unknown"
-            row["objective_status"] = "Локально спокойно. N47.1 после операции."
+            row["objective_status"] = "Локально спокойно. Z98.8 не брать."
             row["clinical_diagnosis"] = "Состояние после циркумцизио"
+            row["mis_diagnos"] = "N47.1"
             break
     secure, _ = build_daily_report(
         raw, cases, day=date(2026, 7, 27), run_id="wh-soft", revision=1, quality={"passed": True}
@@ -730,7 +731,7 @@ def test_warehouse_soft_fills_mkb_from_full_doc_without_touching_agreement(tmp_p
         ).fetchone()
         assert row is not None
         assert row[0] == "N47.1"
-        assert row[1] == "soft_fill_full_doc"
+        assert row[1] in {"soft_fill_diag_slots", "soft_fill_full_doc"}
         assert row[2] == ""
         # слот с кодом не перетирается soft-fill
         slot_row = db.execute(

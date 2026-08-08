@@ -118,7 +118,7 @@ def _block_score(case: dict, block: str) -> float | None:
 
 
 def _icd10_present(case: dict) -> bool:
-    # Код по всему МО или осмысленный текст диагноза (отсутствие кода при Dx - не fail).
+    # Код в слотах диагноза / явной колонке или осмысленный текст Dx (нет кода при Dx - не fail).
     from .mo_icd_resolve import assess_icd_code_requirement
 
     return bool(assess_icd_code_requirement(case).get("ok"))
@@ -186,8 +186,9 @@ def _how_checked_ru(crit: dict) -> str:
         return f"Проверяется наличие заполненного поля «{field}» в МО/КЗ."
     if check == "icd10_present":
         return (
-            "Код МКБ-10 ищется по всему тексту МО/КЗ. Если кода нет, но есть "
-            "формулировка клинического диагноза - критерий не считается нарушением."
+            "Код МКБ-10 ищется в полях «Клинический диагноз» и «Диагноз МИС» "
+            "(и в явной колонке кода). Если кода нет, но есть формулировка "
+            "клинического диагноза - критерий не считается нарушением."
         )
     if check == "diagnosis_substantiated":
         return (

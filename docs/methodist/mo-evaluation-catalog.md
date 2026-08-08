@@ -177,8 +177,8 @@ Warehouse: `fact_mo_score_axis(mis_id, axis, score)`.
 
 | Слой | Поле / код | Метод | История |
 |--|--|--|--|
-| Directory fit | `icd_match.score_pct`, `B_icd_dir_*` | токен/title vs справочник МКБ | порог ± от summary |
-| Name match | `mo_icd_name_match`, `weak_name` | сходство текста Dx ↔ title_ru | −0.05 / +0.05 |
+| Directory fit | `icd_match.score_pct`, `B_icd_dir_*` | токен/title vs справочник МКБ; код и текст Dx **только** из `clinical_diagnosis` / `mis_diagnos` (не весь МО) | порог ± от summary |
+| Name match | `mo_icd_name_match`, `weak_name` | сходство текста Dx ↔ title_ru (те же слоты) | −0.05 / +0.05 |
 | Visit status chip | `icd_visit_status` | enum: ok / missing_dx / not_in_directory / weak_name | нет |
 | Concordance findings | `mo_concordance_findings` | правила status↔Dx↔план; shadow default | `history_dx_line_break` |
 | Protocol suggest | `protocol_suggest.items[].score` | ICD-first + text bridge v5 | эпизод Dx из истории |
