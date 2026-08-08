@@ -56,6 +56,18 @@ for d in "${days[@]}"; do
     --medical-exams-root "$DATA" \
     --out "$DATA/llm_action_judge/$y/$m/$day/judges.jsonl" >>"$LOG" 2>&1
   echo "judge_exit_$d=$?" | tee -a "$LOG"
+  # ICD grey-zone LLM review (фаза 4): default off
+  if [[ "${MO_ICD_LLM_REVIEW:-0}" == "1" || "${MO_ICD_LLM_REVIEW:-0}" == "true" ]]; then
+    mkdir -p "$DATA/llm_icd_review/$y/$m/$day"
+    ICD_LIMIT="${MO_ICD_LLM_REVIEW_LIMIT:-50}"
+    echo "=== icd llm review $d limit=$ICD_LIMIT $(date -u) ===" | tee -a "$LOG"
+    MO_ICD_LLM_REVIEW=1 "$PYTHON" scripts/run_mo_icd_llm_review.py \
+      --date "$d" --medical-exams-root "$DATA" --limit "$ICD_LIMIT" --force-enable \
+      --out "$DATA/llm_icd_review/$y/$m/$day/reviews.jsonl" >>"$LOG" 2>&1
+    echo "icd_llm_review_exit_$d=$?" | tee -a "$LOG"
+  else
+    echo "icd_llm_review_skip_$d=flag_off" | tee -a "$LOG"
+  fi
 done
 "$PYTHON" scripts/recompute_mo_days.py \
   --data-root "$DATA" \
