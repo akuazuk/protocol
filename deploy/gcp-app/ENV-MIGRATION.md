@@ -10,6 +10,8 @@
 - `GOOGLE_API_KEY` / `GEMINI_API_KEY` (+ `_2`, `GENERATIVE_LANGUAGE_API_KEY`)
 - `METHODIST_TOKEN`, модели Gemini (если заданы)
 - staging defaults: `MO_DATA_ROOT`, `RAG_STARTUP_MODE=manifest`, …
+- ICD (фаза 3): `MO_ICD_NAME_IN_PRIMARY=1`, `MO_ICD_DIR_IN_PRIMARY=0`,
+  `MO_ICD_PIPELINE_IN_PRIMARY=0` (см. calibration report)
 
 ## Канон дальше (ближе к прод-cutover)
 

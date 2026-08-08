@@ -16,12 +16,23 @@ from clinical_knowledge.clinical_text_similarity import (
     strip_leading_code_from_title,
 )
 
+from clinical_knowledge.mo_icd_thresholds import (  # noqa: E402
+    NAME_OK as NAME_OK_DEFAULT,
+    NAME_REVIEW as NAME_REVIEW_DEFAULT,
+    SUGGEST_MIN as SUGGEST_MIN_DEFAULT,
+    name_ok as _name_ok,
+    name_review as _name_review,
+    pipeline_in_primary_enabled,
+    suggest_min as _suggest_min,
+)
+
 ENGINE = "mo_icd_name_match_v1"
 _SOURCE = "mo_icd_name_match_v1"
 
-NAME_OK = 0.42
-NAME_REVIEW = 0.28
-SUGGEST_MIN = 0.08
+# Совместимость тестов / импортов: дефолты; runtime - через getters ниже.
+NAME_OK = NAME_OK_DEFAULT
+NAME_REVIEW = NAME_REVIEW_DEFAULT
+SUGGEST_MIN = SUGGEST_MIN_DEFAULT
 
 
 def icd_name_match_enabled() -> bool:
@@ -30,6 +41,8 @@ def icd_name_match_enabled() -> bool:
 
 
 def icd_name_match_primary_enabled() -> bool:
+    if pipeline_in_primary_enabled():
+        return True
     raw = (os.environ.get("MO_ICD_NAME_IN_PRIMARY") or "0").strip().lower()
     return raw in {"1", "true", "yes", "on"}
 
@@ -118,7 +131,7 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
         "findings": [],
         "candidates": [],
         "similarity": None,
-        "thresholds": {"name_ok": NAME_OK, "name_review": NAME_REVIEW},
+        "thresholds": {"name_ok": _name_ok(), "name_review": _name_review()},
         "engine": ENGINE,
     }
     if len(norm) < 3:
@@ -161,13 +174,16 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
         return empty
 
     name_fit = float(best["score"] or 0)
+    thr_ok = _name_ok()
+    thr_review = _name_review()
+    thr_suggest = _suggest_min()
     # Слабый lex без name fit не считаем hit
-    if name_fit < NAME_REVIEW and float(best.get("lex_score") or 0) < SUGGEST_MIN:
+    if name_fit < thr_review and float(best.get("lex_score") or 0) < thr_suggest:
         name_fit = float(best["score"] or 0)
 
-    if name_fit >= NAME_OK:
+    if name_fit >= thr_ok:
         verdict, score_pct, findings = "ok", int(round(min(100.0, name_fit * 100))), []
-    elif name_fit >= NAME_REVIEW:
+    elif name_fit >= thr_review:
         verdict, score_pct = "review", int(round(min(100.0, name_fit * 100)))
         findings = [
             _finding(
@@ -197,7 +213,7 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
         ]
 
     return {
-        "directory_name_hit": name_fit >= NAME_REVIEW,
+        "directory_name_hit": name_fit >= thr_review,
         "best_code": best.get("code"),
         "best_title_ru": best.get("title_ru_clean") or best.get("title_ru"),
         "name_fit": round(name_fit, 3),
@@ -206,7 +222,7 @@ def evaluate_diagnosis_name_only(diag_text: str) -> dict[str, Any]:
         "findings": findings,
         "candidates": scored[:5],
         "similarity": best.get("similarity"),
-        "thresholds": {"name_ok": NAME_OK, "name_review": NAME_REVIEW},
+        "thresholds": {"name_ok": thr_ok, "name_review": thr_review},
         "engine": ENGINE,
     }
 

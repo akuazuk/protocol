@@ -367,11 +367,21 @@ MIS: `diagnosis_list` через `|`, main index в `##[3]`.
 
 ### Фаза 3 - калибровка → primary (P1)
 
-- [ ] Прогон выборки дня с GCE warehouse (без печати PHI в отчёт)
-- [ ] Таблица confusion: chip vs мнение методиста (≥20 кейсов)
-- [ ] Подкрутка порогов в одном месте (constants / env)
-- [ ] `MO_ICD_*_IN_PRIMARY` или общий pipeline flag
-- [ ] Обновить handoff + метрики в этом плане
+- [x] Прогон выборки дня с GCE warehouse (без печати PHI в отчёт)
+- [x] Таблица confusion: chip vs мнение методиста (≥20 кейсов)
+- [x] Подкрутка порогов в одном месте (constants / env)
+- [x] `MO_ICD_*_IN_PRIMARY` или общий pipeline flag
+- [x] Обновить handoff + метрики в этом плане
+
+Решение 2026-08-08 (см. `docs/reports/2026-08-08-mo-icd-pipeline-calibration.md`):
+
+- Эталоны 22/22 chip accuracy=1.0; `not_in_directory` P/R=1.0/1.0.
+- День 2026-08-04 (n=200): `not_in_directory` share≈0.365; `missing_dx`≈0.005.
+- **Включаем** `MO_ICD_NAME_IN_PRIMARY=1` (deploy GCE default).
+- **Не включаем** `MO_ICD_DIR_IN_PRIMARY` / `MO_ICD_PIPELINE_IN_PRIMARY` (ждём ручных labels дня).
+- Пороги не трогали (дефолты v3); вынесены в `mo_icd_thresholds.py` + env override.
+- Критичный fix deploy: RU JSON `data/icd_reference/icd10_ru_mkb10su.json` в Docker image
+  (раньше на GCE `ru_valid_codes=0` → ложный not_in_directory на всём дне).
 
 ### Фаза 4 - LLM серая зона (P2)
 
@@ -401,9 +411,9 @@ MIS: `diagnosis_list` через `|`, main index в `##[3]`.
 | `K293` → directory hit | fail unknown | ok если K29.3 в JSON |
 | `B_icd_mismatch_mis` на export `mismatch` | не стреляет | стреляет |
 | Ложный `missing_dx` при near_code тексте | снижен #50 | 0 на gold |
-| Precision chip `not_in_directory` (ручная ≥20) | unknown | ≥ 0.85 |
-| Recall «реально нет в МКБ» | unknown | ≥ 0.80 |
-| Primary без калибровки | выкл | выкл до фазы 3 |
+| Precision chip `not_in_directory` (эталоны ≥20) | unknown | ≥ 0.85 → **1.0** (2026-08-08) |
+| Recall «реально нет в МКБ» | unknown | ≥ 0.80 → **1.0** (эталоны) |
+| Primary без калибровки | выкл | фаза 3: **NAME=1**, DIR/pipeline=0 |
 | LLM на 100% визитов | нет | нет (только review) |
 | Suggest reasons `icd_fit` | 0 | 0 |
 

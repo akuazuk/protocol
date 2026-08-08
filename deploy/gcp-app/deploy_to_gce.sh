@@ -84,6 +84,11 @@ vals.setdefault("RAG_MANIFEST_PATH", "data/catalog/corpus_path_manifest.jsonl")
 vals.setdefault("RAG_FORBID_FULL_CORPUS_RETRIEVE", "1")
 vals.setdefault("ALLOWED_ORIGINS", "*")
 vals.setdefault("PYTHONUNBUFFERED", "1")
+# ICD pipeline v3 phase 3: NAME findings in primary after calibration;
+# DIR / full pipeline primary stay off until day hand-labels.
+vals.setdefault("MO_ICD_NAME_IN_PRIMARY", "1")
+vals.setdefault("MO_ICD_DIR_IN_PRIMARY", "0")
+vals.setdefault("MO_ICD_PIPELINE_IN_PRIMARY", "0")
 dst.write_text("".join(f"{k}={v}\n" for k, v in sorted(vals.items())), encoding="utf-8")
 dst.chmod(0o600)
 print(f"wrote {dst} keys={len(vals)}")
@@ -99,7 +104,12 @@ echo "[3/5] sync sources to VM"
 tar czf - \
   rag_server.py env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py \
   requirements.txt requirements-rag.txt \
-  backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog services \
+  backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog \
+  data/icd_reference/icd10_ru_mkb10su.json \
+  data/icd_reference/icd10_ru_mkb10su.meta.json \
+  data/icd_reference/dx_aliases_ru.json \
+  data/icd_reference/icd10_who_2016_terminal_codes.json \
+  services \
   deploy/gcp-app/Dockerfile .dockerignore \
   | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR'"
 

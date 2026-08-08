@@ -24,6 +24,11 @@ COPY services/api/ services/api/
 COPY services/mo_pipeline/ services/mo_pipeline/
 COPY scripts/ scripts/
 COPY data/catalog/ data/catalog/
+# RU МКБ справочник для mo_icd_* / icd_mkb (без xlsx/WHO dump)
+COPY data/icd_reference/icd10_ru_mkb10su.json data/icd_reference/icd10_ru_mkb10su.json
+COPY data/icd_reference/icd10_ru_mkb10su.meta.json data/icd_reference/icd10_ru_mkb10su.meta.json
+COPY data/icd_reference/dx_aliases_ru.json data/icd_reference/dx_aliases_ru.json
+COPY data/icd_reference/icd10_who_2016_terminal_codes.json data/icd_reference/icd10_who_2016_terminal_codes.json
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \

@@ -1,0 +1,22 @@
+{"id": "e01_cystitis_ok", "expected_chip": "ok", "note": "classic ok", "case": {"clinical_diagnosis": "Острый цистит N30.0", "mkb_code_main": "N30.0"}}
+{"id": "e02_gastritis_k293_ok", "expected_chip": "ok", "note": "chronic gastritis + code", "case": {"clinical_diagnosis": "Хронический гастрит K29.3", "mkb_code_main": "K29.3"}}
+{"id": "e03_compact_k293_ok", "expected_chip": "ok", "note": "compact code", "case": {"clinical_diagnosis": "Хронический гастрит K293", "mkb_code_main": "K293"}}
+{"id": "e04_orvi_ok", "expected_chip": "ok", "note": "alias ОРВИ", "case": {"clinical_diagnosis": "ОРВИ J06.9", "mkb_code_main": "J06.9"}}
+{"id": "e05_orvi_text_only", "expected_chip": "ok", "note": "ОРВИ without code in slot", "case": {"clinical_diagnosis": "ОРВИ", "mkb_code_main": ""}}
+{"id": "e06_gb_i10", "expected_chip": "ok", "note": "ГБ alias", "case": {"clinical_diagnosis": "ГБ I10", "mkb_code_main": "I10"}}
+{"id": "e07_chr_gastritis", "expected_chip": "ok", "note": "хр. expand", "case": {"clinical_diagnosis": "хр. гастрит K29.3", "mkb_code_main": "K29.3"}}
+{"id": "e08_gerd", "expected_chip": "ok", "note": "ГЭРБ", "case": {"clinical_diagnosis": "ГЭРБ K21.9", "mkb_code_main": "K21.9"}}
+{"id": "e09_ibs_i25", "expected_chip": "ok", "note": "ИБС", "case": {"clinical_diagnosis": "ИБС I25.9", "mkb_code_main": "I25.9"}}
+{"id": "e10_copd", "expected_chip": "ok", "note": "ХОБЛ", "case": {"clinical_diagnosis": "ХОБЛ J44.9", "mkb_code_main": "J44.9"}}
+{"id": "e11_sd2", "expected_chip": "ok", "note": "СД2", "case": {"clinical_diagnosis": "СД2 E11.9", "mkb_code_main": "E11.9"}}
+{"id": "e12_imvp", "expected_chip": "ok", "note": "ИМВП", "case": {"clinical_diagnosis": "ИМВП N39.0", "mkb_code_main": "N39.0"}}
+{"id": "e13_gastritis_m60_weak", "expected_chip": "weak_name", "note": "text vs wrong code", "case": {"clinical_diagnosis": "гастрит M60", "mkb_code_main": "M60"}}
+{"id": "e14_garbage_fail", "expected_chip": "not_in_directory", "note": "noise text", "case": {"clinical_diagnosis": "ааа ббб ввв без нозологии", "mkb_code_main": ""}}
+{"id": "e15_missing_dx", "expected_chip": "missing_dx", "note": "empty", "case": {"clinical_diagnosis": "", "mkb_code_main": "", "objective_status": "общее состояние удовлетворительное"}}
+{"id": "e16_near_code_status", "expected_chip": "ok", "note": "code in status not dx slot", "case": {"clinical_diagnosis": "", "mkb_code_main": "", "objective_status": "Локально спокойно. N30.0 острый цистит."}}
+{"id": "e17_htn_i10", "expected_chip": "ok", "note": "гипертоническая болезнь", "case": {"clinical_diagnosis": "Гипертоническая болезнь 2 ст. I10", "mkb_code_main": "I10"}}
+{"id": "e18_pharyngitis", "expected_chip": "ok", "note": "фарингит", "case": {"clinical_diagnosis": "Острый фарингит J02.9", "mkb_code_main": "J02.9"}}
+{"id": "e19_bronchitis", "expected_chip": "ok", "note": "острый бронхит", "case": {"clinical_diagnosis": "Острый бронхит J20.9", "mkb_code_main": "J20.9"}}
+{"id": "e20_unknown_code", "expected_chip": "not_in_directory", "note": "fake code", "case": {"clinical_diagnosis": "Неизвестная болезнь Q99.99", "mkb_code_main": "Q99.99"}}
+{"id": "e21_cyrillic_h", "expected_chip": "ok", "note": "cyrillic H", "case": {"clinical_diagnosis": "Н 52.1 Миопия слабой степени", "mkb_code_main": ""}}
+{"id": "e22_comma_code", "expected_chip": "ok", "note": "comma decimal", "case": {"clinical_diagnosis": "Хронический гастрит K29,3", "mkb_code_main": "K29,3"}}
