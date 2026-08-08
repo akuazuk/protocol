@@ -926,6 +926,16 @@
       var tone = st === "ok" ? "good" : (st === "weak_name" ? "review" : "critical");
       return ' <span class="status ' + tone + ' icd-visit-chip" title="' + esc(title || label) + '">' + esc(label) + "</span>";
     }
+    function historyTierLabelRu(tier) {
+      var map = {
+        known_to_doctor: "код уже был у этого врача",
+        known_in_specialty_only: "код был у коллег специальности",
+        new_for_profile: "новый код для профиля у врача",
+        first_contact: "первый контакт с этим врачом",
+        insufficient: "истории недостаточно"
+      };
+      return map[String(tier || "")] || String(tier || "");
+    }
     function historyVisitChip(row) {
       var raw = row && (row.raw || row) || {};
       var n = Number(raw.history_prior_n || 0);
@@ -934,9 +944,12 @@
       var label = n > 0 ? ("история: " + n) : "история: 0";
       if (tier === "first_contact") label = "первый к врачу";
       else if (tier === "known_to_doctor") label = "код уже был";
+      else if (tier === "known_in_specialty_only") label = "код у коллег";
       else if (tier === "new_for_profile") label = "новый код";
-      var tone = (tier === "first_contact" || tier === "new_for_profile") ? "review" : "good";
-      return ' <span class="status ' + tone + ' history-visit-chip" title="История пациента до этого визита">' + esc(label) + "</span>";
+      else if (tier === "insufficient") label = "нет истории";
+      var tone = (tier === "first_contact" || tier === "new_for_profile" || tier === "insufficient") ? "review" : "good";
+      var title = historyTierLabelRu(tier) || "История пациента до этого визита";
+      return ' <span class="status ' + tone + ' history-visit-chip" title="' + esc(title) + '">' + esc(label) + "</span>";
     }
     function renderReg55(reg55, fallbackPct) {
       var pct = null;
@@ -988,36 +1001,65 @@
     }
     function renderPatientHistory(bundle) {
       if (!bundle || !bundle.summary) {
-        return '<div class="detail-block"><h3>История пациента</h3><p class="empty">Нет данных истории на складе.</p></div>';
+        return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
+          '<p class="empty">Нет данных истории на складе (нет patient_id / patient_key или склад недоступен).</p>' +
+          '<p class="card-sub">История нужна для контекста МКБ, подбора КП и динамики рубрики МЗ; ' +
+          'по умолчанию не меняет итоговую оценку (shadow).</p></div>';
       }
       var summary = bundle.summary || {};
       var coverage = bundle.coverage || {};
       var tier = bundle.tier || "";
-      var head = "Всего " + (summary.n_visits || 0) + " визит(ов) до этого случая";
+      var tierRu = bundle.tier_label_ru || historyTierLabelRu(tier) || tier;
+      var nVisits = Number(summary.n_visits || 0);
+      var head = "Всего " + nVisits + " визит(ов) до этого случая";
       if (coverage.first_date || coverage.last_date) {
         head += " · " + (coverage.first_date || "?") + " … " + (coverage.last_date || "?");
       }
+      var usage = bundle.usage_for_scores_ru ||
+        "История - контекст до визита. По умолчанию shadow (не двигает итоговую оценку). " +
+        "Влияет на сверку названия МКБ, разрыв линии Dx, подбор КП, динамику рубрики МЗ и приоритет LLM-очереди.";
+      function codesLine(title, codes) {
+        codes = codes || {};
+        var keys = Object.keys(codes);
+        if (!keys.length) return "";
+        return '<p class="card-sub">' + esc(title) + ": " +
+          keys.slice(0, 8).map(function (code) {
+            return esc(code) + "×" + esc(codes[code]);
+          }).join(", ") + "</p>";
+      }
       function shelfHtml(title, rows, collapsed) {
         rows = rows || [];
-        if (!rows.length) return "";
+        if (!rows.length) {
+          return "<details><summary>" + esc(title) + " (0)</summary>" +
+            '<p class="empty">Нет визитов на этой полке.</p></details>';
+        }
         var body = rows.slice(0, 12).map(function (visit) {
           var pct = visit.overall_pct == null ? "-" : (Math.round(Number(visit.overall_pct)) + "%");
-          var mid = visit.mis_id || visit.visit_id || "";
+          var mid = visit.visit_id || visit.mis_id || "";
+          var kind = visit.document_kind ? (" · " + visit.document_kind) : "";
           return '<li><button type="button" class="linkish" data-case="' + esc(mid) + '">' +
             esc(visit.visit_date || "") + "</button> · " + esc(visit.diagnosis_code || "-") +
             (visit.diagnosis_text ? (" · " + esc(String(visit.diagnosis_text).slice(0, 60))) : "") +
-            " · МО " + esc(pct) + "</li>";
+            " · МО " + esc(pct) + esc(kind) + "</li>";
         }).join("");
         var open = collapsed ? "" : " open";
         return "<details" + open + "><summary>" + esc(title) + " (" + rows.length + ")</summary><ul class=\"history-visit-list\">" + body + "</ul></details>";
       }
+      var emptyHint = nVisits === 0
+        ? '<p class="empty">На складе нет более ранних визитов этого пациента (или это первый контакт). ' +
+          'Это нормально для first_contact; не означает, что блок сломан.</p>'
+        : "";
       return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
-        '<p class="card-sub">' + esc(head) +
-        (tier ? (" · " + esc(tier)) : "") + "</p>" +
+        '<p><b>' + esc(tierRu || "контекст") + "</b></p>" +
+        '<p class="card-sub">' + esc(head) + "</p>" +
+        emptyHint +
+        codesLine("Коды у этого врача", summary.codes_same_doctor) +
+        codesLine("Коды у коллег специальности", summary.codes_same_specialty) +
         shelfHtml("К этому врачу", bundle.same_doctor, false) +
         shelfHtml("Другие врачи этой специальности", bundle.same_specialty, false) +
         shelfHtml("Прочие специальности", bundle.other, true) +
-        "</div>";
+        '<details class="mo-secondary-details"><summary>Как история влияет на оценки</summary>' +
+        '<p class="card-sub">' + esc(usage) + "</p></details></div>";
     }
     function documentRow(item) {
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
@@ -1490,8 +1532,8 @@
         renderRubricMz(rubric) +
         '</details></div>' +
         '<div class="case-workspace-decision">' +
-        renderLlmActionJudge(llmJudge, sourceDocument, item) +
         renderPatientHistory(data.patient_history) +
+        renderLlmActionJudge(llmJudge, sourceDocument, item) +
         '<div id="protocol-suggest-host"><div class="skeleton"></div></div>' +
         findingsHtml +
         decisionHtml +

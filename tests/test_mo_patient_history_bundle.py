@@ -12,7 +12,9 @@ from clinical_knowledge.mo_patient_history_bundle import (
     attach_bundle_to_case,
     build_patient_history_bundle,
     evaluate_history_mo,
+    merge_patient_history_into_findings,
     name_match_threshold_delta,
+    public_bundle_for_ui,
 )
 
 
@@ -184,3 +186,31 @@ def test_one_history_finding(tmp_path: Path) -> None:
 def test_name_match_threshold_delta() -> None:
     assert name_match_threshold_delta({"current_code_seen_by_doctor": True}) < 0
     assert name_match_threshold_delta({"tier": "first_contact"}) > 0
+
+
+def test_force_rebuild_after_stale_finding(tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo.sqlite"
+    _seed(warehouse)
+    case = {
+        "patient_id": "1001",
+        "visit_date": "2026-08-01",
+        "doctor_id": "11",
+        "doctor_key": "dk_a",
+        "specialty": "Уролог",
+        "diagnosis_code": "N30.0",
+        "mis_id": "99",
+    }
+    stale = [
+        {
+            "code": FINDING_CODE,
+            "history_tier": TIER_FIRST_CONTACT,
+            "title_ru": "stale",
+        }
+    ]
+    out = merge_patient_history_into_findings(stale, case, warehouse=warehouse, force=True)
+    assert len([f for f in out if f.get("code") == FINDING_CODE]) == 1
+    assert out[-1]["history_tier"] == TIER_KNOWN_DOCTOR
+    assert int((case["_patient_history"]["summary"] or {}).get("n_visits") or 0) >= 3
+    pub = public_bundle_for_ui(case["_patient_history"])
+    assert pub["tier_label_ru"]
+    assert "shadow" in pub["usage_for_scores_ru"].lower() or "не меняет" in pub["usage_for_scores_ru"]

@@ -89,6 +89,9 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "Подбор по установленному диагнозу" in JS
     assert "data-sort-key" in HTML
     assert 'id="drawer-prev"' in HTML
+    assert "renderPatientHistory" in JS
+    assert "Как история влияет на оценки" in JS
+    assert "historyTierLabelRu" in JS
 
 
 def test_mo_search_and_filters_have_explicit_apply_actions() -> None:

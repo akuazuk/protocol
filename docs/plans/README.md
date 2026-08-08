@@ -21,6 +21,7 @@
 | [2026-08-08-mo-consultation-legacy-score-v1.md](2026-08-08-mo-consultation-legacy-score-v1.md) | Legacy consultation снова в оценке (рубрика МЗ / №55 / KP) | active |
 | [2026-08-08-mo-action-queue-precise-signals-v2.md](2026-08-08-mo-action-queue-precise-signals-v2.md) | Очередь разбора: whitelist точных сигналов (safety/Dx), без №55-тикетов | active |
 | [2026-08-08-mo-icd-absent-ok-with-dx-v1.md](2026-08-08-mo-icd-absent-ok-with-dx-v1.md) | Нет кода МКБ при тексте Dx - не дефект; страшно только без Dx и без кода | active |
+| [2026-08-08-mo-history-scores-catalog-v1.md](2026-08-08-mo-history-scores-catalog-v1.md) | Вернуть историю пациента в разборе + каталог всех оценок МО для дашбордов | active |
 | [2026-08-08-mo-nonclinical-exclude-hard-v1.md](2026-08-08-mo-nonclinical-exclude-hard-v1.md) | Non-clinical вне таблиц и любых оценок/КП/LLM | active |
 | [2026-08-08-mo-action-priority-formula-ru-v1.md](2026-08-08-mo-action-priority-formula-ru-v1.md) | Очередь: приоритет по формуле; P0-P3 → русские слова и цвета; demote stale №55 P0 | archived (преемник: mo-action-queue-precise-signals-v2) |
 | [2026-08-08-mo-icd-first-kp-suggest-v1.md](2026-08-08-mo-icd-first-kp-suggest-v1.md) | КП ICD-first при валидном коде; mismatch только на substantive text; plan 1.0 только с clinical KP | active |
