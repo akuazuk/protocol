@@ -414,8 +414,10 @@ MIS: `diagnosis_list` через `|`, main index в `##[3]`.
 
 ### Фаза 6 - (опционально) лёгкая морфология / embeddings spike
 
-- Только если после фаз 1-3 «живот/живота», склонения ломают метрику.
-- Spike-отчёт в `docs/reports/`, не сразу в primary.
+- [x] Лёгкий stem под `MO_ICD_LIGHT_STEM` (default off); без pymorphy
+- [x] Spike-отчёт `docs/reports/2026-08-08-mo-icd-light-stem-spike.md`
+- [x] Embeddings spike не нужен: stem закрыл «живот/живота» на фикстуре
+- Не в primary по умолчанию - включать флаг на GCE после smoke
 
 ---
 

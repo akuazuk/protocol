@@ -16,6 +16,15 @@ def test_title_match_thresholds_aligned_with_consult() -> None:
     assert title_match_score("острый цистит", "Острый цистит") >= TEXT_FIT_OK
 
 
+def test_title_match_light_stem_zhivot(monkeypatch) -> None:
+    monkeypatch.setenv("MO_ICD_LIGHT_STEM", "0")
+    off = title_match_score("боль в животе", "Боли в области живота")
+    monkeypatch.setenv("MO_ICD_LIGHT_STEM", "1")
+    on = title_match_score("боль в животе", "Боли в области живота")
+    assert off == 0.0
+    assert on > 0.0
+
+
 def test_directory_eval_ok_when_text_matches_known_code(monkeypatch) -> None:
     monkeypatch.setattr(
         "icd_mkb.is_code_in_ru_reference",

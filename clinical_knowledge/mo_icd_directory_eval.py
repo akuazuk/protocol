@@ -43,7 +43,13 @@ def icd_directory_primary_enabled() -> bool:
 
 
 def _norm_tokens(text: str) -> set[str]:
-    return {t for t in re.findall(r"[а-яёa-z]{4,}", (text or "").lower()) if len(t) >= 4}
+    """Токены для coverage title; при MO_ICD_LIGHT_STEM - через общий light stem."""
+    try:
+        from clinical_knowledge.clinical_text_similarity import tokens as _shared_tokens
+
+        return _shared_tokens(text, min_len=4)
+    except Exception:  # noqa: BLE001
+        return {t for t in re.findall(r"[а-яёa-z]{4,}", (text or "").lower()) if len(t) >= 4}
 
 
 def title_match_score(diagnosis_text: str, ru_title: str | None) -> float:
