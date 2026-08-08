@@ -1,0 +1,16 @@
+# HTTPS front for protocol-app (GCE).
+# Proxy → docker protocol-web on :8000
+#
+# Requires DNS: protocol.kravira.by A → VM static IP (not CNAME to Render).
+
+protocol.kravira.by {
+	encode gzip
+	reverse_proxy 127.0.0.1:8000
+
+	header {
+		Strict-Transport-Security "max-age=31536000; includeSubDomains; preload"
+		X-Content-Type-Options nosniff
+		Referrer-Policy strict-origin-when-cross-origin
+		-Server
+	}
+}
