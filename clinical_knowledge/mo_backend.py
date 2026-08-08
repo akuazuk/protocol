@@ -1349,7 +1349,6 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
     from .mo_finding_labels_ru import (
         demote_stale_reg55_p0,
         finding_label_ru,
-        severity_label_ru,
         severity_tone_css,
     )
 
