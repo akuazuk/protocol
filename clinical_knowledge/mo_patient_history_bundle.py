@@ -23,6 +23,23 @@ TIER_NEW_PROFILE = "new_for_profile"
 TIER_FIRST_CONTACT = "first_contact"
 TIER_INSUFFICIENT = "insufficient"
 
+TIER_LABELS_RU = {
+    TIER_KNOWN_DOCTOR: "код уже был у этого врача",
+    TIER_KNOWN_SPECIALTY: "код был у коллег специальности",
+    TIER_NEW_PROFILE: "новый код для профиля у врача",
+    TIER_FIRST_CONTACT: "первый контакт с этим врачом",
+    TIER_INSUFFICIENT: "истории недостаточно",
+}
+
+USAGE_FOR_SCORES_RU = (
+    "История пациента - контекст до текущего визита (склад МО). "
+    "По умолчанию не меняет итоговую оценку (shadow). "
+    "Влияет на: порог сверки названия МКБ, finding разрыва линии диагноза, "
+    "подбор КП по эпизоду Dx, динамику рубрики МЗ (коррекции по prior), "
+    "приоритет LLM-очереди для first_contact / new_for_profile. "
+    "Флаг MO_PATIENT_HISTORY_IN_PRIMARY=1 включает влияние на primary score."
+)
+
 
 def patient_history_enabled() -> bool:
     raw = (os.environ.get("MO_PATIENT_HISTORY_BUNDLE") or "1").strip().lower()
@@ -303,20 +320,54 @@ def history_summary_for_analyzers(bundle: Mapping[str, Any] | None) -> dict[str,
     return summary
 
 
+def tier_label_ru(tier: str | None) -> str:
+    key = str(tier or "").strip()
+    return TIER_LABELS_RU.get(key, key or TIER_LABELS_RU[TIER_INSUFFICIENT])
+
+
 def public_bundle_for_ui(bundle: Mapping[str, Any] | None) -> dict[str, Any]:
     """Публичный объект для API/UI без patient_id."""
     if not isinstance(bundle, Mapping):
-        return empty_bundle(reason="empty")
+        empty = empty_bundle(reason="empty")
+        empty["tier_label_ru"] = tier_label_ru(empty.get("tier"))
+        empty["usage_for_scores_ru"] = USAGE_FOR_SCORES_RU
+        return empty
+    tier = str(bundle.get("tier") or TIER_INSUFFICIENT)
     return {
         "engine": ENGINE,
-        "tier": str(bundle.get("tier") or TIER_INSUFFICIENT),
+        "tier": tier,
+        "tier_label_ru": tier_label_ru(tier),
         "summary": dict(bundle.get("summary") or {}),
         "coverage": dict(bundle.get("coverage") or {}),
         "same_doctor": list(bundle.get("same_doctor") or [])[:40],
         "same_specialty": list(bundle.get("same_specialty") or [])[:40],
         "other": list(bundle.get("other") or [])[:20],
         "reason": str(bundle.get("reason") or ""),
+        "usage_for_scores_ru": USAGE_FOR_SCORES_RU,
     }
+
+
+def bundle_is_richer(candidate: Mapping[str, Any] | None, current: Mapping[str, Any] | None) -> bool:
+    """True если candidate лучше current (больше визитов или есть данные при пустом current)."""
+    if not isinstance(candidate, Mapping):
+        return False
+    if not isinstance(current, Mapping):
+        return True
+    c_n = int((candidate.get("summary") or {}).get("n_visits") or 0)
+    cur_n = int((current.get("summary") or {}).get("n_visits") or 0)
+    if c_n > cur_n:
+        return True
+    if cur_n > 0 and c_n == 0:
+        return False
+    # предпочитаем бандл с кодом / без reason=empty
+    c_reason = str(candidate.get("reason") or "")
+    cur_reason = str(current.get("reason") or "")
+    if cur_reason in {"empty", "missing_patient_or_date"} and c_reason not in {
+        "empty",
+        "missing_patient_or_date",
+    }:
+        return True
+    return c_n >= cur_n and bool(candidate.get("tier"))
 
 
 def _history_detail(bundle: Mapping[str, Any]) -> str:
@@ -413,12 +464,17 @@ def attach_bundle_to_case(
     case: dict[str, Any],
     *,
     warehouse: Path | str | sqlite3.Connection | None = None,
+    force: bool = False,
 ) -> dict[str, Any]:
-    """Положить бандл в case['_patient_history'] (один раз)."""
+    """Положить бандл в case['_patient_history'] (один раз, если не force)."""
     if not isinstance(case, dict):
         return empty_bundle(reason="bad_case")
     existing = case.get("_patient_history")
-    if isinstance(existing, Mapping) and existing.get("engine") == ENGINE:
+    if (
+        not force
+        and isinstance(existing, Mapping)
+        and existing.get("engine") == ENGINE
+    ):
         return dict(existing)
 
     patient_id = str(
@@ -490,18 +546,30 @@ def merge_patient_history_into_findings(
     case: dict[str, Any],
     *,
     warehouse: Path | str | sqlite3.Connection | None = None,
+    force: bool = False,
 ) -> list[dict[str, Any]]:
     base = [dict(f) for f in (findings or []) if isinstance(f, Mapping)]
     if not patient_history_enabled():
         return base
-    # не дублировать
-    if any(str(f.get("code") or "") == FINDING_CODE for f in base):
+    if force:
+        base = [f for f in base if str(f.get("code") or "") != FINDING_CODE]
+        if isinstance(case, dict):
+            case.pop("_patient_history", None)
+            case.pop("_patient_history_summary", None)
+    elif any(str(f.get("code") or "") == FINDING_CODE for f in base):
+        # уже есть finding - но бандл в case всё равно нужен UI
+        if isinstance(case, dict) and not case.get("_patient_history"):
+            attach_bundle_to_case(case, warehouse=warehouse, force=True)
         return base
-    extra = evaluate_mo_patient_history(case, warehouse=warehouse)
+    if force:
+        attach_bundle_to_case(case, warehouse=warehouse, force=True)
+        code = str(case.get("diagnosis_code") or case.get("mkb_code_main") or "").strip().upper()
+        extra = evaluate_history_mo(case.get("_patient_history"), current_code=code)
+    else:
+        extra = evaluate_mo_patient_history(case, warehouse=warehouse)
     if patient_history_primary_enabled():
         for item in extra:
-            item = {**item, "shadow": False}
-            base.append(item)
+            base.append({**item, "shadow": False})
     else:
         base.extend(extra)
     return base

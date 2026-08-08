@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-155145Z-consultation-legacy-score"
+BUILD_VERSION = "2026-08-08-160743Z-history-scores-catalog"
 
 
 def _app_version() -> str:
@@ -11836,35 +11836,52 @@ def api_methodist_mo_case_detail(
             if not str(record.get("doctor_fio") or "").strip():
                 record["doctor_fio"] = f"ID врача: {doctor_id}"
         result["record"] = record
-        # История пациента - только для оцениваемых clinical_visit
-        if score_eligible:
-            try:
-                from clinical_knowledge.mo_patient_history_bundle import (
-                    merge_patient_history_into_findings,
-                    public_bundle_for_ui,
-                )
+        # История пациента: пересобрать после identity (patient_id часто появляется только здесь).
+        # Не только для score_eligible - контекст нужен и в разборе, даже если оценки выключены.
+        try:
+            from clinical_knowledge.mo_patient_history_bundle import (
+                bundle_is_richer,
+                merge_patient_history_into_findings,
+                public_bundle_for_ui,
+            )
 
-                hist_case = {
-                    "patient_id": patient_id,
-                    "patient_key": str(record.get("patient_key") or ""),
-                    "visit_date": visit_date,
-                    "doctor_id": doctor_id or str(record.get("doctor_id") or ""),
-                    "doctor_key": str(record.get("doctor_key") or ""),
-                    "doctor_fio": str(record.get("doctor_fio") or ""),
-                    "specialty": str(record.get("specialization") or record.get("specialty") or ""),
-                    "diagnosis_code": str(
-                        record.get("diagnosis_code") or record.get("mkb_code_main") or ""
-                    ),
-                    "mis_id": str(record.get("mis_id") or case_id),
-                    "visit_id": str(record.get("visit_id") or ""),
-                }
-                result["findings"] = merge_patient_history_into_findings(
-                    result.get("findings") if isinstance(result.get("findings"), list) else [],
-                    hist_case,
-                )
-                result["patient_history"] = public_bundle_for_ui(hist_case.get("_patient_history"))
-            except Exception:  # noqa: BLE001
-                pass
+            dx_code = str(
+                record.get("diagnosis_code")
+                or record.get("mkb_code_main")
+                or (clinical.get("mkb_code_main") if isinstance(clinical, dict) else "")
+                or ""
+            )
+            hist_case = {
+                "patient_id": patient_id,
+                "patient_key": str(record.get("patient_key") or ""),
+                "visit_date": visit_date,
+                "doctor_id": doctor_id or str(record.get("doctor_id") or ""),
+                "doctor_key": str(record.get("doctor_key") or ""),
+                "doctor_fio": str(record.get("doctor_fio") or ""),
+                "specialty": str(record.get("specialization") or record.get("specialty") or ""),
+                "diagnosis_code": dx_code,
+                "mkb_code_main": dx_code,
+                "mis_id": str(record.get("mis_id") or case_id),
+                "visit_id": str(record.get("visit_id") or ""),
+            }
+            result["findings"] = merge_patient_history_into_findings(
+                result.get("findings") if isinstance(result.get("findings"), list) else [],
+                hist_case,
+                force=True,
+            )
+            new_bundle = public_bundle_for_ui(hist_case.get("_patient_history"))
+            prev_bundle = result.get("patient_history")
+            if bundle_is_richer(new_bundle, prev_bundle if isinstance(prev_bundle, dict) else None):
+                result["patient_history"] = new_bundle
+            elif not isinstance(prev_bundle, dict):
+                result["patient_history"] = new_bundle
+            live_ph = result.get("patient_history") if isinstance(result.get("patient_history"), dict) else {}
+            summary = live_ph.get("summary") if isinstance(live_ph.get("summary"), dict) else {}
+            record["history_prior_n"] = int(summary.get("n_visits") or 0)
+            record["history_tier"] = str(live_ph.get("tier") or "")
+            result["record"] = record
+        except Exception:  # noqa: BLE001
+            pass
         try:
             from clinical_knowledge.mo_backend import record_access
 
