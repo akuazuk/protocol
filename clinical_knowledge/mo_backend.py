@@ -998,7 +998,7 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
     states = _crm_states([r["case_id"] for r in filtered])
     agg = _filtered_agg(filtered)
     kinds = Counter(r.get("document_kind") or "unknown" for r in filtered)
-    eligible = sum(kinds.get(k, 0) for k in ("clinical_visit",))
+    eligible = sum(kinds.get(k, 0) for k in ("clinical_visit", "consultation"))
     small_slice = len(filtered) < SUPPRESSION_N
     return {
         "ok": True,
@@ -2888,11 +2888,10 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                    LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
                    WHERE c.visit_id = ? OR c.mis_id = ?
                    ORDER BY CASE
-                            WHEN c.document_kind='clinical_visit' THEN 0
+                            WHEN c.document_kind IN ('clinical_visit', 'consultation') THEN 0
                             WHEN c.document_kind='procedure_session' THEN 1
                             WHEN c.document_kind='medical_exam' THEN 2
-                            WHEN c.document_kind='consultation' THEN 3
-                            ELSE 2
+                            ELSE 3
                           END
                    LIMIT 1""",
                 (case_id, case_id),
