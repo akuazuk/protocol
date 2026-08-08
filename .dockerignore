@@ -12,7 +12,12 @@
 minzdrav_protocols/
 corpus/
 corpus_vector_index/
-output/
+# Каталог артефактов локальной сборки - кроме registry КП для suggest
+output/*
+!output/registry/
+output/registry/*
+!output/registry/protocol_cards.jsonl
+
 data/medical_exams/
 data/ml/
 ml/experiments/

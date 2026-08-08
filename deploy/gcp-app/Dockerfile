@@ -29,6 +29,8 @@ COPY data/icd_reference/icd10_ru_mkb10su.json data/icd_reference/icd10_ru_mkb10s
 COPY data/icd_reference/icd10_ru_mkb10su.meta.json data/icd_reference/icd10_ru_mkb10su.meta.json
 COPY data/icd_reference/dx_aliases_ru.json data/icd_reference/dx_aliases_ru.json
 COPY data/icd_reference/icd10_who_2016_terminal_codes.json data/icd_reference/icd10_who_2016_terminal_codes.json
+# Карточки КП для case_protocol_suggest / protocol_match (без PDF)
+COPY output/registry/protocol_cards.jsonl output/registry/protocol_cards.jsonl
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
