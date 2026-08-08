@@ -889,7 +889,43 @@
         kind: row.document_kind_label || row.kz_kind_label || row.kz_kind || "Не указан",
         coverage: firstNumeric([row.coverage_pct, row.coverage, row.deep_coverage_pct]),
         confidence: firstNumeric([row.confidence_pct, row.confidence, row.deep_confidence_pct]),
-        reg55: firstNumeric([row.reg55_pct, row.axis_regulatory, (row.axes || {}).regulatory]) };
+        reg55: firstNumeric([row.reg55_pct, row.axis_regulatory, (row.axes || {}).regulatory]),
+        zone1Band: row.zone1_band || "", zone2aBand: row.zone2a_band || "",
+        zone2bBand: row.zone2b_band || "", zone2bKp: row.zone2b_kp_status || "",
+        attentionPrimary: row.attention_primary || "",
+        attentionReason: row.attention_reason_ru || "" };
+    }
+    function zoneBandChip(band, kpStatus) {
+      var b = String(band || "na");
+      if (b === "na" && kpStatus === "unmatched") {
+        return '<span class="status muted">протокол не подобран</span>';
+      }
+      var map = {
+        ok: ["good", "в норме"],
+        weak: ["review", "слабо"],
+        bad: ["critical", "плохо"],
+        na: ["muted", "нет данных"]
+      };
+      var pair = map[b] || map.na;
+      return '<span class="status ' + pair[0] + '">' + esc(pair[1]) + "</span>";
+    }
+    function layerLabelRu(primary) {
+      return ({
+        safety: "Риск", zone1: "Оформление", zone2a: "Диагноз", zone2b: "План по протоколу"
+      })[primary] || "";
+    }
+    function findingZoneKey(finding) {
+      var code = String((finding && (finding.code || finding.finding_code)) || "");
+      if (/^C_/.test(code)) return "safety";
+      if (/^B_dx|^B_icd|diagnosis/i.test(code)) return "zone2a";
+      if (/plan|exam_rec|treat|follow|D_reg55/i.test(code)) return "zone2b";
+      if (/^A_|missing|complain|anamnes|objective|mo_complete/i.test(code)) return "zone1";
+      var axis = String((finding && finding.axis) || "");
+      if (axis === "safety") return "safety";
+      if (axis === "clinical_concordance") return "zone2a";
+      if (axis === "regulatory") return "zone2b";
+      if (axis === "documentation") return "zone1";
+      return "other";
     }
     function statusLabel(value) {
       var map = { new:"Новый", assigned:"Назначен", in_review:"На разборе", confirmed_issue:"Подтверждено",
@@ -1062,14 +1098,20 @@
         '<p class="card-sub">' + esc(usage) + "</p></details></div>";
     }
     function documentRow(item) {
+      var reason = item.attentionReason || "";
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
-        '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) +         '</td><td>' + esc(item.diagnosis) +
+        '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
         icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
-        '</td><td>' + esc(item.kind) + '</td><td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td><td><b title="Средний балл №55 = 100 × выполненные / применимые">' +
-        esc(score(item.reg55)) + '</b></td><td>' + esc(score(item.coverage)) +
-        '</td><td>' + esc(score(item.confidence)) + '</td><td><span class="status ' + statusClass(item.status) + '">' +
-        esc(statusLabel(item.status)) + "</span></td></tr>";
+        '</td><td>' + zoneBandChip(item.zone1Band) + '</td><td>' + zoneBandChip(item.zone2aBand) +
+        '</td><td>' + zoneBandChip(item.zone2bBand, item.zone2bKp) +
+        '</td><td>' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
+        '</td><td><span class="status ' + statusClass(item.status) + '">' +
+        esc(statusLabel(item.status)) + "</span></td>" +
+        '<td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td>' +
+        '<td><b>' + esc(score(item.reg55)) + '</b></td>' +
+        '<td>' + esc(score(item.coverage)) + '</td>' +
+        '<td>' + esc(score(item.confidence)) + '</td></tr>';
     }
     function queueRow(item) {
       var raw = item.raw || {};
@@ -1078,12 +1120,18 @@
       var tone = raw.severity_tone || severityTone(raw) || statusClass(item.status);
       var crm = raw.crm || {};
       var pdfUrl = raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
+      var layer = raw.layer_ru || layerLabelRu(item.attentionPrimary || raw.attention_primary);
+      var reason = item.attentionReason || raw.attention_reason_ru || raw.reason || raw.comment || "Требует ручной проверки";
       return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
-        esc(tone) + '">' + esc(priority) + '</span></td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
+        esc(tone) + '">' + esc(priority) + '</span></td><td>' + esc(layer || "-") +
+        '</td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
-        '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) + '</td><td>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</td><td>' +
-        esc(raw.reason || raw.comment || "Требует ручной проверки") + '</td><td>' +
+        '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
+        '</td><td>' + zoneBandChip(item.zone1Band || raw.zone1_band) +
+        '</td><td>' + zoneBandChip(item.zone2aBand || raw.zone2a_band) +
+        '</td><td>' + zoneBandChip(item.zone2bBand || raw.zone2b_band, item.zone2bKp || raw.zone2b_kp_status) +
+        '</td><td>' + esc(reason) + '</td><td>' +
         esc(raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(raw.due_date || crm.due_date || "Сегодня") +
         '</td><td>' + esc(statusLabel(item.status)) +
         '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.id) + '.pdf">МО в PDF</button></td></tr>';
@@ -1376,8 +1424,8 @@
               (pair[0] === "unreviewed" ? " checked" : "") + '> ' + pair[1] + '</label>';
           }).join("") + '</div></article>';
       }).join("");
-      return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ РБ к случаю</h3>' +
-        '<p class="card-sub">Подбор по установленному диагнозу (не по МКБ). Название - прямая ссылка на протокол; «Открыть КП» - поиск по каталогу.</p>' +
+      return '<div class="detail-block protocol-suggest-block"><h3>Клинические протоколы для оценки плана</h3>' +
+        '<p class="card-sub">Если протокол не подобран - план не штрафуем за несоответствие протоколу.</p>' +
         items + '</div>';
     }
     function verdictSelect(id, current) {
@@ -1410,6 +1458,105 @@
           esc(pack.pack_id) + '">Открыть / исправить</button></div></article>';
       }).join("") + '</div>';
     }
+    function renderZonesHero(zones) {
+      if (!zones || !zones.ok || zones.skipped) return "";
+      var zoneMap = { zone1: "documentation", zone2a: "diagnosis", zone2b: "plan" };
+      var cards = [
+        ["zone1", "Оформление"],
+        ["zone2a", "Диагноз"],
+        ["zone2b", "План по протоколу"]
+      ].map(function (pair) {
+        var z = zones[pair[0]] || {};
+        var why = "";
+        (zones.criteria || []).some(function (c) {
+          if (String(c.zone || "") === zoneMap[pair[0]] && (c.score === 0 || c.score === 0.5 || c.na_reason)) {
+            why = c.reason || "";
+            return true;
+          }
+          return false;
+        });
+        return '<article class="zone-card zone-card--' + esc(z.band || "na") + '" data-zone-filter="' + pair[0] + '">' +
+          '<div class="zone-card-label">' + esc(z.label_ru || pair[1]) + '</div>' +
+          '<div class="zone-card-band">' + zoneBandChip(z.band, z.kp_status) + '</div>' +
+          (why ? '<p class="zone-card-why">' + esc(String(why).slice(0, 140)) + '</p>' : "") +
+          '</article>';
+      }).join("");
+      var safety = (zones.safety || {}).band;
+      var risk = safety && safety !== "none" ? '<span class="status critical zone-risk-badge">Риск</span>' : "";
+      return '<div class="zones-hero"><div class="zones-hero-head"><h3>Оценка случая</h3>' + risk +
+        '</div><div class="zones-hero-grid">' + cards + '</div></div>';
+    }
+    function renderFindingsCompact(findings, crm, llmJudge) {
+      var filters = [
+        ["all", "Все"], ["zone1", "Оформление"], ["zone2a", "Диагноз"],
+        ["zone2b", "План"], ["safety", "Риск"]
+      ];
+      var chips = '<div class="zone-finding-filters">' + filters.map(function (pair, idx) {
+        return '<button type="button" class="button secondary compact' + (idx === 0 ? " is-active" : "") +
+          '" data-finding-zone="' + pair[0] + '">' + esc(pair[1]) + '</button>';
+      }).join("") + '</div>';
+      var list = findings.length ? findings.map(function (finding) {
+        var zkey = findingZoneKey(finding);
+        var title = finding.title_ru || finding.title || finding.code || "Замечание";
+        var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
+        var linked = finding.linked_fields || [];
+        return '<article class="finding-card finding-card--compact" data-finding-zone-item="' + zkey + '">' +
+          '<div class="finding-card-head"><span class="status muted">' + esc(layerLabelRu(zkey) || "Прочее") +
+          '</span><span class="status ' + esc(finding.severity_tone || severityTone(finding)) + '">' +
+          esc(finding.severity_label_ru || severityLabel(finding) || "Проверить") + '</span></div>' +
+          '<div class="finding-card-title">' + esc(title) + '</div>' +
+          (finding.detail_ru || finding.detail ? '<p class="finding-detail">' +
+            esc(String(finding.detail_ru || finding.detail).slice(0, 220)) + '</p>' : "") +
+          (linked[0] ? '<button type="button" class="linkish" data-focus-clinical="' + esc(linked[0]) +
+            '">показать в тексте МО</button>' : "") +
+          (finding.code ? '<label class="filter finding-decision"><span>Решение</span><select class="control" data-finding-code="' +
+            esc(finding.code) + '"><option value="unreviewed"' + (decision === "unreviewed" ? " selected" : "") +
+            '>Не проверено</option><option value="confirmed"' + (decision === "confirmed" ? " selected" : "") +
+            '>Подтверждено</option><option value="false_positive"' + (decision === "false_positive" ? " selected" : "") +
+            '>Отклонено</option></select></label>' : "") +
+          '</article>';
+      }).join("") : '<p class="empty">Замечаний нет.</p>';
+      var llmLine = "";
+      if (llmJudge && llmJudge.available) {
+        var k = llmJudge.kpis || {};
+        llmLine = '<p class="card-sub llm-inline">ИИ: оформление - ' +
+          esc(statusLabel((k.completeness || {}).verdict) || "нет") +
+          '; диагноз - ' + esc(statusLabel((k.diagnosis || {}).verdict) || "нет") +
+          '; план - ' + esc(statusLabel((k.recommendations || {}).verdict) || "нет") + '</p>';
+      }
+      return '<div class="detail-block"><h3>Что не так</h3>' + chips + llmLine +
+        '<div class="findings-compact-list">' + list + '</div></div>';
+    }
+    function renderHistoryCompact(bundle) {
+      if (!bundle || !bundle.summary) {
+        return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
+          '<p class="empty">Нет prior - коррекции плана не оцениваются.</p></div>';
+      }
+      var summary = bundle.summary || {};
+      var n = Number(summary.n_visits || 0);
+      var sameDoc = (bundle.same_doctor || []).length;
+      var sameSpec = (bundle.same_specialty || []).length;
+      var prior = n > 0 ? "есть prior" : "нет prior";
+      return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
+        '<p>К этому врачу: ' + sameDoc + ' · К специальности: ' + sameSpec +
+        ' · Всего: ' + n + ' · Для коррекций плана: ' + prior + '</p>' +
+        (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются.</p>' : "") +
+        '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
+    }
+    function renderZonesCriteriaDetails(zones) {
+      var rows = (zones.criteria || []).filter(function (c) {
+        return c.score === 0 || c.score === 0.5 || c.score == null;
+      });
+      if (!rows.length) rows = zones.criteria || [];
+      var body = rows.map(function (item) {
+        return '<tr><td>' + esc(item.title || item.id) + '</td><td>' +
+          esc(item.score_label == null ? "не оценивается" : String(item.score_label)) +
+          '</td><td>' + esc(item.reason || "") + '</td></tr>';
+      }).join("");
+      return '<details class="detail-block"><summary>Подробнее: критерии методики</summary>' +
+        '<table class="zones-criteria-table"><thead><tr><th>Параметр</th><th>Оценка</th><th>Что не так</th></tr></thead><tbody>' +
+        body + '</tbody></table></details>';
+    }
     function renderCase(data) {
       var record = data.record || data.case || data;
       var item = rowRecord(record);
@@ -1422,6 +1569,8 @@
       var confidenceInfo = deriveConfidence(data, record, axes);
       var sourceDocument = data.document || {};
       var llmJudge = data.llm_action_judge || {};
+      var zones = data.zones || {};
+      var useZonesUi = !!(zones && zones.ok && !zones.skipped);
       var crmStatus = crm.status || "new";
       state.caseDetail = data;
       state.supersedesPackId = "";
@@ -1437,120 +1586,77 @@
       $("drawer-subtitle").textContent = [
         "визит " + (item.visitId || item.id || "-"),
         "пациент " + (item.patientId || "-"),
-        item.doctorId ? ("врач ID " + item.doctorId) : "",
-        item.date, item.doctor, item.specialty, item.branch
+        item.date, item.doctor, item.specialty, item.diagnosis || ""
       ].filter(Boolean).join(" · ");
       var rubric = data.rubric_mz || {};
-      var findingsHtml = '<div class="detail-block"><h3>Выявленные замечания</h3>' +
-        '<p class="card-sub">Критично - риск вреда; Важно - клинический дефект; Оформление - документирование. ' +
-        'Каждое замечание можно подтвердить или отклонить.</p>' +
-        (findings.length ? findings.map(function (finding) {
-        var title = finding.title_ru || finding.title || finding.code || "Замечание";
-        var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
-        var linked = finding.linked_fields || [];
-        var sevLabel = finding.severity_label_ru || severityLabel(finding) || "Проверить";
-        var sevTone = finding.severity_tone || severityTone(finding);
-        var shadowBadge = (finding.is_shadow || finding.shadow) ?
-          '<span class="status review finding-shadow-badge">черновик</span>' : "";
-        var linkHint = finding.link_hint_ru ?
-          '<p class="finding-link-hint">' + esc(finding.link_hint_ru) +
-          (linked.length ? ' · поля: ' + linked.map(function (field) {
-            return '<button type="button" class="linkish" data-focus-clinical="' + esc(field) + '">' +
-              esc(clinicalFieldLabel(field)) + '</button>';
-          }).join(", ") : "") + '</p>' : "";
-        var detailText = finding.detail_ru || finding.detail || "";
-        var sourceText = finding.source_ref_ru || finding.source_ref || "";
-        return '<article class="finding-card">' +
-          '<div class="finding-card-head"><span class="status ' + esc(sevTone) + '">' + esc(sevLabel) + '</span>' +
-          shadowBadge + '</div>' +
-          '<div class="finding-card-title">' + esc(title) + '</div>' +
-          (finding.severity_hint_ru ? '<p class="card-sub finding-sev-hint">' + esc(finding.severity_hint_ru) + '</p>' : "") +
-          (detailText ? '<p class="finding-detail">' + esc(detailText) + '</p>' : "") +
-          linkHint +
-          (finding.evidence ? '<blockquote>«' + esc(finding.evidence) + '»</blockquote>' : "") +
-          (finding.evidence_span ? '<p class="card-sub">Поле ' + esc(finding.evidence_span.field) +
-            ', символы ' + esc(finding.evidence_span.start) + '-' + esc(finding.evidence_span.end) + '</p>' : "") +
-          (sourceText ? '<details class="finding-source"><summary>Источник и методика</summary><p>' +
-            esc(sourceText) + '</p>' +
-            (finding.source_ref && finding.source_ref !== sourceText ?
-              '<p class="card-sub">Технический код: ' + esc(finding.source_ref) + '</p>' : "") +
-            '</details>' : "") +
-          (finding.code ? '<label class="filter finding-decision"><span>Решение по замечанию</span><select class="control" data-finding-code="' +
-            esc(finding.code) + '"><option value="unreviewed"' + (decision === "unreviewed" ? " selected" : "") +
-            '>Не проверено</option><option value="confirmed"' + (decision === "confirmed" ? " selected" : "") +
-            '>Подтверждено</option><option value="false_positive"' + (decision === "false_positive" ? " selected" : "") +
-            '>Отклонено</option><option value="needs_more_data"' + (decision === "needs_more_data" ? " selected" : "") +
-            '>Нужны данные</option></select></label>' : "") +
-          '</article>';
-      }).join("") : '<p>Критических замечаний не найдено.</p>') + '</div>';
       var decisionHtml =
         '<div class="methodist-decision-panel"><h3>Решение методиста</h3>' +
-        '<div class="decision-meta-row">' +
-        '<label class="filter"><span>Статус</span><select class="control" id="drawer-status">' + statusOptions +
-        '</select></label><label class="filter"><span>Ответственный</span><input class="control" id="drawer-assignee" maxlength="120" value="' +
-        esc(crm.assignee || "") + '"></label><label class="filter"><span>Срок</span><input class="control" id="drawer-due" type="date" value="' +
-        esc(crm.due_date || "") + '"></label><label class="filter"><span>Метки через запятую</span><input class="control" id="drawer-tags" maxlength="500" value="' +
-        esc((crm.tags || []).join(", ")) + '"></label></div>' +
-        '<p class="card-sub" style="margin-top:10px">Согласие с разбором модели по трём вопросам</p>' +
+        '<label class="filter"><span>Статус разбора</span><select class="control" id="drawer-status">' + statusOptions + '</select></label>' +
         '<div class="verdict-row">' +
-        '<label class="filter"><span>Полнота</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
+        '<label class="filter"><span>Оформление</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
         '<label class="filter"><span>Диагноз</span>' + verdictSelect("drawer-verdict-d", "unreviewed") + '</label>' +
-        '<label class="filter"><span>Рекомендации</span>' + verdictSelect("drawer-verdict-r", "unreviewed") + '</label>' +
+        '<label class="filter"><span>План по протоколу</span>' + verdictSelect("drawer-verdict-r", "unreviewed") + '</label>' +
         '</div>' +
-        '<label class="filter decision-summary-field"><span>Развёрнутый разбор</span><textarea class="control" id="drawer-summary" rows="14" maxlength="12000" placeholder="1) С чем согласен / не согласен по полноте&#10;2) Диагноз: подтверждён / сомнителен - почему&#10;3) План: что добавить / убрать&#10;4) Что сказать врачу (1-2 предложения)"></textarea></label>' +
-        '<div class="protocol-suggest-rates" style="margin-top:8px" id="drawer-summary-chips">' +
-        [["Ложное срабатывание","Ложное срабатывание модели. "],["Не хватает осмотра","Не хватает данных осмотра. "],["Диагноз не обоснован","Диагноз не обоснован жалобами/осмотром. "],["План неполный","План обследования/лечения неполный. "]].map(function (pair) {
-          return '<button class="button secondary compact" type="button" data-summary-chip="' + esc(pair[1]) + '">' + esc(pair[0]) + '</button>';
-        }).join("") + '</div>' +
+        '<label class="filter decision-summary-field"><span>Комментарий</span><textarea class="control" id="drawer-summary" rows="5" maxlength="12000" placeholder="Коротко: что не так и что сказать врачу"></textarea></label>' +
+        '<input type="hidden" id="drawer-assignee" value="' + esc(crm.assignee || "") + '">' +
+        '<input type="hidden" id="drawer-due" value="' + esc(crm.due_date || "") + '">' +
+        '<input type="hidden" id="drawer-tags" value="' + esc((crm.tags || []).join(", ")) + '">' +
         '<label class="filter" style="margin-top:8px"><span><input type="checkbox" id="drawer-training-use" checked> Можно использовать для обучения</span></label>' +
-        '<p><button class="button" id="drawer-save" type="button">Сохранить пакет разбора</button> ' +
+        '<p><button class="button" id="drawer-save" type="button">Сохранить</button> ' +
         '<button class="button secondary" type="button" data-open-pdf="/api/methodist/mo/cases/' + encodeURIComponent(item.id) + '/pdf" data-open-name="mo-' + encodeURIComponent(item.id) + '.pdf">МО в PDF</button></p></div>';
       var reg55Pct = (data.reg55 || {}).regulatory_compliance_pct;
       if (reg55Pct == null) reg55Pct = item.reg55;
       if (reg55Pct == null) reg55Pct = axes.regulatory;
-      $("drawer-body").innerHTML =
-        '<div class="case-workspace-grid">' +
-        '<div class="case-workspace-clinical">' +
-        renderClinicalDocument(sourceDocument, findings) +
+      var serviceHtml =
+        '<details class="detail-block mo-secondary-details"><summary>Служебное: №55, старые оси, CRM</summary>' +
         renderReg55(data.reg55, reg55Pct) +
-        '<details class="detail-block mo-secondary-details"><summary>Подробнее: итоговая оценка, оси, рубрика МЗ</summary>' +
-        '<div class="drawer-grid">' + kpi("Итоговая оценка", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "по доступным данным") +
-        kpi("Балл №55", score(reg55Pct), "средний балл = 100 × выполненные / применимые") +
-        kpi("Рубрика МЗ", score(rubric.rubric_pct), rubric.primary ? "методика «Как оценивать»" : "черновик · «Как оценивать»") +
-        kpi(
-          "МКБ / диагноз",
-          ((data.icd_visit_status || {}).label_ru) || (item.raw && item.raw.icd_visit_status_label_ru) || "-",
-          ((data.icd_visit_status || {}).title_ru) || "Диагноз есть и есть в справочнике МКБ"
-        ) +
-        kpi("Статус", statusLabel(data.deep_status || item.status), "рабочий статус") +
-        kpi("Полнота проверки", score(coverageInfo.value), coverageInfo.estimated ? "оценка по доступным полям" : "доступность исходных данных") +
-        kpi("Надёжность", score(confidenceInfo.value), confidenceInfo.estimated ? "оценка по доступным полям" : "устойчивость результата") + '</div>' +
-        '<div class="detail-block"><h3>Оси оценки</h3>' + ["documentation","clinical_concordance","safety","regulatory"].map(function (key) {
-          var labels = { documentation:"Оформление", clinical_concordance:"Согласованность", safety:"Безопасность", regulatory:"Регуляторика (№55)" };
-          return bar(labels[key], axes[key] == null ? record["axis_" + key] : axes[key]);
-        }).join("") + '</div>' +
-        renderRubricMz(rubric) +
-        '</details></div>' +
-        '<div class="case-workspace-decision">' +
-        renderPatientHistory(data.patient_history) +
-        renderLlmActionJudge(llmJudge, sourceDocument, item) +
-        '<div id="protocol-suggest-host"><div class="skeleton"></div></div>' +
-        findingsHtml +
-        decisionHtml +
-        renderReviewPackHistory(packs) +
+        '<div class="drawer-grid">' + kpi("Сводный индекс", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "deep") +
+        kpi("Балл №55", score(reg55Pct), "binary checklist") +
+        kpi("Рубрика МЗ", score(rubric.rubric_pct || zones.rubric_pct), "0 / 0.5 / 1") +
+        kpi("Полнота проверки", score(coverageInfo.value), "модель") +
+        kpi("Надёжность", score(confidenceInfo.value), "модель") + '</div>' +
+        renderRubricMz(rubric) + renderReviewPackHistory(packs) +
         '<div class="detail-block"><h3>История CRM</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
-        }).join("") : '<p class="empty">Событий пока нет.</p>') + '</div>' +
-        '</div></div>';
+        }).join("") : '<p class="empty">Событий пока нет.</p>') + '</div></details>';
+      if (useZonesUi) {
+        $("drawer-body").innerHTML =
+          '<div class="case-workspace-grid case-workspace-grid--zones">' +
+          '<div class="case-workspace-main">' + renderZonesHero(zones) +
+          renderFindingsCompact(findings, crm, llmJudge) +
+          renderClinicalDocument(sourceDocument, findings) +
+          renderHistoryCompact(data.patient_history) +
+          '<div id="protocol-suggest-host" class="protocol-suggest-host--compact"><div class="skeleton"></div></div>' +
+          renderZonesCriteriaDetails(zones) + serviceHtml +
+          '</div><div class="case-workspace-decision">' + decisionHtml + '</div></div>';
+      } else {
+        $("drawer-body").innerHTML =
+          '<div class="case-workspace-grid"><div class="case-workspace-clinical">' +
+          renderClinicalDocument(sourceDocument, findings) + serviceHtml +
+          '</div><div class="case-workspace-decision">' +
+          renderPatientHistory(data.patient_history) +
+          renderLlmActionJudge(llmJudge, sourceDocument, item) +
+          '<div id="protocol-suggest-host"><div class="skeleton"></div></div>' +
+          renderFindingsCompact(findings, crm, llmJudge) + decisionHtml + '</div></div>';
+      }
       $("drawer-save").addEventListener("click", saveCaseDecision);
       updateDrawerNav();
       loadProtocolSuggestIntoCase(item.id);
-      $("drawer-body").querySelectorAll("[data-summary-chip]").forEach(function (button) {
+      $("drawer-body").querySelectorAll("[data-finding-zone]").forEach(function (button) {
         button.addEventListener("click", function () {
-          var area = $("drawer-summary");
-          if (!area) return;
-          area.value = (area.value || "") + button.getAttribute("data-summary-chip");
-          area.focus();
+          var zone = button.getAttribute("data-finding-zone");
+          $("drawer-body").querySelectorAll("[data-finding-zone]").forEach(function (b) {
+            b.classList.toggle("is-active", b === button);
+          });
+          $("drawer-body").querySelectorAll("[data-finding-zone-item]").forEach(function (card) {
+            card.hidden = zone !== "all" && card.getAttribute("data-finding-zone-item") !== zone;
+          });
+        });
+      });
+      $("drawer-body").querySelectorAll("[data-zone-filter]").forEach(function (card) {
+        card.addEventListener("click", function () {
+          var btn = $("drawer-body").querySelector('[data-finding-zone="' + card.getAttribute("data-zone-filter") + '"]');
+          if (btn) btn.click();
         });
       });
       $("drawer-body").querySelectorAll("[data-focus-clinical]").forEach(function (button) {
@@ -1577,8 +1683,6 @@
           loadReviewPackIntoForm(button.getAttribute("data-load-pack"));
         });
       });
-      var focusRow = document.getElementById("rubric-focus-row");
-      if (focusRow) focusRow.scrollIntoView({ block: "nearest", behavior: "smooth" });
     }
     async function loadReviewPackIntoForm(packId) {
       if (!packId) return;
@@ -1718,7 +1822,25 @@
           "/cases/" + encodeURIComponent(caseId) + "/protocol-suggest?" + q.toString()
         );
         if (!response.ok) throw new Error("suggest_failed");
-        host.innerHTML = renderProtocolSuggest(await response.json());
+        var suggest = await response.json();
+        if (host.classList.contains("protocol-suggest-host--compact")) {
+          var top = ((suggest || {}).items || [])[0];
+          if (top) {
+            var more = ((suggest.items || []).length - 1);
+            host.innerHTML = '<div class="detail-block"><p><b>Протокол:</b> ' +
+              esc(top.title || "без названия") +
+              (more > 0 ? ' <button type="button" class="linkish" id="protocol-suggest-expand">ещё ' + more + '</button>' : "") +
+              '</p></div>';
+            var expand = $("protocol-suggest-expand");
+            if (expand) expand.addEventListener("click", function () {
+              host.innerHTML = renderProtocolSuggest(suggest);
+            });
+          } else {
+            host.innerHTML = '<div class="detail-block"><p class="card-sub">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
+          }
+        } else {
+          host.innerHTML = renderProtocolSuggest(suggest);
+        }
       } catch (e) {
         host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
       }
@@ -2673,15 +2795,27 @@
       options[current].focus();
     }
     var COLUMN_MAP = {
-      documents: ["Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз", "Тип документа", "Итог", "Балл №55", "Полнота", "Надёжность", "Статус"],
-      queue: ["Выбор", "Приоритет", "Визит", "Пациент", "Дата", "Филиал", "Врач / специальность", "Диагноз", "Итог", "Причина", "Ответственный", "Срок", "Статус", "МО"]
+      documents: [
+        "Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз",
+        "Оформление", "Диагноз (зона)", "План", "Причина", "Статус",
+        "Итог", "Балл №55", "Полнота проверки", "Надёжность"
+      ],
+      queue: [
+        "Выбор", "Приоритет", "Раздел", "Визит", "Пациент", "Дата", "Филиал",
+        "Врач / специальность", "Диагноз", "Оформление", "Диагноз (зона)", "План",
+        "Причина", "Ответственный", "Срок", "Статус", "МО"
+      ]
+    };
+    var COLUMN_DEFAULTS = {
+      documents: [true, true, true, true, true, true, true, true, true, true, true, false, false, false, false],
+      queue: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
     };
     function ensureColumnState() {
       if (!state.columnVisible.documents.length || state.columnVisible.documents.length !== COLUMN_MAP.documents.length) {
-        state.columnVisible.documents = COLUMN_MAP.documents.map(function () { return true; });
+        state.columnVisible.documents = COLUMN_DEFAULTS.documents.slice();
       }
       if (!state.columnVisible.queue.length || state.columnVisible.queue.length !== COLUMN_MAP.queue.length) {
-        state.columnVisible.queue = COLUMN_MAP.queue.map(function () { return true; });
+        state.columnVisible.queue = COLUMN_DEFAULTS.queue.slice();
       }
     }
     function applyColumnVisibility(key) {
