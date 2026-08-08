@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-141912Z-merge-69-70"
+BUILD_VERSION = "2026-08-08-144502Z-hide-nonclinical"
 
 
 def _app_version() -> str:
@@ -11568,7 +11568,7 @@ def api_methodist_mo_case_detail(
     month: str = Query("", min_length=0, max_length=7),
 ) -> dict:
     _require_methodist_auth(request)
-    from clinical_knowledge.mo_backend import build_case_detail
+    from clinical_knowledge.mo_backend import build_case_detail, is_case_score_eligible
 
     response.headers["Cache-Control"] = "private, no-store"
     result = build_case_detail(case_id, month=month or None)
@@ -11596,7 +11596,48 @@ def api_methodist_mo_case_detail(
             "source_state": document.get("source_state") or "unknown",
             "source_format": document.get("source_format"),
         }
-        # E3: live shadow concordance + ICD directory в case detail (даже до re-pipeline дня).
+    record0 = result.get("record") if isinstance(result.get("record"), dict) else {}
+    kind0 = str(
+        (result.get("document") or {}).get("document_kind")
+        or record0.get("document_kind")
+        or ""
+    )
+    score_eligible = is_case_score_eligible(record0, document_kind=kind0)
+    result["score_eligible"] = score_eligible
+    if not score_eligible:
+        # Неклинический приём: текст МО можно показать, оценок/КП/LLM - нет.
+        skip_ru = (
+            "Не оценивается: не клинический приём "
+            "(процедура / диагностика / профосмотр / стоматология)"
+        )
+        if isinstance(result.get("record"), dict):
+            result["record"]["overall_pct"] = None
+            result["record"]["score_reason"] = skip_ru
+        result["findings"] = []
+        result["axes"] = {}
+        result["block_scores"] = {}
+        result["icd_match"] = {"available": False, "reason": skip_ru}
+        result["icd_visit_status"] = None
+        result["rubric_mz"] = {
+            "ok": False,
+            "primary": False,
+            "skipped": True,
+            "reason": skip_ru,
+        }
+        result["reg55"] = {
+            "regulatory_compliance_pct": None,
+            "criteria": [],
+            "failed": [],
+            "note_ru": skip_ru,
+        }
+        result["llm_action_judge"] = {
+            "available": False,
+            "shadow": True,
+            "reason": skip_ru,
+        }
+        result["protocol_suggest"] = {"ok": True, "available": False, "items": [], "reason": skip_ru}
+    # E3: live analyzers только для clinical_visit.
+    if score_eligible and document.get("ok"):
         try:
             from clinical_knowledge.mo_concordance_findings import (
                 clinical_case_from_document,
@@ -11695,72 +11736,73 @@ def api_methodist_mo_case_detail(
                 )
         except Exception:  # noqa: BLE001
             pass
-    try:
-        from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
-        from clinical_knowledge.mo_rubric_mz import evaluate_mo_rubric_mz
-
-        record = result.get("record") if isinstance(result.get("record"), dict) else {}
-        visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
-        prior = None
+    if score_eligible:
         try:
-            prior = resolve_prior_clinical_for_case(case_id, visit_date=visit_date or None)
-        except Exception:
+            from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
+            from clinical_knowledge.mo_rubric_mz import evaluate_mo_rubric_mz
+
+            record = result.get("record") if isinstance(result.get("record"), dict) else {}
+            visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
             prior = None
-        prior_clinical = (prior or {}).get("clinical") if isinstance(prior, dict) else None
-        rubric = evaluate_mo_rubric_mz(
-            clinical=clinical,
-            meta={
-                "visit_date": visit_date,
-                "visit_time": record.get("visit_time") or clinical.get("visit_time"),
-                "diagnosis_code": record.get("diagnosis_code") or record.get("mkb_code_main"),
-                "mkb_code_main": record.get("mkb_code_main") or record.get("diagnosis_code"),
-                "diagnosis_short": record.get("diagnosis_short"),
-            },
-            block_scores=result.get("block_scores") if isinstance(result.get("block_scores"), dict) else {},
-            prior_clinical=prior_clinical if isinstance(prior_clinical, dict) else None,
-        )
-        if prior and prior.get("visit_date"):
-            rubric["prior_visit_date"] = prior.get("visit_date")
-            rubric["prior_available"] = True
-        else:
-            rubric["prior_available"] = False
-        result["rubric_mz"] = rubric
-    except Exception:
-        result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
-    try:
-        from clinical_knowledge.reg55_criteria import attach_reg55_to_detail
+            try:
+                prior = resolve_prior_clinical_for_case(case_id, visit_date=visit_date or None)
+            except Exception:
+                prior = None
+            prior_clinical = (prior or {}).get("clinical") if isinstance(prior, dict) else None
+            rubric = evaluate_mo_rubric_mz(
+                clinical=clinical,
+                meta={
+                    "visit_date": visit_date,
+                    "visit_time": record.get("visit_time") or clinical.get("visit_time"),
+                    "diagnosis_code": record.get("diagnosis_code") or record.get("mkb_code_main"),
+                    "mkb_code_main": record.get("mkb_code_main") or record.get("diagnosis_code"),
+                    "diagnosis_short": record.get("diagnosis_short"),
+                },
+                block_scores=result.get("block_scores") if isinstance(result.get("block_scores"), dict) else {},
+                prior_clinical=prior_clinical if isinstance(prior_clinical, dict) else None,
+            )
+            if prior and prior.get("visit_date"):
+                rubric["prior_visit_date"] = prior.get("visit_date")
+                rubric["prior_available"] = True
+            else:
+                rubric["prior_available"] = False
+            result["rubric_mz"] = rubric
+        except Exception:
+            result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
+        try:
+            from clinical_knowledge.reg55_criteria import attach_reg55_to_detail
 
-        result = attach_reg55_to_detail(
-            result,
-            clinical=clinical if isinstance(clinical, dict) else {},
-            block_scores=result.get("block_scores")
-            if isinstance(result.get("block_scores"), dict)
-            else {},
-        )
-    except Exception:
-        if isinstance(result, dict) and not result.get("reg55"):
-            axes = result.get("axes") if isinstance(result.get("axes"), dict) else {}
-            result["reg55"] = {
-                "regulatory_compliance_pct": axes.get("regulatory"),
-                "criteria": [],
-                "failed": [],
-                "note_ru": "Подробный разбор №55 временно недоступен; показан процент оси regulatory.",
+            result = attach_reg55_to_detail(
+                result,
+                clinical=clinical if isinstance(clinical, dict) else {},
+                block_scores=result.get("block_scores")
+                if isinstance(result.get("block_scores"), dict)
+                else {},
+            )
+        except Exception:
+            if isinstance(result, dict) and not result.get("reg55"):
+                axes = result.get("axes") if isinstance(result.get("axes"), dict) else {}
+                result["reg55"] = {
+                    "regulatory_compliance_pct": axes.get("regulatory"),
+                    "criteria": [],
+                    "failed": [],
+                    "note_ru": "Подробный разбор №55 временно недоступен; показан процент оси regulatory.",
+                }
+        try:
+            from clinical_knowledge.mo_llm_action_judge import load_llm_action_judge_for_case
+
+            record = result.get("record") if isinstance(result.get("record"), dict) else {}
+            visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
+            result["llm_action_judge"] = load_llm_action_judge_for_case(
+                case_id,
+                visit_date=visit_date,
+            )
+        except Exception:
+            result["llm_action_judge"] = {
+                "available": False,
+                "shadow": True,
+                "reason": "LLM-оценка action-очереди недоступна",
             }
-    try:
-        from clinical_knowledge.mo_llm_action_judge import load_llm_action_judge_for_case
-
-        record = result.get("record") if isinstance(result.get("record"), dict) else {}
-        visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
-        result["llm_action_judge"] = load_llm_action_judge_for_case(
-            case_id,
-            visit_date=visit_date,
-        )
-    except Exception:
-        result["llm_action_judge"] = {
-            "available": False,
-            "shadow": True,
-            "reason": "LLM-оценка action-очереди недоступна",
-        }
     role = _mo_role(request)
     record = result.get("record") if isinstance(result.get("record"), dict) else {}
     visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
@@ -11793,34 +11835,35 @@ def api_methodist_mo_case_detail(
             if not str(record.get("doctor_fio") or "").strip():
                 record["doctor_fio"] = f"ID врача: {doctor_id}"
         result["record"] = record
-        # История пациента - после identity lookup (нужен patient_id / doctor_id)
-        try:
-            from clinical_knowledge.mo_patient_history_bundle import (
-                merge_patient_history_into_findings,
-                public_bundle_for_ui,
-            )
+        # История пациента - только для оцениваемых clinical_visit
+        if score_eligible:
+            try:
+                from clinical_knowledge.mo_patient_history_bundle import (
+                    merge_patient_history_into_findings,
+                    public_bundle_for_ui,
+                )
 
-            hist_case = {
-                "patient_id": patient_id,
-                "patient_key": str(record.get("patient_key") or ""),
-                "visit_date": visit_date,
-                "doctor_id": doctor_id or str(record.get("doctor_id") or ""),
-                "doctor_key": str(record.get("doctor_key") or ""),
-                "doctor_fio": str(record.get("doctor_fio") or ""),
-                "specialty": str(record.get("specialization") or record.get("specialty") or ""),
-                "diagnosis_code": str(
-                    record.get("diagnosis_code") or record.get("mkb_code_main") or ""
-                ),
-                "mis_id": str(record.get("mis_id") or case_id),
-                "visit_id": str(record.get("visit_id") or ""),
-            }
-            result["findings"] = merge_patient_history_into_findings(
-                result.get("findings") if isinstance(result.get("findings"), list) else [],
-                hist_case,
-            )
-            result["patient_history"] = public_bundle_for_ui(hist_case.get("_patient_history"))
-        except Exception:  # noqa: BLE001
-            pass
+                hist_case = {
+                    "patient_id": patient_id,
+                    "patient_key": str(record.get("patient_key") or ""),
+                    "visit_date": visit_date,
+                    "doctor_id": doctor_id or str(record.get("doctor_id") or ""),
+                    "doctor_key": str(record.get("doctor_key") or ""),
+                    "doctor_fio": str(record.get("doctor_fio") or ""),
+                    "specialty": str(record.get("specialization") or record.get("specialty") or ""),
+                    "diagnosis_code": str(
+                        record.get("diagnosis_code") or record.get("mkb_code_main") or ""
+                    ),
+                    "mis_id": str(record.get("mis_id") or case_id),
+                    "visit_id": str(record.get("visit_id") or ""),
+                }
+                result["findings"] = merge_patient_history_into_findings(
+                    result.get("findings") if isinstance(result.get("findings"), list) else [],
+                    hist_case,
+                )
+                result["patient_history"] = public_bundle_for_ui(hist_case.get("_patient_history"))
+            except Exception:  # noqa: BLE001
+                pass
         try:
             from clinical_knowledge.mo_backend import record_access
 
@@ -11856,7 +11899,7 @@ def api_methodist_mo_protocol_suggest(
     """Подбор протоколов МЗ РБ к случаю (не балл оформления)."""
     _require_methodist_auth(request)
     from clinical_knowledge.case_protocol_suggest import suggest_protocols_for_mo_case
-    from clinical_knowledge.mo_backend import build_case_detail
+    from clinical_knowledge.mo_backend import build_case_detail, is_case_score_eligible
     from clinical_knowledge.mo_case_document import build_case_document_payload
     from clinical_knowledge.mo_llm_action_judge import load_llm_action_judge_for_case
 
@@ -11864,6 +11907,19 @@ def api_methodist_mo_protocol_suggest(
     if not detail.get("ok"):
         raise HTTPException(status_code=404, detail="case_not_found")
     record = detail.get("record") if isinstance(detail.get("record"), dict) else {}
+    if not is_case_score_eligible(record):
+        reason = (
+            "Не оценивается: не клинический приём "
+            "(процедура / диагностика / профосмотр / стоматология)"
+        )
+        return {
+            "ok": True,
+            "available": False,
+            "engine": "case_protocol_suggest_skip",
+            "items": [],
+            "reason": reason,
+            "score_eligible": False,
+        }
     # patient_id / doctor_id - для эпизода Dx из истории на складе
     try:
         from clinical_knowledge.mo_review_pack import lookup_case_identity

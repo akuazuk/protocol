@@ -164,20 +164,25 @@
         if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join("|"));
       });
       if (state.selected.months.length) q.set("month", state.selected.months[0]);
-      q.set("score_eligible_only", state.scoreEligibleOnly ? "1" : "0");
+      // Жёстко: non-clinical вне таблицы; URL не даёт opt-out.
+      q.set("score_eligible_only", "1");
       return q;
     }
     function applyScoreEligibleOnly(on, silent) {
-      state.scoreEligibleOnly = !!on;
-      if (state.scoreEligibleOnly) {
-        state.selected.document_types = ["clinical_visit"];
-      } else if (state.selected.document_types.length === 1 && state.selected.document_types[0] === "clinical_visit") {
-        state.selected.document_types = [];
-      }
+      // Жёстко: только clinical_visit в таблице; non-clinical не оцениваем и не показываем.
+      state.scoreEligibleOnly = true;
+      state.selected.document_types = ["clinical_visit"];
       var toggle = $("score-eligible-only");
-      if (toggle) toggle.checked = state.scoreEligibleOnly;
+      if (toggle) {
+        toggle.checked = true;
+        toggle.disabled = true;
+      }
       var filter = document.querySelector('.filter-pop[data-filter="document_types"]');
-      if (filter) renderFilter(filter);
+      if (filter && filter.querySelector(".filter-menu")) {
+        renderFilter(filter);
+        var summaryB = filter.querySelector("summary b");
+        if (summaryB) summaryB.textContent = "Клинический приём";
+      }
       if (!silent) filtersChanged();
     }
     function normalizeSummary(raw) {
@@ -396,8 +401,16 @@
         details.classList.remove("has-pending");
         details.open = false;
         if (key === "document_types") {
-          state.scoreEligibleOnly = draft.length === 1 && draft[0] === "clinical_visit";
-          if ($("score-eligible-only")) $("score-eligible-only").checked = state.scoreEligibleOnly;
+          // Не даём выбрать процедуры/профосмотры в таблице случаев.
+          draft = ["clinical_visit"];
+          state.selected.document_types = ["clinical_visit"];
+          selected = ["clinical_visit"];
+          state.scoreEligibleOnly = true;
+          details.querySelector("summary b").textContent = "Клинический приём";
+          if ($("score-eligible-only")) {
+            $("score-eligible-only").checked = true;
+            $("score-eligible-only").disabled = true;
+          }
         }
         showToast(draft.length ? "Фильтр применён: " + FILTER_LABELS[key] : "Фильтр очищен: " + FILTER_LABELS[key]);
         filtersChanged();
@@ -542,9 +555,7 @@
           var key = button.getAttribute("data-remove"), value = button.getAttribute("data-value");
           state.selected[key] = state.selected[key].filter(function (x) { return x !== value; });
           if (key === "document_types") {
-            state.scoreEligibleOnly = state.selected.document_types.length === 1 &&
-              state.selected.document_types[0] === "clinical_visit";
-            if ($("score-eligible-only")) $("score-eligible-only").checked = state.scoreEligibleOnly;
+            applyScoreEligibleOnly(true, true);
           }
           var filter = document.querySelector('.filter-pop[data-filter="' + key + '"]');
           if (filter) renderFilter(filter);
@@ -598,17 +609,8 @@
       Object.keys(state.selected).forEach(function (key) {
         state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(/[|,]/).filter(Boolean);
       });
-      var scoreFlag = (q.get("score_eligible_only") || "").toLowerCase();
-      if (scoreFlag === "0" || scoreFlag === "false" || scoreFlag === "all") {
-        state.scoreEligibleOnly = false;
-      } else if (scoreFlag === "1" || scoreFlag === "true" || !q.has("score_eligible_only")) {
-        state.scoreEligibleOnly = true;
-        if (!state.selected.document_types.length) state.selected.document_types = ["clinical_visit"];
-      } else {
-        state.scoreEligibleOnly = state.selected.document_types.length === 1 &&
-          state.selected.document_types[0] === "clinical_visit";
-      }
-      if ($("score-eligible-only")) $("score-eligible-only").checked = state.scoreEligibleOnly;
+      // URL score_eligible_only=0 / чужие document_types игнорируем.
+      applyScoreEligibleOnly(true, true);
       if ($("period")) $("period").value = state.period;
       if ($("compare")) $("compare").value = state.compare;
       if ($("date-from")) $("date-from").value = state.dateFrom;
@@ -1095,9 +1097,7 @@
           if (card) pageHost.insertBefore(banner, card);
         }
         banner.hidden = false;
-        var scopeNote = state.scoreEligibleOnly
-          ? "Показаны только клинические приёмы (оцениваемые). Процедуры и профосмотры скрыты фильтром «Только оцениваемые»."
-          : "Показаны все типы документов, включая процедуры и профосмотры (они без оценки).";
+        var scopeNote = "Показаны только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология в таблицу не входят и не оцениваются.";
         if (isSingleDayPeriod()) {
           banner.innerHTML = "<b>Таблица за " + esc(state.dateFrom) + "</b> · всего " +
             esc(data.total || rows.length) + " записей. " + esc(scopeNote) +
@@ -2797,12 +2797,8 @@
         showToast("Фильтры сброшены: только клинические приёмы");
       });
       if ($("score-eligible-only")) {
-        $("score-eligible-only").addEventListener("change", function () {
-          applyScoreEligibleOnly(this.checked, false);
-          showToast(this.checked
-            ? "Показаны только оцениваемые клинические приёмы"
-            : "Показаны все типы документов (процедуры и профосмотры без оценки)");
-        });
+        $("score-eligible-only").checked = true;
+        $("score-eligible-only").disabled = true;
       }
       $("save-view").addEventListener("click", saveView);
       $("analysis-back").addEventListener("click", function () {

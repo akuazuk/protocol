@@ -107,7 +107,11 @@ def test_document_taxonomy(changes: dict, expected: str) -> None:
     assert classified.iloc[0]["document_kind"] == expected
 
 
-def test_batch_prefers_explicit_mo_eligibility_over_legacy_kind() -> None:
+def test_batch_document_kind_gates_over_mo_score_eligible_flag() -> None:
+    """При известном document_kind оцениваем только clinical_visit.
+
+    Явный mo_score_eligible=true на medical_exam больше не открывает оценку.
+    """
     rows = [
         {
             "visit_id": "1",
@@ -118,6 +122,13 @@ def test_batch_prefers_explicit_mo_eligibility_over_legacy_kind() -> None:
         },
         {
             "visit_id": "2",
+            "kz_kind": "kz",
+            "document_kind": "clinical_visit",
+            "mo_score_eligible": "false",
+            "parse_ok": "1",
+        },
+        {
+            "visit_id": "3",
             "kz_kind": "certificate",
             "document_kind": "certificate",
             "mo_score_eligible": "false",
@@ -125,8 +136,9 @@ def test_batch_prefers_explicit_mo_eligibility_over_legacy_kind() -> None:
         },
     ]
     scored, excluded = split_kz_rows(rows)
-    assert [row["visit_id"] for row in scored] == ["1"]
-    assert excluded["n_excluded"] == 1
+    assert [row["visit_id"] for row in scored] == ["2"]
+    assert excluded["n_excluded"] == 2
+    assert excluded["excluded_top_specialties"]["medical_exam"][" - "] == 1
     assert excluded["excluded_top_specialties"]["certificate"][" - "] == 1
 
 
