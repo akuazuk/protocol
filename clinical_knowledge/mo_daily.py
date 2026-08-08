@@ -1206,6 +1206,7 @@ def initialize_warehouse(path: Path) -> None:
               llm_cost_usd REAL DEFAULT 0,
               doctor_key TEXT, specialty TEXT, filial TEXT,
               diagnosis_code TEXT, icd_chapter TEXT,
+              mkb_code_main_source TEXT, mkb_code_main_slot TEXT,
               content_hash TEXT NOT NULL, updated_at TEXT NOT NULL
             );
             CREATE TABLE IF NOT EXISTS fact_mo_finding (
@@ -1306,6 +1307,8 @@ def initialize_warehouse(path: Path) -> None:
                 "scorer_version": "TEXT",
                 "score_schema_version": "TEXT",
                 "llm_cost_usd": "REAL DEFAULT 0",
+                "mkb_code_main_source": "TEXT",
+                "mkb_code_main_slot": "TEXT",
             },
         )
         _ensure_columns(
@@ -1560,10 +1563,32 @@ def upsert_warehouse(
                 schema_version=score_schema_version,
             )
             llm_cost = _safe_number(case.get("llm_cost_usd")) or 0.0
-            diagnosis_codes = _split_multi(raw.get("mkb_codes")) or _split_multi(
-                raw.get("mkb_code_main")
-            )
-            diagnosis_code = diagnosis_codes[0] if diagnosis_codes else ""
+            # Soft-fill МКБ для KPI/UI: слот → иначе full-doc. Agreement не трогаем
+            # (raw.mkb_code_agreement остаётся на исходном слоте экспорта).
+            from clinical_knowledge.mo_icd_resolve import soft_fill_mkb_for_warehouse
+
+            resolve_case = dict(raw)
+            if isinstance(case, Mapping):
+                for key in (
+                    "clinical_diagnosis",
+                    "diagnosis_main_text",
+                    "diagnosis_short",
+                    "mis_diagnos",
+                    "complaints",
+                    "anamnesis_doctor",
+                    "objective_status",
+                    "exam_data",
+                    "exam_recommendations",
+                    "treatment_recommendations",
+                    "manipulations",
+                ):
+                    if not resolve_case.get(key) and case.get(key):
+                        resolve_case[key] = case.get(key)
+            mkb_fill = soft_fill_mkb_for_warehouse(resolve_case)
+            diagnosis_codes = list(mkb_fill.get("codes") or [])
+            diagnosis_code = str(mkb_fill.get("code") or "")
+            mkb_code_main_source = str(mkb_fill.get("source") or "empty")
+            mkb_code_main_slot = str(mkb_fill.get("slot_code") or "")
             diagnosis_chapter = icd_chapter(diagnosis_code)
             eligible_document = str(raw.get("document_kind") or "") in SCORED_DOCUMENT_KINDS
             if eligible_document:
@@ -1599,8 +1624,9 @@ def upsert_warehouse(
                     overall_pct_v3, status, scorer_version, score_schema_version,
                     llm_cost_usd,
                     doctor_key, specialty, filial, diagnosis_code, icd_chapter,
+                    mkb_code_main_source, mkb_code_main_slot,
                     content_hash, updated_at)
-                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                   VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(mis_id) DO UPDATE SET
                    visit_id=excluded.visit_id, visit_date=excluded.visit_date,
                    document_kind=excluded.document_kind, overall_pct=excluded.overall_pct,
@@ -1612,6 +1638,8 @@ def upsert_warehouse(
                    specialty=excluded.specialty, filial=excluded.filial,
                    diagnosis_code=excluded.diagnosis_code,
                    icd_chapter=excluded.icd_chapter,
+                   mkb_code_main_source=excluded.mkb_code_main_source,
+                   mkb_code_main_slot=excluded.mkb_code_main_slot,
                    content_hash=excluded.content_hash, updated_at=excluded.updated_at""",
                 (
                     mis_id,
@@ -1629,6 +1657,8 @@ def upsert_warehouse(
                     filial,
                     diagnosis_code,
                     diagnosis_chapter,
+                    mkb_code_main_source,
+                    mkb_code_main_slot,
                     hashlib.sha256(payload.encode("utf-8")).hexdigest(),
                     now,
                 ),

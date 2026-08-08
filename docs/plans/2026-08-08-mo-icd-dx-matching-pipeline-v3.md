@@ -401,8 +401,16 @@ MIS: `diagnosis_list` через `|`, main index в `##[3]`.
 
 ### Фаза 5 - soft-fill warehouse (P2, координация)
 
-- [ ] P3 из full-document plan; source-маркер; не ломать MIS agreement
-- [ ] Recompute day smoke на GCE
+- [x] P3 из full-document plan; source-маркер; не ломать MIS agreement
+- [x] Recompute day smoke на GCE
+
+Решение 2026-08-08:
+
+- `soft_fill_mkb_for_warehouse` в `mo_icd_resolve.py`.
+- `upsert_warehouse` пишет `diagnosis_code` + `mkb_code_main_source`
+  (`slot|soft_fill_full_doc|empty`) + `mkb_code_main_slot`.
+- `mkb_code_agreement` / CSV слот **не** переписываются.
+- UI: `mo_backend` отдаёт source/slot на списке и в case detail.
 
 ### Фаза 6 - (опционально) лёгкая морфология / embeddings spike
 
