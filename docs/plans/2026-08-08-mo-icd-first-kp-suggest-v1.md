@@ -63,7 +63,7 @@
 3. [x] Directory eval: mismatch только на substantive free text
 4. [x] Рубрика плана: 1.0 только с clinical KP
 5. [x] Тесты (F41.2, code-only ok, contradiction mismatch, wrong-code+good-text)
-6. [ ] PR → merge → GCE deploy → smoke кейса
+6. [~] PR #69 открыт → merge → GCE deploy → smoke кейса
 
 ## Риски
 
