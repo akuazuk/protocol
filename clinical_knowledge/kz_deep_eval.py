@@ -214,26 +214,33 @@ def _axis_concordance(case: dict, protocol_ctx, icd_client=None) -> tuple[float 
                 evidence=dx_text, source_ref="§3.4 chain",
             ))
 
-    # B2: код МКБ валиден и присутствует (по всему МО, не только графа диагноза)
-    from .mo_icd_resolve import resolve_icd_codes_from_mo
+    # B2: код МКБ - отсутствие при тексте диагноза не дефект.
+    from .mo_icd_resolve import assess_icd_code_requirement, resolve_icd_codes_from_mo
 
+    icd_assess = assess_icd_code_requirement(case)
     icd_resolved = resolve_icd_codes_from_mo(case)
-    code = str(icd_resolved.get("main") or "").strip()
-    ok, reason = icd_validate(code, dx_text, icd_client)
-    if not ok and icd_resolved.get("present"):
-        # main пуст/битый, но валидный код есть в другом разделе
-        code = str((icd_resolved.get("all") or [""])[0] or "").strip()
+    code = str(icd_assess.get("code") or "").strip()
+    ok = bool(icd_assess.get("ok"))
+    reason = str(icd_assess.get("reason_ru") or "")
+    if ok and code and icd_client is not None:
+        # вторичная сверка справочником только для уже валидного по форме кода
         ok, reason = icd_validate(code, dx_text, icd_client)
     scan_hay = dx_text or " ".join(
         f"{item.get('field')}={item.get('code')}"
         for item in (icd_resolved.get("sources") or [])[:4]
     )
-    if dx_text or icd_resolved.get("present") or case.get("mkb_code_main"):
+    if (
+        dx_text
+        or icd_resolved.get("present")
+        or case.get("mkb_code_main")
+        or icd_assess.get("status") == "missing_both"
+    ):
         params.append(100.0 if ok else 0.0)
         if not ok:
             findings.append(_finding(
                 "B_icd_invalid", "clinical_concordance", "P2", False,
-                "Проблема кодирования МКБ", detail=reason,
+                str(icd_assess.get("title_ru") or "Проблема кодирования МКБ"),
+                detail=reason,
                 evidence=code or scan_hay,
                 source_ref="МКБ-10",
             ))

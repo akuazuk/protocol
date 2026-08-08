@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-08-mo-icd-absent-ok-with-dx-v1.md](2026-08-08-mo-icd-absent-ok-with-dx-v1.md) | Нет кода МКБ при тексте Dx - не дефект; страшно только без Dx и без кода | active |
 | [2026-08-08-mo-action-priority-formula-ru-v1.md](2026-08-08-mo-action-priority-formula-ru-v1.md) | Очередь: приоритет по формуле; P0-P3 → русские слова и цвета; demote stale №55 P0 | active |
 | [2026-08-08-mo-icd-first-kp-suggest-v1.md](2026-08-08-mo-icd-first-kp-suggest-v1.md) | КП ICD-first при валидном коде; mismatch только на substantive text; plan 1.0 только с clinical KP | active |
 | [2026-08-08-mo-clinical-visit-only-v1.md](2026-08-08-mo-clinical-visit-only-v1.md) | Оценка только clinical_visit; процедуры/стоматология вне score; №55 по пунктам | active |
