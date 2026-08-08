@@ -1,8 +1,8 @@
 name: Production Render release
 
+# Render deploy disabled: production is GCE (protocol.kravira.by).
+# Keep workflow_dispatch only for emergency recovery.
 on:
-  push:
-    branches: [main]
   workflow_dispatch:
 
 permissions:

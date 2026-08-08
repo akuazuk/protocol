@@ -268,6 +268,97 @@ def resolve_diagnosis_text_from_mo(case: dict[str, Any] | None) -> dict[str, Any
     }
 
 
+def has_mo_diagnosis_text(case: dict[str, Any] | None) -> bool:
+    """Есть ли осмысленная формулировка диагноза (не только токены кода МКБ)."""
+    case = case if isinstance(case, dict) else {}
+    try:
+        text = str(resolve_diagnosis_text_from_mo(case).get("text") or "").strip()
+    except Exception:  # noqa: BLE001
+        text = _diagnosis_slots_text(case)
+    if not text:
+        return False
+    try:
+        from clinical_knowledge.mo_icd_directory_eval import free_text_is_substantive
+
+        return bool(free_text_is_substantive(text))
+    except Exception:  # noqa: BLE001
+        cleaned = _ICD_RE.sub(" ", text)
+        cleaned = re.sub(r"\s+", " ", cleaned).strip(" .;,:|-")
+        return len(cleaned) >= 3
+
+
+def _explicit_raw_icd_token(case: dict[str, Any]) -> str:
+    """Сырой токен из явных колонок кода (может быть битым форматом)."""
+    for key in ("mkb_code_main", "diagnosis_code", "icd10", "mkb_code"):
+        raw = case.get(key)
+        if isinstance(raw, (list, tuple)):
+            raw = raw[0] if raw else ""
+        token = str(raw or "").strip()
+        if token and token.lower() not in {"nan", "none", "null", "-", "—"}:
+            return token
+    return ""
+
+
+def assess_icd_code_requirement(case: dict[str, Any] | None) -> dict[str, Any]:
+    """Правило кодирования МКБ для findings / штрафа.
+
+    - валидный код в МО → ok;
+    - кода нет, но есть формулировка диагноза → ok (не дефект);
+    - указан невалидный код → defect (format);
+    - нет ни кода, ни диагноза → defect (missing_both).
+    """
+    case = case if isinstance(case, dict) else {}
+    resolved = resolve_icd_codes_from_mo(case)
+    code = str(resolved.get("main") or "").strip()
+    if not code and resolved.get("all"):
+        code = str(resolved["all"][0]).strip()
+    has_valid = bool(code) and is_valid_icd_format(code)
+    has_dx = has_mo_diagnosis_text(case)
+    raw_explicit = _explicit_raw_icd_token(case)
+    raw_norm = _normalize_code(raw_explicit) if raw_explicit else ""
+    malformed_explicit = bool(raw_explicit) and not is_valid_icd_format(raw_norm)
+
+    if has_valid:
+        return {
+            "ok": True,
+            "status": "ok",
+            "code": code,
+            "has_diagnosis_text": has_dx,
+            "has_valid_code": True,
+            "reason_ru": "",
+            "title_ru": "",
+        }
+    if malformed_explicit:
+        return {
+            "ok": False,
+            "status": "invalid_format",
+            "code": raw_norm or raw_explicit,
+            "has_diagnosis_text": has_dx,
+            "has_valid_code": False,
+            "reason_ru": f"код «{raw_explicit}» не соответствует формату МКБ-10",
+            "title_ru": "Код МКБ не соответствует формату",
+        }
+    if has_dx:
+        return {
+            "ok": True,
+            "status": "diagnosis_without_code",
+            "code": "",
+            "has_diagnosis_text": True,
+            "has_valid_code": False,
+            "reason_ru": "",
+            "title_ru": "",
+        }
+    return {
+        "ok": False,
+        "status": "missing_both",
+        "code": "",
+        "has_diagnosis_text": False,
+        "has_valid_code": False,
+        "reason_ru": "нет формулировки диагноза и кода МКБ",
+        "title_ru": "Нет диагноза и кода МКБ",
+    }
+
+
 def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
     """Найти коды МКБ по всему МО.
 

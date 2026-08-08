@@ -7,6 +7,7 @@ from clinical_knowledge.mo_icd_resolve import (
     SOURCE_EMPTY,
     SOURCE_SLOT,
     SOURCE_SOFT_FILL_FULL_DOC,
+    assess_icd_code_requirement,
     resolve_icd_codes_from_mo,
     soft_fill_mkb_for_warehouse,
 )
@@ -106,11 +107,15 @@ def test_reg55_icd10_present_scans_full_mo() -> None:
             "objective_status": "Локально спокойно. N47.1.",
         }
     ) is True
+    # текст диагноза без кода - не fail
+    assert _icd10_present(
+        {"clinical_diagnosis": "Острая рецидивирующая анальная трещина.", "mkb_code_main": ""}
+    ) is True
 
 
 def test_reg55_how_checked_mentions_full_document() -> None:
     text = _how_checked_ru({"check": "icd10_present"})
-    assert "всему тексту" in text.lower() or "всему" in text.lower()
+    assert "формулировка" in text.lower() or "диагноз" in text.lower()
 
 
 def test_deep_no_b_icd_invalid_when_code_in_recommendations() -> None:
@@ -127,15 +132,50 @@ def test_deep_no_b_icd_invalid_when_code_in_recommendations() -> None:
     assert "B_icd_invalid" not in codes
 
 
-def test_deep_b_icd_invalid_when_no_code_anywhere() -> None:
+def test_deep_no_b_icd_invalid_when_diagnosis_without_code() -> None:
     case = {
-        "clinical_diagnosis": "Состояние после циркумцизио",
-        "complaints": "Боли",
-        "anamnesis_doctor": "Оперирован",
-        "objective_status": "Ране спокойно",
-        "treatment_recommendations": "Перевязки",
+        "clinical_diagnosis": "Острая рецидивирующая анальная трещина.",
+        "complaints": "Боль",
+        "anamnesis_doctor": "Рецидив",
+        "objective_status": "Трещина",
+        "treatment_recommendations": "Диета",
         "mkb_code_main": "",
     }
+    deep = evaluate_kz_deep(case)
+    codes = {f["code"] for f in deep.get("findings") or []}
+    assert "B_icd_invalid" not in codes
+    assess = assess_icd_code_requirement(case)
+    assert assess["ok"] is True
+    assert assess["status"] == "diagnosis_without_code"
+
+
+def test_deep_b_icd_invalid_when_neither_diagnosis_nor_code() -> None:
+    case = {
+        "clinical_diagnosis": "",
+        "complaints": "Боль",
+        "anamnesis_doctor": "Давно",
+        "objective_status": "Без особенностей",
+        "treatment_recommendations": "Наблюдение",
+        "mkb_code_main": "",
+    }
+    # без Dx ось concordance может не ставить B_icd; assess - дефект missing_both
+    _ = evaluate_kz_deep(case)
+    assess = assess_icd_code_requirement(case)
+    assert assess["ok"] is False
+    assert assess["status"] == "missing_both"
+
+
+def test_b_icd_invalid_on_malformed_explicit_code() -> None:
+    case = {
+        "clinical_diagnosis": "Острая рецидивирующая анальная трещина.",
+        "complaints": "Боль",
+        "anamnesis_doctor": "Рецидив",
+        "objective_status": "Трещина",
+        "mkb_code_main": "XXX",
+    }
+    assess = assess_icd_code_requirement(case)
+    assert assess["ok"] is False
+    assert assess["status"] == "invalid_format"
     deep = evaluate_kz_deep(case)
     codes = {f["code"] for f in deep.get("findings") or []}
     assert "B_icd_invalid" in codes
@@ -149,6 +189,21 @@ def test_v3_engine_accepts_icd_outside_diagnosis() -> None:
         "objective_status": "Ране спокойно",
         "exam_data": "",
         "treatment_recommendations": "Дикловит. Код N47.0.",
+        "mkb_code_main": "",
+    }
+    result = evaluate_kz_v3(case)
+    codes = {f.code for f in (result.findings or [])}
+    assert "B_icd_invalid" not in codes
+
+
+def test_v3_engine_no_b_icd_invalid_when_diagnosis_without_code() -> None:
+    case = {
+        "clinical_diagnosis": "Острая рецидивирующая анальная трещина.",
+        "complaints": "Боль при дефекации",
+        "anamnesis_doctor": "Рецидивирует",
+        "objective_status": "Трещина анального канала",
+        "exam_data": "",
+        "treatment_recommendations": "Диета, свечи",
         "mkb_code_main": "",
     }
     result = evaluate_kz_v3(case)

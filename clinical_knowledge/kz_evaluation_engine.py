@@ -312,21 +312,21 @@ def score_concordance(
             penalty_applied=True,
         ))
 
-    # B2 icd valid form - весь МО, не только графа «Диагноз»
-    from .mo_icd_resolve import resolve_icd_codes_from_mo
+    # B2 код МКБ: отсутствие кода при тексте диагноза - не дефект.
+    from .mo_icd_resolve import assess_icd_code_requirement
 
-    icd_resolved = resolve_icd_codes_from_mo(case)
-    code = str(icd_resolved.get("main") or "").strip()
-    if not code and icd_resolved.get("all"):
-        code = str(icd_resolved["all"][0]).strip()
-    icd_ok = bool(code) and bool(_MKB_RE.match(code))
+    icd_assess = assess_icd_code_requirement(case)
+    icd_ok = bool(icd_assess.get("ok"))
+    code = str(icd_assess.get("code") or "").strip()
     scored.append(100.0 if icd_ok else 0.0)
     if not icd_ok:
         findings.append(EvaluationFinding(
             code="B_icd_invalid", axis="clinical_concordance", severity="P2",
             kind="documentation_gap", passed=False,
-            title_ru="Код МКБ отсутствует или не соответствует формату",
-            evidence=code or dx_text, source_ref="МКБ-10", trust_level=TRUST_A,
+            title_ru=str(icd_assess.get("title_ru") or "Проблема кодирования МКБ"),
+            evidence=code or dx_text,
+            detail_ru=str(icd_assess.get("reason_ru") or ""),
+            source_ref="МКБ-10", trust_level=TRUST_A,
             penalty_applied=True,
         ))
 
