@@ -42,9 +42,10 @@ DOCUMENT_KINDS = frozenset(
         "unknown",
     }
 )
-SCORED_DOCUMENT_KINDS = frozenset({"clinical_visit"})
-# SQL-фрагмент для KPI/очередей (без legacy consultation/medical_exam).
-SCORED_KIND_SQL = "document_kind = 'clinical_visit'"
+# clinical_visit - канон; consultation - legacy-алиас в витрине/secure до recompute.
+SCORED_DOCUMENT_KINDS = frozenset({"clinical_visit", "consultation"})
+# SQL-фрагмент для KPI/очередей (legacy consultation = клинический приём).
+SCORED_KIND_SQL = "document_kind IN ('clinical_visit', 'consultation')"
 EMPTY_TOKENS = frozenset({"", "0", "1", "on", "off", "nan", "none", "null"})
 _PROCEDURE_COMPLAINT_RE = re.compile(
     r"(?:яв\w*\s+)?на\s+(?:промыван|процедур|манипуляц|инъекц|перевяз|физиотерап|массаж|дренаж)",
@@ -256,14 +257,14 @@ def _text_nonempty(row: Mapping[str, Any], *keys: str) -> bool:
 
 
 def is_scored_document_kind(kind: str | None) -> bool:
-    """Оцениваем только clinical_visit (полноценный клинический приём)."""
+    """Оцениваем clinical_visit и legacy consultation."""
     return str(kind or "").strip() in SCORED_DOCUMENT_KINDS
 
 
 def scored_kind_sql(alias: str | None = "c") -> str:
-    """SQL-условие для витрины: только clinical_visit."""
+    """SQL-условие для витрины: clinical_visit + legacy consultation."""
     col = f"{alias}.document_kind" if alias else "document_kind"
-    return f"{col} = 'clinical_visit'"
+    return f"{col} IN ('clinical_visit', 'consultation')"
 
 
 def _is_procedure_session(row: Mapping[str, Any]) -> bool:

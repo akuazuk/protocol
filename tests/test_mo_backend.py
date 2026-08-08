@@ -329,7 +329,7 @@ def test_mo_api_uses_methodist_auth_and_no_store(monkeypatch, tmp_path) -> None:
     assert cases.status_code == 200
     applied = cases.json()["applied_filters"]
     assert applied["queue_only"] is True
-    assert applied["document_kinds"] == "clinical_visit"
+    assert applied["document_kinds"] == "clinical_visit|consultation"
     assert applied.get("score_eligible_only") in {"1", 1, True}
     freshness = client.get(
         "/api/methodist/mo/freshness",

@@ -1576,8 +1576,13 @@
     }
     function renderRubricMz(rubric) {
       if (!rubric || !rubric.ok) {
+        var why = (rubric && (rubric.reason || rubric.error)) ?
+          String(rubric.reason || rubric.error) :
+          "Shadow-оценка по методике МЗ пока недоступна для этого случая.";
         return '<div class="detail-block"><h3>Рубрика МЗ («Как оценивать»)</h3>' +
-          '<p class="empty">Shadow-оценка по методике МЗ пока недоступна для этого случая.</p></div>';
+          '<p class="empty">' + esc(why) + '</p>' +
+          '<p class="card-sub">Рубрика МЗ («Как оценивать», шкала 0 / 0.5 / 1) - отдельно от баллов №55. ' +
+          '№55 проверяет пункты постановления pass/fail; рубрика - полноту записи по инструкции №127.</p></div>';
       }
       var groupLabels = {
         documentation: "Документация", clinical: "Клиника",

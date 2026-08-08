@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-152617Z-queue-no-shadow"
+BUILD_VERSION = "2026-08-08-155145Z-consultation-legacy-score"
 
 
 def _app_version() -> str:
@@ -11597,12 +11597,13 @@ def api_methodist_mo_case_detail(
             "source_format": document.get("source_format"),
         }
     record0 = result.get("record") if isinstance(result.get("record"), dict) else {}
-    kind0 = str(
-        (result.get("document") or {}).get("document_kind")
-        or record0.get("document_kind")
-        or ""
+    kind_doc = str((result.get("document") or {}).get("document_kind") or "").strip()
+    kind_rec = str(record0.get("document_kind") or "").strip()
+    # Secure-срез иногда ещё отдаёт legacy consultation при clinical_visit в витрине.
+    score_eligible = is_case_score_eligible(
+        record0,
+        document_kinds=[kind_doc, kind_rec],
     )
-    score_eligible = is_case_score_eligible(record0, document_kind=kind0)
     result["score_eligible"] = score_eligible
     if not score_eligible:
         # Неклинический приём: текст МО можно показать, оценок/КП/LLM - нет.
