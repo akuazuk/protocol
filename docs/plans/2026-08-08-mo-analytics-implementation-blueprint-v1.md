@@ -745,7 +745,7 @@ Smoke: SQL counts zone bands; detail JSON has `zones`.
 | B | разбор + колонки таблиц (ui-target §9, §6–7) | **сделано** (тот же PR / follow-up commit) |
 | C | Сегодня / Период / Очередь (меню 6 пунктов, attention) | **сделано** |
 | D | Врачи + фильтры URL | **сделано** |
-| E | catalog + handoff | дальше |
+| E | catalog + handoff | **сделано** (ожидает merge → GCE deploy → recompute 14д) |
 
 ---
 
