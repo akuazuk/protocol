@@ -27,6 +27,13 @@ def icd_pipeline_enabled() -> bool:
     return raw not in {"0", "false", "no", "off"}
 
 
+def icd_pipeline_primary_enabled() -> bool:
+    """Общий primary: directory + name findings влияют на overall."""
+    from clinical_knowledge.mo_icd_thresholds import pipeline_in_primary_enabled
+
+    return pipeline_in_primary_enabled()
+
+
 def normalize_mis_agreement(raw: Any) -> str:
     """Экспорт: match|partial|mismatch|unknown; legacy: 0/1/true/false."""
     agree = str(raw or "").strip().lower()
@@ -97,7 +104,13 @@ def _merge_chip_status(
         if dir_v in {"ok", "review", "skip"} or name_v == "ok" or codes:
             status = "ok"
         else:
-            status = "ok" if text_fit >= 0.25 or name_fit >= 0.28 else "weak_name"
+            from clinical_knowledge.mo_icd_thresholds import name_review, text_fit_review
+
+            status = (
+                "ok"
+                if text_fit >= text_fit_review() or name_fit >= name_review()
+                else "weak_name"
+            )
     pipeline_verdict = "ok" if status == "ok" else ("review" if status == "weak_name" else "fail")
     return status, pipeline_verdict, merged
 

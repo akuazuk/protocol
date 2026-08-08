@@ -10,14 +10,23 @@ import os
 import re
 from typing import Any
 
+from clinical_knowledge.mo_icd_thresholds import (  # noqa: E402
+    DIR_HIT_SCORE_MIN as DIR_HIT_SCORE_MIN_DEFAULT,
+    TEXT_FIT_OK as TEXT_FIT_OK_DEFAULT,
+    TEXT_FIT_REVIEW as TEXT_FIT_REVIEW_DEFAULT,
+    dir_hit_score_min as _dir_hit_score_min,
+    pipeline_in_primary_enabled,
+    text_fit_ok as _text_fit_ok,
+    text_fit_review as _text_fit_review,
+)
+
 ENGINE = "mo_icd_directory_v1"
 _SOURCE = "mo_icd_directory_v1"
 
-# Согласовано с consult_criteria_enrichment._title_match_score
-TEXT_FIT_OK = 0.35
-TEXT_FIT_REVIEW = 0.25
-# Минимальный lex score из suggest_icd_from_russian для directory_hit
-DIR_HIT_SCORE_MIN = 0.12
+# Совместимость тестов; runtime - getters.
+TEXT_FIT_OK = TEXT_FIT_OK_DEFAULT
+TEXT_FIT_REVIEW = TEXT_FIT_REVIEW_DEFAULT
+DIR_HIT_SCORE_MIN = DIR_HIT_SCORE_MIN_DEFAULT
 
 
 def icd_directory_eval_enabled() -> bool:
@@ -27,6 +36,8 @@ def icd_directory_eval_enabled() -> bool:
 
 def icd_directory_primary_enabled() -> bool:
     """Merge into primary findings (affects overall). Default off = shadow."""
+    if pipeline_in_primary_enabled():
+        return True
     raw = (os.environ.get("MO_ICD_DIR_IN_PRIMARY") or "0").strip().lower()
     return raw in {"1", "true", "yes", "on"}
 
@@ -112,7 +123,10 @@ def evaluate_diagnosis_against_icd_directory(
                     "match_method": row.get("match_method"),
                 }
             )
-        directory_hit = bool(candidates) and top_lex >= DIR_HIT_SCORE_MIN
+        directory_hit = bool(candidates) and top_lex >= _dir_hit_score_min()
+
+    thr_ok = _text_fit_ok()
+    thr_review = _text_fit_review()
 
     code_checks: list[dict[str, Any]] = []
     text_rubric_fit = 0.0
@@ -165,7 +179,7 @@ def evaluate_diagnosis_against_icd_directory(
             "findings": [absent],
             "candidates": [],
             "code_checks": [],
-            "thresholds": {"text_fit_ok": TEXT_FIT_OK, "text_fit_review": TEXT_FIT_REVIEW},
+            "thresholds": {"text_fit_ok": thr_ok, "text_fit_review": thr_review},
         }
 
     if text and not directory_hit and not any_code_in_dir:
@@ -191,7 +205,7 @@ def evaluate_diagnosis_against_icd_directory(
             )
         )
 
-    if any_code_in_dir and text and text_rubric_fit < TEXT_FIT_REVIEW:
+    if any_code_in_dir and text and text_rubric_fit < thr_review:
         findings.append(
             _finding(
                 "B_icd_dir_text_mismatch",
@@ -199,7 +213,7 @@ def evaluate_diagnosis_against_icd_directory(
                 title="Формулировка диагноза слабо согласуется с рубрикой МКБ",
                 detail=(
                     f"Overlap со справочником {text_rubric_fit:.2f} "
-                    f"(порог review {TEXT_FIT_REVIEW}, ok {TEXT_FIT_OK})."
+                    f"(порог review {thr_review}, ok {thr_ok})."
                 ),
                 evidence=text[:200],
             )
@@ -214,10 +228,10 @@ def evaluate_diagnosis_against_icd_directory(
         else:
             verdict = "review"
             score_pct = 60
-    elif text_rubric_fit >= TEXT_FIT_OK or (directory_hit and not uniq_codes):
+    elif text_rubric_fit >= thr_ok or (directory_hit and not uniq_codes):
         verdict = "ok"
-        score_pct = 95 if text_rubric_fit >= TEXT_FIT_OK else 85
-    elif any_code_in_dir and text_rubric_fit >= TEXT_FIT_REVIEW:
+        score_pct = 95 if text_rubric_fit >= thr_ok else 85
+    elif any_code_in_dir and text_rubric_fit >= thr_review:
         verdict = "review"
         score_pct = 78
     elif directory_hit:
@@ -237,7 +251,7 @@ def evaluate_diagnosis_against_icd_directory(
         "findings": findings,
         "candidates": candidates[:5],
         "code_checks": code_checks,
-        "thresholds": {"text_fit_ok": TEXT_FIT_OK, "text_fit_review": TEXT_FIT_REVIEW},
+        "thresholds": {"text_fit_ok": thr_ok, "text_fit_review": thr_review},
     }
 
 
