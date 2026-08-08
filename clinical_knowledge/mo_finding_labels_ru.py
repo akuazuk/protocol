@@ -2,10 +2,14 @@
 
 Если в dim_finding или fact_mo_finding лежит сам код вместо title_ru,
 UI и отчёты показывают человекочитаемую формулировку.
+
+Уровни тяжести в UI - короткие русские слова (не «P0»/«P1»).
+Приоритет очереди - по формуле оценки (см. priority_from_score).
 """
 from __future__ import annotations
 
 import re
+from typing import Any
 
 _A_BLOCK_RU = {
     "complaints": "жалобы",
@@ -53,11 +57,20 @@ FINDING_TITLE_RU: dict[str, str] = {
     "pediatric_limp_ddx_not_addressed": "Не закрыт детский DDx длительной хромоты",
 }
 
+# Короткие русские слова для UI (без префикса P0/P1).
 SEVERITY_LABEL_RU: dict[str, str] = {
-    "P0": "P0 · критично",
-    "P1": "P1 · клинически важно",
-    "P2": "P2 · оформление",
-    "P3": "P3 · формально",
+    "P0": "Критично",
+    "P1": "Важно",
+    "P2": "Оформление",
+    "P3": "Формально",
+}
+
+# CSS-тон бейджа (.status.<tone>).
+SEVERITY_TONE_CSS: dict[str, str] = {
+    "P0": "critical",
+    "P1": "important",
+    "P2": "check",
+    "P3": "formal",
 }
 
 SEVERITY_HINT_RU: dict[str, str] = {
@@ -66,6 +79,8 @@ SEVERITY_HINT_RU: dict[str, str] = {
     "P2": "Дефект документирования или оформления записи.",
     "P3": "Формальное замечание, без прямого клинического риска.",
 }
+
+_SEVERITY_RANK = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
 
 _SOURCE_EXACT_RU: dict[str, str] = {
     "DDInter": (
@@ -151,9 +166,160 @@ def severity_label_ru(severity: str | None) -> str:
     return SEVERITY_LABEL_RU.get(key, "Проверить" if not key else key)
 
 
+def severity_tone_css(severity: str | None) -> str:
+    key = str(severity or "").strip().upper()
+    return SEVERITY_TONE_CSS.get(key, "review")
+
+
 def severity_hint_ru(severity: str | None) -> str:
     key = str(severity or "").strip().upper()
     return SEVERITY_HINT_RU.get(key, "Тяжесть не задана - нужна ручная оценка методиста.")
+
+
+def catalog_has_reg55_p0_criteria() -> bool:
+    """Есть ли в актуальном каталоге №55 реальные score-eligible P0-критерии."""
+    try:
+        from clinical_knowledge.reg55_criteria import _load_reg
+
+        reg = _load_reg() or {}
+        for item in reg.get("criteria") or []:
+            if not isinstance(item, dict):
+                continue
+            if str(item.get("severity") or "").upper() != "P0":
+                continue
+            if item.get("score_eligible") is False:
+                continue
+            return True
+    except Exception:  # noqa: BLE001
+        return False
+    return False
+
+
+def demote_stale_reg55_p0(
+    *,
+    code: str,
+    severity: str | None,
+    title_ru: str | None = None,
+) -> dict[str, Any]:
+    """Ложный D_reg55_p0 (каталог без P0) → P1 + формулировка gap.
+
+    Не трогает настоящие клинические P0 (DDI и т.п.).
+    """
+    cid = str(code or "").strip()
+    sev = str(severity or "").strip().upper()
+    title = finding_label_ru(cid, title_ru)
+    demoted = False
+    if cid == "D_reg55_p0" and sev == "P0" and not catalog_has_reg55_p0_criteria():
+        sev = "P1"
+        title = FINDING_TITLE_RU.get("D_reg55_gap", title)
+        demoted = True
+    return {
+        "code": cid,
+        "severity": sev,
+        "title_ru": title,
+        "demoted_stale_reg55_p0": demoted,
+        "severity_label_ru": severity_label_ru(sev),
+        "severity_tone": severity_tone_css(sev),
+        "severity_hint_ru": severity_hint_ru(sev),
+    }
+
+
+def priority_from_score(score: float | None) -> dict[str, Any]:
+    """Приоритет очереди по формуле оценки (overall / оси), не по коду finding."""
+    if score is None:
+        return {
+            "severity": "P1",
+            "label_ru": "Проверить",
+            "tone": "important",
+            "score_pct": None,
+        }
+    try:
+        value = float(score)
+    except (TypeError, ValueError):
+        return {
+            "severity": "P1",
+            "label_ru": "Проверить",
+            "tone": "important",
+            "score_pct": None,
+        }
+    if value < 40:
+        sev = "P0"
+    elif value < 60:
+        sev = "P1"
+    elif value < 75:
+        sev = "P2"
+    else:
+        sev = "P3"
+    return {
+        "severity": sev,
+        "label_ru": severity_label_ru(sev),
+        "tone": severity_tone_css(sev),
+        "score_pct": round(value, 1),
+    }
+
+
+def worse_severity(a: str | None, b: str | None) -> str:
+    ra = _SEVERITY_RANK.get(str(a or "").upper(), 9)
+    rb = _SEVERITY_RANK.get(str(b or "").upper(), 9)
+    return str(a or b or "P2").upper() if ra <= rb else str(b or a or "P2").upper()
+
+
+def recompute_overall_from_axes(axes: dict[str, Any] | None) -> float | None:
+    """Взвешенный overall по осям (без risk-cap) - для отображения после demote P0."""
+    if not isinstance(axes, dict) or not axes:
+        return None
+    try:
+        from clinical_knowledge.kz_evaluation_engine import _AXIS_WEIGHTS
+    except Exception:  # noqa: BLE001
+        weights = {
+            "documentation": 0.30,
+            "clinical_concordance": 0.35,
+            "safety": 0.25,
+            "regulatory": 0.10,
+        }
+    else:
+        weights = dict(_AXIS_WEIGHTS)
+    parts: list[tuple[float, float]] = []
+    for axis, weight in weights.items():
+        raw = axes.get(axis)
+        if isinstance(raw, (int, float)):
+            parts.append((float(raw), float(weight)))
+    if not parts:
+        return None
+    return round(sum(v * w for v, w in parts) / sum(w for _, w in parts), 1)
+
+
+def queue_priority_for_case(
+    *,
+    finding_severity: str | None,
+    score_pct: float | None,
+    axes: dict[str, Any] | None = None,
+    demoted_stale_reg55_p0: bool = False,
+) -> dict[str, Any]:
+    """Итоговый приоритет строки очереди: худшее из (формула, тяжесть finding)."""
+    display_score = score_pct
+    if demoted_stale_reg55_p0:
+        axis_score = recompute_overall_from_axes(axes)
+        if axis_score is not None:
+            display_score = axis_score
+        elif isinstance(axes, dict) and isinstance(axes.get("regulatory"), (int, float)):
+            # fallback: хотя бы формула №55, не застрявший cap 40%
+            if display_score is None or float(display_score) <= 40.0:
+                display_score = float(axes["regulatory"])
+    from_score = priority_from_score(display_score)
+    finding_sev = str(finding_severity or "").strip().upper() or from_score["severity"]
+    # После demote №55 приоритет ведём по формуле; иначе учитываем и finding.
+    if demoted_stale_reg55_p0:
+        final = str(from_score["severity"])
+    else:
+        final = worse_severity(finding_sev, from_score["severity"])
+    return {
+        "severity": final,
+        "label_ru": severity_label_ru(final),
+        "tone": severity_tone_css(final),
+        "score_pct": from_score.get("score_pct"),
+        "formula_pct": display_score if isinstance(display_score, (int, float)) else None,
+    }
 
 
 def source_ref_display_ru(source_ref: str | None) -> str:
@@ -207,8 +373,14 @@ def enrich_finding_detail_ru(
     if cid == "E_template_copy":
         return source_ref_display_ru(source_ref)
     if cid == "D_reg55_p0":
+        if not catalog_has_reg55_p0_criteria():
+            return (
+                "Устаревшая метка «критический дефект по №55»: в актуальном каталоге "
+                "нет критериев уровня «Критично». Смотрите средний балл по формуле №55 "
+                "и перечень невыполненных пунктов - не приоритет P0."
+            )
         return (
-            "По критериям постановления МЗ № 55 зафиксирован критический (P0) дефект. "
+            "По критериям постановления МЗ № 55 зафиксирован критический дефект. "
             "Ниже в источнике - база правила; при пустом списке критериев это может быть "
             "устаревшая оценка - перепроверьте вручную."
         )
