@@ -143,6 +143,8 @@ def test_merge_named_columns_survives_legacy_column_order(tmp_path: Path) -> Non
             ALTER TABLE fact_mo_case ADD COLUMN scorer_version TEXT;
             ALTER TABLE fact_mo_case ADD COLUMN score_schema_version TEXT;
             ALTER TABLE fact_mo_case ADD COLUMN llm_cost_usd REAL DEFAULT 0;
+            ALTER TABLE fact_mo_case ADD COLUMN mkb_code_main_source TEXT;
+            ALTER TABLE fact_mo_case ADD COLUMN mkb_code_main_slot TEXT;
             """
         )
         db.executescript(

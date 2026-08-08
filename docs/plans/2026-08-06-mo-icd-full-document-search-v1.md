@@ -58,7 +58,8 @@
 - [x] P0: общий helper `resolve_icd_codes_from_mo(case) -> {main, all, sources}` (full-text)
 - [x] P1: `_icd10_present` + deep/engine `B_icd_invalid` на helper
 - [x] P2: тесты - код только в objective / recommendations → pass; нигде → fail
-- [ ] P3: подтянуть `mkb_code_main` в warehouse/export только как soft-fill (не ломая MIS agreement)
+- [x] P3: подтянуть `mkb_code_main` в warehouse только как soft-fill (не ломая MIS agreement;
+  см. `mo_icd_dx_matching_pipeline_v3` фаза 5 / `soft_fill_mkb_for_warehouse`)
 - [ ] P4: одна строка в промптах LLM judge / methodist AI про полный документ
 
 ---

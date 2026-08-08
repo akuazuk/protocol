@@ -600,6 +600,8 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "diagnosis_code": diagnosis_code_public,
                 "diagnosis_short": diagnosis_short,
                 "mkb_code_main": diagnosis_code_public,
+                "mkb_code_main_source": str(item.get("mkb_code_main_source") or ""),
+                "mkb_code_main_slot": str(item.get("mkb_code_main_slot") or ""),
                 "icd_chapter": item.get("icd_chapter") or "",
                 "overall_pct": score,
                 "score_reason": (
@@ -2758,6 +2760,8 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         }.get(str(item.get("document_kind") or "unknown"), str(item.get("document_kind") or "")),
                         "diagnosis_code": diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
                         "mkb_code_main": diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
+                        "mkb_code_main_source": str(item.get("mkb_code_main_source") or ""),
+                        "mkb_code_main_slot": str(item.get("mkb_code_main_slot") or ""),
                         "diagnosis_short": diagnosis_short,
                         "overall_pct": score,
                         "status": item.get("status") or "",

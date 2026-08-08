@@ -693,6 +693,47 @@ def test_one_day_fills_every_warehouse_table(tmp_path: Path) -> None:
         )
 
 
+def test_warehouse_soft_fills_mkb_from_full_doc_without_touching_agreement(tmp_path: Path) -> None:
+    import sqlite3
+
+    raw, cases = warehouse_day_rows()
+    # mis_id=3: слот пуст, код только в статусе → soft_fill; agreement остаётся как в raw
+    for row in raw:
+        if str(row.get("id") or row.get("mis_id") or "") in {"3", "3.0"} or int(float(row.get("id") or 0)) == 3:
+            row["mkb_code_main"] = ""
+            row["mkb_codes"] = ""
+            row["mkb_code_agreement"] = "unknown"
+            row["objective_status"] = "Локально спокойно. N47.1 после операции."
+            row["clinical_diagnosis"] = "Состояние после циркумцизио"
+            break
+    secure, _ = build_daily_report(
+        raw, cases, day=date(2026, 7, 27), run_id="wh-soft", revision=1, quality={"passed": True}
+    )
+    path = tmp_path / "warehouse.sqlite"
+    upsert_warehouse(path, raw, cases, secure)
+    with sqlite3.connect(path) as db:
+        row = db.execute(
+            "SELECT diagnosis_code, mkb_code_main_source, mkb_code_main_slot "
+            "FROM fact_mo_case WHERE mis_id = '3'"
+        ).fetchone()
+        assert row is not None
+        assert row[0] == "N47.1"
+        assert row[1] == "soft_fill_full_doc"
+        assert row[2] == ""
+        # слот с кодом не перетирается soft-fill
+        slot_row = db.execute(
+            "SELECT diagnosis_code, mkb_code_main_source, mkb_code_main_slot "
+            "FROM fact_mo_case WHERE mis_id = '1'"
+        ).fetchone()
+        assert slot_row[0] == "I10"
+        assert slot_row[1] == "slot"
+        assert slot_row[2] == "I10"
+    # raw agreement не мутировали
+    raw3 = next(r for r in raw if int(float(r.get("id") or 0)) == 3)
+    assert raw3.get("mkb_code_agreement") == "unknown"
+    assert not (raw3.get("mkb_code_main") or "").strip()
+
+
 def test_warehouse_upsert_is_idempotent_and_drops_vanished_rows(tmp_path: Path) -> None:
     import sqlite3
 

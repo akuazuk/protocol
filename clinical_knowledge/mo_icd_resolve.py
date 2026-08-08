@@ -344,3 +344,68 @@ def resolve_icd_codes_from_mo(case: dict[str, Any] | None) -> dict[str, Any]:
         "sources": sources,
         "present": bool(all_codes),
     }
+
+
+# Warehouse / KPI soft-fill (фаза 5). Не трогает mkb_code_agreement (слот экспорта).
+SOURCE_SLOT = "slot"
+SOURCE_SOFT_FILL_FULL_DOC = "soft_fill_full_doc"
+SOURCE_EMPTY = "empty"
+
+
+def _slot_mkb_codes(case: dict[str, Any]) -> list[str]:
+    """Коды только из слотов экспорта mkb_codes / mkb_code_main (без full-doc)."""
+    out: list[str] = []
+    seen: set[str] = set()
+    for raw in (case.get("mkb_codes"), case.get("mkb_code_main")):
+        if raw is None or raw == "":
+            continue
+        if isinstance(raw, (list, tuple)):
+            parts = [str(x) for x in raw]
+        else:
+            parts = str(raw).replace(",", "|").split("|")
+        for part in parts:
+            code = _normalize_code(part)
+            if not is_valid_icd_format(code) or code in seen:
+                continue
+            seen.add(code)
+            out.append(code)
+    return out
+
+
+def soft_fill_mkb_for_warehouse(case: dict[str, Any] | None) -> dict[str, Any]:
+    """Код для KPI/UI витрины: слот, иначе full-doc soft-fill.
+
+    Returns:
+        code, codes, source (slot|soft_fill_full_doc|empty), slot_code
+    Не мутирует case и не предназначен для mkb_code_agreement.
+    """
+    case = case if isinstance(case, dict) else {}
+    slot_codes = _slot_mkb_codes(case)
+    slot_main = slot_codes[0] if slot_codes else ""
+    if slot_main:
+        return {
+            "code": slot_main,
+            "codes": slot_codes,
+            "source": SOURCE_SLOT,
+            "slot_code": slot_main,
+        }
+
+    # resolve по полному МО; слот пуст - explicit keys не дадут main
+    resolved = resolve_icd_codes_from_mo(case)
+    fill = str(resolved.get("main") or "").strip()
+    if fill and is_valid_icd_format(fill):
+        all_codes = list(resolved.get("all") or [])
+        if fill not in all_codes:
+            all_codes.insert(0, fill)
+        return {
+            "code": fill,
+            "codes": all_codes,
+            "source": SOURCE_SOFT_FILL_FULL_DOC,
+            "slot_code": "",
+        }
+    return {
+        "code": "",
+        "codes": [],
+        "source": SOURCE_EMPTY,
+        "slot_code": "",
+    }

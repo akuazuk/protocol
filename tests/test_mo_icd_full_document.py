@@ -3,7 +3,13 @@ from __future__ import annotations
 
 from clinical_knowledge.kz_deep_eval import evaluate_kz_deep
 from clinical_knowledge.kz_evaluation_engine import evaluate_kz_v3
-from clinical_knowledge.mo_icd_resolve import resolve_icd_codes_from_mo
+from clinical_knowledge.mo_icd_resolve import (
+    SOURCE_EMPTY,
+    SOURCE_SLOT,
+    SOURCE_SOFT_FILL_FULL_DOC,
+    resolve_icd_codes_from_mo,
+    soft_fill_mkb_for_warehouse,
+)
 from clinical_knowledge.reg55_criteria import _how_checked_ru, _icd10_present
 
 
@@ -148,3 +154,40 @@ def test_v3_engine_accepts_icd_outside_diagnosis() -> None:
     result = evaluate_kz_v3(case)
     codes = {f.code for f in (result.findings or [])}
     assert "B_icd_invalid" not in codes
+
+
+def test_soft_fill_prefers_slot_over_full_doc() -> None:
+    fill = soft_fill_mkb_for_warehouse(
+        {
+            "mkb_code_main": "I10",
+            "objective_status": "N47.1 в статусе",
+        }
+    )
+    assert fill["source"] == SOURCE_SLOT
+    assert fill["code"] == "I10"
+    assert fill["slot_code"] == "I10"
+
+
+def test_soft_fill_from_full_doc_when_slot_empty() -> None:
+    fill = soft_fill_mkb_for_warehouse(
+        {
+            "mkb_code_main": "",
+            "mkb_codes": "",
+            "clinical_diagnosis": "Состояние после операции",
+            "objective_status": "Локально спокойно. N47.1.",
+        }
+    )
+    assert fill["source"] == SOURCE_SOFT_FILL_FULL_DOC
+    assert fill["code"] == "N47.1"
+    assert fill["slot_code"] == ""
+
+
+def test_soft_fill_empty_when_no_code() -> None:
+    fill = soft_fill_mkb_for_warehouse(
+        {
+            "mkb_code_main": "",
+            "objective_status": "без кода",
+        }
+    )
+    assert fill["source"] == SOURCE_EMPTY
+    assert fill["code"] == ""
