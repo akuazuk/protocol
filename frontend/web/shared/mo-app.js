@@ -21,7 +21,8 @@
       sortBy: "date", sortDir: "desc",
       caseNavIds: [],
       protocolSuggest: null,
-      selected: { months: [], branches: [], specialties: [], doctors: [], document_types: [], statuses: [] },
+      selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [] },
+      scoreEligibleOnly: true,
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
       caseDetail: null, supersedesPackId: "",
       drillTrail: [], drillSnapshot: null,
@@ -163,7 +164,21 @@
         if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join("|"));
       });
       if (state.selected.months.length) q.set("month", state.selected.months[0]);
+      q.set("score_eligible_only", state.scoreEligibleOnly ? "1" : "0");
       return q;
+    }
+    function applyScoreEligibleOnly(on, silent) {
+      state.scoreEligibleOnly = !!on;
+      if (state.scoreEligibleOnly) {
+        state.selected.document_types = ["clinical_visit"];
+      } else if (state.selected.document_types.length === 1 && state.selected.document_types[0] === "clinical_visit") {
+        state.selected.document_types = [];
+      }
+      var toggle = $("score-eligible-only");
+      if (toggle) toggle.checked = state.scoreEligibleOnly;
+      var filter = document.querySelector('.filter-pop[data-filter="document_types"]');
+      if (filter) renderFilter(filter);
+      if (!silent) filtersChanged();
     }
     function normalizeSummary(raw) {
       raw = raw || {};
@@ -380,6 +395,10 @@
         details.querySelector("summary b").textContent = draft.length || "Все";
         details.classList.remove("has-pending");
         details.open = false;
+        if (key === "document_types") {
+          state.scoreEligibleOnly = draft.length === 1 && draft[0] === "clinical_visit";
+          if ($("score-eligible-only")) $("score-eligible-only").checked = state.scoreEligibleOnly;
+        }
         showToast(draft.length ? "Фильтр применён: " + FILTER_LABELS[key] : "Фильтр очищен: " + FILTER_LABELS[key]);
         filtersChanged();
       });
@@ -522,6 +541,11 @@
         button.addEventListener("click", function () {
           var key = button.getAttribute("data-remove"), value = button.getAttribute("data-value");
           state.selected[key] = state.selected[key].filter(function (x) { return x !== value; });
+          if (key === "document_types") {
+            state.scoreEligibleOnly = state.selected.document_types.length === 1 &&
+              state.selected.document_types[0] === "clinical_visit";
+            if ($("score-eligible-only")) $("score-eligible-only").checked = state.scoreEligibleOnly;
+          }
           var filter = document.querySelector('.filter-pop[data-filter="' + key + '"]');
           if (filter) renderFilter(filter);
           filtersChanged();
@@ -572,8 +596,19 @@
       state.sortBy = q.get("sort_by") || "date";
       state.sortDir = q.get("sort_dir") || "desc";
       Object.keys(state.selected).forEach(function (key) {
-        state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(",").filter(Boolean);
+        state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(/[|,]/).filter(Boolean);
       });
+      var scoreFlag = (q.get("score_eligible_only") || "").toLowerCase();
+      if (scoreFlag === "0" || scoreFlag === "false" || scoreFlag === "all") {
+        state.scoreEligibleOnly = false;
+      } else if (scoreFlag === "1" || scoreFlag === "true" || !q.has("score_eligible_only")) {
+        state.scoreEligibleOnly = true;
+        if (!state.selected.document_types.length) state.selected.document_types = ["clinical_visit"];
+      } else {
+        state.scoreEligibleOnly = state.selected.document_types.length === 1 &&
+          state.selected.document_types[0] === "clinical_visit";
+      }
+      if ($("score-eligible-only")) $("score-eligible-only").checked = state.scoreEligibleOnly;
       if ($("period")) $("period").value = state.period;
       if ($("compare")) $("compare").value = state.compare;
       if ($("date-from")) $("date-from").value = state.dateFrom;
@@ -1042,14 +1077,16 @@
           var card = pageHost.querySelector(".card");
           if (card) pageHost.insertBefore(banner, card);
         }
+        banner.hidden = false;
+        var scopeNote = state.scoreEligibleOnly
+          ? "Показаны только клинические приёмы (оцениваемые). Процедуры и профосмотры скрыты фильтром «Только оцениваемые»."
+          : "Показаны все типы документов, включая процедуры и профосмотры (они без оценки).";
         if (isSingleDayPeriod()) {
-          banner.hidden = false;
           banner.innerHTML = "<b>Таблица за " + esc(state.dateFrom) + "</b> · всего " +
-            esc(data.total || rows.length) + " записей. Колонка «Балл №55» - средний % по формуле пост. МЗ №55. " +
-            "Прокрутите таблицу вправо после «Итог». Откройте случай - блок балла №55 сразу под текстом МО.";
+            esc(data.total || rows.length) + " записей. " + esc(scopeNote) +
+            " Колонка «Балл №55» - средний % по формуле пост. МЗ №55.";
         } else {
-          banner.hidden = true;
-          banner.innerHTML = "";
+          banner.innerHTML = "<b>Все случаи</b> · " + esc(data.total || rows.length) + " записей. " + esc(scopeNote);
         }
       }
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
@@ -2733,11 +2770,20 @@
         $("sort-dir").value = "desc";
         $("date-from").value = ""; $("date-to").value = "";
         $("date-from-wrap").hidden = true; $("date-to-wrap").hidden = true;
+        applyScoreEligibleOnly(true, true);
         document.querySelectorAll(".filter-pop").forEach(renderFilter);
         $("filters-panel").open = false;
         filtersChanged();
-        showToast("Фильтры сброшены");
+        showToast("Фильтры сброшены: только клинические приёмы");
       });
+      if ($("score-eligible-only")) {
+        $("score-eligible-only").addEventListener("change", function () {
+          applyScoreEligibleOnly(this.checked, false);
+          showToast(this.checked
+            ? "Показаны только оцениваемые клинические приёмы"
+            : "Показаны все типы документов (процедуры и профосмотры без оценки)");
+        });
+      }
       $("save-view").addEventListener("click", saveView);
       $("analysis-back").addEventListener("click", function () {
         if (!state.drillTrail.length) return;

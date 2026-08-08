@@ -798,7 +798,25 @@ def _crm_states(case_ids: list[str]) -> dict[str, dict[str, Any]]:
         return out
 
 
+def _apply_score_eligible_default(params: dict[str, Any]) -> dict[str, Any]:
+    """Для таблицы случаев: по умолчанию только clinical_visit.
+
+    Процедуры / профосмотры / диагностика не попадают в строки и агрегаты таблицы,
+    пока пользователь явно не снимет фильтр (score_eligible_only=0 или другой document_kinds).
+    """
+    out = dict(params or {})
+    if _values(out.get("document_kinds")):
+        return out
+    score_flag = str(out.get("score_eligible_only") or "").strip().lower()
+    if score_flag in {"0", "false", "no", "all"}:
+        return out
+    out["document_kinds"] = "clinical_visit"
+    out["score_eligible_only"] = "1"
+    return out
+
+
 def build_cases(params: dict[str, Any]) -> dict[str, Any]:
+    params = _apply_score_eligible_default(params)
     all_records = _records(params)
     filtered = _filter_records(all_records, params)
     states = _crm_states([r["case_id"] for r in filtered])
@@ -895,7 +913,8 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_facets(params: dict[str, Any]) -> dict[str, Any]:
-    filtered = _filter_records(_records(params), params)
+    all_records = _records(params)
+    filtered = _filter_records(all_records, params)
     facets = _facets(filtered)
     doctor_counts = Counter(str(r.get("doctor_fio") or "") for r in filtered if r.get("doctor_fio"))
     facets["doctors"] = [
@@ -906,6 +925,24 @@ def build_facets(params: dict[str, Any]) -> dict[str, Any]:
             "suppressed": count < SUPPRESSION_N,
         }
         for key, count in doctor_counts.most_common(200)
+    ]
+    # Типы документов - по всему срезу периода (без фильтра document_kinds),
+    # чтобы при default «только clinical_visit» в меню остались процедуры/профосмотры.
+    params_without_kinds = {
+        key: value for key, value in params.items() if key not in {"document_kinds", "score_eligible_only"}
+    }
+    kind_base = _filter_records(all_records, params_without_kinds)
+    kind_counts = Counter(str(r.get("document_kind") or "unknown") for r in kind_base)
+    facets["document_kinds"] = [
+        {
+            "value": key,
+            "label": DOCUMENT_KIND_LABELS.get(key, key),
+            "n": count if count >= SUPPRESSION_N else None,
+            "n_bucket": None if count >= SUPPRESSION_N else f"<{SUPPRESSION_N}",
+            "suppressed": count < SUPPRESSION_N,
+            "score_eligible": key in {"clinical_visit"},
+        }
+        for key, count in kind_counts.most_common()
     ]
     for values in facets.values():
         if not isinstance(values, list):
@@ -927,6 +964,7 @@ def build_facets(params: dict[str, Any]) -> dict[str, Any]:
         "facets": facets,
         "n_filtered": len(filtered),
         "suppression_n": SUPPRESSION_N,
+        "default_document_kinds": ["clinical_visit"],
     }
 
 

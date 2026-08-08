@@ -327,7 +327,10 @@ def test_mo_api_uses_methodist_auth_and_no_store(monkeypatch, tmp_path) -> None:
         headers={"X-Methodist-Token": "mo-test-token"},
     )
     assert cases.status_code == 200
-    assert cases.json()["applied_filters"] == {"queue_only": True, "page": 1, "page_size": 50, "sort_by": "date", "sort_dir": "desc"}
+    applied = cases.json()["applied_filters"]
+    assert applied["queue_only"] is True
+    assert applied["document_kinds"] == "clinical_visit"
+    assert applied.get("score_eligible_only") in {"1", 1, True}
     freshness = client.get(
         "/api/methodist/mo/freshness",
         headers={"X-Methodist-Token": "mo-test-token"},
