@@ -1812,6 +1812,10 @@ def upsert_warehouse(
                     history_prior_n = 0
                     history_tier = ""
             eligible_document = is_scored_document_kind(raw.get("document_kind"))
+            if not eligible_document:
+                # Не клинический приём: тип помечаем, балл в витрине не храним.
+                score = None
+                previous_score = None
             if eligible_document:
                 eligible_rows_count += 1
                 if score is not None:
