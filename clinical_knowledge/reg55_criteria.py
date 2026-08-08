@@ -134,7 +134,13 @@ def _diagnosis_substantiated(case: dict) -> bool:
 
 
 def _eval_criterion(crit: dict, case: dict, thresholds: dict) -> str:
-    """Возвращает 'pass' | 'fail' | 'na'."""
+    """Возвращает 'pass' | 'fail' | 'na'.
+
+    Пункты с ``score_eligible: false`` (служебные, не из постановления) всегда ``na``
+    для формулы среднего балла; в таблице критериев они видны отдельно.
+    """
+    if crit.get("score_eligible") is False:
+        return "na"
     check = crit.get("check")
     if check == "field_present":
         return "pass" if _fields_present(case).get(crit.get("field")) else "fail"
@@ -145,12 +151,32 @@ def _eval_criterion(crit: dict, case: dict, thresholds: dict) -> str:
     if check == "alignment_min":
         score = _block_score(case, str(crit.get("block")))
         if score is None:
-            return "na"  # блок протокола не применялся - не дефект
+            return "na"  # блок протокола не применялся - не в знаменателе
         thr = float(thresholds.get(crit.get("threshold_key"), 50))
         return "pass" if score >= thr else "fail"
     if check == "no_manual_review":
         return "fail" if str(case.get("status")) == "manual_review_required" else "pass"
     return "na"
+
+
+def _whats_wrong_ru(crit: dict, verdict: str, case: dict) -> str:
+    """Кратко: что не так при fail; пусто для pass/na."""
+    if verdict != "fail":
+        return ""
+    custom = str(crit.get("fail_ru") or "").strip()
+    if custom:
+        return custom
+    check = crit.get("check")
+    if check == "field_present":
+        return f"Не заполнено поле «{crit.get('field') or 'раздел'}»."
+    if check == "diagnosis_substantiated":
+        return "Не хватает связки жалобы + (анамнез или осмотр) + диагноз."
+    if check == "alignment_min":
+        score = _block_score(case, str(crit.get("block")))
+        return f"Соответствие блока «{crit.get('block')}» протоколу: {score}."
+    if check == "no_manual_review":
+        return "Случай в очереди ручной проверки модели."
+    return "Критерий не выполнен."
 
 
 def _how_checked_ru(crit: dict) -> str:
@@ -207,10 +233,13 @@ def evaluate_reg55(case: dict) -> dict:
         g = by_group.setdefault(group, {"passed": 0, "total": 0, "na": 0})
         verdict = _eval_criterion(crit, prepared, thresholds)
         how = _how_checked_ru(crit)
+        wrong = _whats_wrong_ru(crit, verdict, prepared)
+        in_formula = crit.get("score_eligible") is not False
         detail = {
             "id": crit.get("id"),
             "title": crit.get("title"),
             "point": crit.get("point"),
+            "point_no": crit.get("point_no") or crit.get("point"),
             "severity": crit.get("severity"),
             "check": crit.get("check"),
             "group": group,
@@ -219,10 +248,13 @@ def evaluate_reg55(case: dict) -> dict:
                 verdict, verdict
             ),
             "how_checked_ru": how,
+            "whats_wrong_ru": wrong,
             "score": 1.0 if verdict == "pass" else (0.0 if verdict == "fail" else None),
+            "in_formula": in_formula and verdict != "na",
+            "score_eligible": in_formula,
         }
         criteria_detail.append(detail)
-        if verdict == "na":
+        if not in_formula or verdict == "na":
             na += 1
             g["na"] = int(g.get("na") or 0) + 1
             continue
@@ -236,9 +268,11 @@ def evaluate_reg55(case: dict) -> dict:
                 "id": crit.get("id"),
                 "title": crit.get("title"),
                 "point": crit.get("point"),
+                "point_no": crit.get("point_no"),
                 "severity": crit.get("severity"),
                 "check": crit.get("check"),
                 "how_checked_ru": how,
+                "whats_wrong_ru": wrong,
             }
             failed.append(item)
             if crit.get("severity") == "P0":
@@ -250,6 +284,7 @@ def evaluate_reg55(case: dict) -> dict:
         "regulatory_compliance_pct": pct,
         "passed": passed,
         "total": total,
+        "applicable": total,
         "na": na,
         "failed": failed,
         "critical_failed": critical_failed,
@@ -257,8 +292,8 @@ def evaluate_reg55(case: dict) -> dict:
         "by_group": by_group,
         "criteria": criteria_detail,
         "formula_ru": (
-            "regulatory_compliance_pct = 100 × (число выполненных) / "
-            "(число применимых; na не входят в знаменатель)"
+            "Средний балл №55 = 100 × (выполненные пункты) / "
+            "(применимые пункты; «не применим» и служебные флаги не в знаменателе)"
         ),
         "regulation_id": meta.get("regulation_id"),
         "regulation_title": meta.get("regulation_title"),
@@ -269,7 +304,7 @@ def evaluate_reg55(case: dict) -> dict:
             )
             if missing_file
             else (
-                "Прокси case-level по адаптированным пунктам прил. 2 пост. МЗ № 55; "
+                "Оценка по проверяемым пунктам прил. 2 пост. МЗ № 55 для клинического приёма; "
                 "не полная официальная экспертиза организации."
             )
         ),
@@ -329,6 +364,33 @@ def attach_reg55_to_detail(
         # alignment-критерии останутся na без L1 block_scores - это честно
         case.setdefault("block_scores", {})
     case.setdefault("status", record.get("status") or out.get("deep_status") or "")
+    kind = str(record.get("document_kind") or case.get("document_kind") or "").strip()
+    if kind == "consultation":
+        kind = "clinical_visit"
+    if kind and kind != "clinical_visit":
+        axes = dict(out.get("axes") or {})
+        out["record"] = record
+        out["axes"] = axes
+        out["reg55"] = {
+            "regulatory_compliance_pct": None,
+            "passed": 0,
+            "total": 0,
+            "applicable": 0,
+            "na": 0,
+            "failed": [],
+            "critical_failed": [],
+            "has_p0_defect": False,
+            "criteria": [],
+            "formula_ru": (
+                "Средний балл №55 считается только для типа «Клинический приём» "
+                "(clinical_visit); na не в знаменателе."
+            ),
+            "note_ru": (
+                f"Тип документа «{kind}» не оценивается по постановлению № 55 "
+                "(нужен clinical_visit)."
+            ),
+        }
+        return out
     reg = evaluate_reg55(case)
     axes = dict(out.get("axes") or {})
     pct = reg.get("regulatory_compliance_pct")

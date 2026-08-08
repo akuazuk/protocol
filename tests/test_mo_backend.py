@@ -58,6 +58,19 @@ def test_document_kind_is_additive_and_uses_taxonomy_rules() -> None:
     assert row["kz_kind"] == "kz"
     assert classify_document_kind({}, {"text_len": 0, "fields_present": {}}) == "empty"
     assert classify_document_kind({"service_names": "УЗИ органов"}, {}) == "diagnostic"
+    assert (
+        classify_document_kind(
+            {
+                "kz_kind": "kz",
+                "service_names": "Консультация врача-терапевта",
+                "complaints": "кашель",
+                "objective_status": "дыхание везикулярное",
+                "clinical_diagnosis": "J06",
+            },
+            {},
+        )
+        == "clinical_visit"
+    )
 
 
 def test_cases_hide_patient_id_and_suppress_small_groups(monkeypatch, tmp_path) -> None:

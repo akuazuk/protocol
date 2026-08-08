@@ -170,7 +170,7 @@ def propagate_visit_scores(warehouse: Path) -> int:
                          AND source.overall_pct IS NOT NULL
                    ))
                WHERE target.overall_pct IS NULL
-                 AND target.document_kind IN ('medical_exam', 'consultation')
+                 AND target.document_kind = 'clinical_visit'
                  AND EXISTS (
                        SELECT 1
                        FROM fact_mo_case AS source
@@ -194,23 +194,23 @@ def refresh_daily_case_aggregates(warehouse: Path) -> int:
                SET eligible_rows = (
                      SELECT COUNT(*) FROM fact_mo_case c
                      WHERE c.visit_date=fact_mo_daily.visit_date
-                       AND c.document_kind IN ('medical_exam','consultation')
+                       AND c.document_kind = 'clinical_visit'
                    ),
                    scored_rows = (
                      SELECT COUNT(*) FROM fact_mo_case c
                      WHERE c.visit_date=fact_mo_daily.visit_date
-                       AND c.document_kind IN ('medical_exam','consultation')
+                       AND c.document_kind = 'clinical_visit'
                        AND c.overall_pct IS NOT NULL
                    ),
                    avg_score = (
                      SELECT ROUND(AVG(c.overall_pct), 1) FROM fact_mo_case c
                      WHERE c.visit_date=fact_mo_daily.visit_date
-                       AND c.document_kind IN ('medical_exam','consultation')
+                       AND c.document_kind = 'clinical_visit'
                    ),
                    needs_attention = (
                      SELECT COUNT(*) FROM fact_mo_case c
                      WHERE c.visit_date=fact_mo_daily.visit_date
-                       AND c.document_kind IN ('medical_exam','consultation')
+                       AND c.document_kind = 'clinical_visit'
                        AND EXISTS (
                          SELECT 1 FROM fact_mo_finding f
                          WHERE f.mis_id=c.mis_id AND f.passed=0
@@ -223,7 +223,7 @@ def refresh_daily_case_aggregates(warehouse: Path) -> int:
                      END
                      FROM fact_mo_case c
                      WHERE c.visit_date=fact_mo_daily.visit_date
-                       AND c.document_kind IN ('medical_exam','consultation')
+                       AND c.document_kind = 'clinical_visit'
                    )"""
         )
         changed = db.total_changes - before

@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-08-mo-clinical-visit-only-v1.md](2026-08-08-mo-clinical-visit-only-v1.md) | Оценка только clinical_visit; процедуры/стоматология вне score; №55 по пунктам | active |
 | [2026-08-08-mo-reg55-day-column-v1.md](2026-08-08-mo-reg55-day-column-v1.md) | Таблица дня: колонка №55 + разбор пунктов при раскрытии | active |
 | [2026-08-08-mo-kp-history-episode-suggest-v1.md](2026-08-08-mo-kp-history-episode-suggest-v1.md) | КП по эпизоду Dx из истории визитов + golden верно/неверно | active |
 | [2026-08-08-mo-kp-suggest-dx-accuracy-v1.md](2026-08-08-mo-kp-suggest-dx-accuracy-v1.md) | Suggest v4: точный КП по тексту Dx (bridge text→ICD, clinical-only) | active |
