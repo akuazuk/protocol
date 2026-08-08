@@ -89,9 +89,14 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "drawer-score-c" not in JS
     assert "Полнота %" not in JS
     assert "protocol-suggest" in JS
-    assert "Протоколы МЗ РБ к случаю" in JS or "Клинические протоколы для оценки плана" in JS
+    assert "Протоколы МЗ" in JS
+    assert "protocolViewerUrl" in JS
     assert "zone-card" in JS
     assert "Что не так" in JS
+    assert "case-workspace-decision-scroll" in JS
+    assert "case-workspace-grid--zones" in CSS or "case-workspace-grid--zones" in SOURCE
+    assert "protocol-suggest-top" in JS
+    assert 'id="drawer-pdf"' in HTML
     assert "data-sort-key" in HTML
     assert 'id="drawer-prev"' in HTML
     assert "renderPatientHistory" in JS
