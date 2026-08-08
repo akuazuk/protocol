@@ -901,10 +901,10 @@
         rows = rows || [];
         if (!rows.length) return "";
         var body = rows.slice(0, 12).map(function (visit) {
-          var pct = visit.overall_pct == null ? "—" : (Math.round(Number(visit.overall_pct)) + "%");
+          var pct = visit.overall_pct == null ? "-" : (Math.round(Number(visit.overall_pct)) + "%");
           var mid = visit.mis_id || visit.visit_id || "";
           return '<li><button type="button" class="linkish" data-case="' + esc(mid) + '">' +
-            esc(visit.visit_date || "") + "</button> · " + esc(visit.diagnosis_code || "—") +
+            esc(visit.visit_date || "") + "</button> · " + esc(visit.diagnosis_code || "-") +
             (visit.diagnosis_text ? (" · " + esc(String(visit.diagnosis_text).slice(0, 60))) : "") +
             " · МО " + esc(pct) + "</li>";
         }).join("");
