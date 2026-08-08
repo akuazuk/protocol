@@ -13,6 +13,7 @@ def test_build_case_fact_graph_uses_diagnosis_text_not_icd() -> None:
             "complaints": "боль в колене; хромота",
             "clinical_diagnosis": "M60 Миозит прямой мышцы бедра",
             "exam_recommendations": "УЗИ",
+            "patient_age_years": 7,
         },
         record={"visit_id": "v1", "specialty": "Ортопед"},
         findings=[
@@ -27,11 +28,42 @@ def test_build_case_fact_graph_uses_diagnosis_text_not_icd() -> None:
     assert "Миозит" in graph["diagnoses"][0]["text"]
     assert "icd" not in graph["diagnoses"][0]
     assert "боль в колене" in graph["complaints"]
+    assert graph["audience"] == "child"
     assert any(g.get("code") == "B_dx_no_support" for g in graph["gaps"])
     assert not any(str(g.get("code") or "").startswith("D_reg55") for g in graph["gaps"])
     assert not any(str(g.get("code") or "").startswith("C_nsaid") for g in graph["gaps"])
     assert not any(str(g.get("code") or "").startswith("B_icd") for g in graph["gaps"])
     assert graph["specialty"]["slug"] == "travmatologiya-ortopediya"
+
+
+def test_suggest_flatfoot_child_hits_pediatric_ortho_kp() -> None:
+    """Реестр: детский ортопедо-травматологический КП (пост. 109) по тексту Dx."""
+    import os
+
+    os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
+    result = suggest_protocols_for_case(
+        clinical={
+            "clinical_diagnosis": (
+                "Плосковальгусная установка стоп без нарушения опоры и передвижения "
+                "с вальгированием пяточных костей."
+            ),
+            "mis_diagnos": "M21.0",
+            "diagnosis_main_text": (
+                "M21.0. Вальгусная деформация, не классифицированная в других рубриках"
+            ),
+            "patient_age_years": 7,
+        },
+        record={"visit_id": "3605554", "specialty": "Ортопед-травматолог"},
+        limit=3,
+    )
+    assert result["available"] is True
+    assert result["items"]
+    top = result["items"][0]
+    path = (top.get("source_path") or "").lower()
+    assert top["match_kind"] == "clinical"
+    assert "детс" in path
+    assert "ортопедо" in path or "травматолог" in path
+    assert all(item["match_kind"] == "clinical" for item in result["items"])
 
 
 def test_truncated_registry_title_uses_filename() -> None:
@@ -82,7 +114,7 @@ def test_suggest_protocols_returns_contract(monkeypatch) -> None:
     )
     assert result["ok"] is True
     assert result["available"] is True
-    assert result["engine"] == "case_protocol_suggest_v3"
+    assert result["engine"] == "case_protocol_suggest_v4"
     assert captured["facts"]["consultation"]["icd10"] == []
     item = result["items"][0]
     assert item["protocol_id"] == "p1"

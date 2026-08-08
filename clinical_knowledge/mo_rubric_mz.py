@@ -211,21 +211,60 @@ def _score_diagnosis(
     return _item(crit, score=0.0, reason="Диагноз и/или МКБ отсутствуют")
 
 
+def _clinical_kp_from_suggest(protocol_suggest: Mapping[str, Any] | None) -> dict[str, Any] | None:
+    try:
+        from clinical_knowledge.case_protocol_suggest import clinical_kp_hit
+
+        return clinical_kp_hit(dict(protocol_suggest) if protocol_suggest else None)
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _score_plan(
     crit: Mapping[str, Any],
     clinical: Mapping[str, Any],
     block_scores: Mapping[str, Any],
+    protocol_suggest: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     text = _first_text(clinical, list(crit.get("fields") or []))
     block_key = str(crit.get("block_score_key") or "")
     aligned = block_scores.get(block_key)
     aligned_f = float(aligned) if isinstance(aligned, (int, float)) else None
+    kp = _clinical_kp_from_suggest(protocol_suggest)
+    kp_title = str((kp or {}).get("title") or "")[:80]
+    if text and aligned_f is not None and aligned_f >= 60 and kp:
+        return _item(
+            crit,
+            score=1.0,
+            reason=f"План есть, КП по диагнозу найден, alignment блока OK ({kp_title})",
+            evidence=text,
+        )
     if text and aligned_f is not None and aligned_f >= 60:
         return _item(crit, score=1.0, reason="План есть и согласован с протоколом", evidence=text)
+    if text and kp and (aligned_f is None or aligned_f >= 40):
+        return _item(
+            crit,
+            score=0.5,
+            reason=(
+                f"План есть; КП по диагнозу найден ({kp_title}); "
+                "полная сверка текста плана с КП - следующий этап"
+            ),
+            evidence=text,
+        )
     if text and (aligned_f is None or aligned_f >= 40):
-        return _item(crit, score=0.5, reason="План указан, согласование частичное/неизвестно", evidence=text)
+        return _item(
+            crit,
+            score=0.5,
+            reason="План указан; КП по диагнозу не подтверждён",
+            evidence=text,
+        )
     if text:
-        return _item(crit, score=0.5, reason="План указан без подтверждённого alignment", evidence=text)
+        return _item(
+            crit,
+            score=0.5,
+            reason="План указан без подтверждённого alignment / КП",
+            evidence=text,
+        )
     if aligned_f is not None and aligned_f >= 60:
         return _item(crit, score=0.5, reason="Alignment есть, текст плана не найден")
     return _item(crit, score=0.0, reason="План не указан")
@@ -279,16 +318,19 @@ def evaluate_mo_rubric_mz(
     meta: Mapping[str, Any] | None = None,
     block_scores: Mapping[str, Any] | None = None,
     prior_clinical: Mapping[str, Any] | None = None,
+    protocol_suggest: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Оценить один случай по рубрике МЗ.
 
     Возвращает список критериев, rubric_pct и provenance. Shadow: primary=false.
+    protocol_suggest - опциональный clinical-hit КП по диагнозу (suggest v4).
     """
     cfg = load_rubric_config()
     clinical = dict(clinical or {})
     meta = dict(meta or {})
     block_scores = dict(block_scores or {})
     prior = dict(prior_clinical) if prior_clinical else None
+    suggest = dict(protocol_suggest) if isinstance(protocol_suggest, Mapping) else None
 
     items: list[dict[str, Any]] = []
     for crit in cfg.get("criteria") or []:
@@ -310,7 +352,7 @@ def evaluate_mo_rubric_mz(
         elif rule == "diagnosis_chain_icd":
             items.append(_score_diagnosis(crit, clinical, meta))
         elif rule == "plan_present_or_aligned":
-            items.append(_score_plan(crit, clinical, block_scores))
+            items.append(_score_plan(crit, clinical, block_scores, suggest))
         elif rule == "dynamics_correction":
             items.append(_score_dynamics(crit, clinical, prior))
         elif rule == "follow_up_present":
@@ -343,6 +385,7 @@ def evaluate_mo_rubric_mz(
         )
         bucket.pop("sum", None)
 
+    kp_hit = _clinical_kp_from_suggest(suggest)
     return {
         "ok": True,
         "schema_version": cfg.get("schema_version"),
@@ -354,6 +397,8 @@ def evaluate_mo_rubric_mz(
         "criteria": items,
         "by_group": by_group,
         "source": "config/mo_rubric_mz.yaml",
+        "kp_suggest_clinical": bool(kp_hit),
+        "kp_suggest_title": str((kp_hit or {}).get("title") or "")[:120] or None,
     }
 
 

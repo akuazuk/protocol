@@ -79,6 +79,14 @@ _RE_GENERIC_DIAG_TX = re.compile(
 )
 
 
+_RE_BOILERPLATE_TITLE = re.compile(
+    r"(?is)(?:устанавливает\s+общие\s+требования|"
+    r"об\s+утверждении\s+клинических\s+протоколов|"
+    r"^клинический\s+протокол\s*$|"
+    r"^клинических\s+протоколов\s*$)"
+)
+
+
 def title_looks_truncated(title: str | None) -> bool:
     """OCR/первая строка карточки без полного названия заболевания."""
     text = str(title or "").strip()
@@ -86,7 +94,9 @@ def title_looks_truncated(title: str | None) -> bool:
         return True
     if text.count("«") != text.count("»"):
         return True
-    if text.endswith(("«", "(", ",", ";", "-", "–", "—")):
+    if text.endswith(("«", "(", ",", ";", "-", "-", " - ")):
+        return True
+    if _RE_BOILERPLATE_TITLE.search(text):
         return True
     if _RE_GENERIC_DIAG_TX.match(text) and ("пациент" in text.lower() or "»" not in text):
         # Общий заголовок без нозологии или обрезок.

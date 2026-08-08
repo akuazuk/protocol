@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-08-095533Z-patient-history-ui-wire"
+BUILD_VERSION = "2026-08-08-105243Z-gcp-primary-next-step"
 
 def _app_version() -> str:
     """Версия сборки: APP_VERSION из окружения или встроенная BUILD_VERSION."""
@@ -11834,7 +11834,7 @@ def api_methodist_mo_protocol_suggest(
 ) -> dict:
     """Подбор протоколов МЗ РБ к случаю (не балл оформления)."""
     _require_methodist_auth(request)
-    from clinical_knowledge.case_protocol_suggest import suggest_protocols_for_case
+    from clinical_knowledge.case_protocol_suggest import suggest_protocols_for_mo_case
     from clinical_knowledge.mo_backend import build_case_detail
     from clinical_knowledge.mo_case_document import build_case_document_payload
     from clinical_knowledge.mo_llm_action_judge import load_llm_action_judge_for_case
@@ -11843,6 +11843,29 @@ def api_methodist_mo_protocol_suggest(
     if not detail.get("ok"):
         raise HTTPException(status_code=404, detail="case_not_found")
     record = detail.get("record") if isinstance(detail.get("record"), dict) else {}
+    # patient_id / doctor_id - для эпизода Dx из истории на складе
+    try:
+        from clinical_knowledge.mo_review_pack import lookup_case_identity
+
+        visit_date_hint = str(record.get("date") or record.get("visit_date") or "")[:10]
+        identity = lookup_case_identity(
+            case_id,
+            visit_date=visit_date_hint or None,
+            mis_id=str(record.get("mis_id") or "") or None,
+        ) or {}
+        if isinstance(identity, dict):
+            if identity.get("patient_id") and not record.get("patient_id"):
+                record["patient_id"] = identity.get("patient_id")
+            if identity.get("doctor_id") and not record.get("doctor_id"):
+                record["doctor_id"] = identity.get("doctor_id")
+            if identity.get("doctor_fio") and not record.get("doctor_fio"):
+                record["doctor_fio"] = identity.get("doctor_fio")
+            if identity.get("specialty") and not (
+                record.get("specialization") or record.get("specialty")
+            ):
+                record["specialization"] = identity.get("specialty")
+    except Exception:
+        pass
     clinical: dict = {}
     try:
         document = build_case_document_payload(case_id, month=month or None, detail=detail)
@@ -11850,14 +11873,27 @@ def api_methodist_mo_protocol_suggest(
             clinical = document.get("clinical") or {}
     except Exception:
         clinical = {}
+    # возраст для audience child/adult
+    if clinical.get("patient_age_years") in (None, "") and record.get("patient_age_years") not in (
+        None,
+        "",
+    ):
+        clinical = dict(clinical)
+        clinical["patient_age_years"] = record.get("patient_age_years")
+    history_bundle = None
+    ph = detail.get("patient_history")
+    if isinstance(ph, dict) and ph.get("engine"):
+        history_bundle = ph
     visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
     judge = load_llm_action_judge_for_case(case_id, visit_date=visit_date)
-    return suggest_protocols_for_case(
+    return suggest_protocols_for_mo_case(
         clinical=clinical,
         record=record,
         findings=detail.get("findings") or [],
         llm_judge=judge if isinstance(judge, dict) else {},
+        history_bundle=history_bundle,
         limit=3,
+        attach_history=True,
     )
 
 
