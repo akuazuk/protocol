@@ -1,0 +1,448 @@
+/* Classic methodist cabinet (/methodist/*) - MO Analytics visual language.
+   Scoped to body.methodist-mode / html.methodist-boot so doctor UI stays untouched.
+   Tokens duplicated (not global mo-tokens.css) to avoid shifting doctor palette. */
+body.methodist-mode,
+html.methodist-boot body.methodist-mode {
+  --font-display: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-ui: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --type-body: 14.5px;
+  --type-control: 13px;
+  --type-label: 11px;
+  --type-table: 13px;
+  --bg: #eef3f1;
+  --bg-glow: radial-gradient(1100px 460px at 10% -8%, rgba(15, 122, 104, .14), transparent 58%),
+    radial-gradient(860px 400px at 90% 0%, rgba(47, 99, 178, .10), transparent 52%),
+    linear-gradient(180deg, #f7faf8 0%, #eef3f1 100%);
+  --surface: rgba(255, 255, 255, .90);
+  --surface-solid: #ffffff;
+  --surface-2: #f2f7f5;
+  --surface-raised: #ffffff;
+  --ink: #142824;
+  --muted: #56706a;
+  --line: #cfdcd7;
+  --line-soft: #e4eeea;
+  --control-line: #b7c9c2;
+  --accent: #0f7a68;
+  --accent-dark: #0b5f51;
+  --accent-soft: #dff3ee;
+  --focus: #2f63b2;
+  --danger: #c0455a;
+  --radius-sm: 10px;
+  --radius: 16px;
+  --shadow: 0 10px 28px rgba(22, 40, 36, .08);
+  --shadow-soft: 0 1px 0 rgba(255,255,255,.65) inset, 0 8px 22px rgba(22, 40, 36, .06);
+  --control-height: 44px;
+  font-family: var(--font-ui);
+  color: var(--ink);
+  background: var(--bg);
+  background-image: var(--bg-glow);
+  background-attachment: fixed;
+  font-size: var(--type-body);
+  line-height: 1.45;
+}
+
+body.methodist-mode .bg-pattern { display: none !important; }
+
+body.methodist-mode .wrap {
+  max-width: min(1680px, 100%);
+  margin: 0 auto;
+  padding: 0 1.25rem 2.5rem;
+  border-top: 0;
+}
+
+/* Doctor chrome (Найти протокол / Пациентам) - не нужен в кабинете */
+body.methodist-mode #app-chrome .app-chrome__journal,
+body.methodist-mode #app-chrome #app-main-tabs {
+  display: none !important;
+}
+
+body.methodist-mode #app-chrome {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  padding: 0.35rem 0 0;
+}
+
+body.methodist-mode .app-chrome__brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.55rem;
+  text-decoration: none;
+  color: var(--ink);
+  font-weight: 800;
+}
+
+body.methodist-mode .methodist-mode-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.75rem 0 0.85rem;
+  padding: 0.85rem 1.1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+body.methodist-mode .methodist-mode-banner__icon {
+  width: 2.1rem;
+  height: 2.1rem;
+  border-radius: 10px;
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 800;
+  display: inline-grid;
+  place-items: center;
+}
+
+body.methodist-mode .methodist-mode-banner__title {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 750;
+  color: var(--ink);
+}
+
+body.methodist-mode .methodist-mode-banner__sub {
+  color: var(--muted);
+  font-size: 0.86rem;
+}
+
+body.methodist-mode .methodist-mode-banner__reviewer {
+  padding: 0.25rem 0.65rem;
+  border-radius: 999px;
+  border: 1px solid var(--line);
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 0.78rem;
+  font-weight: 700;
+}
+
+/* Workspace tabs - compact MO chips */
+body.methodist-mode .methodist-workspace-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0 0 1rem;
+  padding: 0.3rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius-sm);
+  background: var(--surface-2);
+  overflow: visible;
+  max-width: none;
+}
+
+body.methodist-mode .methodist-workspace-tabs::after { display: none; }
+
+body.methodist-mode .methodist-workspace-tabs .app-main-tab-visual,
+body.methodist-mode .methodist-workspace-tabs .app-main-tab-sub {
+  display: none !important;
+}
+
+body.methodist-mode .methodist-workspace-tabs button,
+body.methodist-mode .methodist-workspace-tabs a.methodist-nav-link {
+  display: inline-flex;
+  align-items: center;
+  min-height: 40px;
+  margin: 0;
+  padding: 0.45rem 0.9rem;
+  border: 0;
+  border-radius: 10px;
+  background: transparent;
+  color: var(--ink);
+  font: inherit;
+  font-size: 0.86rem;
+  font-weight: 650;
+  text-decoration: none;
+  cursor: pointer;
+  box-shadow: none;
+}
+
+body.methodist-mode .methodist-workspace-tabs button:hover,
+body.methodist-mode .methodist-workspace-tabs a.methodist-nav-link:hover {
+  background: rgba(255, 255, 255, 0.72);
+}
+
+body.methodist-mode .methodist-workspace-tabs button[aria-selected="true"] {
+  background: var(--surface-solid);
+  color: var(--accent-dark);
+  font-weight: 800;
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.7) inset, 0 4px 12px rgba(22, 40, 36, 0.08);
+}
+
+body.methodist-mode .methodist-workspace-tabs .app-main-tab-title {
+  font-size: inherit;
+  font-weight: inherit;
+}
+
+body.methodist-mode .methodist-workspace-tabs a.methodist-nav-link--accent {
+  margin-left: auto;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 92%, #fff), var(--accent));
+  color: #fff;
+  font-weight: 750;
+}
+
+body.methodist-mode .methodist-workspace-tabs a.methodist-nav-link--accent:hover {
+  background: var(--accent-dark);
+  color: #fff;
+}
+
+/* Hide secondary products from primary nav (panels remain for rare deep-links) */
+body.methodist-mode #tab-methodist-b2c,
+body.methodist-mode #tab-methodist-onco {
+  display: none !important;
+}
+
+/* Buttons → MO control language */
+body.methodist-mode .btn-methodist-enter,
+body.methodist-mode .btn-methodist-exit,
+body.methodist-mode .btn-methodist-queue-open,
+body.methodist-mode .btn-methodist-approve,
+body.methodist-mode .btn-methodist-save,
+body.methodist-mode .btn-ml-dash-refresh,
+body.methodist-mode #mo-account-create,
+body.methodist-mode .methodist-login-card .btn-methodist-enter {
+  min-height: var(--control-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid transparent;
+  border-radius: 12px;
+  padding: 8px 14px;
+  background: linear-gradient(180deg, color-mix(in srgb, var(--accent) 92%, #fff), var(--accent));
+  color: #fff;
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 750;
+  font-size: var(--type-control);
+  letter-spacing: -0.01em;
+  box-shadow: 0 8px 18px rgba(15, 122, 104, 0.22);
+  text-decoration: none;
+}
+
+body.methodist-mode .btn-methodist-enter:hover,
+body.methodist-mode .btn-methodist-exit:hover,
+body.methodist-mode .btn-methodist-queue-open:hover,
+body.methodist-mode .btn-methodist-approve:hover,
+body.methodist-mode .btn-methodist-save:hover,
+body.methodist-mode .btn-ml-dash-refresh:hover,
+body.methodist-mode #mo-account-create:hover {
+  transform: translateY(-1px);
+  background: var(--accent-dark);
+}
+
+body.methodist-mode .btn-methodist-skip,
+body.methodist-mode .btn-methodist-reject,
+body.methodist-mode .methodist-login-card .btn-methodist-skip {
+  min-height: var(--control-height);
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  border: 1px solid var(--control-line);
+  border-radius: 12px;
+  padding: 8px 14px;
+  background: var(--surface-solid);
+  color: var(--ink);
+  cursor: pointer;
+  font-family: var(--font-ui);
+  font-weight: 750;
+  font-size: var(--type-control);
+  box-shadow: none;
+}
+
+body.methodist-mode .btn-methodist-skip:hover,
+body.methodist-mode .btn-methodist-reject:hover {
+  background: var(--surface-2);
+  border-color: color-mix(in srgb, var(--accent) 40%, var(--control-line));
+  color: var(--accent-dark);
+}
+
+body.methodist-mode .btn-methodist-reject {
+  color: var(--danger);
+  border-color: color-mix(in srgb, var(--danger) 35%, var(--control-line));
+}
+
+/* Forms */
+body.methodist-mode .methodist-login-card label,
+body.methodist-mode .filter > span,
+body.methodist-mode .field-label {
+  color: var(--muted);
+  font-size: 11px;
+  font-weight: 750;
+  letter-spacing: 0.02em;
+}
+
+body.methodist-mode .methodist-login-card input,
+body.methodist-mode .control,
+body.methodist-mode .methodist-queue-panel input,
+body.methodist-mode .methodist-queue-panel select,
+body.methodist-mode .methodist-ml-dashboard input,
+body.methodist-mode .methodist-ml-dashboard select,
+body.methodist-mode .methodist-mis-kz-panel input,
+body.methodist-mode .methodist-mis-kz-panel select,
+body.methodist-mode .search-methodist-panel input,
+body.methodist-mode .search-methodist-panel select {
+  min-height: var(--control-height);
+  width: 100%;
+  max-width: none;
+  padding: 8px 12px;
+  border: 1px solid var(--control-line);
+  border-radius: 12px;
+  background: var(--surface-solid);
+  color: var(--ink);
+  box-shadow: 0 1px 0 rgba(255, 255, 255, 0.5) inset;
+  font: inherit;
+}
+
+body.methodist-mode .methodist-login-card input:focus,
+body.methodist-mode .control:focus {
+  outline: none;
+  border-color: var(--accent);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent) 16%, transparent);
+}
+
+body.methodist-mode .methodist-login-overlay {
+  background: rgba(16, 32, 28, 0.45);
+  backdrop-filter: blur(6px);
+}
+
+body.methodist-mode .methodist-login-card {
+  max-width: 420px;
+  padding: 1.35rem 1.4rem 1.25rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-raised);
+  box-shadow: var(--shadow);
+}
+
+body.methodist-mode .methodist-login-card h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: 1.25rem;
+  color: var(--ink);
+}
+
+body.methodist-mode .methodist-login-card .methodist-login-lead {
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Panels / tables */
+body.methodist-mode .methodist-ml-dashboard,
+body.methodist-mode .methodist-queue-panel,
+body.methodist-mode .methodist-mis-kz-panel,
+body.methodist-mode .search-methodist-panel,
+body.methodist-mode .methodist-b2c-panel,
+body.methodist-mode .methodist-onco-panel {
+  max-width: none;
+}
+
+body.methodist-mode .methodist-ml-dashboard__hero,
+body.methodist-mode .methodist-queue-panel .methodist-ml-dashboard__hero,
+body.methodist-mode .methodist-mis-kz-panel .methodist-ml-dashboard__hero {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.1rem 1.2rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface);
+  box-shadow: var(--shadow-soft);
+}
+
+body.methodist-mode .methodist-ml-dashboard__hero h2,
+body.methodist-mode .methodist-queue-panel h2,
+body.methodist-mode .methodist-mis-kz-panel h2 {
+  margin: 0 0 0.35rem;
+  font-family: var(--font-display);
+  font-size: clamp(1.15rem, 1.6vw, 1.4rem);
+  color: var(--ink);
+}
+
+body.methodist-mode .methodist-ml-dashboard__hero p,
+body.methodist-mode .methodist-queue-panel .methodist-ml-dashboard__hero p {
+  margin: 0;
+  color: var(--muted);
+  max-width: 62ch;
+}
+
+body.methodist-mode .methodist-ml-table-wrap {
+  margin-top: 1rem;
+  border: 1px solid var(--line);
+  border-radius: var(--radius);
+  background: var(--surface-solid);
+  overflow: auto;
+}
+
+body.methodist-mode .methodist-ml-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--type-table);
+}
+
+body.methodist-mode .methodist-ml-table th {
+  text-align: left;
+  padding: 0.7rem 0.85rem;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: var(--type-label);
+  font-weight: 750;
+  letter-spacing: 0.03em;
+  text-transform: uppercase;
+  border-bottom: 1px solid var(--line);
+}
+
+body.methodist-mode .methodist-ml-table td {
+  padding: 0.7rem 0.85rem;
+  border-bottom: 1px solid var(--line-soft);
+  vertical-align: top;
+}
+
+/* Footer clutter / broken relative cards */
+body.methodist-mode #section-footer .site-footer-nav,
+body.methodist-mode #section-footer .site-footer-about,
+body.methodist-mode #section-footer .site-footer-disclaimer,
+body.methodist-mode #section-footer .site-footer-source,
+body.methodist-mode .site-footer-doc-links,
+body.methodist-mode .scroll-fab {
+  display: none !important;
+}
+
+body.methodist-mode #section-footer {
+  margin-top: 2rem;
+  padding-top: 1rem;
+  border-top: 1px solid var(--line);
+}
+
+body.methodist-mode #section-footer .site-footer-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+body.methodist-mode #section-footer .site-footer-version-line {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+/* Consult review inside methodist - breathe */
+body.methodist-mode.app-tab-consult #panel-consult-review {
+  max-width: none;
+}
+
+@media (max-width: 720px) {
+  body.methodist-mode .methodist-workspace-tabs a.methodist-nav-link--accent {
+    margin-left: 0;
+    width: 100%;
+    justify-content: center;
+  }
+  body.methodist-mode .wrap {
+    padding-inline: 0.85rem;
+  }
+}
