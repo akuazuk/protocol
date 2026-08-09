@@ -1,7 +1,9 @@
 # МО: один балл №55 + честные findings + полный пересчёт (v1)
 
 Дата: 2026-08-09
-Статус: **active** (согласование)
+Статус: **archived**
+Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md` (добавлена обязательная
+слепая калибровка на 30 МО и confirmatory gate до полного пересчёта)
 Преемник / уточняет: `2026-08-09-mo-reg55-section-pack-v1.md` (SSOT №55 уже заявлен, в UI/складе ещё двойной контур)
 Связанные: `2026-08-08-mo-icd-absent-ok-with-dx-v1.md`, `2026-08-09-mo-icd-name-multidx-brief-v1.md`,
 `2026-08-09-mo-case-review-quality-parity-v1.md`, `2026-08-07-by-home-gcp-llm-split-v1.md` (LLM только GCE)
