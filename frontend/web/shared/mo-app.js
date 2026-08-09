@@ -18,7 +18,7 @@
     };
     var EXPERT_PAGES = { yesterday: true, reports: true };
     var state = {
-      page: "yesterday", period: "yesterday", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
+      page: "yesterday", period: "yesterday", compare: "previous", methodology: "v4", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       reg55Band: "", reg55Pack: "", icdVisitStatus: "",
       sortBy: "date", sortDir: "desc",
       zoneFilter: "", zoneBandFilter: "", attentionOnly: false, kpStatus: "", historyTier: "",
@@ -43,7 +43,7 @@
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Сегодня", queue: "Очередь",
       documents: "Все случаи", doctors: "Врачи",
-      reports: "Отчёты", settings: "Настройки"
+      reports: "Отчёты", settings: "Справка"
     };
     var REMOVED_PAGES = {
       specialties: true, diagnoses: true, safety: true,
@@ -790,6 +790,11 @@
         if (button.getAttribute("data-page") === page) button.setAttribute("aria-current", "page");
         else button.removeAttribute("aria-current");
       });
+      var helpBtn = $("sidebar-help");
+      if (helpBtn) {
+        if (page === "settings") helpBtn.setAttribute("aria-current", "page");
+        else helpBtn.removeAttribute("aria-current");
+      }
       document.title = PAGE_TITLES[page] + " | МО Аналитика";
       if (push !== false) syncUrl(false);
       renderAnalysisRail();
@@ -3311,63 +3316,92 @@
       if (state.period === "custom" && state.dateFrom) return state.dateFrom;
       return minskDateKey(-1);
     }
-    async function loadScoringMethod() {
-      await ensureSummary();
-      var responses = await Promise.all([
-        request("/scoring-method", "/scoring-info"),
-        request("/llm-costs?" + query(), "")
-      ]);
-      var response = responses[0];
-      if (!response.ok) throw new Error("Не удалось загрузить методику оценки.");
-      var data = await response.json();
-      var axes = (data.axes || []).map(function (axis) {
-        var weight = axis.weight == null ? "" : " · вес " + Math.round(Number(axis.weight) * 100) + "%";
-        return notice((axis.label || axis.key) + weight, axis.desc || "", "good");
-      }).join("");
-      var gates = (data.risk_gate || []).map(function (rule) {
-        return "<li>" + esc(rule) + "</li>";
-      }).join("");
-      $("scoring-method").innerHTML =
-        '<p><b>Методика:</b> ' + esc(data.scorer_version || "") + ' · веса ' +
-        esc(data.weights_version || "") + '</p><p><b>Итог:</b> ' + esc(data.overall_rule || "") +
-        '</p><div class="grid"><div class="span-6">' +
-        axes + '</div><div class="span-6"><h3>Правила клинического риска</h3><ol>' + gates +
-        '</ol><p class="card-sub">Пороговые значения: хорошо ' + esc((data.thresholds || {}).good) +
-        ', приемлемо ' + esc((data.thresholds || {}).acceptable) + '.</p></div></div>';
-      var costResponse = responses[1];
-      if (!costResponse.ok) {
-        $("llm-costs").innerHTML = '<div class="empty">Расходы пока недоступны.</div>';
-        return;
+    function accessLabelRu(value) {
+      if (value === "full") return "полная МО Аналитика";
+      if (value === "reports") return "только отчёты";
+      return value || "не указан";
+    }
+    function roleLabelRu(value) {
+      if (value === "admin") return "админ";
+      if (value === "viewer") return "просмотр";
+      if (value === "methodist") return "методист";
+      return value || "методист";
+    }
+    async function loadSettingsPage() {
+      var sessionHost = $("settings-session");
+      var aboutHost = $("settings-about");
+      if (sessionHost) {
+        var sessionHtml = "";
+        var appTok = MO.api.appSessionToken && MO.api.appSessionToken();
+        if (appTok) {
+          try {
+            var statusResponse = await fetch("/api/methodist/account/status", { headers: headers() });
+            var status = statusResponse.ok ? await statusResponse.json() : null;
+            if (status && status.authenticated) {
+              sessionHtml =
+                '<div class="settings-session-row">' +
+                "<div><b>" + esc(status.display_name || status.login || "Пользователь") + "</b>" +
+                "<div class=\"card-sub\">Логин " + esc(status.login || "") +
+                " · роль " + esc(roleLabelRu(status.role)) +
+                " · доступ " + esc(accessLabelRu(status.mo_access)) +
+                (status.reports_min_date ? " · отчёты с " + esc(status.reports_min_date) : "") +
+                "</div></div>" +
+                '<button class="button secondary" type="button" id="settings-logout">Выйти</button>' +
+                "</div>";
+            } else {
+              sessionHtml = '<p class="card-sub">Сессия учётной записи не активна. Войдите снова.</p>';
+            }
+          } catch (error) {
+            sessionHtml = '<p class="card-sub">Не удалось проверить сессию учётной записи.</p>';
+          }
+        } else if (token()) {
+          sessionHtml =
+            '<div class="settings-session-row">' +
+            "<div><b>Вход по токену методиста</b>" +
+            '<div class="card-sub">Полный доступ кабинета. Учётки создаются во вкладке «МО Аналитика» режима методиста.</div></div>' +
+            '<a class="button secondary" href="/methodist/mis-kz">Учётные записи</a>' +
+            "</div>";
+        } else {
+          sessionHtml = '<p class="card-sub">Нет активной сессии.</p>';
+        }
+        sessionHost.innerHTML = sessionHtml;
+        var logoutBtn = $("settings-logout");
+        if (logoutBtn) {
+          logoutBtn.addEventListener("click", async function () {
+            try {
+              await fetch("/api/methodist/account/logout", { method: "POST", headers: headers() });
+            } catch (error) {}
+            if (MO.api.clearAppSessionToken) MO.api.clearAppSessionToken();
+            setAuth(true, "Сессия завершена.");
+          });
+        }
       }
-      var costs = await costResponse.json();
-      var rows = (costs.items || []).map(function (item) {
-        return "<tr><td>" + esc(item.usage_date) + "</td><td>" + esc(item.tier) +
-          "</td><td>" + esc(item.model) + "</td><td>" + fmt(item.calls) +
-          "</td><td>" + fmt(item.prompt_tokens) + " / " + fmt(item.completion_tokens) +
-          "</td><td>$" + Number(item.cost_usd || 0).toFixed(4) + "</td><td>" +
-          fmt(item.avg_latency_ms) + " мс</td></tr>";
-      }).join("");
-      var cov = costs.coverage_summary || {};
-      var covRows = (costs.coverage || []).map(function (item) {
-        return "<tr><td>" + esc(item.date) + "</td><td>" + fmt(item.queue) +
-          "</td><td>" + fmt(item.grades_ok) + "</td><td>" + fmt(item.grades_error) +
-          "</td><td>" + fmt(item.pending) + "</td><td>" + fmt(item.action_judges) +
-          "</td><td>" + (item.night_complete ? "да" : "нет") + "</td></tr>";
-      }).join("");
-      $("llm-costs").innerHTML =
-        '<div class="kpi-row"><div class="kpi"><span>Вызовы</span><b>' + fmt(costs.calls) +
-        '</b></div><div class="kpi"><span>Случаи</span><b>' + fmt(costs.cases) +
-        '</b></div><div class="kpi"><span>Итого</span><b>$' +
-        Number(costs.total_usd || 0).toFixed(4) + '</b></div><div class="kpi"><span>На случай</span><b>$' +
-        Number(costs.cost_per_case_usd || 0).toFixed(4) +
-        '</b></div><div class="kpi"><span>Night OK</span><b>' + fmt(cov.grades_ok) +
-        '</b></div><div class="kpi"><span>В очереди</span><b>' + fmt(cov.pending) +
-        '</b></div><div class="kpi"><span>Action-judge</span><b>' + fmt(cov.action_judges) +
-        '</b></div></div><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Тир</th><th>Модель</th><th>Вызовы</th><th>Токены вход / выход</th><th>Стоимость</th><th>Задержка</th></tr></thead><tbody>' +
-        (rows || '<tr><td colspan="7">LLM-вызовов за период не было.</td></tr>') +
-        '</tbody></table></div><h3>Покрытие night LLM и action-judge</h3><div class="table-wrap"><table><thead><tr><th>Дата</th><th>Очередь</th><th>OK</th><th>Ошибки</th><th>Осталось</th><th>Judge</th><th>Готово</th></tr></thead><tbody>' +
-        (covRows || '<tr><td colspan="7">Нет артефактов night LLM за период.</td></tr>') +
-        '</tbody></table></div>';
+      if (aboutHost) {
+        var versionText = "версия неизвестна";
+        var freshText = "свежесть данных недоступна";
+        try {
+          var versionResponse = await fetch("/api/version", { headers: { Accept: "application/json" } });
+          if (versionResponse.ok) {
+            var version = await versionResponse.json();
+            versionText = esc(version.version || "") +
+              (version.git_commit ? " · " + esc(String(version.git_commit).slice(0, 12)) : "");
+          }
+        } catch (error) {}
+        try {
+          var freshResponse = await request("/freshness", "/freshness");
+          if (freshResponse.ok) {
+            var fresh = await freshResponse.json();
+            freshText = fresh.latest_day
+              ? ("последний день витрины " + esc(fresh.latest_day) +
+                (fresh.lag_days != null ? " · отставание " + esc(fresh.lag_days) + " дн." : ""))
+              : "день витрины ещё не зафиксирован";
+          }
+        } catch (error) {}
+        aboutHost.innerHTML =
+          "<p><b>Сборка:</b> " + versionText + "</p>" +
+          "<p><b>Данные:</b> " + freshText + "</p>" +
+          '<p class="card-sub">Справка открывается ссылкой внизу меню. Основные 6 пунктов меню не меняются.</p>';
+      }
     }
     async function loadPage(page) {
       $("global-error").hidden = true;
@@ -3382,7 +3416,7 @@
           try { await loadAccessLog(); } catch (e) {}
           try { await loadDataQuality(); } catch (e) {}
         }
-        else if (page === "settings") await loadScoringMethod();
+        else if (page === "settings") await loadSettingsPage();
         else await ensureSummary();
       } catch (e) { showError(e.message || String(e)); }
     }
@@ -3830,33 +3864,18 @@
         if (state.data.summary) renderOverview(state.data.summary);
         showToast(dark ? "Тёмная тема включена" : "Светлая тема включена");
       });
-      $("density").addEventListener("change", function () {
-        try { localStorage.setItem(DENSITY_KEY, this.value); } catch (error) {}
-        applyPreferences();
-        showToast(this.value === "compact" ? "Компактная плотность включена" : "Комфортная плотность включена");
-      });
-      $("methodology").addEventListener("change", function () {
-        state.methodology = this.value === "v3" ? "v3" : "v4";
-        state.data = {};
-        showToast("Выбрана методика " + state.methodology);
-        loadPage(state.page);
-      });
-      $("admin-token-save").addEventListener("click", function () {
-        var value = $("admin-token-input").value.trim();
-        if (!value) {
-          showToast("Введите админ-токен");
-          return;
-        }
-        try {
-          sessionStorage.setItem(MO.api.ROLE_KEY, "admin");
-          sessionStorage.setItem(MO.api.ADMIN_TOKEN_KEY, value);
-        } catch (error) {
-          showError("Не удалось сохранить админ-токен для сессии.");
-          return;
-        }
-        $("admin-token-input").value = "";
-        showToast("Роль администратора включена до закрытия вкладки");
-      });
+      if ($("density")) {
+        $("density").addEventListener("change", function () {
+          try { localStorage.setItem(DENSITY_KEY, this.value); } catch (error) {}
+          applyPreferences();
+          showToast(this.value === "compact" ? "Компактная плотность включена" : "Комфортная плотность включена");
+        });
+      }
+      if ($("sidebar-help")) {
+        $("sidebar-help").addEventListener("click", function () {
+          switchPage("settings");
+        });
+      }
       $("command-open").addEventListener("click", function () { openCommandPalette(this); });
       $("command-backdrop").addEventListener("click", closeCommandPalette);
       $("command-search").addEventListener("input", function () { renderCommands(this.value); });
@@ -4034,7 +4053,7 @@
     }
     async function init() {
       readUrl(); applyPreferences(); bind();
-      if ($("methodology")) $("methodology").value = state.methodology === "v3" ? "v3" : "v4";
+      state.methodology = "v4";
       renderChips();
       renderAnalysisRail();
       ensureColumnState();
