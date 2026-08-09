@@ -60,6 +60,24 @@ def test_protocol_display_name_uses_registry_with_underscores():
     assert "22.03.2022" in name
 
 
+def test_protocol_display_name_skips_amendment_boilerplate():
+    from clinical_knowledge.protocol_links import title_looks_truncated
+
+    garbage = (
+        "клинического протокола» заменить словами «в соответствии с клиническим протоколом"
+    )
+    assert title_looks_truncated(garbage)
+    path = (
+        "minzdrav_protocols/allergologiya-immunologiya/"
+        "КП_Диагностика_и_лечение_пациентов_д-нас_с_бронхиальной_астмой_пост_МЗ_2025_38.pdf"
+    )
+    name = protocol_display_name(
+        path, registry_title=garbage, prefer_filename_if_truncated=True
+    )
+    assert "астмой" in name.lower()
+    assert "заменить" not in name.lower()
+
+
 def test_content_disposition_ascii_safe():
     cd = content_disposition_inline("КП1_ДНО.pdf")
     assert "filename=" in cd

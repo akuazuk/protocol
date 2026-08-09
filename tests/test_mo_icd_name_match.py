@@ -81,6 +81,20 @@ def test_name_only_weak_match_typo(monkeypatch) -> None:
         assert any(f["code"] == "B_icd_name_weak_match" for f in result["findings"])
 
 
+def test_name_only_ok_on_multi_diagnosis_asthma_case() -> None:
+    """Мультидиагноз: не штрафовать за «слабое» совпадение целого текста с одной рубрикой."""
+    diag = (
+        "J45 Бронхиальная астма, аллергическая, легкое персистирующее течение, контролируемая. "
+        "Персистирующий аллергический ринит. М21.4 Плоско-вальгусная установка стоп? "
+        "Е 55.0 Дефицит витамина Д? G44.2 Головная боль напряжения?"
+    )
+    result = evaluate_diagnosis_name_only(diag)
+    assert result["verdict"] == "ok", result
+    assert result["name_fit"] >= NAME_OK
+    assert result["findings"] == []
+    assert result["best_code"] is not None
+
+
 def test_merge_name_match_shadow_default(monkeypatch) -> None:
     monkeypatch.setenv("MO_ICD_NAME_MATCH", "1")
     monkeypatch.setenv("MO_ICD_NAME_IN_PRIMARY", "0")

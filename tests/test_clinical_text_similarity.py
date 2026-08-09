@@ -4,11 +4,13 @@ from __future__ import annotations
 import os
 
 from clinical_knowledge.clinical_text_similarity import (
+    best_combined_against_title,
     combined_score,
     fuzz_ratio,
     light_stem,
     normalize_for_match,
     score_against_sections,
+    split_diagnosis_phrases,
     strip_icd_codes,
     strip_leading_code_from_title,
     token_coverage,
@@ -22,6 +24,25 @@ def test_strip_icd_codes_and_leading_title() -> None:
     clean = strip_leading_code_from_title("A00.0 - Холера, вызванная вибрионом")
     assert clean.startswith("Холера")
     assert "A00" not in clean
+    # кириллическая «Е» / пробел в коде
+    stripped = strip_icd_codes("Е 55.0 Дефицит витамина Д")
+    assert "55" not in stripped
+    assert "дефицит" in stripped.lower()
+
+
+def test_split_diagnosis_phrases_and_best_phrase_score() -> None:
+    diag = (
+        "Бронхиальная астма, аллергическая, легкое течение. "
+        "Персистирующий аллергический ринит. Головная боль напряжения"
+    )
+    phrases = split_diagnosis_phrases(diag)
+    assert any("астма" in p.lower() for p in phrases)
+    assert any("ринит" in p.lower() for p in phrases)
+    # целый текст vs короткий title слабее, чем фраза «аллергический ринит»
+    full = combined_score(diag, "Аллергический ринит неуточненный")["combined"]
+    best = best_combined_against_title(diag, "Аллергический ринит неуточненный")
+    assert best["combined"] >= full
+    assert best["combined"] >= 0.5
 
 
 def test_normalize_and_typo_fuzz() -> None:

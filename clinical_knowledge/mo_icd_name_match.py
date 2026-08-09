@@ -10,7 +10,7 @@ import os
 from typing import Any
 
 from clinical_knowledge.clinical_text_similarity import (
-    combined_score,
+    best_combined_against_title,
     normalize_for_match,
     strip_icd_codes,
     strip_leading_code_from_title,
@@ -91,28 +91,82 @@ def _diag_text_from_case(case: dict[str, Any]) -> str:
         ).strip()
 
 
-def _suggest_candidates(diag_text: str, *, max_results: int = 12) -> list[dict[str, Any]]:
+def _suggest_candidates(
+    diag_text: str,
+    *,
+    raw_for_codes: str | None = None,
+    max_results: int = 12,
+) -> list[dict[str, Any]]:
     import icd_mkb
 
     try:
         rows = icd_mkb.suggest_icd_from_russian(diag_text, max_results=max_results)
     except Exception:  # noqa: BLE001
-        return []
+        rows = []
     out: list[dict[str, Any]] = []
-    for row in rows or []:
-        if not isinstance(row, dict):
-            continue
+    seen: set[str] = set()
+
+    def _add(row: dict[str, Any]) -> None:
         title = str(row.get("title_ru") or "").strip()
-        if not title:
-            continue
+        code = str(row.get("code") or "").strip().upper()
+        key = code or title.lower()
+        if not title or key in seen:
+            return
+        seen.add(key)
         out.append(
             {
                 "code": row.get("code"),
                 "title_ru": title,
                 "lex_score": float(row.get("score") or 0),
-                "match_method": row.get("match_method"),
+                "match_method": row.get("match_method") or "suggest",
             }
         )
+
+    for row in rows or []:
+        if isinstance(row, dict):
+            _add(row)
+
+    # Сид из кодов в исходном тексте (до strip): name_only не сравнивает коды,
+    # но title по коду нужен, иначе «J45 Бронхиальная астма…» теряется.
+    try:
+        scanned = icd_mkb.normalize_text_for_icd_scan(raw_for_codes or diag_text or "")
+        for match in icd_mkb.ICD10_CODE_RE.finditer(scanned or ""):
+            code = icd_mkb.normalize_icd_code(match.group(1))
+            if not code or not icd_mkb.is_code_in_ru_reference(code):
+                continue
+            title = icd_mkb.ru_title(code) or ""
+            _add(
+                {
+                    "code": code,
+                    "title_ru": title,
+                    "score": 1.0,
+                    "match_method": "code_seed",
+                }
+            )
+            cat = code.split(".", 1)[0]
+            if cat != code and icd_mkb.is_code_in_ru_reference(cat):
+                _add(
+                    {
+                        "code": cat,
+                        "title_ru": icd_mkb.ru_title(cat) or "",
+                        "score": 0.9,
+                        "match_method": "code_seed_category",
+                    }
+                )
+            elif cat == code and icd_mkb.is_code_in_ru_reference(cat):
+                # уже категория; дополнительно типичная подрубрика .9
+                soft = f"{cat}.9"
+                if icd_mkb.is_code_in_ru_reference(soft):
+                    _add(
+                        {
+                            "code": soft,
+                            "title_ru": icd_mkb.ru_title(soft) or "",
+                            "score": 0.85,
+                            "match_method": "code_seed_soft",
+                        }
+                    )
+    except Exception:  # noqa: BLE001
+        pass
     return out
 
 
@@ -154,12 +208,12 @@ def evaluate_diagnosis_name_only(
         empty["score_pct"] = None
         return empty
 
-    candidates = _suggest_candidates(cleaned or raw)
-    # Пересчёт по очищенным названиям (не lex_score и не равенство кодов)
+    candidates = _suggest_candidates(cleaned or raw, raw_for_codes=raw)
+    # Пересчёт по фразам мультидиагноза (не lex_score и не равенство кодов)
     scored: list[dict[str, Any]] = []
     for row in candidates:
         title_clean = strip_leading_code_from_title(str(row.get("title_ru") or ""))
-        sim = combined_score(cleaned, title_clean)
+        sim = best_combined_against_title(cleaned, title_clean)
         scored.append(
             {
                 "code": row.get("code"),
@@ -167,6 +221,7 @@ def evaluate_diagnosis_name_only(
                 "title_ru_clean": title_clean,
                 "lex_score": row.get("lex_score"),
                 "similarity": sim,
+                "matched_phrase": sim.get("matched_phrase") or "",
                 "score": sim["combined"],
             }
         )
@@ -207,6 +262,11 @@ def evaluate_diagnosis_name_only(
                 detail=(
                     f"Ближе всего: {best.get('title_ru_clean') or best.get('title_ru')} "
                     f"({best.get('code')}), score={name_fit:.2f}"
+                    + (
+                        f"; фраза: {best.get('matched_phrase')}"
+                        if best.get("matched_phrase")
+                        else ""
+                    )
                 ),
                 evidence=raw[:200],
             )
@@ -221,6 +281,11 @@ def evaluate_diagnosis_name_only(
                 detail=(
                     f"Лучший кандидат: {best.get('title_ru_clean') or best.get('title_ru')} "
                     f"({best.get('code')}), score={name_fit:.2f} (коды не учитывались)"
+                    + (
+                        f"; фраза: {best.get('matched_phrase')}"
+                        if best.get("matched_phrase")
+                        else ""
+                    )
                 ),
                 evidence=raw[:200],
             )

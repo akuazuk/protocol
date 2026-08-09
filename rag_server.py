@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-051723Z-mo-home-analytics-link"
+BUILD_VERSION = "2026-08-09-055249Z-mo-icd-regex-ci"
 
 
 def _app_version() -> str:
