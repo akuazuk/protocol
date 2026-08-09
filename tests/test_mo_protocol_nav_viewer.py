@@ -32,8 +32,23 @@ def test_case_review_cta_labels() -> None:
     assert "Поиск в каталоге" in APP
     assert "function protocolViewerUrl" in APP
     assert "page=" in APP
+    assert "from=mo" in APP
     assert "Открыть КП" not in APP
 
 
 def test_frontend_path_maps_viewer_css() -> None:
     assert '"mo-protocol-viewer.css"' in PATHS
+
+
+def test_viewer_css_has_stable_root_route() -> None:
+    """Regression: HTML linked /mo-protocol-viewer.css but route was missing → 404 unstyled page."""
+    from fastapi.testclient import TestClient
+
+    import rag_server
+
+    client = TestClient(rag_server.app)
+    response = client.get("/mo-protocol-viewer.css")
+    assert response.status_code == 200
+    assert "text/css" in (response.headers.get("content-type") or "")
+    assert ".pv-layout" in response.text
+    assert "no-cache" in (response.headers.get("cache-control") or "")

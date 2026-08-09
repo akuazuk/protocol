@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-085019Z-mo-protocol-nav"
+BUILD_VERSION = "2026-08-09-090337Z-mo-proto-nav-css"
 
 
 def _app_version() -> str:
@@ -14268,6 +14268,7 @@ if has_frontend_file("index.html"):
         # Methodist / МО
         "mo-tokens.css": "text/css; charset=utf-8",
         "mo-ui.css": "text/css; charset=utf-8",
+        "mo-protocol-viewer.css": "text/css; charset=utf-8",
         "mo-api.js": "application/javascript; charset=utf-8",
         "mo-charts.js": "application/javascript; charset=utf-8",
         "mo-app.js": "application/javascript; charset=utf-8",
@@ -14289,6 +14290,7 @@ if has_frontend_file("index.html"):
 
     @app.get("/mo-tokens.css", include_in_schema=False)
     @app.get("/mo-ui.css", include_in_schema=False)
+    @app.get("/mo-protocol-viewer.css", include_in_schema=False)
     @app.get("/mo-api.js", include_in_schema=False)
     @app.get("/mo-charts.js", include_in_schema=False)
     @app.get("/mo-app.js", include_in_schema=False)

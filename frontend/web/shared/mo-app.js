@@ -1873,6 +1873,9 @@
       if (viewer && anchorPage && viewer.indexOf("page=") < 0) {
         viewer += (viewer.indexOf("?") >= 0 ? "&" : "?") + "page=" + encodeURIComponent(String(anchorPage));
       }
+      if (viewer && viewer.indexOf("from=") < 0) {
+        viewer += (viewer.indexOf("?") >= 0 ? "&" : "?") + "from=mo";
+      }
       return viewer;
     }
     function bindProtocolSuggestHost(host) {
