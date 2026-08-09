@@ -1228,6 +1228,25 @@ CREATE TABLE IF NOT EXISTS crm_expert_session (
   expires_at TEXT NOT NULL,
   last_seen_at TEXT
 );
+CREATE TABLE IF NOT EXISTS crm_app_user (
+  user_id TEXT PRIMARY KEY,
+  login TEXT NOT NULL UNIQUE,
+  password_hash TEXT NOT NULL,
+  display_name TEXT,
+  role TEXT NOT NULL DEFAULT 'methodist',
+  mo_access TEXT NOT NULL DEFAULT 'reports',
+  reports_min_date TEXT NOT NULL DEFAULT '2026-08-01',
+  active INTEGER NOT NULL DEFAULT 1,
+  created_at TEXT NOT NULL,
+  updated_at TEXT NOT NULL
+);
+CREATE TABLE IF NOT EXISTS crm_app_session (
+  session_id TEXT PRIMARY KEY,
+  user_id TEXT NOT NULL,
+  created_at TEXT NOT NULL,
+  expires_at TEXT NOT NULL,
+  last_seen_at TEXT
+);
 CREATE INDEX IF NOT EXISTS idx_crm_state_status ON crm_case_state(status);
 CREATE INDEX IF NOT EXISTS idx_crm_state_assignee ON crm_case_state(assignee);
 CREATE INDEX IF NOT EXISTS idx_crm_event_case_time ON crm_case_event(case_id, created_at);
@@ -1238,6 +1257,8 @@ CREATE INDEX IF NOT EXISTS idx_dispute_case_status ON crm_dispute_state(case_id,
 CREATE INDEX IF NOT EXISTS idx_crm_review_pack_case ON crm_review_pack(case_id, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_crm_review_pack_training ON crm_review_pack(training_use, created_at DESC);
 CREATE INDEX IF NOT EXISTS idx_crm_expert_session_expert ON crm_expert_session(expert_id, expires_at);
+CREATE INDEX IF NOT EXISTS idx_crm_app_session_user
+  ON crm_app_session(user_id, expires_at);
 """
 CRM_TABLES = (
     "crm_case_state",
@@ -1249,6 +1270,8 @@ CRM_TABLES = (
     "crm_review_pack",
     "crm_expert_user",
     "crm_expert_session",
+    "crm_app_user",
+    "crm_app_session",
 )
 
 # Главы МКБ-10: нужны для группировки диагнозов без внешнего справочника.
