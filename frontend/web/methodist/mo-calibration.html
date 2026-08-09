@@ -1,0 +1,124 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Слепая экспертная разметка калибровки оценок МО">
+  <title>Калибровка МО | Protocol</title>
+  <link rel="icon" href="/protocol-logo-mini.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="/mo-tokens.css">
+  <link rel="stylesheet" href="/mo-ui.css">
+  <link rel="stylesheet" href="/mo-calibration.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">К разметке</a>
+  <div class="app calibration-app">
+    <aside class="sidebar" aria-label="Калибровка МО">
+      <a class="brand" href="/methodist/calibration">
+        <img src="/protocol-logo-mini.svg" alt="">
+        <span class="brand-copy">Калибровка МО<small>слепая разметка C6</small></span>
+      </a>
+      <nav>
+        <ul class="nav-list">
+          <li><a class="nav-button" aria-current="page" href="/methodist/calibration"><span class="nav-icon">К</span><span>Разметка</span></a></li>
+          <li><a class="nav-button" href="/methodist/mo"><span class="nav-icon">МО</span><span>МО Аналитика</span></a></li>
+          <li><a class="nav-button" href="/methodist/mis-kz"><span class="nav-icon">М</span><span>Кабинет методиста</span></a></li>
+        </ul>
+      </nav>
+      <div class="sidebar-foot">
+        <strong id="sidebar-progress">Загрузка</strong>
+        <span class="card-sub">LLM и engine scores скрыты до завершения разметки.</span>
+      </div>
+    </aside>
+
+    <div class="workspace">
+      <header class="context-bar calibration-context">
+        <div>
+          <strong>18 случаев · 22 оценки</strong>
+          <span id="save-state" role="status" aria-live="polite">Проверяем доступ</span>
+        </div>
+        <div class="calibration-actions">
+          <button class="button secondary" id="previous-case" type="button">Назад</button>
+          <button class="button" id="next-incomplete" type="button">Следующая незаполненная</button>
+        </div>
+      </header>
+
+      <main id="main" class="content calibration-content" tabindex="-1">
+        <div id="calibration-error" class="banner" role="alert" hidden></div>
+        <section id="calibration-loading" class="card">
+          <h1>Загружаем слепую выборку</h1>
+          <p class="card-sub">Клинические тексты не сохраняются в браузере.</p>
+        </section>
+
+        <div id="calibration-workspace" class="calibration-grid" hidden>
+          <aside class="card calibration-list-card" aria-label="Список случаев">
+            <div class="calibration-list-head">
+              <h2>Случаи</h2>
+              <span id="case-count" class="freshness"></span>
+            </div>
+            <div id="case-list" class="calibration-case-list"></div>
+          </aside>
+
+          <section class="calibration-review">
+            <article class="card">
+              <div class="page-head">
+                <div>
+                  <h1 id="case-title">Случай</h1>
+                  <p id="case-meta" class="card-sub"></p>
+                </div>
+                <span id="case-status" class="freshness"></span>
+              </div>
+              <div id="clinical-fields" class="clinical-fields"></div>
+            </article>
+
+            <article class="card" id="protocol-card" hidden>
+              <h2>Контекст клинического протокола</h2>
+              <p class="card-sub">Используйте только этот показанный контекст для маршрута KP-grounded.</p>
+              <div id="protocol-context" class="clinical-fields"></div>
+            </article>
+
+            <article class="card">
+              <div class="endpoint-tabs" id="endpoint-tabs" role="tablist" aria-label="Оценяемый раздел"></div>
+              <form id="label-form" class="label-form">
+                <div class="form-grid">
+                  <label class="filter"><span>Итог</span>
+                    <select class="control" id="label-verdict" required>
+                      <option value="">Выберите</option>
+                      <option value="good">Хорошо</option>
+                      <option value="partial">Частично</option>
+                      <option value="poor">Плохо</option>
+                      <option value="critical">Критично</option>
+                      <option value="blocked">Нельзя оценить</option>
+                      <option value="na">Не применимо</option>
+                    </select>
+                  </label>
+                  <label class="filter"><span>Оценка, 0-100</span><input class="control" id="label-score" type="number" min="0" max="100" step="1" required></label>
+                  <label class="filter"><span>Уверенность, 0-1</span><input class="control" id="label-confidence" type="number" min="0" max="1" step="0.05" required></label>
+                  <label class="filter" id="icd-fit-wrap"><span>Соответствие МКБ</span>
+                    <select class="control" id="label-icd-fit">
+                      <option value="">Выберите</option>
+                      <option value="fit">Соответствует</option>
+                      <option value="partial">Частично</option>
+                      <option value="mismatch">Не соответствует</option>
+                      <option value="unknown">Недостаточно данных</option>
+                      <option value="na">Не применимо</option>
+                    </select>
+                  </label>
+                </div>
+                <label class="harm-check"><input id="label-harm" type="checkbox"> <span>Есть потенциальный вред пациенту</span></label>
+                <label class="filter rationale-field"><span>Клиническое обоснование</span><textarea class="control" id="label-rationale" rows="5" minlength="10" maxlength="2000" required placeholder="Почему выбран такой итог. Не копируйте идентификаторы пациента."></textarea></label>
+                <div class="section-actions">
+                  <button class="button" type="submit" id="save-label">Сохранить оценку</button>
+                  <span id="review-stamp" class="card-sub"></span>
+                </div>
+              </form>
+            </article>
+          </section>
+        </div>
+      </main>
+    </div>
+  </div>
+  <script src="/mo-api.js"></script>
+  <script src="/mo-calibration.js"></script>
+</body>
+</html>

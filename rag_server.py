@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-141159Z-mo-calibration-c6-pack"
+BUILD_VERSION = "2026-08-09-143534Z-mo-calibration-methodist-ui"
 
 
 def _app_version() -> str:
@@ -10977,6 +10977,16 @@ class MisKzLlmReviewOneIn(BaseModel):
     visit_id: str = Field(..., min_length=1, max_length=64)
 
 
+class MoCalibrationLabelIn(BaseModel):
+    verdict: str = Field(..., min_length=2, max_length=16)
+    score_pct: float = Field(..., ge=0, le=100)
+    potential_harm: bool
+    icd_fit: str = Field(default="na", min_length=2, max_length=16)
+    confidence: float = Field(..., ge=0, le=1)
+    rationale: str = Field(..., min_length=10, max_length=2000)
+    expected_reviewed_at: str = Field(default="", max_length=40)
+
+
 @app.post("/api/methodist/mis-kz-quality/gemini-review")
 def api_methodist_mis_kz_gemini_review(request: "Request", body: MisKzGeminiReviewIn) -> dict:
     """Пакетный прогон выбранных визитов через LLM (полный разбор)."""
@@ -11152,6 +11162,18 @@ def _mo_role(request: "Request") -> str:
     return role if role in {"viewer", "doctor", "methodist", "lead", "admin"} else "viewer"
 
 
+def _require_calibration_methodist(request: "Request") -> tuple[str, str]:
+    _require_methodist_auth(request)
+    app_user = _mo_app_user(request)
+    role = str(app_user.get("role") or "") if app_user else _mo_role(request)
+    if role not in {"methodist", "lead", "admin"}:
+        raise HTTPException(
+            status_code=403,
+            detail="Разметка калибровки доступна только методисту.",
+        )
+    return _mo_actor(request), role
+
+
 def _mo_trusted_doctor_identity(request: "Request") -> str:
     """Идентичность врача только от настроенного доверенного reverse proxy."""
     enabled = (os.environ.get("MO_TRUST_DOCTOR_IDENTITY_HEADER") or "").strip().lower()
@@ -11200,6 +11222,62 @@ def _mo_params(**kwargs: Any) -> dict[str, Any]:
         and value not in (None, "")
         and not callable(value)
     }
+
+
+@app.get("/api/methodist/mo/calibration/c6")
+def api_methodist_mo_calibration_c6(
+    request: "Request",
+    response: "Response",
+) -> dict[str, Any]:
+    actor, role = _require_calibration_methodist(request)
+    response.headers["Cache-Control"] = "no-store"
+    from clinical_knowledge.mo_calibration_methodist_ui import load_review_pack
+
+    try:
+        return load_review_pack(actor=actor, role=role)
+    except FileNotFoundError as exc:
+        raise HTTPException(status_code=503, detail="C6 review pack не подготовлен.") from exc
+    except (ValueError, json.JSONDecodeError) as exc:
+        raise HTTPException(status_code=409, detail="C6 review pack повреждён.") from exc
+
+
+@app.put("/api/methodist/mo/calibration/c6/labels/{sample_id}/{endpoint}")
+def api_methodist_mo_calibration_label(
+    sample_id: str,
+    endpoint: str,
+    body: MoCalibrationLabelIn,
+    request: "Request",
+    response: "Response",
+) -> dict[str, Any]:
+    actor, role = _require_calibration_methodist(request)
+    response.headers["Cache-Control"] = "no-store"
+    if not re.fullmatch(r"S\d{3}", sample_id):
+        raise HTTPException(status_code=422, detail="Некорректный sample_id.")
+    from clinical_knowledge.mo_calibration_methodist_ui import save_label
+
+    try:
+        return save_label(
+            sample_id=sample_id,
+            endpoint=endpoint,
+            verdict=body.verdict,
+            score_pct=body.score_pct,
+            potential_harm=body.potential_harm,
+            icd_fit=body.icd_fit,
+            confidence=body.confidence,
+            rationale=body.rationale,
+            reviewer_id=actor,
+            reviewer_role=role,
+            expected_reviewed_at=body.expected_reviewed_at,
+        )
+    except KeyError as exc:
+        raise HTTPException(status_code=404, detail="Строка разметки не найдена.") from exc
+    except (ValueError, json.JSONDecodeError) as exc:
+        detail = (
+            "Оценка уже изменена в другой вкладке. Обновите страницу."
+            if str(exc) == "label_changed_by_another_reviewer"
+            else str(exc)
+        )
+        raise HTTPException(status_code=422, detail=detail) from exc
 
 
 @app.get("/api/methodist/mo/dimensions/{dimension}")
@@ -14305,6 +14383,17 @@ if has_frontend_file("index.html"):
             headers={"Cache-Control": "no-cache, must-revalidate"},
         )
 
+    @app.get("/methodist/calibration", include_in_schema=False)
+    def _serve_methodist_calibration() -> FileResponse:
+        p = frontend_file("mo-calibration.html")
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Страница калибровки не найдена")
+        return FileResponse(
+            path=str(p),
+            media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-store"},
+        )
+
     @app.get("/methodist/expert", include_in_schema=False)
     @app.get("/methodist/expert.html", include_in_schema=False)
     @app.get("/methodist/expert/yesterday", include_in_schema=False)
@@ -14322,6 +14411,8 @@ if has_frontend_file("index.html"):
         "mo-api.js": "application/javascript; charset=utf-8",
         "mo-charts.js": "application/javascript; charset=utf-8",
         "mo-app.js": "application/javascript; charset=utf-8",
+        "mo-calibration.css": "text/css; charset=utf-8",
+        "mo-calibration.js": "application/javascript; charset=utf-8",
         "vendor/echarts.min.js": "application/javascript; charset=utf-8",
         "vendor/ECHARTS-LICENSE.txt": "text/plain; charset=utf-8",
         # Doctor chrome / search UX (legacy root URLs)
@@ -14345,6 +14436,8 @@ if has_frontend_file("index.html"):
     @app.get("/mo-api.js", include_in_schema=False)
     @app.get("/mo-charts.js", include_in_schema=False)
     @app.get("/mo-app.js", include_in_schema=False)
+    @app.get("/mo-calibration.css", include_in_schema=False)
+    @app.get("/mo-calibration.js", include_in_schema=False)
     @app.get("/vendor/echarts.min.js", include_in_schema=False)
     @app.get("/vendor/ECHARTS-LICENSE.txt", include_in_schema=False)
     @app.get("/protocol-chrome-tabs.css", include_in_schema=False)

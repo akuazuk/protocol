@@ -48,6 +48,23 @@ For each row in `methodist_labels.jsonl`, fill:
 
 Do not add patient identifiers or copy clinical text into the rationale.
 
+## Web form
+
+After deployment, sign in through the methodist cabinet and open:
+
+```text
+/methodist/calibration
+```
+
+The form:
+
+- is available only to methodist, lead, and admin roles;
+- never shows engine scores, LLM passes, or LLM adjudication;
+- writes reviewer identity and timestamp on the server;
+- does not keep clinical cases in browser storage;
+- records open/save actions without clinical text;
+- unlocks the comparison only after all 22 labels pass validation.
+
 ## Validate
 
 On GCE, after all labels are saved:

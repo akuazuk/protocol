@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C5 выполнены; C6 pack готов, human labels 0/22)
+Статус: **active** (C0-C5 выполнены; C6 secure UI готов, human labels 0/22)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -470,6 +470,13 @@ Uncertainty:
   `missing_n=0`, `extra_n=0`, `passed=false`.
 - C6 не отмечен выполненным: требуется реальная разметка методистом и
   `passed=true`. LLM adjudication не считается human gold.
+- Защищённая форма доступна по `/methodist/calibration`: только роли
+  methodist/lead/admin, API `no-store`, server-side reviewer/timestamp,
+  file lock + atomic replace и отдельный access audit без clinical text.
+- UI не получает engine/LLM outputs и не хранит clinical case в browser
+  storage. Comparison создаётся сервером только после 22/22 valid labels.
+- Рабочий контур UI - GCE primary `protocol.kravira.by`, где уже находится
+  secret pack. В Render backup clinical calibration artifacts не копируются.
 
 ### P0 - после pilot gate
 
