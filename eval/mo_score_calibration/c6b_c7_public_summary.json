@@ -1,0 +1,110 @@
+{
+  "schema_version": 1,
+  "analysis": "c6b_llm_proxy_labels_and_c7",
+  "proxy_not_human_gold": true,
+  "production_decision_allowed": false,
+  "labels": {
+    "complete_label_n": 22,
+    "passed": true,
+    "comparison_unsealed": true,
+    "reviewer_id": "llm_proxy_c6b_not_human_gold",
+    "model": "gemini-3.1-pro-preview"
+  },
+  "c7": {
+    "gold_kind": "llm_proxy_c6b",
+    "production_decision_allowed": false,
+    "endpoints": {
+      "dx": {
+        "gold_labeled_n": 7,
+        "gold_bad_n": 1,
+        "top3": [
+          "blind.mean_2",
+          "ensemble.arm_d_blind_mean",
+          "blind.adjudicated_or_mean",
+          "blind.pass_1",
+          "snapshot.axis.clinical_concordance"
+        ],
+        "top_metrics": {
+          "blind.mean_2": {
+            "pr_auc_bad": 1.0,
+            "roc_auc_bad": 1.0,
+            "mae": 18.7143,
+            "n": 7
+          },
+          "ensemble.arm_d_blind_mean": {
+            "pr_auc_bad": 1.0,
+            "roc_auc_bad": 1.0,
+            "mae": 21.2857,
+            "n": 7
+          },
+          "blind.adjudicated_or_mean": {
+            "pr_auc_bad": 1.0,
+            "roc_auc_bad": 0.9167,
+            "mae": 10.2857,
+            "n": 7
+          },
+          "blind.pass_1": {
+            "pr_auc_bad": 1.0,
+            "roc_auc_bad": 0.9167,
+            "mae": 10.2857,
+            "n": 7
+          },
+          "snapshot.axis.clinical_concordance": {
+            "pr_auc_bad": 1.0,
+            "roc_auc_bad": 0.9167,
+            "mae": 18.5714,
+            "n": 7
+          }
+        }
+      },
+      "plan": {
+        "gold_labeled_n": 7,
+        "gold_bad_n": 2,
+        "top3": [
+          "snapshot.overall_v3",
+          "snapshot.axis.clinical_concordance",
+          "snapshot.axis.safety",
+          "snapshot.overall",
+          "snapshot.axis.regulatory"
+        ],
+        "top_metrics": {
+          "snapshot.overall_v3": {
+            "pr_auc_bad": 0.75,
+            "roc_auc_bad": 0.85,
+            "mae": 17.1286,
+            "n": 7
+          },
+          "snapshot.axis.clinical_concordance": {
+            "pr_auc_bad": 0.75,
+            "roc_auc_bad": 0.7,
+            "mae": 21.8571,
+            "n": 7
+          },
+          "snapshot.axis.safety": {
+            "pr_auc_bad": 0.6667,
+            "roc_auc_bad": 0.75,
+            "mae": 35.8571,
+            "n": 7
+          },
+          "snapshot.overall": {
+            "pr_auc_bad": 0.6667,
+            "roc_auc_bad": 0.65,
+            "mae": 27.1571,
+            "n": 7
+          },
+          "snapshot.axis.regulatory": {
+            "pr_auc_bad": 0.6667,
+            "roc_auc_bad": 0.65,
+            "mae": 27.9286,
+            "n": 7
+          }
+        }
+      }
+    },
+    "limitations": {
+      "formal_human_methodist_labels": false,
+      "production_rollout_allowed": false,
+      "required_next_gate": "confirmatory_cohort_and_owner_review"
+    }
+  }
+}

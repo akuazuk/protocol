@@ -1,6 +1,7 @@
 # MO score calibration - frozen protocol
 
-Status: C0-C5 completed on 2026-08-09. C6 methodist labels is the next gate.
+Status: C0-C9A exploratory complete. See `c9a_public_summary.json` for
+confirmatory provisional shadow picks. Production scoring still locked.
 
 ## Scope
 

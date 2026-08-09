@@ -1,0 +1,144 @@
+{
+  "schema_version": 1,
+  "generated_at": "2026-08-09T16:32:00Z",
+  "period": {
+    "from": "2026-08-01",
+    "to": "2026-08-08"
+  },
+  "seed": 43,
+  "source_file_count": 6,
+  "selected_n": 100,
+  "audit": {
+    "target": 100,
+    "selected": 100,
+    "sentinel_required": false,
+    "sentinel_present": true,
+    "all_training_use_present": true,
+    "max_cases_per_doctor": 3,
+    "coverage": {
+      "band:0-49": 12,
+      "icd_dx_dispute": 11,
+      "has_exam_results": 66,
+      "has_treatment": 79,
+      "kp_unmatched": 71,
+      "band:50-59": 8,
+      "kp_matched": 17,
+      "band:60-69": 11,
+      "band:70-79": 17,
+      "band:80+": 52,
+      "high_action": 52,
+      "specialties": 20,
+      "training_use": 0
+    },
+    "requirements": {
+      "band:0-49": 8,
+      "band:50-59": 8,
+      "band:60-69": 8,
+      "band:70-79": 8,
+      "band:80+": 8,
+      "high_action": 6,
+      "reg55_gap": 0,
+      "reg55_high_weak": 0,
+      "icd_dx_dispute": 8,
+      "kp_matched": 16,
+      "kp_unmatched": 12,
+      "has_exam_results": 8,
+      "has_treatment": 8,
+      "specialties": 4
+    },
+    "deficits": {},
+    "passed": true,
+    "excluded_overlap_n": 0,
+    "exclude_key_n": 30,
+    "requested_requirements": {
+      "band:0-49": 8,
+      "band:50-59": 8,
+      "band:60-69": 8,
+      "band:70-79": 8,
+      "band:80+": 8,
+      "high_action": 6,
+      "reg55_gap": 6,
+      "reg55_high_weak": 4,
+      "icd_dx_dispute": 8,
+      "kp_matched": 16,
+      "kp_unmatched": 12,
+      "has_exam_results": 8,
+      "has_treatment": 8,
+      "specialties": 4
+    },
+    "clamped_requirements": {
+      "band:0-49": 8,
+      "band:50-59": 8,
+      "band:60-69": 8,
+      "band:70-79": 8,
+      "band:80+": 8,
+      "high_action": 6,
+      "reg55_gap": 0,
+      "reg55_high_weak": 0,
+      "icd_dx_dispute": 8,
+      "kp_matched": 16,
+      "kp_unmatched": 12,
+      "has_exam_results": 8,
+      "has_treatment": 8,
+      "specialties": 4
+    }
+  },
+  "specialty_count": 20,
+  "band_counts": {
+    "0-49": 12,
+    "50-59": 8,
+    "60-69": 11,
+    "70-79": 17,
+    "80+": 52
+  },
+  "signal_counts": {
+    "training_use": 0,
+    "high_action": 52,
+    "reg55_gap": 0,
+    "reg55_high_weak": 0,
+    "icd_dx_dispute": 11,
+    "kp_matched": 17,
+    "has_exam_results": 66,
+    "has_treatment": 79
+  },
+  "replay_audit": {
+    "attempted_n": 100,
+    "passed_n": 5,
+    "failed_n": 95,
+    "error_n": 0,
+    "all_cases_reproducible": false,
+    "audit_complete": true
+  },
+  "arm_d_fingerprint": {
+    "engine": "kz_evaluation_v4",
+    "component_hashes": {
+      "clinical_knowledge/kz_evaluation_v4.py": "d51e3f377821e587e4844a9f392d665217a4f6f966487a688df4ec98a6c69e09",
+      "clinical_knowledge/kz_evaluation_engine.py": "26ce39b970457b2034f513b9daf1f6551e469f0e056a4e6f35fda8be5b71fa2c",
+      "clinical_knowledge/kz_evaluation_schema.py": "30a5424ac80bf085f9485dcaeef6788e38607798ddd2b80a2be54d71da787876",
+      "clinical_knowledge/kz_deep_eval.py": "3e6175bf1b173f90295717b265dffc2b457365b8b761651ca97ff4169dd01a2a",
+      "clinical_knowledge/reg55_criteria.py": "dabf7324b4809cb9d1da7137bd8e2935b7758d78befdbf8a27ee46f741eb0db3",
+      "config/mo_scorer_v4.yaml": "756b1e63c1573be3f6ce362c67d985d0af3be3428bd786bff136c14c4658d8ef"
+    },
+    "protocol_summary_tree_hash": "8fd006c20247925fe6c77053608fcae5758b8ec9ed26bc1d12324d6dab823f03",
+    "protocol_summary_file_n": 1876,
+    "environment_flags": {
+      "KZ_EVALUATION_V4_ENABLED": null,
+      "KZ_EVALUATION_V4_PRIMARY": null,
+      "KZ_EVALUATION_V4_GATE": null,
+      "CASE_PROTOCOL_SUGGEST": null,
+      "MO_PATIENT_HISTORY_ENABLED": null
+    },
+    "fingerprint": "9ab7bfcb5a84f47354aed8f916c08d5285319bd94d43bc2614a848cb54da2e49"
+  },
+  "secret_artifact_hashes": {
+    "secret_manifest.jsonl": "0fff5b4e6c300adf51f36b2a91f90e78ecbd3054d3c8c8ab896dbd9952676a0b",
+    "secret_cases.jsonl": "10033360bd736a5487e2badcd795b721bc310e0ecbd103bd0ab6a6ef8596c953",
+    "engine_snapshot.jsonl": "c77d46eeb249be35a630faacf477c57a97d8ab7082214d876a869f6c5e134c85",
+    "engine_replay.jsonl": "50f29b739bf401af5ac7b8b96ca8f26e3c75209b6d0c99b82d0139a1f8857521"
+  },
+  "phi_check": {
+    "contains_row_identifiers": false,
+    "contains_doctor_labels": false,
+    "contains_clinical_text": false
+  }
+}

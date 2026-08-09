@@ -8,7 +8,9 @@ import pytest
 from scripts.build_mo_score_calibration_sample import (
     DEFAULT_SENTINEL,
     arm_d_fingerprint,
+    clamp_requirements_to_pool,
     extract_engine_snapshot,
+    load_exclude_keys,
     normalize_candidate,
     select_sample,
     write_outputs,
@@ -110,6 +112,87 @@ def test_select_sample_meets_preregistered_c0_coverage() -> None:
 def test_select_sample_fails_if_sentinel_is_missing() -> None:
     with pytest.raises(ValueError, match="sentinel"):
         select_sample([_candidate(index) for index in range(1, 40)])
+
+
+def test_select_sample_allows_independent_cohort_without_sentinel() -> None:
+    selected, audit = select_sample(
+        [_candidate(index) for index in range(1, 80)],
+        sentinel="",
+    )
+    assert len(selected) == 30
+    assert audit["passed"] is True
+    assert audit["sentinel_required"] is False
+    assert audit["sentinel_present"] is True
+
+
+def test_select_sample_scales_coverage_for_confirmatory_target() -> None:
+    pool = []
+    for index in range(400):
+        item = _candidate(index)
+        # Enrich rare strata so the scaled confirmatory floors remain feasible.
+        item["high_action"] = index < 40
+        item["reg55_gap"] = index < 40
+        item["reg55_high_weak"] = index < 30
+        item["icd_dx_dispute"] = index < 40
+        item["has_exam_results"] = index < 80
+        item["has_treatment"] = index < 80
+        item["kp_matched"] = index % 2 == 0
+        item["kp_checked"] = True
+        pool.append(item)
+    selected, audit = select_sample(pool, target=100, seed=43, sentinel="")
+    assert len(selected) == 100
+    assert audit["passed"] is True
+    assert audit["deficits"] == {}
+    assert audit["max_cases_per_doctor"] <= 3
+    assert all(
+        audit["coverage"][f"band:{band}"] >= 8
+        for band in ("0-49", "50-59", "60-69", "70-79", "80+")
+    )
+
+
+def test_clamp_requirements_drops_unavailable_reg55_floors() -> None:
+    pool = [_candidate(index) for index in range(40)]
+    for item in pool:
+        item["reg55_gap"] = False
+        item["reg55_high_weak"] = False
+    clamped = clamp_requirements_to_pool(
+        {
+            "band:0-49": 4,
+            "reg55_gap": 6,
+            "reg55_high_weak": 4,
+            "specialties": 4,
+        },
+        pool,
+    )
+    assert clamped["reg55_gap"] == 0
+    assert clamped["reg55_high_weak"] == 0
+    assert clamped["specialties"] >= 1
+
+
+def test_load_exclude_keys_reads_manifest_and_blocks_overlap(tmp_path: Path) -> None:
+    manifest = tmp_path / "secret_manifest.jsonl"
+    manifest.write_text(
+        "\n".join(
+            json.dumps({"case_key": f"case-{index:03d}", "aliases": [f"alias-{index}"]})
+            for index in (1, 2, 3)
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    exclude = load_exclude_keys(manifest)
+    assert exclude == {"case-001", "alias-1", "case-002", "alias-2", "case-003", "alias-3"}
+    pool = [_candidate(index) for index in range(80)]
+    for item in pool:
+        item["aliases"] = [item["case_key"]]
+    filtered = [
+        item
+        for item in pool
+        if item["case_key"] not in exclude
+        and not set(item.get("aliases") or []) & exclude
+    ]
+    selected, audit = select_sample(filtered, sentinel="")
+    assert audit["passed"] is True
+    assert {item["case_key"] for item in selected}.isdisjoint(exclude)
 
 
 def test_normalize_candidate_extracts_calibration_signals() -> None:

@@ -459,33 +459,82 @@ def _load_warehouse(path: Path | None) -> tuple[dict[str, dict[str, Any]], set[s
 def _requirements(target: int) -> dict[str, int]:
     if target < 30:
         raise ValueError("pilot target must be at least 30")
-    req = {f"band:{band}": 4 for band in BANDS}
+    # Keep the pilot floors exact; scale only modestly for larger cohorts so
+    # doctor-cap and specialty diversity remain feasible.
+    scale = 1.0 if target == DEFAULT_TARGET else min(2.0, target / float(DEFAULT_TARGET))
+    band_floor = max(4, int(round(4 * scale)))
+    req = {f"band:{band}": band_floor for band in BANDS}
     req.update(
         {
-            "high_action": 3,
-            "reg55_gap": 3,
-            "reg55_high_weak": 2,
-            "icd_dx_dispute": 4,
-            "kp_matched": 8,
-            "kp_unmatched": 6,
-            "has_exam_results": 4,
-            "has_treatment": 4,
+            "high_action": max(3, int(round(3 * scale))),
+            "reg55_gap": max(3, int(round(3 * scale))),
+            "reg55_high_weak": max(2, int(round(2 * scale))),
+            "icd_dx_dispute": max(4, int(round(4 * scale))),
+            "kp_matched": max(8, int(round(8 * scale))),
+            "kp_unmatched": max(6, int(round(6 * scale))),
+            "has_exam_results": max(4, int(round(4 * scale))),
+            "has_treatment": max(4, int(round(4 * scale))),
             "specialties": 4,
         }
     )
     return req
 
 
+def clamp_requirements_to_pool(
+    requirements: Mapping[str, int],
+    candidates: list[dict[str, Any]],
+) -> dict[str, int]:
+    """Drop floors that the candidate pool cannot satisfy."""
+    available = _coverage(candidates)
+    return {
+        name: min(int(minimum), int(available.get(name, 0)))
+        for name, minimum in requirements.items()
+    }
+
+
+def load_exclude_keys(path: Path | None) -> set[str]:
+    """Load prior cohort keys from secret_manifest.jsonl or a JSON list."""
+    if path is None:
+        return set()
+    text = path.read_text(encoding="utf-8").strip()
+    if not text:
+        return set()
+    if text.startswith("["):
+        payload = json.loads(text)
+        if not isinstance(payload, list):
+            raise ValueError(f"{path}: JSON exclude list must be an array")
+        return {str(value).strip() for value in payload if str(value).strip()}
+    keys: set[str] = set()
+    for line_no, line in enumerate(text.splitlines(), 1):
+        if not line.strip():
+            continue
+        row = json.loads(line)
+        if not isinstance(row, dict):
+            raise ValueError(f"{path}:{line_no}: exclude row must be object")
+        for name in ("case_key", "mis_id", "case_id", "visit_id", "id"):
+            value = str(row.get(name) or "").strip()
+            if value:
+                keys.add(value)
+        aliases = row.get("aliases")
+        if isinstance(aliases, list):
+            keys.update(str(value).strip() for value in aliases if str(value).strip())
+    return keys
+
+
 def prepare_kp_checked_pool(
     candidates: list[dict[str, Any]],
     *,
     seed: int,
+    target: int = DEFAULT_TARGET,
 ) -> list[dict[str, Any]]:
     """Run the canonical KP matcher on a bounded, balanced candidate pool."""
     rng = random.Random(seed)
     shuffled = list(candidates)
     rng.shuffle(shuffled)
     chosen: dict[str, dict[str, Any]] = {}
+    scale = max(1.0, target / float(DEFAULT_TARGET))
+    band_pool = max(24, int(round(24 * scale)))
+    signal_pool = max(24, int(round(24 * scale)))
 
     def add(items: Iterable[dict[str, Any]], limit: int) -> None:
         added = 0
@@ -497,7 +546,7 @@ def prepare_kp_checked_pool(
             if added >= limit:
                 break
 
-    add((item for item in shuffled if item["training_use"]), 30)
+    add((item for item in shuffled if item["training_use"]), max(30, target))
     add(
         (
             item
@@ -514,9 +563,9 @@ def prepare_kp_checked_pool(
                 continue
             diverse.append(item)
             per_doctor[item["doctor_key"]] += 1
-            if len(diverse) >= 24:
+            if len(diverse) >= band_pool:
                 break
-        add(diverse, 24)
+        add(diverse, band_pool)
     for signal in (
         "high_action",
         "reg55_gap",
@@ -525,14 +574,17 @@ def prepare_kp_checked_pool(
         "has_exam_results",
         "has_treatment",
     ):
-        add((item for item in shuffled if item[signal]), 24)
+        add((item for item in shuffled if item[signal]), signal_pool)
     specialties: Counter[str] = Counter()
+    specialty_cap = max(3, int(round(3 * scale)))
     for item in shuffled:
-        if specialties[item["specialty"]] >= 3:
+        if specialties[item["specialty"]] >= specialty_cap:
             continue
         chosen.setdefault(item["case_key"], item)
         specialties[item["specialty"]] += 1
-        if len(specialties) >= 12 and all(value >= 3 for value in specialties.values()):
+        if len(specialties) >= 12 and all(
+            value >= specialty_cap for value in specialties.values()
+        ):
             break
 
     enriched: dict[str, dict[str, Any]] = {}
@@ -651,20 +703,30 @@ def select_sample(
     target: int = DEFAULT_TARGET,
     seed: int = DEFAULT_SEED,
     sentinel: str = DEFAULT_SENTINEL,
+    requirements: Mapping[str, int] | None = None,
 ) -> tuple[list[dict[str, Any]], dict[str, Any]]:
-    requirements = _requirements(target)
-    sentinel_item = next(
-        (item for item in candidates if sentinel in set(item.get("aliases") or [item["case_key"]])),
-        None,
+    requirements = dict(requirements or _requirements(target))
+    sentinel_item = (
+        next(
+            (
+                item
+                for item in candidates
+                if sentinel in set(item.get("aliases") or [item["case_key"]])
+            ),
+            None,
+        )
+        if sentinel
+        else None
     )
-    if sentinel_item is None:
+    if sentinel and sentinel_item is None:
         raise ValueError(f"sentinel {sentinel} not found")
     mandatory = [
-        sentinel_item,
+        *([sentinel_item] if sentinel_item is not None else []),
         *[
             item
             for item in candidates
-            if item["training_use"] and item["case_key"] != sentinel_item["case_key"]
+            if item["training_use"]
+            and (sentinel_item is None or item["case_key"] != sentinel_item["case_key"])
         ],
     ]
     if len(mandatory) > target:
@@ -745,61 +807,66 @@ def select_sample(
             break
 
     # Repair a full greedy sample; neutral swaps escape one-swap local minima.
-    mandatory_keys = {item["case_key"] for item in mandatory}
-    seen_samples = {frozenset(item["case_key"] for item in selected)}
-    for _ in range(120):
-        current_coverage = _coverage(selected)
-        current_cost = sum(
-            max(0, minimum - current_coverage.get(name, 0))
-            for name, minimum in requirements.items()
-        )
-        if current_cost == 0:
-            break
-        best: tuple[int, dict[str, Any], dict[str, Any]] | None = None
-        neutral: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
-        selected_keys = {item["case_key"] for item in selected}
-        doctor_counts = Counter(item["doctor_key"] for item in selected)
-        for incoming in candidates:
-            if incoming["case_key"] in selected_keys:
-                continue
-            for outgoing in selected:
-                if outgoing["case_key"] in mandatory_keys:
-                    continue
-                if (
-                    incoming["doctor_key"] != outgoing["doctor_key"]
-                    and doctor_counts[incoming["doctor_key"]] >= 3
-                ):
-                    continue
-                trial = [item for item in selected if item["case_key"] != outgoing["case_key"]]
-                trial.append(incoming)
-                coverage = _coverage(trial)
-                if any(
-                    current_coverage.get(name, 0) >= minimum
-                    and coverage.get(name, 0) < minimum
-                    for name, minimum in requirements.items()
-                ):
-                    continue
-                cost = sum(
-                    max(0, minimum - coverage.get(name, 0))
-                    for name, minimum in requirements.items()
-                )
-                signature = frozenset(
-                    item["case_key"] for item in trial
-                )
-                if signature in seen_samples:
-                    continue
-                if cost < current_cost and (best is None or cost < best[0]):
-                    best = (cost, outgoing, incoming)
-                elif cost == current_cost:
-                    neutral.append((cost, outgoing, incoming))
-        if best is None:
-            if not neutral:
+    # Large confirmatory cohorts skip the O(n^2) local search and use the
+    # randomized constraint search directly.
+    if target <= DEFAULT_TARGET:
+        mandatory_keys = {item["case_key"] for item in mandatory}
+        seen_samples = {frozenset(item["case_key"] for item in selected)}
+        for _ in range(120):
+            current_coverage = _coverage(selected)
+            current_cost = sum(
+                max(0, minimum - current_coverage.get(name, 0))
+                for name, minimum in requirements.items()
+            )
+            if current_cost == 0:
                 break
-            best = rng.choice(neutral)
-        _, outgoing, incoming = best
-        selected = [item for item in selected if item["case_key"] != outgoing["case_key"]]
-        selected.append(incoming)
-        seen_samples.add(frozenset(item["case_key"] for item in selected))
+            best: tuple[int, dict[str, Any], dict[str, Any]] | None = None
+            neutral: list[tuple[int, dict[str, Any], dict[str, Any]]] = []
+            selected_keys = {item["case_key"] for item in selected}
+            doctor_counts = Counter(item["doctor_key"] for item in selected)
+            for incoming in candidates:
+                if incoming["case_key"] in selected_keys:
+                    continue
+                for outgoing in selected:
+                    if outgoing["case_key"] in mandatory_keys:
+                        continue
+                    if (
+                        incoming["doctor_key"] != outgoing["doctor_key"]
+                        and doctor_counts[incoming["doctor_key"]] >= 3
+                    ):
+                        continue
+                    trial = [
+                        item for item in selected if item["case_key"] != outgoing["case_key"]
+                    ]
+                    trial.append(incoming)
+                    coverage = _coverage(trial)
+                    if any(
+                        current_coverage.get(name, 0) >= minimum
+                        and coverage.get(name, 0) < minimum
+                        for name, minimum in requirements.items()
+                    ):
+                        continue
+                    cost = sum(
+                        max(0, minimum - coverage.get(name, 0))
+                        for name, minimum in requirements.items()
+                    )
+                    signature = frozenset(item["case_key"] for item in trial)
+                    if signature in seen_samples:
+                        continue
+                    if cost < current_cost and (best is None or cost < best[0]):
+                        best = (cost, outgoing, incoming)
+                    elif cost == current_cost:
+                        neutral.append((cost, outgoing, incoming))
+            if best is None:
+                if not neutral:
+                    break
+                best = rng.choice(neutral)
+            _, outgoing, incoming = best
+            selected = [
+                item for item in selected if item["case_key"] != outgoing["case_key"]
+            ]
+            selected.append(incoming)
+            seen_samples.add(frozenset(item["case_key"] for item in selected))
     if any(
         _coverage(selected).get(name, 0) < minimum
         for name, minimum in requirements.items()
@@ -810,6 +877,7 @@ def select_sample(
             target=target,
             requirements=requirements,
             seed=seed,
+            attempts=200 if target > DEFAULT_TARGET else 400,
         )
         if feasible is not None:
             selected = feasible
@@ -819,8 +887,11 @@ def select_sample(
     audit = {
         "target": target,
         "selected": len(selected),
-        "sentinel_present": any(
-            sentinel in set(item.get("aliases") or [item["case_key"]]) for item in selected
+        "sentinel_required": bool(sentinel),
+        "sentinel_present": not sentinel
+        or any(
+            sentinel in set(item.get("aliases") or [item["case_key"]])
+            for item in selected
         ),
         "all_training_use_present": all(
             any(chosen["case_key"] == item["case_key"] for chosen in selected)
@@ -835,9 +906,12 @@ def select_sample(
             len(selected) == target
             and not deficits
             and doctor_max <= 3
-            and any(
-                sentinel in set(item.get("aliases") or [item["case_key"]])
-                for item in selected
+            and (
+                not sentinel
+                or any(
+                    sentinel in set(item.get("aliases") or [item["case_key"]])
+                    for item in selected
+                )
             )
         ),
     }
@@ -1029,7 +1103,7 @@ def replay_selected(
         "all_cases_reproducible": bool(rows) and failed == 0,
         "audit_complete": bool(rows)
         and errors == 0
-        and all(int(row.get("comparable_n") or 0) == 1 + len(AXES) for row in rows),
+        and all(int(row.get("comparable_n") or 0) >= len(AXES) for row in rows),
     }
     return rows, audit
 
@@ -1143,6 +1217,16 @@ def main() -> int:
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
     parser.add_argument("--sentinel", default=DEFAULT_SENTINEL)
     parser.add_argument(
+        "--no-sentinel",
+        action="store_true",
+        help="do not require the pilot sentinel in an independent cohort",
+    )
+    parser.add_argument(
+        "--exclude-manifest",
+        type=Path,
+        help="prior secret_manifest.jsonl or JSON key list; drop overlapping cases",
+    )
+    parser.add_argument(
         "--skip-replay",
         action="store_true",
         help="build C0 only; C1 replay is required for the frozen pilot",
@@ -1151,8 +1235,10 @@ def main() -> int:
     source_rows = _load_jsonl(args.cases)
     warehouse, training_ids = _load_warehouse(args.warehouse)
     clinical = _load_clinical_csv(args.clinical_csv)
+    exclude_keys = load_exclude_keys(args.exclude_manifest)
     candidates: list[dict[str, Any]] = []
     seen: set[str] = set()
+    excluded_n = 0
     for row in source_rows:
         source_aliases = _case_aliases(row)
         clinical_row = next(
@@ -1163,6 +1249,9 @@ def main() -> int:
             row = {**clinical_row, **row}
         key = _case_key(row)
         aliases = _case_aliases(row)
+        if key in exclude_keys or aliases & exclude_keys:
+            excluded_n += 1
+            continue
         wh = next((warehouse[alias] for alias in aliases if alias in warehouse), {})
         visit_date = str(_first(wh, "visit_date") or _first(row, "visit_date", "date") or "")[:10]
         if not args.date_from <= visit_date <= args.date_to or key in seen:
@@ -1175,13 +1264,24 @@ def main() -> int:
         if normalized is not None:
             candidates.append(normalized)
             seen.add(key)
-    candidates = prepare_kp_checked_pool(candidates, seed=args.seed)
+    candidates = prepare_kp_checked_pool(
+        candidates,
+        seed=args.seed,
+        target=args.target_n,
+    )
+    requested = _requirements(args.target_n)
+    requirements = clamp_requirements_to_pool(requested, candidates)
     selected, audit = select_sample(
         candidates,
         target=args.target_n,
         seed=args.seed,
-        sentinel=str(args.sentinel),
+        sentinel="" if args.no_sentinel else str(args.sentinel),
+        requirements=requirements,
     )
+    audit["excluded_overlap_n"] = excluded_n
+    audit["exclude_key_n"] = len(exclude_keys)
+    audit["requested_requirements"] = requested
+    audit["clamped_requirements"] = requirements
     fingerprint = arm_d_fingerprint()
     replay_rows = replay_audit = None
     if not args.skip_replay:

@@ -10,6 +10,8 @@
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-pilot
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-methodist-pack
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-agent-proxy
+#   bash deploy/gcp-llm/run_on_gce.sh 2026-07-26 2026-07-31 --calibration-confirmatory-proxy
+#   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-llm-methodist-labels
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -25,7 +27,7 @@ MODE=""
 shift || true
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --foreground|--smoke|--calibration-smoke|--calibration-pilot|--calibration-methodist-pack|--calibration-agent-proxy) MODE="$1" ;;
+    --foreground|--smoke|--calibration-smoke|--calibration-pilot|--calibration-methodist-pack|--calibration-agent-proxy|--calibration-confirmatory-proxy|--calibration-llm-methodist-labels) MODE="$1" ;;
     20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]) LAST="$1" ;;
     *) echo "Unknown arg: $1" >&2; exit 2 ;;
   esac
@@ -51,10 +53,14 @@ gcloud compute scp \
   "$ROOT/scripts/run_mo_calibration_blind_judge.py" \
   "$ROOT/scripts/eval_mo_score_calibration.py" \
   "$ROOT/scripts/eval_mo_score_agent_proxy.py" \
+  "$ROOT/scripts/select_mo_calibration_provisional.py" \
+  "$ROOT/scripts/run_mo_calibration_llm_methodist_labels.py" \
+  "$ROOT/scripts/eval_mo_score_calibration_c7.py" \
   "$ROOT/scripts/build_mo_calibration_methodist_pack.py" \
   "$ROOT/clinical_knowledge/mo_icd_llm_review.py" \
   "$ROOT/clinical_knowledge/mo_dx_evidence_score.py" \
   "$ROOT/clinical_knowledge/mo_plan_protocol_score.py" \
+  "$ROOT/clinical_knowledge/mo_calibration_methodist_ui.py" \
   "${VM}:/tmp/" --zone="$ZONE" --quiet
 
 gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
@@ -64,11 +70,13 @@ sudo cp /tmp/mo_llm_range_runner.sh /tmp/grade_kz_llm.py \
   /tmp/run_mo_action_queue_llm_judge.py /tmp/run_mo_icd_llm_review.py \
   /tmp/recompute_mo_days.py /tmp/build_mo_score_calibration_sample.py \
   /tmp/run_mo_calibration_blind_judge.py /tmp/eval_mo_score_calibration.py \
-  /tmp/eval_mo_score_agent_proxy.py \
+  /tmp/eval_mo_score_agent_proxy.py /tmp/select_mo_calibration_provisional.py \
+  /tmp/run_mo_calibration_llm_methodist_labels.py /tmp/eval_mo_score_calibration_c7.py \
   /tmp/build_mo_calibration_methodist_pack.py \
   /opt/protocol/scripts/
 sudo cp /tmp/mo_icd_llm_review.py /tmp/mo_dx_evidence_score.py \
-  /tmp/mo_plan_protocol_score.py /opt/protocol/clinical_knowledge/
+  /tmp/mo_plan_protocol_score.py /tmp/mo_calibration_methodist_ui.py \
+  /opt/protocol/clinical_knowledge/
 sudo chmod +x /opt/protocol/scripts/mo_llm_range_runner.sh
 if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/scripts/mo_llm_range_runner.sh '${CONTAINER}':/app/scripts/
@@ -80,10 +88,14 @@ if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/scripts/run_mo_calibration_blind_judge.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/eval_mo_score_calibration.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/eval_mo_score_agent_proxy.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/select_mo_calibration_provisional.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/run_mo_calibration_llm_methodist_labels.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/eval_mo_score_calibration_c7.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/build_mo_calibration_methodist_pack.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_icd_llm_review.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_dx_evidence_score.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_plan_protocol_score.py '${CONTAINER}':/app/clinical_knowledge/
+  sudo docker cp /opt/protocol/clinical_knowledge/mo_calibration_methodist_ui.py '${CONTAINER}':/app/clinical_knowledge/
 fi
 "
 
@@ -108,6 +120,116 @@ echo SMOKE_GRADE_OK
   exit 0
 fi
 
+if [[ "$MODE" == "--calibration-llm-methodist-labels" ]]; then
+  CALIBRATION_DIR="${DATA}/calibration/mo-score-v3-${FIRST}-${LAST}"
+  PROXY_MODEL="${MO_CALIBRATION_PROXY_MODEL:-gemini-3.1-pro-preview}"
+  LABEL_SUMMARY="${CALIBRATION_DIR}/secret/methodist/llm_proxy_labels_summary.json"
+  C7_OUT="${CALIBRATION_DIR}/c7_against_llm_proxy_labels.json"
+  echo "[2/3] calibration C6B: LLM-proxy methodist labels + C7"
+  gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
+set -euo pipefail
+sudo docker exec \
+  -e MO_LLM_EXECUTION_HOST=gce -e RUN_HOST=gcp \
+  '${CONTAINER}' bash -lc \"
+set -euo pipefail
+cd /app
+test -f '${CALIBRATION_DIR}/secret/methodist/methodist_cases.jsonl'
+test -f '${CALIBRATION_DIR}/secret/methodist/methodist_labels.jsonl'
+python scripts/run_mo_calibration_llm_methodist_labels.py \\
+  --model '${PROXY_MODEL}' \\
+  --summary-out '${LABEL_SUMMARY}'
+python -c 'import json; value=json.load(open(\\\"${LABEL_SUMMARY}\\\")); assert value[\\\"passed\\\"] and value[\\\"comparison_unsealed\\\"] and value[\\\"error_n\\\"]==0 and value[\\\"proxy_not_human_gold\\\"]; print(\\\"LLM_METHODIST_LABELS_OK\\\", value[\\\"written_n\\\"], value[\\\"label_audit\\\"][\\\"complete_label_n\\\"])'
+python scripts/eval_mo_score_calibration_c7.py \\
+  --snapshot '${CALIBRATION_DIR}/secret/engine_snapshot.jsonl' \\
+  --replay '${CALIBRATION_DIR}/secret/engine_replay.jsonl' \\
+  --blind '${CALIBRATION_DIR}/secret/blind_pilot.jsonl' \\
+  --labels '${CALIBRATION_DIR}/secret/methodist/methodist_labels.jsonl' \\
+  --out '${C7_OUT}' \\
+  --gold-kind llm_proxy_c6b \\
+  --bootstrap-iterations 2000 --seed 42
+python -c 'import json; value=json.load(open(\\\"${C7_OUT}\\\")); assert value[\\\"production_decision_allowed\\\"] is False; print(json.dumps({\\\"dx_top\\\":(value[\\\"endpoints\\\"][\\\"dx\\\"][\\\"ranking_by_gold_pr_auc\\\"] or [None])[0],\\\"plan_top\\\":(value[\\\"endpoints\\\"][\\\"plan\\\"][\\\"ranking_by_gold_pr_auc\\\"] or [None])[0],\\\"dx_bad\\\":value[\\\"endpoints\\\"][\\\"dx\\\"][\\\"gold_bad_n\\\"],\\\"plan_bad\\\":value[\\\"endpoints\\\"][\\\"plan\\\"][\\\"gold_bad_n\\\"]}, ensure_ascii=False))'
+\"
+"
+  echo "[3/3] done LLM methodist labels on GCE ${VM}"
+  echo "LABEL_SUMMARY=${LABEL_SUMMARY}"
+  echo "C7_OUT=${C7_OUT}"
+  exit 0
+fi
+
+if [[ "$MODE" == "--calibration-confirmatory-proxy" ]]; then
+  CALIBRATION_DIR="${DATA}/calibration/mo-score-v3-confirmatory-${FIRST}-${LAST}"
+  PILOT_MANIFEST="${DATA}/calibration/mo-score-v3-2026-08-01-2026-08-08/secret/secret_manifest.jsonl"
+  TARGET_N="${MO_CALIBRATION_CONFIRMATORY_N:-100}"
+  SEED="${MO_CALIBRATION_CONFIRMATORY_SEED:-43}"
+  BLIND_MODEL="${MO_CALIBRATION_MODEL:-gemini-3.6-flash}"
+  PROXY_MODEL="${MO_CALIBRATION_PROXY_MODEL:-gemini-3.1-pro-preview}"
+  BLIND_OUT="${CALIBRATION_DIR}/secret/blind_confirmatory.jsonl"
+  BLIND_SUMMARY="${CALIBRATION_DIR}/confirmatory_blind_summary.json"
+  PROXY_OUT="${CALIBRATION_DIR}/secret/agent_proxy_confirmatory.jsonl"
+  PROXY_SUMMARY="${CALIBRATION_DIR}/secret/agent_proxy_confirmatory_summary.json"
+  PROXY_EVAL="${CALIBRATION_DIR}/agent_proxy_eval_summary.json"
+  PROVISIONAL_OUT="${CALIBRATION_DIR}/provisional_methodology.json"
+  Y1="${FIRST:0:4}"
+  M1="${FIRST:5:2}"
+  echo "[2/3] calibration C9A: confirmatory ${TARGET_N} cases + blind + proxy"
+  gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
+set -euo pipefail
+sudo mkdir -p '${CALIBRATION_DIR}'
+sudo docker exec \
+  -e MO_LLM_EXECUTION_HOST=gce -e RUN_HOST=gcp \
+  '${CONTAINER}' bash -lc \"
+set -euo pipefail
+cd /app
+test -f '${PILOT_MANIFEST}'
+python scripts/build_mo_score_calibration_sample.py \\
+  --cases ${DATA}/secure_cases/${Y1}/${M1}/kz_l1_${Y1}-${M1}-??_cases.jsonl \\
+  --clinical-csv ${DATA}/secure_cases/${Y1}/${M1}/mis_protocol_${Y1}-${M1}.csv \\
+  --warehouse ${DATA}/warehouse/mo_analytics.sqlite \\
+  --secret-dir '${CALIBRATION_DIR}/secret' \\
+  --public-manifest '${CALIBRATION_DIR}/public_manifest.json' \\
+  --date-from '${FIRST}' --date-to '${LAST}' \\
+  --target-n '${TARGET_N}' --seed '${SEED}' --no-sentinel \\
+  --exclude-manifest '${PILOT_MANIFEST}'
+python -c 'import json; m=json.load(open(\\\"${CALIBRATION_DIR}/public_manifest.json\\\")); assert m[\\\"audit\\\"][\\\"passed\\\"]; assert m[\\\"selected_n\\\"]==int(\\\"${TARGET_N}\\\"); print(\\\"CONFIRMATORY_SAMPLE_OK\\\", m[\\\"selected_n\\\"])'
+python scripts/eval_mo_score_calibration.py \\
+  --cases '${CALIBRATION_DIR}/secret/secret_cases.jsonl' \\
+  --snapshot '${CALIBRATION_DIR}/secret/engine_snapshot.jsonl' \\
+  --replay '${CALIBRATION_DIR}/secret/engine_replay.jsonl' \\
+  --out '${CALIBRATION_DIR}/replay_drift_summary.json'
+python scripts/run_mo_calibration_blind_judge.py \\
+  --cases '${CALIBRATION_DIR}/secret/secret_cases.jsonl' \\
+  --manifest '${CALIBRATION_DIR}/secret/secret_manifest.jsonl' \\
+  --out '${BLIND_OUT}' \\
+  --summary-out '${BLIND_SUMMARY}' \\
+  --limit 0 --passes 1 --model '${BLIND_MODEL}' --require-route-coverage --resume || true
+python -c 'import json; value=json.load(open(\\\"${BLIND_SUMMARY}\\\")); assert value[\\\"parse_success_n\\\"]>=int(\\\"${TARGET_N}\\\")-2; assert value[\\\"leakage_failure_n\\\"]==0; assert value[\\\"geo_error_n\\\"]==0; print(\\\"CONFIRMATORY_BLIND_OK\\\")'
+python scripts/run_mo_calibration_blind_judge.py \\
+  --cases '${CALIBRATION_DIR}/secret/secret_cases.jsonl' \\
+  --manifest '${CALIBRATION_DIR}/secret/secret_manifest.jsonl' \\
+  --out '${PROXY_OUT}' \\
+  --summary-out '${PROXY_SUMMARY}' \\
+  --limit 0 --passes 1 --model '${PROXY_MODEL}' --require-route-coverage --resume || true
+python -c 'import json; value=json.load(open(\\\"${PROXY_SUMMARY}\\\")); assert value[\\\"parse_success_n\\\"]>=int(\\\"${TARGET_N}\\\")-2; assert value[\\\"leakage_failure_n\\\"]==0; assert value[\\\"geo_error_n\\\"]==0; print(\\\"CONFIRMATORY_PROXY_OK\\\")'
+python scripts/eval_mo_score_agent_proxy.py \\
+  --snapshot '${CALIBRATION_DIR}/secret/engine_snapshot.jsonl' \\
+  --replay '${CALIBRATION_DIR}/secret/engine_replay.jsonl' \\
+  --blind '${BLIND_OUT}' \\
+  --proxy '${PROXY_OUT}' \\
+  --out '${PROXY_EVAL}' \\
+  --bootstrap-iterations 2000 --seed 43
+python scripts/select_mo_calibration_provisional.py \\
+  --proxy-eval '${PROXY_EVAL}' \\
+  --out '${PROVISIONAL_OUT}'
+python -c 'import json; value=json.load(open(\\\"${PROVISIONAL_OUT}\\\")); assert value[\\\"production_rollout\\\"][\\\"allowed\\\"] is False; print(json.dumps(value[\\\"shadow_recommendation\\\"], ensure_ascii=False))'
+\"
+"
+  echo "[3/3] done confirmatory proxy on GCE ${VM}"
+  echo "SECRET_DIR=${CALIBRATION_DIR}/secret"
+  echo "PUBLIC_AGGREGATE=${PROXY_EVAL}"
+  echo "PROVISIONAL=${PROVISIONAL_OUT}"
+  exit 0
+fi
+
 if [[ "$MODE" == "--calibration-agent-proxy" ]]; then
   CALIBRATION_DIR="${DATA}/calibration/mo-score-v3-${FIRST}-${LAST}"
   PROXY_MODEL="${MO_CALIBRATION_PROXY_MODEL:-gemini-3.1-pro-preview}"
@@ -123,14 +245,12 @@ sudo docker exec \
 set -euo pipefail
 cd /app
 python -c 'import hashlib,json,pathlib; from scripts.build_mo_score_calibration_sample import arm_d_fingerprint; root=pathlib.Path(\\\"${CALIBRATION_DIR}\\\"); m=json.load(open(root/\\\"public_manifest.json\\\")); assert m[\\\"audit\\\"][\\\"passed\\\"]; assert arm_d_fingerprint()[\\\"fingerprint\\\"]==m[\\\"arm_d_fingerprint\\\"][\\\"fingerprint\\\"]; expected=m[\\\"secret_artifact_hashes\\\"]; files=(\\\"secret_cases.jsonl\\\",\\\"secret_manifest.jsonl\\\",\\\"engine_snapshot.jsonl\\\",\\\"engine_replay.jsonl\\\"); assert all(hashlib.sha256((root/\\\"secret\\\"/name).read_bytes()).hexdigest()==expected[name] for name in files); print(\\\"FROZEN_SAMPLE_HASH_OK\\\")'
-proxy_rc=0
 python scripts/run_mo_calibration_blind_judge.py \
   --cases '${CALIBRATION_DIR}/secret/secret_cases.jsonl' \
   --manifest '${CALIBRATION_DIR}/secret/secret_manifest.jsonl' \
   --out '${PROXY_OUT}' \
   --summary-out '${PROXY_SUMMARY}' \
-  --limit 30 --passes 1 --model '${PROXY_MODEL}' --require-route-coverage --resume || proxy_rc=\$?
-if [[ \"\${proxy_rc}\" -ne 0 && \"\${proxy_rc}\" -ne 2 ]]; then exit \"\${proxy_rc}\"; fi
+  --limit 30 --passes 1 --model '${PROXY_MODEL}' --require-route-coverage --resume || true
 python -c 'import json; value=json.load(open(\\\"${PROXY_SUMMARY}\\\")); assert value[\\\"parse_success_n\\\"]>=29 and value[\\\"error_n\\\"]<=1 and value[\\\"leakage_failure_n\\\"]==0 and value[\\\"geo_error_n\\\"]==0 and value[\\\"route_coverage_passed\\\"]; print(\\\"PROXY_EXPLORATORY_GATE_OK\\\")'
 python scripts/eval_mo_score_agent_proxy.py \
   --snapshot '${CALIBRATION_DIR}/secret/engine_snapshot.jsonl' \

@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C5 выполнены; C6 secure UI готов, human labels 0/22)
+Статус: **active** (C0-C9A done; owner B → `mo-shadow-dx-plan-conservative-v1`; SSOT locked)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -408,9 +408,16 @@ Uncertainty:
 - [x] **C4** GCE smoke 5 случаев ×2
 - [x] **C5** GCE pilot 30 ×2 + LLM adjudication
 - [ ] **C6** Methodist labels: ≥15 и все disagreements
-- [ ] **C7** Сравнение одиночных scores и ensembles с CI
-- [ ] **C8** Pilot report + выбор provisional methodology
-- [ ] **C9** Confirmatory cohort ≥100 или ≥30 bad
+  (human gate waived 2026-08-09; substitute **C6B** LLM-proxy labels done -
+  план `2026-08-09-mo-calibration-llm-methodist-proxy-v1.md`)
+- [x] **C7** Сравнение одиночных scores и ensembles с CI (против C6B proxy-gold;
+  `production_decision_allowed=false`; bad-n мал: Dx 1 / Plan 2)
+- [x] **C8** Pilot report + provisional methodology
+  (C8A exploratory + C8B vs C6B gold: оба Dx/Plan `no_stable_provisional`;
+  production rollout forbidden)
+- [x] **C9** Confirmatory cohort ≥100 (C9A exploratory proxy-gold):
+  Dx `blind.adjudicated_or_mean`, Plan `ensemble.arm_d_blind_mean`;
+  production rollout всё ещё `false`
 
 #### Результат C0-C4 от 2026-08-09
 
@@ -468,8 +475,11 @@ Uncertainty:
   `0700`, файлы `0600`.
 - Текущий label gate: `complete_label_n=0/22`, `case_n=18`,
   `missing_n=0`, `extra_n=0`, `passed=false`.
-- C6 не отмечен выполненным: требуется реальная разметка методистом и
-  `passed=true`. LLM adjudication не считается human gold.
+- C6 human не отмечен выполненным: реальная разметка методистом всё ещё
+  желательна, но owner waived gate. LLM adjudication не считается human gold.
+- C6B (в работе): независимый Pro-proxy пишет 22 labels в тот же pack с
+  `reviewer_id=llm_proxy_c6b_not_human_gold`, затем formal C7 против этих
+  labels без изменения production scoring.
 - Защищённая форма доступна по `/methodist/calibration`: только роли
   methodist/lead/admin, API `no-store`, server-side reviewer/timestamp,
   file lock + atomic replace и отдельный access audit без clinical text.
@@ -484,12 +494,15 @@ Uncertainty:
 - [ ] **S2** Zones подписаны отдельно
 - [ ] **S3** 0.5 = «Частично», 0 = «Не выполнено»
 - [ ] **S4** Live attach только с полным payload
-- [ ] **S5** Новые Endpoint C/D остаются shadow до C9
+- [x] **S5** Новые Endpoint C/D остаются shadow до C9 (и после: выбран вариант B)
 
 ### P1 - после confirmatory gate
 
 - [ ] **S6** Выбранный clinical selector становится primary queue signal
+  (**отложено**; вариант C не выбран. Вместо этого B:
+  `2026-08-09-mo-shadow-dx-plan-conservative-v1.md`)
 - [ ] **S7** Dx evidence и plan scores показываются отдельно в case review
+  (shadow-only, консервативные poor/critical; см. B-план)
 - [ ] **S8** Осторожный ICD mismatch code
 - [ ] **S9** LLM fallback маркируется как no-KP / lower trust
 - [ ] **S10** Gold tests из adjudicated pilot без PHI

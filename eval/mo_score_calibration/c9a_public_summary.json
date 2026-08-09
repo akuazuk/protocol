@@ -1,0 +1,142 @@
+{
+  "schema_version": 1,
+  "analysis": "c9a_confirmatory_proxy",
+  "period": {
+    "from": "2026-07-26",
+    "to": "2026-07-31",
+    "seed": 43,
+    "selected_n": 100
+  },
+  "blind": {
+    "model": "gemini-3.6-flash",
+    "result_n": 100,
+    "parse_success_n": 99,
+    "error_n": 1,
+    "leakage_failure_n": 0,
+    "geo_error_n": 0,
+    "route_counts": {
+      "kp_grounded": 52,
+      "llm_no_kp": 48
+    }
+  },
+  "proxy": {
+    "model": "gemini-3.1-pro-preview",
+    "result_n": 100,
+    "parse_success_n": 98,
+    "error_n": 2,
+    "leakage_failure_n": 0,
+    "geo_error_n": 0,
+    "route_counts": {
+      "kp_grounded": 52,
+      "llm_no_kp": 48
+    }
+  },
+  "endpoints": {
+    "dx": {
+      "proxy_labeled_n": 82,
+      "proxy_bad_n": 13,
+      "top5": [
+        "blind.adjudicated_or_mean",
+        "blind.mean_2",
+        "blind.pass_1",
+        "ensemble.arm_d_blind_mean",
+        "ensemble.zone_blind_adjudicated"
+      ],
+      "top_metrics": {
+        "blind.adjudicated_or_mean": {
+          "n": 81,
+          "pr_auc_bad": 0.8107,
+          "roc_auc_bad": 0.9209,
+          "mae": 7.963,
+          "spearman": 0.7835
+        },
+        "blind.mean_2": {
+          "n": 81,
+          "pr_auc_bad": 0.8107,
+          "roc_auc_bad": 0.9209,
+          "mae": 7.963,
+          "spearman": 0.7835
+        },
+        "blind.pass_1": {
+          "n": 81,
+          "pr_auc_bad": 0.8107,
+          "roc_auc_bad": 0.9209,
+          "mae": 7.963,
+          "spearman": 0.7835
+        },
+        "ensemble.arm_d_blind_mean": {
+          "n": 81,
+          "pr_auc_bad": 0.8107,
+          "roc_auc_bad": 0.9209,
+          "mae": 13.4506,
+          "spearman": 0.7835
+        },
+        "ensemble.zone_blind_adjudicated": {
+          "n": 56,
+          "pr_auc_bad": 0.6967,
+          "roc_auc_bad": 0.8919,
+          "mae": 13.0804,
+          "spearman": 0.6911
+        }
+      }
+    },
+    "plan": {
+      "proxy_labeled_n": 75,
+      "proxy_bad_n": 26,
+      "top5": [
+        "ensemble.arm_d_blind_mean",
+        "blind.adjudicated_or_mean",
+        "blind.mean_2",
+        "blind.pass_1",
+        "arm_d.axis.clinical_concordance"
+      ],
+      "top_metrics": {
+        "ensemble.arm_d_blind_mean": {
+          "n": 73,
+          "pr_auc_bad": 0.9034,
+          "roc_auc_bad": 0.9149,
+          "mae": 22.4178,
+          "spearman": 0.7851
+        },
+        "blind.adjudicated_or_mean": {
+          "n": 74,
+          "pr_auc_bad": 0.9016,
+          "roc_auc_bad": 0.9135,
+          "mae": 14.1486,
+          "spearman": 0.7673
+        },
+        "blind.mean_2": {
+          "n": 74,
+          "pr_auc_bad": 0.9016,
+          "roc_auc_bad": 0.9135,
+          "mae": 14.1486,
+          "spearman": 0.7673
+        },
+        "blind.pass_1": {
+          "n": 74,
+          "pr_auc_bad": 0.9016,
+          "roc_auc_bad": 0.9135,
+          "mae": 14.1486,
+          "spearman": 0.7673
+        },
+        "arm_d.axis.clinical_concordance": {
+          "n": 74,
+          "pr_auc_bad": 0.4879,
+          "roc_auc_bad": 0.5192,
+          "mae": 39.0135,
+          "spearman": 0.1818
+        }
+      }
+    }
+  },
+  "provisional": {
+    "dx": "provisional_shadow:blind.adjudicated_or_mean",
+    "plan": "provisional_shadow:ensemble.arm_d_blind_mean",
+    "note": "Shadow only. Do not change action queue, thresholds, SSOT, or warehouse until formal C6-C9 with methodist gold."
+  },
+  "production_rollout": {
+    "allowed": false,
+    "reason": "proxy_not_human_gold",
+    "required_next_gate": "independent_methodist_labels"
+  }
+}
