@@ -67,6 +67,25 @@ def _utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+def judge_config_fingerprint(model: str) -> dict[str, Any]:
+    component_paths = {
+        "judge": Path(__file__),
+        "dx_contract": ROOT / "clinical_knowledge" / "mo_dx_evidence_score.py",
+        "plan_contract": ROOT / "clinical_knowledge" / "mo_plan_protocol_score.py",
+    }
+    payload = {
+        "engine": ENGINE,
+        "schema_version": SCHEMA_VERSION,
+        "model": model,
+        "forbidden_prompt_keys": sorted(FORBIDDEN_PROMPT_KEYS),
+        "component_hashes": {
+            name: hashlib.sha256(path.read_bytes()).hexdigest()
+            for name, path in component_paths.items()
+        },
+    }
+    return {**payload, "fingerprint": _hash(payload)}
+
+
 def _clip(value: Any, limit: int = 4000) -> str:
     text = str(value or "").strip()
     return text if len(text) <= limit else text[: limit - 1] + "…"
@@ -480,6 +499,7 @@ def judge_case(
     result: dict[str, Any] = {
         "schema_version": SCHEMA_VERSION,
         "engine": ENGINE,
+        "kind": "pass",
         "sample_id": sample_id,
         "pass_no": pass_no,
         "model": model,
@@ -581,6 +601,218 @@ def _select_smoke_rows(
     return selected[:limit]
 
 
+def _plan_score(result: Mapping[str, Any]) -> int | None:
+    value = (
+        result.get("plan_protocol_pct")
+        if result.get("provenance") == "kp_grounded"
+        else result.get("plan_general_llm_pct")
+    )
+    try:
+        return int(round(float(value))) if value is not None else None
+    except (TypeError, ValueError):
+        return None
+
+
+def disagreement_endpoints(
+    first: Mapping[str, Any],
+    second: Mapping[str, Any],
+    *,
+    score_delta: int = 15,
+) -> list[str]:
+    """Pre-registered trigger for the third, independent adjudication pass."""
+    out: list[str] = []
+    dx_a = first.get("dx_evidence") if isinstance(first.get("dx_evidence"), Mapping) else {}
+    dx_b = second.get("dx_evidence") if isinstance(second.get("dx_evidence"), Mapping) else {}
+    dx_scores = (dx_a.get("dx_evidence_pct"), dx_b.get("dx_evidence_pct"))
+    dx_numeric_disagreement = (
+        all(value is not None for value in dx_scores)
+        and abs(float(dx_scores[0]) - float(dx_scores[1])) >= score_delta
+    )
+    if (
+        dx_a.get("verdict") != dx_b.get("verdict")
+        or dx_a.get("icd_fit") != dx_b.get("icd_fit")
+        or bool(dx_a.get("potential_harm")) != bool(dx_b.get("potential_harm"))
+        or dx_numeric_disagreement
+    ):
+        out.append("dx")
+    plan_a = (
+        first.get("plan_concordance")
+        if isinstance(first.get("plan_concordance"), Mapping)
+        else {}
+    )
+    plan_b = (
+        second.get("plan_concordance")
+        if isinstance(second.get("plan_concordance"), Mapping)
+        else {}
+    )
+    plan_scores = (_plan_score(plan_a), _plan_score(plan_b))
+    plan_numeric_disagreement = (
+        all(value is not None for value in plan_scores)
+        and abs(int(plan_scores[0]) - int(plan_scores[1])) >= score_delta
+    )
+    if (
+        plan_a.get("verdict") != plan_b.get("verdict")
+        or bool(plan_a.get("potential_harm")) != bool(plan_b.get("potential_harm"))
+        or plan_numeric_disagreement
+    ):
+        out.append("plan")
+    return out
+
+
+def build_adjudication_prompt(
+    case_pack: Mapping[str, Any],
+    *,
+    endpoint: str,
+    first: Mapping[str, Any],
+    second: Mapping[str, Any],
+    route: str,
+    protocol_context: Mapping[str, Any] | None,
+) -> tuple[str, dict[str, Any]]:
+    if endpoint == "dx":
+        _, blind_input = build_dx_prompt(case_pack)
+        instruction = (
+            "Независимо разреши расхождение двух слепых оценок Endpoint C. "
+            "Не усредняй автоматически; заново проверь диагноз по исходным evidence."
+        )
+    elif endpoint == "plan":
+        _, blind_input = build_plan_prompt(
+            case_pack,
+            route=route,
+            protocol_context=protocol_context,
+        )
+        instruction = (
+            "Независимо разреши расхождение двух слепых оценок Endpoint D. "
+            "Диагноз остаётся принятой premise; заново проверь план по исходному входу."
+        )
+    else:
+        raise ValueError("endpoint must be dx or plan")
+    payload = {
+        "endpoint": endpoint,
+        "blind_input": blind_input,
+        "candidate_a": dict(first),
+        "candidate_b": dict(second),
+    }
+    prompt = "\n".join(
+        [
+            instruction,
+            "Верни один итоговый JSON того же endpoint-контракта без markdown.",
+            "Не используй и не запрашивай engine scores, findings или queue state.",
+            "Вход:",
+            _canonical(payload),
+        ]
+    )
+    return prompt, payload
+
+
+def adjudicate_case(
+    row: Mapping[str, Any],
+    *,
+    sample_id: str,
+    endpoint: str,
+    first: Mapping[str, Any],
+    second: Mapping[str, Any],
+    model: str,
+    dry_run: bool,
+) -> dict[str, Any]:
+    pack = blind_case_pack(row, sample_id=sample_id)
+    route, protocol_context = protocol_context_for_case(row, pack)
+    first_result = first["dx_evidence"] if endpoint == "dx" else first["plan_concordance"]
+    second_result = second["dx_evidence"] if endpoint == "dx" else second["plan_concordance"]
+    prompt, prompt_input = build_adjudication_prompt(
+        pack,
+        endpoint=endpoint,
+        first=first_result,
+        second=second_result,
+        route=route["route"],
+        protocol_context=protocol_context,
+    )
+    audit = audit_prompt_input(prompt_input, source_row=row)
+    if not audit["passed"]:
+        raise ValueError("adjudication prompt leakage audit failed")
+    output: dict[str, Any] = {
+        "schema_version": SCHEMA_VERSION,
+        "engine": ENGINE,
+        "kind": "adjudication",
+        "sample_id": sample_id,
+        "endpoint": endpoint,
+        "model": model,
+        "route": route["route"],
+        "candidate_hashes": [_hash(first_result), _hash(second_result)],
+        "prompt_hash": _hash(prompt),
+        "input_hash": audit["input_hash"],
+        "leakage_audit": audit,
+        "result": None,
+        "latency_ms": None,
+        "retry_count": 0,
+        "error": None,
+    }
+    if dry_run:
+        output["dry_run"] = True
+        return output
+    assert_gce_live_contour()
+    elapsed = 0
+    try:
+        for attempt in range(2):
+            raw, latency = _generate(prompt, model=model)
+            elapsed += latency
+            try:
+                parsed = extract_json_object(raw)
+                if endpoint == "dx":
+                    output["result"] = validate_dx_evidence_result(
+                        pin_dx_semantics(parsed),
+                        case_id=sample_id,
+                    )
+                else:
+                    output["result"] = validate_plan_concordance_result(
+                        pin_plan_route(
+                            parsed,
+                            route=route["route"],
+                            protocol_context=protocol_context,
+                        ),
+                        case_id=sample_id,
+                    )
+                output["retry_count"] = attempt
+                break
+            except (ValueError, json.JSONDecodeError):
+                if attempt == 1:
+                    raise
+    except Exception as exc:  # noqa: BLE001
+        output["error"] = f"{type(exc).__name__}: {str(exc)[:400]}"
+    output["latency_ms"] = elapsed
+    return output
+
+
+def _append_jsonl(path: Path, row: Mapping[str, Any]) -> None:
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open("a", encoding="utf-8") as handle:
+        handle.write(_canonical(row) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    try:
+        path.chmod(0o600)
+    except OSError:
+        pass
+
+
+def _dedupe_results(results: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    latest: dict[tuple[Any, ...], dict[str, Any]] = {}
+    for row in results:
+        if row.get("kind", "pass") == "pass":
+            key = ("pass", str(row.get("sample_id")), int(row.get("pass_no") or 0))
+        else:
+            key = ("adjudication", str(row.get("sample_id")), str(row.get("endpoint")))
+        latest[key] = row
+    return sorted(
+        latest.values(),
+        key=lambda row: (
+            str(row.get("sample_id")),
+            0 if row.get("kind", "pass") == "pass" else 1,
+            int(row.get("pass_no") or 0),
+            str(row.get("endpoint") or ""),
+        ),
+    )
+
+
 def _summary(
     results: list[dict[str, Any]],
     *,
@@ -588,11 +820,13 @@ def _summary(
     passes: int,
     require_route_coverage: bool,
 ) -> dict[str, Any]:
-    routes = Counter(str(row.get("route") or "unknown") for row in results)
-    errors = [str(row.get("error")) for row in results if row.get("error")]
+    primary = [row for row in results if row.get("kind", "pass") == "pass"]
+    adjudications = [row for row in results if row.get("kind") == "adjudication"]
+    routes = Counter(str(row.get("route") or "unknown") for row in primary)
+    errors = [str(row.get("error")) for row in primary if row.get("error")]
     leakage_failures = sum(
         1
-        for row in results
+        for row in primary
         if not all(
             bool((row.get("leakage_audit") or {}).get(stage, {}).get("passed"))
             for stage in ("dx", "plan")
@@ -600,7 +834,7 @@ def _summary(
     )
     parse_success = sum(
         1
-        for row in results
+        for row in primary
         if row.get("dx_evidence") is not None and row.get("plan_concordance") is not None
     )
     route_coverage = bool(routes.get("kp_grounded") and routes.get("llm_no_kp"))
@@ -610,8 +844,8 @@ def _summary(
         "generated_at": _utc_now(),
         "model": model,
         "passes": passes,
-        "result_n": len(results),
-        "unique_sample_n": len({row.get("sample_id") for row in results}),
+        "result_n": len(primary),
+        "unique_sample_n": len({row.get("sample_id") for row in primary}),
         "route_counts": dict(routes),
         "parse_success_n": parse_success,
         "error_n": len(errors),
@@ -620,19 +854,24 @@ def _summary(
             1 for error in errors if "location is not supported" in error.lower() or "geo" in error.lower()
         ),
         "route_coverage_passed": route_coverage,
-        "passed": bool(results)
-        and parse_success == len(results)
+        "adjudication_n": len(adjudications),
+        "adjudication_success_n": sum(
+            1 for row in adjudications if row.get("result") is not None and not row.get("error")
+        ),
+        "adjudication_error_n": sum(1 for row in adjudications if row.get("error")),
+        "adjudication_leakage_failure_n": sum(
+            1
+            for row in adjudications
+            if not bool((row.get("leakage_audit") or {}).get("passed"))
+        ),
+        "passed": bool(primary)
+        and parse_success == len(primary)
         and not errors
         and leakage_failures == 0
+        and all(not row.get("error") and row.get("result") is not None for row in adjudications)
+        and all(bool((row.get("leakage_audit") or {}).get("passed")) for row in adjudications)
         and (route_coverage or not require_route_coverage),
-        "config_hash": _hash(
-            {
-                "engine": ENGINE,
-                "schema_version": SCHEMA_VERSION,
-                "model": model,
-                "forbidden_prompt_keys": sorted(FORBIDDEN_PROMPT_KEYS),
-            }
-        ),
+        "judge_config": judge_config_fingerprint(model),
     }
     return summary
 
@@ -648,15 +887,26 @@ def main() -> int:
     parser.add_argument("--model", default=os.environ.get("MO_CALIBRATION_MODEL") or DEFAULT_MODEL)
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--require-route-coverage", action="store_true")
+    parser.add_argument("--resume", action="store_true")
+    parser.add_argument("--adjudicate-disagreements", action="store_true")
     args = parser.parse_args()
     if not args.dry_run:
         assert_gce_live_contour()
     rows = _load_rows(args.cases)
     rows = _select_smoke_rows(rows, manifest_path=args.manifest, limit=args.limit)
-    results: list[dict[str, Any]] = []
+    if args.out.exists() and not args.resume:
+        args.out.unlink()
+    results: list[dict[str, Any]] = _load_rows(args.out) if args.resume and args.out.is_file() else []
+    completed_passes = {
+        (str(item.get("sample_id")), int(item.get("pass_no") or 0))
+        for item in results
+        if item.get("kind", "pass") == "pass" and not item.get("error")
+    }
     for index, row in enumerate(rows, 1):
         sample_id = f"S{index:03d}"
         for pass_no in range(1, max(1, args.passes) + 1):
+            if (sample_id, pass_no) in completed_passes:
+                continue
             started = time.perf_counter()
             result = judge_case(
                 row,
@@ -667,20 +917,69 @@ def main() -> int:
             )
             result["elapsed_ms"] = int((time.perf_counter() - started) * 1000)
             results.append(result)
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    with args.out.open("w", encoding="utf-8") as handle:
+            _append_jsonl(args.out, result)
+
+    disagreement_n = 0
+    if args.adjudicate_disagreements:
+        existing_adjudications = {
+            (str(item.get("sample_id")), str(item.get("endpoint")))
+            for item in results
+            if item.get("kind") == "adjudication" and not item.get("error")
+        }
+        by_sample: dict[str, list[dict[str, Any]]] = {}
+        for item in results:
+            if item.get("kind", "pass") != "pass" or item.get("error"):
+                continue
+            by_sample.setdefault(str(item.get("sample_id")), []).append(item)
+        for index, row in enumerate(rows, 1):
+            sample_id = f"S{index:03d}"
+            passes_for_case = sorted(
+                by_sample.get(sample_id, []),
+                key=lambda item: int(item.get("pass_no") or 0),
+            )
+            if len(passes_for_case) < 2:
+                continue
+            endpoints = disagreement_endpoints(passes_for_case[0], passes_for_case[1])
+            disagreement_n += len(endpoints)
+            for endpoint in endpoints:
+                if (sample_id, endpoint) in existing_adjudications:
+                    continue
+                adjudication = adjudicate_case(
+                    row,
+                    sample_id=sample_id,
+                    endpoint=endpoint,
+                    first=passes_for_case[0],
+                    second=passes_for_case[1],
+                    model=args.model,
+                    dry_run=args.dry_run,
+                )
+                results.append(adjudication)
+                _append_jsonl(args.out, adjudication)
+
+    results = _dedupe_results(results)
+    temporary = args.out.with_suffix(args.out.suffix + ".tmp")
+    with temporary.open("w", encoding="utf-8") as handle:
         for result in results:
             handle.write(_canonical(result) + "\n")
+    temporary.replace(args.out)
     try:
         args.out.chmod(0o600)
     except OSError:
         pass
+
     summary = _summary(
         results,
         model=args.model,
         passes=max(1, args.passes),
         require_route_coverage=args.require_route_coverage,
     )
+    summary["disagreement_endpoint_n"] = disagreement_n
+    if args.adjudicate_disagreements:
+        summary["adjudication_complete"] = (
+            summary["adjudication_success_n"] == disagreement_n
+            and summary["adjudication_error_n"] == 0
+        )
+        summary["passed"] = bool(summary["passed"] and summary["adjudication_complete"])
     if args.dry_run:
         summary["dry_run"] = True
         summary["passed"] = (

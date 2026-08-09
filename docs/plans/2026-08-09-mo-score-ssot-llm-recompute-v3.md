@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C4 выполнены; C5-C9 ожидают pilot/adjudication)
+Статус: **active** (C0-C5 выполнены; C6 methodist labels - следующий gate)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -406,7 +406,7 @@ Uncertainty:
 - [x] **C2** Контракты Endpoint C/D + synthetic tests
 - [x] **C3** Blind prompts + автоматический leakage test
 - [x] **C4** GCE smoke 5 случаев ×2
-- [ ] **C5** GCE pilot 30 ×2 + LLM adjudication
+- [x] **C5** GCE pilot 30 ×2 + LLM adjudication
 - [ ] **C6** Methodist labels: ≥15 и все disagreements
 - [ ] **C7** Сравнение одиночных scores и ensembles с CI
 - [ ] **C8** Pilot report + выбор provisional methodology
@@ -429,6 +429,32 @@ Uncertainty:
   разница score 4.0 п.п. для Dx и 1.2 п.п. для plan.
 - Secret artifacts остались только в `/var/data/medical_exams/calibration/`;
   в git и отчёт попали только агрегаты.
+- Production scoring, action queue, warehouse и UI не изменялись.
+
+#### Результат C5 от 2026-08-09
+
+- Arm D заморожен fingerprint
+  `9ab7bfcb5a84f47354aed8f916c08d5285319bd94d43bc2614a848cb54da2e49`:
+  code/config hashes, 1876 protocol summaries и relevant environment flags.
+- Blind judge/model/contracts заморожены fingerprint
+  `1e106ed8e0980127643aaf247f978a326a4d26f3bc167918274da843cdbefca0`.
+- Frozen pilot artifacts:
+  `secret_cases=d4005d89...ac88f`,
+  `secret_manifest=70b89aed...535a`,
+  `engine_snapshot=111e7cea...2657`; resume проверяет hashes и Arm D fingerprint.
+- Drift root cause: метка `v4.0.0` не идентифицирует code/data state; source
+  `_content_hash` и warehouse `content_hash` не совпали в 30/30, а сохранённые
+  overall/axes описывают неоднородные snapshots. Поэтому старый warehouse
+  snapshot не является Arm D baseline; Arm D для pilot - текущий replay с
+  полным fingerprint.
+- GCE pilot: 30 случаев × 2 = 60/60 валидных blind passes; 19 случаев
+  KP-grounded и 11 no-KP; 0 parse/leakage/geo/runtime errors.
+- Disagreement adjudication: 22/22 успешно (Dx 9, plan 13), 0 leakage/errors.
+- Repeat agreement: Dx verdict 28/30, plan verdict 20/30, ICD fit 27/30,
+  potential harm 30/30 для Dx и 29/30 для plan.
+- Score repeatability: Dx median absolute difference 0, mean 9.04, max 99 п.п.;
+  plan median 0.5, mean 9.71, max 45 п.п. Большие outliers требуют обязательной
+  проверки методистом в C6; provisional methodology по LLM-only данным не выбирается.
 - Production scoring, action queue, warehouse и UI не изменялись.
 
 ### P0 - после pilot gate

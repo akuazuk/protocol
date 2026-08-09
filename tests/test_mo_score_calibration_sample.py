@@ -7,6 +7,7 @@ import pytest
 
 from scripts.build_mo_score_calibration_sample import (
     DEFAULT_SENTINEL,
+    arm_d_fingerprint,
     extract_engine_snapshot,
     normalize_candidate,
     select_sample,
@@ -41,6 +42,7 @@ def _candidate(index: int) -> dict:
         "icd_dx_dispute": index < 10,
         "kp_matched": index % 2 == 0,
         "kp_trust": "A" if index % 2 == 0 else "",
+        "kp_checked": True,
         "has_exam_results": index < 16,
         "has_treatment": index < 16,
         "axes": {
@@ -200,3 +202,13 @@ def test_public_manifest_cannot_be_written_under_secret_dir(tmp_path: Path) -> N
             source_paths=[],
             seed=42,
         )
+
+
+def test_arm_d_fingerprint_freezes_code_config_and_protocol_summaries() -> None:
+    first = arm_d_fingerprint()
+    second = arm_d_fingerprint()
+    assert first == second
+    assert len(first["fingerprint"]) == 64
+    assert first["component_hashes"]["config/mo_scorer_v4.yaml"] != "missing"
+    assert "protocol_summary_tree_hash" in first
+    assert "environment_flags" in first
