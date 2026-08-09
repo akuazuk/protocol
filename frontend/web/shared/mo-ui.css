@@ -1054,7 +1054,22 @@ kbd {
   background: color-mix(in srgb, var(--surface-2) 70%, var(--surface-solid));
   padding: 12px 16px 14px;
 }
-.methodist-decision-panel--dock h3 { margin: 0 0 8px; font-size: 15px; }
+.methodist-decision-panel--dock > .decision-dock-summary {
+  list-style: none;
+  cursor: pointer;
+  font-size: 15px;
+  font-weight: 650;
+  padding: 2px 0;
+  user-select: none;
+}
+.methodist-decision-panel--dock > .decision-dock-summary::-webkit-details-marker { display: none; }
+.methodist-decision-panel--dock > .decision-dock-summary::before {
+  content: "▸ ";
+  color: var(--muted);
+  font-weight: 700;
+}
+.methodist-decision-panel--dock[open] > .decision-dock-summary::before { content: "▾ "; }
+.methodist-decision-panel--dock .decision-dock-body { margin-top: 10px; }
 .methodist-decision-panel--dock .decision-actions {
   display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px;
 }
