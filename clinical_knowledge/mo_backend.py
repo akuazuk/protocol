@@ -1157,6 +1157,13 @@ def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any]
     date_from = str(params.get("date_from") or "")[:10]
     date_to = str(params.get("date_to") or "")[:10]
     if not date_from or not date_to:
+        try:
+            resolved = _resolve_request_period(params)
+            date_from = resolved.current.date_from.isoformat()
+            date_to = resolved.current.date_to.isoformat()
+        except Exception:  # noqa: BLE001
+            return None
+    if not date_from or not date_to:
         return None
     try:
         with closing(_read_connection()) as conn:

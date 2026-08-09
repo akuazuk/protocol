@@ -939,19 +939,19 @@
         host.innerHTML = '<p class="card-sub">Оценки зон ещё не посчитаны за период (нужен recompute после деплоя движка).</p>';
         return;
       }
-      function tile(label, value, meta, go) {
-        return '<button type="button" class="attention-tile" data-attention-go="' + esc(go || "") + '">' +
+      function tile(label, value, meta, go, tone) {
+        return '<button type="button" class="attention-tile attention-tile--' + esc(tone || "neutral") + '" data-attention-go="' + esc(go || "") + '">' +
           '<div class="kpi-label">' + esc(label) + '</div>' +
           '<div class="kpi-value">' + esc(value == null ? "-" : value) + '</div>' +
           (meta ? '<div class="kpi-meta">' + esc(meta) + '</div>' : "") +
           '</button>';
       }
       host.innerHTML =
-        tile("Критично в очереди", a.queue_critical != null ? a.queue_critical : "-", "открыть очередь", "queue:critical") +
-        tile("Важно в очереди", a.queue_important != null ? a.queue_important : "-", "открыть очередь", "queue:important") +
-        tile("Оформление плохо", a.zone1_bad, (a.zone1_bad_pct != null ? a.zone1_bad_pct + "%" : ""), "zone1:bad") +
-        tile("Диагноз плохо", a.zone2a_bad, (a.zone2a_bad_pct != null ? a.zone2a_bad_pct + "%" : ""), "zone2a:bad") +
-        tile("План плохо", a.zone2b_bad, (a.zone2b_bad_pct != null ? a.zone2b_bad_pct + "%" : ""), "zone2b:bad");
+        tile("Критично в очереди", a.queue_critical != null ? a.queue_critical : "-", "открыть очередь", "queue:critical", "critical") +
+        tile("Важно в очереди", a.queue_important != null ? a.queue_important : "-", "открыть очередь", "queue:important", "important") +
+        tile("Оформление плохо", a.zone1_bad, (a.zone1_bad_pct != null ? a.zone1_bad_pct + "%" : ""), "zone1:bad", "zone1") +
+        tile("Диагноз плохо", a.zone2a_bad, (a.zone2a_bad_pct != null ? a.zone2a_bad_pct + "%" : ""), "zone2a:bad", "zone2a") +
+        tile("План плохо", a.zone2b_bad, (a.zone2b_bad_pct != null ? a.zone2b_bad_pct + "%" : ""), "zone2b:bad", "zone2b");
       host.querySelectorAll("[data-attention-go]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var go = btn.getAttribute("data-attention-go") || "";
@@ -968,20 +968,57 @@
         });
       });
     }
+    function cssToken(name, fallback) {
+      try {
+        var v = getComputedStyle(document.documentElement).getPropertyValue(name).trim();
+        return v || fallback;
+      } catch (e) { return fallback; }
+    }
     function renderZoneTrendHost(hostId, trends) {
       var host = $(hostId);
       if (!host) return;
-      trends = trends || [];
+      trends = (trends || []).slice(-14);
       if (!trends.length) {
         host.innerHTML = '<p class="empty">Нет тренда зон за период.</p>';
         return;
       }
-      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Дата</th><th>Оформление</th><th>Диагноз</th><th>План</th><th>Риск</th></tr></thead><tbody>' +
-        trends.slice(-14).map(function (row) {
-          return "<tr><td>" + esc(row.date) + "</td><td>" + esc(score(row.zone1_avg)) +
-            "</td><td>" + esc(score(row.zone2a_avg)) + "</td><td>" + esc(score(row.zone2b_avg)) +
-            "</td><td>" + esc(row.safety_critical || 0) + "</td></tr>";
-        }).join("") + "</tbody></table></div>";
+      host.classList.add("zone-trend-chart");
+      var dates = trends.map(function (row) { return row.date; });
+      var c1 = cssToken("--zone-1", cssToken("--chart-1", "#2f6f63"));
+      var c2 = cssToken("--zone-2a", cssToken("--chart-2", "#4a6fa5"));
+      var c3 = cssToken("--zone-2b", cssToken("--chart-3", "#8a7a5a"));
+      function series(name, key, color) {
+        return {
+          name: name,
+          type: "line",
+          smooth: true,
+          showSymbol: trends.length <= 10,
+          symbolSize: 7,
+          lineStyle: { width: 2.4, color: color },
+          itemStyle: { color: color },
+          areaStyle: { color: color, opacity: 0.08 },
+          data: trends.map(function (row) {
+            var v = row[key];
+            return v == null ? null : Number(v);
+          })
+        };
+      }
+      MO.moChart(host, {
+        color: [c1, c2, c3],
+        legend: { top: 4, data: ["Оформление", "Диагноз", "План"] },
+        grid: { left: 42, right: 18, top: 42, bottom: 28 },
+        tooltip: { trigger: "axis" },
+        xAxis: { type: "category", data: dates, boundaryGap: false },
+        yAxis: { type: "value", min: 0, max: 100, name: "%" },
+        series: [
+          series("Оформление", "zone1_avg", c1),
+          series("Диагноз", "zone2a_avg", c2),
+          series("План", "zone2b_avg", c3)
+        ]
+      }, {
+        label: "Тренд трёх оценок",
+        description: "Средние доли оформления, диагноза и плана по дням периода."
+      });
     }
     function renderOverview(data) {
       if (!data.available) { showError(data.reason || "Данные месяца недоступны."); return; }
@@ -2878,13 +2915,58 @@
       renderYesterdayFlow(data, (flowDim && flowDim.value) || "specialty");
       renderYesterdaySourceQuality(data);
     }
+    async function resolveTodayWorkingDay() {
+      if (state.period === "custom" && state.dateFrom) {
+        return { day: state.dateFrom, fallback: false, preferred: state.dateFrom };
+      }
+      var preferred = minskDateKey(-1);
+      var through = "";
+      try {
+        var fr = await request("/freshness", "/freshness");
+        if (fr.ok) {
+          var fj = await fr.json();
+          through = String(fj.data_through || "").slice(0, 10);
+        }
+      } catch (e) {}
+      if (through && through < preferred) {
+        return { day: through, fallback: true, preferred: preferred };
+      }
+      return { day: preferred, fallback: false, preferred: preferred };
+    }
     async function loadYesterday() {
-      var day = (state.period === "custom" && state.dateFrom) ? state.dateFrom : minskDateKey(-1);
-      $("yesterday-date").textContent = "Итоги за " + new Date(day + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
+      var resolved = await resolveTodayWorkingDay();
+      var day = resolved.day;
+      var label = "Итоги за " + new Date(day + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
+      if (resolved.fallback) {
+        label += " Показан последний день с данными (за " +
+          new Date(resolved.preferred + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"medium" }) +
+          " выгрузки ещё нет).";
+      }
+      $("yesterday-date").textContent = label;
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (await handleHttpAuth(response)) return;
       if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
       var data = await response.json();
+      var hasSignal = !!(data.attention && (data.attention.n_evaluated || data.attention.n_evaluated === 0));
+      if ((!hasSignal || !(data.attention && data.attention.n_evaluated)) && !resolved.fallback) {
+        // empty calendar day with ok:true - try freshness fallback once
+        try {
+          var fr2 = await request("/freshness", "/freshness");
+          if (fr2.ok) {
+            var through2 = String((await fr2.json()).data_through || "").slice(0, 10);
+            if (through2 && through2 !== day) {
+              resolved = { day: through2, fallback: true, preferred: day };
+              day = through2;
+              $("yesterday-date").textContent = "Итоги за " +
+                new Date(day + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) +
+                ". Показан последний день с данными (свежих выгрузок пока нет).";
+              response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
+              if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
+              data = await response.json();
+            }
+          }
+        } catch (e) {}
+      }
       state.data.daily = data;
       $("partial-banner").hidden = !(data.partial || data.quality_status === "blocked");
       var completeness = data.data_completeness || {};
@@ -2905,9 +2987,12 @@
       renderYesterday(data);
     }
     function renderEntityPages(summary) {
-      $("diagnosis-findings").innerHTML = (summary.findings || []).slice(0,8).map(function (x) {
-        return notice(x.severity || "Проверить", x.title || x.label || "Требуется ручная проверка", x.severity === "P0" ? "critical" : "review");
-      }).join("") || '<div class="empty">Замечаний по выбранному срезу нет.</div>';
+      if ($("diagnosis-findings")) {
+        $("diagnosis-findings").innerHTML = (summary.findings || []).slice(0,8).map(function (x) {
+          return notice(x.severity || "Проверить", x.title || x.label || "Требуется ручная проверка", x.severity === "P0" ? "critical" : "review");
+        }).join("") || '<div class="empty">Замечаний по выбранному срезу нет.</div>';
+      }
+      if (!$("quality-kpis")) return;
       $("quality-kpis").innerHTML = kpi("Свежесть", summary.generated ? "Актуально" : "Нет отметки", summary.generated) +
         kpi("Записей", summary.n, "получено") + kpi("Оценено", summary.evaluated, "после проверки") + kpi("Пропуски", Math.max(0, summary.n-summary.evaluated), "не допущено");
       $("quality-chart").innerHTML = bar("Обработано", summary.n ? summary.evaluated / summary.n * 100 : 0) +
@@ -2965,7 +3050,7 @@
         series: [{
           type: "bar",
           barMaxWidth: 16,
-          itemStyle: { borderRadius: [0, 6, 6, 0], color: "#c62828" },
+          itemStyle: { borderRadius: [0, 6, 6, 0], color: cssToken("--bad", "#9a5b66") },
           data: ranked.map(function (x) { return Number(x[pctKey] || 0); })
         }]
       }, {

@@ -583,3 +583,70 @@ def test_period_details_hosts_icd_and_gaps() -> None:
     assert "function renderMonthIcdStatus" in app
     assert "function renderMonthClinicalGaps" in app
     assert "icd_visit_status" in app
+
+
+def test_overview_attention_resolves_month_period(monkeypatch) -> None:
+    """month=YYYY-MM without date_from/to must still build zone attention."""
+    from contextlib import contextmanager
+    from datetime import date
+    from types import SimpleNamespace
+
+    class _Row(dict):
+        def __getitem__(self, key):  # noqa: ANN001
+            return dict.get(self, key)
+
+    class FakeConn:
+        def execute(self, sql, args=None):  # noqa: ANN001
+            class Result:
+                def fetchone(self_inner):
+                    if "COUNT(*)" in sql or "n_evaluated" in sql:
+                        return _Row(
+                            n_evaluated=10,
+                            zone1_bad=2,
+                            zone2a_bad=1,
+                            zone2b_bad=3,
+                            safety_critical=0,
+                            zone1_avg=80.0,
+                            zone2a_avg=90.0,
+                            zone2b_avg=70.0,
+                        )
+                    return None
+
+                def fetchall(self_inner):
+                    if "GROUP BY" in sql:
+                        return [
+                            _Row(
+                                date="2026-08-06",
+                                zone1_avg=80.0,
+                                zone2a_avg=90.0,
+                                zone2b_avg=70.0,
+                                safety_critical=0,
+                            )
+                        ]
+                    return []
+
+                def __iter__(self_inner):
+                    return iter([(0, "id"), (1, "zone1_band")])
+
+            return Result()
+
+    @contextmanager
+    def fake_closing(_conn):  # noqa: ANN001
+        yield FakeConn()
+
+    monkeypatch.setattr(
+        mo_backend,
+        "_resolve_request_period",
+        lambda _params: SimpleNamespace(
+            current=SimpleNamespace(date_from=date(2026, 8, 1), date_to=date(2026, 8, 31))
+        ),
+    )
+    monkeypatch.setattr(mo_backend, "_read_connection", lambda: FakeConn())
+    monkeypatch.setattr(mo_backend, "closing", fake_closing)
+
+    att = mo_backend._overview_attention_from_warehouse({"month": "2026-08", "period": "month"})
+    assert att is not None
+    assert att["n_evaluated"] == 10
+    assert att["zone1_bad"] == 2
+    assert att["zone_trends"]
+    assert att["zone_trends"][0]["date"] == "2026-08-06"
