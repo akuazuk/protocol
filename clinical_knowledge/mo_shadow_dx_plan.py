@@ -15,6 +15,15 @@ CRITICAL_MAX_SCORE = 30.0
 PLAN_ENSEMBLE_DOWNGRADE_MIN = 60.0
 
 
+def _shadow_cutoffs() -> tuple[float, float]:
+    try:
+        from clinical_knowledge.mo_scoring_profile import shadow_thresholds
+
+        return shadow_thresholds()
+    except Exception:  # noqa: BLE001
+        return POOR_MAX_SCORE, CRITICAL_MAX_SCORE
+
+
 def _clip(text: Any, limit: int) -> str:
     value = str(text or "").strip()
     return value if len(value) <= limit else value[: limit - 1] + "…"
@@ -71,6 +80,7 @@ def attention_band_for_endpoint(
     if band == "poor" and potential_harm:
         band = "critical"
 
+    poor_max, critical_max = _shadow_cutoffs()
     if score_pct is None:
         return {
             **base,
@@ -78,19 +88,19 @@ def attention_band_for_endpoint(
             "softened": True,
             "soften_reason": "missing_score",
         }
-    if band == "poor" and score_pct > POOR_MAX_SCORE:
+    if band == "poor" and score_pct > poor_max:
         return {
             **base,
             "band": "none",
             "softened": True,
-            "soften_reason": "poor_score_above_45",
+            "soften_reason": "poor_score_above_threshold",
         }
     if band == "critical":
-        allow_critical = score_pct <= CRITICAL_MAX_SCORE or (
-            potential_harm and score_pct <= POOR_MAX_SCORE
+        allow_critical = score_pct <= critical_max or (
+            potential_harm and score_pct <= poor_max
         )
         if not allow_critical:
-            if score_pct <= POOR_MAX_SCORE:
+            if score_pct <= poor_max:
                 return {
                     **base,
                     "band": "poor",

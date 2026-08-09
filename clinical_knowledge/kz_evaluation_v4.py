@@ -43,6 +43,12 @@ def load_v4_config() -> dict[str, Any]:
     if abs(sum(normalized.values()) - 1.0) > 1e-9:
         raise ValueError("mo_scorer_v4_weights_must_sum_to_one")
     raw["axis_weights"] = normalized
+    try:
+        from clinical_knowledge.mo_scoring_profile import apply_profile_to_v4_config
+
+        raw = apply_profile_to_v4_config(raw)
+    except Exception:  # noqa: BLE001
+        pass
     return raw
 
 

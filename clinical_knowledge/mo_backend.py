@@ -738,12 +738,22 @@ _MULTI_FILTERS = {
 }
 
 
+def _attention_score_cutoff() -> float:
+    try:
+        from clinical_knowledge.mo_scoring_profile import load_scoring_profile
+
+        return float((load_scoring_profile() or {}).get("attention_score_below") or 75)
+    except Exception:  # noqa: BLE001
+        return 75.0
+
+
 def _needs_review(rec: dict[str, Any]) -> bool:
     score = rec.get("overall_pct")
+    cutoff = _attention_score_cutoff()
     return bool(
         int(rec.get("p0") or 0) > 0
         or int(rec.get("p1") or 0) > 0
-        or (isinstance(score, (int, float)) and score < 75)
+        or (isinstance(score, (int, float)) and score < cutoff)
         or rec.get("status") == "manual_review_required"
     )
 
@@ -4290,6 +4300,8 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
             "export_aggregates": can_view_population and not is_expert,
             "export_clinical": normalized_role in {"methodist", "lead", "admin"},
             "manage_saved_views": normalized_role in {"methodist", "lead", "admin"},
+            "manage_scoring_config": normalized_role in {"methodist", "lead", "admin"},
+            "recompute_scores": normalized_role in {"lead", "admin", "methodist"},
             "review_pack": can_work_cases,
         },
         "metric_states": ["available", "missing", "not_applicable", "scoring_error", "suppressed"],

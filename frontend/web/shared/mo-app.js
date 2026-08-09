@@ -4018,6 +4018,203 @@
       if (value === "methodist") return "методист";
       return value || "методист";
     }
+    function scoringStrictnessCanEdit() {
+      var actions = (state.data.capabilities && state.data.capabilities.actions) || {};
+      return actions.manage_scoring_config !== false;
+    }
+    function renderScoringStrictness(payload) {
+      var host = $("scoring-strictness");
+      if (!host) return;
+      var profile = (payload && payload.profile) || {};
+      var effective = (payload && payload.effective) || {};
+      var days = (payload && payload.available_days) || {};
+      var job = (payload && payload.recompute_job) || null;
+      var zb = effective.zone_bands || profile.zone_bands || {};
+      var st = effective.status_thresholds || profile.status_thresholds || {};
+      var caps = effective.risk_caps || profile.risk_caps || {};
+      var preset = profile.preset || "standard";
+      var canEdit = scoringStrictnessCanEdit();
+      var disabled = canEdit ? "" : " disabled";
+      var jobHtml = "";
+      if (job && job.status) {
+        jobHtml =
+          '<p class="card-sub">Пересчёт: <b>' + esc(job.status) + "</b>" +
+          (job.date_from ? " · " + esc(job.date_from) + "…" + esc(job.date_to || "") : "") +
+          (job.progress ? " · " + esc(job.progress.done) + "/" + esc(job.progress.total) : "") +
+          "</p>";
+      }
+      host.innerHTML =
+        '<div class="settings-stack scoring-strictness-form">' +
+        '<label class="filter"><span>Пресет жёсткости</span>' +
+        '<select class="control" id="score-preset"' + disabled + ">" +
+        '<option value="soft">Мягкая</option>' +
+        '<option value="standard">Стандарт</option>' +
+        '<option value="strict">Жёсткая</option>' +
+        '<option value="custom">Своя</option>' +
+        "</select></label>" +
+        '<div class="grid">' +
+        '<label class="filter span-3"><span>Зона «плохо» ниже, %</span><input class="control" id="score-bad-below" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Зона «в норме» от, %</span><input class="control" id="score-ok-at" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Статус «хорошо» от</span><input class="control" id="score-good" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Статус «приемлемо» от</span><input class="control" id="score-acc" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок P0</span><input class="control" id="score-p0" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок P1</span><input class="control" id="score-p1" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>В очередь при балле ниже</span><input class="control" id="score-attention" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        "</div>" +
+        '<p class="card-sub">Доступные дни витрины: ' +
+        (days.n ? (esc(days.first) + " … " + esc(days.last) + " (" + esc(days.n) + ")") : "пока нет") +
+        ". Версия профиля: " + esc(profile.profile_version || 1) +
+        (profile.apply_on_next_load ? " · ждёт следующую загрузку" : "") +
+        "</p>" +
+        jobHtml +
+        (canEdit
+          ? '<div class="section-actions" style="margin-top:8px">' +
+            '<button class="button" type="button" id="score-save">Сохранить</button>' +
+            '<button class="button secondary" type="button" id="score-recompute-range">Пересчитать период</button>' +
+            '<button class="button secondary" type="button" id="score-recompute-all">Пересчитать всё</button>' +
+            '<button class="button secondary" type="button" id="score-next-load">На следующую загрузку</button>' +
+            "</div>" +
+            '<div class="grid" style="margin-top:8px">' +
+            '<label class="filter span-4"><span>Период с</span><input class="control" id="score-date-from" type="date"></label>' +
+            '<label class="filter span-4"><span>по</span><input class="control" id="score-date-to" type="date"></label>' +
+            "</div>" +
+            '<p class="card-sub" id="score-strictness-status"></p>'
+          : '<p class="card-sub">Изменение жёсткости доступно методисту и админу.</p>') +
+        "</div>";
+      if ($("score-preset")) $("score-preset").value = preset;
+      if ($("score-bad-below")) $("score-bad-below").value = zb.bad_below != null ? zb.bad_below : 50;
+      if ($("score-ok-at")) $("score-ok-at").value = zb.ok_at_or_above != null ? zb.ok_at_or_above : 85;
+      if ($("score-good")) $("score-good").value = st.good != null ? st.good : 78;
+      if ($("score-acc")) $("score-acc").value = st.acceptable != null ? st.acceptable : 58;
+      if ($("score-p0")) $("score-p0").value = caps.P0 != null ? caps.P0 : 40;
+      if ($("score-p1")) $("score-p1").value = caps.P1 != null ? caps.P1 : 60;
+      if ($("score-attention")) $("score-attention").value = profile.attention_score_below != null ? profile.attention_score_below : 70;
+      if ($("score-date-from") && days.first) $("score-date-from").value = days.first;
+      if ($("score-date-to") && days.last) $("score-date-to").value = days.last;
+      if (!canEdit) return;
+      var presets = (profile.presets) || {};
+      if ($("score-preset")) {
+        $("score-preset").addEventListener("change", function () {
+          var key = $("score-preset").value;
+          var pack = presets[key];
+          if (!pack) return;
+          $("score-bad-below").value = pack.zone_bands.bad_below;
+          $("score-ok-at").value = pack.zone_bands.ok_at_or_above;
+          $("score-good").value = pack.status_thresholds.good;
+          $("score-acc").value = pack.status_thresholds.acceptable;
+          $("score-p0").value = pack.risk_caps.P0;
+          $("score-p1").value = pack.risk_caps.P1;
+          $("score-attention").value = pack.attention_score_below;
+        });
+      }
+      function collectPatch() {
+        return {
+          preset: $("score-preset").value,
+          zone_bands: {
+            bad_below: Number($("score-bad-below").value),
+            ok_at_or_above: Number($("score-ok-at").value)
+          },
+          status_thresholds: {
+            good: Number($("score-good").value),
+            acceptable: Number($("score-acc").value)
+          },
+          risk_caps: {
+            P0: Number($("score-p0").value),
+            P1: Number($("score-p1").value)
+          },
+          attention_score_below: Number($("score-attention").value)
+        };
+      }
+      function setStatus(text, isError) {
+        var el = $("score-strictness-status");
+        if (!el) return;
+        el.textContent = text || "";
+        el.style.color = isError ? "var(--danger, #b42318)" : "";
+      }
+      if ($("score-save")) {
+        $("score-save").addEventListener("click", async function () {
+          setStatus("Сохраняю…");
+          try {
+            var response = await request("/scoring-config", "/scoring-config", {
+              method: "PUT",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(collectPatch())
+            });
+            if (!response.ok) throw new Error("Не удалось сохранить профиль");
+            var data = await response.json();
+            renderScoringStrictness(data);
+            setStatus("Профиль сохранён. Запустите пересчёт периода или отметьте «на следующую загрузку».");
+          } catch (error) {
+            setStatus(error.message || String(error), true);
+          }
+        });
+      }
+      async function runRecompute(body) {
+        setStatus("Запускаю пересчёт…");
+        try {
+          await request("/scoring-config", "/scoring-config", {
+            method: "PUT",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(collectPatch())
+          });
+          var response = await request("/recompute", "/recompute", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(body)
+          });
+          var data = await response.json().catch(function () { return {}; });
+          if (!response.ok) throw new Error((data && data.detail) || "Пересчёт не запущен");
+          renderScoringStrictness(data);
+          setStatus(
+            data.scheduled
+              ? "Отложено на следующую подгрузку данных."
+              : "Пересчёт запущен. Обновите страницу через несколько минут."
+          );
+        } catch (error) {
+          setStatus(error.message || String(error), true);
+        }
+      }
+      if ($("score-recompute-range")) {
+        $("score-recompute-range").addEventListener("click", function () {
+          runRecompute({
+            apply_mode: "now",
+            date_from: $("score-date-from").value,
+            date_to: $("score-date-to").value
+          });
+        });
+      }
+      if ($("score-recompute-all")) {
+        $("score-recompute-all").addEventListener("click", function () {
+          if (!window.confirm("Пересчитать всю доступную витрину? Это может занять время.")) return;
+          runRecompute({ apply_mode: "now", whole_range: true });
+        });
+      }
+      if ($("score-next-load")) {
+        $("score-next-load").addEventListener("click", function () {
+          var whole = window.confirm(
+            "OK - пересчитать всю историю на следующей загрузке.\nОтмена - только новые дни пайплайна + текущий период из полей дат (если заполнены)."
+          );
+          var body = { apply_mode: "next_load" };
+          if (whole) body.whole_range = true;
+          else if ($("score-date-from").value && $("score-date-to").value) {
+            body.date_from = $("score-date-from").value;
+            body.date_to = $("score-date-to").value;
+          }
+          runRecompute(body);
+        });
+      }
+    }
+    async function loadScoringStrictness() {
+      var host = $("scoring-strictness");
+      if (!host) return;
+      try {
+        var response = await request("/scoring-config", "/scoring-config");
+        if (!response.ok) throw new Error("scoring-config unavailable");
+        renderScoringStrictness(await response.json());
+      } catch (error) {
+        host.innerHTML = '<p class="card-sub">Не удалось загрузить настройки жёсткости.</p>';
+      }
+    }
     async function loadSettingsPage() {
       var sessionHost = $("settings-session");
       var aboutHost = $("settings-about");
@@ -4093,6 +4290,7 @@
           "<p><b>Данные:</b> " + freshText + "</p>" +
           '<p class="card-sub">Справка открывается ссылкой внизу меню. Основные 6 пунктов меню не меняются.</p>';
       }
+      await loadScoringStrictness();
     }
     async function loadPage(page) {
       $("global-error").hidden = true;

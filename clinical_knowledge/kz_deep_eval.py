@@ -47,24 +47,31 @@ def load_deep_config() -> dict:
     cfg = dict(_DEFAULT_DEEP_CFG)
     p = _CONFIG_DIR / "deep_thresholds.yaml"
     if not p.is_file():
-        return cfg
-    try:
-        import yaml
+        cfg_out = cfg
+    else:
+        try:
+            import yaml
 
-        data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+            data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
+        except Exception:  # noqa: BLE001
+            data = {}
+        stt = data.get("status_thresholds") or {}
+        if stt.get("good") is not None:
+            cfg["t_good"] = float(stt["good"])
+        if stt.get("acceptable") is not None:
+            cfg["t_acc"] = float(stt["acceptable"])
+        ma = data.get("min_axis_review")
+        cfg["min_axis_review"] = None if ma in (None, "null", "None") else float(ma)
+        hc = data.get("harm_flag_overall_cutoff")
+        if hc is not None:
+            cfg["harm_flag_overall_cutoff"] = float(hc)
+        cfg_out = cfg
+    try:
+        from clinical_knowledge.mo_scoring_profile import apply_profile_to_deep_config
+
+        return apply_profile_to_deep_config(cfg_out)
     except Exception:  # noqa: BLE001
-        return cfg
-    stt = data.get("status_thresholds") or {}
-    if stt.get("good") is not None:
-        cfg["t_good"] = float(stt["good"])
-    if stt.get("acceptable") is not None:
-        cfg["t_acc"] = float(stt["acceptable"])
-    ma = data.get("min_axis_review")
-    cfg["min_axis_review"] = None if ma in (None, "null", "None") else float(ma)
-    hc = data.get("harm_flag_overall_cutoff")
-    if hc is not None:
-        cfg["harm_flag_overall_cutoff"] = float(hc)
-    return cfg
+        return cfg_out
 
 try:
     from .term_catalog import expand_term
