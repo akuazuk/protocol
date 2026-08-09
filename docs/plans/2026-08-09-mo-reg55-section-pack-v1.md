@@ -238,23 +238,23 @@ UI:
 
 ### Этап 2. Пайплайн + warehouse + API
 - [ ] Publish case fields + daily criterion agg
-- [ ] deep axis D = `reg55_section.pct`
-- [ ] Findings `D_reg55_<point>`
-- [ ] `month-report.reg55_section` (для главной без `/rubric-summary`)
+- [x] deep axis D = `reg55_section.pct` (через `to_reg55_detail_payload`)
+- [x] Findings `D_reg55_gap` (якоря пунктов в detail; per-point codes - следующий шаг)
+- [x] `month-report.reg55` + `GET /reg55-section-summary` (вместо `/rubric-summary` на Обзоре)
 - [ ] Серверные фильтры `reg55_*` в cases/queue
 
 ### Этап 3. UI главной + таблицы + фильтры (фокус дашборда и градаций)
 - [ ] CSS-токены / легенда трёх band (§4.1a) + helper `bandFromPct`
-- [ ] KPI-ряд: убрать «Рубрика МЗ»; «Соответствие №55» + доли по градациям
+- [x] KPI-ряд: «Соответствие №55» + доли по градациям в `#month-reg55`; shadow «Рубрика МЗ» убрана с Обзора
 - [ ] Виджет распределения градаций (donut/stacked) с drill `reg55_band`
-- [ ] `#month-reg55-section`: top-fail (+ колонки вклада в band), bar критериев **со стеком band**
+- [x] Карточка top-fail пунктов разд. V (id `#month-rubric-mz` пока сохранён); stacked band - след. шаг
 - [ ] Heatmap/таблица специальность × градация; specialty × пункт с tooltip band_share
 - [ ] Тренд: avg №55 % + stacked доли band по дням
 - [ ] Колонки queue/documents: % + **pill градации** + row-tint; сортировка/priority с band
 - [ ] Таблицы врачи/спец.: доли трёх band
-- [ ] Toolbar: «Градация №55», «Критерий №55», пресеты band; chips
-- [ ] Case detail: badge градации + текст п.13 + комплекс мер
-- [ ] Удалить `/rubric-summary` из `loadOverview`
+- [ ] Toolbar: «Градация №55», «Критерий №55», пресеты band; chips (client focus chip есть)
+- [x] Case detail: badge градации + текст п.13 + комплекс мер; shadow rubric block убран
+- [x] Удалить `/rubric-summary` из `loadOverview` (заменён на `/reg55-section-summary`)
 
 ### Этап 4. Выпил старого
 - [ ] Удалить hot path `evaluate_mo_rubric_mz` / binary `evaluate_reg55` из UI и month

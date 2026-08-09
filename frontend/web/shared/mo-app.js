@@ -611,8 +611,8 @@
           '<button type="button" data-clear-finding aria-label="Удалить фильтр замечания">×</button></span>');
       }
       if (state.rubricCriterion) {
-        html.push('<span class="chip">Рубрика МЗ: ' + esc(state.rubricCriterion) +
-          '<button type="button" data-clear-rubric aria-label="Удалить фильтр рубрики">×</button></span>');
+        html.push('<span class="chip">№55 пункт: ' + esc(state.rubricCriterion) +
+          '<button type="button" data-clear-rubric aria-label="Удалить фильтр пункта №55">×</button></span>');
       }
       if (state.zoneFilter || state.zoneBandFilter) {
         html.push('<span class="chip">Раздел: ' +
@@ -934,10 +934,21 @@
       $("month-period-label").textContent=(data.period_label || "Период")+" с "+data.period.date_from+" по "+data.data_through+
         ". Дней: "+data.days_elapsed+" из "+data.days_in_month+". Europe/Minsk.";
       $("freshness").textContent="Данные по "+data.data_through;
+      var reg55Kpi = data.reg55 || {};
+      var reg55KpiHtml = "";
+      if (reg55Kpi.available && (reg55Kpi.avg_pct != null || reg55Kpi.value != null)) {
+        reg55KpiHtml = kpi(
+          "Соответствие №55",
+          score(reg55Kpi.avg_pct != null ? reg55Kpi.avg_pct : reg55Kpi.value),
+          (reg55Kpi.reg55_band_label_ru || "п.12 · разд. V") +
+            " · sample " + (reg55Kpi.sample_n || 0)
+        );
+      }
       $("month-kpis").innerHTML=kpi("Записи",k.source_records,"объём")+
         kpi("Оценено",k.evaluated,score(k.coverage_pct)+" покрытие")+
         kpi("Свежесть", $("freshness") ? $("freshness").textContent : "-", "склад")+
-        kpi("Прогноз объёма",forecast.projected_source,"к концу месяца");
+        kpi("Прогноз объёма",forecast.projected_source,"к концу месяца")+
+        reg55KpiHtml;
       // overview API may nest attention on month-report or separate overview call
       var attention = data.attention || (data.overview && data.overview.attention) || null;
       if (!attention && state.data.overviewAttention) attention = state.data.overviewAttention;
@@ -974,44 +985,58 @@
       banner.textContent="Расхождение дневных и MTD итогов: источник "+reconciliation.source_delta+
         ", оценено "+reconciliation.evaluated_delta+". Данные не замаскированы.";
       renderMonthTrend(data);renderMonthHeatmap(data);renderMonthDoctors(data);renderMonthPareto(data);renderMonthFunnel(data);
-      $("month-reg55").innerHTML=(data.reg55 || {}).available ?
-        kpi("Соответствие №55",score(data.reg55.value),"проверенная метрика") : unavailableBlock(data.reg55);
-      renderMonthRubricMz(data.rubric_mz);
+      renderMonthReg55Section(data.reg55);
     }
-    function renderMonthRubricMz(rubric) {
-      var host = $("month-rubric-mz");
-      if (!host) return;
-      if (!rubric || !rubric.available) {
-        host.innerHTML = unavailableBlock(rubric, "Нет выборки для рубрики МЗ за период.");
+    function renderMonthReg55Section(reg55) {
+      var hostKpi = $("month-reg55");
+      var hostTable = $("month-rubric-mz");
+      if (!reg55 || !reg55.available) {
+        if (hostKpi) hostKpi.innerHTML = unavailableBlock(reg55, "Нет выборки №55 (разд. V) за период.");
+        if (hostTable) hostTable.innerHTML = unavailableBlock(reg55, "Нет выборки для сводки пунктов №55.");
         return;
       }
-      var top = (rubric.top_fail || []).slice(0, 8).map(function (item) {
-        return '<tr tabindex="0" data-rubric-criterion="' + esc(item.id) + '"><td>' + esc(item.title || item.id) + '</td><td>' + esc(item.zero_n) +
-          '</td><td>' + esc(item.half_n) + '</td><td><b>' + esc(item.fail_pct) + '%</b></td></tr>';
+      var share = reg55.band_share || {};
+      function bandKpi(code, label) {
+        var row = share[code] || {};
+        return kpi(label, (row.n != null ? row.n : "-"), (row.pct != null ? row.pct + "%" : "") + " выборки");
+      }
+      if (hostKpi) {
+        hostKpi.innerHTML =
+          kpi("Соответствие №55", score(reg55.avg_pct != null ? reg55.avg_pct : reg55.value),
+            (reg55.reg55_band_label_ru || "п.12-13") + " · sample " + (reg55.sample_n || 0)) +
+          bandKpi("compliant_min", "80-100%") +
+          bandKpi("compliant_measures", "55-79,9%") +
+          bandKpi("noncompliant", "≤54,9%");
+      }
+      if (!hostTable) return;
+      var top = (reg55.top_fail || []).slice(0, 8).map(function (item) {
+        return '<tr tabindex="0" data-rubric-criterion="' + esc(item.point || item.id) + '"><td><b>' +
+          esc(item.point || item.id) + "</b> " + esc(item.title || "") + "</td><td>" + esc(item.zero_n) +
+          "</td><td>" + esc(item.half_n) + "</td><td><b>" + esc(item.fail_pct) + "%</b></td></tr>";
       }).join("");
       var titles = {};
-      (rubric.top_fail || []).forEach(function (item) { titles[item.id] = item.title || item.id; });
-      var specialtyRows = (rubric.by_specialty || []).slice(0, 8).map(function (row) {
+      (reg55.top_fail || []).forEach(function (item) { titles[item.point || item.id] = item.title || item.id; });
+      var specialtyRows = (reg55.by_specialty || []).slice(0, 8).map(function (row) {
         var weak = (row.top_criteria || []).map(function (c) {
           return esc(titles[c.id] || c.id) + " (" + esc(c.fail_n) + ")";
         }).join("; ");
         return "<tr><td>" + esc(row.specialty) + "</td><td>" + esc(row.fail_n) +
           "</td><td>" + (weak || " - ") + "</td></tr>";
       }).join("");
-      host.innerHTML =
-        kpi("Средняя рубрика", score(rubric.avg_rubric_pct), "shadow · sample " + (rubric.sample_n || 0)) +
-        kpi("Выборка", rubric.sample_n, (rubric.date_from || "") + " - " + (rubric.date_to || "")) +
+      hostTable.innerHTML =
+        kpi("Выборка", reg55.sample_n, (reg55.date_from || "") + " - " + (reg55.date_to || "")) +
+        kpi("Оценено по №55", reg55.scored_n, "с применимыми пунктами") +
         '<div class="table-wrap" style="margin-top:10px"><table class="rubric-table"><thead><tr>' +
-        '<th>Критерий</th><th>0</th><th>0.5</th><th>Доля слабостей</th></tr></thead><tbody>' +
-        (top || '<tr><td colspan="4" class="empty">Слабых критериев нет.</td></tr>') +
-        '</tbody></table></div>' +
-        '<p class="card-sub">Клик по критерию открывает очередь разбора с подсветкой этого пункта в карточке случая.</p>' +
+        "<th>Пункт разд. V</th><th>0</th><th>0.5</th><th>Доля слабостей</th></tr></thead><tbody>" +
+        (top || '<tr><td colspan="4" class="empty">Слабых пунктов нет.</td></tr>') +
+        "</tbody></table></div>" +
+        '<p class="card-sub">Клик по пункту открывает очередь с фокусом этого критерия в карточке случая.</p>' +
         '<h3 style="margin:14px 0 8px;font-size:14px">Слабости по специальностям</h3>' +
         '<div class="table-wrap"><table class="rubric-table"><thead><tr>' +
-        '<th>Специальность</th><th>Слабых оценок</th><th>Топ критерии</th></tr></thead><tbody>' +
+        "<th>Специальность</th><th>Слабых оценок</th><th>Топ пункты</th></tr></thead><tbody>" +
         (specialtyRows || '<tr><td colspan="3" class="empty">Недостаточно данных по специальностям.</td></tr>') +
-        '</tbody></table></div>';
-      host.querySelectorAll("[data-rubric-criterion]").forEach(function (row) {
+        "</tbody></table></div>";
+      hostTable.querySelectorAll("[data-rubric-criterion]").forEach(function (row) {
         function openCriterion(event) {
           if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
           event.preventDefault();
@@ -1033,10 +1058,10 @@
       var responses = await Promise.all([
         request("/month-report" + suffix, "__root__"),
         request("/facets" + suffix, "/cases" + suffix),
-        request("/rubric-summary?" + rubricQuery.toString()),
+        request("/reg55-section-summary?" + rubricQuery.toString()),
         request("/overview" + suffix)
       ]);
-      var response = responses[0], facetsResponse = responses[1], rubricResponse = responses[2], overviewResponse = responses[3];
+      var response = responses[0], facetsResponse = responses[1], reg55Response = responses[2], overviewResponse = responses[3];
       if (await handleHttpAuth(response)) return;
       if (!response.ok) throw new Error("Не удалось загрузить отчёт месяца.");
       var raw = await response.json();
@@ -1044,10 +1069,16 @@
         var facetPayload = await facetsResponse.json();
         raw.facets = facetPayload.facets || facetPayload;
       }
-      if (rubricResponse && rubricResponse.ok) {
-        raw.rubric_mz = await rubricResponse.json();
-      } else {
-        raw.rubric_mz = { available: false, reason: "Сводка рубрики МЗ недоступна" };
+      // month-report уже кладёт reg55; summary API - fallback / обогащение top_fail
+      if (reg55Response && reg55Response.ok) {
+        var reg55Payload = await reg55Response.json();
+        if (reg55Payload && reg55Payload.available) {
+          raw.reg55 = Object.assign({}, raw.reg55 || {}, reg55Payload, { available: true });
+        } else if (!(raw.reg55 && raw.reg55.available)) {
+          raw.reg55 = reg55Payload || { available: false, reason: "Сводка №55 недоступна" };
+        }
+      } else if (!(raw.reg55 && raw.reg55.available)) {
+        raw.reg55 = { available: false, reason: "Сводка №55 недоступна" };
       }
       if (overviewResponse && overviewResponse.ok) {
         var ov = await overviewResponse.json();
@@ -1175,9 +1206,17 @@
       var title = historyTierLabelRu(tier) || "История пациента до этого визита";
       return ' <span class="status ' + tone + ' history-visit-chip" title="' + esc(title) + '">' + esc(label) + "</span>";
     }
+    function reg55BandTone(code) {
+      if (code === "compliant_min") return "good";
+      if (code === "compliant_measures") return "review";
+      if (code === "noncompliant") return "critical";
+      return "review";
+    }
     function renderReg55(reg55, fallbackPct) {
       var pct = null;
-      if (reg55 && reg55.regulatory_compliance_pct != null && reg55.regulatory_compliance_pct !== "") {
+      if (reg55 && reg55.reg55_section_pct != null && reg55.reg55_section_pct !== "") {
+        pct = Number(reg55.reg55_section_pct);
+      } else if (reg55 && reg55.regulatory_compliance_pct != null && reg55.regulatory_compliance_pct !== "") {
         pct = Number(reg55.regulatory_compliance_pct);
       } else if (fallbackPct != null && fallbackPct !== "") {
         pct = Number(fallbackPct);
@@ -1187,23 +1226,33 @@
           esc((reg55 && reg55.note_ru) || "Нет данных для этого случая (оцениваются только клинические приёмы).") +
           "</p></div>";
       }
-      var head = "Средний балл по формуле: <b style=\"font-size:1.35rem\">" +
+      var bandCode = (reg55 && reg55.reg55_band) || "";
+      var bandLabel = (reg55 && reg55.reg55_band_label_ru) || "";
+      var head = "Средний балл (п.12): <b style=\"font-size:1.35rem\">" +
         (pct == null || !Number.isFinite(pct) ? "-" : (Math.round(pct) + "%")) + "</b>";
-      if (reg55 && reg55.passed != null && reg55.total != null && reg55.total > 0) {
-        head += "<br>выполнено " + esc(reg55.passed) + " из " + esc(reg55.total) + " применимых пунктов";
+      if (bandLabel) {
+        head += ' <span class="status ' + reg55BandTone(bandCode) + '">' + esc(bandLabel) + "</span>";
       }
-      if (reg55 && reg55.na) head += " · не применимо (вне знаменателя): " + esc(reg55.na);
+      if (reg55 && reg55.pack_label_ru) {
+        head += "<br><small>" + esc(reg55.pack_label_ru) + "</small>";
+      }
+      if (reg55 && reg55.passed != null && reg55.total != null && reg55.total > 0) {
+        head += "<br>полная оценка 1.0: " + esc(reg55.passed) + " из " + esc(reg55.total) + " применимых";
+      }
+      if (reg55 && reg55.na) head += " · n/a вне знаменателя: " + esc(reg55.na);
+      var focusPoint = state.rubricCriterion || "";
       var criteria = (reg55 && reg55.criteria) || [];
       var rows = criteria.length ? criteria.map(function (item) {
         var verdict = item.verdict || "";
         var tone = verdict === "pass" ? "good" : (verdict === "fail" ? "critical" : "review");
-        var scoreBit = item.score == null ? "n/a" : String(item.score);
+        var scoreBit = item.score == null || verdict === "na" ? "n/a" : String(item.score);
         var point = item.point_no || item.point || "-";
-        var wrong = item.whats_wrong_ru || (verdict === "fail" ? (item.how_checked_ru || "не выполнен") : "");
-        return '<tr>' +
+        var wrong = item.whats_wrong_ru || (verdict === "fail" || verdict === "partial" ? (item.how_checked_ru || "") : "");
+        var focus = focusPoint && String(focusPoint) === String(point) ? " rubric-row--focus" : "";
+        var ev127 = item.evidence_from_127 ? ' <span class="card-sub">· опора №127</span>' : "";
+        return '<tr class="' + focus + '">' +
           '<td><b>' + esc(point) + "</b></td>" +
-          '<td>' + esc(item.title || item.id || "критерий") +
-          (item.severity ? (' <span class="card-sub">[' + esc(item.severity) + "]</span>") : "") +
+          '<td>' + esc(item.title || item.id || "критерий") + ev127 +
           (item.group ? ('<br><small>' + esc(item.group) + "</small>") : "") +
           "</td>" +
           '<td><span class="status ' + tone + '">' + esc(item.verdict_ru || verdict || "-") +
@@ -1216,12 +1265,22 @@
         rows + "</tbody></table></div>" :
         "<p class=\"card-sub\">Детализация пунктов появится после загрузки критериев №55.</p>";
       var formula = (reg55 && reg55.formula_ru) ||
-        "Средний балл №55 = 100 × (выполненные) / (применимые; «не применим» не в знаменателе)";
+        "Средний балл №55 = 100 × (сумма 0/0.5/1) / (применимые пункты разд. V; n/a вне знаменателя)";
+      var measures = (reg55 && reg55.measures) || [];
+      var measuresHtml = "";
+      if (measures.length && (bandCode === "compliant_measures" || bandCode === "noncompliant")) {
+        measuresHtml = "<h4 style=\"margin:12px 0 6px;font-size:13px\">Комплекс мероприятий (score &lt; 1)</h4><ul>" +
+          measures.slice(0, 8).map(function (m) {
+            return "<li><b>" + esc(m.point || "") + "</b> " + esc(m.title || "") +
+              " - " + esc(m.reason || "") + "</li>";
+          }).join("") + "</ul>";
+      }
       return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3>' +
         '<p>' + head + "</p>" +
         '<p class="card-sub">' + esc(formula) + "</p>" +
+        (reg55 && reg55.reg55_band_detail_ru ? ('<p class="card-sub">' + esc(reg55.reg55_band_detail_ru) + "</p>") : "") +
         (reg55 && reg55.note_ru ? ('<p class="card-sub">' + esc(reg55.note_ru) + "</p>") : "") +
-        table + "</div>";
+        measuresHtml + table + "</div>";
     }
     function renderPatientHistory(bundle) {
       if (!bundle || !bundle.summary) {
@@ -1923,7 +1982,6 @@
         "пациент " + (item.patientId || "-"),
         item.date, item.doctor, item.specialty, item.diagnosis || ""
       ].filter(Boolean).join(" · ");
-      var rubric = data.rubric_mz || {};
       var pdfPath = "/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf";
       var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
@@ -1953,18 +2011,20 @@
         drawerPdf.setAttribute("data-open-pdf", pdfPath);
         drawerPdf.setAttribute("data-open-name", pdfName);
       }
-      var reg55Pct = (data.reg55 || {}).regulatory_compliance_pct;
+      var reg55Payload = data.reg55 || {};
+      var reg55Pct = reg55Payload.reg55_section_pct;
+      if (reg55Pct == null) reg55Pct = reg55Payload.regulatory_compliance_pct;
       if (reg55Pct == null) reg55Pct = item.reg55;
       if (reg55Pct == null) reg55Pct = axes.regulatory;
+      var reg55BandLabel = reg55Payload.reg55_band_label_ru || "";
       var serviceHtml =
-        '<details class="detail-block mo-secondary-details"><summary>Служебное: №55, старые оси, CRM</summary>' +
-        renderReg55(data.reg55, reg55Pct) +
+        '<div class="detail-block">' + renderReg55(reg55Payload, reg55Pct) + "</div>" +
+        '<details class="detail-block mo-secondary-details"><summary>Служебное: deep, покрытие, CRM</summary>' +
         '<div class="drawer-grid">' + kpi("Сводный индекс", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "deep") +
-        kpi("Балл №55", score(reg55Pct), "binary checklist") +
-        kpi("Рубрика МЗ", score(rubric.rubric_pct || zones.rubric_pct), "0 / 0.5 / 1") +
+        kpi("Балл №55", score(reg55Pct), reg55BandLabel || "разд. V · 0/0.5/1") +
         kpi("Полнота проверки", score(coverageInfo.value), "модель") +
         kpi("Надёжность", score(confidenceInfo.value), "модель") + '</div>' +
-        renderRubricMz(rubric) + renderReviewPackHistory(packs) +
+        renderReviewPackHistory(packs) +
         '<div class="detail-block"><h3>История CRM</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Событий пока нет.</p>') + '</div></details>';

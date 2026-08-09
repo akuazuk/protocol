@@ -2473,10 +2473,30 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
             "in_work": in_work,
             "closed": closed,
         },
-        "reg55": _unavailable(
-            "В текущей витрине нет отдельной проверенной метрики соответствия постановлению №55"
-        ),
+        "reg55": _month_reg55_section(bounded_params),
     }
+
+
+def _month_reg55_section(params: dict[str, Any]) -> dict[str, Any]:
+    """Сводка №55 section-pack для карточки Обзора (sample secure_cases)."""
+    try:
+        from clinical_knowledge.mo_reg55_section import build_reg55_section_summary_from_sources
+
+        date_from = str(params.get("date_from") or "")[:10]
+        date_to = str(params.get("date_to") or "")[:10]
+        summary = build_reg55_section_summary_from_sources(
+            date_from=date_from,
+            date_to=date_to,
+            limit=120,
+        )
+        if not summary.get("available"):
+            return _unavailable(
+                summary.get("reason")
+                or "Нет выборки clinical_visit для оценки №55 за период"
+            )
+        return summary
+    except Exception as exc:  # noqa: BLE001
+        return _unavailable(f"Сводка №55 недоступна: {exc}")
 
 
 def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
