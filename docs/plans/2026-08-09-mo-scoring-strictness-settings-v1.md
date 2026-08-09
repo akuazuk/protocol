@@ -1,7 +1,7 @@
 # МО Аналитика: настройка жёсткости оценок и пересчёт (v1)
 
 Дата: 2026-08-09
-Статус: **active**
+Статус: **active** (v1 в проде; polish UI/cache в follow-up)
 
 ## Контекст
 
@@ -38,6 +38,8 @@
 - [x] Settings UI
 - [x] Pipeline hook next-load
 - [x] Tests, bump, PR
+- [x] GCE smoke save+recompute одного дня
+- [x] Polish: live profile overlay без stale cache, UI notes/poll, явные next-load кнопки
 
 ## Риски
 

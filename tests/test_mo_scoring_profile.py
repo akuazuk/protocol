@@ -32,7 +32,6 @@ def test_save_strict_preset_updates_zone_bands(tmp_path: Path, monkeypatch):
     assert path.is_file()
     raw = json.loads(path.read_text(encoding="utf-8"))
     assert raw["profile_version"] == 2  # default 1 + save
-    load_zone_bands.cache_clear()
     bands = load_zone_bands()
     assert bands["bad_below"] == 60.0
     assert band_for_zone(55.0, [{"score": 1.0}], bands=bands) == "bad"
