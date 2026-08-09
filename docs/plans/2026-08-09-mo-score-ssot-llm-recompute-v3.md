@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C5 выполнены; C6 human 0/22 waived → C6B LLM-proxy gold в работе)
+Статус: **active** (C0-C5; C6 human waived; C6B 22/22 + C7 proxy-gold done; prod locked)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -408,9 +408,10 @@ Uncertainty:
 - [x] **C4** GCE smoke 5 случаев ×2
 - [x] **C5** GCE pilot 30 ×2 + LLM adjudication
 - [ ] **C6** Methodist labels: ≥15 и все disagreements
-  (human gate waived 2026-08-09; substitute **C6B** LLM-proxy labels -
+  (human gate waived 2026-08-09; substitute **C6B** LLM-proxy labels done -
   план `2026-08-09-mo-calibration-llm-methodist-proxy-v1.md`)
-- [ ] **C7** Сравнение одиночных scores и ensembles с CI (против C6B proxy-gold)
+- [x] **C7** Сравнение одиночных scores и ensembles с CI (против C6B proxy-gold;
+  `production_decision_allowed=false`; bad-n мал: Dx 1 / Plan 2)
 - [ ] **C8** Pilot report + выбор provisional methodology
 - [ ] **C9** Confirmatory cohort ≥100 или ≥30 bad
 

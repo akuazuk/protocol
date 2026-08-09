@@ -1,6 +1,7 @@
 # MO score calibration - frozen protocol
 
-Status: C0-C5 completed on 2026-08-09. C6 methodist labels is the next gate.
+Status: C0-C5 done; C6 human waived; C6B LLM-proxy labels 22/22 + C7 proxy-gold
+done (`c6b_c7_public_summary.json`). Production scoring still locked.
 
 ## Scope
 

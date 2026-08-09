@@ -18,10 +18,10 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-08-09-mo-calibration-llm-methodist-proxy-v1.md](2026-08-09-mo-calibration-llm-methodist-proxy-v1.md) | C6B: LLM заполняет 22 C6 labels → C7 против proxy-gold; human gate waived | active |
+| [2026-08-09-mo-calibration-llm-methodist-proxy-v1.md](2026-08-09-mo-calibration-llm-methodist-proxy-v1.md) | C6B: 22/22 LLM labels + C7 proxy-gold; prod locked | active |
 | [2026-08-09-mo-calibration-confirmatory-proxy-v1.md](2026-08-09-mo-calibration-confirmatory-proxy-v1.md) | C8A/C9A: provisional shadow + July confirmatory ≥100 без human gold | active |
 | [2026-08-09-mo-calibration-agent-proxy-v1.md](2026-08-09-mo-calibration-agent-proxy-v1.md) | C6A/C7A: AI-proxy выполнен; Dx 25 scored/2 bad, plan 21/8; formal C6 не закрыт | completed |
-| [2026-08-09-mo-score-ssot-llm-recompute-v3.md](2026-08-09-mo-score-ssot-llm-recompute-v3.md) | C0-C5 выполнены; C6 human 0/22 waived → C6B LLM-proxy gold | active |
+| [2026-08-09-mo-score-ssot-llm-recompute-v3.md](2026-08-09-mo-score-ssot-llm-recompute-v3.md) | C0-C5; C6B/C7 proxy-gold done; C8-C9 и prod scoring locked | active |
 | [2026-08-09-mo-score-ssot-llm-recompute-v2.md](2026-08-09-mo-score-ssot-llm-recompute-v2.md) | Калибровка 30 МО: движок vs blind LLM vs методист; выбор score/ensemble; затем SSOT №55 и recompute | archived (преемник: mo-score-ssot-llm-recompute-v3) |
 | [2026-08-09-mo-score-ssot-llm-recompute-v1.md](2026-08-09-mo-score-ssot-llm-recompute-v1.md) | Один №55 везде; честные findings; МКБ-канон; полный recompute + LLM grey-zone | archived (преемник: mo-score-ssot-llm-recompute-v2) |
 | [2026-08-09-methodist-cabinet-mo-style-v1.md](2026-08-09-methodist-cabinet-mo-style-v1.md) | Кабинет методиста: стиль МО, full width, без мусора/битых ссылок | active |

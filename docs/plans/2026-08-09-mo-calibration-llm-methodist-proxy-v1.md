@@ -1,7 +1,7 @@
 # МО: C6B LLM-proxy labels как substitute gold + formal C7
 
 Дата: 2026-08-09
-Статус: **active** (owner waived human methodist gate)
+Статус: **active** (C6B labels 22/22 + C7 proxy-gold выполнены; production locked)
 
 Связанные планы:
 - `2026-08-09-mo-score-ssot-llm-recompute-v3.md`
@@ -35,18 +35,23 @@ Production scoring / SSOT / queue не меняются.
 ## Метрики
 
 - Было: `complete_label_n=0/22`, `comparison_unsealed=false`.
-- Цель C6B: `22/22` complete, `passed=true`, `comparison_unsealed=true`,
-  `error_n=0`, reviewer только `llm_proxy_c6b_not_human_gold`.
-- Цель C7: PHI-safe ranking Dx/Plan по gold PR-AUC; production decision запрещён.
+- Стало C6B: `22/22` complete, `passed=true`, `comparison_unsealed=true`,
+  reviewer `llm_proxy_c6b_not_human_gold`, model `gemini-3.1-pro-preview`.
+- C7 против scored (non-blocked/na) gold: Dx labeled 7 / bad 1;
+  Plan labeled 7 / bad 2; `production_decision_allowed=false`.
+- Top Dx: `blind.mean_2` (PR-AUC 1.0 на n=7, нестабильно).
+- Top Plan: `snapshot.overall_v3` (PR-AUC 0.75).
+- PHI-safe: `eval/mo_score_calibration/c6b_c7_public_summary.json`.
 
 ## Шаги
 
 - [x] L0 Owner waiver: human methodist gate не блокирует proxy path.
 - [x] L1 Скрипт LLM labels + C7 eval + unit tests.
 - [x] L2 GCE mode `--calibration-llm-methodist-labels`.
-- [ ] L3 GCE: заполнить 22 labels, unseal, audit passed.
-- [ ] L4 C7 aggregate против LLM-proxy gold; PHI-safe отчёт.
-- [ ] L5 Обновить v3 plan / handoff; production decision всё ещё запрещён.
+- [x] L3 GCE: заполнить 22 labels, unseal, audit passed.
+- [x] L4 C7 aggregate против LLM-proxy gold; PHI-safe отчёт.
+- [ ] L5 Owner review ranking + решить C8 formal vs продолжить C9A;
+  production decision всё ещё запрещён.
 
 ## Риски
 
