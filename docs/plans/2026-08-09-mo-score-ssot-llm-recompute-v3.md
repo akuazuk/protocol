@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C8 + C9A exploratory done; production scoring locked)
+Статус: **active** (C0-C9A done; owner B → `mo-shadow-dx-plan-conservative-v1`; SSOT locked)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
