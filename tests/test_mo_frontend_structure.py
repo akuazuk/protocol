@@ -93,6 +93,8 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "protocolViewerUrl" in JS
     assert "zone-card" in JS
     assert "Что не так" in JS
+    assert "Разбор по критериям" in JS
+    assert "zones-criteria-block" in JS
     assert "case-workspace-decision-scroll" in JS
     assert "case-workspace-grid--zones" in CSS or "case-workspace-grid--zones" in SOURCE
     assert "protocol-suggest-top" in JS

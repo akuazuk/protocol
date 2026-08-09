@@ -1723,18 +1723,44 @@
         '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
     }
     function renderZonesCriteriaDetails(zones) {
-      var rows = (zones.criteria || []).filter(function (c) {
-        return c.score === 0 || c.score === 0.5 || c.score == null;
+      var zoneOrder = [
+        ["documentation", "Оформление"],
+        ["diagnosis", "Диагноз"],
+        ["plan", "План по протоколу"]
+      ];
+      var all = zones.criteria || [];
+      if (!all.length) return "";
+      var weak = all.filter(function (c) {
+        return c.score === 0 || c.score === 0.5 || (c.score == null && c.na_reason);
       });
-      if (!rows.length) rows = zones.criteria || [];
-      var body = rows.map(function (item) {
-        return '<tr><td>' + esc(item.title || item.id) + '</td><td>' +
-          esc(item.score_label == null ? "не оценивается" : String(item.score_label)) +
-          '</td><td>' + esc(item.reason || "") + '</td></tr>';
+      var brief = weak.length
+        ? '<ul class="zones-brief-list">' + weak.map(function (item) {
+          var mark = item.score === 0 ? "плохо" : (item.score === 0.5 ? "слабо" : "н/д");
+          return '<li><b>' + esc(item.title || item.id) + '</b> (' + esc(mark) + ') - ' +
+            esc(item.reason || "нужна проверка") + '</li>';
+        }).join("") + '</ul>'
+        : '<p class="card-sub">По критериям методики замечаний нет (все оценённые пункты = 1).</p>';
+      var sections = zoneOrder.map(function (pair) {
+        var rows = all.filter(function (c) { return String(c.zone || "") === pair[0]; });
+        if (!rows.length) return "";
+        var body = rows.map(function (item) {
+          var tone = item.score === 1 || item.score === 1.0 ? "good"
+            : (item.score === 0.5 ? "review" : (item.score === 0 ? "critical" : "muted"));
+          return '<tr class="zones-crit-row zones-crit-row--' + tone + '"><td>' +
+            esc(item.title || item.id) + '</td><td><span class="status ' + tone + '">' +
+            esc(item.score_label == null ? "н/д" : String(item.score_label)) +
+            '</span></td><td>' + esc(item.reason || "") + '</td></tr>';
+        }).join("");
+        return '<h4 class="zones-crit-group">' + esc(pair[1]) + '</h4>' +
+          '<div class="table-wrap"><table class="zones-criteria-table"><thead><tr>' +
+          '<th>Параметр</th><th>Оценка</th><th>Пояснение</th></tr></thead><tbody>' +
+          body + '</tbody></table></div>';
       }).join("");
-      return '<details class="detail-block"><summary>Подробнее: критерии методики</summary>' +
-        '<table class="zones-criteria-table"><thead><tr><th>Параметр</th><th>Оценка</th><th>Что не так</th></tr></thead><tbody>' +
-        body + '</tbody></table></details>';
+      return '<div class="detail-block zones-criteria-block"><h3>Разбор по критериям</h3>' +
+        '<p class="card-sub">Методика «Как оценивать»: 1 / 0.5 / 0 / н/д. Сначала слабые места, ниже полная таблица.</p>' +
+        brief +
+        '<details open class="zones-criteria-details"><summary>Полная таблица критериев</summary>' +
+        sections + '</details></div>';
     }
     function renderCase(data) {
       var record = data.record || data.case || data;

@@ -20,7 +20,7 @@ from typing import Any
 _ICD_CODE_RE = re.compile(r"\b[A-Za-z]\d{2}(?:\.\d{1,4})?\b")
 # Ведущий «A00.0 - » / «A00.0:» в title_ru выгрузки
 _LEADING_CODE_TITLE_RE = re.compile(
-    r"^\s*[A-Za-z]\d{2}(?:\.\d{1,4})?\s*[-–—:]\s*",
+    r"^\s*[A-Za-z]\d{2}(?:\.\d{1,4})?\s*[-- - :]\s*",
     re.UNICODE,
 )
 _TOKEN_RE = re.compile(r"[а-яёa-z0-9]{3,}", re.IGNORECASE)
@@ -75,10 +75,82 @@ def light_stem(token: str) -> str:
 
 
 def strip_icd_codes(text: str) -> str:
-    """Убрать коды МКБ из строки (для name_only и секций клиники)."""
+    """Убрать коды МКБ из строки (для name_only и секций клиники).
+
+    Сначала нормализует кириллические/пробельные формы («М21.4», «Е 55.0»)
+    через icd_mkb, затем вырезает латинские токены кода.
+    """
     if not text:
         return ""
-    return _WS_RE.sub(" ", _ICD_CODE_RE.sub(" ", text)).strip()
+    raw = str(text)
+    try:
+        import icd_mkb
+
+        raw = icd_mkb.normalize_text_for_icd_scan(raw)
+    except Exception:  # noqa: BLE001
+        pass
+    return _WS_RE.sub(" ", _ICD_CODE_RE.sub(" ", raw)).strip()
+
+
+def split_diagnosis_phrases(text: str) -> list[str]:
+    """Разбить мультидиагноз на фразы для name-match.
+
+    Длинный клинический текст с несколькими нозологиями нельзя сравнивать
+    целиком с коротким title_ru - короткий title «выигрывает» overlap'ом.
+    Берём предложения и «голову» до первой запятой (нозология без уточнений).
+    """
+    cleaned = strip_icd_codes(text or "")
+    if not cleaned:
+        return []
+    parts = re.split(r"[.?!;\n]+", cleaned)
+    out: list[str] = []
+    seen: set[str] = set()
+
+    def _add(phrase: str) -> None:
+        p = _WS_RE.sub(" ", (phrase or "").strip(" ,;:-"))
+        if len(p) < 4:
+            return
+        key = p.lower()
+        if key in seen:
+            return
+        seen.add(key)
+        out.append(p)
+
+    for part in parts:
+        _add(part)
+        # «Бронхиальная астма, аллергическая, …» → отдельно нозология
+        if "," in (part or ""):
+            head = part.split(",", 1)[0]
+            if 4 <= len(head.strip()) <= 80:
+                _add(head)
+    if not out and cleaned.strip():
+        _add(cleaned)
+    return out
+
+
+def best_combined_against_title(query: str, title: str) -> dict[str, Any]:
+    """Max combined_score по фразам мультидиагноза и полному тексту."""
+    title_clean = strip_leading_code_from_title(title or "")
+    q = (query or "").strip()
+    if not q or len(title_clean) < 3:
+        return {
+            "token_jaccard": 0.0,
+            "token_coverage": 0.0,
+            "fuzz_ratio": 0.0,
+            "combined": 0.0,
+            "matched_phrase": "",
+        }
+    phrases = split_diagnosis_phrases(q)
+    if q not in phrases:
+        phrases = [q, *phrases]
+    best = combined_score(q, title_clean)
+    best_phrase = q
+    for phrase in phrases:
+        scores = combined_score(phrase, title_clean)
+        if float(scores["combined"]) > float(best["combined"]):
+            best = scores
+            best_phrase = phrase
+    return {**best, "matched_phrase": best_phrase}
 
 
 def strip_leading_code_from_title(title: str) -> str:
@@ -185,7 +257,7 @@ def best_match_against_titles(
     *,
     title_key: str = "title_ru",
 ) -> dict[str, Any] | None:
-    """Выбрать лучший кандидат по combined_score(query, title).
+    """Выбрать лучший кандидат по max score фраз мультидиагноза ↔ title.
 
     candidates: list of dicts with title_key (и обычно code).
     """
@@ -200,7 +272,7 @@ def best_match_against_titles(
         title = strip_leading_code_from_title(str(row.get(title_key) or ""))
         if len(title) < 3:
             continue
-        scores = combined_score(q, title)
+        scores = best_combined_against_title(q, title)
         sc = float(scores["combined"])
         if sc > best_score:
             best_score = sc
@@ -209,5 +281,6 @@ def best_match_against_titles(
                 "title_ru_clean": title,
                 "similarity": scores,
                 "score": sc,
+                "matched_phrase": scores.get("matched_phrase") or "",
             }
     return best

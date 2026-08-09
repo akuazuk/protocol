@@ -19,7 +19,7 @@
 | Файл | Тема | Статус |
 |------|------|--------|
 | [2026-08-08-mo-analytics-ui-target-v2.md](2026-08-08-mo-analytics-ui-target-v2.md) | Канон экранов МО: короткое меню, лаконичный разбор, всё на русском | active |
-| [2026-08-08-mo-analytics-implementation-blueprint-v1.md](2026-08-08-mo-analytics-implementation-blueprint-v1.md) | Blueprint склада/API/движка зон; UI в объёме ui-target-v2; релизы A–E в коде (PR #78) | active |
+| [2026-08-08-mo-analytics-implementation-blueprint-v1.md](2026-08-08-mo-analytics-implementation-blueprint-v1.md) | Blueprint склада/API/движка зон; UI в объёме ui-target-v2; релизы A-E в коде (PR #78) | active |
 | [2026-08-08-mo-analytics-mz-sheet-layers-v2.md](2026-08-08-mo-analytics-mz-sheet-layers-v2.md) | Канон зон: №127 без КП; диагноз/план с КП | active |
 | [2026-08-08-mo-analytics-three-layer-redesign-v1.md](2026-08-08-mo-analytics-three-layer-redesign-v1.md) | Трёхслойная модель (черновик) | archived (преемник: mz-sheet-layers-v2) |
 | [2026-08-08-mo-consultation-legacy-score-v1.md](2026-08-08-mo-consultation-legacy-score-v1.md) | Legacy consultation снова в оценке (рубрика МЗ / №55 / KP) | active |
@@ -34,6 +34,7 @@
 | [2026-08-08-mo-reg55-day-column-v1.md](2026-08-08-mo-reg55-day-column-v1.md) | Таблица дня: колонка №55 + разбор пунктов при раскрытии | active |
 | [2026-08-08-mo-kp-history-episode-suggest-v1.md](2026-08-08-mo-kp-history-episode-suggest-v1.md) | КП по эпизоду Dx из истории визитов + golden верно/неверно | active |
 | [2026-08-08-mo-kp-suggest-dx-accuracy-v1.md](2026-08-08-mo-kp-suggest-dx-accuracy-v1.md) | Suggest v4: точный КП по тексту Dx (bridge text→ICD, clinical-only) | archived (преемник: mo-icd-first-kp-suggest-v1; text-path остаётся без кода) |
+| [2026-08-09-mo-icd-name-multidx-brief-v1.md](2026-08-09-mo-icd-name-multidx-brief-v1.md) | Name-match мультидиагноз (ложный weak) + UI «Разбор по критериям» | active |
 | [2026-08-07-by-home-gcp-llm-split-v1.md](2026-08-07-by-home-gcp-llm-split-v1.md) | E1: всё на GCP, МИС-мост с Mac → E2 МИС с GCP → E3 BY+LLM на GCP; Docker-границы | active |
 | [2026-08-08-mo-icd-dx-matching-pipeline-v3.md](2026-08-08-mo-icd-dx-matching-pipeline-v3.md) | Полный пайплайн Dx↔МКБ: оркестратор, aliases, compact-коды, калибровка→primary, LLM review | active |
 | [2026-08-08-mo-patient-history-bundle-v2.md](2026-08-08-mo-patient-history-bundle-v2.md) | Сначала бандл истории пациента (врач + специальность), потом одно МО и анализаторы | active |
