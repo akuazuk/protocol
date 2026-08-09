@@ -18,7 +18,8 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-08-09-mo-reg55-section-pack-v1.md](2026-08-09-mo-reg55-section-pack-v1.md) | МО Аналитика: один №55 section-pack (прил.1 разд.V); дашборд/фильтры/градации; №127 evidence | active |
+| [2026-08-09-mo-dashboards-zones-first-v2.md](2026-08-09-mo-dashboards-zones-first-v2.md) | МО Аналитика: меню и дашборды простыми словами (зоны primary; №55 в «Подробнее») | active |
+| [2026-08-09-mo-dashboards-zones-first-v1.md](2026-08-09-mo-dashboards-zones-first-v1.md) | Дашборды зоны-first (техническая версия) | archived (преемник: mo-dashboards-zones-first-v2) |
 | [2026-08-09-auth-accounts-unify-v1.md](2026-08-09-auth-accounts-unify-v1.md) | Единый вход методиста + МО Аналитика; P0 SSO/403; далее login/password и admin учёток | active |
 | [2026-08-09-mo-case-review-quality-parity-v1.md](2026-08-09-mo-case-review-quality-parity-v1.md) | Разбор случая: качество как у экспертного разбора (brief, клиника, КП, врачу) | active |
 | [2026-08-08-mo-analytics-ui-target-v2.md](2026-08-08-mo-analytics-ui-target-v2.md) | Канон экранов МО: короткое меню, лаконичный разбор, всё на русском | active |
@@ -62,8 +63,8 @@
 | [2026-08-03-ci-release-concurrency-v3.md](2026-08-03-ci-release-concurrency-v3.md) | CI baseline 0, обязательный lint и GitHub Actions concurrency для production release | completed |
 | [2026-08-03-mo-filter-actions-ui-v1.md](2026-08-03-mo-filter-actions-ui-v1.md) | МО Аналитика: явный запуск поиска, подтверждение мультифильтров и раскрываемые панели | active |
 | [2026-08-03-multi-agent-release-guard-v2.md](2026-08-03-multi-agent-release-guard-v2.md) | Multi-agent release guard: только merged `origin/main` в Render, hard guards и branch protection | archived (преемник: ci-release-concurrency-v3) |
-| [2026-08-03-mo-rubric-mz-scoring-viz-v1.md](2026-08-03-mo-rubric-mz-scoring-viz-v1.md) | МО: рубрика МЗ «Как оценивать» (0/0.5/1), shadow scorer и визуализация в case detail | archived (преемник: mo-reg55-section-pack-v1) |
-| [2026-07-30-mo-analytics-bi-redesign-v1.md](2026-07-30-mo-analytics-bi-redesign-v1.md) | МО Аналитика: редизайн BI (ECharts, фильтры, «Вчера» и «Месяц»), доставка данных в прод и оценка v4 | active |
+| [2026-08-03-mo-rubric-mz-scoring-viz-v1.md](2026-08-03-mo-rubric-mz-scoring-viz-v1.md) | МО: рубрика МЗ «Как оценивать» (0/0.5/1), shadow scorer и визуализация в case detail | active |
+| [2026-07-30-mo-analytics-bi-redesign-v1.md](2026-07-30-mo-analytics-bi-redesign-v1.md) | МО Аналитика: редизайн BI (ECharts, фильтры, «Вчера» и «Месяц»), доставка данных в прод и оценка v4 | active (замена hero-дашбордов → [mo-dashboards-zones-first-v2](2026-08-09-mo-dashboards-zones-first-v2.md)) |
 | [2026-07-29-repo-structure-cleanup-v1.md](2026-07-29-repo-structure-cleanup-v1.md) | Cleanup структуры репозитория: frontend/backend/ops без регрессий прода | archived (преемник: repo-sections-archive-v2) |
 | [2026-07-28-multi-machine-git-deploy-workflow-v1.md](2026-07-28-multi-machine-git-deploy-workflow-v1.md) | Workflow для 2 ПК: safe-start, safe-pull, deploy-guard и единый runbook | archived (преемник: multi-agent-release-guard-v2) |
 | [2026-07-28-mo-daily-bi-platform-v1.md](2026-07-28-mo-daily-bi-platform-v1.md) | МО из БД: ежедневная загрузка «вчера», объективная оценка, CRM/BI, отчёты, терминология КЗ/МО и полный перенесённый backlog | active |

@@ -789,7 +789,12 @@
     async function loadLegacyOverview(suffix) {
       return request("/overview" + suffix, "__root__");
     }
+    function hostActive(id) {
+      var el = $(id);
+      return !!(el && !el.hasAttribute("hidden"));
+    }
     function renderMonthTrend(data) {
+      if (!hostActive("month-trend-chart")) return;
       var items = (data.timeseries || {}).items || [], dates = items.map(function (item) { return item.date; });
       var names = {
         overall:"Итог", documentation:"Оформление", clinical_concordance:"Клиническая согласованность",
@@ -829,6 +834,7 @@
       });
     }
     function renderMonthHeatmap(data) {
+      if (!hostActive("month-heatmap-chart")) return;
       var cells=((data.heatmap || {}).cells || []), rows=Array.from(new Set(cells.map(function (x) { return x.row; }))),
         cols=Array.from(new Set(cells.map(function (x) { return x.col; })));
       if (!cells.length) { $("month-heatmap-chart").innerHTML=unavailableBlock(data.heatmap); return; }
@@ -845,6 +851,7 @@
       });
     }
     function renderMonthDoctors(data) {
+      if (!hostActive("month-doctor-chart")) return;
       var section=data.doctor_case_mix || {}, items=(section.items || []).filter(function (x) {
         return x.enough_data && !x.suppressed && x.delta != null;
       }).slice(0,15);
@@ -863,6 +870,7 @@
       $("month-doctor-note").innerHTML='<p class="inline-note">'+esc(section.rule || "")+"</p>";
     }
     function renderMonthPareto(data) {
+      if (!hostActive("month-pareto-chart")) return;
       var section=data.pareto || {}, items=section.items || [];
       if (!items.length) { $("month-pareto-chart").innerHTML=unavailableBlock(section); return; }
       var chart=MO.moChart($("month-pareto-chart"), {
@@ -884,6 +892,7 @@
       });
     }
     function renderMonthFunnel(data) {
+      if (!hostActive("month-funnel-chart") && !hostActive("month-crm-chart")) return;
       var funnel=data.funnel || {}, stages=[
         ["Источник",funnel.source],["Допущено",funnel.eligible],["Оценено",funnel.evaluated],
         ["С замечаниями",funnel.with_findings],["В работе CRM",funnel.in_crm_work],["Закрыто",funnel.closed]
@@ -962,21 +971,10 @@
       $("month-period-label").textContent=(data.period_label || "Период")+" с "+data.period.date_from+" по "+data.data_through+
         ". Дней: "+data.days_elapsed+" из "+data.days_in_month+". Europe/Minsk.";
       $("freshness").textContent="Данные по "+data.data_through;
-      var reg55Kpi = data.reg55 || {};
-      var reg55KpiHtml = "";
-      if (reg55Kpi.available && (reg55Kpi.avg_pct != null || reg55Kpi.value != null)) {
-        reg55KpiHtml = kpi(
-          "Соответствие №55",
-          score(reg55Kpi.avg_pct != null ? reg55Kpi.avg_pct : reg55Kpi.value),
-          (reg55Kpi.reg55_band_label_ru || "п.12 · разд. V") +
-            " · sample " + (reg55Kpi.sample_n || 0)
-        );
-      }
       $("month-kpis").innerHTML=kpi("Записи",k.source_records,"объём")+
         kpi("Оценено",k.evaluated,score(k.coverage_pct)+" покрытие")+
         kpi("Свежесть", $("freshness") ? $("freshness").textContent : "-", "склад")+
-        kpi("Прогноз объёма",forecast.projected_source,"к концу месяца")+
-        reg55KpiHtml;
+        kpi("Прогноз объёма",forecast.projected_source,"к концу месяца");
       // overview API may nest attention on month-report or separate overview call
       var attention = data.attention || (data.overview && data.overview.attention) || null;
       if (!attention && state.data.overviewAttention) attention = state.data.overviewAttention;
@@ -989,24 +987,40 @@
           var bv = Number(b.zone2a_bad_pct != null ? b.zone2a_bad_pct : b.bad_pct) || 0;
           return bv - av;
         }).slice(0, 8);
-        look.innerHTML = docs.length ? '<div class="table-wrap"><table><thead><tr><th>Врач</th><th>Случаев</th><th>Оформл. плохо</th><th>Диагноз плохо</th><th>План плохо</th></tr></thead><tbody>' +
+        look.innerHTML = docs.length ? '<div class="table-wrap"><table><thead><tr><th>Врач</th><th>Случаев</th><th>Оформл. плохо</th><th>Диагноз плохо</th><th>План плохо</th><th></th></tr></thead><tbody>' +
           docs.map(function (row) {
-            return "<tr><td>" + esc(row.doctor_fio || row.doctor || "") + "</td><td>" + esc(row.n) +
+            var name = row.doctor_fio || row.doctor || "";
+            return "<tr><td>" + esc(name) + "</td><td>" + esc(row.n) +
               "</td><td>" + esc(pctOrDash(row.zone1_bad_pct != null ? row.zone1_bad_pct : null)) +
               "</td><td>" + esc(pctOrDash(row.zone2a_bad_pct != null ? row.zone2a_bad_pct : null)) +
-              "</td><td>" + esc(pctOrDash(row.zone2b_bad_pct != null ? row.zone2b_bad_pct : null)) + "</td></tr>";
+              "</td><td>" + esc(pctOrDash(row.zone2b_bad_pct != null ? row.zone2b_bad_pct : null)) +
+              '</td><td><button type="button" class="button secondary compact" data-look-doctor="' +
+              esc(name) + '">Открыть</button></td></tr>';
           }).join("") + "</tbody></table></div>" : '<p class="empty">Недостаточно данных.</p>';
+        look.querySelectorAll("[data-look-doctor]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var name = btn.getAttribute("data-look-doctor") || "";
+            if (!name) return;
+            state.selected.doctors = [name];
+            state.zoneBandFilter = "bad";
+            switchPage("documents");
+          });
+        });
       }
-      $("month-forecast").innerHTML=kpi("Прогноз записей",forecast.projected_source,forecast.method)+
-        kpi("Прогноз оценённых",forecast.projected_evaluated,"при текущем темпе")+
-        kpi("Прогноз оценки",score(forecast.projected_avg_score),"без изменения среднего");
-      var comparisons=data.comparison || {};
-      $("month-compare").innerHTML=Object.keys(comparisons).map(function (key) {
-        var item=comparisons[key];
-        return item.available ? notice(item.label,
-          "Записи "+signed(item.deltas.source_records,"")+"; оценка "+signed(item.deltas.avg_score),"good") :
-          notice("Сравнение недоступно",item.reason,"review");
-      }).join("")+"<p class=\"inline-note\">"+esc((forecast.assumptions || []).join(". "))+"</p>";
+      if (hostActive("month-forecast")) {
+        $("month-forecast").innerHTML=kpi("Прогноз записей",forecast.projected_source,forecast.method)+
+          kpi("Прогноз оценённых",forecast.projected_evaluated,"при текущем темпе")+
+          kpi("Прогноз оценки",score(forecast.projected_avg_score),"без изменения среднего");
+      }
+      if (hostActive("month-compare")) {
+        var comparisons=data.comparison || {};
+        $("month-compare").innerHTML=Object.keys(comparisons).map(function (key) {
+          var item=comparisons[key];
+          return item.available ? notice(item.label,
+            "Записи "+signed(item.deltas.source_records,"")+"; оценка "+signed(item.deltas.avg_score),"good") :
+            notice("Сравнение недоступно",item.reason,"review");
+        }).join("")+"<p class=\"inline-note\">"+esc((forecast.assumptions || []).join(". "))+"</p>";
+      }
       var reconciliation=data.reconciliation || {}, banner=$("month-reconciliation");
       banner.hidden=reconciliation.status === "ok";
       banner.className="banner critical";
@@ -2518,6 +2532,7 @@
         }).join("") : '<tr><td colspan="5" class="empty">Разбивка по типам документов недоступна.</td></tr>';
     }
     function renderYesterdayIndices(data) {
+      if (!hostActive("yesterday-index-cards")) return;
       var items = ((data.indices || {}).items || []);
       $("yesterday-index-cards").innerHTML = items.map(function (item) {
         return kpi(item.label, item.available ? score(item.value) : "Нет данных",
@@ -2567,6 +2582,7 @@
       });
     }
     function renderYesterdayFindings(data) {
+      if (!hostActive("yesterday-findings-chart")) return;
       var items = ((data.top_findings || {}).items || []).slice(0, 12);
       var day = (data.top_findings || {}).day || data.day || data.data_through || "";
       if (!items.length) {
@@ -2624,6 +2640,7 @@
       }).join("");
     }
     function renderYesterdayDoctors(data) {
+      if (!hostActive("yesterday-doctor-chart")) return;
       var section = data.doctor_outliers || {}, items = section.items || [];
       if (!items.length) {
         $("yesterday-doctor-chart").innerHTML = unavailableBlock(section);
@@ -2694,6 +2711,7 @@
       bindCaseRows($("yesterday-action-rows"));
     }
     function renderYesterdayFlow(data, dimension) {
+      if (!hostActive("yesterday-flow-chart")) return;
       var section = data.flow_changes || {}, dimensions = section.dimensions || {};
       var items = (dimensions[dimension] || []).filter(function (item) { return item.available; }).slice(0, 12);
       if (!items.length) {
@@ -2728,6 +2746,7 @@
       }).join("");
     }
     function renderYesterdaySourceQuality(data) {
+      if (!hostActive("yesterday-source-quality")) return;
       var section = data.source_quality || {}, items = section.items || [];
       $("yesterday-source-quality").innerHTML = items.length ? items.map(function (item) {
         if (!item.available) return notice(item.label, item.reason, "review");
@@ -2755,7 +2774,8 @@
       renderYesterdayIndices(data);
       renderYesterdayFindings(data);
       renderYesterdayDoctors(data);
-      renderYesterdayFlow(data, $("yesterday-flow-dimension").value);
+      var flowDim = $("yesterday-flow-dimension");
+      renderYesterdayFlow(data, (flowDim && flowDim.value) || "specialty");
       renderYesterdaySourceQuality(data);
     }
     async function loadYesterday() {
@@ -3685,9 +3705,11 @@
           takeYesterdayCase(button.getAttribute("data-take-case"), button);
         }
       });
-      $("yesterday-flow-dimension").addEventListener("change", function () {
-        if (state.data.daily) renderYesterdayFlow(state.data.daily, this.value);
-      });
+      if ($("yesterday-flow-dimension")) {
+        $("yesterday-flow-dimension").addEventListener("change", function () {
+          if (state.data.daily) renderYesterdayFlow(state.data.daily, this.value);
+        });
+      }
       $("saved-view").addEventListener("change", function () { if (this.value !== "") loadView(this.value); });
       $("view-manager").addEventListener("click", function (event) {
         var loadButton = event.target.closest("[data-load-view]");
