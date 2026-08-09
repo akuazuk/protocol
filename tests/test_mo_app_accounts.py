@@ -100,9 +100,10 @@ def test_crm_tables_include_app_accounts() -> None:
 
 
 def test_methodist_tab_is_accounts_admin_not_summary_stub() -> None:
-    assert "МО Аналитика - учётные записи" in DOCTOR_HTML
+    assert "Учётные записи МО Аналитики" in DOCTOR_HTML
     assert "mo-account-create" in DOCTOR_HTML
     assert "mo-accounts-table" in DOCTOR_HTML
     assert "Массовый анализ медицинских записей" not in DOCTOR_HTML
     assert "CRM/BI-дашборд МО" not in DOCTOR_HTML
     assert "function createMethodistMoAccount()" in DOCTOR_HTML
+    assert 'id="methodist-nav-mo-analytics"' in DOCTOR_HTML
