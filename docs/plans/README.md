@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-09-mo-today-rings-dynamics-v1.md](2026-08-09-mo-today-rings-dynamics-v1.md) | Сегодня: кольца зон/№55 + динамика по периоду; покрытие оценок | active (план до кода) |
 | [2026-08-09-mo-analytics-visual-refresh-v1.md](2026-08-09-mo-analytics-visual-refresh-v1.md) | МО Аналитика: цвет умеренно+, Avenir-шкала, sort/filter/chips/col-dropdown на таблицах | active |
 | [2026-08-09-mo-protocol-nav-viewer-v1.md](2026-08-09-mo-protocol-nav-viewer-v1.md) | Навигация по КП: полный viewer без тупика, ссылка на стр. PDF, стиль МО | active |
 | [2026-08-09-mo-settings-refresh-v1.md](2026-08-09-mo-settings-refresh-v1.md) | МО Аналитика: Справка вместо Настроек; зоны; без v3/v4 и AI-расходов | active |
