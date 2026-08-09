@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-094029Z-mo-protocol-reader"
+BUILD_VERSION = "2026-08-09-095546Z-mo-score-dashboard-api"
 
 
 def _app_version() -> str:
@@ -12441,6 +12441,29 @@ def api_methodist_mo_reg55_section_summary(
         date_to=date_to,
         limit=limit,
     )
+
+
+@app.get("/api/methodist/mo/score-dashboard")
+def api_methodist_mo_score_dashboard(
+    request: "Request",
+    response: "Response",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    trend_date_from: str = Query("", max_length=10),
+    trend_date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+) -> dict:
+    """Кольца зон/№55 + дневная динамика для окна #period (волна 0 Today rings)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_score_dashboard
+
+    response.headers["Cache-Control"] = "private, no-store"
+    return build_score_dashboard(_mo_params(**locals()))
 
 
 @app.get("/api/methodist/mo/cases/{case_id}/document")

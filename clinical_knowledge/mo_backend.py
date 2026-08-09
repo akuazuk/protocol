@@ -1152,8 +1152,8 @@ def build_facets(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any] | None:
-    """Агрегаты зон для overview (без UI-флага; клиент может игнорировать)."""
+def _resolve_attention_window(params: dict[str, Any]) -> tuple[str, str, str, str] | None:
+    """Агрегаты date_from/to + окно тренда (lookback для одного дня)."""
     date_from = str(params.get("date_from") or "")[:10]
     date_to = str(params.get("date_to") or "")[:10]
     if not date_from or not date_to:
@@ -1165,32 +1165,181 @@ def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any]
             return None
     if not date_from or not date_to:
         return None
+    trend_from = str(params.get("trend_date_from") or "")[:10]
+    trend_to = str(params.get("trend_date_to") or "")[:10]
+    if not trend_from or not trend_to:
+        if date_from == date_to:
+            try:
+                day = date.fromisoformat(date_to)
+                trend_from = (day - timedelta(days=13)).isoformat()
+                trend_to = date_to
+            except ValueError:
+                trend_from, trend_to = date_from, date_to
+        else:
+            trend_from, trend_to = date_from, date_to
+    return date_from, date_to, trend_from, trend_to
+
+
+def _band_share_payload(counts: Mapping[str, int], *, n: int) -> dict[str, Any]:
+    out: dict[str, Any] = {}
+    for key in ("ok", "weak", "bad", "na"):
+        value = int(counts.get(key) or 0)
+        out[key] = {
+            "n": value,
+            "pct": round(100.0 * value / n, 1) if n else 0.0,
+        }
+    return out
+
+
+def _queue_band_counts(
+    conn: sqlite3.Connection,
+    *,
+    date_from: str,
+    date_to: str,
+) -> tuple[int, int]:
+    """Число уникальных визитов в очереди: критично / важно."""
+    from .mo_action_queue_select import (
+        BAND_CRITICAL,
+        BAND_IMPORTANT,
+        pick_primary_queue_finding,
+        sql_finding_code_in_clause,
+    )
+
+    finding_cols = {row[1] for row in conn.execute("PRAGMA table_info(fact_mo_finding)")}
+    if "finding_code" not in finding_cols:
+        return 0, 0
+    shadow_select = (
+        "COALESCE(f.is_shadow, 0) AS is_shadow"
+        if "is_shadow" in finding_cols
+        else "0 AS is_shadow"
+    )
+    title_select = (
+        "COALESCE(NULLIF(f.title_ru,''), '') AS finding_title"
+        if "title_ru" in finding_cols
+        else "'' AS finding_title"
+    )
+    evidence_select = (
+        "COALESCE(NULLIF(f.evidence,''), '') AS evidence"
+        if "evidence" in finding_cols
+        else "'' AS evidence"
+    )
+    clause = sql_finding_code_in_clause("f")
+    try:
+        rows = conn.execute(
+            f"""SELECT c.visit_id AS visit_id,
+                      f.finding_code AS finding_code,
+                      f.severity AS severity,
+                      {title_select},
+                      {evidence_select},
+                      {shadow_select}
+               FROM fact_mo_case c
+               JOIN fact_mo_finding f ON f.mis_id = c.mis_id
+               WHERE c.visit_date BETWEEN ? AND ?
+                 AND c.document_kind IN ('clinical_visit', 'consultation')
+                 AND {clause}""",
+            (date_from, date_to),
+        ).fetchall()
+    except Exception:  # noqa: BLE001
+        return 0, 0
+    by_visit: dict[str, list[dict[str, Any]]] = {}
+    for row in rows:
+        visit_id = str(row["visit_id"] or "").strip()
+        if not visit_id:
+            continue
+        by_visit.setdefault(visit_id, []).append(
+            {
+                "finding_code": str(row["finding_code"] or ""),
+                "severity": str(row["severity"] or ""),
+                "finding_title": str(row["finding_title"] or ""),
+                "evidence": str(row["evidence"] or ""),
+                "is_shadow": bool(int(row["is_shadow"] or 0)),
+            }
+        )
+    critical = 0
+    important = 0
+    for findings in by_visit.values():
+        primary = pick_primary_queue_finding(findings)
+        if not primary:
+            continue
+        from .mo_action_queue_select import signal_band_for_finding
+
+        band = signal_band_for_finding(primary)
+        if band == BAND_CRITICAL:
+            critical += 1
+        elif band == BAND_IMPORTANT:
+            important += 1
+    return critical, important
+
+
+def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any] | None:
+    """Агрегаты зон + band_share + тренд (lookback) + счётчики очереди."""
+    window = _resolve_attention_window(params)
+    if not window:
+        return None
+    date_from, date_to, trend_from, trend_to = window
     try:
         with closing(_read_connection()) as conn:
             cols = {row[1] for row in conn.execute("PRAGMA table_info(fact_mo_case)")}
             if "zone1_band" not in cols:
                 return None
+            has_reg55_pct = "reg55_section_pct" in cols
+            has_reg55_band = "reg55_band" in cols
+            reg55_avg_sql = (
+                "AVG(reg55_section_pct) AS reg55_avg"
+                if has_reg55_pct
+                else "NULL AS reg55_avg"
+            )
+            reg55_band_sql = (
+                """SUM(CASE WHEN reg55_band='compliant_min' THEN 1 ELSE 0 END) AS reg55_ok,
+                   SUM(CASE WHEN reg55_band='compliant_measures' THEN 1 ELSE 0 END) AS reg55_mid,
+                   SUM(CASE WHEN reg55_band='noncompliant' THEN 1 ELSE 0 END) AS reg55_bad,
+                   SUM(CASE WHEN COALESCE(reg55_band,'unscored')='unscored'
+                              OR reg55_band IS NULL OR reg55_band='' THEN 1 ELSE 0 END) AS reg55_unscored"""
+                if has_reg55_band
+                else """NULL AS reg55_ok, NULL AS reg55_mid, NULL AS reg55_bad, NULL AS reg55_unscored"""
+            )
             row = conn.execute(
-                """SELECT
+                f"""SELECT
                      COUNT(*) AS n_evaluated,
                      SUM(CASE WHEN zone1_band='bad' THEN 1 ELSE 0 END) AS zone1_bad,
+                     SUM(CASE WHEN zone1_band='weak' THEN 1 ELSE 0 END) AS zone1_weak,
+                     SUM(CASE WHEN zone1_band='ok' THEN 1 ELSE 0 END) AS zone1_ok,
+                     SUM(CASE WHEN zone1_band='na' OR zone1_band IS NULL OR zone1_band='' THEN 1 ELSE 0 END) AS zone1_na,
                      SUM(CASE WHEN zone2a_band='bad' THEN 1 ELSE 0 END) AS zone2a_bad,
+                     SUM(CASE WHEN zone2a_band='weak' THEN 1 ELSE 0 END) AS zone2a_weak,
+                     SUM(CASE WHEN zone2a_band='ok' THEN 1 ELSE 0 END) AS zone2a_ok,
+                     SUM(CASE WHEN zone2a_band='na' OR zone2a_band IS NULL OR zone2a_band='' THEN 1 ELSE 0 END) AS zone2a_na,
                      SUM(CASE WHEN zone2b_band='bad' THEN 1 ELSE 0 END) AS zone2b_bad,
+                     SUM(CASE WHEN zone2b_band='weak' THEN 1 ELSE 0 END) AS zone2b_weak,
+                     SUM(CASE WHEN zone2b_band='ok' THEN 1 ELSE 0 END) AS zone2b_ok,
+                     SUM(CASE WHEN zone2b_band='na' OR zone2b_band IS NULL OR zone2b_band='' THEN 1 ELSE 0 END) AS zone2b_na,
                      SUM(CASE WHEN attention_primary='safety' THEN 1 ELSE 0 END) AS safety_critical,
                      AVG(zone1_pct) AS zone1_avg,
                      AVG(zone2a_pct) AS zone2a_avg,
-                     AVG(zone2b_pct) AS zone2b_avg
+                     AVG(zone2b_pct) AS zone2b_avg,
+                     {reg55_avg_sql},
+                     {reg55_band_sql}
                    FROM fact_mo_case
                    WHERE visit_date BETWEEN ? AND ?
                      AND document_kind IN ('clinical_visit', 'consultation')
                      AND layer_engine IS NOT NULL""",
                 (date_from, date_to),
             ).fetchone()
+            trend_reg55 = (
+                "AVG(reg55_section_pct) AS reg55_avg"
+                if has_reg55_pct
+                else "NULL AS reg55_avg"
+            )
             trend = conn.execute(
-                """SELECT visit_date AS date,
+                f"""SELECT visit_date AS date,
+                          COUNT(*) AS n_evaluated,
                           AVG(zone1_pct) AS zone1_avg,
                           AVG(zone2a_pct) AS zone2a_avg,
                           AVG(zone2b_pct) AS zone2b_avg,
+                          {trend_reg55},
+                          SUM(CASE WHEN zone1_band='bad' THEN 1 ELSE 0 END) AS zone1_bad,
+                          SUM(CASE WHEN zone2a_band='bad' THEN 1 ELSE 0 END) AS zone2a_bad,
+                          SUM(CASE WHEN zone2b_band='bad' THEN 1 ELSE 0 END) AS zone2b_bad,
                           SUM(CASE WHEN attention_primary='safety' THEN 1 ELSE 0 END) AS safety_critical
                    FROM fact_mo_case
                    WHERE visit_date BETWEEN ? AND ?
@@ -1198,61 +1347,204 @@ def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any]
                      AND layer_engine IS NOT NULL
                    GROUP BY visit_date
                    ORDER BY visit_date""",
-                (date_from, date_to),
+                (trend_from, trend_to),
             ).fetchall()
+            queue_critical, queue_important = _queue_band_counts(
+                conn, date_from=date_from, date_to=date_to
+            )
     except Exception:  # noqa: BLE001
         return None
     if not row:
         return None
     n = int(row["n_evaluated"] or 0)
-    if n <= 0:
+
+    def _pct(part: int) -> float:
+        return round(100.0 * part / n, 1) if n else 0.0
+
+    def _zone_block(prefix: str) -> dict[str, Any]:
+        bad = int(row[f"{prefix}_bad"] or 0)
+        weak = int(row[f"{prefix}_weak"] or 0)
+        ok = int(row[f"{prefix}_ok"] or 0)
+        na = int(row[f"{prefix}_na"] or 0)
+        avg = row[f"{prefix}_avg"]
         return {
-            "n_evaluated": 0,
-            "zone1_bad": 0,
-            "zone1_bad_pct": 0.0,
-            "zone2a_bad": 0,
-            "zone2a_bad_pct": 0.0,
-            "zone2b_bad": 0,
-            "zone2b_bad_pct": 0.0,
-            "safety_critical": 0,
-            "queue_critical": None,
-            "queue_important": None,
-            "zone_avgs": {"zone1": None, "zone2a": None, "zone2b": None},
-            "zone_trends": [],
+            "bad": bad,
+            "bad_pct": _pct(bad),
+            "weak": weak,
+            "ok": ok,
+            "na": na,
+            "avg_pct": round(float(avg), 1) if avg is not None else None,
+            "bands": _band_share_payload(
+                {"ok": ok, "weak": weak, "bad": bad, "na": na}, n=n
+            ),
         }
 
-    def _pct(bad: int) -> float:
-        return round(100.0 * bad / n, 1)
+    empty = {
+        "n_evaluated": 0,
+        "zone1_bad": 0,
+        "zone1_bad_pct": 0.0,
+        "zone2a_bad": 0,
+        "zone2a_bad_pct": 0.0,
+        "zone2b_bad": 0,
+        "zone2b_bad_pct": 0.0,
+        "safety_critical": 0,
+        "queue_critical": 0,
+        "queue_important": 0,
+        "zone_avgs": {"zone1": None, "zone2a": None, "zone2b": None},
+        "zone_bands": {
+            "zone1": _band_share_payload({}, n=0),
+            "zone2a": _band_share_payload({}, n=0),
+            "zone2b": _band_share_payload({}, n=0),
+        },
+        "reg55": {
+            "available": False,
+            "avg_pct": None,
+            "band_share": {},
+            "sample_n": 0,
+        },
+        "zone_trends": [],
+        "window": {
+            "date_from": date_from,
+            "date_to": date_to,
+            "trend_date_from": trend_from,
+            "trend_date_to": trend_to,
+        },
+    }
+    if n <= 0:
+        empty["queue_critical"] = queue_critical
+        empty["queue_important"] = queue_important
+        return empty
 
-    z1_bad = int(row["zone1_bad"] or 0)
-    z2a_bad = int(row["zone2a_bad"] or 0)
-    z2b_bad = int(row["zone2b_bad"] or 0)
+    z1 = _zone_block("zone1")
+    z2a = _zone_block("zone2a")
+    z2b = _zone_block("zone2b")
+    reg55_avg = row["reg55_avg"]
+    reg55_share = {}
+    if has_reg55_band:
+        for code, key in (
+            ("compliant_min", "reg55_ok"),
+            ("compliant_measures", "reg55_mid"),
+            ("noncompliant", "reg55_bad"),
+            ("unscored", "reg55_unscored"),
+        ):
+            value = int(row[key] or 0)
+            reg55_share[code] = {"n": value, "pct": _pct(value)}
     return {
         "n_evaluated": n,
-        "zone1_bad": z1_bad,
-        "zone1_bad_pct": _pct(z1_bad),
-        "zone2a_bad": z2a_bad,
-        "zone2a_bad_pct": _pct(z2a_bad),
-        "zone2b_bad": z2b_bad,
-        "zone2b_bad_pct": _pct(z2b_bad),
+        "zone1_bad": z1["bad"],
+        "zone1_bad_pct": z1["bad_pct"],
+        "zone2a_bad": z2a["bad"],
+        "zone2a_bad_pct": z2a["bad_pct"],
+        "zone2b_bad": z2b["bad"],
+        "zone2b_bad_pct": z2b["bad_pct"],
         "safety_critical": int(row["safety_critical"] or 0),
-        "queue_critical": None,
-        "queue_important": None,
+        "queue_critical": queue_critical,
+        "queue_important": queue_important,
         "zone_avgs": {
-            "zone1": round(float(row["zone1_avg"]), 1) if row["zone1_avg"] is not None else None,
-            "zone2a": round(float(row["zone2a_avg"]), 1) if row["zone2a_avg"] is not None else None,
-            "zone2b": round(float(row["zone2b_avg"]), 1) if row["zone2b_avg"] is not None else None,
+            "zone1": z1["avg_pct"],
+            "zone2a": z2a["avg_pct"],
+            "zone2b": z2b["avg_pct"],
+        },
+        "zone_bands": {
+            "zone1": z1["bands"],
+            "zone2a": z2a["bands"],
+            "zone2b": z2b["bands"],
+        },
+        "zones": {
+            "zone1": z1,
+            "zone2a": z2a,
+            "zone2b": z2b,
+        },
+        "reg55": {
+            "available": bool(has_reg55_band or has_reg55_pct),
+            "avg_pct": round(float(reg55_avg), 1) if reg55_avg is not None else None,
+            "band_share": reg55_share,
+            "sample_n": n,
         },
         "zone_trends": [
             {
                 "date": str(t["date"]),
+                "n_evaluated": int(t["n_evaluated"] or 0),
                 "zone1_avg": round(float(t["zone1_avg"]), 1) if t["zone1_avg"] is not None else None,
                 "zone2a_avg": round(float(t["zone2a_avg"]), 1) if t["zone2a_avg"] is not None else None,
                 "zone2b_avg": round(float(t["zone2b_avg"]), 1) if t["zone2b_avg"] is not None else None,
+                "reg55_avg": round(float(t["reg55_avg"]), 1) if t["reg55_avg"] is not None else None,
+                "zone1_bad_pct": (
+                    round(100.0 * int(t["zone1_bad"] or 0) / int(t["n_evaluated"] or 0), 1)
+                    if int(t["n_evaluated"] or 0)
+                    else None
+                ),
+                "zone2a_bad_pct": (
+                    round(100.0 * int(t["zone2a_bad"] or 0) / int(t["n_evaluated"] or 0), 1)
+                    if int(t["n_evaluated"] or 0)
+                    else None
+                ),
+                "zone2b_bad_pct": (
+                    round(100.0 * int(t["zone2b_bad"] or 0) / int(t["n_evaluated"] or 0), 1)
+                    if int(t["n_evaluated"] or 0)
+                    else None
+                ),
                 "safety_critical": int(t["safety_critical"] or 0),
             }
             for t in trend
         ],
+        "window": {
+            "date_from": date_from,
+            "date_to": date_to,
+            "trend_date_from": trend_from,
+            "trend_date_to": trend_to,
+        },
+    }
+
+
+def build_score_dashboard(params: dict[str, Any]) -> dict[str, Any]:
+    """Кольца + динамика для Сегодня/Период (окно = period query)."""
+    attention = _overview_attention_from_warehouse(params)
+    if not attention:
+        return {
+            "ok": False,
+            "available": False,
+            "reason": "Нет витрины зон (нужен recompute с layer_engine).",
+            "source": _backend_source(),
+        }
+    window = attention.get("window") or {}
+    return {
+        "ok": True,
+        "available": True,
+        "source": _backend_source(),
+        "window": {
+            **window,
+            "granularity": "day",
+        },
+        "coverage": {
+            "evaluated": attention.get("n_evaluated") or 0,
+            "target_pct": 99.0,
+        },
+        "queue": {
+            "critical": attention.get("queue_critical") or 0,
+            "important": attention.get("queue_important") or 0,
+        },
+        "zones": attention.get("zones")
+        or {
+            "zone1": {"bands": (attention.get("zone_bands") or {}).get("zone1")},
+            "zone2a": {"bands": (attention.get("zone_bands") or {}).get("zone2a")},
+            "zone2b": {"bands": (attention.get("zone_bands") or {}).get("zone2b")},
+        },
+        "reg55": attention.get("reg55") or {"available": False},
+        "trends": attention.get("zone_trends") or [],
+        "attention": {
+            "n_evaluated": attention.get("n_evaluated"),
+            "zone1_bad": attention.get("zone1_bad"),
+            "zone2a_bad": attention.get("zone2a_bad"),
+            "zone2b_bad": attention.get("zone2b_bad"),
+            "zone1_bad_pct": attention.get("zone1_bad_pct"),
+            "zone2a_bad_pct": attention.get("zone2a_bad_pct"),
+            "zone2b_bad_pct": attention.get("zone2b_bad_pct"),
+            "safety_critical": attention.get("safety_critical"),
+            "queue_critical": attention.get("queue_critical"),
+            "queue_important": attention.get("queue_important"),
+            "zone_avgs": attention.get("zone_avgs"),
+        },
     }
 
 
@@ -2066,6 +2358,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         for items in flow_dimensions.values()
         for item in items
     )
+    # Агрегаты за день; zone_trends автоматически с lookback 14 дней.
     attention = _overview_attention_from_warehouse(
         {"date_from": day, "date_to": day}
     )
