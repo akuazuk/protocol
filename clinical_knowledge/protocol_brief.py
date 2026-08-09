@@ -514,8 +514,8 @@ def build_protocol_brief(
     page_lookup: Callable[[str, str], Any] | None = None,
     title_hint: str | None = None,
     max_points: int = 8,
-    max_text_chars: int = 320,
-    min_points_per_section: int = 3,
+    max_text_chars: int = 520,
+    min_points_per_section: int = 1,
 ) -> dict[str, Any]:
     """Единая расширенная сводка протокола: выводы по разделам + сущности + нозология."""
     from clinical_knowledge.protocol_summary.nav import (
@@ -592,9 +592,15 @@ def build_protocol_brief(
         if cond is not None:
             builder = _SECTION_BUILDERS[kind]
             points = builder(cond, ctx=ctx, max_points=max_points)
-        if len(points) < min_points_per_section and rich:
-            need = min_points_per_section - len(points)
-            points += _points_from_chunks(rich, brief_id, limit=max_text_chars, max_points=need, ctx=ctx)
+        if rich:
+            # Без карточки - наполняем раздел из чанков до max_points.
+            # С тонкой карточкой - добиваем хотя бы до min_points_per_section.
+            target = max_points if cond is None else min_points_per_section
+            if len(points) < target:
+                need = (max_points if cond is None else target) - len(points)
+                points += _points_from_chunks(
+                    rich, brief_id, limit=max_text_chars, max_points=need, ctx=ctx
+                )
         if not points:
             continue
         sections_out.append({"id": brief_id, "label": label, "points": points, "count": len(points)})
@@ -641,3 +647,106 @@ def build_protocol_brief(
         "entities": entities,
         "full_text_available": bool(rich),
     }
+
+
+# source_view group id -> brief section id / label
+_VIEW_SECTION_MAP: dict[str, tuple[str, str]] = {
+    "diagnosis": ("diagnosis", "Диагноз и критерии"),
+    "diagnostics": ("exams", "Обследования"),
+    "treatment": ("treatment", "Лечение и препараты"),
+    "followup": ("follow_up", "Наблюдение и маршрут"),
+}
+
+
+def sections_from_source_view(view: dict[str, Any] | None, *, max_points: int = 8) -> list[dict[str, Any]]:
+    """Превращает clinical source_view (TOC) в секции brief - fallback без Summary."""
+    if not isinstance(view, dict):
+        return []
+    sections_map = view.get("sections") or {}
+    labels = view.get("section_labels") or {}
+    toc = view.get("toc") or []
+    order: list[str] = []
+    for row in toc:
+        gid = str((row or {}).get("id") or "").strip()
+        if gid and gid not in order:
+            order.append(gid)
+    for gid in _VIEW_SECTION_MAP:
+        if gid not in order and sections_map.get(gid):
+            order.append(gid)
+
+    out: list[dict[str, Any]] = []
+    for gid in order:
+        mapped = _VIEW_SECTION_MAP.get(gid)
+        if not mapped:
+            continue
+        brief_id, default_label = mapped
+        items = sections_map.get(gid) or []
+        if not items:
+            continue
+        points: list[dict[str, Any]] = []
+        deduper = new_deduper()
+        for item in items:
+            if len(points) >= max_points:
+                break
+            if not isinstance(item, dict):
+                continue
+            lead = str(item.get("lead") or "").strip()
+            body = str(item.get("body") or "").strip()
+            text = lead
+            if body and body != lead and len(text) < 420:
+                joined = (lead.rstrip(".…") + ". " + body).strip() if lead else body
+                text = joined
+            text = meaningful_clinical_excerpt(text, limit=520, require_sentence_start=False) or text
+            text = clean_clinical_text(text)
+            if not text or len(text) < 16 or is_legal_admin_text(text):
+                continue
+            if not deduper.accept(text):
+                continue
+            page = item.get("page") or item.get("page_from") or item.get("page_start")
+            quote = lead if lead and lead != text else None
+            points.append(
+                {
+                    "text": text,
+                    "quote": quote,
+                    "page_start": page,
+                    "page_source": "source_view" if page else None,
+                    "verified": False,
+                    "tags": [],
+                    "detail": [],
+                }
+            )
+        if points:
+            out.append(
+                {
+                    "id": brief_id,
+                    "label": labels.get(gid) or default_label,
+                    "points": points,
+                    "count": len(points),
+                }
+            )
+    return out
+
+
+def apply_source_view_fallback(brief: dict[str, Any], source_doc: dict[str, Any] | None) -> dict[str, Any]:
+    """Если brief пуст - наполнить секциями из source_text / rich clinical view."""
+    if not isinstance(brief, dict):
+        return brief
+    if brief.get("available") and (brief.get("sections") or []):
+        return brief
+    if not isinstance(source_doc, dict):
+        return brief
+    view = source_doc.get("view") if isinstance(source_doc.get("view"), dict) else None
+    sections = sections_from_source_view(view)
+    if not sections:
+        return brief
+    brief = dict(brief)
+    brief["sections"] = sections
+    brief["available"] = True
+    brief["source"] = "source_view"
+    if not brief.get("title"):
+        brief["title"] = source_doc.get("title") or brief.get("title") or ""
+    if not brief.get("protocol_id"):
+        brief["protocol_id"] = source_doc.get("protocol_id")
+    brief["full_text_available"] = True
+    brief["fallback"] = "source_view"
+    return brief

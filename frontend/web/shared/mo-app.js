@@ -1866,6 +1866,13 @@
       if (viewer.indexOf("/proto?") === 0) {
         viewer = "/proto-viewer.html?" + viewer.slice("/proto?".length);
       }
+      if (viewer && item.section && viewer.indexOf("section=") < 0) {
+        viewer += (viewer.indexOf("?") >= 0 ? "&" : "?") + "section=" + encodeURIComponent(item.section);
+      }
+      var anchorPage = item.page || item.anchor_page || item.page_start;
+      if (viewer && anchorPage && viewer.indexOf("page=") < 0) {
+        viewer += (viewer.indexOf("?") >= 0 ? "&" : "?") + "page=" + encodeURIComponent(String(anchorPage));
+      }
       return viewer;
     }
     function bindProtocolSuggestHost(host) {
@@ -1904,8 +1911,8 @@
         ("/doctor/search?q=" + encodeURIComponent(top.search_query || suggest.search_query || top.title || ""));
       var topBar = '<div class="protocol-suggest-top"><span>Протокол:</span><b>' +
         esc(top.title || "без названия") + '</b>' +
-        (topViewer ? '<a class="button compact" href="' + esc(topViewer) + '" target="_blank" rel="noopener">Открыть</a>' : "") +
-        (topSearch ? '<a class="button secondary compact" href="' + esc(topSearch) + '" target="_blank" rel="noopener">Поиск КП</a>' : "") +
+        (topViewer ? '<a class="button compact" href="' + esc(topViewer) + '" target="_blank" rel="noopener">Открыть протокол</a>' : "") +
+        (topSearch ? '<a class="button secondary compact" href="' + esc(topSearch) + '" target="_blank" rel="noopener">Поиск в каталоге</a>' : "") +
         (list.length > 1 ? '<button type="button" class="linkish" id="protocol-suggest-expand">ещё ' +
           (list.length - 1) + '</button>' : "") +
         '</div>';
@@ -1928,10 +1935,10 @@
           esc(item.match_kind_label || item.match_kind || "клиника") + '</span><span>' +
           esc(item.score != null ? (Math.round(Number(item.score)) + " баллов") : "") +
           '</span>' +
+          (viewer ? '<a class="button compact" href="' + esc(viewer) +
+            '" target="_blank" rel="noopener">Открыть протокол</a>' : "") +
           (searchUrl ? '<a class="button secondary compact" href="' + esc(searchUrl) +
-            '" target="_blank" rel="noopener">Поиск</a>' : "") +
-          (viewer ? '<a class="button secondary compact" href="' + esc(viewer) +
-            '" target="_blank" rel="noopener">Открыть</a>' : "") +
+            '" target="_blank" rel="noopener">Поиск в каталоге</a>' : "") +
           '</div>' + (reasons ? '<ul class="llm-judge-bullets">' + reasons + '</ul>' : "") +
           '<div class="protocol-suggest-rates" role="radiogroup" aria-label="Релевантность протокола">' +
           [['relevant','да'],['partial','частично'],['irrelevant','нет'],['unreviewed','не оценил']].map(function (pair) {
@@ -1940,7 +1947,7 @@
           }).join("") + '</div></article>';
       }).join("");
       return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-        '<p class="card-sub">Нужны, чтобы оценить план по протоколу. Это не оценка оформления МО.</p>' +
+        '<p class="card-sub">«Открыть протокол» - навигация и PDF по страницам; «Поиск в каталоге» - если нужен другой КП. Без КП план не штрафуем.</p>' +
         topBar + items + '</div>';
     }
     function verdictSelect(id, current) {

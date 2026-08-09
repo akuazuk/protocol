@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-082225Z-handoff-dash-visual"
+BUILD_VERSION = "2026-08-09-085019Z-mo-protocol-nav"
 
 
 def _app_version() -> str:
@@ -12826,8 +12826,19 @@ def api_protocol_brief(
         rich_chunks=rich_chunks or None,
         page_lookup=_lookup,
         max_points=8,
-        max_text_chars=320,
+        max_text_chars=520,
+        min_points_per_section=1,
     )
+    # Never-empty cascade: Summary/chunks → clinical source_view TOC.
+    if not brief.get("available") or not (brief.get("sections") or []):
+        try:
+            from clinical_knowledge.protocol_brief import apply_source_view_fallback
+            from clinical_knowledge.protocol_summary.source_text import resolve_protocol_source_text
+
+            source_doc = resolve_protocol_source_text(key, rich_chunks=rich_chunks or None)
+            brief = apply_source_view_fallback(brief, source_doc)
+        except Exception:
+            pass
     brief["build_version"] = BUILD_VERSION
 
     # ИИ-обзор раздела из офлайн-кэша (P5), если предрасчитан.
