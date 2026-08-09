@@ -43,26 +43,25 @@ def _visible_text(html: str) -> str:
 
 
 def test_mo_dashboard_has_complete_crm_navigation() -> None:
-    # Канон меню ui-target-v2: 6 видимых пунктов; остальные страницы остаются в DOM (hidden).
+    # Канон меню ui-target-v2 / zones-first D6: 6 видимых + hidden settings; без legacy pages.
     for page in (
         "overview",
         "yesterday",
         "queue",
         "documents",
         "doctors",
-        "specialties",
-        "diagnoses",
-        "safety",
-        "data-quality",
         "reports",
         "settings",
     ):
         assert f'data-page="{page}"' in SOURCE
+    for gone in ("specialties", "diagnoses", "safety", "doctor-cabinet"):
+        assert f'id="page-{gone}"' not in HTML
     for label in ("Сегодня", "Период", "Очередь", "Все случаи", "Врачи", "Отчёты"):
         assert label in HTML
     assert 'id="breadcrumbs"' in HTML
     assert 'id="doctor-zone-chart"' in HTML
     assert 'data-zone-preset="dx"' in HTML
+    assert 'id="access-log-content"' in HTML  # secondary under Отчёты
 
 
 def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:

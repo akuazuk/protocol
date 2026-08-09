@@ -233,14 +233,7 @@
               <article class="card span-3"><h2>Выбранные врачи</h2><div id="doctor-selection-flow" class="empty">Выделите точки рамкой.</div></article>
             </div>
           </details>
-        </section>
-        <section class="page" id="page-specialties" data-page="specialties" hidden aria-labelledby="title-specialties"><div class="page-head"><div><h1 id="title-specialties">Специальности</h1><p>Распределение оценок внутри сопоставимых групп; клик переходит к врачам специальности.</p></div></div><div class="card"><h2>Диапазон оценок по специальностям</h2><div id="specialty-boxplot-chart"></div></div><div id="specialty-attention"></div></section>
-        <section class="page" id="page-diagnoses" data-page="diagnoses" hidden aria-labelledby="title-diagnoses"><div class="page-head"><div><h1 id="title-diagnoses">Диагнозы и МКБ</h1><p>Площадь - объём, цвет - средняя оценка. Клик по коду открывает связанные случаи.</p></div></div><div class="card"><h2>Главы и коды МКБ</h2><div id="icd-treemap-chart"></div></div><div id="diagnosis-findings"></div></section>
-        <section class="page" id="page-safety" data-page="safety" hidden aria-labelledby="title-safety"><div class="page-head"><div><h1 id="title-safety">Безопасность</h1><p>Динамика замечаний по приоритету и маркеры инцидентов P0.</p></div></div><div class="kpis" id="safety-kpis"></div><div class="card"><h2>Приоритеты по дням</h2><p class="card-sub">Автоматическое замечание не является медицинским решением</p><div id="safety-severity-chart"></div><div id="safety-list"></div></div></section>
-        <section class="page" id="page-doctor-cabinet" data-page="doctor-cabinet" hidden aria-labelledby="title-doctor-cabinet"><div class="page-head"><div><h1 id="title-doctor-cabinet">Кабинет врача</h1><p>Свои записи, замечания с источниками, рекомендации по исправлению и оспаривание.</p></div></div><div id="doctor-cabinet-unavailable" class="card">Выберите врача на диаграмме. Прямой вход врача доступен только при настроенной доверенной серверной идентификации.</div><div id="doctor-cabinet-content" hidden><div class="kpis" id="doctor-cabinet-kpis"></div><div class="grid"><article class="card span-7"><h2>Записи и замечания</h2><div id="doctor-cabinet-records"></div></article><article class="card span-5"><h2>Что исправить</h2><div id="doctor-cabinet-actions"></div><h2>Шаблонные пары</h2><div id="doctor-template-pairs"></div></article></div></div></section>
-        <section class="page" id="page-access-log" data-page="access-log" hidden aria-labelledby="title-access-log"><div class="page-head"><div><h1 id="title-access-log">Журнал доступа</h1><p>Открытие персональных кабинетов и выгрузок. Доступно только администратору.</p></div></div><div class="card" id="access-log-content">Для просмотра требуется роль администратора.</div></section>
-        <section class="page" id="page-data-quality" data-page="data-quality" hidden aria-labelledby="title-data-quality"><div class="page-head"><div><h1 id="title-data-quality">Качество данных</h1><p>Свежесть, полнота, дубли, расхождения дат и состояние повторной обработки.</p></div></div><div class="kpis" id="quality-kpis"></div><div class="grid"><article class="card span-7"><h2>Показатели загрузки</h2><div class="bars" id="quality-chart"></div></article><article class="card span-5"><h2>Предупреждения</h2><div id="quality-warnings"></div></article><article class="card span-12"><h2>Готовность компонентов</h2><p class="card-sub">Витрина, отчёты, pipeline и источник клинического текста проверяются независимо</p><div class="health-components" id="health-components"></div></article></div></section>
-        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports">
+        </section>        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports">
           <div class="page-head"><div><h1 id="title-reports">Отчёты</h1><p>Ежедневные отчёты, свежесть данных и быстрый переход к разбору.</p></div></div>
           <div class="section-actions">
             <button class="button" data-action="export-aggregates">Создать сводку</button>
@@ -251,6 +244,12 @@
           </div>
           <div class="kpis" id="report-kpis"></div>
           <div class="card"><h2>Готовые ежедневные отчёты</h2><p class="card-sub">Клик открывает отчёт за выбранный день на экране «Вчера»</p><div class="report-grid" id="report-list"></div></div>
+          <details class="card mo-secondary-details"><summary>Подробнее: журнал доступа и качество данных</summary>
+            <div class="grid">
+              <article class="card span-6"><h2>Журнал доступа</h2><p class="card-sub">Только администратор</p><div id="access-log-content"></div></article>
+              <article class="card span-6"><h2>Качество данных</h2><p class="card-sub">Свежесть и полнота среза</p><div class="kpis" id="quality-kpis"></div><div class="bars" id="quality-chart"></div><div id="quality-warnings"></div><div class="health-components" id="health-components"></div></article>
+            </div>
+          </details>
         </section>
         <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">
           <div class="page-head"><div><h1 id="title-settings">Настройки и методика</h1><p>Рабочие представления, отображение таблиц и прозрачные правила оценки.</p></div></div>

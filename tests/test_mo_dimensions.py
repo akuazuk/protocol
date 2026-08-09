@@ -121,23 +121,25 @@ def test_specialty_doctor_case_finding_source_drilldown(monkeypatch, tmp_path: P
 def test_phase5_frontend_uses_real_echarts_and_selected_doctor_action_flow() -> None:
     html = (ROOT / "frontend/web/methodist/mis-kz-quality.html").read_text(encoding="utf-8")
     script = (ROOT / "frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
+    # D6: legacy specialty/diagnoses/safety/cabinet pages removed from DOM.
     for marker in (
         "doctor-scatter-chart",
+        "doctor-zone-chart",
+        "access-log-content",
+        "quality-kpis",
+    ):
+        assert marker in html
+    for gone in (
         "specialty-boxplot-chart",
         "icd-treemap-chart",
         "safety-severity-chart",
         "doctor-cabinet-records",
-        "doctor-template-pairs",
-        "access-log-content",
     ):
-        assert marker in html
+        assert gone not in html
     assert 'type:"scatter"' in script
-    assert 'type:"boxplot"' in script
-    assert 'type:"treemap"' in script
-    assert 'stack:"severity"' in script
     assert "brushSelected" in script
     assert "open-selected-doctors" in script
-    assert "/doctor-cabinet/disputes" in script
+    assert "REMOVED_PAGES" in script
 
 
 def test_dimension_routes_require_authentication(monkeypatch, tmp_path: Path) -> None:
