@@ -53,7 +53,7 @@
       borderWidth: 1,
       axisPointer: { type: "cross" },
       textStyle: { color: token("--ink", "#14241f"), fontSize: 12 },
-      extraCssText: "border-radius:12px;box-shadow:0 12px 32px rgba(16,40,34,.12);padding:10px 12px;"
+      extraCssText: "border-radius:12px;box-shadow:0 10px 24px rgba(22,40,36,.08);padding:10px 12px;"
     }, option.tooltip || {});
     option.legend = mergeDeep({
       textStyle: { color: token("--muted", "#5b6f6a") },
@@ -88,11 +88,11 @@
     if (option.yAxis) option.yAxis = themeAxis(option.yAxis, axisDefaults);
 
     option.color = option.color || [
-      token("--accent", "#0f7660"),
-      token("--chart-2", "#2563eb"),
-      token("--chart-3", "#c27803"),
-      token("--chart-4", "#be123c"),
-      token("--chart-5", "#7c3aed")
+      token("--chart-1", token("--accent", "#2f6f63")),
+      token("--chart-2", "#4a6fa5"),
+      token("--chart-3", "#a67c52"),
+      token("--chart-4", "#8a6b7a"),
+      token("--chart-5", "#6b7a8f")
     ];
     if (config && config.description) option.aria.description = config.description;
     return option;

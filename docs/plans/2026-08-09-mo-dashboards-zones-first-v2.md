@@ -231,13 +231,20 @@
 - [x] После merge №55-scorer: блок «Подробнее» на Периоде (D4; #87+#90)
 - [x] Сводки МКБ / клиника в «Подробнее» (D5)
 - [x] Удалить скрытые пункты меню из HTML (D6: legacy pages out of DOM; settings hidden; журнал/качество в Отчёты «Подробнее»)
+- [x] D7: muted visual refresh + empty-data fixes (attention по `month=`; Сегодня → `data_through`; тренд зон ECharts)
 
 ---
 
-## 8. Одна следующая команда после согласия
+## 8. Данные и пустые экраны (2026-08-09)
+
+Склад на GCE **не пустой**: `fact_mo_case` ~97k, зональные поля есть, дни **2026-08-01..06** пересчитаны.
+Пустые дашборды были из UI/API: «Сегодня» смотрел на календарный «вчера» без выгрузки; overview с `month=` не резолвил даты для attention. Новых inbound за 07-09 нет - без extract не изобретаем строки.
+
+---
+
+## 9. Одна следующая команда
 
 ```bash
-scripts/ops/git_task_start.sh mo-dashboard-hero-cleanup --pc=pc1 \
-  --branch=cursor/mo-dashboard-hero-cleanup-pc1
-# Чистка Сегодня/Период под §3; меню оставить 6 пунктов; файлы №55 из чужого PR не трогать
+# после merge D7: bash deploy/gcp-app/deploy_to_gce.sh
+# smoke: overview?month=2026-08 → attention.n_evaluated>0; Сегодня показывает data_through
 ```
