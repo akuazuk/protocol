@@ -154,13 +154,24 @@
         </section>
 
         <section class="page" id="page-yesterday" data-page="yesterday" hidden aria-labelledby="title-yesterday">
-          <div class="page-head"><div><h1 id="title-yesterday">Сегодня</h1><p id="yesterday-date">Рабочий экран за вчера: куда смотреть сейчас.</p></div><span class="freshness">Ежедневный отчёт</span></div>
+          <div class="page-head"><div><h1 id="title-yesterday">Сегодня</h1><p id="yesterday-date">Рабочий экран за вчера: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
+          <div class="kpis score-kpi-strip" id="yesterday-score-kpis"><div class="skeleton"></div></div>
           <div class="attention-strip" id="yesterday-attention"><div class="skeleton"></div></div>
           <div id="partial-banner" class="banner" hidden>Данные неполные. Публикация итогового отчёта заблокирована до завершения проверки.</div>
           <div class="section-actions"><button class="button" data-action="download">Скачать отчёт</button><button class="button secondary" data-go="queue">Открыть очередь</button><button class="button secondary" id="share-yesterday">Поделиться ссылкой на срез</button></div>
           <div class="grid">
+            <article class="card span-12">
+              <h2>Распределение оценок</h2>
+              <p class="card-sub">Кольца по окну из фильтра периода. Клик по сегменту открывает случаи.</p>
+              <div class="score-rings" id="yesterday-score-rings"><div class="skeleton"></div></div>
+            </article>
+            <article class="card span-12">
+              <h2>Динамика</h2>
+              <p class="card-sub" id="yesterday-dynamics-sub">Средние % зон и №55 по дням выбранного периода</p>
+              <div id="yesterday-score-dynamics" class="zone-trend-chart"></div>
+              <div id="yesterday-zone-trend" hidden></div>
+            </article>
             <article class="card span-12"><h2>Таблица дня</h2><p class="card-sub">Сначала критично и важно - клик открывает разбор</p><div class="table-wrap sticky-first"><table><thead><tr><th>Приоритет</th><th>Раздел</th><th>Визит</th><th>Пациент</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
-            <article class="card span-12"><h2>Тренд 14 дней</h2><p class="card-sub">Оформление · Диагноз · План</p><div id="yesterday-zone-trend"></div></article>
             <details class="card span-12 mo-secondary-details"><summary>Подробнее: полнота данных за день</summary>
             <div class="grid">
             <article class="card span-12"><h2>Полнота данных</h2><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>

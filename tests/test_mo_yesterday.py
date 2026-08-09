@@ -326,6 +326,9 @@ def test_yesterday_markup_rendering_and_minsk_date_contract() -> None:
     assert len(html.splitlines()) < 360
     for marker in (
         'id="yesterday-attention"',
+        'id="yesterday-score-kpis"',
+        'id="yesterday-score-rings"',
+        'id="yesterday-score-dynamics"',
         'id="yesterday-action-rows"',
         'id="yesterday-zone-trend"',
         'id="yesterday-completeness"',
@@ -345,6 +348,9 @@ def test_yesterday_markup_rendering_and_minsk_date_contract() -> None:
     assert "navigateYesterdayFinding" in app
     assert "data-open-case" in app or 'data-case="' in app
     assert "открыть список МО" in app
+    assert "renderScoreRings" in app
+    assert "renderScoreDynamics" in app
+    assert "/score-dashboard?" in app
     for renderer in (
         "renderYesterdayIndices",
         "renderYesterdayFindings",

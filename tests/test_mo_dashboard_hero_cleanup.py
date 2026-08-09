@@ -41,12 +41,18 @@ def test_period_hero_keeps_zones_not_heatmap() -> None:
     assert 'id="month-rubric-mz"' in overview
 
 
-def test_today_hero_has_table_and_zone_trend() -> None:
+def test_today_hero_has_table_and_score_rings() -> None:
     today = HTML.split('id="page-yesterday"')[1].split('id="page-queue"')[0]
     assert "yesterday-action-rows" in today
+    assert "yesterday-score-rings" in today
+    assert "yesterday-score-dynamics" in today
+    assert "yesterday-score-kpis" in today
     assert "yesterday-zone-trend" in today
     assert 'id="yesterday-index-cards" hidden' in today
     assert "hostActive" in APP
+    assert "renderScoreRings" in APP
+    assert "renderScoreDynamics" in APP
+    assert "/score-dashboard?" in APP
     assert "reg55KpiHtml" not in APP
     assert "data-look-doctor" in APP
 
@@ -54,5 +60,5 @@ def test_today_hero_has_table_and_zone_trend() -> None:
 if __name__ == "__main__":
     test_left_menu_has_exactly_six_visible_pages()
     test_period_hero_keeps_zones_not_heatmap()
-    test_today_hero_has_table_and_zone_trend()
+    test_today_hero_has_table_and_score_rings()
     print("ok")
