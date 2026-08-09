@@ -8,8 +8,8 @@ Date: 2026-08-09
 - branch: `cursor/mo-score-calibration-harness-pc1`
 - worktree: `/private/tmp/protocol-task-mo-score-calibration-harness-pc1`
 - base: `95e457b02e2b96d2167b87f8bc148c053874c308`
-- implementation HEAD: commit containing this report
-- PR: pending publication
+- implementation HEAD: `a7760ea8`
+- PR: https://github.com/akuazuk/protocol/pull/108
 - merge/deploy: not performed
 
 ## Completed
