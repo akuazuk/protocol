@@ -94,6 +94,22 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_visual_refresh_tokens_and_table_chrome_helper() -> None:
+    assert "--type-page" in TOKENS
+    assert "--type-control" in TOKENS
+    assert "--type-table" in TOKENS
+    assert "--zone-1:" in TOKENS and "--zone-2a:" in TOKENS and "--zone-2b:" in TOKENS
+    assert ".table-toolbar" in UI
+    assert "tr.col-filters" in UI or "thead tr.col-filters" in UI
+    assert "attachTableChrome" in APP
+    assert "enhanceTablesIn" in APP
+    assert 'data-chip="bad"' in APP
+    assert "data-col-filter" in APP
+    assert "chrome-yesterday-action-rows" in APP
+    assert "chrome-doctor-rows" in APP
+    assert "serverSort: true" in APP
+
+
 def test_settings_page_is_help_with_zones_without_v3v4_or_ai_costs() -> None:
     assert 'id="sidebar-help"' in HTML
     assert ">Справка</button>" in HTML
