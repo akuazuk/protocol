@@ -1,8 +1,10 @@
 # МО: калибровка оценки → один №55 → полный пересчёт (v2)
 
 Дата: 2026-08-09
-Статус: **active** (согласование калибровочного протокола)
-Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v1.md`
+Статус: **archived**
+Предшественник: `2026-08-09-mo-score-ssot-llm-recompute-v1.md`
+Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v3.md` (добавлены отдельные
+Dx-evidence и Dx-conditioned plan/KP endpoints)
 
 Связанные планы:
 - `2026-08-09-mo-reg55-section-pack-v1.md` - один section-pack №55;

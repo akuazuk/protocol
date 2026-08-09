@@ -18,7 +18,8 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-08-09-mo-score-ssot-llm-recompute-v2.md](2026-08-09-mo-score-ssot-llm-recompute-v2.md) | Калибровка 30 МО: движок vs blind LLM vs методист; выбор score/ensemble; затем SSOT №55 и recompute | active |
+| [2026-08-09-mo-score-ssot-llm-recompute-v3.md](2026-08-09-mo-score-ssot-llm-recompute-v3.md) | Dx из клиники + план по КП / LLM fallback; калибровка всех scores; затем SSOT №55 и recompute | active |
+| [2026-08-09-mo-score-ssot-llm-recompute-v2.md](2026-08-09-mo-score-ssot-llm-recompute-v2.md) | Калибровка 30 МО: движок vs blind LLM vs методист; выбор score/ensemble; затем SSOT №55 и recompute | archived (преемник: mo-score-ssot-llm-recompute-v3) |
 | [2026-08-09-mo-score-ssot-llm-recompute-v1.md](2026-08-09-mo-score-ssot-llm-recompute-v1.md) | Один №55 везде; честные findings; МКБ-канон; полный recompute + LLM grey-zone | archived (преемник: mo-score-ssot-llm-recompute-v2) |
 | [2026-08-09-methodist-cabinet-mo-style-v1.md](2026-08-09-methodist-cabinet-mo-style-v1.md) | Кабинет методиста: стиль МО, full width, без мусора/битых ссылок | active |
 | [2026-08-09-mo-today-rings-dynamics-v1.md](2026-08-09-mo-today-rings-dynamics-v1.md) | Сегодня: кольца зон/№55 + динамика по #period; волна 0 API | active |
