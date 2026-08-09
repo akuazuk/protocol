@@ -77,15 +77,15 @@
 
 ### P1 - login/password для методиста
 
-- [ ] Обобщить expert-auth → app-users с ролями `methodist|lead|admin`.
-- [ ] UI входа логин/пароль в кабинете и МО (вместо поля токена как основного).
-- [ ] Одна session на origin; sliding TTL 12–24ч.
+- [x] Обобщить expert-auth → app-users с ролями `methodist|lead|admin`.
+- [x] UI входа логин/пароль в кабинете и МО (вместо поля токена как основного).
+- [x] Одна session на origin; sliding TTL 12–24ч.
 - [ ] Миграция: bootstrap admin из env; опционально перенос expert users → methodist.
 
 ### P2 - админка учёток
 
-- [ ] `/methodist/admin` (роль admin).
-- [ ] CRUD: создать, роль, deactivate, reset password.
+- [x] `/methodist/admin` (роль admin).
+- [x] CRUD: создать, роль, deactivate, reset password.
 - [ ] Аудит входов и изменений учёток.
 
 ### P3 - зачистка

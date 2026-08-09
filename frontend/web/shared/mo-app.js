@@ -13,6 +13,7 @@
     var isExpertMode = function () { return !!(MO.api.isExpertAudience && MO.api.isExpertAudience()); };
     var hasSession = function () {
       if (isExpertMode()) return !!(MO.api.expertToken && MO.api.expertToken());
+      if (MO.api.appSessionToken && MO.api.appSessionToken()) return true;
       return !!token();
     };
     var EXPERT_PAGES = { yesterday: true, reports: true };
@@ -346,7 +347,9 @@
       } catch (error) {}
       if (shouldForceReauth(response.status, detail)) {
         if (isExpertMode() && MO.api.clearExpertToken) MO.api.clearExpertToken();
-        else if (MO.api.clearToken) MO.api.clearToken();
+        else if (MO.api.appSessionToken && MO.api.appSessionToken()) {
+          if (MO.api.clearAppSessionToken) MO.api.clearAppSessionToken();
+        } else if (MO.api.clearToken) MO.api.clearToken();
         setAuth(true, detail || "Требуется повторный вход.");
         return true;
       }
@@ -3682,12 +3685,49 @@
         $("token-submit").addEventListener("click", function () {
           var value = $("token-input").value.trim();
           if (!value) { $("auth-error").textContent = "Введите токен."; return; }
+          if (MO.api.clearAppSessionToken) MO.api.clearAppSessionToken();
           if (MO.api.setToken) MO.api.setToken(value);
           else {
             try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
           }
           setAuth(false); loadCapabilities(); loadPage(state.page);
         });
+      }
+      if ($("account-login-submit")) {
+        $("account-login-submit").addEventListener("click", async function () {
+          var login = ($("account-login-input") && $("account-login-input").value || "").trim();
+          var password = ($("account-password-input") && $("account-password-input").value || "").trim();
+          if (!login || !password) {
+            $("auth-error").textContent = "Введите логин и пароль.";
+            return;
+          }
+          $("auth-error").textContent = "";
+          try {
+            var response = await fetch("/api/methodist/account/login", {
+              method: "POST",
+              headers: { Accept: "application/json", "Content-Type": "application/json" },
+              body: JSON.stringify({ login: login, password: password })
+            });
+            var data = await response.json().catch(function () { return {}; });
+            if (!response.ok) {
+              $("auth-error").textContent = data.detail || "Неверный логин или пароль.";
+              return;
+            }
+            if (MO.api.clearToken) MO.api.clearToken();
+            if (MO.api.setAppSessionToken) MO.api.setAppSessionToken(data.session_token || "");
+            if ($("account-password-input")) $("account-password-input").value = "";
+            setAuth(false);
+            await loadCapabilities();
+            switchPage(state.page || "yesterday", false);
+          } catch (error) {
+            $("auth-error").textContent = "Не удалось войти. Проверьте сеть и повторите.";
+          }
+        });
+        if ($("account-password-input")) {
+          $("account-password-input").addEventListener("keydown", function (event) {
+            if (event.key === "Enter") $("account-login-submit").click();
+          });
+        }
       }
       if ($("expert-login-submit")) {
         $("expert-login-submit").addEventListener("click", async function () {
@@ -3751,7 +3791,19 @@
       if (!hasSession()) setAuth(true);
       else {
         setAuth(false);
-        if (isExpertMode()) {
+        if (MO.api.appSessionToken && MO.api.appSessionToken()) {
+          try {
+            var appStatusResponse = await fetch("/api/methodist/account/status", { headers: headers() });
+            if (appStatusResponse.ok) {
+              var appStatus = await appStatusResponse.json();
+              if (!appStatus.authenticated) {
+                MO.api.clearAppSessionToken();
+                setAuth(true);
+                return;
+              }
+            }
+          } catch (error) {}
+        } else if (isExpertMode()) {
           try {
             var statusResponse = await fetch("/api/expert/status", { headers: headers() });
             if (statusResponse.ok) {

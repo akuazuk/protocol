@@ -5,6 +5,7 @@
   var ROLE_KEY = "protocol_methodist_role";
   var ADMIN_TOKEN_KEY = "protocol_methodist_admin_token";
   var EXPERT_SESSION_KEY = "protocol_expert_session";
+  var APP_SESSION_KEY = "protocol_methodist_session";
   var API_ROOT = "/api/methodist/mo";
   var LEGACY_ROOT = "/api/methodist/mis-kz-quality";
 
@@ -65,6 +66,18 @@
     setExpertToken("");
   }
 
+  function appSessionToken() {
+    return readStorage(APP_SESSION_KEY);
+  }
+
+  function setAppSessionToken(value) {
+    writeStorage(APP_SESSION_KEY, value);
+  }
+
+  function clearAppSessionToken() {
+    setAppSessionToken("");
+  }
+
   function headers() {
     var result = { Accept: "application/json" };
     // On methodist MO pages prefer methodist token so leftover expert session
@@ -75,6 +88,11 @@
         result["X-Expert-Session"] = expert;
         return result;
       }
+    }
+    var appSession = appSessionToken();
+    if (appSession) {
+      result["X-Methodist-Session"] = appSession;
+      return result;
     }
     if (token()) result["X-Methodist-Token"] = token();
     try {
@@ -112,6 +130,7 @@
     ROLE_KEY: ROLE_KEY,
     ADMIN_TOKEN_KEY: ADMIN_TOKEN_KEY,
     EXPERT_SESSION_KEY: EXPERT_SESSION_KEY,
+    APP_SESSION_KEY: APP_SESSION_KEY,
     headers: headers,
     request: request,
     token: token,
@@ -120,6 +139,9 @@
     expertToken: expertToken,
     setExpertToken: setExpertToken,
     clearExpertToken: clearExpertToken,
+    appSessionToken: appSessionToken,
+    setAppSessionToken: setAppSessionToken,
+    clearAppSessionToken: clearAppSessionToken,
     isExpertAudience: isExpertAudience
   });
 })(window.MO = window.MO || {});
