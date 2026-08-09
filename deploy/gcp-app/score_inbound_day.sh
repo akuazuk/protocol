@@ -85,6 +85,10 @@ python scripts/recompute_mo_days.py \
   --first-date "$DAY" \
   --last-date "$DAY" \
   --warehouse "$DATA/warehouse/mo_analytics.sqlite"
+if [[ -f /opt/protocol/scripts/mo_apply_scoring_profile_on_load.py || -f scripts/mo_apply_scoring_profile_on_load.py ]]; then
+  MO_DATA_ROOT="$DATA" python scripts/mo_apply_scoring_profile_on_load.py \
+    --data-root "$DATA" --wait || true
+fi
 echo SCORE_INBOUND_OK
 '
 }

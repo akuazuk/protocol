@@ -1077,10 +1077,31 @@ def build_scoring_info() -> dict[str, Any]:
                 "documentation": 0.25, "clinical_concordance": 0.35,
                 "safety": 0.30, "regulatory": 0.10,
             },
+            "risk_caps": {"P0": 40.0, "P1": 60.0},
         }
     weights = cfg["axis_weights"]
-    t_good = 80.0
-    t_acc = 60.0
+    caps = cfg.get("risk_caps") or {}
+    t_good = 78.0
+    t_acc = 58.0
+    zone_bad = 50.0
+    zone_ok = 85.0
+    preset = "standard"
+    try:
+        from .mo_scoring_profile import load_scoring_profile
+
+        profile = load_scoring_profile()
+        st = profile.get("status_thresholds") or {}
+        zb = profile.get("zone_bands") or {}
+        t_good = float(st.get("good") or t_good)
+        t_acc = float(st.get("acceptable") or t_acc)
+        zone_bad = float(zb.get("bad_below") or zone_bad)
+        zone_ok = float(zb.get("ok_at_or_above") or zone_ok)
+        preset = str(profile.get("preset") or preset)
+        caps = profile.get("risk_caps") or caps
+    except Exception:  # noqa: BLE001
+        pass
+    p0_cap = int(float(caps.get("P0") or 40))
+    p1_cap = int(float(caps.get("P1") or 60))
     return {
         "ok": True,
         "overall_rule": (
@@ -1099,18 +1120,21 @@ def build_scoring_info() -> dict[str, Any]:
              "desc": "Соответствие требованиям Пост. №55 (обязательные реквизиты и разделы КЗ)."},
         ],
         "severity": [
-            {"key": "P0", "label": "Критично", "desc": "Потенциальный вред пациенту. Ограничивает overall до 40, статус «критично»."},
-            {"key": "P1", "label": "Клинический дефект", "desc": "Серьёзное несоответствие. Ограничивает overall до 60, статус «на разбор»/«плохо»."},
+            {"key": "P0", "label": "Критично", "desc": f"Потенциальный вред пациенту. Ограничивает overall до {p0_cap}, статус «критично»."},
+            {"key": "P1", "label": "Клинический дефект", "desc": f"Серьёзное несоответствие. Ограничивает overall до {p1_cap}, статус «на разбор»/«плохо»."},
             {"key": "P2", "label": "Документирование", "desc": "Умеренный дефект оформления/согласованности."},
             {"key": "P3", "label": "Формальное", "desc": "Незначительное замечание."},
         ],
         "risk_gate": [
-            "Подтверждённая находка P0 trust A/B → overall ≤ 40, статус «критично».",
-            "Подтверждённая находка P1 trust A/B → overall ≤ 60, статус «на разбор».",
+            f"Подтверждённая находка P0 trust A/B → overall ≤ {p0_cap}, статус «критично».",
+            f"Подтверждённая находка P1 trust A/B → overall ≤ {p1_cap}, статус «на разбор».",
             "P0/P1 trust C/D не штрафуют: создают advisory и очередь методисту.",
             f"Иначе overall ≥ {int(t_good)} → «хорошо»; ≥ {int(t_acc)} → «приемлемо»; ниже → «на разбор».",
+            f"Зоны UI: плохо ниже {int(zone_bad)}%; в норме от {int(zone_ok)}% (пресет «{preset}»).",
         ],
         "thresholds": {"good": t_good, "acceptable": t_acc},
+        "zone_bands": {"bad_below": zone_bad, "ok_at_or_above": zone_ok},
+        "scoring_preset": preset,
         "scorer_version": cfg["scorer_version"],
         "weights_version": cfg["weights_version"],
         "primary": False,
@@ -1119,7 +1143,7 @@ def build_scoring_info() -> dict[str, Any]:
             "good": "хорошо", "acceptable": "приемлемо", "review": "на разбор",
             "poor": "плохо", "critical": "критично", "insufficient_data": "мало данных",
         },
-        "source": "config/mo_scorer_v4.yaml; движок clinical_knowledge/kz_evaluation_v4.py",
+        "source": "config/mo_scorer_v4.yaml + mo_scoring_profile.json; зоны mo_zone_bands.yaml",
     }
 
 

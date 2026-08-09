@@ -54,13 +54,20 @@ def zones_scores_enabled() -> bool:
 @lru_cache(maxsize=1)
 def load_zone_bands() -> dict[str, Any]:
     raw = yaml.safe_load(BANDS_PATH.read_text(encoding="utf-8")) or {}
-    return {
+    out = {
         "bad_below": float(raw.get("bad_below") or 50),
         "ok_at_or_above": float(raw.get("ok_at_or_above") or 85),
         "labels_ru": dict(raw.get("labels_ru") or {}),
         "zone_labels_ru": dict(raw.get("zone_labels_ru") or {}),
         "engine": str(raw.get("engine") or ENGINE),
     }
+    try:
+        from clinical_knowledge.mo_scoring_profile import effective_zone_bands
+
+        out.update(effective_zone_bands(out))
+    except Exception:  # noqa: BLE001
+        pass
+    return out
 
 
 def _norm(value: Any) -> str:

@@ -88,4 +88,11 @@ done
   --first-date "$FIRST" \
   --last-date "$LAST" \
   --warehouse "$DATA/warehouse/mo_analytics.sqlite" >>"$LOG" 2>&1
+echo "recompute_exit=$?" | tee -a "$LOG"
+# кабинетный профиль жёсткости: stamp / pending historical recompute
+if [[ -f scripts/mo_apply_scoring_profile_on_load.py ]]; then
+  echo "=== scoring profile on-load $(date -u) ===" | tee -a "$LOG"
+  MO_DATA_ROOT="$DATA" "$PYTHON" scripts/mo_apply_scoring_profile_on_load.py \
+    --data-root "$DATA" --wait >>"$LOG" 2>&1 || true
+fi
 echo "ALL_DONE $(date -u)" | tee -a "$LOG"

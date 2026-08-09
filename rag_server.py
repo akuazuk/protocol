@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-190601Z-shadow-b-billing-note"
+BUILD_VERSION = "2026-08-09-192256Z-scoring-strictness-settings"
 
 
 def _app_version() -> str:
@@ -12720,6 +12720,99 @@ def api_methodist_mo_scoring_method(request: "Request") -> dict:
     from clinical_knowledge.mis_kz_quality import build_scoring_info
 
     return build_scoring_info()
+
+
+@app.get("/api/methodist/mo/scoring-config")
+def api_methodist_mo_scoring_config_get(request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_scoring_profile import scoring_config_public
+
+    return scoring_config_public()
+
+
+@app.put("/api/methodist/mo/scoring-config")
+def api_methodist_mo_scoring_config_put(request: "Request", body: dict[str, Any]) -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) not in {"methodist", "lead", "admin"}:
+        raise HTTPException(status_code=403, detail="Недостаточно прав для изменения жёсткости оценок.")
+    from clinical_knowledge.mo_scoring_profile import save_scoring_profile, scoring_config_public
+
+    try:
+        save_scoring_profile(body or {}, actor=_mo_actor(request))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    return scoring_config_public()
+
+
+@app.post("/api/methodist/mo/recompute")
+def api_methodist_mo_recompute(request: "Request", body: dict[str, Any]) -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) not in {"methodist", "lead", "admin"}:
+        raise HTTPException(status_code=403, detail="Недостаточно прав для пересчёта витрины.")
+    from clinical_knowledge.mo_scoring_profile import (
+        save_scoring_profile,
+        scoring_config_public,
+        start_recompute,
+    )
+
+    payload = body or {}
+    apply_mode = str(payload.get("apply_mode") or "now").strip().lower()
+    actor = _mo_actor(request)
+    whole_range = bool(payload.get("whole_range") or payload.get("all_days"))
+    date_from = str(payload.get("date_from") or payload.get("first_date") or "").strip()[:10]
+    date_to = str(payload.get("date_to") or payload.get("last_date") or "").strip()[:10]
+
+    if apply_mode in {"next_load", "on_next_load", "auto"}:
+        if whole_range:
+            save_scoring_profile(
+                {
+                    "apply_on_next_load": True,
+                    "pending_recompute": {
+                        "whole_range": True,
+                        "mode": str(payload.get("mode") or "warehouse_zones"),
+                        "requested_by": actor,
+                    },
+                },
+                actor=actor,
+            )
+        elif date_from and date_to:
+            save_scoring_profile(
+                {
+                    "apply_on_next_load": True,
+                    "pending_recompute": {
+                        "date_from": date_from,
+                        "date_to": date_to,
+                        "mode": str(payload.get("mode") or "warehouse_zones"),
+                        "requested_by": actor,
+                    },
+                },
+                actor=actor,
+            )
+        else:
+            # только новые дни пайплайна увидят профиль; исторический догон не нужен
+            save_scoring_profile({"apply_on_next_load": True, "pending_recompute": None}, actor=actor)
+        out = scoring_config_public()
+        out["scheduled"] = True
+        out["apply_mode"] = "next_load"
+        return out
+
+    try:
+        job = start_recompute(
+            date_from=date_from or None,
+            date_to=date_to or None,
+            whole_range=whole_range,
+            actor=actor,
+            mode=str(payload.get("mode") or "warehouse_zones"),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    out = scoring_config_public()
+    out["started"] = True
+    out["apply_mode"] = "now"
+    out["recompute_job"] = job
+    return out
 
 
 @app.get("/api/methodist/mo/reports")
