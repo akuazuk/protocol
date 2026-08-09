@@ -460,6 +460,41 @@ def _icd_primary_hits(row: dict[str, Any], codes: list[str]) -> int:
     return sum(1 for c in codes if c in primary)
 
 
+def _rehab_or_noise_penalty(row: dict[str, Any], graph: dict[str, Any]) -> int:
+    """Выше = хуже. Детская БА/J45: штрафуем реабилитацию и чужой adult noise."""
+    blob = (
+        str(row.get("source_path") or "")
+        + " "
+        + str(row.get("title") or "")
+        + " "
+        + str(row.get("protocol_id") or "")
+    ).lower()
+    codes = {
+        str(c).upper()
+        for c in (graph.get("icd10_in_directory") or graph.get("icd10") or [])
+        if c
+    }
+    diag_parts = [
+        str(item.get("text") or "")
+        for item in (graph.get("diagnoses") or [])
+        if isinstance(item, dict)
+    ]
+    diag = " ".join(diag_parts).lower()
+    audience = str(graph.get("audience") or "").lower()
+    asthmaish = any(c.startswith("J45") or c.startswith("J46") for c in codes) or "астм" in diag
+    pediatric = audience in {"child", "pediatric", "paediatric"}
+    penalty = 0
+    if "реабилитац" in blob or "rehabil" in blob:
+        penalty += 5 if asthmaish else 2
+    if asthmaish and ("взросл" in blob or "adult" in blob) and (pediatric or "астм" in diag):
+        penalty += 3
+    if asthmaish and "астм" in blob:
+        penalty -= 2  # boost asthma KP
+    if asthmaish and ("д-нас" in blob or "детск" in blob or "д_нас" in blob or "д-нас" in blob):
+        penalty -= 3
+    return penalty
+
+
 def _rank_rows(
     matched: list[dict[str, Any]],
     graph: dict[str, Any],
@@ -467,28 +502,29 @@ def _rank_rows(
     *,
     case_codes: list[str] | None = None,
 ) -> list[dict[str, Any]]:
-    """Предпочесть clinical; внутри - ICD fit, primary hit, score."""
+    """Предпочесть clinical; внутри - ICD fit, primary hit, score; штраф rehab."""
     codes = [str(c).upper() for c in (case_codes or graph.get("icd10_in_directory") or []) if c]
     filtered = [row for row in matched if not _path_blocked_for_specialty(row, graph)]
-    decorated: list[tuple[int, float, int, float, dict[str, Any]]] = []
+    decorated: list[tuple[int, int, float, int, float, dict[str, Any]]] = []
     for row in filtered:
         kind = _match_kind(row, graph)
         tier = {"clinical": 0, "ddx": 1, "specialty": 2}.get(kind, 3)
         decorated.append(
             (
                 tier,
+                _rehab_or_noise_penalty(row, graph),
                 -_best_icd_fit_weight(row),
                 -_icd_primary_hits(row, codes),
                 -float(row.get("match_score") or 0),
                 row,
             )
         )
-    decorated.sort(key=lambda item: (item[0], item[1], item[2], item[3]))
-    strong = [row for tier, _, _, _, row in decorated if tier == 0]
+    decorated.sort(key=lambda item: (item[0], item[1], item[2], item[3], item[4]))
+    strong = [row for tier, *_rest, row in decorated if tier == 0]
     if len(strong) >= limit:
         return strong[:limit]
     out = strong[:]
-    for _, _, _, _, row in decorated:
+    for *_, row in decorated:
         if row in out:
             continue
         out.append(row)

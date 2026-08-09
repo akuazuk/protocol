@@ -1,0 +1,47 @@
+{
+  "id": "mo_1_test",
+  "source": "clients_consult/mo_1_test.pdf",
+  "clinical": {
+    "complaints": "на кашель сухой, насморк. Борозды на ногтях. Головная боль, чаще по вечерам. Неправильная установка стоп при ходьбе. Набор веса неуточненный, по питанию",
+    "anamnesis_doctor": "Семейная АГ, гиперхолестеринемия. Хронические заболевания: Бронхиальная астма с 4х лет (ремиссия 1 год).",
+    "objective_status": "Кашля нет. Носовое дыхание не затруднено. Костно-мышечная система без отклонений. Кожа без изменений. Дыхание везикулярное, хрипы нет. ped at scab abs",
+    "clinical_diagnosis": "J45 Бронхиальная астма, аллергическая, контролируемая. Персистирующий аллергический ринит. М21.4 Плоско-вальгусная установка стоп? Е 55.0 Дефицит витамина Д? G44.2 Головная боль напряжения?",
+    "exam_recommendations": "Аллергопанель, спирограмма, аллерголог",
+    "treatment_recommendations": "витамин Д; явка с результатами",
+    "patient_age_years": 8
+  },
+  "zones_stub": {
+    "ok": true,
+    "engine": "mo_zones_v1",
+    "zone1": {"band": "weak", "pct": 91.7, "label_ru": "Оформление"},
+    "zone2a": {"band": "ok", "pct": 100.0, "label_ru": "Диагноз"},
+    "zone2b": {"band": "na", "pct": null, "kp_status": "unmatched", "label_ru": "План"},
+    "safety": {"band": "none"},
+    "criteria": [
+      {
+        "id": "risk_factors",
+        "zone": "documentation",
+        "title": "Факторы риска",
+        "score": 0.5,
+        "score_label": "0.5",
+        "reason": "семейная АГ упомянута без развёрнутой оценки"
+      }
+    ]
+  },
+  "expect_gap_codes": [
+    "B_complaint_exam_mismatch",
+    "B_dx_not_in_exam",
+    "B_tentative_dx_weak_support",
+    "B_chronic_dx_therapy_absent",
+    "A_text_noise",
+    "B_treatment_before_confirmed_dx",
+    "B_complaint_not_addressed_in_plan"
+  ],
+  "expect_brief": {
+    "available": true,
+    "diagnosis_methodology_band": "ok",
+    "plan_band": "na",
+    "min_doctor_feedback": 3,
+    "must_mention_substrings": ["кашель", "терап", "протокол"]
+  }
+}

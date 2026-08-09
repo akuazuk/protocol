@@ -1056,8 +1056,11 @@
     function findingZoneKey(finding) {
       var code = String((finding && (finding.code || finding.finding_code)) || "");
       if (/^C_/.test(code)) return "safety";
+      if (/^B_complaint_exam|^B_dx_not|^B_tentative|^B_chronic_dx|^B_treatment_before|^finding_/i.test(code)) {
+        return "zone2a";
+      }
       if (/^B_dx|^B_icd|diagnosis/i.test(code)) return "zone2a";
-      if (/plan|exam_rec|treat|follow|D_reg55/i.test(code)) return "zone2b";
+      if (/plan|exam_rec|treat|follow|D_reg55|B_complaint_not_addressed/i.test(code)) return "zone2b";
       if (/^A_|missing|complain|anamnes|objective|mo_complete/i.test(code)) return "zone1";
       var axis = String((finding && finding.axis) || "");
       if (axis === "safety") return "safety";
@@ -1722,6 +1725,87 @@
         (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются.</p>' : "") +
         '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
     }
+    function renderReviewBrief(brief, narrative) {
+      if (!brief || !brief.available || !brief.ok) {
+        return '<div class="detail-block review-brief-block"><h3>Итог разбора</h3>' +
+          '<p class="empty">' + esc((brief && brief.reason) || "Итог разбора пока недоступен.") +
+          '</p></div>';
+      }
+      var zones = brief.zones || {};
+      var axes = brief.diagnosis_axes || {};
+      var weak = (brief.methodology_weak || []).slice(0, 6).map(function (item) {
+        var mark = item.score === 0 ? "плохо" : (item.score === 0.5 ? "слабо" : "н/д");
+        return '<li><b>' + esc(item.title || item.id || "") + '</b> (' + esc(mark) + ')' +
+          (item.reason ? ' - ' + esc(item.reason) : "") + '</li>';
+      }).join("");
+      var gaps = (brief.clinical_gaps || []).slice(0, 6).map(function (item) {
+        return '<li><b>' + esc(item.title_ru || item.code || "") + '</b>' +
+          (item.detail_ru ? ' - ' + esc(String(item.detail_ru).slice(0, 180)) : "") + '</li>';
+      }).join("");
+      var feedback = (brief.doctor_feedback || []).map(function (line) {
+        return '<li>' + esc(line) + '</li>';
+      }).join("");
+      var icd = brief.icd || {};
+      var proto = brief.protocol || {};
+      var method = (axes.methodology || {});
+      var icdAxis = (axes.icd_directory || {});
+      var support = (axes.clinical_support || {});
+      var ai = "";
+      if (narrative && narrative.available) {
+        ai = '<div class="review-brief-ai"><h4>Черновик ИИ</h4><p>' +
+          esc(narrative.summary_ru || "") + '</p>' +
+          ((narrative.doctor_feedback_ru || []).length ?
+            '<ul>' + narrative.doctor_feedback_ru.slice(0, 4).map(function (line) {
+              return '<li>' + esc(line) + '</li>';
+            }).join("") + '</ul>' : "") +
+          '<p class="card-sub">Не меняет зоны методики · уверенность ' +
+          esc(narrative.confidence != null ? Math.round(Number(narrative.confidence) * 100) + "%" : " - ") +
+          '</p></div>';
+      }
+      return '<div class="detail-block review-brief-block"><h3>Итог разбора</h3>' +
+        '<p class="card-sub">' + esc(brief.summary_ru || "") + '</p>' +
+        '<div class="review-brief-zones">' +
+        '<div><b>Оформление</b> - ' + esc((zones.documentation || {}).band_ru || " - ") +
+        '<div class="card-sub">' + esc((zones.documentation || {}).why_ru || "") + '</div></div>' +
+        '<div><b>Диагноз</b> - ' + esc((zones.diagnosis || {}).band_ru || " - ") +
+        '<div class="card-sub">' + esc((zones.diagnosis || {}).why_ru || "") + '</div></div>' +
+        '<div><b>План</b> - ' + esc((zones.plan || {}).band_ru || " - ") +
+        '<div class="card-sub">' + esc((zones.plan || {}).why_ru || "") + '</div></div>' +
+        '</div>' +
+        '<h4>Три оси диагноза</h4>' +
+        '<ul class="review-brief-axes">' +
+        '<li><b>' + esc(method.label_ru || "Методика") + '</b>: ' +
+        esc(method.band_ru || "") + ' - ' + esc(method.detail_ru || "") + '</li>' +
+        '<li><b>' + esc(icdAxis.label_ru || "МКБ") + '</b>: ' +
+        esc(icdAxis.detail_ru || icd.detail_ru || "") +
+        '<div class="card-sub">' + esc(icdAxis.note_ru || icd.note_ru || "") + '</div></li>' +
+        '<li><b>' + esc(support.label_ru || "Клиническая опора") + '</b>: ' +
+        esc(support.band_ru || "") + ' - ' + esc(support.detail_ru || "") + '</li>' +
+        '</ul>' +
+        (weak ? '<h4>Слабые места методики</h4><ul>' + weak + '</ul>' : "") +
+        (gaps ? '<h4>Клиника</h4><ul>' + gaps + '</ul>' : '<p class="card-sub">Клинических разрывов machine не нашёл.</p>') +
+        '<h4>МКБ</h4><p>' + esc(icd.detail_ru || "") + '</p>' +
+        '<h4>Протокол</h4><p>' + esc(proto.detail_ru || "") +
+        (proto.secondary_ru ? '<span class="card-sub"> ' + esc(proto.secondary_ru) + '</span>' : "") +
+        '</p>' +
+        '<h4>Что сказать врачу</h4>' +
+        (feedback ? '<ul id="review-brief-feedback">' + feedback + '</ul>' :
+          '<p class="empty">Автопунктов нет.</p>') +
+        '<p><button type="button" class="button secondary compact" id="review-brief-prefill">' +
+        'Подставить в решение методиста</button></p>' +
+        '<p class="card-sub">' + esc((brief.confidence || {}).machine_ru || "") + ' ' +
+        esc((brief.confidence || {}).ai_ru || "") + '</p>' +
+        ai +
+        '</div>';
+    }
+    function prefillDecisionFromBrief(brief) {
+      var area = $("drawer-summary");
+      if (!area || !brief) return;
+      var text = brief.decision_summary_ru ||
+        ((brief.doctor_feedback || []).map(function (line) { return "• " + line; }).join("\n"));
+      if (!text) return;
+      if (!String(area.value || "").trim()) area.value = text;
+    }
     function renderZonesCriteriaDetails(zones) {
       var zoneOrder = [
         ["documentation", "Оформление"],
@@ -1847,10 +1931,11 @@
           '<div class="case-workspace-decision">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
+          renderReviewBrief(data.review_brief, data.case_narrative) +
           renderFindingsCompact(findings, crm, llmJudge) +
+          renderZonesCriteriaDetails(zones) +
           renderHistoryCompact(data.patient_history) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
-          renderZonesCriteriaDetails(zones) +
           serviceHtml +
           '</div>' +
           decisionHtml +
@@ -1869,11 +1954,23 @@
       }
       bindCaseWorkspaceInteractions();
       updateDrawerNav();
+      if (useZonesUi) prefillDecisionFromBrief(data.review_brief || {});
       loadProtocolSuggestIntoCase(item.id);
     }
     function bindCaseWorkspaceInteractions() {
       var saveBtn = $("drawer-save");
       if (saveBtn) saveBtn.addEventListener("click", saveCaseDecision);
+      var prefillBtn = $("review-brief-prefill");
+      if (prefillBtn) {
+        prefillBtn.addEventListener("click", function () {
+          var brief = (state.caseDetail && state.caseDetail.review_brief) || {};
+          var area = $("drawer-summary");
+          if (!area) return;
+          var text = brief.decision_summary_ru ||
+            ((brief.doctor_feedback || []).map(function (line) { return "• " + line; }).join("\n"));
+          if (text) area.value = text;
+        });
+      }
       var body = $("drawer-body");
       if (!body) return;
       body.querySelectorAll("[data-finding-zone]").forEach(function (button) {
@@ -2075,6 +2172,23 @@
         var suggest = await response.json();
         host.innerHTML = renderProtocolSuggest(suggest);
         bindProtocolSuggestHost(host);
+        if (state.caseDetail) {
+          state.caseDetail.protocol_suggest = suggest;
+          if (state.caseDetail.review_brief && suggest && suggest.available) {
+            var items = suggest.items || [];
+            var top = items[0] || {};
+            state.caseDetail.review_brief.protocol = {
+              matched: true,
+              kp_status: "matched",
+              title: top.title || null,
+              protocol_id: top.protocol_id || null,
+              detail_ru: top.title
+                ? ("Топ-1: " + top.title + (items.length > 1 ? (" · ещё " + (items.length - 1)) : ""))
+                : "Протоколы подобраны",
+              items_n: items.length
+            };
+          }
+        }
       } catch (e) {
         host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
         bindProtocolSuggestHost(host);
