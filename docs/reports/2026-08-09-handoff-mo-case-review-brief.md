@@ -17,7 +17,6 @@ Plan: `docs/plans/2026-08-09-mo-case-review-quality-parity-v1.md`
 
 ## Не сделано
 
-- R0 warehouse recompute `2026-08-06` на GCE (после merge + deploy)
 - Опрос методиста на 20 кейсах
 - Расширение gold до 15 МО
 
@@ -44,3 +43,10 @@ bash deploy/gcp-app/deploy_to_gce.sh
 - `frontend/web/shared/mo-app.js`, `rag_server.py` case detail
 - `clinical_knowledge/case_protocol_suggest.py`
 - `clinical_knowledge/mo_case_review_brief.py` / `mo_clinical_gaps.py`
+
+## Deploy / warehouse
+
+- PR: https://github.com/akuazuk/protocol/pull/84 merged as `f1f1e49d`
+- GCE deploy: `2026-08-09-061543Z-mo-case-review-brief` on protocol.kravira.by
+- Recompute: 2026-08-06 success (544 rows / 447 cases)
+- Smoke case `3651471`: `review_brief.available=true`, feedback_n=6

@@ -257,7 +257,7 @@ Shadow → primary после калибровки на ≥20 кейсах (ка
 - [x] Разложить по слоям L1-L6 и фазам A-F
 - [x] R0 code: merge #82 (`f0e3c724`, 2026-08-09)
 - [x] R0 deploy: GCE + smoke `mo_1_test` / J45 pediatric (после #82; повторить после R1-R5)
-- [ ] R0 warehouse: recompute дней с false weak МКБ (хотя бы 2026-08-06)
+- [x] R0 warehouse: recompute дней с false weak МКБ (хотя бы 2026-08-06)
 - [x] R1: `mo_case_review_brief` + UI «Итог разбора»
 - [x] R2: concordance rules complaint↔exam↔dx (`mo_clinical_gaps`)
 - [x] R3: suggest quality для эталона БА (`_rehab_or_noise_penalty`)
