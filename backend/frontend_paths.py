@@ -21,6 +21,7 @@ CANONICAL_ASSET_MAP: dict[str, str] = {
     "consult_review.html": "doctor/consult_review.html",
     # Methodist workspace
     "mis-kz-quality.html": "methodist/mis-kz-quality.html",
+    "mo-calibration.html": "methodist/mo-calibration.html",
     "expert.html": "methodist/expert.html",
     "onco-risk.html": "methodist/onco-risk.html",
     # Patient workspace
@@ -49,6 +50,8 @@ CANONICAL_ASSET_MAP: dict[str, str] = {
     "mo-api.js": "shared/mo-api.js",
     "mo-charts.js": "shared/mo-charts.js",
     "mo-app.js": "shared/mo-app.js",
+    "mo-calibration.css": "shared/mo-calibration.css",
+    "mo-calibration.js": "shared/mo-calibration.js",
     "vendor/echarts.min.js": "shared/vendor/echarts.min.js",
     "vendor/ECHARTS-LICENSE.txt": "shared/vendor/ECHARTS-LICENSE.txt",
 }

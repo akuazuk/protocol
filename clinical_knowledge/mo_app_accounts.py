@@ -29,6 +29,7 @@ REPORTS_ALLOWED_PREFIXES = (
     "/api/methodist/mo/daily-report",
     "/api/methodist/mo/reports",
     "/api/methodist/mo/cases",
+    "/api/methodist/mo/calibration",
     "/api/methodist/mo/review-packs",
     "/api/methodist/mo/rubric-summary",
     "/api/methodist/mo/freshness",
