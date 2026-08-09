@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-055808Z-mo-review-gaps"
+BUILD_VERSION = "2026-08-09-062416Z-auth-accounts-p0"
 
 
 def _app_version() -> str:
@@ -14011,16 +14011,9 @@ if has_frontend_file("index.html"):
     @app.get("/methodist/expert.html", include_in_schema=False)
     @app.get("/methodist/expert/yesterday", include_in_schema=False)
     @app.get("/methodist/expert/reports", include_in_schema=False)
-    def _serve_methodist_expert() -> FileResponse:
-        """Кабинет врача-эксперта: вчера + отчёты с августа + разбор случаев."""
-        p = frontend_file("expert.html")
-        if not p.is_file():
-            raise HTTPException(status_code=404, detail="Страница эксперта не найдена")
-        return FileResponse(
-            path=str(p),
-            media_type="text/html; charset=utf-8",
-            headers={"Cache-Control": "no-cache, must-revalidate"},
-        )
+    def _redirect_methodist_expert() -> RedirectResponse:
+        """Expert UI removed from product path; use methodist MO analytics."""
+        return RedirectResponse(url="/methodist/mo", status_code=302)
 
     _SHARED_STATIC_ASSETS = {
         # Methodist / МО
