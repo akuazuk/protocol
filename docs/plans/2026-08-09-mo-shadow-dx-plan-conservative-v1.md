@@ -1,7 +1,7 @@
 # МО: shadow Dx/Plan (вариант B), консервативные пороги
 
 Дата: 2026-08-09
-Статус: **active** (W0-W2 в коде; ждёт merge/deploy + GCE backfill)
+Статус: **active** (W0-W2 в коде; merged #114; GCE deployed; smoke in progress)
 
 Связанные планы:
 - `2026-08-09-mo-score-ssot-llm-recompute-v3.md` - калибровка и SSOT (C ещё закрыт);
@@ -170,7 +170,7 @@ critical**. `partial` не считается браком для внимани
 - [x] **W1.2** API case detail отдаёт shadow block (`no-store` если нужно).
 - [x] **W1.3** UI блок в разборе случая + copy про неофициальность.
 - [ ] **W1.4** Smoke на GCE: 20 clinical cases, ручной просмотр ≥5 poor/critical.
-- [ ] **W1.5** BUILD_VERSION / PR; production official scores не меняются.
+- [x] **W1.5** BUILD_VERSION / PR; production official scores не меняются.
 
 ### Волна 2 - B2 очередь (в том же PR по запросу владельца)
 
