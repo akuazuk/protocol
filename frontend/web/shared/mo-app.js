@@ -1771,7 +1771,9 @@
       var pdfPath = "/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf";
       var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
-        '<div class="methodist-decision-panel methodist-decision-panel--dock"><h3>Решение методиста</h3>' +
+        '<details class="methodist-decision-panel methodist-decision-panel--dock">' +
+        '<summary class="decision-dock-summary">Решение методиста</summary>' +
+        '<div class="decision-dock-body">' +
         '<div class="verdict-row">' +
         '<label class="filter"><span>Оформление</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
         '<label class="filter"><span>Диагноз</span>' + verdictSelect("drawer-verdict-d", "unreviewed") + '</label>' +
@@ -1788,7 +1790,7 @@
         '<div class="decision-actions">' +
         '<button class="button" id="drawer-save" type="button">Сохранить</button>' +
         '<button class="button secondary" type="button" data-open-pdf="' + esc(pdfPath) + '" data-open-name="' + esc(pdfName) + '">МО в PDF</button>' +
-        '</div></div>';
+        '</div></div></details>';
       var drawerPdf = $("drawer-pdf");
       if (drawerPdf) {
         drawerPdf.hidden = false;

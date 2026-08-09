@@ -97,6 +97,9 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "case-workspace-grid--zones" in CSS or "case-workspace-grid--zones" in SOURCE
     assert "protocol-suggest-top" in JS
     assert 'id="drawer-pdf"' in HTML
+    assert 'details class="methodist-decision-panel methodist-decision-panel--dock"' in JS
+    assert "decision-dock-summary" in JS
+    assert 'methodist-decision-panel--dock[open]' in CSS or "decision-dock-summary" in CSS
     assert "data-sort-key" in HTML
     assert 'id="drawer-prev"' in HTML
     assert "renderPatientHistory" in JS
