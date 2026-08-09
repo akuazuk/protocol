@@ -42,10 +42,12 @@
     };
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Сегодня", queue: "Очередь",
-      documents: "Все случаи", doctors: "Врачи", specialties: "Специальности",
-      diagnoses: "Диагнозы и МКБ", safety: "Безопасность", "data-quality": "Качество данных",
-      "doctor-cabinet": "Кабинет врача", "access-log": "Журнал доступа",
+      documents: "Все случаи", doctors: "Врачи",
       reports: "Отчёты", settings: "Настройки"
+    };
+    var REMOVED_PAGES = {
+      specialties: true, diagnoses: true, safety: true,
+      "data-quality": true, "doctor-cabinet": true, "access-log": true
     };
     var FILTER_LABELS = {
       months: "Месяц", branches: "Филиал", specialties: "Специальность", doctors: "Врач",
@@ -779,6 +781,7 @@
       renderAnalysisRail();
     }
     function switchPage(page, push) {
+      if (REMOVED_PAGES[page]) page = (page === "access-log" || page === "data-quality") ? "reports" : "documents";
       if (!PAGE_TITLES[page]) page = "yesterday";
       if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
       state.page = page;
@@ -3156,11 +3159,12 @@
       });
     }
     async function loadAccessLog() {
+      var host=$("access-log-content"); if (!host) return;
       var response=await request("/access-log","/access-log");
-      if (response.status===403) { $("access-log-content").innerHTML='<div class="empty">Журнал доступен только администратору.</div>'; return; }
+      if (response.status===403) { host.innerHTML='<div class="empty">Журнал доступен только администратору.</div>'; return; }
       if (!response.ok) throw new Error("Не удалось загрузить журнал доступа.");
       var data=await response.json();
-      $("access-log-content").innerHTML=(data.items || []).map(function (item) {
+      host.innerHTML=(data.items || []).map(function (item) {
         return notice(item.action,item.created_at+" · "+item.actor+" · роль "+item.role+
           (item.doctor_key ? " · врач "+item.doctor_key : ""),"good");
       }).join("") || '<div class="empty">Событий доступа пока нет.</div>';
@@ -3170,6 +3174,7 @@
       renderEntityPages(state.data.summary);
     }
     async function loadDataQuality() {
+      if (!$("quality-kpis")) return;
       var responses = await Promise.all([
         request("/data-quality?" + query().toString(), "/cases?" + query().toString()),
         request("/health", "/freshness")
@@ -3372,13 +3377,11 @@
         else if (page === "queue") await loadCases(true);
         else if (page === "documents") await loadCases(false);
         else if (page === "doctors") await loadDoctorsDimension();
-        else if (page === "specialties") await loadSpecialtiesDimension();
-        else if (page === "diagnoses") await loadDiagnosesDimension();
-        else if (page === "safety") await loadSafetyDimension();
-        else if (page === "doctor-cabinet") await loadDoctorCabinet();
-        else if (page === "access-log") await loadAccessLog();
-        else if (page === "data-quality") await loadDataQuality();
-        else if (page === "reports") await loadReports();
+        else if (page === "reports") {
+          await loadReports();
+          try { await loadAccessLog(); } catch (e) {}
+          try { await loadDataQuality(); } catch (e) {}
+        }
         else if (page === "settings") await loadScoringMethod();
         else await ensureSummary();
       } catch (e) { showError(e.message || String(e)); }
