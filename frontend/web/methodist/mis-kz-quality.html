@@ -27,12 +27,13 @@
           <li><button class="nav-button" data-page="documents"><span class="nav-icon">≡</span><span class="nav-text">Все случаи</span></button></li>
           <li><button class="nav-button" data-page="doctors"><span class="nav-icon">Вр</span><span class="nav-text">Врачи</span></button></li>
           <li><button class="nav-button" data-page="reports"><span class="nav-icon">⇩</span><span class="nav-text">Отчёты</span></button></li>
-          <li hidden><button class="nav-button" data-page="settings"><span class="nav-text">Настройки</span></button></li>
+          <li hidden><button class="nav-button" data-page="settings" id="nav-settings" aria-hidden="true"><span class="nav-text">Справка</span></button></li>
         </ul>
       </nav>
       <div class="sidebar-foot">
+        <button type="button" class="sidebar-help" id="sidebar-help" data-page="settings">Справка</button>
         <a href="/methodist/mis-kz">Кабинет методиста</a>
-        <p class="card-sub" style="margin:8px 0 0">Меню: 6 пунктов · оценка: оформление / диагноз / план</p>
+        <p class="card-sub" style="margin:8px 0 0">Оценка: оформление / диагноз / план / риск</p>
       </div>
     </aside>
 
@@ -252,25 +253,40 @@
           </details>
         </section>
         <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">
-          <div class="page-head"><div><h1 id="title-settings">Настройки и методика</h1><p>Рабочие представления, отображение таблиц и прозрачные правила оценки.</p></div></div>
+          <div class="page-head"><div><h1 id="title-settings">Справка и настройки</h1><p>Как мы смотрим запись, кто вошёл и личные настройки экрана.</p></div></div>
           <div class="grid">
-            <article class="card span-6"><h2>Сохранённые представления</h2><p class="card-sub">Личные представления хранят текущие фильтры и страницу.</p><div id="view-manager"></div></article>
+            <article class="card span-12">
+              <h2>Сессия</h2>
+              <p class="card-sub">Текущий вход в МО Аналитику</p>
+              <div id="settings-session"><div class="skeleton"></div></div>
+            </article>
+            <article class="card span-12">
+              <h2>Как мы смотрим запись</h2>
+              <p class="card-sub">Четыре зоны качества - не десять метрик</p>
+              <div id="settings-zones" class="settings-zones">
+                <div class="settings-zone"><h3>Оформление</h3><p>Заполнен ли осмотр как положено: жалобы, анамнез, статус, диагноз, рекомендации.</p><p class="card-sub">Плохо: дыры в тексте МО.</p></div>
+                <div class="settings-zone"><h3>Диагноз</h3><p>Есть ли диагноз и код, согласованы ли они между собой и с клиникой.</p><p class="card-sub">Плохо: нет Dx / слабая опора. Чип МКБ - отдельно: нашлась ли формулировка в справочнике.</p></div>
+                <div class="settings-zone"><h3>План по протоколу</h3><p>Обследование и лечение по клиническому протоколу МЗ.</p><p class="card-sub">Плохо только если протокол подобран. Иначе «протокол не подобран», не «0%».</p></div>
+                <div class="settings-zone"><h3>Риск</h3><p>Опасные вещи: лекарства, красные флаги, маршрутизация.</p><p class="card-sub">Не процент на первом экране - «есть / нет» в очереди и в разборе.</p></div>
+              </div>
+              <p class="card-sub" style="margin-top:12px"><b>№55</b> - проверка «по инструкции» (постановление МЗ) для роли врача. Это не замена трёх зон; смотрим глубже в разборе случая, не вместо «Сегодня».</p>
+              <div id="scoring-method" hidden></div>
+            </article>
             <article class="card span-6">
               <h2>Интерфейс</h2>
               <div class="settings-stack">
-                <label class="filter"><span>Методика на графиках</span><select class="control" id="methodology"><option value="v3" selected>v3 - текущая</option><option value="v4">v4 - проверка</option></select></label>
-                <p class="card-sub">v4 станет основной после двойной экспертной разметки и приёмки.</p>
                 <label class="filter"><span>Плотность таблиц</span><select class="control" id="density"><option value="comfortable">Комфортная</option><option value="compact">Компактная</option></select></label>
-                <div>
-                  <h2>Администратор</h2>
-                  <p class="card-sub">Отдельный токен хранится только до закрытия вкладки.</p>
-                  <label class="filter"><span>Админ-токен</span><input class="control" id="admin-token-input" type="password" autocomplete="off"></label>
-                  <button class="button secondary" id="admin-token-save" type="button">Сохранить для сессии</button>
-                </div>
               </div>
             </article>
-            <article class="card span-12"><h2>Как определяется оценка</h2><p class="card-sub">Оси, пороги и правила приоритета клинического риска</p><div id="scoring-method"><div class="skeleton"></div></div></article>
-            <article class="card span-12"><h2>Расходы AI</h2><p class="card-sub">Токены, стоимость и задержка каждого ночного прогона</p><div id="llm-costs"><div class="skeleton"></div></div></article>
+            <article class="card span-6">
+              <h2>Сохранённые представления</h2>
+              <p class="card-sub">Фильтры и страница для быстрого возврата</p>
+              <div id="view-manager"></div>
+            </article>
+            <article class="card span-12">
+              <h2>О системе</h2>
+              <div id="settings-about"><div class="skeleton"></div></div>
+            </article>
           </div>
         </section>
       </main>

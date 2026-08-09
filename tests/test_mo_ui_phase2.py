@@ -94,6 +94,22 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_settings_page_is_help_with_zones_without_v3v4_or_ai_costs() -> None:
+    assert 'id="sidebar-help"' in HTML
+    assert ">Справка</button>" in HTML
+    assert "Справка и настройки" in HTML
+    assert 'id="settings-zones"' in HTML
+    assert "Оформление" in HTML and "Диагноз" in HTML and "План по протоколу" in HTML and "Риск" in HTML
+    assert 'id="methodology"' not in HTML
+    assert 'id="llm-costs"' not in HTML
+    assert 'id="admin-token-input"' not in HTML
+    assert "loadSettingsPage" in APP
+    assert "loadScoringMethod" not in APP
+    assert "/llm-costs" not in APP
+    assert 'settings: "Справка"' in APP
+    assert ".sidebar-help" in UI
+
+
 def test_page_references_no_external_url_or_cdn_and_has_no_long_dash() -> None:
     assert not re.search(r'(?:src|href)=["\']https?://', HTML)
     assert "cdn." not in HTML.lower()
