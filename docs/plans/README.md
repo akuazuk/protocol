@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-09-auth-accounts-unify-v1.md](2026-08-09-auth-accounts-unify-v1.md) | Единый вход методиста + МО Аналитика; P0 SSO/403; далее login/password и admin учёток | active |
 | [2026-08-09-mo-case-review-quality-parity-v1.md](2026-08-09-mo-case-review-quality-parity-v1.md) | Разбор случая: качество как у экспертного разбора (brief, клиника, КП, врачу) | active |
 | [2026-08-08-mo-analytics-ui-target-v2.md](2026-08-08-mo-analytics-ui-target-v2.md) | Канон экранов МО: короткое меню, лаконичный разбор, всё на русском | active |
 | [2026-08-08-mo-analytics-implementation-blueprint-v1.md](2026-08-08-mo-analytics-implementation-blueprint-v1.md) | Blueprint склада/API/движка зон; UI в объёме ui-target-v2; релизы A-E в коде (PR #78) | active |
@@ -51,7 +52,7 @@
 | [2026-08-05-mo-case-review-workspace-v1.md](2026-08-05-mo-case-review-workspace-v1.md) | Разбор случая: sticky МО + scroll разбора, форма решения, RU, таблица дня | archived (преемник: case-review-workspace-v2) |
 | [2026-08-05-mo-llm-action-queue-judge-v1.md](2026-08-05-mo-llm-action-queue-judge-v1.md) | LLM-судья A/B только для action-очереди МО (диагноз, затем план) | active |
 | [2026-08-05-mo-methodist-review-pack-v1.md](2026-08-05-mo-methodist-review-pack-v1.md) | Отчёты: ID визита/пациента + fullscreen-разбор + пакет решения методиста для обучения | active |
-| [2026-08-05-mo-expert-reviewer-portal-v1.md](2026-08-05-mo-expert-reviewer-portal-v1.md) | Кабинет врача-эксперта (логин/пароль), отчёты со вчера, gold из review pack | active |
+| [2026-08-05-mo-expert-reviewer-portal-v1.md](2026-08-05-mo-expert-reviewer-portal-v1.md) | Кабинет врача-эксперта (логин/пароль), отчёты со вчера, gold из review pack | archived (преемник: auth-accounts-unify-v1) |
 | [2026-08-05-mo-august-llm-bi-backfill-v1.md](2026-08-05-mo-august-llm-bi-backfill-v1.md) | LLM backfill с августа, continuous на Render, починка merge/BI врачей | active |
 | [2026-08-05-mo-eval-smirnova-concordance-v1.md](2026-08-05-mo-eval-smirnova-concordance-v1.md) | Оценка МО: findings согласованности по кейсу Смирнова (статус↔диагноз↔план) | active |
 | [2026-08-05-mo-case-protocol-suggest-v1.md](2026-08-05-mo-case-protocol-suggest-v1.md) | Case → Protocol Suggest: подбор КП МЗ по МО/КЗ отдельно от L1 scorer | active |

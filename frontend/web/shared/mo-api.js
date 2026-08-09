@@ -17,33 +17,48 @@
     }
   }
 
-  function token() {
+  function readStorage(key) {
     try {
-      return sessionStorage.getItem(TOKEN_KEY) || localStorage.getItem(TOKEN_KEY) || "";
+      return sessionStorage.getItem(key) || localStorage.getItem(key) || "";
     } catch (error) {
       return "";
     }
   }
 
-  function expertToken() {
-    try {
-      return sessionStorage.getItem(EXPERT_SESSION_KEY) || localStorage.getItem(EXPERT_SESSION_KEY) || "";
-    } catch (error) {
-      return "";
-    }
-  }
-
-  function setExpertToken(value) {
+  function writeStorage(key, value) {
     var tokenValue = String(value || "").trim();
     try {
       if (tokenValue) {
-        sessionStorage.setItem(EXPERT_SESSION_KEY, tokenValue);
-        localStorage.setItem(EXPERT_SESSION_KEY, tokenValue);
+        sessionStorage.setItem(key, tokenValue);
+        localStorage.setItem(key, tokenValue);
       } else {
-        sessionStorage.removeItem(EXPERT_SESSION_KEY);
-        localStorage.removeItem(EXPERT_SESSION_KEY);
+        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
       }
     } catch (error) {}
+  }
+
+  function token() {
+    var value = readStorage(TOKEN_KEY);
+    // Sync across storages so a new tab (empty sessionStorage) still sees localStorage.
+    if (value) writeStorage(TOKEN_KEY, value);
+    return value;
+  }
+
+  function setToken(value) {
+    writeStorage(TOKEN_KEY, value);
+  }
+
+  function clearToken() {
+    writeStorage(TOKEN_KEY, "");
+  }
+
+  function expertToken() {
+    return readStorage(EXPERT_SESSION_KEY);
+  }
+
+  function setExpertToken(value) {
+    writeStorage(EXPERT_SESSION_KEY, value);
   }
 
   function clearExpertToken() {
@@ -52,10 +67,14 @@
 
   function headers() {
     var result = { Accept: "application/json" };
-    var expert = expertToken();
-    if (expert) {
-      result["X-Expert-Session"] = expert;
-      return result;
+    // On methodist MO pages prefer methodist token so leftover expert session
+    // does not silently downgrade / kick BI access.
+    if (isExpertAudience()) {
+      var expert = expertToken();
+      if (expert) {
+        result["X-Expert-Session"] = expert;
+        return result;
+      }
     }
     if (token()) result["X-Methodist-Token"] = token();
     try {
@@ -96,6 +115,8 @@
     headers: headers,
     request: request,
     token: token,
+    setToken: setToken,
+    clearToken: clearToken,
     expertToken: expertToken,
     setExpertToken: setExpertToken,
     clearExpertToken: clearExpertToken,

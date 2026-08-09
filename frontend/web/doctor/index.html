@@ -17100,7 +17100,7 @@
   function methodistReviewerForFeedback() {
     return (
       window.__methodistReviewer ||
-      sessionStorage.getItem(METHODIST_STORAGE_REVIEWER) ||
+      readMethodistStorage(METHODIST_STORAGE_REVIEWER) ||
       "methodist"
     );
   }
@@ -22598,6 +22598,29 @@
 
   var METHODIST_STORAGE_TOKEN = "protocol_methodist_token";
   var METHODIST_STORAGE_REVIEWER = "protocol_methodist_reviewer";
+  function readMethodistStorage(key) {
+    try {
+      return sessionStorage.getItem(key) || localStorage.getItem(key) || "";
+    } catch (e) {
+      return "";
+    }
+  }
+  function writeMethodistStorage(key, value) {
+    var next = String(value || "").trim();
+    try {
+      if (next) {
+        sessionStorage.setItem(key, next);
+        localStorage.setItem(key, next);
+      } else {
+        sessionStorage.removeItem(key);
+        localStorage.removeItem(key);
+      }
+    } catch (e) {}
+  }
+  function clearMethodistStorageCreds() {
+    writeMethodistStorage(METHODIST_STORAGE_TOKEN, "");
+    writeMethodistStorage(METHODIST_STORAGE_REVIEWER, "");
+  }
   var METHODIST_TAG_OPTIONS = [
     { id: "wrong_protocol", label: "Неверно подобран клинический протокол" },
     { id: "missed_protocol", label: "Не нашли нужный КП" },
@@ -25723,10 +25746,7 @@
     window.__methodistMode = false;
     window.__methodistToken = "";
     window.__methodistReviewer = "";
-    try {
-      sessionStorage.removeItem(METHODIST_STORAGE_TOKEN);
-      sessionStorage.removeItem(METHODIST_STORAGE_REVIEWER);
-    } catch (e) {}
+    clearMethodistStorageCreds();
     var mPanel = document.getElementById("methodist-review-panel");
     if (mPanel) mPanel.hidden = true;
     try {
@@ -25767,14 +25787,9 @@
   function beginMethodistLoginFlow() {
     var params = new URLSearchParams(window.location.search || "");
     var qt = params.get("methodist_token") || "";
-    var stored = "";
-    try {
-      stored = sessionStorage.getItem(METHODIST_STORAGE_TOKEN) || "";
-    } catch (e) {}
+    var stored = readMethodistStorage(METHODIST_STORAGE_TOKEN);
     window.__methodistToken = qt || stored || "";
-    try {
-      window.__methodistReviewer = sessionStorage.getItem(METHODIST_STORAGE_REVIEWER) || "";
-    } catch (e2) {}
+    window.__methodistReviewer = readMethodistStorage(METHODIST_STORAGE_REVIEWER);
 
     var loginErr = document.getElementById("methodist-login-error");
     var tokenInp = document.getElementById("methodist-login-token");
@@ -25790,10 +25805,8 @@
     function persistMethodistCreds(tok, rev) {
       window.__methodistToken = tok;
       window.__methodistReviewer = rev;
-      try {
-        sessionStorage.setItem(METHODIST_STORAGE_TOKEN, tok);
-        sessionStorage.setItem(METHODIST_STORAGE_REVIEWER, rev);
-      } catch (e) {}
+      writeMethodistStorage(METHODIST_STORAGE_TOKEN, tok);
+      writeMethodistStorage(METHODIST_STORAGE_REVIEWER, rev);
     }
 
     function activateMethodistSession() {
@@ -25924,10 +25937,8 @@
         }
         window.__methodistToken = tok;
         window.__methodistReviewer = rev;
-        try {
-          sessionStorage.setItem(METHODIST_STORAGE_TOKEN, tok);
-          sessionStorage.setItem(METHODIST_STORAGE_REVIEWER, rev);
-        } catch (e) {}
+        writeMethodistStorage(METHODIST_STORAGE_TOKEN, tok);
+        writeMethodistStorage(METHODIST_STORAGE_REVIEWER, rev);
         verifyMethodistSession(
           base,
           function () {

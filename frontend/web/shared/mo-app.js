@@ -307,6 +307,52 @@
       $("auth").hidden = !show; $("dashboard").hidden = show;
       if (message) $("auth-error").textContent = message;
     }
+    function shouldForceReauth(status, detail) {
+      if (status === 401) return true;
+      if (status !== 403) return false;
+      if (!hasSession()) return true;
+      var text = String(detail || "").toLowerCase();
+      // Permission-style 403: keep the session, show an in-app error.
+      if (
+        text.indexOf("роль") >= 0 ||
+        text.indexOf("недоступ") >= 0 ||
+        text.indexOf("недостаточно прав") >= 0 ||
+        text.indexOf("администратор") >= 0 ||
+        text.indexOf("только к") >= 0 ||
+        text.indexOf("только администратору") >= 0
+      ) {
+        return false;
+      }
+      // Auth-style 403: invalid/missing token or expired session.
+      if (
+        text.indexOf("token") >= 0 ||
+        text.indexOf("токен") >= 0 ||
+        text.indexOf("сессия") >= 0 ||
+        text.indexOf("methodist") >= 0 ||
+        text.indexOf("логин") >= 0
+      ) {
+        return true;
+      }
+      // Default: do not kick a live session on an ambiguous 403.
+      return false;
+    }
+    async function handleHttpAuth(response) {
+      if (!response || (response.status !== 401 && response.status !== 403)) return false;
+      var detail = "";
+      try {
+        var data = await response.clone().json();
+        if (typeof data.detail === "string") detail = data.detail;
+        else if (data.detail != null) detail = JSON.stringify(data.detail);
+      } catch (error) {}
+      if (shouldForceReauth(response.status, detail)) {
+        if (isExpertMode() && MO.api.clearExpertToken) MO.api.clearExpertToken();
+        else if (MO.api.clearToken) MO.api.clearToken();
+        setAuth(true, detail || "Требуется повторный вход.");
+        return true;
+      }
+      showError(detail || "Недостаточно прав для этого раздела.");
+      return true;
+    }
     function values(list, keys) {
       return (list || []).map(function (item) {
         if (typeof item === "string") return { value: item, label: item, count: null };
@@ -991,7 +1037,7 @@
         request("/overview" + suffix)
       ]);
       var response = responses[0], facetsResponse = responses[1], rubricResponse = responses[2], overviewResponse = responses[3];
-      if (response.status === 401 || response.status === 403) { setAuth(true); return; }
+      if (await handleHttpAuth(response)) return;
       if (!response.ok) throw new Error("Не удалось загрузить отчёт месяца.");
       var raw = await response.json();
       if (facetsResponse.ok) {
@@ -2579,7 +2625,7 @@
       var day = (state.period === "custom" && state.dateFrom) ? state.dateFrom : minskDateKey(-1);
       $("yesterday-date").textContent = "Итоги за " + new Date(day + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
-      if (response.status === 401 || response.status === 403) { setAuth(true); return; }
+      if (await handleHttpAuth(response)) return;
       if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
       var data = await response.json();
       state.data.daily = data;
@@ -3636,7 +3682,10 @@
         $("token-submit").addEventListener("click", function () {
           var value = $("token-input").value.trim();
           if (!value) { $("auth-error").textContent = "Введите токен."; return; }
-          try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
+          if (MO.api.setToken) MO.api.setToken(value);
+          else {
+            try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
+          }
           setAuth(false); loadCapabilities(); loadPage(state.page);
         });
       }
