@@ -21,6 +21,19 @@
   <link rel="stylesheet" href="/protocol-chrome-tabs.css" />
   <link rel="stylesheet" href="/search-flow.css" />
   <link rel="stylesheet" href="/ux-redesign.css" />
+  <link rel="stylesheet" href="/methodist-cabinet.css" />
+  <script>
+    /* Early class so methodist shell styles apply before first paint when URL is /methodist/* */
+    (function () {
+      try {
+        var p = new URLSearchParams(location.search || "");
+        var path = (location.pathname || "").replace(/\/$/, "");
+        if (p.get("mode") === "methodist" || path === "/methodist" || path.indexOf("/methodist/") === 0) {
+          document.documentElement.classList.add("methodist-boot");
+        }
+      } catch (e) {}
+    })();
+  </script>
   <style>
     :root {
       /* Палитра в духе kravira.by: глубокий изумруд + мята */
@@ -12735,7 +12748,7 @@
     </div>
     <div class="app-chrome consult-hide-print" id="app-chrome">
       <div class="app-chrome__masthead">
-        <a class="app-chrome__brand" href="/doctor/search" aria-label="Protocol - найти клинический протокол">
+        <a class="app-chrome__brand" href="/doctor/search" id="app-chrome-brand" aria-label="Protocol - найти клинический протокол">
           <img class="app-sticky-bar__logo" src="/protocol-logo-mini.svg" width="132" height="15" alt="Protocol" />
         </a>
       </div>
@@ -12756,74 +12769,27 @@
 
     <div class="app-main-tabs app-main-tabs--journal methodist-workspace-tabs consult-hide-print" role="tablist" aria-label="Кабинет методиста" id="methodist-main-tabs" hidden>
       <button type="button" role="tab" id="tab-methodist-queue" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-queue" hidden>
-        <span class="app-main-tab-visual" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M8 6h13" /><path d="M8 12h13" /><path d="M8 18h13" /><path d="M3 6h.01" /><path d="M3 12h.01" /><path d="M3 18h.01" />
-          </svg>
-        </span>
-        <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Очередь случаев</span>
-          <span class="app-main-tab-sub">приоритетная проверка и разметка КЗ</span>
-        </span>
+        <span class="app-main-tab-text"><span class="app-main-tab-title">Очередь</span></span>
+      </button>
+      <button type="button" role="tab" id="tab-methodist-consult" class="app-main-tab" aria-selected="false" aria-controls="panel-consult-review" hidden>
+        <span class="app-main-tab-text"><span class="app-main-tab-title">Анализ</span></span>
       </button>
       <button type="button" role="tab" id="tab-methodist-ml-stats" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-ml-stats" hidden>
-        <span class="app-main-tab-visual" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <line x1="18" y1="20" x2="18" y2="10" />
-            <line x1="12" y1="20" x2="12" y2="4" />
-            <line x1="6" y1="20" x2="6" y2="14" />
-          </svg>
-        </span>
-        <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Обзор качества</span>
-          <span class="app-main-tab-sub">источники, разметка и готовность движка</span>
-        </span>
+        <span class="app-main-tab-text"><span class="app-main-tab-title">Обзор</span></span>
       </button>
       <button type="button" role="tab" id="tab-methodist-search-stats" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-search-stats" hidden>
-        <span class="app-main-tab-visual" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
-          </svg>
-        </span>
-        <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Качество поиска</span>
-          <span class="app-main-tab-sub">оценка выдачи и улучшения поиска</span>
-        </span>
-      </button>
-      <button type="button" role="tab" id="tab-methodist-b2c" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-b2c" hidden>
-        <span class="app-main-tab-visual" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <rect x="2" y="5" width="20" height="14" rx="2"/><path d="M2 10h20"/><path d="M6 15h.01M10 15h4"/>
-          </svg>
-        </span>
-        <span class="app-main-tab-text">
-          <span class="app-main-tab-title">B2C · монетизация</span>
-          <span class="app-main-tab-sub">тарифы patient.html, оплата и тексты для пациента</span>
-        </span>
-      </button>
-      <button type="button" role="tab" id="tab-methodist-onco" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-onco" hidden>
-        <span class="app-main-tab-visual" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 12h4l2 6 4-12 2 6h6" />
-          </svg>
-        </span>
-        <span class="app-main-tab-text">
-          <span class="app-main-tab-title">Онко-риск</span>
-          <span class="app-main-tab-sub">обзор, настройки B2B/B2C, демо-инструмент</span>
-        </span>
+        <span class="app-main-tab-text"><span class="app-main-tab-title">Поиск</span></span>
       </button>
       <button type="button" role="tab" id="tab-methodist-mis-kz" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-mis-kz" hidden>
-        <span class="app-main-tab-visual" aria-hidden="true">
-          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M3 3v18h18" /><path d="M7 14l4-4 4 3 5-6" />
-          </svg>
-        </span>
-        <span class="app-main-tab-text">
-          <span class="app-main-tab-title">МО Аналитика</span>
-          <span class="app-main-tab-sub">массовый анализ записей из БД МИС</span>
-        </span>
+        <span class="app-main-tab-text"><span class="app-main-tab-title">Учётки</span></span>
       </button>
+      <button type="button" role="tab" id="tab-methodist-b2c" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-b2c" hidden>
+        <span class="app-main-tab-text"><span class="app-main-tab-title">B2C</span></span>
+      </button>
+      <button type="button" role="tab" id="tab-methodist-onco" class="app-main-tab" aria-selected="false" aria-controls="panel-methodist-onco" hidden>
+        <span class="app-main-tab-text"><span class="app-main-tab-title">Онко</span></span>
+      </button>
+      <a class="methodist-nav-link methodist-nav-link--accent" href="/methodist/mo" id="methodist-nav-mo-analytics">МО Аналитика</a>
     </div>
 
     <div class="demo-cases-bar" id="demo-cases-bar" hidden>
@@ -14195,7 +14161,7 @@
             <h2>Монетизация B2C (patient.html)</h2>
             <p>
               Включите тарифы и оплату для пациентов, выберите доступные уровни проверки и тексты подсказок.
-              Изменения применяются сразу на <a href="patient.html" target="_blank" rel="noopener noreferrer">patient.html</a>.
+              Изменения применяются сразу на <a href="/patient.html" target="_blank" rel="noopener noreferrer">patient.html</a>.
             </p>
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
@@ -14231,7 +14197,7 @@
         </div>
         <div class="methodist-b2c-actions">
           <button type="button" class="btn-primary" id="methodist-b2c-save">Сохранить настройки</button>
-          <a href="patient.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть patient.html</a>
+          <a href="/patient.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть patient.html</a>
           <span id="methodist-b2c-status" class="methodist-b2c-status"></span>
         </div>
         <p class="methodist-tier-hint" id="b2c-config-path" style="margin-top:0.5rem"></p>
@@ -14272,7 +14238,7 @@
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-onco-refresh">Обновить</button>
-            <a href="onco-risk.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open methodist-onco-hero-link">Открыть в новой вкладке</a>
+            <a href="/onco-risk.html" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open methodist-onco-hero-link">Открыть в новой вкладке</a>
           </div>
         </div>
 
@@ -14338,11 +14304,11 @@
               </li>
               <li>
                 <span class="methodist-onco-integr-tag methodist-onco-integr-tag--b2c">B2C</span>
-                <span>Блок <code>onco_questions</code> на <a href="patient.html" target="_blank" rel="noopener noreferrer">patient.html</a> (флаг <code>PATIENT_ONCO_QUESTIONS_ENABLED</code>). Только вопросы врачу, без чисел.</span>
+                <span>Блок <code>onco_questions</code> на <a href="/patient.html" target="_blank" rel="noopener noreferrer">patient.html</a> (флаг <code>PATIENT_ONCO_QUESTIONS_ENABLED</code>). Только вопросы врачу, без чисел.</span>
               </li>
               <li>
                 <span class="methodist-onco-integr-tag">Demo</span>
-                <span><a href="onco-risk.html" target="_blank" rel="noopener noreferrer">onco-risk.html</a> - полная панель B2B + B2C для методиста и тестирования кейсов.</span>
+                <span><a href="/onco-risk.html" target="_blank" rel="noopener noreferrer">onco-risk.html</a> - полная панель B2B + B2C для методиста и тестирования кейсов.</span>
               </li>
               <li>
                 <span class="methodist-onco-integr-tag">KB</span>
@@ -14409,8 +14375,8 @@
       <div id="methodist-mis-kz-root" class="methodist-mis-kz-panel consult-hide-print">
         <div class="methodist-ml-dashboard__hero">
           <div>
-            <h2>МО Аналитика - учётные записи</h2>
-            <p>Логин и пароль для входа в МО Аналитику: доступ только к отчётам или полный BI, персональный период отчётов.</p>
+            <h2>Учётные записи МО Аналитики</h2>
+            <p>Логин и пароль для входа в <a href="/methodist/mo">МО Аналитику</a>: доступ к отчётам или полный BI, персональный период отчётов.</p>
             <p class="methodist-tier-hint" id="methodist-mis-kz-meta"></p>
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
@@ -14515,7 +14481,7 @@
             <span class="site-footer-card__sub">Корпус, качество подбора и метрики КЗ</span>
           </span>
         </button>
-        <a href="patient.html" class="site-footer-card site-footer-card--patient">
+        <a href="/patient.html" class="site-footer-card site-footer-card--patient">
           <span class="site-footer-card__icon" aria-hidden="true">
             <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 21s-6-4.35-6-10a6 6 0 1112 0c0 5.65-6 10-6 10z"/><circle cx="12" cy="11" r="2.5"/></svg>
           </span>
@@ -22773,19 +22739,29 @@
       if (active) tabSearchStats.removeAttribute("hidden");
       else tabSearchStats.setAttribute("hidden", "");
     }
-    if (tabB2c) {
-      if (active) tabB2c.removeAttribute("hidden");
-      else tabB2c.setAttribute("hidden", "");
-    }
+    // B2C / онко - не в primary nav кабинета (панели остаются для редких deep-link)
+    if (tabB2c) tabB2c.setAttribute("hidden", "");
     var tabOnco = document.getElementById("tab-methodist-onco");
-    if (tabOnco) {
-      if (active) tabOnco.removeAttribute("hidden");
-      else tabOnco.setAttribute("hidden", "");
-    }
+    if (tabOnco) tabOnco.setAttribute("hidden", "");
     var tabMisKz = document.getElementById("tab-methodist-mis-kz");
     if (tabMisKz) {
       if (active) tabMisKz.removeAttribute("hidden");
       else tabMisKz.setAttribute("hidden", "");
+    }
+    var tabConsultMethodist = document.getElementById("tab-methodist-consult");
+    if (tabConsultMethodist) {
+      if (active) tabConsultMethodist.removeAttribute("hidden");
+      else tabConsultMethodist.setAttribute("hidden", "");
+    }
+    var brandLink = document.getElementById("app-chrome-brand");
+    if (brandLink) {
+      if (active) {
+        brandLink.setAttribute("href", "/methodist/overview");
+        brandLink.setAttribute("aria-label", "Protocol - кабинет методиста");
+      } else {
+        brandLink.setAttribute("href", "/doctor/search");
+        brandLink.setAttribute("aria-label", "Protocol - найти клинический протокол");
+      }
     }
     var methodistTabsRow = document.getElementById("methodist-main-tabs");
     if (methodistTabsRow) {
@@ -22828,7 +22804,11 @@
       return;
     }
     if (path === "/methodist/cases" && window.__methodistMode) {
-      switchMainAppTab(MAIN_TAB_QUEUE);
+      if ((window.location.hash || "") === "#consult-review") {
+        switchMainAppTab(MAIN_TAB_CONSULT);
+      } else {
+        switchMainAppTab(MAIN_TAB_QUEUE);
+      }
       return;
     }
     if (path === "/methodist/search-quality" && window.__methodistMode) {
@@ -30040,7 +30020,7 @@
       html:
         "<p>Ниже - рабочий интерфейс медицинского центра <strong>Кравира</strong>. Используйте демо-сценарии или загрузите обезличенное консультативное заключение.</p>" +
         "<p>Оценка не является МЭЭ и не заменяет решение врача.</p>" +
-        "<p><a href=\"docs/mvp-presentation.html\" target=\"_blank\" rel=\"noopener\">Полная презентация MVP</a> - диаграммы, витрина для МИС и Минздрава (новая вкладка).</p>",
+        "<p><a href=\"/docs/mvp-presentation.html\" target=\"_blank\" rel=\"noopener\">Полная презентация MVP</a> - диаграммы, витрина для МИС и Минздрава (новая вкладка).</p>",
     },
   ];
 
@@ -30858,6 +30838,7 @@
     var tabB2c = document.getElementById("tab-methodist-b2c");
     var tabOnco = document.getElementById("tab-methodist-onco");
     var tabMisKz = document.getElementById("tab-methodist-mis-kz");
+    var tabConsultMethodist = document.getElementById("tab-methodist-consult");
     var panelSearch = document.getElementById("panel-main-search");
     var panelConsult = document.getElementById("panel-consult-review");
     var panelAnalytics = document.getElementById("panel-analytics-stats");
@@ -30881,6 +30862,10 @@
     tabConsult.setAttribute("aria-selected", isConsult ? "true" : "false");
     tabSearch.tabIndex = isSearch ? 0 : -1;
     tabConsult.tabIndex = isConsult ? 0 : -1;
+    if (tabConsultMethodist) {
+      tabConsultMethodist.setAttribute("aria-selected", isConsult ? "true" : "false");
+      tabConsultMethodist.tabIndex = isConsult ? 0 : -1;
+    }
     if (tabAnalytics) {
       tabAnalytics.setAttribute("aria-selected", isAnalytics ? "true" : "false");
       tabAnalytics.classList.toggle("is-active", isAnalytics);
@@ -30968,7 +30953,13 @@
         history.replaceState(null, "", window.location.pathname + window.location.search + "#analytics-stats");
         if (typeof loadAnalyticsTab === "function") loadAnalyticsTab();
       } else if (isConsult) {
-        history.replaceState(null, "", "/doctor/review" + window.location.search);
+        if (window.__methodistMode) {
+          history.replaceState(null, "", "/methodist/cases" + window.location.search + "#consult-review");
+        } else {
+          history.replaceState(null, "", "/doctor/review" + window.location.search);
+        }
+      } else if (window.__methodistMode) {
+        history.replaceState(null, "", "/methodist/overview" + window.location.search);
       } else {
         history.replaceState(null, "", "/doctor/search" + window.location.search);
       }
@@ -32895,6 +32886,13 @@
       tml.setAttribute("data-wired", "1");
       tml.addEventListener("click", function () {
         switchMainAppTab(MAIN_TAB_ML_STATS);
+      });
+    }
+    var tmc = document.getElementById("tab-methodist-consult");
+    if (tmc && !tmc.getAttribute("data-wired")) {
+      tmc.setAttribute("data-wired", "1");
+      tmc.addEventListener("click", function () {
+        switchMainAppTab(MAIN_TAB_CONSULT);
       });
     }
     if (tq && !tq.getAttribute("data-wired")) {

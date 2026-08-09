@@ -151,6 +151,7 @@ def test_static_assets_have_stable_routes_content_types_and_no_cache() -> None:
     expected = {
         "/mo-tokens.css": "text/css",
         "/mo-ui.css": "text/css",
+        "/methodist-cabinet.css": "text/css",
         "/mo-protocol-viewer.css": "text/css",
         "/mo-api.js": "application/javascript",
         "/mo-charts.js": "application/javascript",
