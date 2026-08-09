@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-09-mo-calibration-agent-proxy-v1.md](2026-08-09-mo-calibration-agent-proxy-v1.md) | C6A/C7A: AI-proxy выполнен; Dx 25 scored/2 bad, plan 21/8; formal C6 не закрыт | completed |
 | [2026-08-09-mo-score-ssot-llm-recompute-v3.md](2026-08-09-mo-score-ssot-llm-recompute-v3.md) | C0-C5 выполнены; C6 secure UI готов для 18 cases / 22 labels, human labels 0/22 | active |
 | [2026-08-09-mo-score-ssot-llm-recompute-v2.md](2026-08-09-mo-score-ssot-llm-recompute-v2.md) | Калибровка 30 МО: движок vs blind LLM vs методист; выбор score/ensemble; затем SSOT №55 и recompute | archived (преемник: mo-score-ssot-llm-recompute-v3) |
 | [2026-08-09-mo-score-ssot-llm-recompute-v1.md](2026-08-09-mo-score-ssot-llm-recompute-v1.md) | Один №55 везде; честные findings; МКБ-канон; полный recompute + LLM grey-zone | archived (преемник: mo-score-ssot-llm-recompute-v2) |
