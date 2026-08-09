@@ -8,7 +8,8 @@
 - Branch: `cursor/mo-calibration-agent-proxy-c6a-pc1`
 - Worktree: `/private/tmp/protocol-task-mo-calibration-agent-proxy-c6a-pc1`
 - Base: `1e6a3773`
-- HEAD / PR: будут заполнены после commit/push.
+- Published branch head at PR creation: `63f0f2cd`
+- PR: [#112](https://github.com/akuazuk/protocol/pull/112)
 - BUILD_VERSION: `2026-08-09-154205Z-mo-calibration-proxy`
 
 ## Что сделано
