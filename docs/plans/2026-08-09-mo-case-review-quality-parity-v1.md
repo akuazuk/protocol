@@ -255,7 +255,9 @@ Shadow → primary после калибровки на ≥20 кейсах (ка
 
 - [x] Зафиксировать эталон по `mo_1_test` и разрыв с продуктом  
 - [x] Разложить по слоям L1-L6 и фазам A-F  
-- [ ] R0: merge/deploy #82  
+- [x] R0 code: merge #82 (`f0e3c724`, 2026-08-09)  
+- [ ] R0 deploy: GCE + smoke `mo_1_test` / J45 pediatric  
+- [ ] R0 warehouse: recompute дней с false weak МКБ (хотя бы 2026-08-06)  
 - [ ] R1: `mo_case_review_brief` + UI «Итог разбора»  
 - [ ] R2: concordance rules complaint↔exam↔dx  
 - [ ] R3: suggest quality для эталона БА  
@@ -264,12 +266,67 @@ Shadow → primary после калибровки на ≥20 кейсах (ка
 
 ---
 
-## 11. Одна безопасная следующая команда
+## 11. Повторное ревью пробелов (2026-08-09, после эталона `mo_1_test`)
 
-После merge #82 - отдельная task-ветка от свежего `origin/main`:
+Сверка экспертного разбора с планом A-F. Что **уже покрыто** / **не хватало** / **добавить**.
+
+### 11.1 Учтено в плане или в #82
+
+| Элемент экспертного разбора | Где |
+|--|--|
+| Зоны + band + критерий risk_factors 0.5 | L1 + #82 markers семейная АГ |
+| Таблица критериев | #82 UI + фаза A brief |
+| Ложный «слабо МКБ» на мультиDx | #82 name-match phrases |
+| КП детская БА №38, title без OCR-мусора | #82 title boilerplate + фаза D ranking |
+| Жалоба↔осмотр (кашель нет) | фаза C `B_complaint_exam_mismatch` |
+| Dx? без опоры / стопы / ногти | фаза C `B_dx_not_in_exam`, `B_tentative_dx_weak_support` |
+| Хроническая БА без текущей терапии | фаза C `B_chronic_dx_therapy_absent` |
+| «Что сказать врачу» | фаза B templates |
+| План н/д без КП | L4 правило + UI-target |
+
+### 11.2 Пробелы - добавить в объём (не было явно)
+
+| Пробел | Почему важно на `mo_1_test` | Куда в плане |
+|--|--|--|
+| **Три оси диагноза не смешивать в UI** | Пользователь видел «слабо МКБ» и думал, что зона Диагноз плохая; при этом zone2a=100% | R1 brief: отдельные строки «Методика Dx» / «МКБ-справочник» / «Клиническая опора» |
+| **Почему band=слабо при высоком %** | 91.7% + has_half → weakly; методист не понимает | R1: в зоне why явно «есть критерий 0.5: …» (уже частично zone-card-why) |
+| **Опечатки / мусор OCR в тексте** | «Перенсененные», `ped at scab abs`, `Е 55.0` | Новое правило фазы C: `A_text_noise` (P3) - кириллица в коде, latin scraps, грубые опечатки шапки |
+| **Лечение до подтверждения tentative Dx** | витамин D при E55.0? | Фаза C: `B_treatment_before_confirmed_dx` |
+| **Вторичный КП при мультиDx** | ринит + БА; эталон упоминал оба | Фаза D: топ-1 основной + optional «смежный КП» (ринит д-нас) без штрафа плана |
+| **Жалоба на вес/питание без маршрута** | набор веса в жалобах, в плане нет | Фаза C: `B_complaint_not_addressed_in_plan` (общий, не только вес) |
+| **Нейро/офтальмо при головной боли** | направление есть - ok; но осмотр тонкий | Покрыто tentative + exam mismatch; не отдельный код |
+| **Evidence-цитаты в критериях** | экспертный разбор опирался на цитаты | R1: `criteria[].evidence` / snippet в brief (engine уже умеет evidence) |
+| **Prefill решения методиста** | textarea пустая; экспертный текст = doctor_feedback | R1: кнопка «подставить итог разбора» в summary |
+| **Warehouse recompute после фикса МКБ** | старые chips `слабо МКБ` останутся до re-score | R0 deploy checklist |
+| **zone2a только «наличие Dx»** | 100% при слабой клинической опоре tentative | R2: shadow soft-cap / отдельный sub-score «опора Dx», не ломая sheet 0/0.5/1 без решения владельца |
+| **Audience/age в suggest** | GCE icd_first тянул rehab | Фаза D: pediatric + specialty tie-break обязателен |
+| **LLM action-judge vs narrative** | на эталоне judge мог не быть | Фаза E: не дублировать KPI judge; narrative только gaps+врачу |
+| **Attention queue** | false ICD weak не должен создавать очередь | Regression: name_match P3 не поднимает attention_primary |
+
+### 11.3 Эталонный чеклист приёмки (любое МО)
+
+Разбор считается «как экспертный», если методист без чтения всего PDF отвечает:
+
+1. Какая зона хромает и **какой критерий** (не только цвет).  
+2. Есть ли **разрыв клиники** (жалоба/осмотр/Dx/план) - да/нет + 1 фраза.  
+3. МКБ: ок / нет / слабо - и это **не** путается с зоной Диагноз.  
+4. КП: название читаемое; если нет - план н/д объяснён.  
+5. 3-6 пунктов врачу готовы к копированию в решение.  
+
+Smoke на `mo_1_test` после R0+R1+R2: пункты 1-5 все да.
+
+---
+
+## 12. Одна безопасная следующая команда
 
 ```bash
+# R0 deploy после merge #82
+bash deploy/gcp-app/deploy_to_gce.sh
+# затем recompute дня эталона при необходимости:
+# bash deploy/gcp-llm/run_on_gce.sh 2026-08-06 --smoke   # только если нужен LLM;
+# иначе scripts/recompute_mo_days.py на GCE для name_match/zones
+
+# R1 код
 scripts/ops/git_task_start.sh mo-case-review-brief --pc=pc1 \
   --branch=cursor/mo-case-review-brief-pc1
-# реализовать clinical_knowledge/mo_case_review_brief.py + поле review_brief в case detail
 ```
