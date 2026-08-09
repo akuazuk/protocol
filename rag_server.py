@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-065903Z-auth-accounts-admin"
+BUILD_VERSION = "2026-08-09-071801Z-mo-reg55-ci"
 
 
 def _app_version() -> str:
@@ -11647,6 +11647,9 @@ def api_methodist_mo_cases(
     attention_only: bool = Query(False),
     kp_status: str = Query("", max_length=32),
     history_tier: str = Query("", max_length=64),
+    reg55_point: str = Query("", max_length=500),
+    reg55_band: str = Query("", max_length=200),
+    reg55_pack: str = Query("", max_length=500),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
     sort_by: str = Query("date"),
@@ -11934,9 +11937,9 @@ def api_methodist_mo_case_detail(
         except Exception:
             result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
         try:
-            from clinical_knowledge.reg55_criteria import attach_reg55_to_detail
+            from clinical_knowledge.mo_reg55_section import attach_reg55_section_to_detail
 
-            result = attach_reg55_to_detail(
+            result = attach_reg55_section_to_detail(
                 result,
                 clinical=clinical if isinstance(clinical, dict) else {},
                 block_scores=result.get("block_scores")
@@ -11947,6 +11950,7 @@ def api_methodist_mo_case_detail(
             if isinstance(result, dict) and not result.get("reg55"):
                 axes = result.get("axes") if isinstance(result.get("axes"), dict) else {}
                 result["reg55"] = {
+                    "engine": "mo_reg55_section",
                     "regulatory_compliance_pct": axes.get("regulatory"),
                     "criteria": [],
                     "failed": [],
@@ -12407,12 +12411,32 @@ def api_methodist_mo_rubric_summary(
     date_to: str = Query("", max_length=10),
     limit: int = Query(120, ge=10, le=300),
 ) -> dict:
-    """Shadow-сводка рубрики МЗ по защищённым срезам периода."""
+    """Shadow-сводка рубрики МЗ по защищённым срезам периода (legacy)."""
     _require_methodist_auth(request)
     from clinical_knowledge.mo_rubric_mz import build_rubric_summary_from_sources
 
     response.headers["Cache-Control"] = "private, no-store"
     return build_rubric_summary_from_sources(
+        date_from=date_from,
+        date_to=date_to,
+        limit=limit,
+    )
+
+
+@app.get("/api/methodist/mo/reg55-section-summary")
+def api_methodist_mo_reg55_section_summary(
+    request: "Request",
+    response: "Response",
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    limit: int = Query(120, ge=10, le=300),
+) -> dict:
+    """Сводка №55 section-pack (прил.1 разд. V) по защищённым срезам периода."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_reg55_section import build_reg55_section_summary_from_sources
+
+    response.headers["Cache-Control"] = "private, no-store"
+    return build_reg55_section_summary_from_sources(
         date_from=date_from,
         date_to=date_to,
         limit=limit,

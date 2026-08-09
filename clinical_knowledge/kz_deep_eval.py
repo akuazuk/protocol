@@ -562,35 +562,27 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
         "safety": c_score,
         "regulatory": None,
     }
-    # ось D (№55) - опционально, если case совместим
+    # ось D (№55) - section-pack прил.1 разд. V (0/0.5/1, n/a вне знаменателя)
     reg55 = None
     try:
-        from .reg55_criteria import evaluate_reg55
+        from .mo_reg55_section import evaluate_reg55_section, to_reg55_detail_payload
 
-        reg55 = evaluate_reg55(case)
+        section = evaluate_reg55_section(case)
+        reg55 = to_reg55_detail_payload(section)
         axes["regulatory"] = reg55.get("regulatory_compliance_pct")
-        if reg55.get("has_p0_defect"):
-            from .reg55_criteria import format_failed_criteria_ru
-
+        measures = list(reg55.get("measures") or [])
+        if measures:
+            detail = "; ".join(
+                f"{m.get('point')}: {m.get('title')} ({m.get('score')})"
+                for m in measures[:6]
+            )
+            band = str(reg55.get("reg55_band") or "")
+            sev = "P1" if band == "noncompliant" else "P2"
             findings.append(_finding(
-                "D_reg55_p0", "regulatory", "P0", False,
-                "Критический дефект по постановлению МЗ № 55",
-                detail=format_failed_criteria_ru(reg55.get("critical_failed") or []),
-                source_ref="Пост. №55",
-            ))
-        non_p0 = [
-            item for item in (reg55.get("failed") or [])
-            if item.get("severity") != "P0"
-        ]
-        if non_p0:
-            from .reg55_criteria import format_failed_criteria_ru
-
-            worst = "P1" if any(i.get("severity") == "P1" for i in non_p0) else "P2"
-            findings.append(_finding(
-                "D_reg55_gap", "regulatory", worst, False,
-                "Невыполненные критерии качества по постановлению МЗ № 55",
-                detail=format_failed_criteria_ru(non_p0),
-                source_ref="Пост. №55",
+                "D_reg55_gap", "regulatory", sev, False,
+                "Недостатки по пунктам постановления МЗ № 55 (разд. V)",
+                detail=detail,
+                source_ref="Пост. №55 · разд. V",
             ))
     except Exception:  # noqa: BLE001
         pass

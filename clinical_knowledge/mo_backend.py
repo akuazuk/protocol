@@ -544,7 +544,24 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
         marks = ",".join("?" for _ in months)
         where.append(f"substr(c.visit_date, 1, 7) IN ({marks})")
         values.extend(months)
-    sql = """
+    has_reg55 = _warehouse_has_column(str(_db_path()), "fact_mo_case", "reg55_section_pct")
+    if has_reg55:
+        reg55_select = """
+               COALESCE(c.reg55_section_pct, ax_reg.score) AS reg55_pct,
+               c.reg55_section_pct AS reg55_section_pct,
+               c.reg55_band AS reg55_band,
+               c.reg55_pack AS reg55_pack,
+               c.reg55_applicable_n AS reg55_applicable_n,
+               COALESCE(c.reg55_weak_points_json, '[]') AS reg55_weak_points_json"""
+    else:
+        reg55_select = """
+               ax_reg.score AS reg55_pct,
+               ax_reg.score AS reg55_section_pct,
+               NULL AS reg55_band,
+               NULL AS reg55_pack,
+               NULL AS reg55_applicable_n,
+               '[]' AS reg55_weak_points_json"""
+    sql = f"""
         SELECT c.*, d.doctor_fio,
                COALESCE(d.specialty, c.specialty) AS doctor_specialty,
                COALESCE(d.filial, c.filial) AS doctor_filial,
@@ -552,7 +569,7 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                COALESCE(f.p0, 0) AS p0, COALESCE(f.p1, 0) AS p1,
                COALESCE(f.p2, 0) AS p2, COALESCE(f.p3, 0) AS p3,
                COALESCE(f.finding_codes, '') AS finding_codes,
-               ax_reg.score AS reg55_pct
+               {reg55_select}
         FROM fact_mo_case c
         LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
         LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
@@ -642,6 +659,25 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                     if isinstance(item.get("reg55_pct"), (int, float))
                     else None
                 ),
+                "reg55_section_pct": (
+                    float(item["reg55_section_pct"])
+                    if isinstance(item.get("reg55_section_pct"), (int, float))
+                    else (
+                        float(item["reg55_pct"])
+                        if isinstance(item.get("reg55_pct"), (int, float))
+                        else None
+                    )
+                ),
+                "reg55_band": str(item.get("reg55_band") or "") or None,
+                "reg55_pack": str(item.get("reg55_pack") or "") or None,
+                "reg55_applicable_n": (
+                    int(item["reg55_applicable_n"])
+                    if isinstance(item.get("reg55_applicable_n"), (int, float))
+                    else None
+                ),
+                "reg55_weak_points": _parse_reg55_weak_points(
+                    item.get("reg55_weak_points_json")
+                ),
                 "score_reason": (
                     None
                     if isinstance(score, (int, float))
@@ -701,6 +737,21 @@ def _needs_review(rec: dict[str, Any]) -> bool:
     )
 
 
+def _parse_reg55_weak_points(raw: Any) -> list[str]:
+    if isinstance(raw, list):
+        return [str(x).strip() for x in raw if str(x).strip()]
+    text = str(raw or "").strip()
+    if not text:
+        return []
+    try:
+        data = json.loads(text)
+        if isinstance(data, list):
+            return [str(x).strip() for x in data if str(x).strip()]
+    except Exception:  # noqa: BLE001
+        pass
+    return [part for part in re.split(r"[|,]", text) if part.strip()]
+
+
 def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -> list[dict[str, Any]]:
     single = {
         key: params.get(key)
@@ -725,6 +776,9 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
     }
     selected = {field: set(_values(params.get(key))) for key, field in _MULTI_FILTERS.items()}
     finding_codes = set(_values(params.get("finding_codes")))
+    reg55_points = set(_values(params.get("reg55_point")))
+    reg55_bands = {v.lower() for v in _values(params.get("reg55_band"))}
+    reg55_packs = set(_values(params.get("reg55_pack")))
     excludes = {
         field: set(_values(params.get(f"exclude_{key}"))) for key, field in _MULTI_FILTERS.items()
     }
@@ -785,6 +839,22 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
         history_tier = str(params.get("history_tier") or "").strip()
         if history_tier and str(rec.get("history_tier") or "") != history_tier:
             continue
+        if reg55_bands:
+            rec_band = str(rec.get("reg55_band") or "unscored").lower()
+            if rec_band not in reg55_bands:
+                continue
+        if reg55_packs and str(rec.get("reg55_pack") or "") not in reg55_packs:
+            continue
+        if reg55_points:
+            weak = {
+                str(p)
+                for p in (rec.get("reg55_weak_points") or [])
+                if str(p)
+            }
+            if not weak:
+                weak = set(_parse_reg55_weak_points(rec.get("reg55_weak_points_json")))
+            if not (reg55_points & weak):
+                continue
         out.append(rec)
     return out
 
@@ -933,7 +1003,8 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     sort_map = {
         "date": "date",
         "overall": "overall_pct",
-        "reg55": "reg55_pct",
+        "reg55": "reg55_section_pct",
+        "reg55_band": "reg55_band",
         "priority": "p0",
         "updated_at": "updated_at",
         "doctor": "doctor_fio",
@@ -2473,10 +2544,30 @@ def build_month_report(params: dict[str, Any]) -> dict[str, Any]:
             "in_work": in_work,
             "closed": closed,
         },
-        "reg55": _unavailable(
-            "В текущей витрине нет отдельной проверенной метрики соответствия постановлению №55"
-        ),
+        "reg55": _month_reg55_section(bounded_params),
     }
+
+
+def _month_reg55_section(params: dict[str, Any]) -> dict[str, Any]:
+    """Сводка №55 section-pack для карточки Обзора (sample secure_cases)."""
+    try:
+        from clinical_knowledge.mo_reg55_section import build_reg55_section_summary_from_sources
+
+        date_from = str(params.get("date_from") or "")[:10]
+        date_to = str(params.get("date_to") or "")[:10]
+        summary = build_reg55_section_summary_from_sources(
+            date_from=date_from,
+            date_to=date_to,
+            limit=120,
+        )
+        if not summary.get("available"):
+            return _unavailable(
+                summary.get("reason")
+                or "Нет выборки clinical_visit для оценки №55 за период"
+            )
+        return summary
+    except Exception as exc:  # noqa: BLE001
+        return _unavailable(f"Сводка №55 недоступна: {exc}")
 
 
 def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:

@@ -1459,6 +1459,11 @@ def initialize_warehouse(path: Path) -> None:
                 "avg_clinical_concordance": "REAL",
                 "avg_safety": "REAL",
                 "avg_regulatory": "REAL",
+                "avg_reg55_section_pct": "REAL",
+                "n_band_compliant_min": "INTEGER",
+                "n_band_compliant_measures": "INTEGER",
+                "n_band_noncompliant": "INTEGER",
+                "n_reg55_unscored": "INTEGER",
                 "needs_attention": "INTEGER",
                 "critical": "INTEGER",
             },
@@ -1493,6 +1498,11 @@ def initialize_warehouse(path: Path) -> None:
                 "rubric_pct": "REAL",
                 "layer_engine": "TEXT",
                 "layer_updated_at": "TEXT",
+                "reg55_section_pct": "REAL",
+                "reg55_band": "TEXT",
+                "reg55_pack": "TEXT",
+                "reg55_applicable_n": "INTEGER",
+                "reg55_weak_points_json": "TEXT",
             },
         )
         db.execute(
@@ -1502,6 +1512,14 @@ def initialize_warehouse(path: Path) -> None:
         db.execute(
             "CREATE INDEX IF NOT EXISTS idx_case_zone_bands "
             "ON fact_mo_case(zone1_band, zone2a_band, zone2b_band, visit_date)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_reg55_band "
+            "ON fact_mo_case(reg55_band, visit_date)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_reg55_pack "
+            "ON fact_mo_case(reg55_pack, visit_date)"
         )
         db.execute(
             """CREATE TABLE IF NOT EXISTS fact_mo_patient_history_cache (
@@ -1743,6 +1761,13 @@ def upsert_warehouse(
     eligible_critical_ids: set[str] = set()
     eligible_attention_ids: set[str] = set()
     eligible_axis_scores: dict[str, list[float]] = defaultdict(list)
+    eligible_reg55_pcts: list[float] = []
+    reg55_band_day = {
+        "compliant_min": 0,
+        "compliant_measures": 0,
+        "noncompliant": 0,
+        "unscored": 0,
+    }
     with sqlite3.connect(path) as db:
         seen_ids: list[str] = []
         for raw in raw_rows:
@@ -1815,6 +1840,11 @@ def upsert_warehouse(
                 "rubric_pct": None,
                 "layer_engine": None,
                 "layer_updated_at": None,
+                "reg55_section_pct": None,
+                "reg55_band": "unscored",
+                "reg55_pack": None,
+                "reg55_applicable_n": None,
+                "reg55_weak_points_json": "[]",
             }
             if not eligible_document:
                 # Не клинический приём: без МКБ/истории/баллов (в таблице не показываем).
@@ -1947,6 +1977,30 @@ def upsert_warehouse(
                         zone_cols.update(warehouse_zone_columns(zones))
                 except Exception:  # noqa: BLE001
                     pass
+                try:
+                    from clinical_knowledge.mo_reg55_section import (
+                        evaluate_reg55_section,
+                        warehouse_reg55_columns,
+                    )
+
+                    reg55_case = dict(raw)
+                    if isinstance(case, Mapping):
+                        reg55_case.update({k: v for k, v in case.items() if v not in (None, "")})
+                    reg55_case["doctor_specialization"] = specialty or reg55_case.get(
+                        "doctor_specialization"
+                    ) or ""
+                    reg55_case["document_kind"] = "clinical_visit"
+                    section = evaluate_reg55_section(reg55_case)
+                    zone_cols.update(warehouse_reg55_columns(section))
+                    pct55 = zone_cols.get("reg55_section_pct")
+                    if isinstance(pct55, (int, float)):
+                        eligible_reg55_pcts.append(float(pct55))
+                    band55 = str(zone_cols.get("reg55_band") or "unscored")
+                    if band55 not in reg55_band_day:
+                        band55 = "unscored"
+                    reg55_band_day[band55] += 1
+                except Exception:  # noqa: BLE001
+                    reg55_band_day["unscored"] += 1
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             db.execute(
                 """INSERT INTO fact_mo_case
@@ -1961,9 +2015,11 @@ def upsert_warehouse(
                     zone1_band, zone2a_band, zone2b_band, zone2b_kp_status,
                     attention_primary, attention_reason_ru,
                     rubric_json, rubric_pct, layer_engine, layer_updated_at,
+                    reg55_section_pct, reg55_band, reg55_pack, reg55_applicable_n,
+                    reg55_weak_points_json,
                     content_hash, updated_at)
                    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?,
-                           ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                           ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                    ON CONFLICT(mis_id) DO UPDATE SET
                    visit_id=excluded.visit_id, visit_date=excluded.visit_date,
                    document_kind=excluded.document_kind, overall_pct=excluded.overall_pct,
@@ -1991,6 +2047,11 @@ def upsert_warehouse(
                    rubric_json=excluded.rubric_json, rubric_pct=excluded.rubric_pct,
                    layer_engine=excluded.layer_engine,
                    layer_updated_at=excluded.layer_updated_at,
+                   reg55_section_pct=excluded.reg55_section_pct,
+                   reg55_band=excluded.reg55_band,
+                   reg55_pack=excluded.reg55_pack,
+                   reg55_applicable_n=excluded.reg55_applicable_n,
+                   reg55_weak_points_json=excluded.reg55_weak_points_json,
                    content_hash=excluded.content_hash, updated_at=excluded.updated_at""",
                 (
                     mis_id,
@@ -2028,6 +2089,11 @@ def upsert_warehouse(
                     zone_cols.get("rubric_pct"),
                     zone_cols.get("layer_engine"),
                     zone_cols.get("layer_updated_at"),
+                    zone_cols.get("reg55_section_pct"),
+                    zone_cols.get("reg55_band"),
+                    zone_cols.get("reg55_pack"),
+                    zone_cols.get("reg55_applicable_n"),
+                    zone_cols.get("reg55_weak_points_json") or "[]",
                     hashlib.sha256(payload.encode("utf-8")).hexdigest(),
                     now,
                 ),
@@ -2429,12 +2495,17 @@ def upsert_warehouse(
             value = daily_axes.get(key)
             return _safe_number(value if value is not None else axes.get(key))
 
+        avg_reg55_section = (
+            round(statistics.fmean(eligible_reg55_pcts), 1) if eligible_reg55_pcts else None
+        )
         db.execute(
             """INSERT INTO fact_mo_daily (
                  visit_date, source_rows, scored_rows, avg_score, revision, quality_status, updated_at,
                  eligible_rows, partial, coverage_pct, avg_documentation, avg_clinical_concordance,
-                 avg_safety, avg_regulatory, needs_attention, critical
-               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+                 avg_safety, avg_regulatory, avg_reg55_section_pct,
+                 n_band_compliant_min, n_band_compliant_measures, n_band_noncompliant,
+                 n_reg55_unscored, needs_attention, critical
+               ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
                ON CONFLICT(visit_date) DO UPDATE SET
                  source_rows=excluded.source_rows, scored_rows=excluded.scored_rows,
                  avg_score=excluded.avg_score, revision=excluded.revision,
@@ -2443,6 +2514,11 @@ def upsert_warehouse(
                  coverage_pct=excluded.coverage_pct, avg_documentation=excluded.avg_documentation,
                  avg_clinical_concordance=excluded.avg_clinical_concordance,
                  avg_safety=excluded.avg_safety, avg_regulatory=excluded.avg_regulatory,
+                 avg_reg55_section_pct=excluded.avg_reg55_section_pct,
+                 n_band_compliant_min=excluded.n_band_compliant_min,
+                 n_band_compliant_measures=excluded.n_band_compliant_measures,
+                 n_band_noncompliant=excluded.n_band_noncompliant,
+                 n_reg55_unscored=excluded.n_reg55_unscored,
                  needs_attention=excluded.needs_attention, critical=excluded.critical""",
             (
                 day_key,
@@ -2459,6 +2535,11 @@ def upsert_warehouse(
                 resolved_axis("clinical_concordance"),
                 resolved_axis("safety"),
                 resolved_axis("regulatory"),
+                avg_reg55_section,
+                reg55_band_day["compliant_min"],
+                reg55_band_day["compliant_measures"],
+                reg55_band_day["noncompliant"],
+                reg55_band_day["unscored"],
                 needs_attention,
                 critical,
             ),
