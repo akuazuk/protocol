@@ -1117,7 +1117,34 @@ kbd {
   border-bottom: 1px solid var(--border, #ddd); padding: 6px 8px; text-align: left; vertical-align: top;
 }
 .status.muted { opacity: 0.75; }
+.review-brief-block {
+  margin: 12px 0 16px;
+  padding: 14px 16px;
+  border: 1px solid var(--line, #d0d7de);
+  border-radius: 10px;
+  background: color-mix(in srgb, var(--accent, #1565c0) 5%, var(--surface-solid, #fff));
+}
+.review-brief-zones {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin: 10px 0 14px;
+}
+.review-brief-zones > div {
+  padding: 8px 10px;
+  border: 1px solid var(--line, #d0d7de);
+  border-radius: 8px;
+  background: var(--surface-solid, #fff);
+}
+.review-brief-axes { margin: 0 0 10px; padding-left: 1.2em; }
+.review-brief-axes li { margin: 4px 0; }
+.review-brief-ai {
+  margin-top: 12px;
+  padding-top: 10px;
+  border-top: 1px dashed var(--line, #d0d7de);
+}
 @media (max-width: 960px) {
+  .review-brief-zones { grid-template-columns: 1fr; }
   .zones-hero-grid { grid-template-columns: 1fr; }
   .case-workspace-grid--zones { grid-template-columns: 1fr; height: auto; }
   .drawer.case-workspace .drawer-body { overflow: auto; }
