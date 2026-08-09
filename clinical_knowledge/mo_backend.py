@@ -40,6 +40,17 @@ from .mis_kz_quality import (
 
 ROOT = Path(__file__).resolve().parent.parent
 SUPPRESSION_N = max(2, int(os.environ.get("MO_SUPPRESSION_N", "5")))
+CLINICAL_GAP_CODES = frozenset(
+    {
+        "B_complaint_exam_mismatch",
+        "B_dx_not_in_exam",
+        "B_tentative_dx_weak_support",
+        "B_chronic_dx_therapy_absent",
+        "B_treatment_before_confirmed_dx",
+        "B_complaint_not_addressed_in_plan",
+        "A_text_noise",
+    }
+)
 DOCUMENT_KINDS = frozenset(
     {
         "clinical_visit",
@@ -855,6 +866,12 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
                 weak = set(_parse_reg55_weak_points(rec.get("reg55_weak_points_json")))
             if not (reg55_points & weak):
                 continue
+        want_icd = str(params.get("icd_visit_status") or "").strip().lower()
+        if want_icd:
+            from .mo_icd_visit_status import status_from_finding_codes
+
+            if status_from_finding_codes(rec.get("finding_codes")) != want_icd:
+                continue
         out.append(rec)
     return out
 
@@ -1232,6 +1249,79 @@ def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any]
     }
 
 
+
+def _secondary_icd_and_gaps(filtered: list[dict[str, Any]], *, small_slice: bool) -> dict[str, Any]:
+    """Сводки МКБ-чипа и clinical gaps для Period «Подробнее» (не hero)."""
+    if small_slice:
+        return {
+            "icd_visit_status": {
+                "available": False,
+                "reason": f"Малая выборка (<{SUPPRESSION_N})",
+                "counts": {},
+                "sample_n": len(filtered),
+            },
+            "clinical_gaps": {
+                "available": False,
+                "reason": f"Малая выборка (<{SUPPRESSION_N})",
+                "items": [],
+                "cases_with_gaps": None,
+            },
+            "kp_unmatched": {"available": False, "n": None, "label_ru": "План без подобранного КП"},
+        }
+    from .mo_finding_labels_ru import finding_label_ru
+    from .mo_icd_visit_status import chip_label_ru, chip_title_ru, status_from_finding_codes
+
+    icd_counts: Counter[str] = Counter()
+    gap_cases: Counter[str] = Counter()
+    cases_with_any_gap = 0
+    unmatched = 0
+    for rec in filtered:
+        codes = [str(c) for c in (rec.get("finding_codes") or []) if str(c)]
+        icd_counts[status_from_finding_codes(codes)] += 1
+        gaps = CLINICAL_GAP_CODES.intersection(codes)
+        if gaps:
+            cases_with_any_gap += 1
+            for code in gaps:
+                gap_cases[code] += 1
+        if str(rec.get("zone2b_kp_status") or "").lower() == "unmatched":
+            unmatched += 1
+    status_order = ("ok", "missing_dx", "not_in_directory", "weak_name", "unknown")
+    counts = {
+        st: {
+            "n": int(icd_counts.get(st, 0)),
+            "label_ru": chip_label_ru(st),
+            "title_ru": chip_title_ru(st),
+        }
+        for st in status_order
+    }
+    items = [
+        {
+            "finding_code": code,
+            "label": finding_label_ru(code),
+            "cases": int(n),
+        }
+        for code, n in gap_cases.most_common(12)
+    ]
+    return {
+        "icd_visit_status": {
+            "available": True,
+            "counts": counts,
+            "sample_n": len(filtered),
+        },
+        "clinical_gaps": {
+            "available": bool(items),
+            "cases_with_gaps": cases_with_any_gap,
+            "items": items,
+            "reason": None if items else "Нет клинических разрывов в выборке (или ещё не в витрине)",
+        },
+        "kp_unmatched": {
+            "available": True,
+            "n": unmatched,
+            "label_ru": "План без подобранного КП",
+        },
+    }
+
+
 def build_overview(params: dict[str, Any]) -> dict[str, Any]:
     all_records = _records(params)
     filtered = _filter_records(all_records, params)
@@ -1259,6 +1349,10 @@ def build_overview(params: dict[str, Any]) -> dict[str, Any]:
         },
         "attention": attention,
         "zone_trends": (attention or {}).get("zone_trends") if attention else None,
+        **{
+            k: v
+            for k, v in _secondary_icd_and_gaps(filtered, small_slice=small_slice).items()
+        },
         "document_kind_distribution": {} if small_slice else dict(kinds),
         "data_through": max((str(r.get("date") or "") for r in filtered), default=""),
         "axis_means": None if small_slice else agg.get("axis_means"),

@@ -529,3 +529,57 @@ def test_auto_source_falls_back_when_period_is_absent_from_warehouse(
         )
         == "jsonl_fallback"
     )
+
+
+def test_overview_icd_and_clinical_gaps_secondary(monkeypatch) -> None:
+    monkeypatch.setattr(mo_backend, "SUPPRESSION_N", 2)
+
+    def _rec(case_id: str, codes: list[str], *, kp: str = "matched") -> dict:
+        return {
+            "case_id": case_id,
+            "visit_id": case_id,
+            "date": "2026-08-06",
+            "doctor_fio": "Врач",
+            "specialization": "Педиатр",
+            "filial": "Ф1",
+            "document_kind": "clinical_visit",
+            "overall_pct": 70.0,
+            "finding_codes": codes,
+            "zone2b_kp_status": kp,
+            "p0": 0,
+            "finding_axes": [],
+            "status": "review",
+            "score_band": "60-75",
+        }
+
+    rows = [
+        _rec("1", ["B_dx_absent"]),
+        _rec("2", ["B_icd_name_weak_match", "B_complaint_exam_mismatch"]),
+        _rec("3", ["B_complaint_exam_mismatch"]),
+        _rec("4", [], kp="unmatched"),
+        _rec("5", ["B_dx_not_in_exam"]),
+    ]
+    monkeypatch.setattr(mo_backend, "_records", lambda params: rows)
+    monkeypatch.setattr(mo_backend, "_crm_states", lambda ids: {})
+    monkeypatch.setattr(mo_backend, "_overview_attention_from_warehouse", lambda params: None)
+    monkeypatch.setattr(mo_backend, "build_freshness", lambda params: {"ok": True})
+    overview = mo_backend.build_overview({})
+    assert overview["icd_visit_status"]["available"] is True
+    assert overview["icd_visit_status"]["counts"]["missing_dx"]["n"] == 1
+    assert overview["icd_visit_status"]["counts"]["weak_name"]["n"] == 1
+    assert overview["clinical_gaps"]["available"] is True
+    assert overview["clinical_gaps"]["cases_with_gaps"] == 3
+    assert overview["kp_unmatched"]["n"] == 1
+    filtered = mo_backend._filter_records(rows, {"icd_visit_status": "missing_dx"})
+    assert [r["case_id"] for r in filtered] == ["1"]
+
+
+def test_period_details_hosts_icd_and_gaps() -> None:
+    html = Path("frontend/web/methodist/mis-kz-quality.html").read_text(encoding="utf-8")
+    app = Path("frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
+    assert 'id="month-icd-status"' in html
+    assert 'id="month-clinical-gaps"' in html
+    assert "Подробнее: №55, МКБ и клиника" in html
+    assert "function renderMonthIcdStatus" in app
+    assert "function renderMonthClinicalGaps" in app
+    assert "icd_visit_status" in app

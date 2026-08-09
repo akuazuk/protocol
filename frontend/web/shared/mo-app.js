@@ -19,7 +19,7 @@
     var EXPERT_PAGES = { yesterday: true, reports: true };
     var state = {
       page: "yesterday", period: "yesterday", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
-      reg55Band: "", reg55Pack: "",
+      reg55Band: "", reg55Pack: "", icdVisitStatus: "",
       sortBy: "date", sortDir: "desc",
       zoneFilter: "", zoneBandFilter: "", attentionOnly: false, kpStatus: "", historyTier: "",
       doctorZoneMetric: "zone1",
@@ -185,6 +185,7 @@
       if (state.attentionOnly) q.set("attention_only", "1");
       if (state.kpStatus) q.set("kp_status", state.kpStatus);
       if (state.historyTier) q.set("history_tier", state.historyTier);
+      if (state.icdVisitStatus) q.set("icd_visit_status", state.icdVisitStatus);
       return q;
     }
     function applyScoreEligibleOnly(on, silent) {
@@ -646,6 +647,10 @@
         html.push('<span class="chip">История: ' + esc(state.historyTier) +
           '<button type="button" data-clear-history-tier aria-label="Удалить фильтр истории">×</button></span>');
       }
+      if (state.icdVisitStatus) {
+        html.push('<span class="chip">МКБ: ' + esc(state.icdVisitStatus) +
+          '<button type="button" data-clear-icd-status aria-label="Удалить фильтр МКБ">×</button></span>');
+      }
       $("filter-chips").innerHTML = html.join("");
       $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
         button.addEventListener("click", function () {
@@ -702,6 +707,11 @@
         state.historyTier = "";
         filtersChanged();
       });
+      var clearIcd = $("filter-chips").querySelector("[data-clear-icd-status]");
+      if (clearIcd) clearIcd.addEventListener("click", function () {
+        state.icdVisitStatus = "";
+        filtersChanged();
+      });
     }
     function syncUrl(replace) {
       var q = query();
@@ -742,6 +752,7 @@
       state.attentionOnly = q.get("attention_only") === "1" || q.get("attention_only") === "true";
       state.kpStatus = q.get("kp_status") || "";
       state.historyTier = q.get("history_tier") || "";
+      state.icdVisitStatus = q.get("icd_visit_status") || "";
       Object.keys(state.selected).forEach(function (key) {
         state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(/[|,]/).filter(Boolean);
       });
@@ -1028,6 +1039,8 @@
         ", оценено "+reconciliation.evaluated_delta+". Данные не замаскированы.";
       renderMonthTrend(data);renderMonthHeatmap(data);renderMonthDoctors(data);renderMonthPareto(data);renderMonthFunnel(data);
       renderMonthReg55Section(data.reg55);
+      renderMonthIcdStatus(data.icd_visit_status);
+      renderMonthClinicalGaps(data.clinical_gaps, data.kp_unmatched);
     }
     function renderMonthReg55Section(reg55) {
       var hostKpi = $("month-reg55");
@@ -1107,6 +1120,82 @@
         });
       }
     }
+
+    function renderMonthIcdStatus(payload) {
+      var host = $("month-icd-status");
+      if (!host) return;
+      if (!payload || !payload.available) {
+        host.innerHTML = unavailableBlock(payload, "Сводка чипа МКБ недоступна.");
+        return;
+      }
+      var counts = payload.counts || {};
+      var order = ["missing_dx", "not_in_directory", "weak_name", "ok", "unknown"];
+      host.innerHTML = order.map(function (st) {
+        var row = counts[st] || {};
+        return '<button type="button" class="kpi kpi--clickable" data-icd-status="' + esc(st) + '" title="' +
+          esc(row.title_ru || "") + '"><div class="kpi-label">' + esc(row.label_ru || st) +
+          '</div><div class="kpi-value">' + esc(row.n != null ? row.n : "-") +
+          '</div><div class="kpi-meta">из ' + esc(payload.sample_n || 0) + '</div></button>';
+      }).join("");
+      host.querySelectorAll("[data-icd-status]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          state.icdVisitStatus = btn.getAttribute("data-icd-status") || "";
+          state.pageNo = 1;
+          renderChips();
+          switchPage("documents");
+          filtersChanged();
+        });
+      });
+    }
+    function renderMonthClinicalGaps(payload, kpUnmatched) {
+      var host = $("month-clinical-gaps");
+      if (!host) return;
+      var kp = kpUnmatched || {};
+      var head = "";
+      if (kp && kp.available && kp.n != null) {
+        head = '<button type="button" class="kpi kpi--clickable" data-kp-unmatched="1">' +
+          '<div class="kpi-label">' + esc(kp.label_ru || "План без КП") + "</div>" +
+          '<div class="kpi-value">' + esc(kp.n) + "</div>" +
+          '<div class="kpi-meta">протокол не подобран</div></button>';
+      }
+      if (!payload || !payload.available) {
+        host.innerHTML = head + unavailableBlock(payload, "Нет клинических разрывов в выборке.");
+      } else {
+        var rows = (payload.items || []).slice(0, 8).map(function (item) {
+          return '<tr tabindex="0" data-gap-code="' + esc(item.finding_code) + '"><td>' +
+            esc(item.label || item.finding_code) + "</td><td><b>" + esc(item.cases) + "</b></td></tr>";
+        }).join("");
+        host.innerHTML = head +
+          kpi("Случаев с разрывом", payload.cases_with_gaps, "клинические разрывы") +
+          '<div class="table-wrap" style="margin-top:10px"><table class="rubric-table"><thead><tr>' +
+          "<th>Разрыв</th><th>Случаев</th></tr></thead><tbody>" +
+          (rows || '<tr><td colspan="2" class="empty">Пусто.</td></tr>') +
+          "</tbody></table></div>";
+        host.querySelectorAll("[data-gap-code]").forEach(function (row) {
+          function openGap(event) {
+            if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
+            event.preventDefault();
+            state.findingCode = row.getAttribute("data-gap-code") || "";
+            state.pageNo = 1;
+            renderChips();
+            switchPage("documents");
+            filtersChanged();
+          }
+          row.addEventListener("click", openGap);
+          row.addEventListener("keydown", openGap);
+        });
+      }
+      host.querySelectorAll("[data-kp-unmatched]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          state.kpStatus = "unmatched";
+          state.pageNo = 1;
+          renderChips();
+          switchPage("documents");
+          filtersChanged();
+        });
+      });
+    }
+
     async function loadOverview() {
       var suffix = "?" + query().toString();
       var q = query();
@@ -1144,6 +1233,9 @@
         raw.attention = ov.attention || null;
         raw.zone_trends = ov.zone_trends || (ov.attention && ov.attention.zone_trends) || [];
         if (ov.by_doctor) raw.by_doctor = ov.by_doctor;
+        if (ov.icd_visit_status) raw.icd_visit_status = ov.icd_visit_status;
+        if (ov.clinical_gaps) raw.clinical_gaps = ov.clinical_gaps;
+        if (ov.kp_unmatched) raw.kp_unmatched = ov.kp_unmatched;
       }
       renderOverview(raw);
       buildFacets(normalizeSummary(raw), raw.facets);
