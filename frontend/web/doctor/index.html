@@ -14409,141 +14409,60 @@
       <div id="methodist-mis-kz-root" class="methodist-mis-kz-panel consult-hide-print">
         <div class="methodist-ml-dashboard__hero">
           <div>
-            <h2>МО Аналитика</h2>
-            <p>
-              Массовый анализ медицинских записей, полученных напрямую из БД МИС.
-              Единые фильтры, сравнение периодов, рабочая очередь и подробный разбор каждого случая
-              доступны в полном дашборде.
-            </p>
+            <h2>МО Аналитика - учётные записи</h2>
+            <p>Логин и пароль для входа в МО Аналитику: доступ только к отчётам или полный BI, персональный период отчётов.</p>
             <p class="methodist-tier-hint" id="methodist-mis-kz-meta"></p>
           </div>
           <div class="methodist-ml-dashboard__hero-actions">
             <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-refresh">Обновить</button>
-            <a href="/methodist/mo" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open">Открыть полный дашборд →</a>
           </div>
         </div>
         <div id="methodist-mis-kz-error" class="methodist-ml-error" hidden></div>
-        <div id="methodist-mis-kz-kpi" class="analytics-kpi-grid" hidden></div>
-        <div id="methodist-mis-kz-hygiene" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9">
-          <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Гигиена данных: что оценивается</h3>
-          <p class="methodist-tier-hint" style="margin:0 0 0.65rem">Разделение строк выгрузки на КЗ и не-КЗ. Диагностику (УЗИ, рентген, функц., эндоскопия, лаборатория), неклинические роли и пустые записи не оцениваем.</p>
-          <div id="methodist-mis-kz-hygiene-bar" style="display:flex;height:26px;border-radius:9px;overflow:hidden;background:#eef2f0"></div>
-          <div id="methodist-mis-kz-hygiene-legend" style="display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:0.6rem"></div>
-          <p class="methodist-tier-hint" id="methodist-mis-kz-hygiene-hint" style="margin:0.6rem 0 0"></p>
-        </div>
-        <div id="methodist-mis-kz-reg55" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9">
-          <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Постановление МЗ РБ 2021 №55: невыполненные критерии</h3>
-          <p class="methodist-tier-hint" style="margin:0 0 0.65rem">Доля выполненных пофакторных критериев уровня случая. Ниже - какие критерии чаще не выполнены (доля КЗ).</p>
-          <div id="methodist-mis-kz-reg55-bars"></div>
-          <p class="methodist-tier-hint" id="methodist-mis-kz-reg55-hint" style="margin:0.6rem 0 0"></p>
-        </div>
-        <div id="methodist-mis-kz-compare" hidden style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9"></div>
-        <div style="margin-top:1.25rem;padding:1.1rem 1.2rem;border:1px solid rgba(15,107,92,.18);border-radius:14px;background:linear-gradient(180deg,#f2f8f6 0%,#eaf3f0 100%);display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap">
-          <div>
-            <h3 style="margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">CRM/BI-дашборд МО</h3>
-            <p class="methodist-tier-hint" style="margin:0">Глобальные фильтры, отчёт за вчера, сравнение периодов, очередь разбора, врачи, специальности, диагнозы, безопасность и качество данных.</p>
+        <div style="margin-top:1.25rem;padding:1rem 1.1rem;border:1px solid rgba(15,107,92,.12);border-radius:14px;background:#f8faf9">
+          <h3 style="margin:0 0 0.75rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Создать учётную запись</h3>
+          <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:10px">
+            <label class="filter"><span>Логин</span><input class="control" id="mo-account-login" type="text" autocomplete="off"></label>
+            <label class="filter"><span>Пароль</span><input class="control" id="mo-account-password" type="password" autocomplete="new-password"></label>
+            <label class="filter"><span>Имя</span><input class="control" id="mo-account-display-name" type="text" autocomplete="off"></label>
+            <label class="filter"><span>Роль</span>
+              <select class="control" id="mo-account-role">
+                <option value="methodist">methodist</option>
+                <option value="lead">lead</option>
+                <option value="admin">admin</option>
+                <option value="viewer">viewer</option>
+              </select>
+            </label>
+            <label class="filter"><span>Доступ МО</span>
+              <select class="control" id="mo-account-mo-access">
+                <option value="reports">reports</option>
+                <option value="full">full</option>
+              </select>
+            </label>
+            <label class="filter"><span>Отчёты с даты</span><input class="control" id="mo-account-reports-min-date" type="date" value="2026-08-01"></label>
           </div>
-          <a href="/methodist/mo" target="_blank" rel="noopener noreferrer" class="btn-methodist-queue-open" style="white-space:nowrap">Открыть полный дашборд →</a>
-        </div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1rem" hidden>
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Клинические специальности</h3>
-          <p class="methodist-tier-hint" style="margin-bottom:0.75rem">Только врачебные роли (без стоматологов, медсестёр, логопеда, лаборатории)</p>
-          <table class="methodist-ml-table" id="methodist-mis-kz-specs-table">
-            <thead>
-              <tr>
-                <th>Специальность</th>
-                <th>N</th>
-                <th>Avg %</th>
-                <th>Core %</th>
-                <th>Δ к янв.</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1rem" hidden>
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Врачи (клинические)</h3>
-          <table class="methodist-ml-table" id="methodist-mis-kz-table">
-            <thead>
-              <tr>
-                <th>Врач</th>
-                <th>Специальность</th>
-                <th>Филиал</th>
-                <th>N</th>
-                <th>Avg %</th>
-                <th>Min</th>
-                <th>Max</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
-        </div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem" hidden>
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Топ-50 случаев, требующих внимания</h3>
-          <p class="methodist-tier-hint" id="methodist-mis-kz-worst-meta" style="margin-bottom:0.75rem"></p>
-          <div style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:0.75rem">
-            <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-all">Выбрать все</button>
-            <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-select-none">Снять</button>
-            <button type="button" class="btn-methodist-queue-open" id="methodist-mis-kz-gemini">Запустить нейросетевой анализ</button>
+          <div style="margin-top:0.85rem">
+            <button type="button" class="btn-methodist-queue-open" id="mo-account-create">Создать</button>
           </div>
-          <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-status" style="margin-bottom:0.5rem"></p>
-          <div id="methodist-mis-kz-progress-wrap" hidden style="margin:0 0 0.85rem">
-            <div style="display:flex;justify-content:space-between;font-size:12px;opacity:.8;margin-bottom:4px">
-              <span id="methodist-mis-kz-progress-label">Ожидание…</span>
-              <span id="methodist-mis-kz-progress-pct">0%</span>
-            </div>
-            <div style="height:8px;border-radius:999px;background:rgba(15,107,92,.12);overflow:hidden">
-              <div id="methodist-mis-kz-progress-bar" style="height:100%;width:0%;background:#0f6b5c;transition:width .25s ease"></div>
-            </div>
-          </div>
-          <table class="methodist-ml-table" id="methodist-mis-kz-worst-table">
-            <thead>
-              <tr>
-                <th></th>
-                <th>#</th>
-                <th>Дата</th>
-                <th>Visit ID</th>
-                <th>Patient ID</th>
-                <th>Врач</th>
-                <th>Полная проверка, %</th>
-                <th>№55</th>
-                <th>Комментарий проверки</th>
-                <th>Углублённая проверка, %</th>
-                <th>Комментарий углублённой проверки</th>
-              </tr>
-            </thead>
-            <tbody></tbody>
-          </table>
         </div>
-        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem" hidden>
-          <h3 style="margin:0 0 0.5rem;font-size:1.05rem">Нейросетевой анализ</h3>
-          <p class="methodist-tier-hint" id="methodist-mis-kz-gemini-meta" style="margin-bottom:0.75rem"></p>
-          <table class="methodist-ml-table" id="methodist-mis-kz-gemini-table">
+        <div class="methodist-ml-table-wrap" style="margin-top:1.25rem">
+          <h3 style="margin:0 0 0.75rem;font-size:1.05rem">Учётные записи</h3>
+          <table class="methodist-ml-table" id="mo-accounts-table">
             <thead>
               <tr>
-                <th>#</th>
-                <th>Дата</th>
-                <th>Visit ID</th>
-                <th>Patient ID</th>
-                <th>Врач</th>
-                <th>Оценка, %</th>
-                <th>Кратко</th>
+                <th>Логин</th>
+                <th>Имя</th>
+                <th>Роль</th>
+                <th>Доступ</th>
+                <th>Отчёты с</th>
+                <th>Активна</th>
                 <th></th>
               </tr>
             </thead>
             <tbody></tbody>
           </table>
-          <div id="methodist-mis-kz-report-detail" hidden style="margin-top:1rem;padding:0;border:1px solid rgba(15,107,92,.14);border-radius:14px;background:linear-gradient(180deg,#f7fbf9 0%,#f3f7f5 100%);overflow:hidden">
-            <div style="padding:0.85rem 1.1rem;border-bottom:1px solid rgba(15,107,92,.1);display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap">
-              <h4 style="margin:0;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c">Расширенный отчёт</h4>
-              <button type="button" class="btn-ml-dash-refresh" id="methodist-mis-kz-report-close" style="padding:4px 10px">Закрыть</button>
-            </div>
-            <div id="methodist-mis-kz-report-body" style="padding:1rem 1.1rem 1.2rem;font:inherit;line-height:1.55"></div>
-          </div>
         </div>
       </div>
     </div>
-
     <div
       id="panel-methodist-queue"
       class="panel-methodist-queue"
@@ -23840,396 +23759,187 @@
       });
   }
 
+  function methodistMoAccountsHeaders() {
+    return {
+      Accept: "application/json",
+      "X-Methodist-Token": window.__methodistToken || "",
+      "X-Methodist-Reviewer": window.__methodistReviewer || "",
+    };
+  }
+
+  function renderMethodistMoAccountsTable(users) {
+    var tbody = document.querySelector("#mo-accounts-table tbody");
+    if (!tbody) return;
+    var rows = users || [];
+    if (!rows.length) {
+      tbody.innerHTML = "<tr><td colspan='7'>Пока нет учётных записей</td></tr>";
+      return;
+    }
+    function esc(s) {
+      return String(s == null ? "" : s)
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;");
+    }
+    tbody.innerHTML = rows
+      .map(function (user) {
+        return (
+          "<tr data-user-id='" + esc(user.user_id) + "'>" +
+          "<td>" + esc(user.login) + "</td>" +
+          "<td><input class='control mo-account-display-name' value='" + esc(user.display_name || user.login) + "'></td>" +
+          "<td><select class='control mo-account-role'>" +
+          ["viewer", "methodist", "lead", "admin"].map(function (role) {
+            return "<option value='" + role + "'" + (user.role === role ? " selected" : "") + ">" + role + "</option>";
+          }).join("") +
+          "</select></td>" +
+          "<td><select class='control mo-account-mo-access'>" +
+          ["reports", "full"].map(function (access) {
+            return "<option value='" + access + "'" + (user.mo_access === access ? " selected" : "") + ">" + access + "</option>";
+          }).join("") +
+          "</select></td>" +
+          "<td><input class='control mo-account-reports-min-date' type='date' value='" + esc(user.reports_min_date || "2026-08-01") + "'></td>" +
+          "<td><input type='checkbox' class='mo-account-active'" + (user.active ? " checked" : "") + "></td>" +
+          "<td style='white-space:nowrap'>" +
+          "<button type='button' class='btn-ml-dash-refresh mo-account-save'>Сохранить</button> " +
+          "<button type='button' class='btn-ml-dash-refresh mo-account-toggle'>" + (user.active ? "Выключить" : "Включить") + "</button>" +
+          "</td></tr>"
+        );
+      })
+      .join("");
+  }
+
+  function createMethodistMoAccount() {
+    if (!window.__methodistMode || !window.__methodistToken) return;
+    var errEl = document.getElementById("methodist-mis-kz-error");
+    var loginEl = document.getElementById("mo-account-login");
+    var passwordEl = document.getElementById("mo-account-password");
+    var displayEl = document.getElementById("mo-account-display-name");
+    var roleEl = document.getElementById("mo-account-role");
+    var accessEl = document.getElementById("mo-account-mo-access");
+    var minDateEl = document.getElementById("mo-account-reports-min-date");
+    var payload = {
+      login: loginEl ? loginEl.value.trim() : "",
+      password: passwordEl ? passwordEl.value : "",
+      display_name: displayEl ? displayEl.value.trim() : "",
+      role: roleEl ? roleEl.value : "methodist",
+      mo_access: accessEl ? accessEl.value : "reports",
+      reports_min_date: minDateEl ? minDateEl.value : "2026-08-01",
+      active: true,
+    };
+    return fetch("/api/methodist/accounts", {
+      method: "POST",
+      headers: Object.assign({ "Content-Type": "application/json" }, methodistMoAccountsHeaders()),
+      body: JSON.stringify(payload),
+    })
+      .then(function (response) {
+        return response.json().then(function (data) {
+          if (!response.ok) throw new Error(data.detail || response.status);
+          return data;
+        });
+      })
+      .then(function () {
+        if (passwordEl) passwordEl.value = "";
+        if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
+      })
+      .catch(function (error) {
+        if (errEl) {
+          errEl.hidden = false;
+          errEl.textContent = "Не удалось создать учётку: " + methodistApiErrorRu(error.message || error);
+        }
+      });
+  }
+
   function loadMethodistMisKzPanel() {
     if (!window.__methodistMode || !window.__methodistToken) return;
     var root = document.getElementById("methodist-mis-kz-root");
     var errEl = document.getElementById("methodist-mis-kz-error");
-    var kpiEl = document.getElementById("methodist-mis-kz-kpi");
     var metaEl = document.getElementById("methodist-mis-kz-meta");
-    var tbody = document.querySelector("#methodist-mis-kz-table tbody");
-    var worstBody = document.querySelector("#methodist-mis-kz-worst-table tbody");
-    var worstMeta = document.getElementById("methodist-mis-kz-worst-meta");
     if (errEl) {
       errEl.hidden = true;
       errEl.textContent = "";
     }
     if (root) root.classList.add("is-loading");
-    var moSummaryOptions = {
-      headers: {
-        Accept: "application/json",
-        "X-Methodist-Token": window.__methodistToken,
-      },
-    };
-    fetch("/api/methodist/mo/overview?period=month&compare_period=previous", moSummaryOptions)
+    fetch("/api/methodist/accounts", { headers: methodistMoAccountsHeaders() })
       .then(function (response) {
-        if (response.status !== 404 && response.status !== 405 && response.status !== 501) return response;
-        return fetch("/api/methodist/mis-kz-quality?month=2026-07&compare_month=2026-01", moSummaryOptions);
-      })
-      .then(function (r) {
-        if (!r.ok) {
-          return r.text().then(function (t) {
-            throw new Error(t || r.status);
-          });
-        }
-        return r.json();
+        return response.json().then(function (data) {
+          if (!response.ok) throw new Error(data.detail || response.status);
+          return data;
+        });
       })
       .then(function (data) {
-        if (!data || !data.available) {
-          if (errEl) {
-            errEl.hidden = false;
-            errEl.textContent = (data && data.hint_ru) || "Сводка МО ещё не готова";
-          }
-          if (metaEl) metaEl.textContent = "Нет готовой сводки за выбранный период";
-          if (kpiEl) kpiEl.hidden = true;
-          if (tbody) tbody.innerHTML = "";
-          if (worstBody) worstBody.innerHTML = "";
-          if (worstMeta) worstMeta.textContent = "";
-          return;
-        }
-        if (metaEl) {
-          metaEl.textContent =
-            "Месяц " +
-            (data.month || " - ") +
-            " · клинич. спец. " +
-            (data.specialties_n != null ? data.specialties_n : " - ") +
-            " · avg " +
-            (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
-            " · МО " +
-            (data.n_ok != null ? data.n_ok : " - ") +
-            (data.n_excluded_nonclinical ? " (исключено неклинич. " + data.n_excluded_nonclinical + ")" : "") +
-            (data.generated_at ? " · " + data.generated_at : "");
-        }
-        if (kpiEl) {
-          kpiEl.hidden = false;
-          kpiEl.innerHTML =
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">МО оценено</div><div class="analytics-kpi__value">' +
-            (data.n_ok != null ? data.n_ok : " - ") +
-            '</div></div>' +
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">Итоговая оценка</div><div class="analytics-kpi__value">' +
-            (data.avg_overall_pct != null ? data.avg_overall_pct + "%" : " - ") +
-            '</div></div>' +
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">Специальностей</div><div class="analytics-kpi__value">' +
-            (data.specialties_n != null ? data.specialties_n : " - ") +
-            '</div></div>' +
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">Врачей</div><div class="analytics-kpi__value">' +
-            (data.doctors_n != null ? data.doctors_n : " - ") +
-            '</div></div>' +
-            '<div class="analytics-kpi"><div class="analytics-kpi__label">Соответствие №55</div><div class="analytics-kpi__value">' +
-            (data.avg_regulatory_compliance_pct != null ? data.avg_regulatory_compliance_pct + "%" : " - ") +
-            '</div>' +
-            (data.reg55_p0_defect_n ? '<div class="analytics-kpi__hint" style="color:#c0392b">P0: ' + data.reg55_p0_defect_n + '</div>' : '') +
-            "</div>";
-        }
-        function methodistReg55Cell(v) {
-          if (!v || v.reg55_pct == null || v.reg55_pct === "") return " - ";
-          var n = Number(v.reg55_pct);
-          var failed = v.reg55_failed || [];
-          var tips = failed.map(function (f) { return "• " + (f.title || f.id); }).join("\n");
-          var dot = v.reg55_has_p0 ? '<span title="Критический дефект (P0)" style="color:#c0392b;font-weight:700">&#9679;</span> ' : "";
-          var attr = failed.length ? " title=\"Не выполнено:\n" + tips.replace(/"/g, "'") + "\"" : "";
-          return "<span" + attr + ">" + dot + n.toFixed(0) + "%</span>";
-        }
-        (function renderMisKzReg55() {
-          var card = document.getElementById("methodist-mis-kz-reg55");
-          if (!card) return;
-          var failed = data.reg55_top_failed || [];
-          if (!failed.length) { card.hidden = true; return; }
-          card.hidden = false;
-          var sev = { P0: "#c0392b", P1: "#e08a1e", P2: "#5b8def", P3: "#8a94a6" };
-          function esc3(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-          document.getElementById("methodist-mis-kz-reg55-bars").innerHTML = failed.map(function (f) {
-            var pct = f.pct != null ? Number(f.pct) : 0;
-            var col = sev[f.severity] || "#8a94a6";
-            var w = Math.max(2, Math.min(100, pct));
-            return '<div style="display:flex;align-items:center;gap:10px;margin:6px 0">' +
-              '<div style="flex:0 0 300px;font-size:12.5px"><span style="color:' + col + ';font-weight:700;min-width:24px;display:inline-block">' + esc3(f.severity || "") + '</span> ' +
-              esc3(f.title || f.id) + ' <span style="color:#64748b;font-size:11px">(' + esc3(f.point || "") + ')</span></div>' +
-              '<div style="flex:1;height:15px;border-radius:8px;background:#eef2f0;overflow:hidden"><div style="height:100%;width:' + w + '%;background:' + col + '"></div></div>' +
-              '<div style="flex:0 0 92px;text-align:right;font-size:12px;color:#64748b">' + pct.toFixed(1) + '% · ' + (f.n || 0) + '</div></div>';
-          }).join("");
-          document.getElementById("methodist-mis-kz-reg55-hint").textContent =
-            "Оценено по №55: " + (data.reg55_scored_n != null ? data.reg55_scored_n : " - ") +
-            " МО. Критические замечания: " + (data.reg55_p0_defect_n || 0) +
-            ". Остальные замечания разделены на клинические, документальные и формальные.";
-        })();
-        (function renderMisKzHygiene() {
-          var card = document.getElementById("methodist-mis-kz-hygiene");
-          if (!card) return;
-          var eb = data.excluded_breakdown || {};
-          var byKind = eb.by_kind || {};
-          var meta = {
-            kz: { label: "Консультации", color: "#2f8f78", scored: true },
-            certificate: { label: "Справки / медосмотры", color: "#7bc4ad", scored: true },
-            diagnostic: { label: "Диагностика (УЗИ и пр.)", color: "#e0a04a", scored: false },
-            non_clinical: { label: "Неклинические роли", color: "#9aa6b2", scored: false },
-            empty: { label: "Пустые записи", color: "#cbd3da", scored: false }
-          };
-          var order = ["kz", "certificate", "diagnostic", "non_clinical", "empty"];
-          var total = 0;
-          order.forEach(function (k) { total += Number(byKind[k] || 0); });
-          if (!total) { card.hidden = true; return; }
-          card.hidden = false;
-          function esc2(s) { return String(s == null ? "" : s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;"); }
-          var segs = [], legend = [];
-          order.forEach(function (k) {
-            var n = Number(byKind[k] || 0);
-            if (!n) return;
-            var m = meta[k] || { label: k, color: "#bbb", scored: false };
-            var pct = (n / total) * 100;
-            segs.push('<div title="' + esc2(m.label) + ': ' + n + '" style="width:' + pct.toFixed(2) + '%;background:' + m.color + '"></div>');
-            legend.push('<span style="display:inline-flex;align-items:center;gap:6px;font-size:12.5px"><span style="width:11px;height:11px;border-radius:3px;background:' + m.color + '"></span>' + esc2(m.label) + ' <b>' + n + '</b> <span style="color:#64748b">(' + pct.toFixed(1) + '%' + (m.scored ? '' : ', не в оценке') + ')</span></span>');
-          });
-          document.getElementById("methodist-mis-kz-hygiene-bar").innerHTML = segs.join("");
-          document.getElementById("methodist-mis-kz-hygiene-legend").innerHTML = legend.join("");
-          var scored = eb.n_scored != null ? eb.n_scored : ((byKind.kz || 0) + (byKind.certificate || 0));
-          var excl = eb.n_excluded != null ? eb.n_excluded : (total - scored);
-          var hint = "Всего строк выгрузки: " + total + " · в оценку " + scored + " (КЗ+справки) · исключено " + excl + ".";
-          if (!byKind.diagnostic) {
-            hint += " diagnostic=0: УЗИ/рентген не отделяются из текущих CSV (нужен пере-экспорт с автором по doctor_id).";
-          }
-          document.getElementById("methodist-mis-kz-hygiene-hint").textContent = hint;
-        })();
-        var cmp = data.month_compare || {};
-        var cmpEl = document.getElementById("methodist-mis-kz-compare");
-        if (cmpEl) {
-          if (cmp.available) {
-            cmpEl.hidden = false;
-            var dAvg = cmp.delta_avg;
-            var dTone = dAvg == null ? "#64748b" : dAvg > 0.5 ? "#0f6b5c" : dAvg < -0.5 ? "#b91c1c" : "#64748b";
-            var dTxt =
-              dAvg == null ? " - " : (dAvg > 0 ? "+" : "") + Number(dAvg).toFixed(1) + " п.п.";
-            cmpEl.innerHTML =
-              '<div style="display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;margin-bottom:0.75rem">' +
-              "<div><h3 style=\"margin:0 0 0.25rem;font-size:1.05rem;font-family:Outfit,DM Sans,sans-serif;color:#0f6b5c\">Динамика: " +
-              (cmp.base_month || "янв") +
-              " → " +
-              (cmp.compare_month || "июль") +
-              "</h3><p class=\"methodist-tier-hint\" style=\"margin:0\">" +
-              (cmp.note_ru || "Сравнение клинических специальностей") +
-              "</p></div>" +
-              '<div style="display:flex;flex-wrap:wrap;gap:8px">' +
-              '<span style="padding:6px 10px;border-radius:999px;background:#fff;border:1px solid rgba(15,107,92,.12);font-size:13px">Avg ' +
-              (cmp.avg_base != null ? cmp.avg_base : "-") +
-              "% → <strong style=\"color:" +
-              dTone +
-              '">' +
-              (cmp.avg_compare != null ? cmp.avg_compare + "%" : "-") +
-              "</strong> (" +
-              dTxt +
-              ")</span>" +
-              '<span style="padding:6px 10px;border-radius:999px;background:rgba(15,107,92,.08);font-size:13px">↑ ' +
-              (cmp.specialties_up || 0) +
-              "</span>" +
-              '<span style="padding:6px 10px;border-radius:999px;background:rgba(185,28,28,.08);font-size:13px">↓ ' +
-              (cmp.specialties_down || 0) +
-              "</span>" +
-              '<span style="padding:6px 10px;border-radius:999px;background:rgba(100,116,139,.1);font-size:13px">≈ ' +
-              (cmp.specialties_flat || 0) +
-              "</span></div></div>" +
-              '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:8px">' +
-              '<div style="padding:0.65rem 0.8rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)"><div style="font-size:11px;opacity:.7">КЗ ' +
-              (cmp.base_month || "") +
-              '</div><div style="font-size:1.15rem;font-weight:600">' +
-              (cmp.n_base != null ? cmp.n_base : "-") +
-              "</div></div>" +
-              '<div style="padding:0.65rem 0.8rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)"><div style="font-size:11px;opacity:.7">КЗ ' +
-              (cmp.compare_month || "") +
-              '</div><div style="font-size:1.15rem;font-weight:600">' +
-              (cmp.n_compare != null ? cmp.n_compare : "-") +
-              "</div></div>" +
-              ((cmp.blocks || [])
-                .slice(0, 6)
-                .map(function (b) {
-                  var bd = b.delta;
-                  var bt =
-                    bd == null ? "#64748b" : bd > 0 ? "#0f6b5c" : bd < 0 ? "#b91c1c" : "#64748b";
-                  return (
-                    '<div style="padding:0.65rem 0.8rem;border-radius:10px;background:#fff;border:1px solid rgba(15,107,92,.1)"><div style="font-size:11px;opacity:.7">' +
-                    (b.block || "") +
-                    '</div><div style="font-size:13px">' +
-                    (b.avg_base != null ? Number(b.avg_base).toFixed(0) : "-") +
-                    ' → <strong style="color:' +
-                    bt +
-                    '">' +
-                    (b.avg_compare != null ? Number(b.avg_compare).toFixed(0) : "-") +
-                    "</strong>" +
-                    (bd != null ? " (" + (bd > 0 ? "+" : "") + bd + ")" : "") +
-                    "</div></div>"
-                  );
-                })
-                .join("") || "") +
-              "</div>";
-          } else {
-            cmpEl.hidden = false;
-            cmpEl.innerHTML =
-              '<h3 style="margin:0 0 0.35rem;font-size:1.05rem;color:#0f6b5c">Динамика январь → июль</h3>' +
-              '<p class="methodist-tier-hint" style="margin:0">' +
-              ((cmp && cmp.hint_ru) ||
-                "Сравнение появится, когда будет готова сводка за январь 2026.") +
-              (cmp && cmp.missing && cmp.missing.length
-                ? " Нет: " + cmp.missing.join(", ") + "."
-                : "") +
-              "</p>";
-          }
-        }
-        var deltaBySpec = {};
-        (cmp.specialties || []).forEach(function (s) {
-          deltaBySpec[s.specialization] = s;
-        });
-        var specsBody = document.querySelector("#methodist-mis-kz-specs-table tbody");
-        if (specsBody) {
-          var specs = (data.specialties || []).slice().sort(function (a, b) {
-            return (b.n || 0) - (a.n || 0);
-          });
-          specsBody.innerHTML = specs.length
-            ? specs
-                .map(function (s) {
-                  var d = deltaBySpec[s.specialization] || {};
-                  var delta = d.delta;
-                  var tone =
-                    delta == null ? "#64748b" : delta > 0.5 ? "#0f6b5c" : delta < -0.5 ? "#b91c1c" : "#64748b";
-                  var dLabel =
-                    delta == null
-                      ? " - "
-                      : '<strong style="color:' +
-                        tone +
-                        '">' +
-                        (delta > 0 ? "+" : "") +
-                        delta +
-                        "</strong>";
-                  return (
-                    "<tr><td>" +
-                    (s.specialization || " - ") +
-                    "</td><td>" +
-                    (s.n != null ? s.n : " - ") +
-                    "</td><td>" +
-                    (s.avg_overall_pct != null ? s.avg_overall_pct : " - ") +
-                    "</td><td>" +
-                    (s.avg_core_overall_pct != null ? s.avg_core_overall_pct : " - ") +
-                    "</td><td>" +
-                    dLabel +
-                    "</td></tr>"
-                  );
-                })
-                .join("")
-            : "<tr><td colspan='5'>Нет клинических специальностей</td></tr>";
-        }
-        var docs = (data.doctors || []).slice().sort(function (a, b) {
-          return (b.avg_overall_pct || 0) - (a.avg_overall_pct || 0);
-        });
-        if (tbody) {
-          tbody.innerHTML = docs
-            .slice(0, 80)
-            .map(function (d) {
-              return (
-                "<tr><td>" +
-                (d.doctor_fio || " - ") +
-                "</td><td>" +
-                (d.specialization || " - ") +
-                "</td><td>" +
-                (d.filial || " - ") +
-                "</td><td>" +
-                (d.n != null ? d.n : " - ") +
-                "</td><td>" +
-                (d.avg_overall_pct != null ? d.avg_overall_pct : " - ") +
-                "</td><td>" +
-                (d.min_overall_pct != null ? d.min_overall_pct : " - ") +
-                "</td><td>" +
-                (d.max_overall_pct != null ? d.max_overall_pct : " - ") +
-                "</td></tr>"
-              );
+        if (metaEl) metaEl.textContent = "Учётных записей: " + (data.n != null ? data.n : (data.users || []).length);
+        renderMethodistMoAccountsTable(data.users || []);
+        var tbody = document.querySelector("#mo-accounts-table tbody");
+        if (!tbody) return;
+        tbody.querySelectorAll(".mo-account-save").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var row = btn.closest("tr");
+            if (!row) return;
+            var userId = row.getAttribute("data-user-id");
+            var payload = {
+              login: row.querySelector("td") ? row.cells[0].textContent.trim() : "",
+              display_name: row.querySelector(".mo-account-display-name") ? row.querySelector(".mo-account-display-name").value.trim() : "",
+              role: row.querySelector(".mo-account-role") ? row.querySelector(".mo-account-role").value : "methodist",
+              mo_access: row.querySelector(".mo-account-mo-access") ? row.querySelector(".mo-account-mo-access").value : "reports",
+              reports_min_date: row.querySelector(".mo-account-reports-min-date") ? row.querySelector(".mo-account-reports-min-date").value : "2026-08-01",
+              active: row.querySelector(".mo-account-active") ? row.querySelector(".mo-account-active").checked : true,
+            };
+            fetch("/api/methodist/accounts/" + encodeURIComponent(userId), {
+              method: "PATCH",
+              headers: Object.assign({ "Content-Type": "application/json" }, methodistMoAccountsHeaders()),
+              body: JSON.stringify(payload),
             })
-            .join("");
-        }
-        var worst = data.worst_visits || [];
-        if (worstMeta) {
-          worstMeta.textContent =
-            (data.worst_visits_meta && data.worst_visits_meta.rule_ru) ||
-            "50 визитов с самой низкой итоговой оценкой среди всех врачей";
-        }
-        if (worstBody) {
-          worstBody.innerHTML = worst.length
-            ? worst
-                .map(function (v, i) {
-                  var l1 = v.l1_overall_pct != null ? v.l1_overall_pct : v.overall_pct;
-                  var l1c = v.l1_comment || v.comment || " - ";
-                  return (
-                    "<tr><td><input type='checkbox' class='methodist-mis-kz-cb' value='" +
-                    (v.visit_id || "") +
-                    "'/></td><td>" +
-                    (i + 1) +
-                    "</td><td>" +
-                    (v.date || " - ") +
-                    "</td><td>" +
-                    (v.visit_id || " - ") +
-                    "</td><td>" +
-                    (v.patient_id || " - ") +
-                    "</td><td>" +
-                    (v.doctor_fio || " - ") +
-                    (v.doctor_specialization ? " · " + v.doctor_specialization : "") +
-                    "</td><td>" +
-                    (l1 != null ? l1 : " - ") +
-                    "</td><td>" +
-                    methodistReg55Cell(v) +
-                    "</td><td>" +
-                    l1c +
-                    "</td><td>" +
-                    (v.l2_overall_pct != null ? v.l2_overall_pct : " - ") +
-                    "</td><td>" +
-                    (v.l2_comment || v.l2_error || " - ") +
-                    "</td></tr>"
-                  );
-                })
-                .join("")
-            : "<tr><td colspan='11'>Нет данных worst_visits</td></tr>";
-        }
-        var geminiMeta = document.getElementById("methodist-mis-kz-gemini-meta");
-        var geminiBody = document.querySelector("#methodist-mis-kz-gemini-table tbody");
-        var gmeta = data.gemini_meta || {};
-        if (geminiMeta) {
-          geminiMeta.textContent = gmeta.note_ru || "Нейросетевой анализ с опорой на клинические протоколы";
-        }
-        window.__methodistMisKzLlmReviews = data.gemini_reviews || [];
-        var greviews = window.__methodistMisKzLlmReviews;
-        if (geminiBody) {
-          geminiBody.innerHTML = greviews.length
-            ? greviews
-                .map(function (v, i) {
-                  return (
-                    "<tr><td>" +
-                    (i + 1) +
-                    "</td><td>" +
-                    (v.date || " - ") +
-                    "</td><td>" +
-                    (v.visit_id || " - ") +
-                    "</td><td>" +
-                    (v.patient_id || " - ") +
-                    "</td><td>" +
-                    (v.doctor_fio || " - ") +
-                    "</td><td>" +
-                    (v.overall_pct != null ? v.overall_pct : " - ") +
-                    "</td><td>" +
-                    String(v.comment || v.error || " - ").slice(0, 140) +
-                    "</td><td><button type='button' class='btn-ml-dash-refresh methodist-mis-kz-report-btn' data-idx='" +
-                    i +
-                    "'>Отчёт</button></td></tr>"
-                  );
-                })
-                .join("")
-            : "<tr><td colspan='8'>Пока пусто - выберите визиты и запустите нейросетевой анализ</td></tr>";
-          geminiBody.querySelectorAll(".methodist-mis-kz-report-btn").forEach(function (btn) {
-            btn.addEventListener("click", function () {
-              if (typeof showMethodistMisKzFullReport === "function") {
-                showMethodistMisKzFullReport(Number(btn.getAttribute("data-idx")));
-              }
-            });
+              .then(function (response) {
+                return response.json().then(function (body) {
+                  if (!response.ok) throw new Error(body.detail || response.status);
+                  return body;
+                });
+              })
+              .then(function () {
+                if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
+              })
+              .catch(function (error) {
+                if (errEl) {
+                  errEl.hidden = false;
+                  errEl.textContent = "Не удалось сохранить: " + methodistApiErrorRu(error.message || error);
+                }
+              });
           });
-        }
+        });
+        tbody.querySelectorAll(".mo-account-toggle").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            var row = btn.closest("tr");
+            if (!row) return;
+            var userId = row.getAttribute("data-user-id");
+            var active = row.querySelector(".mo-account-active") ? row.querySelector(".mo-account-active").checked : true;
+            fetch("/api/methodist/accounts/" + encodeURIComponent(userId), {
+              method: "PATCH",
+              headers: Object.assign({ "Content-Type": "application/json" }, methodistMoAccountsHeaders()),
+              body: JSON.stringify({ active: !active }),
+            })
+              .then(function (response) {
+                return response.json().then(function (body) {
+                  if (!response.ok) throw new Error(body.detail || response.status);
+                  return body;
+                });
+              })
+              .then(function () {
+                if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
+              })
+              .catch(function (error) {
+                if (errEl) {
+                  errEl.hidden = false;
+                  errEl.textContent = "Не удалось изменить статус: " + methodistApiErrorRu(error.message || error);
+                }
+              });
+          });
+        });
       })
-      .catch(function (e) {
+      .catch(function (error) {
         if (errEl) {
           errEl.hidden = false;
-          errEl.textContent = "Не удалось загрузить MIS·КЗ: " + methodistApiErrorRu(e.message || e);
+          errEl.textContent = "Не удалось загрузить учётки: " + methodistApiErrorRu(error.message || error);
         }
       })
       .finally(function () {
@@ -33223,6 +32933,13 @@
       misKzRefresh.setAttribute("data-wired", "1");
       misKzRefresh.addEventListener("click", function () {
         if (typeof loadMethodistMisKzPanel === "function") loadMethodistMisKzPanel();
+      });
+    }
+    var moAccountCreate = document.getElementById("mo-account-create");
+    if (moAccountCreate && !moAccountCreate.getAttribute("data-wired")) {
+      moAccountCreate.setAttribute("data-wired", "1");
+      moAccountCreate.addEventListener("click", function () {
+        if (typeof createMethodistMoAccount === "function") createMethodistMoAccount();
       });
     }
     var misKzReportClose = document.getElementById("methodist-mis-kz-report-close");

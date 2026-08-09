@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-070604Z-mo-reg55-wh"
+BUILD_VERSION = "2026-08-09-071155Z-mo-reg55-merge"
 
 
 def _app_version() -> str:
@@ -8661,10 +8661,22 @@ def _verify_key_admin_guard(request: "Request") -> None:
 
 def _require_methodist_auth(request: "Request") -> None:
     from clinical_knowledge.feedback_store import is_methodist_authenticated, methodist_auth_enabled
+    from clinical_knowledge.mo_app_accounts import path_allowed_for_access, resolve_app_session
     from clinical_knowledge.mo_expert_auth import (
         expert_path_allowed,
         resolve_expert_session,
     )
+
+    app_user = resolve_app_session(request.headers)
+    if app_user:
+        path = request.url.path
+        if not path_allowed_for_access(path, app_user.get("mo_access")):
+            raise HTTPException(
+                status_code=403,
+                detail="Недостаточно прав для этого раздела.",
+            )
+        request.state.mo_app_user = app_user  # type: ignore[attr-defined]
+        return
 
     expert = resolve_expert_session(request.headers)
     if expert:
@@ -10668,6 +10680,110 @@ def api_expert_status(request: "Request") -> dict:
     return out
 
 
+def _require_accounts_admin(request: "Request") -> None:
+    from clinical_knowledge.feedback_store import is_methodist_authenticated, methodist_auth_enabled
+
+    app_user = _mo_app_user(request)
+    if app_user and str(app_user.get("role") or "") == "admin":
+        request.state.mo_app_user = app_user  # type: ignore[attr-defined]
+        return
+    if methodist_auth_enabled() and is_methodist_authenticated(request.headers):
+        return
+    raise HTTPException(status_code=403, detail="Только администратору.")
+
+
+@app.get("/api/methodist/accounts")
+def api_methodist_accounts_list(request: "Request") -> dict:
+    _require_accounts_admin(request)
+    from clinical_knowledge.mo_app_accounts import list_users
+
+    return list_users()
+
+
+@app.post("/api/methodist/accounts")
+def api_methodist_accounts_create(request: "Request", body: dict[str, Any]) -> dict:
+    _require_accounts_admin(request)
+    from clinical_knowledge.mo_app_accounts import upsert_user
+
+    try:
+        return upsert_user(
+            login=str(body.get("login") or ""),
+            password=str(body.get("password") or ""),
+            display_name=str(body.get("display_name") or ""),
+            role=str(body.get("role") or "methodist"),
+            mo_access=str(body.get("mo_access") or "reports"),
+            reports_min_date=body.get("reports_min_date"),
+            active=bool(body.get("active", True)),
+        )
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.patch("/api/methodist/accounts/{user_id}")
+def api_methodist_accounts_patch(
+    user_id: str,
+    request: "Request",
+    body: dict[str, Any],
+) -> dict:
+    _require_accounts_admin(request)
+    from clinical_knowledge.mo_app_accounts import upsert_user
+
+    try:
+        return upsert_user(
+            user_id=str(user_id),
+            login=str(body.get("login") or ""),
+            password=body.get("password"),
+            display_name=str(body.get("display_name") or ""),
+            role=str(body.get("role") or "methodist"),
+            mo_access=str(body.get("mo_access") or "reports"),
+            reports_min_date=body.get("reports_min_date"),
+            active=bool(body.get("active", True)),
+        )
+    except ValueError as exc:
+        code = str(exc)
+        status = 404 if code == "user_not_found" else 422
+        raise HTTPException(status_code=status, detail=code) from exc
+
+
+@app.post("/api/methodist/account/login")
+def api_methodist_account_login(body: dict[str, Any]) -> dict:
+    from clinical_knowledge.mo_app_accounts import login_user
+
+    try:
+        return login_user(
+            login=str(body.get("login") or ""),
+            password=str(body.get("password") or ""),
+        )
+    except PermissionError as exc:
+        raise HTTPException(status_code=401, detail="Неверный логин или пароль.") from exc
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.post("/api/methodist/account/logout")
+def api_methodist_account_logout(request: "Request") -> dict:
+    from clinical_knowledge.mo_app_accounts import SESSION_HEADER, logout_user
+
+    token = (request.headers.get(SESSION_HEADER) or request.headers.get("X-Methodist-Session") or "").strip()
+    return logout_user(token)
+
+
+@app.get("/api/methodist/account/status")
+def api_methodist_account_status(request: "Request") -> dict:
+    from clinical_knowledge.mo_app_accounts import resolve_app_session
+
+    out: dict[str, Any] = {"ok": True, "authenticated": False}
+    session = resolve_app_session(request.headers)
+    if session:
+        out["authenticated"] = True
+        out["login"] = session.get("login")
+        out["display_name"] = session.get("display_name")
+        out["role"] = session.get("role")
+        out["mo_access"] = session.get("mo_access")
+        out["reports_min_date"] = session.get("reports_min_date")
+    return out
+
+
 @app.get("/api/methodist/bootstrap")
 def api_methodist_bootstrap() -> dict:
     """Автовход для on-prem: токен и инициалы из env (только при METHODIST_UI_AUTO_LOGIN=1)."""
@@ -10988,10 +11104,22 @@ def api_methodist_mis_kz_case_detail(
     return result
 
 
+def _mo_app_user(request: "Request") -> dict[str, Any] | None:
+    user = getattr(request.state, "mo_app_user", None)
+    if user:
+        return user
+    from clinical_knowledge.mo_app_accounts import resolve_app_session
+
+    return resolve_app_session(request.headers)
+
+
 def _mo_actor(request: "Request") -> str:
     from clinical_knowledge.feedback_store import methodist_default_reviewer
     from clinical_knowledge.mo_expert_auth import resolve_expert_session
 
+    app_user = _mo_app_user(request)
+    if app_user:
+        return str(app_user.get("actor") or f"user:{app_user.get('login')}")[:120]
     expert = getattr(request.state, "mo_expert", None) or resolve_expert_session(request.headers)
     if expert:
         return str(expert.get("actor") or f"expert:{expert.get('login')}")[:120]
@@ -11007,6 +11135,11 @@ def _mo_actor(request: "Request") -> str:
 def _mo_role(request: "Request") -> str:
     from clinical_knowledge.mo_expert_auth import resolve_expert_session
 
+    app_user = _mo_app_user(request)
+    if app_user:
+        if str(app_user.get("mo_access") or "reports") == "reports":
+            return "expert"
+        return str(app_user.get("role") or "methodist")
     expert = getattr(request.state, "mo_expert", None) or resolve_expert_session(request.headers)
     if expert:
         return "expert"
@@ -11419,12 +11552,14 @@ def api_methodist_mo_daily_report(
     response: "Response" = None,
 ) -> dict:
     _require_methodist_auth(request)
+    from clinical_knowledge.mo_app_accounts import user_reports_min_date
     from clinical_knowledge.mo_backend import build_daily_report, record_access
     from clinical_knowledge.mo_expert_auth import reports_min_date
 
     role = _mo_role(request)
+    app_user = _mo_app_user(request)
     if role == "expert":
-        min_day = reports_min_date()
+        min_day = user_reports_min_date(app_user) if app_user else reports_min_date()
         if report_date < min_day:
             raise HTTPException(
                 status_code=403,
@@ -12367,8 +12502,12 @@ def api_methodist_mo_health(request: "Request") -> dict:
 @app.get("/api/methodist/mo/capabilities")
 def api_methodist_mo_capabilities(request: "Request") -> dict:
     _require_methodist_auth(request)
+    from clinical_knowledge.mo_app_accounts import capabilities_for_user
     from clinical_knowledge.mo_backend import build_mo_capabilities
 
+    app_user = _mo_app_user(request)
+    if app_user:
+        return capabilities_for_user(app_user)
     return build_mo_capabilities(_mo_role(request))
 
 
@@ -12462,10 +12601,14 @@ def api_methodist_mo_scoring_method(request: "Request") -> dict:
 @app.get("/api/methodist/mo/reports")
 def api_methodist_mo_reports(request: "Request") -> dict:
     _require_methodist_auth(request)
+    from clinical_knowledge.mo_app_accounts import user_reports_min_date
     from clinical_knowledge.mo_backend import build_reports
     from clinical_knowledge.mo_expert_auth import reports_min_date
 
-    min_date = reports_min_date() if _mo_role(request) == "expert" else None
+    app_user = _mo_app_user(request)
+    min_date = None
+    if _mo_role(request) == "expert":
+        min_date = user_reports_min_date(app_user) if app_user else reports_min_date()
     return build_reports(min_date=min_date)
 
 

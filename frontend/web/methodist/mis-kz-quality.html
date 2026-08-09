@@ -274,7 +274,13 @@
 
   <section class="auth" id="auth" hidden aria-labelledby="auth-title">
     <h1 id="auth-title">Вход в МО Аналитику</h1>
-    <p>Раздел доступен методистам. Введите токен или откройте его из кабинета методиста.</p>
+    <p>Раздел доступен методистам. Войдите по логину и паролю или используйте токен из кабинета методиста.</p>
+    <label for="account-login-input">Логин</label>
+    <input id="account-login-input" type="text" autocomplete="username">
+    <label for="account-password-input">Пароль</label>
+    <input id="account-password-input" type="password" autocomplete="current-password">
+    <button class="button" id="account-login-submit">Войти по логину</button>
+    <p class="methodist-tier-hint" style="margin:1rem 0 0.5rem">или токен методиста</p>
     <label for="token-input">Токен методиста</label>
     <input id="token-input" type="password" autocomplete="off">
     <button class="button" id="token-submit">Войти</button>
