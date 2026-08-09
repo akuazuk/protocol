@@ -187,6 +187,7 @@ L4  Только PDF + список страниц из locator (last resort)
 - [x] **P3** `build_protocol_brief`: softer empty-section rules; длиннее осмысленные фразы; page links обязательны в UI
 - [x] **P4** Restyle viewer на `mo-tokens` (+ кабинет/разбор выглядят одинаково)
 - [x] **P4b** Hotfix: зарегистрировать `/mo-protocol-viewer.css` в `_SHARED_STATIC_ASSETS` (иначе 404 и «голая» страница)
+- [x] **P4c** Hotfix: на GCE не было `minzdrav_protocols` + `protocol_summaries` → sync в `/var/data/protocol_corpus` и mount в container
 - [ ] **P5** Тесты: brief cascade; viewer query params; suggest button labels; smoke 20 paths
 - [ ] **P6** Deploy GCE; handoff; обновить quality-parity (§ КП) ссылкой на этот план
 

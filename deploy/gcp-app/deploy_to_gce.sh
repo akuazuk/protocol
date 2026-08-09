@@ -44,8 +44,12 @@ ssh_cmd() {
   gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="$1"
 }
 
+CORPUS_REMOTE="${CORPUS_REMOTE:-/var/data/protocol_corpus}"
+# 1=sync corpus when local PDFs/summaries exist; 0=reuse whatever is already on the VM
+SYNC_PROTOCOL_CORPUS="${SYNC_PROTOCOL_CORPUS:-1}"
+
 echo "[1/5] prepare remote dir"
-ssh_cmd "sudo mkdir -p '$REMOTE_DIR' /var/data/medical_exams && sudo chown -R \"\$(whoami):\$(whoami)\" '$REMOTE_DIR'"
+ssh_cmd "sudo mkdir -p '$REMOTE_DIR' /var/data/medical_exams '$CORPUS_REMOTE' && sudo chown -R \"\$(whoami):\$(whoami)\" '$REMOTE_DIR' '$CORPUS_REMOTE'"
 
 echo "[2/5] build staging env (no values printed)"
 python3 - <<'PY'
@@ -122,15 +126,34 @@ gcloud compute scp /tmp/protocol-gcp-staging.env "${VM}:${ENV_REMOTE}" --zone="$
 rm -f /tmp/protocol-gcp-staging.env
 ssh_cmd "chmod 600 '$ENV_REMOTE'"
 
+if [[ "$SYNC_PROTOCOL_CORPUS" == "1" ]] \
+  && [[ -d minzdrav_protocols ]] \
+  && [[ -d data/protocol_summaries/json ]] \
+  && [[ -f data/protocol_catalog.jsonl ]]; then
+  echo "[3b/5] sync protocol corpus (PDF + summaries) → ${CORPUS_REMOTE}"
+  bash deploy/gcp-app/sync_protocol_corpus.sh
+else
+  echo "[3b/5] skip protocol corpus sync (SYNC_PROTOCOL_CORPUS=${SYNC_PROTOCOL_CORPUS})"
+fi
+
 echo "[4/5] docker build on VM (may take several minutes)"
 ssh_cmd "cd '$REMOTE_DIR' && sudo docker build -f deploy/gcp-app/Dockerfile -t '$IMAGE_TAG' ."
 
-echo "[5/5] run container"
+HAS_CORPUS="$(ssh_cmd "if [[ -d '$CORPUS_REMOTE/minzdrav_protocols' && -d '$CORPUS_REMOTE/protocol_summaries/json' && -f '$CORPUS_REMOTE/protocol_catalog.jsonl' ]]; then echo yes; else echo no; fi")"
+CORPUS_MOUNTS=""
+if [[ "$HAS_CORPUS" == "yes" ]]; then
+  echo "[5/5] run container with protocol corpus mounts"
+  CORPUS_MOUNTS="-v $CORPUS_REMOTE/minzdrav_protocols:/app/minzdrav_protocols:ro -v $CORPUS_REMOTE/protocol_summaries:/app/data/protocol_summaries:ro -v $CORPUS_REMOTE/protocol_catalog.jsonl:/app/data/protocol_catalog.jsonl:ro"
+else
+  echo "[5/5] run container WITHOUT protocol corpus (navigator will be empty; sync with deploy/gcp-app/sync_protocol_corpus.sh)" >&2
+fi
+
 ssh_cmd "sudo docker rm -f '$CONTAINER' >/dev/null 2>&1 || true
 sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
   -p 8000:8000 \
   --env-file '$ENV_REMOTE' \
   -v /var/data:/var/data \
+  $CORPUS_MOUNTS \
   -e MO_DATA_ROOT=/var/data/medical_exams \
   -e PORT=8000 \
   '$IMAGE_TAG'
