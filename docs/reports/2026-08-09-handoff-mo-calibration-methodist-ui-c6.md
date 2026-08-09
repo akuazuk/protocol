@@ -15,7 +15,8 @@ Date: 2026-08-09
 ## Completed
 
 - Added a full-width MO-style labeling page at `/methodist/calibration`.
-- Linked it from both the methodist cabinet and MO Analytics sidebar.
+- Linked it from the methodist cabinet without expanding the six-item MO
+  Analytics navigation.
 - Added protected GET/PUT APIs for the frozen C6 review pack.
 - Restricted data and writes to methodist, lead, and admin roles.
 - Added server-owned reviewer identity and timestamp.
@@ -43,7 +44,7 @@ Date: 2026-08-09
 
 - Focused UI/pack/cabinet tests: 12 passed.
 - Final calibration, account, auth, contract, and blind regression selection:
-  41 passed.
+  43 passed, including the six-item MO navigation contract.
 - JavaScript syntax, Python compile, diff check, and IDE lint passed.
 - API tests verify authentication, role denial, `no-store`, save, and unseal gate.
 - Filesystem tests verify `0600` labels/audit and absence of comparison before gate.

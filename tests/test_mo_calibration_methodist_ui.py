@@ -222,7 +222,5 @@ def test_calibration_page_and_assets_are_served(c6_root: Path) -> None:
 def test_methodist_navigation_links_to_calibration() -> None:
     root = Path(__file__).resolve().parents[1]
     cabinet = (root / "frontend/web/doctor/index.html").read_text(encoding="utf-8")
-    analytics = (root / "frontend/web/methodist/mis-kz-quality.html").read_text(encoding="utf-8")
     assert 'id="methodist-nav-calibration"' in cabinet
     assert 'href="/methodist/calibration"' in cabinet
-    assert 'href="/methodist/calibration"' in analytics
