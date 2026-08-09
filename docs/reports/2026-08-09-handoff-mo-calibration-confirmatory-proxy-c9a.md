@@ -44,5 +44,8 @@
 
 ## Следующий безопасный шаг
 
+Полная инструкция для агента на другом компьютере:
+`docs/reports/2026-08-09-handoff-mo-calibration-continuation-agent.md`.
+
 Дождаться GCE confirmatory completion, скачать PHI-safe aggregates, обновить
-отчёт и открыть/дополнить PR. Human labeling остаётся отдельным gate.
+отчёт и дополнить PR #113. Human labeling остаётся отдельным gate.
