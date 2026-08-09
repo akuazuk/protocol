@@ -1017,6 +1017,42 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
             if states.get(r["case_id"], {}).get("status", "new")
             not in {"false_positive", "resolved", "closed"}
         ]
+    shadow_attention_only = str(params.get("shadow_attention_only") or "").lower() in {
+        "1",
+        "true",
+        "yes",
+    }
+    queue_only = str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}
+    shadow_index: dict[str, Any] = {}
+    if shadow_attention_only or queue_only or str(
+        params.get("include_shadow_dx_plan") or ""
+    ).lower() in {"1", "true", "yes"}:
+        try:
+            from .mo_shadow_dx_plan import load_shadow_index
+
+            days = {
+                str(rec.get("date") or rec.get("visit_date") or "")[:10]
+                for rec in filtered
+                if str(rec.get("date") or rec.get("visit_date") or "")
+            }
+            for day in sorted(days):
+                if len(day) == 10:
+                    shadow_index.update(load_shadow_index(day))
+        except Exception:  # noqa: BLE001
+            shadow_index = {}
+    if shadow_attention_only:
+        from .mo_shadow_dx_plan import case_has_shadow_attention
+
+        kept = []
+        for rec in filtered:
+            shadow = (
+                shadow_index.get(str(rec.get("case_id") or ""))
+                or shadow_index.get(str(rec.get("visit_id") or ""))
+                or shadow_index.get(str(rec.get("mis_id") or ""))
+            )
+            if case_has_shadow_attention(shadow):
+                kept.append(rec)
+        filtered = kept
     sort_map = {
         "date": "date",
         "overall": "overall_pct",
@@ -1062,6 +1098,17 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
             public["icd_visit_status_title_ru"] = chip_title_ru(icd_status)
         except Exception:  # noqa: BLE001
             pass
+        shadow = (
+            shadow_index.get(str(rec.get("case_id") or ""))
+            or shadow_index.get(str(rec.get("visit_id") or ""))
+            or shadow_index.get(str(rec.get("mis_id") or ""))
+        )
+        if shadow:
+            public["shadow_dx_plan"] = {
+                "available": bool(shadow.get("available")),
+                "case_attention_band": shadow.get("case_attention_band") or "none",
+                "disclaimer_ru": shadow.get("disclaimer_ru"),
+            }
         rows.append({**public, "crm": crm})
     if include_patient_id:
         try:

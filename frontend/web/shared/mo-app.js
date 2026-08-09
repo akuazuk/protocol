@@ -21,7 +21,7 @@
       page: "yesterday", period: "yesterday", compare: "previous", methodology: "v4", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       reg55Band: "", reg55Pack: "", icdVisitStatus: "",
       sortBy: "date", sortDir: "desc",
-      zoneFilter: "", zoneBandFilter: "", attentionOnly: false, kpStatus: "", historyTier: "",
+      zoneFilter: "", zoneBandFilter: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
       doctorZoneMetric: "zone1",
       caseNavIds: [],
       protocolSuggest: null,
@@ -458,6 +458,7 @@
       if (state.zoneFilter) q.set("zone", state.zoneFilter);
       if (state.zoneBandFilter) q.set("zone_band", state.zoneBandFilter);
       if (state.attentionOnly) q.set("attention_only", "1");
+      if (state.shadowAttentionOnly) q.set("shadow_attention_only", "1");
       if (state.kpStatus) q.set("kp_status", state.kpStatus);
       if (state.historyTier) q.set("history_tier", state.historyTier);
       if (state.icdVisitStatus) q.set("icd_visit_status", state.icdVisitStatus);
@@ -1026,6 +1027,7 @@
       state.zoneFilter = q.get("zone") || "";
       state.zoneBandFilter = q.get("zone_band") || "";
       state.attentionOnly = q.get("attention_only") === "1" || q.get("attention_only") === "true";
+      state.shadowAttentionOnly = q.get("shadow_attention_only") === "1" || q.get("shadow_attention_only") === "true";
       state.kpStatus = q.get("kp_status") || "";
       state.historyTier = q.get("history_tier") || "";
       state.icdVisitStatus = q.get("icd_visit_status") || "";
@@ -2133,8 +2135,14 @@
       if (band && band !== "compliant_min" && reason.indexOf("№55") < 0) {
         reason = "№55 " + reg55BandLabelRu(band) + (reason ? " · " + reason : "");
       }
+      var shadow = raw.shadow_dx_plan || item.shadow_dx_plan || {};
+      var shadowBand = shadow.case_attention_band || "";
+      var shadowBadge = (shadowBand === "poor" || shadowBand === "critical")
+        ? ('<br><span class="' + shadowBandClass(shadowBand) + '" title="' +
+          esc(shadow.disclaimer_ru || "shadow") + '">' + esc(shadowBandLabel(shadowBand)) + "</span>")
+        : "";
       return '<tr tabindex="0" class="' + reg55RowClass(band).trim() + '" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
-        esc(tone) + '">' + esc(priority) + '</span></td><td>' + esc(layer || "-") +
+        esc(tone) + '">' + esc(priority) + '</span>' + shadowBadge + '</td><td>' + esc(layer || "-") +
         '</td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
@@ -2512,6 +2520,44 @@
           esc(pack.pack_id) + '">Открыть / исправить</button></div></article>';
       }).join("") + '</div>';
     }
+    function shadowBandLabel(band) {
+      if (band === "critical") return "Критично (shadow)";
+      if (band === "poor") return "Плохо (shadow)";
+      return "Без красного флага";
+    }
+    function shadowBandClass(band) {
+      if (band === "critical") return "status bad";
+      if (band === "poor") return "status warn";
+      return "status good";
+    }
+    function renderShadowDxPlan(shadow) {
+      shadow = shadow || {};
+      var disclaimer = shadow.disclaimer_ru || "Клиническая калибровка (shadow) - не официальная оценка";
+      if (!shadow.available) {
+        return '<div class="detail-block mo-shadow-dx-plan">' +
+          "<h3>" + esc(disclaimer) + "</h3>" +
+          '<p class="card-sub">' + esc(shadow.reason || "Ещё не посчитано для этого случая") + "</p></div>";
+      }
+      function line(title, block) {
+        block = block || {};
+        var att = block.attention || {};
+        var band = att.band || "none";
+        var score = block.score_pct != null ? Math.round(Number(block.score_pct)) + "%" : "-";
+        var summary = block.summary_ru || "";
+        var ens = block.ensemble_pct != null ? (" · ensemble " + Math.round(Number(block.ensemble_pct)) + "%") : "";
+        return '<div class="mo-shadow-endpoint"><b>' + esc(title) + "</b> · " +
+          '<span class="' + shadowBandClass(band) + '">' + esc(shadowBandLabel(band)) + "</span> · " +
+          esc(score) + esc(ens) +
+          (summary ? '<p class="card-sub">' + esc(summary) + "</p>" : "") +
+          "</div>";
+      }
+      return '<div class="detail-block mo-shadow-dx-plan">' +
+        "<h3>" + esc(disclaimer) + "</h3>" +
+        '<p class="card-sub">Красное только при poor/critical после смягчения порогов. Official scores не меняются.</p>' +
+        line("Диагноз", shadow.dx) +
+        line("План", shadow.plan) +
+        "</div>";
+    }
     function renderZonesHero(zones) {
       if (!zones || !zones.ok || zones.skipped) return "";
       var zoneMap = { zone1: "documentation", zone2a: "diagnosis", zone2b: "plan" };
@@ -2730,6 +2776,7 @@
       var confidenceInfo = deriveConfidence(data, record, axes);
       var sourceDocument = data.document || {};
       var llmJudge = data.llm_action_judge || {};
+      var shadowDxPlan = data.shadow_dx_plan || {};
       var zones = data.zones || {};
       var useZonesUi = !!(zones && zones.ok && !zones.skipped);
       var crmStatus = crm.status || "new";
@@ -2804,6 +2851,7 @@
           '<div class="case-workspace-decision">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
+          renderShadowDxPlan(shadowDxPlan) +
           renderReviewBrief(data.review_brief, data.case_narrative) +
           renderFindingsCompact(findings, crm, llmJudge) +
           renderZonesCriteriaDetails(zones) +
@@ -2820,6 +2868,7 @@
           '</div><div class="case-workspace-decision">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderPatientHistory(data.patient_history) +
+          renderShadowDxPlan(shadowDxPlan) +
           renderLlmActionJudge(llmJudge, sourceDocument, item) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
           renderFindingsCompact(findings, crm, llmJudge) +
@@ -4437,6 +4486,19 @@
         showToast("Применён фильтр: только критические");
         filtersChanged();
       });
+      var shadowOnlyBtn = $("queue-shadow-attention-only");
+      if (shadowOnlyBtn) {
+        shadowOnlyBtn.addEventListener("click", function () {
+          state.shadowAttentionOnly = !state.shadowAttentionOnly;
+          shadowOnlyBtn.classList.toggle("active", state.shadowAttentionOnly);
+          showToast(
+            state.shadowAttentionOnly
+              ? "Фильтр: shadow плохо/критично (не официальная оценка)"
+              : "Фильтр shadow снят"
+          );
+          filtersChanged();
+        });
+      }
       $("yesterday-findings-list").addEventListener("click", function (event) {
         var caseButton = event.target.closest("[data-open-case]");
         if (caseButton) {

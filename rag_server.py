@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-154205Z-mo-calibration-proxy"
+BUILD_VERSION = "2026-08-09-184637Z-shadow-dx-plan-b"
 
 
 def _app_version() -> str:
@@ -11723,6 +11723,7 @@ def api_methodist_mo_cases(
     zone: str = Query("", max_length=32),
     zone_band: str = Query("", max_length=16),
     attention_only: bool = Query(False),
+    shadow_attention_only: bool = Query(False),
     kp_status: str = Query("", max_length=32),
     history_tier: str = Query("", max_length=64),
     reg55_point: str = Query("", max_length=500),
@@ -11855,6 +11856,12 @@ def api_methodist_mo_case_detail(
         result["llm_action_judge"] = {
             "available": False,
             "shadow": True,
+            "reason": skip_ru,
+        }
+        result["shadow_dx_plan"] = {
+            "available": False,
+            "shadow": True,
+            "official_score": False,
             "reason": skip_ru,
         }
         result["protocol_suggest"] = {"ok": True, "available": False, "items": [], "reason": skip_ru}
@@ -12048,6 +12055,22 @@ def api_methodist_mo_case_detail(
                 "available": False,
                 "shadow": True,
                 "reason": "LLM-оценка action-очереди недоступна",
+            }
+        try:
+            from clinical_knowledge.mo_shadow_dx_plan import load_shadow_for_case
+
+            record = result.get("record") if isinstance(result.get("record"), dict) else {}
+            visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
+            result["shadow_dx_plan"] = load_shadow_for_case(
+                case_id,
+                visit_date=visit_date,
+            )
+        except Exception:
+            result["shadow_dx_plan"] = {
+                "available": False,
+                "shadow": True,
+                "official_score": False,
+                "reason": "Shadow Dx/Plan недоступен",
             }
     role = _mo_role(request)
     record = result.get("record") if isinstance(result.get("record"), dict) else {}
