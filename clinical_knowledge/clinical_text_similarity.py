@@ -18,9 +18,10 @@ from typing import Any
 
 # МКБ-10 латиница (A00, J20.9, Z00.0)
 _ICD_CODE_RE = re.compile(r"\b[A-Za-z]\d{2}(?:\.\d{1,4})?\b")
-# Ведущий «A00.0 - » / «A00.0:» в title_ru выгрузки
+# Ведущий «A00.0 - » / «A00.0:» в title_ru выгрузки.
+# Дефисы/тире через \u escapes - normalize_ui_dashes не должен ломать character class.
 _LEADING_CODE_TITLE_RE = re.compile(
-    r"^\s*[A-Za-z]\d{2}(?:\.\d{1,4})?\s*[-- - :]\s*",
+    r"^\s*[A-Za-z]\d{2}(?:\.\d{1,4})?\s*(?:[-:\u2013\u2014])\s*",
     re.UNICODE,
 )
 _TOKEN_RE = re.compile(r"[а-яёa-z0-9]{3,}", re.IGNORECASE)
