@@ -8,7 +8,8 @@ Date: 2026-08-09
 - branch: `cursor/mo-score-calibration-methodist-c6-pc1`
 - worktree: `/private/tmp/protocol-task-mo-score-calibration-methodist-c6-pc1`
 - base: `e6b784323e5c7a954f2829d0fe1c77af27ec3857`
-- HEAD/PR: pending
+- implementation HEAD: `39258a7e`
+- PR: https://github.com/akuazuk/protocol/pull/110
 - merge/deploy: not performed
 
 ## Completed
