@@ -8,9 +8,13 @@
   <link rel="stylesheet" href="/protocol-chrome-tabs.css?v=__BUILD_VERSION__" />
   <link rel="stylesheet" href="/mo-tokens.css?v=__BUILD_VERSION__" />
   <link rel="stylesheet" href="/mo-protocol-viewer.css?v=__BUILD_VERSION__" />
+  <script>
+    if (new URLSearchParams(location.search).get("from") === "mo") {
+      document.documentElement.classList.add("pv-from-mo");
+    }
+  </script>
 </head>
 <body class="app-tab-search pv-mo">
-  <script>if (new URLSearchParams(location.search).get("from")==="mo") document.documentElement.classList.add("pv-from-mo");</script>
   <div class="app-chrome" id="app-chrome">
     <div class="app-chrome__masthead">
       <a class="app-chrome__brand" href="/" aria-label="Protocol - на главную">
@@ -19,15 +23,9 @@
     </div>
     <div class="app-chrome__journal">
       <nav class="app-main-tabs app-main-tabs--journal app-main-tabs--primary" aria-label="Раздел приложения">
-        <a href="/#consult-review" class="app-main-tab" id="tab-consult-review" title="Проверка консультативного заключения">
-          <span class="app-main-tab-title">Проверка</span>
-        </a>
-        <a href="/#search" class="app-main-tab" id="tab-main-search" aria-current="page" title="Поиск клинических протоколов">
-          <span class="app-main-tab-title">Поиск</span>
-        </a>
-        <a href="/patient.html" class="app-main-tab app-main-tab--patient" id="tab-patient-b2c" title="После приема - понять своё заключение">
-          <span class="app-main-tab-title">После приема</span>
-        </a>
+        <a href="/#consult-review" class="app-main-tab"><span class="app-main-tab-title">Проверка</span></a>
+        <a href="/#search" class="app-main-tab" aria-current="page"><span class="app-main-tab-title">Поиск</span></a>
+        <a href="/patient.html" class="app-main-tab app-main-tab--patient"><span class="app-main-tab-title">После приема</span></a>
       </nav>
     </div>
   </div>
@@ -39,7 +37,7 @@
     </div>
   </header>
   <main class="pv-main" id="pv-root">
-    <p class="pv-loading" id="pv-status">Загрузка выводов протокола…</p>
+    <p class="pv-loading" id="pv-status">Загрузка протокола…</p>
   </main>
   <script>
   (function () {
@@ -47,433 +45,319 @@
     var RESET_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M18 6L6 18M6 6l12 12"/></svg>';
     var PDF_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5"/></svg>';
 
+    var state = { mode: "study", reader: null, brief: null, path: "", q: "" };
+
     function qp(name) { return new URLSearchParams(location.search).get(name) || ""; }
     function esc(s) { return String(s || "").replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;"); }
     function escAttr(s) { return esc(s); }
     function escRx(s) { return String(s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
     function norm(s) { return String(s || "").toLowerCase().replace(/ё/g, "е"); }
-    function pdfHref(path, page) { var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || ""); var n = Number(page); return (page && n > 0) ? (u + "#page=" + n) : u; }
+    function pdfHref(path, page) {
+      var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || "");
+      var n = Number(page);
+      return (page && n > 0) ? (u + "#page=" + n) : u;
+    }
     function hl(text, terms) {
       var e = esc(text);
       var list = (Array.isArray(terms) ? terms : [terms]).map(function (t) { return String(t || "").trim(); }).filter(function (t) { return t.length >= 3; });
       if (!list.length) return e;
       list.sort(function (a, b) { return b.length - a.length; });
-      try { return e.replace(new RegExp("(" + list.map(escRx).join("|") + ")", "gi"), '<mark class="pv-mark">$1</mark>'); } catch (err) { return e; }
+      try { return e.replace(new RegExp("(" + list.map(escRx).join("|") + ")", "gi"), '<mark class="pv-mark">$1</mark>'); }
+      catch (err) { return e; }
     }
     function queryTerms(q) {
       return norm(q).split(/[^a-zа-я0-9]+/i).filter(function (t) { return t.length >= 3; });
     }
 
-    /* ---------- BRIEF (primary view) ---------- */
-    function fetchBrief(path, query, icd) {
-      var u = "/api/protocol-brief?path=" + encodeURIComponent(path) + "&query=" + encodeURIComponent(query || "");
-      if (icd) u += "&icd=" + encodeURIComponent(icd);
+    function fetchReader(path, query) {
+      var u = "/api/protocol-reader?path=" + encodeURIComponent(path) + "&query=" + encodeURIComponent(query || "");
       return fetch(u, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
     }
-    function renderMeta(brief) {
-      var el = document.getElementById("pv-meta"), out = "";
-      var cond = brief.condition;
-      if (cond && cond.display_label) out += '<span class="pv-chip pv-chip--icd">' + esc(cond.display_label) + "</span>";
-      (brief.care_setting_labels || []).forEach(function (c) { out += '<span class="pv-chip pv-chip--care">' + esc(c) + "</span>"; });
-      var srcTitle = brief.source === "summary" ? "Структурная карточка протокола с дословными цитатами"
-        : brief.source === "mixed" ? "Карточка протокола + ключевые фразы из текста"
-        : brief.source === "source_view" ? "Оглавление и фрагменты из текста протокола"
-        : "Ключевые фразы из текста протокола";
-      var srcLabel = brief.source === "rich_chunks" || brief.source === "source_view" ? "из текста" : "из карточки";
-      out += '<span class="pv-chip pv-chip--src" title="' + escAttr(srcTitle) + '">' + esc(srcLabel) + "</span>";
+    function fetchBrief(path, query) {
+      var u = "/api/protocol-brief?path=" + encodeURIComponent(path) + "&query=" + encodeURIComponent(query || "");
+      return fetch(u, { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    }
+
+    function renderMeta(sourceLabel, titleHint) {
+      var el = document.getElementById("pv-meta");
+      var out = "";
+      if (sourceLabel) out += '<span class="pv-chip pv-chip--src" title="Источник текста">' + esc(sourceLabel) + "</span>";
+      if (titleHint) out += '<span class="pv-chip">' + esc(titleHint) + "</span>";
       el.innerHTML = out;
     }
-    function entChips(brief, sectionId) {
-      var kind = sectionId === "treatment" ? "drugs" : (sectionId === "exams" ? "exams" : null);
-      if (!kind) return "";
-      var list = ((brief.entities || {})[kind] || []).slice(0, 12);
-      if (!list.length) return "";
-      var cls = kind === "exams" ? "pv-ent__chip pv-ent__chip--exam" : "pv-ent__chip";
-      var out = '<div class="pv-ent">';
-      list.forEach(function (t) { out += '<span class="' + cls + '">' + esc(t) + "</span>"; });
-      return out + "</div>";
-    }
-    function tagClass(tag) {
-      var t = norm(tag);
-      if (t.indexOf("тяжесть") === 0 || t.indexOf("исключа") >= 0) return "pv-tag--danger";
-      if (t.indexOf("обязательн") >= 0) return "pv-tag--req";
-      if (t.indexOf("по показ") >= 0 || t.indexOf("дополнительн") >= 0) return "pv-tag--opt";
-      return "pv-tag--type";
-    }
-    function tagsHtml(tags) {
-      if (!tags || !tags.length) return "";
-      var out = '<div class="pv-point__tags">';
-      tags.forEach(function (t) { if (t) out += '<span class="pv-tag ' + tagClass(t) + '">' + esc(t) + "</span>"; });
-      return out + "</div>";
-    }
-    function detailHtml(detail) {
-      if (!detail || !detail.length) return "";
-      var out = '<dl class="pv-point__detail">';
-      detail.forEach(function (d) {
-        if (!d || !d.value) return;
-        out += "<dt>" + esc(d.label || "") + "</dt><dd>" + esc(d.value) + "</dd>";
-      });
-      return out + "</dl>";
-    }
-    function pointHtml(path, pt, idx, sectionId, terms, anchorPage) {
-      var pageHit = anchorPage && String(pt.page_start || "") === String(anchorPage);
-      var html = '<article class="pv-point' + (pageHit ? ' is-page-hit' : '') + '" data-pv-point data-sec="' + escAttr(sectionId) + '"' +
-        (pt.page_start ? ' data-page="' + escAttr(pt.page_start) + '"' : '') + '>';
-      html += tagsHtml(pt.tags);
-      var raw = String(pt.text || "");
-      var long = raw.length > 420;
-      html += '<p class="pv-point__text' + (long ? ' is-clamped' : '') + '" data-raw="' + escAttr(raw) + '">' + hl(raw, terms) + "</p>";
-      if (long) html += '<button type="button" class="pv-point__more" data-expand-point>Показать полностью</button>';
-      html += detailHtml(pt.detail);
-      var meta = "";
-      if (pt.page_start) meta += '<a class="pv-point__page" href="' + escAttr(pdfHref(path, pt.page_start)) + '" target="_blank" rel="noopener">Оригинал · стр. ' + esc(pt.page_start) + "</a>";
-      if (pt.verified) meta += '<span class="pv-point__badge" title="Цитата найдена в тексте PDF">страница сверена</span>';
-      var qid = "q_" + sectionId + "_" + idx;
-      if (pt.quote) meta += '<button type="button" class="pv-point__cite-btn" data-cite-toggle="' + qid + '">цитата</button>';
-      if (meta) html += '<div class="pv-point__meta">' + meta + "</div>";
-      if (pt.quote) html += '<blockquote class="pv-point__quote" id="' + qid + '" hidden>' + esc(pt.quote) + "</blockquote>";
-      return html + "</article>";
-    }
-    function sectionHtml(path, brief, sec, terms) {
-      var pts = sec.points || [];
-      var html = '<section class="pv-section" id="pv-sec-' + escAttr(sec.id) + '" data-sec="' + escAttr(sec.id) + '">';
-      html += '<div class="pv-section__head"><h2 class="pv-section__title">' + esc(sec.label) + '</h2><span class="pv-section__rule"></span></div>';
-      if (sec.overview) html += '<p class="pv-section__overview">' + esc(sec.overview) + "</p>";
-      html += entChips(brief, sec.id);
-      html += '<div class="pv-points">';
-      pts.forEach(function (pt, i) { html += pointHtml(path, pt, i, sec.id, terms, qp('page')); });
-      return html + "</div></section>";
-    }
-    function relatedHtml(brief) {
-      var rel = brief.related || [];
-      if (!rel.length) return "";
-      var out = '<div class="pv-related"><p class="pv-related__title">См. также - протоколы по той же группе МКБ</p><div class="pv-related__list">';
-      rel.forEach(function (r) {
-        if (!r || !r.path) return;
-        var href = "/proto-viewer.html?path=" + encodeURIComponent(r.path);
-        out += '<a class="pv-related__link" href="' + escAttr(href) + '">' + esc(r.title || r.path) + "</a>";
-      });
-      return out + "</div></div>";
-    }
-    function renderBrief(brief, path) {
-      var root = document.getElementById("pv-root");
-      var terms = queryTerms(qp("q"));
-      var shell =
+
+    function toolbarHtml(path) {
+      return '<div class="pv-modes" role="tablist" aria-label="Режим навигации">' +
+        '<button type="button" data-mode="study" class="' + (state.mode === "study" ? "is-active" : "") + '">Изучение</button>' +
+        '<button type="button" data-mode="visit" class="' + (state.mode === "visit" ? "is-active" : "") + '">Кратко</button>' +
+        "</div>" +
         '<div class="pv-toolbar">' +
         '<div class="pv-search-wrap">' +
-        '<input class="pv-search" id="pv-search" type="search" placeholder="Найти в протоколе: лекарство, обследование, диагноз…" value="' + escAttr(qp("q")) + '" autocomplete="off" />' +
-        '<button type="button" class="pv-icon-btn" id="pv-reset" title="Сбросить" aria-label="Сбросить">' + RESET_SVG + '</button>' +
-        '<button type="button" class="pv-icon-btn pv-icon-btn--go" id="pv-go" title="Найти" aria-label="Найти">' + SEARCH_SVG + '</button>' +
+        '<input class="pv-search" id="pv-search" type="search" placeholder="Найти в протоколе…" value="' + escAttr(state.q) + '" autocomplete="off" />' +
+        '<button type="button" class="pv-icon-btn" id="pv-reset" title="Сбросить" aria-label="Сбросить">' + RESET_SVG + "</button>" +
+        '<button type="button" class="pv-icon-btn pv-icon-btn--go" id="pv-go" title="Найти" aria-label="Найти">' + SEARCH_SVG + "</button>" +
         "</div>" +
-        (qp('page') ? '<a class="pv-pdf-btn pv-pdf-btn--primary" href="' + escAttr(pdfHref(path, qp('page'))) + '" target="_blank" rel="noopener">' + PDF_SVG + ' Оригинал · стр. ' + esc(qp('page')) + '</a>' : '') +
-        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path)) + '" target="_blank" rel="noopener">' + PDF_SVG + ' PDF целиком</a>' +
-        "</div>" +
-        (brief.fallback === 'source_view' ? '<div class="pv-fallback-banner">Показана навигация по тексту протокола (структурная карточка недоступна). Ссылки ведут на страницы оригинала.</div>' : '') +
-        (brief.needs_review ? '<div class="pv-review-banner">Карточка размечена автоматически и ожидает проверки методиста - сверяйтесь с текстом PDF.</div>' : '') +
-        '<div class="pv-overview" id="pv-overview" hidden></div>' +
-        '<div class="pv-layout">' +
-        '<nav class="pv-rail" id="pv-rail"><p class="pv-rail__title">Разделы</p></nav>' +
-        '<div class="pv-detail" id="pv-detail"></div>' +
-        "</div>" +
-        '<div class="pv-fulltext"><button type="button" class="pv-fulltext__toggle" id="pv-ft-toggle">' + PDF_SVG + ' Показать полный текст протокола</button><div class="pv-fulltext__body" id="pv-ft-body"></div></div>';
-      root.innerHTML = shell;
+        (qp("page") ? '<a class="pv-pdf-btn pv-pdf-btn--primary" href="' + escAttr(pdfHref(path, qp("page"))) + '" target="_blank" rel="noopener">' + PDF_SVG + " Оригинал · стр. " + esc(qp("page")) + "</a>" : "") +
+        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path)) + '" target="_blank" rel="noopener">' + PDF_SVG + " PDF целиком</a>" +
+        "</div>";
+    }
+
+    function paraHtml(path, p, terms, anchorPage) {
+      var pageHit = anchorPage && String(p.page_start || "") === String(anchorPage);
+      var raw = String(p.text || "");
+      var long = raw.length > 1100;
+      var html = '<article class="pv-para' + (pageHit ? " is-page-hit" : "") + '" data-pv-para data-sec="' + escAttr(p.section_id) + '"' +
+        (p.page_start ? ' data-page="' + escAttr(p.page_start) + '"' : "") + ' id="pv-p-' + escAttr(p.id) + '">';
+      html += '<p class="pv-para__text' + (long ? " is-clamped" : "") + '" data-raw="' + escAttr(raw) + '">' + hl(raw, terms) + "</p>";
+      if (long) html += '<button type="button" class="pv-para__more" data-expand>Показать полностью</button>';
+      var ents = p.entities || {};
+      var chips = "";
+      (ents.drugs || []).slice(0, 6).forEach(function (d) { chips += '<span class="pv-ent__chip">' + esc(d) + "</span>"; });
+      (ents.exams || []).slice(0, 6).forEach(function (d) { chips += '<span class="pv-ent__chip pv-ent__chip--exam">' + esc(d) + "</span>"; });
+      if (chips) html += '<div class="pv-ent">' + chips + "</div>";
+      var anns = p.annotations || [];
+      if (anns.length) {
+        html += '<div class="pv-ann">';
+        anns.forEach(function (a) { html += '<span class="pv-ann__chip">' + esc(a.label || a.kind || "") + "</span>"; });
+        html += "</div>";
+      }
+      html += '<div class="pv-para__meta">';
+      if (p.page_start) {
+        html += '<a class="pv-para__page" href="' + escAttr(pdfHref(path, p.page_start)) + '" target="_blank" rel="noopener">Оригинал · стр. ' + esc(p.page_start) + "</a>";
+      }
+      html += "</div></article>";
+      return html;
+    }
+
+    function renderStudy(path, reader) {
+      var root = document.getElementById("pv-root");
+      var terms = queryTerms(state.q);
+      var toc = reader.toc || [];
+      var paras = reader.paragraphs || [];
+      var bySec = {};
+      paras.forEach(function (p) {
+        if (!bySec[p.section_id]) bySec[p.section_id] = [];
+        bySec[p.section_id].push(p);
+      });
+      var html = toolbarHtml(path);
+      if (!(reader.source)) {
+        html += '<div class="pv-fallback-banner">Показаны абзацы из текста протокола. Сверяйте спорные места с PDF.</div>';
+      }
+      html += '<div class="pv-layout"><nav class="pv-rail" id="pv-rail"><p class="pv-rail__title">Разделы</p></nav><div class="pv-stream" id="pv-stream"></div></div>';
+      root.innerHTML = html;
 
       var rail = document.getElementById("pv-rail");
-      var detail = document.getElementById("pv-detail");
-      (brief.sections || []).forEach(function (sec) {
+      var stream = document.getElementById("pv-stream");
+      toc.forEach(function (sec) {
         var b = document.createElement("button");
-        b.type = "button"; b.className = "pv-rail__item"; b.setAttribute("data-rail", sec.id);
-        b.innerHTML = '<span>' + esc(sec.label) + '</span><span class="pv-rail__count">' + (sec.count || (sec.points || []).length) + "</span>";
+        b.type = "button";
+        b.className = "pv-rail__item";
+        b.setAttribute("data-rail", sec.id);
+        b.innerHTML = "<span>" + esc(sec.label) + '</span><span class="pv-rail__count">' + esc(sec.count) + "</span>";
         b.addEventListener("click", function () { jumpTo(sec.id); });
         rail.appendChild(b);
       });
-      detail.innerHTML = (brief.sections || []).map(function (sec) { return sectionHtml(path, brief, sec, terms); }).join("") + relatedHtml(brief);
 
-      // цитаты
-      detail.querySelectorAll("[data-cite-toggle]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var q = document.getElementById(btn.getAttribute("data-cite-toggle"));
-          if (!q) return;
-          q.hidden = !q.hidden;
-          btn.textContent = q.hidden ? "цитата" : "скрыть цитату";
-        });
+      var body = "";
+      toc.forEach(function (sec) {
+        var list = bySec[sec.id] || [];
+        if (!list.length) return;
+        body += '<section class="pv-section" id="pv-sec-' + escAttr(sec.id) + '" data-sec="' + escAttr(sec.id) + '">';
+        body += '<div class="pv-section__head"><h2 class="pv-section__title">' + esc(sec.label) + '</h2><span class="pv-section__rule"></span></div>';
+        list.forEach(function (p) { body += paraHtml(path, p, terms, qp("page")); });
+        body += "</section>";
       });
-      detail.querySelectorAll("[data-expand-point]").forEach(function (btn) {
+      stream.innerHTML = body || '<p class="pv-empty">Нет абзацев по запросу.</p>';
+
+      wireChrome(path);
+      wireExpand(stream);
+      applyFilter(state.q);
+      deepLink();
+    }
+
+    function renderVisit(path, brief) {
+      var root = document.getElementById("pv-root");
+      var html = toolbarHtml(path);
+      html += '<div class="pv-fallback-banner">Режим «Кратко» - сжатые выводы для приёма. Для чтения протокола переключитесь на «Изучение».</div>';
+      html += '<div class="pv-stream" id="pv-stream">';
+      (brief.sections || []).forEach(function (sec) {
+        html += '<section class="pv-section" id="pv-sec-' + escAttr(sec.id) + '"><div class="pv-section__head"><h2 class="pv-section__title">' + esc(sec.label) + '</h2><span class="pv-section__rule"></span></div>';
+        (sec.points || []).forEach(function (pt) {
+          html += '<article class="pv-point"><p class="pv-point__text">' + esc(pt.text || "") + "</p>";
+          if (pt.page_start) {
+            html += '<div class="pv-point__meta"><a class="pv-point__page" href="' + escAttr(pdfHref(path, pt.page_start)) + '" target="_blank" rel="noopener">Оригинал · стр. ' + esc(pt.page_start) + "</a></div>";
+          }
+          html += "</article>";
+        });
+        html += "</section>";
+      });
+      html += "</div>";
+      root.innerHTML = html;
+      wireChrome(path);
+    }
+
+    function jumpTo(id) {
+      var el = document.getElementById("pv-sec-" + id);
+      if (!el) return;
+      el.scrollIntoView({ behavior: "smooth", block: "start" });
+      setActiveRail(id);
+    }
+    function setActiveRail(id) {
+      var rail = document.getElementById("pv-rail");
+      if (!rail) return;
+      rail.querySelectorAll("[data-rail]").forEach(function (b) {
+        b.classList.toggle("is-active", b.getAttribute("data-rail") === id);
+      });
+    }
+    function deepLink() {
+      var wantSec = qp("section");
+      var wantPage = qp("page");
+      if (wantSec) jumpTo(wantSec);
+      if (wantPage) {
+        var hit = document.querySelector('.pv-para[data-page="' + wantPage + '"]');
+        if (hit) {
+          hit.scrollIntoView({ behavior: "smooth", block: "center" });
+          var sec = hit.getAttribute("data-sec");
+          if (sec) setActiveRail(sec);
+        }
+      } else if (!wantSec) {
+        var first = (state.reader && state.reader.toc && state.reader.toc[0]) || null;
+        if (first) setActiveRail(first.id);
+      }
+    }
+    function wireExpand(root) {
+      root.querySelectorAll("[data-expand]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var p = btn.previousElementSibling;
           if (p) p.classList.remove("is-clamped");
           btn.remove();
         });
       });
-
-      function jumpTo(id) {
-        var el = document.getElementById("pv-sec-" + id);
-        if (!el) return;
-        el.scrollIntoView({ behavior: "smooth", block: "start" });
-        setActiveRail(id);
-      }
-      function setActiveRail(id) {
-        rail.querySelectorAll("[data-rail]").forEach(function (b) { b.classList.toggle("is-active", b.getAttribute("data-rail") === id); });
-      }
-      // scrollspy
-      if ("IntersectionObserver" in window) {
-        var obs = new IntersectionObserver(function (entries) {
-          entries.forEach(function (e) { if (e.isIntersecting) setActiveRail(e.target.getAttribute("data-sec")); });
-        }, { rootMargin: "-15% 0px -70% 0px", threshold: 0 });
-        detail.querySelectorAll(".pv-section").forEach(function (s) { obs.observe(s); });
-      }
-      var wantSec = qp("section");
-      var first = null;
-      if (wantSec) {
-        first = (brief.sections || []).find(function (s) { return s.id === wantSec; }) || null;
-      }
-      if (!first) first = (brief.sections || [])[0];
-      if (first) { setActiveRail(first.id); if (wantSec) jumpTo(first.id); }
-      var wantPage = qp("page");
-      if (wantPage) {
-        var hit = detail.querySelector('.pv-point[data-page="' + wantPage + '"]');
-        if (hit) {
-          hit.scrollIntoView({ behavior: "smooth", block: "center" });
-          var sec = hit.getAttribute("data-sec");
-          if (sec) setActiveRail(sec);
-        }
-      }
-
-      wireSearch(path, brief);
-      wireFullText(path);
-      var q0 = qp("q");
-      if (q0 && q0.trim().length >= 2) applySearch(path, brief, q0);
     }
-
-    /* ---------- Search over brief points + AI overview ---------- */
-    var overviewReq = 0;
-    function applySearch(path, brief, q) {
+    function applyFilter(q) {
       var qs = String(q || "").trim();
-      var detail = document.getElementById("pv-detail");
-      var overview = document.getElementById("pv-overview");
       var terms = queryTerms(qs);
-      var totalMatch = 0;
-
-      detail.querySelectorAll(".pv-section").forEach(function (sec) {
+      var stream = document.getElementById("pv-stream");
+      if (!stream) return;
+      stream.querySelectorAll(".pv-section").forEach(function (sec) {
         var visible = 0;
-        sec.querySelectorAll("[data-pv-point]").forEach(function (pt) {
-          var txt = norm(pt.textContent || "");
-          var ok = !qs || qs.length < 2 || terms.every(function (t) { return txt.indexOf(t) >= 0; }) || (terms.length === 0);
-          if (qs.length >= 2 && terms.length) ok = terms.some(function (t) { return txt.indexOf(t) >= 0; });
-          pt.hidden = !ok;
-          if (ok) visible++;
+        sec.querySelectorAll("[data-pv-para]").forEach(function (node) {
+          var raw = (node.querySelector(".pv-para__text") || {}).getAttribute
+            ? node.querySelector(".pv-para__text").getAttribute("data-raw")
+            : node.textContent;
+          var txt = norm(raw || node.textContent || "");
+          var ok = !qs || qs.length < 2 || !terms.length || terms.some(function (t) { return txt.indexOf(t) >= 0; });
+          node.hidden = !ok;
+          if (ok) {
+            visible++;
+            var p = node.querySelector(".pv-para__text");
+            if (p) {
+              var base = p.getAttribute("data-raw") || p.textContent;
+              p.setAttribute("data-raw", base);
+              p.innerHTML = hl(base, qs.length >= 2 ? terms : []);
+            }
+          }
         });
         sec.style.display = (qs.length >= 2 && visible === 0) ? "none" : "";
-        totalMatch += visible;
-      });
-
-      // подсветка терминов
-      rehighlight(detail, qs.length >= 2 ? terms : []);
-
-      if (qs.length < 2) {
-        if (overview) { overview.hidden = true; overview.innerHTML = ""; }
-        return;
-      }
-      // AI overview
-      if (overview) {
-        overview.hidden = false;
-        overview.innerHTML = '<p class="pv-overview__title">ИИ-сводка по запросу</p><p class="pv-overview__summary">Загрузка…</p>';
-      }
-      var reqId = ++overviewReq;
-      fetchOverview(path, qs, brief.title || "").then(function (ov) {
-        if (reqId !== overviewReq || !overview) return;
-        var html = overviewHtml(ov, path);
-        if (html) { overview.innerHTML = html; overview.hidden = false; }
-        else { overview.hidden = true; overview.innerHTML = ""; }
       });
     }
-    function rehighlight(detail, terms) {
-      detail.querySelectorAll(".pv-point__text").forEach(function (p) {
-        var raw = p.getAttribute("data-raw");
-        if (raw == null) { raw = p.textContent; p.setAttribute("data-raw", raw); }
-        p.innerHTML = hl(raw, terms);
-      });
-    }
-    function fetchOverview(path, query, title) {
-      return fetch("/api/protocol-overview", { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ path: path, q: query, title: title || "" }) })
-        .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
-    }
-    function overviewHtml(ov, path) {
-      if (!ov || !ov.ok) return "";
-      var html = '<p class="pv-overview__title">ИИ-сводка по запросу</p>';
-      if (ov.summary) html += '<p class="pv-overview__summary">' + esc(ov.summary) + "</p>";
-      var pts = ov.points || [];
-      if (pts.length) {
-        html += '<ul class="pv-overview__points">';
-        pts.forEach(function (pt) {
-          var cite = pt.page ? '<a class="pv-overview__cite" href="' + escAttr(pdfHref(path, pt.page)) + '" target="_blank" rel="noopener">стр. ' + esc(pt.page) + "</a>" : "";
-          html += '<li class="pv-overview__point">' + esc(pt.text || "") + cite + "</li>";
+    function wireChrome(path) {
+      document.querySelectorAll("[data-mode]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var mode = btn.getAttribute("data-mode");
+          if (!mode || mode === state.mode) return;
+          state.mode = mode;
+          paint();
         });
-        html += "</ul>";
-      }
-      return (ov.summary || pts.length) ? html : "";
-    }
-    function wireSearch(path, brief) {
+      });
       var search = document.getElementById("pv-search");
       var go = document.getElementById("pv-go");
       var reset = document.getElementById("pv-reset");
-      function run() { applySearch(path, brief, search.value); }
+      function run() {
+        state.q = (search && search.value) || "";
+        if (state.mode === "study") applyFilter(state.q);
+        else paint();
+      }
       if (go) go.addEventListener("click", run);
-      if (reset) reset.addEventListener("click", function () { search.value = ""; applySearch(path, brief, ""); search.focus(); });
-      search.addEventListener("keydown", function (ev) { if (ev.key === "Enter") { ev.preventDefault(); run(); } });
-      var t; search.addEventListener("input", function () { clearTimeout(t); t = setTimeout(run, 350); });
+      if (reset) reset.addEventListener("click", function () {
+        if (search) search.value = "";
+        state.q = "";
+        run();
+      });
+      if (search) {
+        search.addEventListener("keydown", function (ev) { if (ev.key === "Enter") { ev.preventDefault(); run(); } });
+        var t;
+        search.addEventListener("input", function () { clearTimeout(t); t = setTimeout(run, 280); });
+      }
     }
 
-    /* ---------- Full text (legacy source-view, lazy) ---------- */
-    var ORDER = ["diagnosis", "diagnostics", "treatment", "followup"];
-    var MAX_VISIBLE = 6;
-    function chipsHtml(entities) {
-      if (!entities || !entities.length) return "";
-      var out = '<div class="protocol-src-item__chips">';
-      entities.forEach(function (chip) {
-        var items = (chip && chip.items) || []; if (!items.length) return;
-        out += '<span class="pv-ent__chip"><b>' + esc(chip.label || "") + "</b> " + esc(items.join(", ")) + "</span>";
-      });
-      return out + "</div>";
-    }
-    function ftItemHtml(path, item, open) {
-      var page = item.page, bullets = item.body_bullets || [], bodyPart = "";
-      if (bullets.length) { bodyPart = '<ul class="protocol-src-item__bullets">'; bullets.forEach(function (b) { bodyPart += "<li>" + esc(b) + "</li>"; }); bodyPart += "</ul>"; }
-      else if (item.body && item.body !== item.lead) bodyPart = '<p class="protocol-src-item__body">' + esc(item.body) + "</p>";
-      return '<details class="protocol-src-item"' + (open ? " open" : "") + "><summary>" +
-        (page ? '<span class="protocol-src-item__page">стр. ' + esc(page) + "</span>" : "") +
-        '<span class="protocol-src-item__lead">' + esc(item.lead) + "</span></summary>" + bodyPart +
-        (page ? '<p class="protocol-src-item__meta"><a href="' + escAttr(pdfHref(path, page)) + '" target="_blank" rel="noopener">Оригинал · стр. ' + esc(page) + "</a></p>" : "") +
-        "</details>";
-    }
-    function ftBodyHtml(path, view) {
-      var labels = (view && view.section_labels) || {}, sections = (view && view.sections) || {}, html = "";
-      var order = (view && view.toc ? view.toc.map(function (t) { return t.id; }) : ORDER);
-      order.forEach(function (sec) {
-        var items = sections[sec] || []; if (!items.length) return;
-        html += '<details class="protocol-src-section" id="pv-ft-sec-' + escAttr(sec) + '"><summary><span>' + esc(labels[sec] || sec) + '</span><span class="pv-rail__count">' + items.length + "</span></summary><div class=\"protocol-src-section__items\">";
-        items.slice(0, MAX_VISIBLE).forEach(function (it, i) { html += ftItemHtml(path, it, i === 0); });
-        if (items.length > MAX_VISIBLE) {
-          html += '<button type="button" class="protocol-src-show-more" data-ft-more="' + escAttr(sec) + '">Показать ещё ' + (items.length - MAX_VISIBLE) + "</button>";
-          items.slice(MAX_VISIBLE).forEach(function (it) { html += '<div hidden data-ft-extra="' + escAttr(sec) + '">' + ftItemHtml(path, it, false) + "</div>"; });
+    function paint() {
+      var path = state.path;
+      if (state.mode === "visit") {
+        if (state.brief && state.brief.available && (state.brief.sections || []).length) {
+          document.getElementById("pv-title").textContent = state.brief.title || state.reader && state.reader.title || "Протокол";
+          renderMeta("кратко", "режим приёма");
+          renderVisit(path, state.brief);
+          return;
         }
-        html += "</div></details>";
-      });
-      return html || '<p class="protocol-src-empty">Нет данных по этому протоколу.</p>';
-    }
-    function wireFullText(path) {
-      var toggle = document.getElementById("pv-ft-toggle");
-      var body = document.getElementById("pv-ft-body");
-      if (!toggle || !body) return;
-      var loaded = false, openState = false;
-      toggle.addEventListener("click", function () {
-        openState = !openState;
-        if (!openState) { body.innerHTML = ""; toggle.innerHTML = PDF_SVG + " Показать полный текст протокола"; return; }
-        toggle.innerHTML = PDF_SVG + " Скрыть полный текст";
-        if (loaded) { body.innerHTML = body.getAttribute("data-html") || ""; wireFtMore(body); return; }
-        body.innerHTML = '<p class="pv-loading">Загрузка полного текста…</p>';
-        fetch("/api/protocol-source-text?path=" + encodeURIComponent(path), { cache: "no-store" })
-          .then(function (r) { return r.ok ? r.json() : null; })
-          .then(function (doc) {
-            var html = (doc && doc.view) ? ftBodyHtml(path, doc.view) : '<p class="protocol-src-empty">Полный текст недоступен.</p>';
-            body.setAttribute("data-html", html); body.innerHTML = html; loaded = true; wireFtMore(body);
-          })
-          .catch(function () { body.innerHTML = '<p class="protocol-src-empty">Ошибка загрузки текста.</p>'; });
-      });
-    }
-    function wireFtMore(body) {
-      body.querySelectorAll("[data-ft-more]").forEach(function (btn) {
-        btn.addEventListener("click", function () {
-          var sec = btn.getAttribute("data-ft-more") || "";
-          body.querySelectorAll('[data-ft-extra="' + sec + '"]').forEach(function (el) { el.hidden = false; });
-          btn.remove();
+        // lazy load brief
+        document.getElementById("pv-status") && (document.getElementById("pv-root").innerHTML = '<p class="pv-loading">Загрузка кратких выводов…</p>');
+        fetchBrief(path, state.q).then(function (brief) {
+          state.brief = brief;
+          if (brief && brief.available && (brief.sections || []).length) paint();
+          else {
+            state.mode = "study";
+            paint();
+          }
         });
-      });
+        return;
+      }
+      if (state.reader && state.reader.available && (state.reader.paragraphs || []).length) {
+        document.getElementById("pv-title").textContent = state.reader.title || "Протокол Минздрава";
+        document.title = (state.reader.title || "Протокол") + " - навигация";
+        var src = state.reader.source === "rich_chunks" ? "из текста (чанки)" : "из текста протокола";
+        renderMeta(src, (state.reader.stats && state.reader.stats.paragraphs ? (state.reader.stats.paragraphs + " абз.") : ""));
+        renderStudy(path, state.reader);
+        return;
+      }
+      showPdfOnly(path, "Абзацы протокола пока недоступны. Откройте оригинал PDF.");
     }
 
-    function briefFromSourceDoc(doc) {
-      if (!doc || !doc.view || !(doc.view.toc || []).length) return null;
-      var map = {
-        diagnosis: ["diagnosis", "Диагноз и критерии"],
-        diagnostics: ["exams", "Обследования"],
-        treatment: ["treatment", "Лечение и препараты"],
-        followup: ["follow_up", "Наблюдение и маршрут"]
-      };
-      var labels = doc.view.section_labels || {};
-      var sectionsMap = doc.view.sections || {};
-      var sections = [];
-      (doc.view.toc || []).forEach(function (row) {
-        var gid = row && row.id;
-        var mapped = map[gid];
-        if (!mapped) return;
-        var items = sectionsMap[gid] || [];
-        if (!items.length) return;
-        var points = items.slice(0, 8).map(function (it) {
-          var lead = String((it && it.lead) || "").trim();
-          var body = String((it && it.body) || "").trim();
-          var text = lead;
-          if (body && body !== lead) text = (lead ? (lead.replace(/[.…]\s*$/, "") + ". ") : "") + body;
-          return {
-            text: text,
-            quote: lead && lead !== text ? lead : null,
-            page_start: it.page || it.page_from || null,
-            page_source: it.page ? "source_view" : null,
-            verified: false,
-            tags: [],
-            detail: []
-          };
-        }).filter(function (pt) { return pt.text && pt.text.length >= 16; });
-        if (!points.length) return;
-        sections.push({ id: mapped[0], label: labels[gid] || mapped[1], points: points, count: points.length });
-      });
-      if (!sections.length) return null;
-      return {
-        available: true,
-        title: doc.title || "Протокол Минздрава",
-        source: "source_view",
-        fallback: "source_view",
-        sections: sections,
-        entities: {},
-        care_setting_labels: [],
-        related: []
-      };
-    }
-    function fetchSourceDoc(path) {
-      return fetch("/api/protocol-source-text?path=" + encodeURIComponent(path), { cache: "no-store" })
-        .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
-    }
     function showPdfOnly(path, message) {
       var root = document.getElementById("pv-root");
       document.getElementById("pv-title").textContent = "Клинический протокол";
       root.innerHTML =
-        '<p class="pv-empty">' + esc(message) + '</p>' +
-        '<p style="text-align:center;margin-top:0.5rem;">' +
-        (qp("page") ? '<a class="pv-pdf-btn pv-pdf-btn--primary" href="' + escAttr(pdfHref(path, qp("page"))) + '" target="_blank" rel="noopener">' + PDF_SVG + ' Оригинал · стр. ' + esc(qp("page")) + '</a> ' : '') +
-        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path)) + '" target="_blank" rel="noopener">' + PDF_SVG + ' Открыть PDF</a></p>';
-    }
-    function mountBrief(brief, path) {
-      document.getElementById("pv-title").textContent = brief.title || "Протокол Минздрава";
-      document.title = (brief.title || "Протокол") + " - навигация";
-      renderMeta(brief);
-      renderBrief(brief, path);
+        '<p class="pv-empty">' + esc(message) + "</p>" +
+        '<p style="text-align:center">' +
+        (qp("page") ? '<a class="pv-pdf-btn pv-pdf-btn--primary" href="' + escAttr(pdfHref(path, qp("page"))) + '" target="_blank" rel="noopener">' + PDF_SVG + " Оригинал · стр. " + esc(qp("page")) + "</a> " : "") +
+        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path)) + '" target="_blank" rel="noopener">' + PDF_SVG + " Открыть PDF</a></p>";
     }
 
-    /* ---------- Init ---------- */
-    var path = qp("path"), q = qp("q"), icd = qp("icd");
-    if (!path) { document.getElementById("pv-status").textContent = "Не указан протокол."; return; }
-    fetchBrief(path, q, icd).then(function (brief) {
-      if (brief && brief.available && (brief.sections || []).length) {
-        mountBrief(brief, path);
-        return null;
+    state.path = qp("path");
+    state.q = qp("q");
+    if (!state.path) {
+      document.getElementById("pv-status").textContent = "Не указан протокол.";
+      return;
+    }
+    fetchReader(state.path, state.q).then(function (reader) {
+      state.reader = reader;
+      if (reader && reader.available && (reader.paragraphs || []).length) {
+        paint();
+        return;
       }
-      document.getElementById("pv-status").textContent = "Структурная карточка недоступна - собираем навигацию по тексту…";
-      return fetchSourceDoc(path).then(function (doc) {
-        var fb = briefFromSourceDoc(doc);
-        if (fb) { mountBrief(fb, path); return; }
-        showPdfOnly(path, "Навигация по разделам пока недоступна. Откройте оригинал PDF" +
-          (qp("page") ? (" на стр. " + qp("page")) : "") + ".");
+      // fallback to brief visit if reader empty
+      return fetchBrief(state.path, state.q).then(function (brief) {
+        state.brief = brief;
+        if (brief && brief.available && (brief.sections || []).length) {
+          state.mode = "visit";
+          paint();
+        } else {
+          showPdfOnly(state.path, "Навигация по протоколу недоступна. Откройте оригинал PDF.");
+        }
       });
-    }).catch(function () { document.getElementById("pv-status").textContent = "Ошибка загрузки."; });
+    }).catch(function () {
+      document.getElementById("pv-status").textContent = "Ошибка загрузки.";
+    });
   })();
   </script>
 </body>
