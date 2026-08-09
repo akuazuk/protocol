@@ -94,6 +94,18 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_today_score_rings_and_dynamics_wired_to_period() -> None:
+    assert 'id="yesterday-score-rings"' in HTML
+    assert 'id="yesterday-score-dynamics"' in HTML
+    assert 'id="yesterday-analytics-window"' in HTML
+    assert ".score-rings" in UI
+    assert "renderScoreRings" in APP
+    assert "renderScoreDynamics" in APP
+    assert "analyticsWindowLabel" in APP
+    assert "/score-dashboard?" in APP
+    assert "reg55_avg" in APP
+
+
 def test_visual_refresh_tokens_and_table_chrome_helper() -> None:
     assert "--type-page" in TOKENS
     assert "--type-control" in TOKENS

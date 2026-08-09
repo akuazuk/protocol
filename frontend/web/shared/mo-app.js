@@ -1294,6 +1294,266 @@
         description: "Средние доли оформления, диагноза и плана по дням периода."
       });
     }
+    function analyticsWindowLabel(win) {
+      win = win || {};
+      if (state.period === "yesterday") {
+        return "вчера · динамика 14 дней до " + (win.trend_date_to || win.date_to || "…");
+      }
+      if (state.period === "7d") return "последние 7 дней";
+      if (state.period === "month") return "текущий месяц (по дням)";
+      if (win.date_from && win.date_to) {
+        return win.date_from === win.date_to
+          ? win.date_from
+          : (win.date_from + " - " + win.date_to);
+      }
+      return "выбранный период";
+    }
+    function openZoneBandCases(zoneKey, band) {
+      applyDrill({
+        label: (ZONE_LABELS[zoneKey] || zoneKey) + " · " + (band || ""),
+        zoneFilter: zoneKey || "",
+        zoneBandFilter: band || "",
+        attentionOnly: false,
+        page: "documents"
+      });
+    }
+    function openReg55BandCases(band) {
+      pushDrill("№55 · " + reg55BandLabelRu(band), function () {
+        state.reg55Band = band || "";
+        state.pageNo = 1;
+        renderChips();
+        switchPage("documents");
+        filtersChanged();
+      });
+      state.reg55Band = band || "";
+      state.pageNo = 1;
+      renderChips();
+      switchPage("documents");
+      filtersChanged();
+    }
+    function renderYesterdayScoreKpis(daily, dash) {
+      var host = $("yesterday-score-kpis");
+      if (!host) return;
+      var funnel = (daily && daily.funnel) || {};
+      var evaluated = funnel.evaluated;
+      if (evaluated == null && daily && daily.attention) evaluated = daily.attention.n_evaluated;
+      var eligible = funnel.eligible;
+      var source = funnel.source != null ? funnel.source : eligible;
+      var cov = null;
+      if (eligible != null && Number(eligible) > 0 && evaluated != null) {
+        cov = Math.round(1000 * Number(evaluated) / Number(eligible)) / 10;
+      }
+      var through = (daily && (daily.data_through || daily.date)) || "";
+      var win = (dash && dash.window) || {};
+      host.innerHTML =
+        kpi("Получено", source == null ? "-" : source, "рабочий день") +
+        kpi("Оценено", evaluated == null ? "-" : evaluated, "рабочий день") +
+        kpi("Покрытие", cov == null ? "-" : (cov + "%"), "eligible") +
+        kpi("Свежесть", through || "-", win.date_from
+          ? ("кольца: " + analyticsWindowLabel(win))
+          : "склад");
+    }
+    function renderScoreRing(card, title, centerText, segments, onSelect) {
+      card.innerHTML =
+        '<p class="score-ring-title">' + esc(title) + "</p>" +
+        '<div class="score-ring-chart"></div>' +
+        '<p class="score-ring-meta">' + esc(centerText || "") + "</p>";
+      var chartHost = card.querySelector(".score-ring-chart");
+      var data = (segments || []).filter(function (s) { return Number(s.value) > 0; });
+      if (!data.length) {
+        chartHost.innerHTML = '<p class="empty">Нет оценок</p>';
+        return;
+      }
+      var chart = MO.moChart(chartHost, {
+        tooltip: {
+          trigger: "item",
+          formatter: function (p) {
+            return esc(p.name) + ": " + esc(p.value) + " (" + (p.percent != null ? p.percent : "") + "%)";
+          }
+        },
+        series: [{
+          type: "pie",
+          radius: ["56%", "78%"],
+          center: ["50%", "52%"],
+          avoidLabelOverlap: true,
+          label: { show: false },
+          labelLine: { show: false },
+          data: data.map(function (s) {
+            return {
+              name: s.name,
+              value: Number(s.value) || 0,
+              band: s.band,
+              itemStyle: { color: s.color }
+            };
+          })
+        }],
+        graphic: [{
+          type: "text",
+          left: "center",
+          top: "44%",
+          style: {
+            text: String(centerText || "").split("\n")[0] || "-",
+            fill: cssToken("--ink", "#1c2430"),
+            font: "700 16px Avenir Next, Avenir, Helvetica Neue, sans-serif",
+            align: "center",
+            verticalAlign: "middle"
+          }
+        }]
+      }, {
+        label: title,
+        description: "Распределение оценок. Клик по сегменту открывает случаи."
+      });
+      if (chart && typeof onSelect === "function") {
+        chart.on("click", function (params) {
+          var band = params && params.data && params.data.band;
+          if (band) onSelect(band);
+        });
+      }
+    }
+    function renderScoreRings(dash) {
+      var host = $("yesterday-score-rings");
+      if (!host) return;
+      if (!dash || !dash.ok || !dash.available) {
+        host.innerHTML = '<p class="empty">' +
+          esc((dash && (dash.reason || dash.error)) || "Нет оценок за выбранное окно.") + "</p>";
+        return;
+      }
+      var good = cssToken("--good", "#2f6f63");
+      var warn = cssToken("--warn", "#9a7b3c");
+      var bad = cssToken("--bad", "#9a5b66");
+      var mute = cssToken("--muted", "#7a8494");
+      var zones = dash.zones || {};
+      var zoneMeta = [
+        { key: "zone1", title: "Оформление" },
+        { key: "zone2a", title: "Диагноз" },
+        { key: "zone2b", title: "План по протоколу" }
+      ];
+      var zoneLabels = { ok: "в норме", weak: "слабо", bad: "плохо", na: "нет данных" };
+      host.innerHTML = "";
+      zoneMeta.forEach(function (meta) {
+        var card = document.createElement("div");
+        card.className = "score-ring";
+        host.appendChild(card);
+        var block = zones[meta.key] || {};
+        var bands = block.bands || {};
+        var segments = ["ok", "weak", "bad", "na"].map(function (band) {
+          var row = bands[band] || {};
+          return {
+            band: band,
+            name: zoneLabels[band],
+            value: Number(row.n || 0),
+            color: band === "ok" ? good : band === "weak" ? warn : band === "bad" ? bad : mute
+          };
+        });
+        var center = block.avg_pct == null ? "-" : (Math.round(Number(block.avg_pct)) + "%");
+        renderScoreRing(card, meta.title, center, segments, function (band) {
+          openZoneBandCases(meta.key, band);
+        });
+      });
+      var regCard = document.createElement("div");
+      regCard.className = "score-ring";
+      host.appendChild(regCard);
+      var reg = dash.reg55 || {};
+      if (!reg.available) {
+        regCard.innerHTML =
+          '<p class="score-ring-title">№55</p><p class="empty">№55 недоступен за окно</p>';
+        return;
+      }
+      var share = reg.band_share || {};
+      var regSeg = [
+        { band: "compliant_min", name: "80-100%", color: good },
+        { band: "compliant_measures", name: "55-79.9%", color: warn },
+        { band: "noncompliant", name: "до 54.9%", color: bad },
+        { band: "unscored", name: "не оценено", color: mute }
+      ].map(function (s) {
+        var row = share[s.band] || {};
+        return { band: s.band, name: s.name, value: Number(row.n || 0), color: s.color };
+      });
+      var regCenter = reg.avg_pct == null ? "-" : (Math.round(Number(reg.avg_pct)) + "%");
+      renderScoreRing(regCard, "№55", regCenter, regSeg, openReg55BandCases);
+    }
+    function renderScoreDynamics(dash) {
+      var host = $("yesterday-score-dynamics");
+      var sub = $("yesterday-dynamics-sub");
+      if (!host) return;
+      var trends = (dash && dash.trends) || [];
+      var win = (dash && dash.window) || {};
+      if (sub) {
+        var from = win.trend_date_from || win.date_from || "";
+        var to = win.trend_date_to || win.date_to || "";
+        sub.textContent = from && to
+          ? ("Средние % по дням: " + from + " - " + to + " · клик по дню открывает этот день")
+          : "Средние % зон и №55 по дням выбранного периода";
+      }
+      if (!trends.length) {
+        host.innerHTML = '<p class="empty">Нет динамики за окно аналитики.</p>';
+        return;
+      }
+      host.classList.add("zone-trend-chart");
+      var dates = trends.map(function (row) { return row.date; });
+      var c1 = cssToken("--zone-1", cssToken("--chart-1", "#2f6f63"));
+      var c2 = cssToken("--zone-2a", cssToken("--chart-2", "#4a6fa5"));
+      var c3 = cssToken("--zone-2b", cssToken("--chart-3", "#8a7a5a"));
+      var c55 = cssToken("--accent", "#3d5a80");
+      function series(name, key, color, dashed) {
+        return {
+          name: name,
+          type: "line",
+          smooth: true,
+          showSymbol: trends.length <= 14,
+          symbolSize: 7,
+          lineStyle: { width: dashed ? 2 : 2.4, color: color, type: dashed ? "dashed" : "solid" },
+          itemStyle: { color: color },
+          areaStyle: dashed ? undefined : { color: color, opacity: 0.07 },
+          data: trends.map(function (row) {
+            var v = row[key];
+            return v == null ? null : Number(v);
+          })
+        };
+      }
+      var chart = MO.moChart(host, {
+        color: [c1, c2, c3, c55],
+        legend: { top: 4, data: ["Оформление", "Диагноз", "План", "№55"] },
+        grid: { left: 42, right: 18, top: 42, bottom: 28 },
+        tooltip: { trigger: "axis" },
+        xAxis: { type: "category", data: dates, boundaryGap: false },
+        yAxis: { type: "value", min: 0, max: 100, name: "%" },
+        series: [
+          series("Оформление", "zone1_avg", c1, false),
+          series("Диагноз", "zone2a_avg", c2, false),
+          series("План", "zone2b_avg", c3, false),
+          series("№55", "reg55_avg", c55, true)
+        ]
+      }, {
+        label: "Динамика оценок",
+        description: "Средние проценты зон и №55 по дням окна аналитики."
+      });
+      if (chart) {
+        chart.on("click", function (params) {
+          var day = dates[params.dataIndex];
+          if (!day) return;
+          state.period = "custom";
+          state.dateFrom = day;
+          state.dateTo = day;
+          if ($("period")) $("period").value = "custom";
+          if ($("date-from")) $("date-from").value = day;
+          if ($("date-to")) $("date-to").value = day;
+          if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
+          if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
+          filtersChanged();
+        });
+      }
+    }
+    function renderYesterdayScoreDashboard(dash, workingDay) {
+      var win = (dash && dash.window) || {};
+      var analytics = $("yesterday-analytics-window");
+      if (analytics) {
+        analytics.textContent = "Рабочий день: " + (workingDay || "…") +
+          " · в кольцах и динамике: " + analyticsWindowLabel(win);
+      }
+      renderScoreRings(dash);
+      renderScoreDynamics(dash);
+    }
     function renderOverview(data) {
       if (!data.available) { showError(data.reason || "Данные месяца недоступны."); return; }
       var summary=normalizeSummary(data), k=data.kpi || {}, forecast=data.forecast || {};
@@ -3184,9 +3444,10 @@
         showError(error.message);
       }
     }
-    function renderYesterday(data) {
+    function renderYesterday(data, dash, workingDay) {
+      renderYesterdayScoreKpis(data, dash || null);
       renderAttentionStrip("yesterday-attention", data.attention || null);
-      renderZoneTrendHost("yesterday-zone-trend", (data.attention && data.attention.zone_trends) || []);
+      renderYesterdayScoreDashboard(dash || state.data.scoreDashboard || null, workingDay || data.date || "");
       renderYesterdayActions(data);
       renderYesterdayCompleteness(data);
       renderYesterdayIndices(data);
@@ -3224,6 +3485,7 @@
           " выгрузки ещё нет).";
       }
       $("yesterday-date").textContent = label;
+      var dashPromise = request("/score-dashboard?" + query().toString(), "/score-dashboard");
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (await handleHttpAuth(response)) return;
       if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
@@ -3248,7 +3510,20 @@
           }
         } catch (e) {}
       }
+      var dash = { ok: false, available: false, reason: "Сводка оценок недоступна." };
+      try {
+        var dashResp = await dashPromise;
+        if (dashResp && dashResp.ok) dash = await dashResp.json();
+        else if (dashResp && dashResp.status === 404) {
+          dash.reason = "API score-dashboard ещё не на сервере.";
+        }
+      } catch (e) {
+        dash.reason = "Не удалось загрузить кольца и динамику.";
+      }
       state.data.daily = data;
+      state.data.scoreDashboard = dash;
+      var fresh = $("yesterday-freshness");
+      if (fresh) fresh.textContent = "Данные по " + (data.data_through || data.date || day);
       $("partial-banner").hidden = !(data.partial || data.quality_status === "blocked");
       var completeness = data.data_completeness || {};
       var banner = $("partial-banner");
@@ -3265,7 +3540,7 @@
           (completeness.llm_queue_pending ? " (" + completeness.llm_queue_pending + ")" : "") +
           ". Очередь LLM не блокирует итог при достаточном покрытии.";
       }
-      renderYesterday(data);
+      renderYesterday(data, dash, day);
     }
     function renderEntityPages(summary) {
       if ($("diagnosis-findings")) {
