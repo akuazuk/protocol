@@ -1,7 +1,8 @@
 # MO score calibration - frozen protocol
 
-Status: C0-C5 done; C6 human waived; C6B LLM-proxy labels 22/22 + C7 proxy-gold
-done (`c6b_c7_public_summary.json`). Production scoring still locked.
+Status: C0-C5 done; C6 human waived; C6B/C7 done; C8B
+`provisional-methodology-c8b.json` = no_stable (tiny bad-n). C9A confirmatory
+blind 100 done, Pro-proxy running. Production scoring still locked.
 
 ## Scope
 

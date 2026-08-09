@@ -412,8 +412,10 @@ Uncertainty:
   план `2026-08-09-mo-calibration-llm-methodist-proxy-v1.md`)
 - [x] **C7** Сравнение одиночных scores и ensembles с CI (против C6B proxy-gold;
   `production_decision_allowed=false`; bad-n мал: Dx 1 / Plan 2)
-- [ ] **C8** Pilot report + выбор provisional methodology
-- [ ] **C9** Confirmatory cohort ≥100 или ≥30 bad
+- [x] **C8** Pilot report + provisional methodology
+  (C8A exploratory + C8B vs C6B gold: оба Dx/Plan `no_stable_provisional`;
+  production rollout forbidden)
+- [ ] **C9** Confirmatory cohort ≥100 или ≥30 bad (C9A blind done; proxy running)
 
 #### Результат C0-C4 от 2026-08-09
 

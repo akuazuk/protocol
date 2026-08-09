@@ -1,0 +1,93 @@
+{
+  "schema_version": 1,
+  "analysis": "c8b_c7_llm_proxy_gold_provisional",
+  "gold_kind": "llm_proxy_c6b",
+  "proxy_models": [],
+  "endpoints": {
+    "dx": {
+      "top_candidate": "blind.mean_2",
+      "top_metrics": {
+        "n": 7,
+        "proxy_bad_n": 1,
+        "mae": 18.7143,
+        "spearman": 0.7748,
+        "roc_auc_bad": 1.0,
+        "pr_auc_bad": 1.0,
+        "pr_auc_bad_ci95": [
+          1.0,
+          1.0
+        ],
+        "classification_at_55": {
+          "threshold": 55,
+          "tp": 1,
+          "tn": 3,
+          "fp": 3,
+          "fn": 0,
+          "sensitivity": 1.0,
+          "specificity": 0.5,
+          "precision": 0.25,
+          "balanced_accuracy": 0.75
+        }
+      },
+      "ranking_top3": [
+        "blind.mean_2",
+        "ensemble.arm_d_blind_mean",
+        "blind.adjudicated_or_mean"
+      ],
+      "proxy_labeled_n": 7,
+      "proxy_bad_n": 1,
+      "stable_enough_for_provisional": false,
+      "decision": "no_stable_provisional"
+    },
+    "plan": {
+      "top_candidate": "snapshot.overall_v3",
+      "top_metrics": {
+        "n": 7,
+        "proxy_bad_n": 2,
+        "mae": 17.1286,
+        "spearman": 0.7819,
+        "roc_auc_bad": 0.85,
+        "pr_auc_bad": 0.75,
+        "pr_auc_bad_ci95": [
+          0.25,
+          1.0
+        ],
+        "classification_at_55": {
+          "threshold": 55,
+          "tp": 1,
+          "tn": 5,
+          "fp": 0,
+          "fn": 1,
+          "sensitivity": 0.5,
+          "specificity": 1.0,
+          "precision": 1.0,
+          "balanced_accuracy": 0.75
+        }
+      },
+      "ranking_top3": [
+        "snapshot.overall_v3",
+        "snapshot.axis.clinical_concordance",
+        "snapshot.axis.safety"
+      ],
+      "proxy_labeled_n": 7,
+      "proxy_bad_n": 2,
+      "stable_enough_for_provisional": false,
+      "decision": "no_stable_provisional"
+    }
+  },
+  "production_rollout": {
+    "allowed": false,
+    "reason": "proxy_not_human_gold",
+    "required_next_gate": "confirmatory_cohort_and_owner_review"
+  },
+  "shadow_recommendation": {
+    "dx": "no_stable_provisional",
+    "plan": "no_stable_provisional",
+    "note": "Shadow only. Do not change action queue, thresholds, SSOT, or warehouse until confirmatory gate and owner review. LLM-proxy gold is not human methodist gold."
+  },
+  "phi_check": {
+    "contains_source_identifiers": false,
+    "contains_sample_identifiers": false,
+    "contains_clinical_text": false
+  }
+}

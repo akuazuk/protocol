@@ -1,7 +1,7 @@
 # МО: exploratory confirmatory proxy C8A/C9A
 
 Дата: 2026-08-09
-Статус: **active** (без human gold; formal C6-C9 не закрыты)
+Статус: **active** (blind 100/100 done; Pro-proxy in progress; C8B unstable)
 
 Связанные планы:
 - `2026-08-09-mo-score-ssot-llm-recompute-v3.md`
@@ -9,11 +9,10 @@
 
 ## Контекст
 
-Formal C6 human labels остаются 0/22; owner waived gate. Параллельно C6B
-заполняет тот же pack LLM-proxy labels для formal C7
-(`2026-08-09-mo-calibration-llm-methodist-proxy-v1.md`).
-C8A выбирает provisional shadow methodology по уже готовому C7A proxy aggregate.
-C9A строит независимый July cohort ≥100 и повторяет blind+proxy сравнение.
+Formal C6 human labels остаются 0/22; owner waived gate. C6B уже заполнил
+22 LLM-proxy labels и C7; C8B по этому gold - `no_stable_provisional`
+(слишком мало bad). C8A остаётся exploratory по C7A proxy aggregate.
+C9A: July cohort 100, blind flash готов (parse 99/100), Pro-proxy в работе.
 
 ## Что изменено в production
 
@@ -36,8 +35,9 @@ C9A строит независимый July cohort ≥100 и повторяет
 
 - C8A Dx: `no_stable_provisional` (proxy-bad=2).
 - C8A Plan: `provisional_shadow:blind.pass_1`.
-- C9A цель: selected_n=100, overlap with pilot=0, leakage/geo=0.
-- Formal C6: остаётся `0/22`.
+- C9A: selected_n=100; blind parse 99/100, leakage/geo=0; proxy in progress.
+- C8B (C6B gold): Dx/Plan `no_stable_provisional`.
+- Formal C6 human: остаётся `0/22`.
 
 ## Шаги
 
@@ -45,7 +45,7 @@ C9A строит независимый July cohort ≥100 и повторяет
 - [x] B1 Sampler: `--no-sentinel`, `--exclude-manifest`, scaled floors.
 - [x] B2 GCE mode `--calibration-confirmatory-proxy`.
 - [x] B3 C8A provisional из pilot proxy aggregate.
-- [ ] B4 GCE July sample 100 + blind + proxy + eval.
+- [ ] B4 GCE July sample 100 + blind + proxy + eval (blind done; proxy running).
 - [ ] B5 PHI-safe report/PR; production decision запрещён.
 
 ## Риски

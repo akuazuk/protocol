@@ -50,8 +50,10 @@ Production scoring / SSOT / queue не меняются.
 - [x] L2 GCE mode `--calibration-llm-methodist-labels`.
 - [x] L3 GCE: заполнить 22 labels, unseal, audit passed.
 - [x] L4 C7 aggregate против LLM-proxy gold; PHI-safe отчёт.
-- [ ] L5 Owner review ranking + решить C8 formal vs продолжить C9A;
-  production decision всё ещё запрещён.
+- [x] L5 C8B provisional из C7/C6B: оба endpoint `no_stable_provisional`
+  (bad-n 1/2 < gate); артефакт
+  `eval/mo_score_calibration/provisional-methodology-c8b.json`.
+  Production decision запрещён; дальше - C9A confirmatory.
 
 ## Риски
 
