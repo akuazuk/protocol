@@ -1,6 +1,6 @@
 # MO score calibration - frozen protocol
 
-Status: C0-C4 completed on 2026-08-09. C5-C9 are not started.
+Status: C0-C5 completed on 2026-08-09. C6 methodist labels is the next gate.
 
 ## Scope
 
@@ -80,6 +80,23 @@ The judge additionally refuses a live call unless both
 - paired score differences: Dx mean 4.0 p.p. (max 20), plan mean 1.2 p.p.
   (max 5).
 
-The replay drift is a finding, not a reason to overwrite the warehouse. C5 must
-freeze the intended Arm D implementation/config hash and explain the old-vs-current
-drift before candidate methodology is compared or production formulas change.
+The replay drift is a finding, not a reason to overwrite the warehouse. C5 froze
+the intended Arm D implementation/config hash and documented old-vs-current drift
+before candidate methodology is compared or production formulas change.
+
+## C5 result
+
+- frozen Arm D fingerprint:
+  `9ab7bfcb5a84f47354aed8f916c08d5285319bd94d43bc2614a848cb54da2e49`;
+- frozen blind judge/model/contracts fingerprint:
+  `1e106ed8e0980127643aaf247f978a326a4d26f3bc167918274da843cdbefca0`;
+- 30 cases × 2 passes: 60/60 parsed, no leakage/geo/runtime errors;
+- route split: 19 KP-grounded cases, 11 no-KP cases;
+- 22 disagreement endpoints adjudicated successfully: 9 Dx, 13 plan;
+- verdict agreement: Dx 28/30, plan 20/30;
+- score absolute difference: Dx median 0, mean 9.04, max 99 p.p.; plan median
+  0.5, mean 9.71, max 45 p.p.
+
+The large paired outliers mean LLM-only output is not gold. C6 must label every
+disagreement, potential-harm case, ICD dispute, and required random agreements
+before C7 compares candidates or C8 selects a provisional methodology.

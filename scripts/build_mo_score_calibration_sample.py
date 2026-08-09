@@ -11,6 +11,7 @@ import argparse
 import csv
 import hashlib
 import json
+import os
 import random
 import sqlite3
 import sys
@@ -31,6 +32,14 @@ DEFAULT_SENTINEL = "3643940"
 BANDS = ("0-49", "50-59", "60-69", "70-79", "80+")
 AXES = ("documentation", "clinical_concordance", "safety", "regulatory")
 SECRET_FILE_NAMES = frozenset({"secret_manifest.jsonl", "secret_cases.jsonl", "engine_snapshot.jsonl"})
+ARM_D_FILES = (
+    "clinical_knowledge/kz_evaluation_v4.py",
+    "clinical_knowledge/kz_evaluation_engine.py",
+    "clinical_knowledge/kz_evaluation_schema.py",
+    "clinical_knowledge/kz_deep_eval.py",
+    "clinical_knowledge/reg55_criteria.py",
+    "config/mo_scorer_v4.yaml",
+)
 
 
 def _utc_now() -> str:
@@ -43,6 +52,43 @@ def _canonical_json(value: Any) -> str:
 
 def _sha256(value: Any) -> str:
     return hashlib.sha256(_canonical_json(value).encode("utf-8")).hexdigest()
+
+
+def arm_d_fingerprint() -> dict[str, Any]:
+    """Freeze code, config, summary corpus, and relevant scorer flags."""
+    component_hashes: dict[str, str] = {}
+    for relative in ARM_D_FILES:
+        path = ROOT / relative
+        component_hashes[relative] = (
+            hashlib.sha256(path.read_bytes()).hexdigest() if path.is_file() else "missing"
+        )
+    summary_root = ROOT / "data" / "protocol_summaries"
+    summary_hash = hashlib.sha256()
+    summary_files = 0
+    if summary_root.is_dir():
+        for path in sorted(item for item in summary_root.rglob("*") if item.is_file()):
+            summary_hash.update(str(path.relative_to(summary_root)).encode("utf-8"))
+            summary_hash.update(b"\0")
+            summary_hash.update(hashlib.sha256(path.read_bytes()).digest())
+            summary_files += 1
+    flags = {
+        name: os.environ.get(name)
+        for name in (
+            "KZ_EVALUATION_V4_ENABLED",
+            "KZ_EVALUATION_V4_PRIMARY",
+            "KZ_EVALUATION_V4_GATE",
+            "CASE_PROTOCOL_SUGGEST",
+            "MO_PATIENT_HISTORY_ENABLED",
+        )
+    }
+    payload = {
+        "engine": "kz_evaluation_v4",
+        "component_hashes": component_hashes,
+        "protocol_summary_tree_hash": summary_hash.hexdigest(),
+        "protocol_summary_file_n": summary_files,
+        "environment_flags": flags,
+    }
+    return {**payload, "fingerprint": _sha256(payload)}
 
 
 def _as_float(value: Any) -> float | None:
@@ -489,10 +535,10 @@ def prepare_kp_checked_pool(
         if len(specialties) >= 12 and all(value >= 3 for value in specialties.values()):
             break
 
-    enriched: list[dict[str, Any]] = []
+    enriched: dict[str, dict[str, Any]] = {}
     for item in chosen.values():
         if item.get("kp_checked"):
-            enriched.append(item)
+            enriched[item["case_key"]] = item
             continue
         normalized = normalize_candidate(
             item["row"],
@@ -501,8 +547,8 @@ def prepare_kp_checked_pool(
             compute_kp=True,
         )
         if normalized is not None:
-            enriched.append(normalized)
-    return enriched
+            enriched[item["case_key"]] = normalized
+    return [enriched.get(item["case_key"], item) for item in candidates]
 
 
 def _coverage(selected: list[dict[str, Any]]) -> dict[str, int]:
@@ -515,7 +561,7 @@ def _coverage(selected: list[dict[str, Any]]) -> dict[str, int]:
         ):
             if item[name]:
                 counts[name] += 1
-        if item.get("kp_checked", True) and not item["kp_matched"]:
+        if item.get("kp_checked", False) and not item["kp_matched"]:
             counts["kp_unmatched"] += 1
     counts["specialties"] = len({item["specialty"] for item in selected})
     counts["training_use"] = sum(1 for item in selected if item["training_use"])
@@ -536,7 +582,7 @@ def _satisfies_requirement(
     if requirement.startswith("band:"):
         return item["band"] == requirement.split(":", 1)[1]
     if requirement == "kp_unmatched":
-        return bool(item.get("kp_checked", True) and not item["kp_matched"])
+        return bool(item.get("kp_checked", False) and not item["kp_matched"])
     if requirement == "specialties":
         return item["specialty"] not in {current["specialty"] for current in selected}
     return bool(item.get(requirement))
@@ -888,7 +934,12 @@ def extract_engine_snapshot(item: Mapping[str, Any]) -> dict[str, Any]:
     return snapshot
 
 
-def replay_v4(item: Mapping[str, Any], *, drug_ctx: dict[str, Any] | None = None) -> dict[str, Any]:
+def replay_v4(
+    item: Mapping[str, Any],
+    *,
+    drug_ctx: dict[str, Any] | None = None,
+    fingerprint: Mapping[str, Any] | None = None,
+) -> dict[str, Any]:
     """Replay the primary deterministic scorer from the selected full payload."""
     from clinical_knowledge.kz_deep_eval import load_drug_ctx, resolve_protocol_ctx
     from clinical_knowledge.kz_evaluation_v4 import evaluate_kz_v4
@@ -938,13 +989,18 @@ def replay_v4(item: Mapping[str, Any], *, drug_ctx: dict[str, Any] | None = None
         ),
         "scorer_version": result.scorer_version,
         "schema_version": result.schema_version,
+        "arm_d_fingerprint": str((fingerprint or {}).get("fingerprint") or ""),
         "comparisons": comparisons,
         "comparable_n": len(comparable),
         "passed": bool(comparable) and all(value["match"] for value in comparable),
     }
 
 
-def replay_selected(selected: list[dict[str, Any]]) -> tuple[list[dict[str, Any]], dict[str, Any]]:
+def replay_selected(
+    selected: list[dict[str, Any]],
+    *,
+    fingerprint: Mapping[str, Any] | None = None,
+) -> tuple[list[dict[str, Any]], dict[str, Any]]:
     """Replay once with shared immutable contexts and return a PHI-safe aggregate."""
     from clinical_knowledge.kz_deep_eval import load_drug_ctx
 
@@ -953,7 +1009,7 @@ def replay_selected(selected: list[dict[str, Any]]) -> tuple[list[dict[str, Any]
     errors = 0
     for item in selected:
         try:
-            rows.append(replay_v4(item, drug_ctx=drug_ctx))
+            rows.append(replay_v4(item, drug_ctx=drug_ctx, fingerprint=fingerprint))
         except Exception as exc:  # noqa: BLE001 - preserve every pilot row for audit
             errors += 1
             rows.append(
@@ -995,6 +1051,7 @@ def write_outputs(
     seed: int,
     replay_rows: list[dict[str, Any]] | None = None,
     replay_audit: dict[str, Any] | None = None,
+    fingerprint: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     if public_manifest.name in SECRET_FILE_NAMES or secret_dir in public_manifest.parents:
         raise ValueError("public manifest must be outside secret-dir")
@@ -1057,6 +1114,7 @@ def write_outputs(
             )
         },
         "replay_audit": replay_audit,
+        "arm_d_fingerprint": dict(fingerprint or {}),
         "secret_artifact_hashes": {
             path.name: hashlib.sha256(path.read_bytes()).hexdigest()
             for path in secret_paths
@@ -1124,9 +1182,10 @@ def main() -> int:
         seed=args.seed,
         sentinel=str(args.sentinel),
     )
+    fingerprint = arm_d_fingerprint()
     replay_rows = replay_audit = None
     if not args.skip_replay:
-        replay_rows, replay_audit = replay_selected(selected)
+        replay_rows, replay_audit = replay_selected(selected, fingerprint=fingerprint)
     public = write_outputs(
         selected,
         audit,
@@ -1136,6 +1195,7 @@ def main() -> int:
         seed=args.seed,
         replay_rows=replay_rows,
         replay_audit=replay_audit,
+        fingerprint=fingerprint,
     )
     passed = bool(audit["passed"]) and (
         args.skip_replay or bool((replay_audit or {}).get("audit_complete"))

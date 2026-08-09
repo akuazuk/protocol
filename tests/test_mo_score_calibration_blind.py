@@ -7,13 +7,17 @@ import pytest
 
 from scripts.run_mo_calibration_blind_judge import (
     FORBIDDEN_PROMPT_KEYS,
+    _dedupe_results,
     _select_smoke_rows,
     assert_gce_live_contour,
     audit_prompt_input,
     blind_case_pack,
+    build_adjudication_prompt,
     build_dx_prompt,
     build_plan_prompt,
+    disagreement_endpoints,
     judge_case,
+    judge_config_fingerprint,
     pin_dx_semantics,
     pin_plan_route,
 )
@@ -178,3 +182,84 @@ def test_controller_downgrades_unsupported_icd_mismatch() -> None:
     )
     assert pinned["icd_fit"] == "unknown"
     assert pinned["provenance"] == "llm_blind"
+
+
+def test_disagreement_triggers_are_endpoint_specific() -> None:
+    first = {
+        "dx_evidence": {
+            "dx_evidence_pct": 85,
+            "verdict": "good",
+            "icd_fit": "fit",
+            "potential_harm": False,
+        },
+        "plan_concordance": {
+            "plan_general_llm_pct": 80,
+            "verdict": "good",
+            "provenance": "llm_no_kp",
+            "potential_harm": False,
+        },
+    }
+    second = {
+        "dx_evidence": {
+            "dx_evidence_pct": 65,
+            "verdict": "partial",
+            "icd_fit": "partial",
+            "potential_harm": False,
+        },
+        "plan_concordance": {
+            "plan_general_llm_pct": 78,
+            "verdict": "good",
+            "provenance": "llm_no_kp",
+            "potential_harm": False,
+        },
+    }
+    assert disagreement_endpoints(first, second) == ["dx"]
+
+
+def test_adjudication_prompt_stays_blind_to_engine_canaries() -> None:
+    row = _source_row()
+    pack = blind_case_pack(row, sample_id="S001")
+    candidate = {
+        "dx_evidence_pct": 70,
+        "verdict": "partial",
+        "supported_by": [],
+        "not_supported_by": [{"slot": "exam_data", "evidence": "нет подтверждения"}],
+        "contradictions": [],
+        "icd_fit": "partial",
+        "potential_harm": False,
+        "provenance": "llm_blind",
+    }
+    prompt, prompt_input = build_adjudication_prompt(
+        pack,
+        endpoint="dx",
+        first=candidate,
+        second={**candidate, "dx_evidence_pct": 50, "verdict": "poor"},
+        route="llm_no_kp",
+        protocol_context=None,
+    )
+    assert audit_prompt_input(prompt_input, source_row=row)["passed"] is True
+    assert "SCORE_CANARY_91827" not in prompt
+    assert "QUEUE_CANARY_66319" not in prompt
+
+
+def test_resume_deduplication_keeps_latest_attempt() -> None:
+    rows = [
+        {"kind": "pass", "sample_id": "S001", "pass_no": 1, "error": "old"},
+        {"kind": "pass", "sample_id": "S001", "pass_no": 1, "error": None},
+        {"kind": "adjudication", "sample_id": "S001", "endpoint": "dx", "error": None},
+    ]
+    deduped = _dedupe_results(rows)
+    assert len(deduped) == 2
+    assert next(row for row in deduped if row["kind"] == "pass")["error"] is None
+
+
+def test_judge_config_fingerprint_freezes_prompt_contract_code() -> None:
+    first = judge_config_fingerprint("test-model")
+    second = judge_config_fingerprint("test-model")
+    assert first == second
+    assert len(first["fingerprint"]) == 64
+    assert set(first["component_hashes"]) == {
+        "judge",
+        "dx_contract",
+        "plan_contract",
+    }
