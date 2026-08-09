@@ -9,7 +9,8 @@
 - Worktree: `/private/tmp/protocol-task-mo-calibration-confirmatory-proxy-c9a-pc1`
 - Base: `a76f93f3` (PR #112 merge)
 - BUILD_VERSION: `2026-08-09-161306Z-mo-calibration-c9a`
-- HEAD / PR: заполняются после push.
+- HEAD: `a133e690`
+- PR: [#113](https://github.com/akuazuk/protocol/pull/113)
 
 ## Что сделано
 
