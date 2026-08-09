@@ -17,8 +17,8 @@
 
 **Канон дашборда МО Аналитика (с 2026-08-08, уточнение 2026-08-09):** hero и
 таблицы опираются на **зоны** (§Z). Deep overall / оси A-D / №55 binary /
-heatmap+Pareto+funnel - не главная шкала. План замены экранов:
-`docs/plans/2026-08-09-mo-dashboards-zones-first-v1.md`. Нормативный
+heatmap+Pareto+funnel - не главная шкала. План меню и экранов простыми словами:
+`docs/plans/2026-08-09-mo-dashboards-zones-first-v2.md`. Нормативный
 `mo_reg55_section` (PR #87) - secondary на «Период», не hero «Сегодня».
 
 ---
