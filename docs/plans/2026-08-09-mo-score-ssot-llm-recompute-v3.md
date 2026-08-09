@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (согласование полного набора оценок)
+Статус: **active** (C0-C4 выполнены; C5-C9 ожидают pilot/adjudication)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -401,16 +401,35 @@ Uncertainty:
 
 ### C - до изменения production
 
-- [ ] **C0** Sampler + secret/public manifests
-- [ ] **C1** Snapshot всех существующих scores и replay reproducibility
-- [ ] **C2** Контракты Endpoint C/D + synthetic tests
-- [ ] **C3** Blind prompts + автоматический leakage test
-- [ ] **C4** GCE smoke 5 случаев ×2
+- [x] **C0** Sampler + secret/public manifests
+- [x] **C1** Snapshot всех существующих scores и replay reproducibility
+- [x] **C2** Контракты Endpoint C/D + synthetic tests
+- [x] **C3** Blind prompts + автоматический leakage test
+- [x] **C4** GCE smoke 5 случаев ×2
 - [ ] **C5** GCE pilot 30 ×2 + LLM adjudication
 - [ ] **C6** Methodist labels: ≥15 и все disagreements
 - [ ] **C7** Сравнение одиночных scores и ensembles с CI
 - [ ] **C8** Pilot report + выбор provisional methodology
 - [ ] **C9** Confirmatory cohort ≥100 или ≥30 bad
+
+#### Результат C0-C4 от 2026-08-09
+
+- C0: 30 случаев, seed 42, sentinel включён, все 5 `training_use=1` включены,
+  максимум 3 случая одного врача, deficits отсутствуют.
+- Покрытие: 13 специальностей, ICD ↔ Dx disputes 4, KP matched 8, KP unmatched
+  22, обследования 18, лечение 30; каждый score band содержит минимум 4 случая.
+- C1: snapshot всех семейств оценок сохранён; replay выполнен для 30/30 без
+  runtime errors, но точное совпадение current engine с сохранённым snapshot -
+  0/30. Это отдельный drift blocker до C5, warehouse не перезаписывался.
+- C2-C3: 23 synthetic/unit tests; смешение KP/no-KP маршрутов, неподтверждённый
+  ICD mismatch и score leakage отклоняются.
+- C4 на GCE: 5 случаев × 2, `gemini-3.6-flash`, 10/10 parse, 0 leakage,
+  0 geo/API/runtime errors; routes: 4 KP-grounded и 6 no-KP.
+- Repeat agreement: Dx verdict 4/5, plan verdict 5/5; средняя абсолютная
+  разница score 4.0 п.п. для Dx и 1.2 п.п. для plan.
+- Secret artifacts остались только в `/var/data/medical_exams/calibration/`;
+  в git и отчёт попали только агрегаты.
+- Production scoring, action queue, warehouse и UI не изменялись.
 
 ### P0 - после pilot gate
 
