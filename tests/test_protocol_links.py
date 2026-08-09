@@ -104,6 +104,14 @@ def test_protocol_nav_api_path():
     assert url is not None
     assert url.startswith("/proto-viewer.html?path=")
     assert "section=treatment" in url
+    with_page = protocol_nav_api_path(
+        "minzdrav_protocols/gastroenterologiya/foo.pdf",
+        section="treatment",
+        page=12,
+    )
+    assert with_page is not None
+    assert "page=12" in with_page
+    assert "section=treatment" in with_page
 
 
 def test_dedupe_protocol_rows_by_basename_and_title():

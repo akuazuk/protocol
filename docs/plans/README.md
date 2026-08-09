@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-09-mo-protocol-nav-viewer-v1.md](2026-08-09-mo-protocol-nav-viewer-v1.md) | Навигация по КП: полный viewer без тупика, ссылка на стр. PDF, стиль МО | active |
 | [2026-08-09-mo-settings-refresh-v1.md](2026-08-09-mo-settings-refresh-v1.md) | МО Аналитика: Справка вместо Настроек; зоны; без v3/v4 и AI-расходов | active |
 | [2026-08-09-mo-dashboards-zones-first-v2.md](2026-08-09-mo-dashboards-zones-first-v2.md) | МО Аналитика: меню и дашборды простыми словами (зоны primary; №55 в «Подробнее») | active |
 | [2026-08-09-mo-dashboards-zones-first-v1.md](2026-08-09-mo-dashboards-zones-first-v1.md) | Дашборды зоны-first (техническая версия) | archived (преемник: mo-dashboards-zones-first-v2) |

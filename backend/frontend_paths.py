@@ -43,6 +43,7 @@ CANONICAL_ASSET_MAP: dict[str, str] = {
     "protocol_logo_curves_transparent.svg": "shared/protocol_logo_curves_transparent.svg",
     "logo_mini.png": "shared/logo_mini.png",
     "mo-tokens.css": "shared/mo-tokens.css",
+    "mo-protocol-viewer.css": "shared/mo-protocol-viewer.css",
     "mo-ui.css": "shared/mo-ui.css",
     "mo-api.js": "shared/mo-api.js",
     "mo-charts.js": "shared/mo-charts.js",

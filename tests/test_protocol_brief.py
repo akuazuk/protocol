@@ -302,3 +302,32 @@ def test_brief_drops_title_echo_point(monkeypatch) -> None:
     texts = " ".join(p["text"] for p in exams["points"])
     assert "КЛИНИЧЕСКИЙ ПРОТОКОЛ" not in texts
     assert "Общий анализ крови" in texts
+
+
+def test_brief_source_view_fallback() -> None:
+    from clinical_knowledge.protocol_brief import apply_source_view_fallback
+
+    empty = {"available": False, "sections": [], "title": "", "path": "x.pdf"}
+    doc = {
+        "title": "КП тестовый",
+        "protocol_id": "x",
+        "view": {
+            "toc": [{"id": "treatment", "label": "Лечение", "count": 1}],
+            "section_labels": {"treatment": "Лечение и препараты"},
+            "sections": {
+                "treatment": [
+                    {
+                        "lead": "Базисная терапия проводится ингаляционными глюкокортикостероидами длительным курсом.",
+                        "body": "При недостаточном контроле добавляют длительно действующие бета-2-агонисты.",
+                        "page": 8,
+                    }
+                ]
+            },
+        },
+    }
+    filled = apply_source_view_fallback(empty, doc)
+    assert filled["available"] is True
+    assert filled["source"] == "source_view"
+    treat = next(s for s in filled["sections"] if s["id"] == "treatment")
+    assert treat["points"][0]["page_start"] == 8
+    assert "Базисная терапия" in treat["points"][0]["text"]

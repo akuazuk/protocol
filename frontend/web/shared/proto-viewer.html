@@ -5,227 +5,11 @@
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Навигация по протоколу</title>
   <link rel="icon" href="/protocol-logo.svg" type="image/svg+xml" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,600;9..40,700&family=Outfit:wght@500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="/protocol-chrome-tabs.css?v=__BUILD_VERSION__" />
-  <style>
-    :root {
-      --green-900: #06402e;
-      --green-800: #0d5c4a;
-      --green-700: #1a8a72;
-      --green-600: #2db896;
-      --bg: #eef8f4;
-      --card: #fff;
-      --line: rgba(160, 210, 195, 0.55);
-      --text: #14231f;
-      --muted: #5f7a72;
-      --mint: #d8f5ea;
-      --mint-soft: #ecfbf4;
-      --sky: #dbeefe;
-      --shadow: 0 10px 32px rgba(13, 92, 74, 0.1);
-      --shadow-sm: 0 3px 12px rgba(13, 92, 74, 0.07);
-    }
-    * { box-sizing: border-box; }
-    body {
-      margin: 0;
-      font-family: "DM Sans", "Segoe UI", system-ui, sans-serif;
-      background:
-        radial-gradient(ellipse 120% 80% at 0% 0%, rgba(219, 238, 254, 0.5), transparent 50%),
-        radial-gradient(ellipse 90% 60% at 100% 0%, rgba(216, 245, 234, 0.6), transparent 45%),
-        var(--bg);
-      color: var(--text);
-      line-height: 1.5;
-      min-height: 100vh;
-    }
-
-    /* Header */
-    .pv-header {
-      padding: 0.85rem 1rem 0.75rem;
-      background: rgba(255, 255, 255, 0.78);
-      border-bottom: 1px solid var(--line);
-      backdrop-filter: blur(6px);
-    }
-    .pv-header__wrap { max-width: 1160px; margin: 0 auto; }
-    .pv-eyebrow {
-      margin: 0 0 0.15rem; font-size: 0.66rem; font-weight: 700; letter-spacing: 0.08em;
-      text-transform: uppercase; color: var(--green-700);
-    }
-    .pv-title {
-      margin: 0; font-family: Outfit, "DM Sans", sans-serif;
-      font-size: 1.12rem; font-weight: 800; color: var(--green-900);
-      line-height: 1.28; overflow-wrap: anywhere;
-    }
-    .pv-meta { display: flex; flex-wrap: wrap; gap: 0.4rem; margin: 0.5rem 0 0; }
-    .pv-chip {
-      display: inline-flex; align-items: center; gap: 0.3rem;
-      font-size: 0.7rem; font-weight: 650; padding: 0.2rem 0.6rem;
-      border-radius: 999px; border: 1px solid var(--line); background: #fff; color: #334155;
-    }
-    .pv-chip--icd { background: var(--sky); border-color: rgba(3, 105, 161, 0.28); color: #075985; }
-    .pv-chip--care { background: var(--mint-soft); border-color: rgba(26, 138, 114, 0.3); color: var(--green-800); }
-    .pv-chip--src { background: rgba(148, 163, 184, 0.16); color: #475569; cursor: help; }
-
-    .pv-main { max-width: 1160px; margin: 0 auto; padding: 0.9rem 1rem 2.5rem; }
-
-    /* Toolbar: search + PDF */
-    .pv-toolbar {
-      display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; margin: 0 0 0.9rem;
-    }
-    .pv-search-wrap { flex: 1 1 16rem; min-width: 0; display: flex; gap: 0.35rem; }
-    .pv-search {
-      flex: 1 1 auto; min-width: 0; font: inherit; font-size: 0.86rem;
-      padding: 0.55rem 0.75rem; border-radius: 12px; border: 1px solid var(--line);
-      background: #fff; box-shadow: var(--shadow-sm);
-    }
-    .pv-search:focus { outline: 2px solid rgba(26, 138, 114, 0.28); border-color: var(--green-700); }
-    .pv-icon-btn {
-      display: inline-flex; align-items: center; justify-content: center;
-      width: 2.5rem; height: 2.5rem; padding: 0; border-radius: 12px;
-      border: 1px solid var(--line); background: #fff; color: var(--green-800); cursor: pointer;
-    }
-    .pv-icon-btn svg { width: 1.05rem; height: 1.05rem; }
-    .pv-icon-btn--go { background: linear-gradient(180deg, #fff, var(--mint)); border-color: rgba(26, 138, 114, 0.38); }
-    .pv-icon-btn:hover { filter: brightness(0.98); }
-    .pv-pdf-btn {
-      font: inherit; font-size: 0.78rem; font-weight: 700; padding: 0.55rem 0.85rem;
-      border-radius: 12px; border: 1px solid rgba(26, 138, 114, 0.32);
-      background: #fff; color: var(--green-800); cursor: pointer; text-decoration: none; white-space: nowrap;
-      display: inline-flex; align-items: center; gap: 0.35rem;
-    }
-    .pv-pdf-btn:hover { background: var(--mint-soft); }
-
-    /* AI overview */
-    .pv-overview {
-      margin: 0 0 0.9rem; border-radius: 16px; border: 1px solid rgba(26, 138, 114, 0.24);
-      background: linear-gradient(165deg, var(--mint-soft), #fff); padding: 0.8rem 0.95rem; overflow-wrap: anywhere;
-    }
-    .pv-overview[hidden] { display: none; }
-    .pv-overview__title { margin: 0 0 0.35rem; font-size: 0.74rem; font-weight: 800; color: var(--green-800); text-transform: uppercase; letter-spacing: 0.04em; }
-    .pv-overview__summary { margin: 0; font-size: 0.88rem; line-height: 1.55; }
-    .pv-overview__points { margin: 0.5rem 0 0; padding-left: 1.1rem; font-size: 0.84rem; }
-    .pv-overview__point { margin: 0.28rem 0; }
-    .pv-overview__cite { margin-left: 0.3rem; font-size: 0.72rem; color: var(--green-700); font-weight: 650; text-decoration: none; }
-
-    /* Master-detail layout */
-    .pv-layout { display: grid; grid-template-columns: 15rem minmax(0, 1fr); gap: 1.1rem; align-items: start; }
-    .pv-rail { position: sticky; top: 0.75rem; display: flex; flex-direction: column; gap: 0.25rem; }
-    .pv-rail__title { margin: 0 0 0.35rem 0.35rem; font-size: 0.66rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--muted); }
-    .pv-rail__item {
-      display: flex; justify-content: space-between; align-items: center; gap: 0.4rem;
-      width: 100%; text-align: left; font: inherit; font-size: 0.82rem; font-weight: 600;
-      padding: 0.5rem 0.6rem; border-radius: 11px; border: 1px solid transparent;
-      background: transparent; color: var(--text); cursor: pointer;
-    }
-    .pv-rail__item:hover { background: var(--mint-soft); }
-    .pv-rail__item.is-active { background: #fff; border-color: rgba(26, 138, 114, 0.4); color: var(--green-800); box-shadow: var(--shadow-sm); }
-    .pv-rail__count { flex-shrink: 0; min-width: 1.3rem; text-align: center; font-size: 0.68rem; font-weight: 700; padding: 0.08rem 0.34rem; border-radius: 999px; background: rgba(226, 232, 240, 0.85); color: #475569; }
-    .pv-rail__item.is-active .pv-rail__count { background: var(--mint); color: var(--green-800); }
-
-    .pv-detail { display: flex; flex-direction: column; gap: 1.1rem; }
-    .pv-section { scroll-margin-top: 0.75rem; }
-    .pv-section__head { display: flex; align-items: center; gap: 0.5rem; margin: 0 0 0.6rem; }
-    .pv-section__title { margin: 0; font-family: Outfit, "DM Sans", sans-serif; font-size: 1rem; font-weight: 700; color: var(--green-900); }
-    .pv-section__rule { flex: 1; height: 1px; background: var(--line); }
-
-    .pv-ent { display: flex; flex-wrap: wrap; gap: 0.35rem; margin: 0 0 0.7rem; }
-    .pv-ent__chip { font-size: 0.72rem; font-weight: 600; padding: 0.22rem 0.6rem; border-radius: 999px; background: var(--mint-soft); border: 1px solid rgba(52, 168, 130, 0.28); color: var(--green-800); }
-    .pv-ent__chip--exam { background: var(--sky); border-color: rgba(3, 105, 161, 0.22); color: #075985; }
-
-    .pv-points { display: flex; flex-direction: column; gap: 0.6rem; }
-    .pv-point {
-      position: relative; padding: 0.7rem 0.85rem 0.7rem 1rem; border-radius: 14px;
-      background: var(--card); border: 1px solid var(--line); box-shadow: var(--shadow-sm); overflow-wrap: anywhere;
-    }
-    .pv-point::before { content: ""; position: absolute; left: 0; top: 0.7rem; bottom: 0.7rem; width: 4px; border-radius: 4px; background: var(--green-600); }
-    .pv-point[hidden] { display: none; }
-    .pv-point__text { margin: 0; font-size: 0.9rem; line-height: 1.58; color: #1f2d29; }
-    .pv-point__meta { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 0.6rem; margin-top: 0.45rem; }
-    .pv-point__page { font-size: 0.73rem; font-weight: 700; color: var(--green-700); white-space: nowrap; text-decoration: none; border-bottom: 1px dotted rgba(26, 138, 114, 0.55); }
-    .pv-point__page:hover { color: var(--green-800); }
-    .pv-point__cite-btn { font: inherit; font-size: 0.72rem; font-weight: 650; color: #64748b; background: none; border: none; padding: 0; cursor: pointer; display: inline-flex; align-items: center; gap: 0.25rem; }
-    .pv-point__cite-btn::before { content: "\201C"; font-weight: 800; color: var(--green-600); }
-    .pv-point__quote { margin: 0.5rem 0 0; padding: 0.5rem 0.7rem; border-left: 3px solid rgba(52, 168, 130, 0.45); background: var(--mint-soft); font-size: 0.82rem; color: #3f5750; border-radius: 0 8px 8px 0; }
-    .pv-point__quote[hidden] { display: none; }
-    .pv-mark { background: rgba(250, 204, 21, 0.5); border-radius: 3px; }
-
-    /* Point tags + structured detail (P1/P2) */
-    .pv-point__tags { display: flex; flex-wrap: wrap; gap: 0.3rem; margin: 0 0 0.35rem; }
-    .pv-tag { font-size: 0.66rem; font-weight: 700; letter-spacing: 0.02em; padding: 0.12rem 0.5rem; border-radius: 999px; text-transform: uppercase; border: 1px solid transparent; }
-    .pv-tag--type { background: rgba(148, 163, 184, 0.16); color: #475569; }
-    .pv-tag--req { background: var(--mint-soft); color: var(--green-800); border-color: rgba(26, 138, 114, 0.3); }
-    .pv-tag--opt { background: var(--sky); color: #075985; border-color: rgba(3, 105, 161, 0.22); }
-    .pv-tag--danger { background: #fde8e6; color: #b42318; border-color: rgba(180, 35, 24, 0.28); }
-    .pv-point__detail { display: grid; grid-template-columns: max-content 1fr; gap: 0.15rem 0.6rem; margin: 0.45rem 0 0; font-size: 0.8rem; }
-    .pv-point__detail dt { color: var(--muted); font-weight: 700; }
-    .pv-point__detail dd { margin: 0; color: #334155; overflow-wrap: anywhere; }
-    .pv-point__badge { font-size: 0.7rem; font-weight: 700; color: var(--green-700); display: inline-flex; align-items: center; gap: 0.2rem; }
-    .pv-point__badge::before { content: "\2713"; }
-
-    /* Section AI overview (P5) */
-    .pv-section__overview { margin: 0 0 0.6rem; padding: 0.55rem 0.75rem; border-radius: 12px; background: linear-gradient(165deg, var(--mint-soft), #fff); border: 1px solid rgba(26, 138, 114, 0.2); font-size: 0.85rem; line-height: 1.5; color: #1f2d29; }
-
-    /* Weak-card review banner (P3/P4) */
-    .pv-review-banner { margin: 0 0 0.9rem; padding: 0.55rem 0.8rem; border-radius: 12px; background: #fff7ed; border: 1px solid rgba(217, 119, 6, 0.3); color: #9a3412; font-size: 0.8rem; font-weight: 600; display: flex; align-items: center; gap: 0.4rem; }
-
-    /* Related protocols (P6) */
-    .pv-related { margin-top: 1.5rem; border-top: 1px dashed var(--line); padding-top: 1rem; }
-    .pv-related__title { margin: 0 0 0.55rem; font-size: 0.78rem; font-weight: 800; text-transform: uppercase; letter-spacing: 0.04em; color: var(--green-800); }
-    .pv-related__list { display: flex; flex-direction: column; gap: 0.4rem; }
-    .pv-related__link { display: block; padding: 0.5rem 0.7rem; border-radius: 11px; border: 1px solid var(--line); background: #fff; color: var(--green-800); font-size: 0.84rem; font-weight: 600; text-decoration: none; box-shadow: var(--shadow-sm); }
-    .pv-related__link:hover { background: var(--mint-soft); }
-
-    .pv-empty, .pv-loading { color: var(--muted); font-size: 0.9rem; padding: 1.5rem 0.5rem; text-align: center; }
-
-    /* Full text (behind toggle) */
-    .pv-fulltext { margin-top: 1.5rem; border-top: 1px dashed var(--line); padding-top: 1rem; }
-    .pv-fulltext__toggle {
-      font: inherit; font-size: 0.82rem; font-weight: 650; padding: 0.55rem 0.9rem; border-radius: 12px;
-      border: 1px solid var(--line); background: #fff; color: var(--green-800); cursor: pointer;
-      display: inline-flex; align-items: center; gap: 0.4rem;
-    }
-    .pv-fulltext__toggle:hover { background: var(--mint-soft); }
-    .pv-fulltext__body { margin-top: 0.9rem; }
-
-    /* Full-text renderer (reused legacy source-view) */
-    .protocol-src-section { margin-bottom: 0.5rem; border: 1px solid rgba(210, 230, 220, 0.9); border-radius: 12px; overflow: hidden; }
-    .protocol-src-section > summary { list-style: none; cursor: pointer; display: flex; justify-content: space-between; gap: 0.45rem; padding: 0.5rem 0.6rem; background: var(--mint-soft); font-size: 0.82rem; font-weight: 700; color: var(--green-800); }
-    .protocol-src-section > summary::-webkit-details-marker { display: none; }
-    .protocol-src-section__items { padding: 0.3rem 0.4rem 0.45rem; }
-    .protocol-src-item { margin: 0.3rem 0; border-radius: 10px; border: 1px solid rgba(241, 245, 249, 0.95); }
-    .protocol-src-item > summary { list-style: none; cursor: pointer; display: flex; gap: 0.42rem; align-items: flex-start; padding: 0.45rem 0.5rem; font-size: 0.82rem; }
-    .protocol-src-item > summary::-webkit-details-marker { display: none; }
-    .protocol-src-item__page { flex-shrink: 0; font-size: 0.66rem; font-weight: 700; padding: 0.14rem 0.4rem; border-radius: 999px; background: var(--sky); color: #0369a1; }
-    .protocol-src-item__lead { flex: 1; min-width: 0; overflow-wrap: anywhere; }
-    .protocol-src-item__body { margin: 0; padding: 0 0.5rem 0.45rem 2.4rem; font-size: 0.8rem; color: #475569; overflow-wrap: anywhere; }
-    .protocol-src-item__meta { padding: 0 0.5rem 0.45rem 2.4rem; font-size: 0.72rem; }
-    .protocol-src-item__meta a { color: var(--green-700); font-weight: 650; text-decoration: none; }
-    .protocol-src-item__bullets { margin: 0; padding: 0.15rem 0.5rem 0.45rem 2.4rem; list-style: disc; color: #475569; font-size: 0.8rem; }
-    .protocol-src-item__bullets li { margin: 0.28rem 0; overflow-wrap: anywhere; }
-    .protocol-src-show-more { display: block; width: calc(100% - 0.7rem); margin: 0.35rem auto 0.15rem; font: inherit; font-size: 0.78rem; font-weight: 650; padding: 0.4rem 0.55rem; border-radius: 8px; border: 1px dashed rgba(26, 138, 114, 0.35); background: var(--mint-soft); color: var(--green-800); cursor: pointer; }
-    .protocol-src-empty { color: var(--muted); font-size: 0.85rem; padding: 0.75rem 0.2rem; }
-
-    /* Mobile */
-    @media (max-width: 860px) {
-      .pv-layout { grid-template-columns: 1fr; gap: 0.75rem; }
-      .pv-rail {
-        position: sticky; top: 0; z-index: 5; flex-direction: row; overflow-x: auto;
-        gap: 0.4rem; padding: 0.5rem 0.1rem; margin: 0 -0.15rem;
-        background: rgba(238, 248, 244, 0.94); backdrop-filter: blur(4px); -webkit-overflow-scrolling: touch; scrollbar-width: none;
-      }
-      .pv-rail::-webkit-scrollbar { display: none; }
-      .pv-rail__title { display: none; }
-      .pv-rail__item { flex: 0 0 auto; width: auto; border: 1px solid var(--line); background: #fff; }
-      .pv-title { font-size: 1.02rem; }
-      .pv-point__text { font-size: 0.95rem; }
-    }
-    @media (max-width: 560px) {
-      .pv-icon-btn { width: 2.7rem; height: 2.7rem; }
-      .pv-pdf-btn { padding: 0.6rem 0.9rem; }
-    }
-  </style>
+  <link rel="stylesheet" href="/mo-tokens.css?v=__BUILD_VERSION__" />
+  <link rel="stylesheet" href="/mo-protocol-viewer.css?v=__BUILD_VERSION__" />
 </head>
-<body class="app-tab-search">
+<body class="app-tab-search pv-mo">
   <div class="app-chrome" id="app-chrome">
     <div class="app-chrome__masthead">
       <a class="app-chrome__brand" href="/" aria-label="Protocol - на главную">
@@ -267,7 +51,7 @@
     function escAttr(s) { return esc(s); }
     function escRx(s) { return String(s || "").replace(/[.*+?^${}()|[\]\\]/g, "\\$&"); }
     function norm(s) { return String(s || "").toLowerCase().replace(/ё/g, "е"); }
-    function pdfHref(path, page) { var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || ""); return page ? u + "#page=" + page : u; }
+    function pdfHref(path, page) { var u = "/api/protocol-pdf?path=" + encodeURIComponent(path || ""); var n = Number(page); return (page && n > 0) ? (u + "#page=" + n) : u; }
     function hl(text, terms) {
       var e = esc(text);
       var list = (Array.isArray(terms) ? terms : [terms]).map(function (t) { return String(t || "").trim(); }).filter(function (t) { return t.length >= 3; });
@@ -292,8 +76,9 @@
       (brief.care_setting_labels || []).forEach(function (c) { out += '<span class="pv-chip pv-chip--care">' + esc(c) + "</span>"; });
       var srcTitle = brief.source === "summary" ? "Структурная карточка протокола с дословными цитатами"
         : brief.source === "mixed" ? "Карточка протокола + ключевые фразы из текста"
+        : brief.source === "source_view" ? "Оглавление и фрагменты из текста протокола"
         : "Ключевые фразы из текста протокола";
-      var srcLabel = brief.source === "rich_chunks" ? "из текста" : "из карточки";
+      var srcLabel = brief.source === "rich_chunks" || brief.source === "source_view" ? "из текста" : "из карточки";
       out += '<span class="pv-chip pv-chip--src" title="' + escAttr(srcTitle) + '">' + esc(srcLabel) + "</span>";
       el.innerHTML = out;
     }
@@ -329,14 +114,19 @@
       });
       return out + "</dl>";
     }
-    function pointHtml(path, pt, idx, sectionId, terms) {
-      var html = '<article class="pv-point" data-pv-point data-sec="' + escAttr(sectionId) + '">';
+    function pointHtml(path, pt, idx, sectionId, terms, anchorPage) {
+      var pageHit = anchorPage && String(pt.page_start || "") === String(anchorPage);
+      var html = '<article class="pv-point' + (pageHit ? ' is-page-hit' : '') + '" data-pv-point data-sec="' + escAttr(sectionId) + '"' +
+        (pt.page_start ? ' data-page="' + escAttr(pt.page_start) + '"' : '') + '>';
       html += tagsHtml(pt.tags);
-      html += '<p class="pv-point__text">' + hl(pt.text || "", terms) + "</p>";
+      var raw = String(pt.text || "");
+      var long = raw.length > 420;
+      html += '<p class="pv-point__text' + (long ? ' is-clamped' : '') + '" data-raw="' + escAttr(raw) + '">' + hl(raw, terms) + "</p>";
+      if (long) html += '<button type="button" class="pv-point__more" data-expand-point>Показать полностью</button>';
       html += detailHtml(pt.detail);
       var meta = "";
-      if (pt.page_start) meta += '<a class="pv-point__page" href="' + escAttr(pdfHref(path, pt.page_start)) + '" target="_blank" rel="noopener">стр. ' + esc(pt.page_start) + "</a>";
-      if (pt.verified) meta += '<span class="pv-point__badge" title="Цитата найдена в тексте PDF">подтверждено</span>';
+      if (pt.page_start) meta += '<a class="pv-point__page" href="' + escAttr(pdfHref(path, pt.page_start)) + '" target="_blank" rel="noopener">Оригинал · стр. ' + esc(pt.page_start) + "</a>";
+      if (pt.verified) meta += '<span class="pv-point__badge" title="Цитата найдена в тексте PDF">страница сверена</span>';
       var qid = "q_" + sectionId + "_" + idx;
       if (pt.quote) meta += '<button type="button" class="pv-point__cite-btn" data-cite-toggle="' + qid + '">цитата</button>';
       if (meta) html += '<div class="pv-point__meta">' + meta + "</div>";
@@ -350,7 +140,7 @@
       if (sec.overview) html += '<p class="pv-section__overview">' + esc(sec.overview) + "</p>";
       html += entChips(brief, sec.id);
       html += '<div class="pv-points">';
-      pts.forEach(function (pt, i) { html += pointHtml(path, pt, i, sec.id, terms); });
+      pts.forEach(function (pt, i) { html += pointHtml(path, pt, i, sec.id, terms, qp('page')); });
       return html + "</div></section>";
     }
     function relatedHtml(brief) {
@@ -374,9 +164,11 @@
         '<button type="button" class="pv-icon-btn" id="pv-reset" title="Сбросить" aria-label="Сбросить">' + RESET_SVG + '</button>' +
         '<button type="button" class="pv-icon-btn pv-icon-btn--go" id="pv-go" title="Найти" aria-label="Найти">' + SEARCH_SVG + '</button>' +
         "</div>" +
-        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">' + PDF_SVG + " PDF</a>" +
+        (qp('page') ? '<a class="pv-pdf-btn pv-pdf-btn--primary" href="' + escAttr(pdfHref(path, qp('page'))) + '" target="_blank" rel="noopener">' + PDF_SVG + ' Оригинал · стр. ' + esc(qp('page')) + '</a>' : '') +
+        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path)) + '" target="_blank" rel="noopener">' + PDF_SVG + ' PDF целиком</a>' +
         "</div>" +
-        (brief.needs_review ? '<div class="pv-review-banner">Карточка размечена автоматически и ожидает проверки методиста - сверяйтесь с текстом PDF.</div>' : "") +
+        (brief.fallback === 'source_view' ? '<div class="pv-fallback-banner">Показана навигация по тексту протокола (структурная карточка недоступна). Ссылки ведут на страницы оригинала.</div>' : '') +
+        (brief.needs_review ? '<div class="pv-review-banner">Карточка размечена автоматически и ожидает проверки методиста - сверяйтесь с текстом PDF.</div>' : '') +
         '<div class="pv-overview" id="pv-overview" hidden></div>' +
         '<div class="pv-layout">' +
         '<nav class="pv-rail" id="pv-rail"><p class="pv-rail__title">Разделы</p></nav>' +
@@ -405,6 +197,13 @@
           btn.textContent = q.hidden ? "цитата" : "скрыть цитату";
         });
       });
+      detail.querySelectorAll("[data-expand-point]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var p = btn.previousElementSibling;
+          if (p) p.classList.remove("is-clamped");
+          btn.remove();
+        });
+      });
 
       function jumpTo(id) {
         var el = document.getElementById("pv-sec-" + id);
@@ -422,8 +221,22 @@
         }, { rootMargin: "-15% 0px -70% 0px", threshold: 0 });
         detail.querySelectorAll(".pv-section").forEach(function (s) { obs.observe(s); });
       }
-      var first = (brief.sections || [])[0];
-      if (first) setActiveRail(first.id);
+      var wantSec = qp("section");
+      var first = null;
+      if (wantSec) {
+        first = (brief.sections || []).find(function (s) { return s.id === wantSec; }) || null;
+      }
+      if (!first) first = (brief.sections || [])[0];
+      if (first) { setActiveRail(first.id); if (wantSec) jumpTo(first.id); }
+      var wantPage = qp("page");
+      if (wantPage) {
+        var hit = detail.querySelector('.pv-point[data-page="' + wantPage + '"]');
+        if (hit) {
+          hit.scrollIntoView({ behavior: "smooth", block: "center" });
+          var sec = hit.getAttribute("data-sec");
+          if (sec) setActiveRail(sec);
+        }
+      }
 
       wireSearch(path, brief);
       wireFullText(path);
@@ -529,7 +342,7 @@
       return '<details class="protocol-src-item"' + (open ? " open" : "") + "><summary>" +
         (page ? '<span class="protocol-src-item__page">стр. ' + esc(page) + "</span>" : "") +
         '<span class="protocol-src-item__lead">' + esc(item.lead) + "</span></summary>" + bodyPart +
-        (page ? '<p class="protocol-src-item__meta"><a href="' + escAttr(pdfHref(path, page)) + '" target="_blank" rel="noopener">PDF · стр. ' + esc(page) + "</a></p>" : "") +
+        (page ? '<p class="protocol-src-item__meta"><a href="' + escAttr(pdfHref(path, page)) + '" target="_blank" rel="noopener">Оригинал · стр. ' + esc(page) + "</a></p>" : "") +
         "</details>";
     }
     function ftBodyHtml(path, view) {
@@ -577,20 +390,88 @@
       });
     }
 
-    /* ---------- Init ---------- */
-    var path = qp("path"), q = qp("q"), icd = qp("icd");
-    if (!path) { document.getElementById("pv-status").textContent = "Не указан протокол."; return; }
-    fetchBrief(path, q, icd).then(function (brief) {
-      if (!brief || !brief.available || !(brief.sections || []).length) {
-        document.getElementById("pv-status").textContent = "Структурные выводы по этому протоколу недоступны. Откройте PDF.";
-        var root = document.getElementById("pv-root");
-        root.innerHTML += '<p style="text-align:center;margin-top:1rem;"><a class="pv-pdf-btn" href="' + escAttr(pdfHref(path, 0)) + '" target="_blank" rel="noopener">' + PDF_SVG + " Открыть PDF</a></p>";
-        return;
-      }
+    function briefFromSourceDoc(doc) {
+      if (!doc || !doc.view || !(doc.view.toc || []).length) return null;
+      var map = {
+        diagnosis: ["diagnosis", "Диагноз и критерии"],
+        diagnostics: ["exams", "Обследования"],
+        treatment: ["treatment", "Лечение и препараты"],
+        followup: ["follow_up", "Наблюдение и маршрут"]
+      };
+      var labels = doc.view.section_labels || {};
+      var sectionsMap = doc.view.sections || {};
+      var sections = [];
+      (doc.view.toc || []).forEach(function (row) {
+        var gid = row && row.id;
+        var mapped = map[gid];
+        if (!mapped) return;
+        var items = sectionsMap[gid] || [];
+        if (!items.length) return;
+        var points = items.slice(0, 8).map(function (it) {
+          var lead = String((it && it.lead) || "").trim();
+          var body = String((it && it.body) || "").trim();
+          var text = lead;
+          if (body && body !== lead) text = (lead ? (lead.replace(/[.…]\s*$/, "") + ". ") : "") + body;
+          return {
+            text: text,
+            quote: lead && lead !== text ? lead : null,
+            page_start: it.page || it.page_from || null,
+            page_source: it.page ? "source_view" : null,
+            verified: false,
+            tags: [],
+            detail: []
+          };
+        }).filter(function (pt) { return pt.text && pt.text.length >= 16; });
+        if (!points.length) return;
+        sections.push({ id: mapped[0], label: labels[gid] || mapped[1], points: points, count: points.length });
+      });
+      if (!sections.length) return null;
+      return {
+        available: true,
+        title: doc.title || "Протокол Минздрава",
+        source: "source_view",
+        fallback: "source_view",
+        sections: sections,
+        entities: {},
+        care_setting_labels: [],
+        related: []
+      };
+    }
+    function fetchSourceDoc(path) {
+      return fetch("/api/protocol-source-text?path=" + encodeURIComponent(path), { cache: "no-store" })
+        .then(function (r) { return r.ok ? r.json() : null; }).catch(function () { return null; });
+    }
+    function showPdfOnly(path, message) {
+      var root = document.getElementById("pv-root");
+      document.getElementById("pv-title").textContent = "Клинический протокол";
+      root.innerHTML =
+        '<p class="pv-empty">' + esc(message) + '</p>' +
+        '<p style="text-align:center;margin-top:0.5rem;">' +
+        (qp("page") ? '<a class="pv-pdf-btn pv-pdf-btn--primary" href="' + escAttr(pdfHref(path, qp("page"))) + '" target="_blank" rel="noopener">' + PDF_SVG + ' Оригинал · стр. ' + esc(qp("page")) + '</a> ' : '') +
+        '<a class="pv-pdf-btn" href="' + escAttr(pdfHref(path)) + '" target="_blank" rel="noopener">' + PDF_SVG + ' Открыть PDF</a></p>';
+    }
+    function mountBrief(brief, path) {
       document.getElementById("pv-title").textContent = brief.title || "Протокол Минздрава";
       document.title = (brief.title || "Протокол") + " - навигация";
       renderMeta(brief);
       renderBrief(brief, path);
+    }
+
+    /* ---------- Init ---------- */
+    var path = qp("path"), q = qp("q"), icd = qp("icd");
+    if (!path) { document.getElementById("pv-status").textContent = "Не указан протокол."; return; }
+    fetchBrief(path, q, icd).then(function (brief) {
+      if (brief && brief.available && (brief.sections || []).length) {
+        mountBrief(brief, path);
+        return null;
+      }
+      document.getElementById("pv-status").textContent = "Структурная карточка недоступна - собираем навигацию по тексту…";
+      return fetchSourceDoc(path).then(function (doc) {
+        var fb = briefFromSourceDoc(doc);
+        if (fb) { mountBrief(fb, path); return; }
+        showPdfOnly(path, "Навигация по разделам пока недоступна. Откройте оригинал PDF" +
+          (qp("page") ? (" на стр. " + qp("page")) : "") + ".");
+      });
     }).catch(function () { document.getElementById("pv-status").textContent = "Ошибка загрузки."; });
   })();
   </script>

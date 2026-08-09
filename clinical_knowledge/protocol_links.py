@@ -206,6 +206,7 @@ def protocol_nav_api_path(
     *,
     section: str | None = None,
     q: str | None = None,
+    page: int | str | None = None,
 ) -> str | None:
     """Относительный URL навигатора протокола `/proto-viewer.html?path=…`."""
     p = normalize_protocol_path(local_path)
@@ -216,6 +217,13 @@ def protocol_nav_api_path(
         url += f"&section={quote(str(section).strip(), safe='')}"
     if q and str(q).strip():
         url += f"&q={quote(str(q).strip()[:120], safe='')}"
+    if page not in (None, "", 0, "0"):
+        try:
+            page_n = int(str(page).strip())
+        except (TypeError, ValueError):
+            page_n = 0
+        if page_n > 0:
+            url += f"&page={page_n}"
     return url
 
 
