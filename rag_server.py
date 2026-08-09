@@ -11674,6 +11674,15 @@ def api_methodist_mo_case_detail(
                 result.get("findings") if isinstance(result.get("findings"), list) else [],
                 live_case,
             )
+            try:
+                from clinical_knowledge.mo_clinical_gaps import merge_clinical_gaps_into_findings
+
+                result["findings"] = merge_clinical_gaps_into_findings(
+                    result.get("findings") if isinstance(result.get("findings"), list) else [],
+                    live_case,
+                )
+            except Exception:  # noqa: BLE001
+                pass
             result["findings"] = merge_icd_directory_into_findings(
                 result.get("findings") if isinstance(result.get("findings"), list) else [],
                 live_case,
@@ -11950,6 +11959,35 @@ def api_methodist_mo_case_detail(
                         prior_clinical = prior_pack.get("clinical")
                 except Exception:  # noqa: BLE001
                     prior_clinical = None
+                # Suggest нужен зонам плана и review_brief (раньше только async endpoint).
+                if not isinstance(result.get("protocol_suggest"), dict):
+                    try:
+                        from clinical_knowledge.case_protocol_suggest import (
+                            suggest_protocols_for_mo_case,
+                        )
+
+                        suggest_clinical = dict(clinical) if isinstance(clinical, dict) else {}
+                        if record_z.get("patient_age_years") is not None:
+                            suggest_clinical.setdefault(
+                                "patient_age_years", record_z.get("patient_age_years")
+                            )
+                        result["protocol_suggest"] = suggest_protocols_for_mo_case(
+                            clinical=suggest_clinical,
+                            record=record_z,
+                            findings=result.get("findings")
+                            if isinstance(result.get("findings"), list)
+                            else [],
+                            llm_judge=result.get("llm_action_judge")
+                            if isinstance(result.get("llm_action_judge"), dict)
+                            else None,
+                            history_bundle=result.get("patient_history")
+                            if isinstance(result.get("patient_history"), dict)
+                            else None,
+                            limit=5,
+                            attach_history=False,
+                        )
+                    except Exception:  # noqa: BLE001
+                        pass
                 zones = compute_mo_zone_scores(
                     {
                         "clinical": clinical if isinstance(clinical, dict) else {},
@@ -11999,6 +12037,39 @@ def api_methodist_mo_case_detail(
                     result["record"]["attention_reason_ru"] = zones.get("attention_reason_ru")
         except Exception:  # noqa: BLE001
             result["zones"] = {"ok": False, "engine": "mo_zones_v1", "error": "zones_unavailable"}
+    # Итог разбора (machine brief) - после зон / findings / МКБ / suggest.
+    if score_eligible and isinstance(result, dict):
+        try:
+            from clinical_knowledge.mo_case_review_brief import build_case_review_brief
+
+            # Опциональный LLM-нарратив (default off) - не ломает зоны.
+            try:
+                from clinical_knowledge.mo_case_narrative import (
+                    case_narrative_enabled,
+                    generate_case_narrative,
+                )
+
+                if case_narrative_enabled():
+                    # Сначала brief без narrative, потом обогащение.
+                    draft = build_case_review_brief({**result, "case_narrative": None})
+                    result["case_narrative"] = generate_case_narrative(
+                        brief=draft if draft.get("ok") else {},
+                        clinical=clinical if isinstance(clinical, dict) else {},
+                    )
+            except Exception:  # noqa: BLE001
+                result["case_narrative"] = {
+                    "ok": False,
+                    "available": False,
+                    "reason": "narrative_unavailable",
+                }
+            result["review_brief"] = build_case_review_brief(result)
+        except Exception:  # noqa: BLE001
+            result["review_brief"] = {
+                "ok": False,
+                "available": False,
+                "engine": "mo_case_review_brief_v1",
+                "reason": "brief_unavailable",
+            }
     return result
 
 

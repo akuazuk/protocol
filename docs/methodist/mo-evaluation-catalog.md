@@ -1,10 +1,11 @@
 # Каталог оценок МО (источник для дашбордов)
 
-Дата: 2026-08-08  
+Дата: 2026-08-09
 Планы: `docs/plans/2026-08-08-mo-analytics-mz-sheet-layers-v2.md`,
 `docs/plans/2026-08-08-mo-analytics-ui-target-v2.md`,
 `docs/plans/2026-08-08-mo-analytics-implementation-blueprint-v1.md`,
-`docs/plans/2026-08-08-mo-history-scores-catalog-v1.md`
+`docs/plans/2026-08-08-mo-history-scores-catalog-v1.md`,
+`docs/plans/2026-08-09-mo-case-review-quality-parity-v1.md`
 
 Этот документ перечисляет **все** виды оценок / метрик Medical Oversight в Protocol.
 Его нужно использовать при переделке дашбордов, таблиц, фильтров и диаграмм:
@@ -15,7 +16,7 @@
 не попадают.
 
 **Канон дашборда МО Аналитика (с 2026-08-08):** hero и таблицы опираются на
-**зоны** (§Z). Deep overall / оси A–D / №55 binary остаются в каталоге как
+**зоны** (§Z). Deep overall / оси A-D / №55 binary остаются в каталоге как
 приложения и блоки «Подробнее», не как главная шкала экранов.
 
 ---
@@ -34,7 +35,7 @@
 - Код: `clinical_knowledge/mo_zone_scores.py` + `config/mo_rubric_mz.yaml` (`zone`,
   `requires_protocol`) + `config/mo_zone_bands.yaml`.
 - Шкала критериев рубрики: 0 / 0.5 / 1 → среднее зоны × 100.
-- Bands: `bad` &lt; 50, `weak` 50–84, `ok` ≥ 85, `na` если зона не применима.
+- Bands: `bad` &lt; 50, `weak` 50-84, `ok` ≥ 85, `na` если зона не применима.
 - Без matched KP нельзя писать «не по протоколу» на жалобы/осмотр (`zone1`);
   для `zone2b` без КП → `na` / `kp_status=unmatched`, не 0.
 - Коррекции плана без prior history → `n/a`, не 0.
@@ -47,10 +48,22 @@
 | Сегодня / Период | полоса внимания (плохо по зонам), тренд avg % |
 | Очередь / Все случаи | колонки Оформление / Диагноз / План; фильтры `zone`, `zone_band`, `attention_only`, `kp_status`, `history_tier` |
 | Врачи | % плохо по зонам + полосы; клик → случаи врача с `zone_band=bad` |
-| Разбор | три карточки зон → «Что не так» → текст МО; №55/deep/CRM в «Подробнее» |
+| Разбор | три карточки зон → **Итог разбора** (`review_brief`) → «Что не так» → критерии → текст МО; №55/deep/CRM в «Подробнее» |
 
 LLM night/judge/overlay **не** перезаписывает warehouse `%` зон; overlay рядом
 как калибровка / текст.
+
+### Z.1 Итог разбора (`review_brief`)
+
+| Поле | Смысл | Код |
+|--|--|--|
+| `review_brief` | Machine brief: зоны why, 3 оси Dx, gaps, МКБ, КП, doctor_feedback | `mo_case_review_brief.py` |
+| `clinical_gaps` / shadow findings | Жалоба↔осмотр, Dx без осмотра, tentative, терапия, OCR, план | `mo_clinical_gaps.py` |
+| `case_narrative` | Опц. LLM JSON (default off, `MO_CASE_NARRATIVE=1` только GCE) | `mo_case_narrative.py` |
+
+Не путать: зона «Диагноз» (методика) ≠ chip МКБ-справочник ≠ клиническая опора Dx.
+Gold/eval: `tests/fixtures/mo_case_review_brief_mo1_gold.json`,
+`scripts/eval_mo_case_review_brief.py`.
 
 ---
 
@@ -112,7 +125,7 @@ LLM night/judge/overlay **не** перезаписывает warehouse `%` зо
 - **UI:** колонка «Итог» (скрыта по умолчанию), secondary KPI.
 - **Код:** `mo_daily.case_overall_pct` → `fact_mo_case.overall_pct`.
 - **Метод:** приоритет: `evaluation_v4.score_pct` (если primary) → `deep.overall_pct` →
-  `evaluation_v3.score_pct` → L1 `overall_pct` / `core_overall_pct`. Шкала 0–100.
+  `evaluation_v3.score_pct` → L1 `overall_pct` / `core_overall_pct`. Шкала 0-100.
   Risk-cap от findings (типично P0→40, P1→60).
 - **История:** косвенно, только если primary-флаг истории включён.
 
@@ -127,7 +140,7 @@ LLM night/judge/overlay **не** перезаписывает warehouse `%` зо
 - **Код:** `kz_evaluation_engine.evaluate_kz_v3`.
 - **Метод:** веса осей doc 0.30 / concordance 0.35 / safety 0.25 / regulatory 0.10
   (перенормировка). Caps при пустом Dx/recs/objective. Trust A/B влияет на штрафы.
-  Coverage/confidence отдельно (0–1). Env `KZ_EVALUATION_V3_*`.
+  Coverage/confidence отдельно (0-1). Env `KZ_EVALUATION_V3_*`.
 
 ### 1.4 Scorer v4 (`evaluation_v4.score_pct`)
 
@@ -138,7 +151,7 @@ LLM night/judge/overlay **не** перезаписывает warehouse `%` зо
 
 ---
 
-## 2. Оси (0–100)
+## 2. Оси (0-100)
 
 | Поле | RU | Метод |
 |--|--|--|
@@ -181,7 +194,7 @@ Warehouse: `fact_mo_score_axis(mis_id, axis, score)`.
 
 | Поле | RU | Метод |
 |--|--|--|
-| `coverage.overall` / `coverage_pct` | Полнота проверки | доля оцениваемых частей осей (0–1 → %) |
+| `coverage.overall` / `coverage_pct` | Полнота проверки | доля оцениваемых частей осей (0-1 → %) |
 | `confidence.overall` / `confidence_pct` | Надёжность | среднее doc_parse / protocol_match / evidence_match / protocol_knowledge |
 | `attention_required` | требует внимания | P0/P1 или coverage/confidence &lt; 0.5 (v4) |
 
@@ -226,7 +239,9 @@ Warehouse: `fact_mo_score_axis(mis_id, axis, score)`.
 | Name match | `mo_icd_name_match`, `weak_name` | сходство текста Dx ↔ title_ru (те же слоты) | −0.05 / +0.05 |
 | Visit status chip | `icd_visit_status` | enum: ok / missing_dx / not_in_directory / weak_name | нет |
 | Concordance findings | `mo_concordance_findings` | правила status↔Dx↔план; shadow default | `history_dx_line_break` |
-| Protocol suggest | `protocol_suggest.items[].score` | ICD-first + text bridge v5 | эпизод Dx из истории |
+| Clinical gaps (parity) | `mo_clinical_gaps`, `B_complaint_exam_*`, `B_dx_not_in_exam`, … | complaint↔exam↔dx↔plan; shadow | нет |
+| Case review brief | `review_brief` | синтез зон + gaps + КП + «врачу» | нет |
+| Protocol suggest | `protocol_suggest.items[].score` | ICD-first + text bridge + rehab/audience penalty | эпизод Dx из истории |
 | KP golden (offline) | `mo_kp_suggest_golden_eval` | right/wrong vs gold | episode-aware |
 
 ---
@@ -254,14 +269,14 @@ Secondary: средние `avg_overall`, `avg_coverage`, `avg_confidence`, `avg_
 
 ## 11. Рекомендуемые колонки/фильтры для новых дашбордов
 
-**Primary (одна «главная» метрика на таблицу):** `overall_pct`  
-**Зоны (канон):** `zone1_band` / `zone2a_band` / `zone2b_band` (+ `attention_reason_ru`)  
-**Regulatory (secondary):** `reg55_pct`  
-**Shadow depth:** `rubric_mz.rubric_pct`  
-**Axes (развернуть в Подробнее):** documentation / concordance / safety / regulatory  
-**Meta:** coverage_pct, confidence_pct  
-**Context chips:** `icd_visit_status`, `history_tier` (+ `history_prior_n`)  
-**Queue:** `attention_primary` + whitelist reason (не сырой P0–P3)  
+**Primary (одна «главная» метрика на таблицу):** `overall_pct`
+**Зоны (канон):** `zone1_band` / `zone2a_band` / `zone2b_band` (+ `attention_reason_ru`)
+**Regulatory (secondary):** `reg55_pct`
+**Shadow depth:** `rubric_mz.rubric_pct`
+**Axes (развернуть в Подробнее):** documentation / concordance / safety / regulatory
+**Meta:** coverage_pct, confidence_pct
+**Context chips:** `icd_visit_status`, `history_tier` (+ `history_prior_n`)
+**Queue:** `attention_primary` + whitelist reason (не сырой P0-P3)
 **LLM (не в hero %):** night grader + action judge; overlay рядом с зонами
 
 Фильтры, которые стоит сохранить/добавить:
