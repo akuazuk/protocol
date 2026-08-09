@@ -27,16 +27,13 @@
           <li><button class="nav-button" data-page="documents"><span class="nav-icon">≡</span><span class="nav-text">Все случаи</span></button></li>
           <li><button class="nav-button" data-page="doctors"><span class="nav-icon">Вр</span><span class="nav-text">Врачи</span></button></li>
           <li><button class="nav-button" data-page="reports"><span class="nav-icon">⇩</span><span class="nav-text">Отчёты</span></button></li>
-          <li hidden><button class="nav-button" data-page="safety"><span class="nav-text">Безопасность</span></button></li>
-          <li hidden><button class="nav-button" data-page="doctor-cabinet"><span class="nav-text">Кабинет врача</span></button></li>
-          <li hidden><button class="nav-button" data-page="specialties"><span class="nav-text">Специальности</span></button></li>
-          <li hidden><button class="nav-button" data-page="diagnoses"><span class="nav-text">Диагнозы</span></button></li>
-          <li hidden><button class="nav-button" data-page="data-quality"><span class="nav-text">Качество данных</span></button></li>
-          <li hidden><button class="nav-button" data-page="access-log"><span class="nav-text">Журнал доступа</span></button></li>
           <li hidden><button class="nav-button" data-page="settings"><span class="nav-text">Настройки</span></button></li>
         </ul>
       </nav>
-      <div class="sidebar-foot"><a href="/methodist/mis-kz">Кабинет методиста</a></div>
+      <div class="sidebar-foot">
+        <a href="/methodist/mis-kz">Кабинет методиста</a>
+        <p class="card-sub" style="margin:8px 0 0">Меню: 6 пунктов · оценка: оформление / диагноз / план</p>
+      </div>
     </aside>
 
     <div class="workspace">
@@ -126,7 +123,7 @@
       </header>
 
       <main id="main" class="content" tabindex="-1">
-        <nav class="breadcrumbs" id="breadcrumbs" aria-label="Путь по разделу"><ol><li>МО Аналитика</li><li aria-current="page">Обзор МО</li></ol></nav>
+        <nav class="breadcrumbs" id="breadcrumbs" aria-label="Путь по разделу"><ol><li>МО Аналитика</li><li aria-current="page">Сегодня</li></ol></nav>
         <div id="global-error" class="banner" role="alert" hidden></div>
         <section class="page" id="page-overview" data-page="overview" aria-labelledby="title-overview">
           <div class="page-head"><div><h1 id="title-overview">Период</h1><p id="month-period-label">Картина за выбранный диапазон: оформление, диагноз, план по протоколу.</p></div><span class="freshness" id="freshness">Проверяем свежесть</span></div>
@@ -135,18 +132,20 @@
           <div class="attention-strip" id="month-attention"><div class="skeleton"></div></div>
           <div class="grid">
             <article class="card span-12"><h2>Тренд трёх оценок</h2><p class="card-sub">Оформление · Диагноз · План по протоколу</p><div id="month-zone-trend"></div></article>
-            <article class="card span-12"><h2>Куда смотреть</h2><p class="card-sub">Специальности и врачи с высокой долей «плохо»</p><div id="month-look-where"></div></article>
-            <details class="card span-12 mo-secondary-details"><summary>Подробнее: старые графики и №55</summary>
+            <article class="card span-12"><h2>Куда смотреть</h2><p class="card-sub">Врачи с высокой долей «плохо» по зонам</p><div id="month-look-where"></div></article>
+            <details class="card span-12 mo-secondary-details"><summary>Подробнее: №55 и служебные сводки</summary>
             <div class="grid">
-            <article class="card span-12"><h2>Прогноз и сравнение</h2><p class="card-sub">Линейный темп до конца месяца</p><div class="month-compare" id="month-forecast"></div><div id="month-compare"></div></article>
-            <article class="card span-12"><h2>Четыре индекса и объём</h2><p class="card-sub">Динамика по дням (legacy)</p><div id="month-trend-chart"></div></article>
-            <article class="card span-7"><h2>Специальность × глава МКБ</h2><p class="card-sub">Цвет - средняя оценка, значение - объём; клик фильтрует случаи</p><div id="month-heatmap-chart"></div></article>
-            <article class="card span-5"><h2>Врачи с поправкой на состав случаев</h2><p class="card-sub">Дельта к специальности, 95% ДИ и порог выборки</p><div id="month-doctor-chart"></div><div id="month-doctor-note"></div></article>
-            <article class="card span-7"><h2>Парето замечаний</h2><p class="card-sub">Число случаев и накопленная доля; клик открывает связанные случаи</p><div id="month-pareto-chart"></div></article>
-            <article class="card span-5"><h2>Воронка месяца</h2><p class="card-sub">От источника до закрытия работы методиста</p><div id="month-funnel-chart"></div></article>
-            <article class="card span-6"><h2>Прогресс CRM</h2><p class="card-sub">Рабочие статусы случаев с рассчитанной оценкой</p><div id="month-crm-chart"></div></article>
             <article class="card span-6"><h2>Соответствие №55 (разд. V)</h2><p class="card-sub">Средний % по п.12 и доли градаций п.13 (80-100 / 55-79,9 / ≤54,9)</p><div id="month-reg55"></div></article>
-            <article class="card span-12"><h2>№55: слабые пункты разд. V</h2><p class="card-sub">Top-fail по пунктам section-pack; клик открывает очередь с фокусом пункта</p><div id="month-rubric-mz"></div></article>
+            <article class="card span-6"><h2>№55: слабые пункты разд. V</h2><p class="card-sub">Top-fail по пунктам section-pack; клик открывает очередь с фокусом пункта</p><div id="month-rubric-mz"></div></article>
+            <div id="month-forecast" hidden></div>
+            <div id="month-compare" hidden></div>
+            <div id="month-trend-chart" hidden></div>
+            <div id="month-heatmap-chart" hidden></div>
+            <div id="month-doctor-chart" hidden></div>
+            <div id="month-doctor-note" hidden></div>
+            <div id="month-pareto-chart" hidden></div>
+            <div id="month-funnel-chart" hidden></div>
+            <div id="month-crm-chart" hidden></div>
             </div></details>
           </div>
         </section>
@@ -159,14 +158,19 @@
           <div class="grid">
             <article class="card span-12"><h2>Таблица дня</h2><p class="card-sub">Сначала критично и важно - клик открывает разбор</p><div class="table-wrap sticky-first"><table><thead><tr><th>Приоритет</th><th>Раздел</th><th>Визит</th><th>Пациент</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
             <article class="card span-12"><h2>Тренд 14 дней</h2><p class="card-sub">Оформление · Диагноз · План</p><div id="yesterday-zone-trend"></div></article>
-            <details class="card span-12 mo-secondary-details"><summary>Подробнее: полнота дня, старые индексы, поток</summary>
+            <details class="card span-12 mo-secondary-details"><summary>Подробнее: полнота данных за день</summary>
             <div class="grid">
-            <article class="card span-12"><h2>Полнота данных и воронка</h2><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
-            <article class="card span-12"><h2>Четыре индекса (legacy)</h2><div class="kpis index-kpis" id="yesterday-index-cards"></div><div id="yesterday-index-chart"></div></article>
-            <article class="card span-6"><h2>Топ замечаний</h2><div id="yesterday-findings-chart"></div><div id="yesterday-findings-list"></div></article>
-            <article class="card span-6"><h2>Врачи ниже ожидаемого</h2><div id="yesterday-doctor-chart"></div><div id="yesterday-doctor-note"></div></article>
-            <article class="card span-7"><h2>Структура потока</h2><label class="filter"><span>Разрез потока</span><select class="control" id="yesterday-flow-dimension"><option value="specialty">Специальности</option><option value="branch">Филиалы</option><option value="document_kind">Типы документов</option></select></label><div id="yesterday-flow-chart"></div><div id="yesterday-flow-note"></div></article>
-            <article class="card span-5"><h2>Качество источника</h2><div id="yesterday-source-quality"></div></article>
+            <article class="card span-12"><h2>Полнота данных</h2><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
+            <div id="yesterday-index-cards" hidden></div>
+            <div id="yesterday-index-chart" hidden></div>
+            <div id="yesterday-findings-chart" hidden></div>
+            <div id="yesterday-findings-list" hidden></div>
+            <div id="yesterday-doctor-chart" hidden></div>
+            <div id="yesterday-doctor-note" hidden></div>
+            <select id="yesterday-flow-dimension" hidden aria-hidden="true"><option value="specialty">Специальности</option></select>
+            <div id="yesterday-flow-chart" hidden></div>
+            <div id="yesterday-flow-note" hidden></div>
+            <div id="yesterday-source-quality" hidden></div>
             </div></details>
           </div>
         </section>
