@@ -31,7 +31,7 @@ class KzEvaluationResultV4(KzEvaluationResultV3):
 
 
 @lru_cache(maxsize=1)
-def load_v4_config() -> dict[str, Any]:
+def _load_v4_config_yaml() -> dict[str, Any]:
     raw = yaml.safe_load(CONFIG_PATH.read_text(encoding="utf-8")) or {}
     weights = raw.get("axis_weights") or {}
     missing = set(AXES) - set(weights)
@@ -43,13 +43,17 @@ def load_v4_config() -> dict[str, Any]:
     if abs(sum(normalized.values()) - 1.0) > 1e-9:
         raise ValueError("mo_scorer_v4_weights_must_sum_to_one")
     raw["axis_weights"] = normalized
+    return raw
+
+
+def load_v4_config() -> dict[str, Any]:
+    raw = dict(_load_v4_config_yaml())
     try:
         from clinical_knowledge.mo_scoring_profile import apply_profile_to_v4_config
 
-        raw = apply_profile_to_v4_config(raw)
+        return apply_profile_to_v4_config(raw)
     except Exception:  # noqa: BLE001
-        pass
-    return raw
+        return raw
 
 
 def _enabled(name: str, default: str) -> bool:

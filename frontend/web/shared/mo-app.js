@@ -4018,17 +4018,50 @@
       if (value === "methodist") return "методист";
       return value || "методист";
     }
+    var scoringStrictnessPollTimer = null;
     function scoringStrictnessCanEdit() {
       var actions = (state.data.capabilities && state.data.capabilities.actions) || {};
       return actions.manage_scoring_config !== false;
     }
+    function stopScoringStrictnessPoll() {
+      if (scoringStrictnessPollTimer) {
+        window.clearInterval(scoringStrictnessPollTimer);
+        scoringStrictnessPollTimer = null;
+      }
+    }
+    function startScoringStrictnessPoll() {
+      stopScoringStrictnessPoll();
+      var ticks = 0;
+      scoringStrictnessPollTimer = window.setInterval(async function () {
+        ticks += 1;
+        try {
+          var response = await request("/scoring-config", "/scoring-config");
+          if (!response.ok) return;
+          var data = await response.json();
+          var job = data.recompute_job || {};
+          renderScoringStrictness(data);
+          if (!job.status || job.status === "done" || job.status === "error" || ticks >= 40) {
+            stopScoringStrictnessPoll();
+            var el = $("score-strictness-status");
+            if (el && job.status === "done") el.textContent = "Пересчёт витрины завершён.";
+            if (el && job.status === "error") {
+              el.textContent = "Пересчёт завершился с ошибкой.";
+              el.style.color = "var(--danger, #b42318)";
+            }
+          }
+        } catch (error) {}
+      }, 2000);
+    }
     function renderScoringStrictness(payload) {
       var host = $("scoring-strictness");
       if (!host) return;
+      var prevFrom = $("score-date-from") ? $("score-date-from").value : "";
+      var prevTo = $("score-date-to") ? $("score-date-to").value : "";
       var profile = (payload && payload.profile) || {};
       var effective = (payload && payload.effective) || {};
       var days = (payload && payload.available_days) || {};
       var job = (payload && payload.recompute_job) || null;
+      var notes = (payload && payload.notes_ru) || [];
       var zb = effective.zone_bands || profile.zone_bands || {};
       var st = effective.status_thresholds || profile.status_thresholds || {};
       var caps = effective.risk_caps || profile.risk_caps || {};
@@ -4038,13 +4071,19 @@
       var jobHtml = "";
       if (job && job.status) {
         jobHtml =
-          '<p class="card-sub">Пересчёт: <b>' + esc(job.status) + "</b>" +
-          (job.date_from ? " · " + esc(job.date_from) + "…" + esc(job.date_to || "") : "") +
+          '<p class="card-sub">Пересчёт витрины/зон: <b>' + esc(job.status) + "</b>" +
+          (job.date_from ? " · " + esc(job.date_from) + " - " + esc(job.date_to || "") : "") +
           (job.progress ? " · " + esc(job.progress.done) + "/" + esc(job.progress.total) : "") +
           "</p>";
       }
+      var notesHtml = notes.length
+        ? '<ul class="card-sub" style="margin:8px 0 0 1.1rem;padding:0">' +
+          notes.map(function (n) { return "<li>" + esc(n) + "</li>"; }).join("") +
+          "</ul>"
+        : "";
       host.innerHTML =
         '<div class="settings-stack scoring-strictness-form">' +
+        '<p class="card-sub">Меняет полосы зон и пороги внимания. Пересчёт обновляет витрину без повторного LLM.</p>' +
         '<label class="filter"><span>Пресет жёсткости</span>' +
         '<select class="control" id="score-preset"' + disabled + ">" +
         '<option value="soft">Мягкая</option>' +
@@ -4062,17 +4101,20 @@
         '<label class="filter span-3"><span>В очередь при балле ниже</span><input class="control" id="score-attention" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         "</div>" +
         '<p class="card-sub">Доступные дни витрины: ' +
-        (days.n ? (esc(days.first) + " … " + esc(days.last) + " (" + esc(days.n) + ")") : "пока нет") +
+        (days.n ? (esc(days.first) + " - " + esc(days.last) + " (" + esc(days.n) + ")") : "пока нет") +
         ". Версия профиля: " + esc(profile.profile_version || 1) +
         (profile.apply_on_next_load ? " · ждёт следующую загрузку" : "") +
         "</p>" +
         jobHtml +
+        notesHtml +
         (canEdit
           ? '<div class="section-actions" style="margin-top:8px">' +
             '<button class="button" type="button" id="score-save">Сохранить</button>' +
             '<button class="button secondary" type="button" id="score-recompute-range">Пересчитать период</button>' +
             '<button class="button secondary" type="button" id="score-recompute-all">Пересчитать всё</button>' +
-            '<button class="button secondary" type="button" id="score-next-load">На следующую загрузку</button>' +
+            '<button class="button secondary" type="button" id="score-next-load-days">На след. загрузку (новые дни)</button>' +
+            '<button class="button secondary" type="button" id="score-next-load-range">На след. загрузку (период)</button>' +
+            '<button class="button secondary" type="button" id="score-next-load-all">На след. загрузку (вся история)</button>' +
             "</div>" +
             '<div class="grid" style="margin-top:8px">' +
             '<label class="filter span-4"><span>Период с</span><input class="control" id="score-date-from" type="date"></label>' +
@@ -4089,8 +4131,8 @@
       if ($("score-p0")) $("score-p0").value = caps.P0 != null ? caps.P0 : 40;
       if ($("score-p1")) $("score-p1").value = caps.P1 != null ? caps.P1 : 60;
       if ($("score-attention")) $("score-attention").value = profile.attention_score_below != null ? profile.attention_score_below : 70;
-      if ($("score-date-from") && days.first) $("score-date-from").value = days.first;
-      if ($("score-date-to") && days.last) $("score-date-to").value = days.last;
+      if ($("score-date-from")) $("score-date-from").value = prevFrom || days.first || "";
+      if ($("score-date-to")) $("score-date-to").value = prevTo || days.last || "";
       if (!canEdit) return;
       var presets = (profile.presets) || {};
       if ($("score-preset")) {
@@ -4143,7 +4185,7 @@
             if (!response.ok) throw new Error("Не удалось сохранить профиль");
             var data = await response.json();
             renderScoringStrictness(data);
-            setStatus("Профиль сохранён. Запустите пересчёт периода или отметьте «на следующую загрузку».");
+            setStatus("Профиль сохранён. Запустите пересчёт периода или отложите на следующую загрузку.");
           } catch (error) {
             setStatus(error.message || String(error), true);
           }
@@ -4165,11 +4207,12 @@
           var data = await response.json().catch(function () { return {}; });
           if (!response.ok) throw new Error((data && data.detail) || "Пересчёт не запущен");
           renderScoringStrictness(data);
-          setStatus(
-            data.scheduled
-              ? "Отложено на следующую подгрузку данных."
-              : "Пересчёт запущен. Обновите страницу через несколько минут."
-          );
+          if (data.scheduled) {
+            setStatus("Отложено на следующую подгрузку данных.");
+          } else {
+            setStatus("Пересчёт витрины/зон запущен…");
+            startScoringStrictnessPoll();
+          }
         } catch (error) {
           setStatus(error.message || String(error), true);
         }
@@ -4189,18 +4232,24 @@
           runRecompute({ apply_mode: "now", whole_range: true });
         });
       }
-      if ($("score-next-load")) {
-        $("score-next-load").addEventListener("click", function () {
-          var whole = window.confirm(
-            "OK - пересчитать всю историю на следующей загрузке.\nОтмена - только новые дни пайплайна + текущий период из полей дат (если заполнены)."
-          );
-          var body = { apply_mode: "next_load" };
-          if (whole) body.whole_range = true;
-          else if ($("score-date-from").value && $("score-date-to").value) {
-            body.date_from = $("score-date-from").value;
-            body.date_to = $("score-date-to").value;
-          }
-          runRecompute(body);
+      if ($("score-next-load-days")) {
+        $("score-next-load-days").addEventListener("click", function () {
+          runRecompute({ apply_mode: "next_load" });
+        });
+      }
+      if ($("score-next-load-range")) {
+        $("score-next-load-range").addEventListener("click", function () {
+          runRecompute({
+            apply_mode: "next_load",
+            date_from: $("score-date-from").value,
+            date_to: $("score-date-to").value
+          });
+        });
+      }
+      if ($("score-next-load-all")) {
+        $("score-next-load-all").addEventListener("click", function () {
+          if (!window.confirm("На следующей загрузке пересчитать всю историю витрины?")) return;
+          runRecompute({ apply_mode: "next_load", whole_range: true });
         });
       }
     }
@@ -4210,7 +4259,10 @@
       try {
         var response = await request("/scoring-config", "/scoring-config");
         if (!response.ok) throw new Error("scoring-config unavailable");
-        renderScoringStrictness(await response.json());
+        var data = await response.json();
+        renderScoringStrictness(data);
+        var job = data.recompute_job || {};
+        if (job.status === "running" || job.status === "queued") startScoringStrictnessPoll();
       } catch (error) {
         host.innerHTML = '<p class="card-sub">Не удалось загрузить настройки жёсткости.</p>';
       }

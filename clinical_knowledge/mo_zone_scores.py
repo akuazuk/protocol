@@ -52,15 +52,20 @@ def zones_scores_enabled() -> bool:
 
 
 @lru_cache(maxsize=1)
-def load_zone_bands() -> dict[str, Any]:
+def _load_zone_bands_yaml() -> dict[str, Any]:
     raw = yaml.safe_load(BANDS_PATH.read_text(encoding="utf-8")) or {}
-    out = {
+    return {
         "bad_below": float(raw.get("bad_below") or 50),
         "ok_at_or_above": float(raw.get("ok_at_or_above") or 85),
         "labels_ru": dict(raw.get("labels_ru") or {}),
         "zone_labels_ru": dict(raw.get("zone_labels_ru") or {}),
         "engine": str(raw.get("engine") or ENGINE),
     }
+
+
+def load_zone_bands() -> dict[str, Any]:
+    """YAML defaults + живой кабинетный профиль (без кеша оверлея)."""
+    out = dict(_load_zone_bands_yaml())
     try:
         from clinical_knowledge.mo_scoring_profile import effective_zone_bands
 

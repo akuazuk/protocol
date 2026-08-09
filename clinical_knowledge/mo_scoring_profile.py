@@ -193,22 +193,23 @@ def load_scoring_profile(*, root: Path | None = None) -> dict[str, Any]:
 
 
 def _invalidate_caches() -> None:
+    """Сброс YAML-кешей (профиль читается каждый раз поверх них)."""
     try:
-        from clinical_knowledge.mo_zone_scores import load_zone_bands
+        from clinical_knowledge.mo_zone_scores import _load_zone_bands_yaml
 
-        load_zone_bands.cache_clear()
+        _load_zone_bands_yaml.cache_clear()
     except Exception:  # noqa: BLE001
         pass
     try:
-        from clinical_knowledge.kz_evaluation_v4 import load_v4_config
+        from clinical_knowledge.kz_evaluation_v4 import _load_v4_config_yaml
 
-        load_v4_config.cache_clear()
+        _load_v4_config_yaml.cache_clear()
     except Exception:  # noqa: BLE001
         pass
     try:
-        from clinical_knowledge.kz_deep_eval import load_deep_config
+        from clinical_knowledge.kz_deep_eval import _load_deep_config_yaml
 
-        load_deep_config.cache_clear()
+        _load_deep_config_yaml.cache_clear()
     except Exception:  # noqa: BLE001
         pass
 
@@ -411,10 +412,11 @@ def scoring_config_public(*, root: Path | None = None) -> dict[str, Any]:
         },
         "recompute_job": job,
         "notes_ru": [
-            "Жёсткость зон меняет полосы «плохо / слабо / в норме» при пересчёте витрины.",
-            "Пороги статусов и risk-caps влияют на новый deep/v4-прогон; для уже записанных overall нужен полный rescore.",
-            "«На следующую загрузку» применит профиль при ночном LLM/inbound score + recompute.",
+            "Пересчёт из настроек обновляет витрину и полосы зон (Оформление / Диагноз / План) без повторного LLM.",
+            "Пороги статусов и потолки P0/P1 влияют на новый deep/v4-прогон; уже записанный overall в cases.jsonl сам не меняется.",
+            "«На следующую загрузку» применит профиль при ночном прогоне или inbound score + recompute.",
         ],
+        "recompute_mode": "warehouse_zones",
     }
 
 
