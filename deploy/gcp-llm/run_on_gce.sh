@@ -8,6 +8,7 @@
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-06 --smoke   # grade --limit 1 only
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-smoke
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-pilot
+#   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-methodist-pack
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -23,7 +24,7 @@ MODE=""
 shift || true
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --foreground|--smoke|--calibration-smoke|--calibration-pilot) MODE="$1" ;;
+    --foreground|--smoke|--calibration-smoke|--calibration-pilot|--calibration-methodist-pack) MODE="$1" ;;
     20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]) LAST="$1" ;;
     *) echo "Unknown arg: $1" >&2; exit 2 ;;
   esac
@@ -48,6 +49,7 @@ gcloud compute scp \
   "$ROOT/scripts/build_mo_score_calibration_sample.py" \
   "$ROOT/scripts/run_mo_calibration_blind_judge.py" \
   "$ROOT/scripts/eval_mo_score_calibration.py" \
+  "$ROOT/scripts/build_mo_calibration_methodist_pack.py" \
   "$ROOT/clinical_knowledge/mo_icd_llm_review.py" \
   "$ROOT/clinical_knowledge/mo_dx_evidence_score.py" \
   "$ROOT/clinical_knowledge/mo_plan_protocol_score.py" \
@@ -60,6 +62,7 @@ sudo cp /tmp/mo_llm_range_runner.sh /tmp/grade_kz_llm.py \
   /tmp/run_mo_action_queue_llm_judge.py /tmp/run_mo_icd_llm_review.py \
   /tmp/recompute_mo_days.py /tmp/build_mo_score_calibration_sample.py \
   /tmp/run_mo_calibration_blind_judge.py /tmp/eval_mo_score_calibration.py \
+  /tmp/build_mo_calibration_methodist_pack.py \
   /opt/protocol/scripts/
 sudo cp /tmp/mo_icd_llm_review.py /tmp/mo_dx_evidence_score.py \
   /tmp/mo_plan_protocol_score.py /opt/protocol/clinical_knowledge/
@@ -73,6 +76,7 @@ if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/scripts/build_mo_score_calibration_sample.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/run_mo_calibration_blind_judge.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/eval_mo_score_calibration.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/build_mo_calibration_methodist_pack.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_icd_llm_review.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_dx_evidence_score.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_plan_protocol_score.py '${CONTAINER}':/app/clinical_knowledge/
@@ -97,6 +101,27 @@ sudo docker exec '${CONTAINER}' wc -l /tmp/gcp_smoke_grades_${FIRST}.jsonl
 echo SMOKE_GRADE_OK
 "
   echo "[3/3] done smoke"
+  exit 0
+fi
+
+if [[ "$MODE" == "--calibration-methodist-pack" ]]; then
+  CALIBRATION_DIR="${DATA}/calibration/mo-score-v3-${FIRST}-${LAST}"
+  echo "[2/3] calibration C6: build blinded methodist review pack"
+  gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
+set -euo pipefail
+sudo docker exec '${CONTAINER}' bash -lc \"
+set -euo pipefail
+cd /app
+python scripts/build_mo_calibration_methodist_pack.py \
+  --cases '${CALIBRATION_DIR}/secret/secret_cases.jsonl' \
+  --pilot '${CALIBRATION_DIR}/secret/blind_pilot.jsonl' \
+  --secret-out-dir '${CALIBRATION_DIR}/secret/methodist' \
+  --public-status '${CALIBRATION_DIR}/methodist_status.json'
+\"
+"
+  echo "[3/3] done calibration methodist pack on GCE ${VM}"
+  echo "SECRET_PACK=${CALIBRATION_DIR}/secret/methodist"
+  echo "PUBLIC_STATUS=${CALIBRATION_DIR}/methodist_status.json"
   exit 0
 fi
 
