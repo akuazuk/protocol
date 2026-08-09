@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-09-mo-score-ssot-llm-recompute-v1.md](2026-08-09-mo-score-ssot-llm-recompute-v1.md) | Один №55 везде; честные findings; МКБ-канон; полный recompute + LLM grey-zone | active |
 | [2026-08-09-methodist-cabinet-mo-style-v1.md](2026-08-09-methodist-cabinet-mo-style-v1.md) | Кабинет методиста: стиль МО, full width, без мусора/битых ссылок | active |
 | [2026-08-09-mo-today-rings-dynamics-v1.md](2026-08-09-mo-today-rings-dynamics-v1.md) | Сегодня: кольца зон/№55 + динамика по #period; волна 0 API | active |
 | [2026-08-09-mo-protocol-nav-reader-v2.md](2026-08-09-mo-protocol-nav-reader-v2.md) | Навигация по КП: fullscreen reader МО, абзацы вместо обрывков, Study/Visit | active |
