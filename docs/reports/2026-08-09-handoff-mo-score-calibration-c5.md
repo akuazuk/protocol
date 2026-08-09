@@ -8,8 +8,8 @@ Date: 2026-08-09
 - branch: `cursor/mo-score-calibration-pilot-c5-pc1`
 - worktree: `/private/tmp/protocol-task-mo-score-calibration-pilot-c5-pc1`
 - base: `4e7bd0df0164669fbeae070688e4b27affb5b32e`
-- HEAD: pending final commit
-- PR: pending publication
+- implementation HEAD: `1c9a8ce5`
+- PR: https://github.com/akuazuk/protocol/pull/109
 - merge/deploy: not performed
 
 ## Completed
