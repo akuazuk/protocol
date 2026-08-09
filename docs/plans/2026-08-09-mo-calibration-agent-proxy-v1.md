@@ -1,6 +1,6 @@
 # МО: независимый AI-proxy до human gold (C6A/C7A)
 
-Дата: 2026-08-09  
+Дата: 2026-08-09
 Статус: **completed** (exploratory C6A/C7A; formal C6-C9 не закрыты)
 
 Связанный основной план:
