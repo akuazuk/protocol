@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-092522Z-mo-ui-visual-refresh"
+BUILD_VERSION = "2026-08-09-094029Z-mo-protocol-reader"
 
 
 def _app_version() -> str:
@@ -12868,6 +12868,32 @@ def api_protocol_brief(
     while len(_BRIEF_CACHE) > _BRIEF_CACHE_MAX:
         _BRIEF_CACHE.popitem(last=False)
     return brief
+
+
+@app.get("/api/protocol-reader")
+def api_protocol_reader(
+    path: str = Query(..., min_length=3, max_length=512),
+    query: str = Query("", max_length=2000),
+) -> dict:
+    """Study-навигатор: абзацы протокола (не короткие brief-пункты)."""
+    from clinical_knowledge.protocol_links import normalize_protocol_path
+    from clinical_knowledge.protocol_reader import build_protocol_reader
+
+    p = path.strip()
+    key = normalize_protocol_path(p) or p
+    rich_chunks: list[dict] = []
+    try:
+        _require_rag_loaded(max_wait_sec=max(2.0, env_float("RAG_LOAD_WAIT_LITE_SEC", 12.0)))
+        rich_chunks = get_rich_chunks_for_path(key)
+    except Exception:
+        rich_chunks = []
+    payload = build_protocol_reader(
+        p,
+        query=query.strip(),
+        rich_chunks=rich_chunks or None,
+    )
+    payload["build_version"] = BUILD_VERSION
+    return payload
 
 
 @app.get("/api/protocol-summary-excerpt")

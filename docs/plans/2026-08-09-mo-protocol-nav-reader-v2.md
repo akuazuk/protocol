@@ -1,8 +1,8 @@
 # Навигация по КП: reader на всю ширину + абзацы (v2)
 
-Дата: 2026-08-09  
-Статус: **active** (согласование; радикальная переделка)  
-Преемник / замена: `2026-08-09-mo-protocol-nav-viewer-v1.md` → **archived**  
+Дата: 2026-08-09
+Статус: **active** (R0-R5 в коде; ждём merge + GCE deploy)
+Преемник / замена: `2026-08-09-mo-protocol-nav-viewer-v1.md` → **archived**
 (в v1 починили тупик, CSS, corpus на GCE; модель контента «короткие пункты» осталась)
 
 Связанные (не дублировать):
@@ -22,7 +22,7 @@
 
 ### 1.1 Контент - главный дефект
 
-Источник правды на диске уже абзацный (`source_text` / rich_chunks, часто 300-900+ символов на блок).  
+Источник правды на диске уже абзацный (`source_text` / rich_chunks, часто 300-900+ символов на блок).
 Пайплайн **сжимает** его в обрывки:
 
 | Ступень | Лимит сейчас | Эффект |
@@ -48,9 +48,9 @@
 
 ### 1.3 Что v1 уже закрыл (не трогать зря)
 
-- never-empty cascade brief → source_view  
-- `/mo-protocol-viewer.css` route  
-- corpus на GCE (`/var/data/protocol_corpus` + mounts)  
+- never-empty cascade brief → source_view
+- `/mo-protocol-viewer.css` route
+- corpus на GCE (`/var/data/protocol_corpus` + mounts)
 - CTA «Открыть протокол» / deep-link `section`/`page`
 
 v2 **не** про «ещё раз починить 404», а про **другую модель чтения**.
@@ -92,10 +92,10 @@ v2 **не** про «ещё раз починить 404», а про **друг�
 
 Правила UI:
 
-- `max-width: none` (или `min(100%, 1680px)` на ультрашироких); боковые поля как у МО shell.  
-- Rail sticky, узкий (≈12rem), на mobile - горизонтальные чипы.  
-- Абзац **развёрнут по умолчанию** (не lead 160 + «ещё»).  
-- Без doctor chrome при `from=mo` (уже есть); тот же вид из кабинета методиста.  
+- `max-width: none` (или `min(100%, 1680px)` на ультрашироких); боковые поля как у МО shell.
+- Rail sticky, узкий (≈12rem), на mobile - горизонтальные чипы.
+- Абзац **развёрнут по умолчанию** (не lead 160 + «ещё»).
+- Без doctor chrome при `from=mo` (уже есть); тот же вид из кабинета методиста.
 - Опционально волна 2: правая колонка PDF.js (split view) - не блокер v2.1.
 
 ---
@@ -195,12 +195,12 @@ Smoke-набор: 20 КП (астма, ЧЛХ, педиатрия, терапи�
 
 ## 7. Шаги
 
-- [ ] **R0** Согласовать канон D (Study default, Visit optional) + full width МО  
-- [ ] **R1** Backend `protocol_reader.py` + `/api/protocol-reader` (paragraph units)  
-- [ ] **R2** UI shell: full-width, rail+stream, без clamp lead-160; стиль как case-workspace  
-- [ ] **R3** Annotations из Summary (dose/level/flags) на абзацах; страница → PDF  
-- [ ] **R4** Поиск по абзацам + deep-link section/page  
-- [ ] **R5** Тесты длины/мусора + smoke 20; GCE deploy (corpus mounts уже есть)  
+- [x] **R0** Согласовать канон D (Study default, Visit optional) + full width МО
+- [x] **R1** Backend `protocol_reader.py` + `/api/protocol-reader` (paragraph units)
+- [x] **R2** UI shell: full-width, rail+stream, без clamp lead-160; стиль как case-workspace
+- [x] **R3** Annotations из Summary (dose/level/flags) на абзацах; страница → PDF
+- [x] **R4** Поиск по абзацам + deep-link section/page
+- [ ] **R5** Тесты длины/мусора + smoke 20; GCE deploy (corpus mounts уже есть) - тесты в PR; smoke/deploy после merge
 - [ ] **R6** (позже) PDF.js split view; (ещё позже) E re-chunk если дыры
 
 Вне scope v2.1: массовый LLM-пересказ; смена suggest-ранжирования (это quality-parity).
