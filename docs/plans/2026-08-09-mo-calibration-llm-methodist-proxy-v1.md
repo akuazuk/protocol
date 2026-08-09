@@ -1,7 +1,7 @@
 # МО: C6B LLM-proxy labels как substitute gold + formal C7
 
 Дата: 2026-08-09
-Статус: **active** (C6B labels 22/22 + C7 proxy-gold выполнены; production locked)
+Статус: **completed** (C6B/C7/C8B done; superseded for methodology by C9A)
 
 Связанные планы:
 - `2026-08-09-mo-score-ssot-llm-recompute-v3.md`

@@ -1,8 +1,7 @@
 # MO score calibration - frozen protocol
 
-Status: C0-C5 done; C6 human waived; C6B/C7 done; C8B
-`provisional-methodology-c8b.json` = no_stable (tiny bad-n). C9A confirmatory
-blind 100 done, Pro-proxy running. Production scoring still locked.
+Status: C0-C9A exploratory complete. See `c9a_public_summary.json` for
+confirmatory provisional shadow picks. Production scoring still locked.
 
 ## Scope
 

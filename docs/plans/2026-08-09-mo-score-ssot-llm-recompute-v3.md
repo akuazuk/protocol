@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C5; C6 human waived; C6B 22/22 + C7 proxy-gold done; prod locked)
+Статус: **active** (C0-C8 + C9A exploratory done; production scoring locked)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -415,7 +415,9 @@ Uncertainty:
 - [x] **C8** Pilot report + provisional methodology
   (C8A exploratory + C8B vs C6B gold: оба Dx/Plan `no_stable_provisional`;
   production rollout forbidden)
-- [ ] **C9** Confirmatory cohort ≥100 или ≥30 bad (C9A blind done; proxy running)
+- [x] **C9** Confirmatory cohort ≥100 (C9A exploratory proxy-gold):
+  Dx `blind.adjudicated_or_mean`, Plan `ensemble.arm_d_blind_mean`;
+  production rollout всё ещё `false`
 
 #### Результат C0-C4 от 2026-08-09
 

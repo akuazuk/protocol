@@ -1,0 +1,94 @@
+{
+  "schema_version": 1,
+  "analysis": "agent_proxy_provisional_c8a",
+  "proxy_models": [
+    "gemini-3.1-pro-preview"
+  ],
+  "endpoints": {
+    "dx": {
+      "top_candidate": "blind.adjudicated_or_mean",
+      "top_metrics": {
+        "n": 81,
+        "proxy_bad_n": 12,
+        "mae": 7.963,
+        "spearman": 0.7835,
+        "roc_auc_bad": 0.9209,
+        "pr_auc_bad": 0.8107,
+        "pr_auc_bad_ci95": [
+          0.5988,
+          0.9628
+        ],
+        "classification_at_55": {
+          "threshold": 55,
+          "tp": 10,
+          "tn": 63,
+          "fp": 6,
+          "fn": 2,
+          "sensitivity": 0.8333333333333334,
+          "specificity": 0.9130434782608695,
+          "precision": 0.625,
+          "balanced_accuracy": 0.8731884057971014
+        }
+      },
+      "ranking_top3": [
+        "blind.adjudicated_or_mean",
+        "blind.mean_2",
+        "blind.pass_1"
+      ],
+      "proxy_labeled_n": 82,
+      "proxy_bad_n": 13,
+      "stable_enough_for_provisional": true,
+      "decision": "provisional_shadow:blind.adjudicated_or_mean"
+    },
+    "plan": {
+      "top_candidate": "ensemble.arm_d_blind_mean",
+      "top_metrics": {
+        "n": 73,
+        "proxy_bad_n": 26,
+        "mae": 22.4178,
+        "spearman": 0.7851,
+        "roc_auc_bad": 0.9149,
+        "pr_auc_bad": 0.9034,
+        "pr_auc_bad_ci95": [
+          0.7993,
+          0.97
+        ],
+        "classification_at_55": {
+          "threshold": 55,
+          "tp": 12,
+          "tn": 47,
+          "fp": 0,
+          "fn": 14,
+          "sensitivity": 0.46153846153846156,
+          "specificity": 1.0,
+          "precision": 1.0,
+          "balanced_accuracy": 0.7307692307692308
+        }
+      },
+      "ranking_top3": [
+        "ensemble.arm_d_blind_mean",
+        "blind.adjudicated_or_mean",
+        "blind.mean_2"
+      ],
+      "proxy_labeled_n": 75,
+      "proxy_bad_n": 26,
+      "stable_enough_for_provisional": true,
+      "decision": "provisional_shadow:ensemble.arm_d_blind_mean"
+    }
+  },
+  "production_rollout": {
+    "allowed": false,
+    "reason": "proxy_not_human_gold",
+    "required_next_gate": "independent_methodist_labels"
+  },
+  "shadow_recommendation": {
+    "dx": "provisional_shadow:blind.adjudicated_or_mean",
+    "plan": "provisional_shadow:ensemble.arm_d_blind_mean",
+    "note": "Shadow only. Do not change action queue, thresholds, SSOT, or warehouse until formal C6-C9 with methodist gold."
+  },
+  "phi_check": {
+    "contains_source_identifiers": false,
+    "contains_sample_identifiers": false,
+    "contains_clinical_text": false
+  }
+}
