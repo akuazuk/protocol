@@ -596,6 +596,8 @@ def test_overview_attention_resolves_month_period(monkeypatch) -> None:
             return dict.get(self, key)
 
     class FakeConn:
+        last_trend_args = None
+
         def execute(self, sql, args=None):  # noqa: ANN001
             class Result:
                 def fetchone(self_inner):
@@ -603,30 +605,59 @@ def test_overview_attention_resolves_month_period(monkeypatch) -> None:
                         return _Row(
                             n_evaluated=10,
                             zone1_bad=2,
+                            zone1_weak=3,
+                            zone1_ok=5,
+                            zone1_na=0,
                             zone2a_bad=1,
+                            zone2a_weak=2,
+                            zone2a_ok=7,
+                            zone2a_na=0,
                             zone2b_bad=3,
+                            zone2b_weak=2,
+                            zone2b_ok=4,
+                            zone2b_na=1,
                             safety_critical=0,
                             zone1_avg=80.0,
                             zone2a_avg=90.0,
                             zone2b_avg=70.0,
+                            reg55_avg=78.0,
+                            reg55_ok=4,
+                            reg55_mid=3,
+                            reg55_bad=2,
+                            reg55_unscored=1,
                         )
                     return None
 
                 def fetchall(self_inner):
                     if "GROUP BY" in sql:
+                        FakeConn.last_trend_args = args
                         return [
                             _Row(
                                 date="2026-08-06",
+                                n_evaluated=10,
                                 zone1_avg=80.0,
                                 zone2a_avg=90.0,
                                 zone2b_avg=70.0,
+                                reg55_avg=78.0,
+                                zone1_bad=2,
+                                zone2a_bad=1,
+                                zone2b_bad=3,
                                 safety_critical=0,
                             )
                         ]
                     return []
 
                 def __iter__(self_inner):
-                    return iter([(0, "id"), (1, "zone1_band")])
+                    if "fact_mo_finding" in sql:
+                        return iter([(0, "finding_code"), (1, "severity"), (2, "is_shadow")])
+                    return iter(
+                        [
+                            (0, "id"),
+                            (1, "zone1_band"),
+                            (2, "reg55_section_pct"),
+                            (3, "reg55_band"),
+                        ]
+                    )
 
             return Result()
 
@@ -643,10 +674,117 @@ def test_overview_attention_resolves_month_period(monkeypatch) -> None:
     )
     monkeypatch.setattr(mo_backend, "_read_connection", lambda: FakeConn())
     monkeypatch.setattr(mo_backend, "closing", fake_closing)
+    monkeypatch.setattr(mo_backend, "_queue_band_counts", lambda *_a, **_k: (4, 7))
 
     att = mo_backend._overview_attention_from_warehouse({"month": "2026-08", "period": "month"})
     assert att is not None
     assert att["n_evaluated"] == 10
     assert att["zone1_bad"] == 2
+    assert att["zone_bands"]["zone1"]["ok"]["n"] == 5
+    assert att["reg55"]["available"] is True
+    assert att["reg55"]["band_share"]["compliant_min"]["n"] == 4
+    assert att["queue_critical"] == 4
+    assert att["queue_important"] == 7
     assert att["zone_trends"]
     assert att["zone_trends"][0]["date"] == "2026-08-06"
+
+
+def test_daily_attention_uses_14_day_trend_lookback(monkeypatch) -> None:
+    from contextlib import contextmanager
+
+    class _Row(dict):
+        def __getitem__(self, key):  # noqa: ANN001
+            return dict.get(self, key)
+
+    seen = {"trend_args": None}
+
+    class FakeConn:
+        def execute(self, sql, args=None):  # noqa: ANN001
+            class Result:
+                def fetchone(self_inner):
+                    if "COUNT(*)" in sql or "zone1_bad" in sql:
+                        return _Row(
+                            n_evaluated=5,
+                            zone1_bad=1,
+                            zone1_weak=1,
+                            zone1_ok=3,
+                            zone1_na=0,
+                            zone2a_bad=0,
+                            zone2a_weak=1,
+                            zone2a_ok=4,
+                            zone2a_na=0,
+                            zone2b_bad=1,
+                            zone2b_weak=0,
+                            zone2b_ok=3,
+                            zone2b_na=1,
+                            safety_critical=0,
+                            zone1_avg=70.0,
+                            zone2a_avg=80.0,
+                            zone2b_avg=60.0,
+                            reg55_avg=None,
+                            reg55_ok=0,
+                            reg55_mid=0,
+                            reg55_bad=0,
+                            reg55_unscored=5,
+                        )
+                    return None
+
+                def fetchall(self_inner):
+                    if "GROUP BY" in sql:
+                        seen["trend_args"] = args
+                        return [
+                            _Row(
+                                date="2026-08-01",
+                                n_evaluated=2,
+                                zone1_avg=71.0,
+                                zone2a_avg=81.0,
+                                zone2b_avg=61.0,
+                                reg55_avg=None,
+                                zone1_bad=0,
+                                zone2a_bad=0,
+                                zone2b_bad=0,
+                                safety_critical=0,
+                            ),
+                            _Row(
+                                date="2026-08-06",
+                                n_evaluated=3,
+                                zone1_avg=69.0,
+                                zone2a_avg=79.0,
+                                zone2b_avg=59.0,
+                                reg55_avg=None,
+                                zone1_bad=1,
+                                zone2a_bad=0,
+                                zone2b_bad=1,
+                                safety_critical=0,
+                            ),
+                        ]
+                    return []
+
+                def __iter__(self_inner):
+                    return iter([(0, "id"), (1, "zone1_band"), (2, "reg55_band")])
+
+            return Result()
+
+    @contextmanager
+    def fake_closing(_conn):  # noqa: ANN001
+        yield FakeConn()
+
+    monkeypatch.setattr(mo_backend, "_read_connection", lambda: FakeConn())
+    monkeypatch.setattr(mo_backend, "closing", fake_closing)
+    monkeypatch.setattr(mo_backend, "_queue_band_counts", lambda *_a, **_k: (1, 2))
+
+    att = mo_backend._overview_attention_from_warehouse(
+        {"date_from": "2026-08-06", "date_to": "2026-08-06"}
+    )
+    assert att is not None
+    assert att["window"]["trend_date_from"] == "2026-07-24"
+    assert att["window"]["trend_date_to"] == "2026-08-06"
+    assert seen["trend_args"] == ("2026-07-24", "2026-08-06")
+    assert len(att["zone_trends"]) == 2
+
+    dash = mo_backend.build_score_dashboard(
+        {"date_from": "2026-08-06", "date_to": "2026-08-06"}
+    )
+    assert dash["ok"] is True
+    assert dash["zones"]["zone1"]["bands"]["ok"]["n"] == 3
+    assert len(dash["trends"]) == 2

@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-09-mo-today-rings-dynamics-v1.md](2026-08-09-mo-today-rings-dynamics-v1.md) | Сегодня: кольца зон/№55 + динамика по #period; волна 0 API | active |
 | [2026-08-09-mo-protocol-nav-reader-v2.md](2026-08-09-mo-protocol-nav-reader-v2.md) | Навигация по КП: fullscreen reader МО, абзацы вместо обрывков, Study/Visit | active |
 | [2026-08-09-mo-analytics-visual-refresh-v1.md](2026-08-09-mo-analytics-visual-refresh-v1.md) | МО Аналитика: цвет умеренно+, Avenir-шкала, sort/filter/chips/col-dropdown на таблицах | active |
 | [2026-08-09-mo-protocol-nav-viewer-v1.md](2026-08-09-mo-protocol-nav-viewer-v1.md) | Навигация по КП: never-empty / CSS / corpus (технический фикс) | archived (преемник: mo-protocol-nav-reader-v2) |
