@@ -9,7 +9,23 @@ from scripts.run_mo_calibration_llm_methodist_labels import (
     REVIEWER_ID,
     label_from_result,
     run_labels,
+    sanitize_blocked_scores,
 )
+
+
+def test_sanitize_blocked_scores_strips_plan_pct() -> None:
+    cleaned = sanitize_blocked_scores(
+        "plan",
+        {
+            "verdict": "blocked",
+            "plan_protocol_pct": 40,
+            "exam_protocol_pct": 10,
+            "plan_general_llm_pct": 20,
+        },
+    )
+    assert cleaned["plan_protocol_pct"] is None
+    assert cleaned["exam_protocol_pct"] is None
+    assert cleaned["plan_general_llm_pct"] is None
 
 
 def test_label_from_result_maps_dx_and_plan_contracts() -> None:

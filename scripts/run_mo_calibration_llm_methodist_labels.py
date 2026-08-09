@@ -70,6 +70,26 @@ def _rationale(payload: Mapping[str, Any]) -> str:
     return text[:2000]
 
 
+def sanitize_blocked_scores(endpoint: str, payload: Mapping[str, Any]) -> dict[str, Any]:
+    """Models sometimes emit scores with blocked/na; contract forbids that."""
+    normalized = dict(payload)
+    verdict = str(normalized.get("verdict") or "").strip().lower()
+    if verdict not in {"blocked", "na"}:
+        return normalized
+    if endpoint == "dx":
+        normalized["dx_evidence_pct"] = None
+    else:
+        for key in (
+            "exam_protocol_pct",
+            "treatment_protocol_pct",
+            "followup_protocol_pct",
+            "plan_protocol_pct",
+            "plan_general_llm_pct",
+        ):
+            normalized[key] = None
+    return normalized
+
+
 def label_from_result(endpoint: str, payload: Mapping[str, Any]) -> dict[str, Any]:
     verdict = str(payload.get("verdict") or "")
     icd_fit = "na" if endpoint == "plan" else str(payload.get("icd_fit") or "unknown")
@@ -123,12 +143,14 @@ def judge_endpoint(
             raw, _latency = _generate(prompt, model=model)
             parsed = extract_json_object(raw)
             if endpoint == "dx":
+                pinned = sanitize_blocked_scores("dx", pin_dx_semantics(parsed))
                 result = validate_dx_evidence_result(
-                    pin_dx_semantics(parsed),
+                    pinned,
                     case_id=str(case["sample_id"]),
                 )
             else:
-                result = validate_plan_concordance_result(
+                pinned = sanitize_blocked_scores(
+                    "plan",
                     pin_plan_route(
                         parsed,
                         route=route,
@@ -136,6 +158,9 @@ def judge_endpoint(
                         if isinstance(protocol_context, dict)
                         else None,
                     ),
+                )
+                result = validate_plan_concordance_result(
+                    pinned,
                     case_id=str(case["sample_id"]),
                 )
             return label_from_result(endpoint, result)
