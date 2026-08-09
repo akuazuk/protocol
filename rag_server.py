@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-161306Z-mo-calibration-c9a"
+BUILD_VERSION = "2026-08-09-170334Z-c6b-llm-methodist-labels"
 
 
 def _app_version() -> str:

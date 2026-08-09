@@ -9,7 +9,9 @@
 
 ## Контекст
 
-Formal C6 ждёт 22 human labels. Владелец разрешил продолжать без них.
+Formal C6 human labels остаются 0/22; owner waived gate. Параллельно C6B
+заполняет тот же pack LLM-proxy labels для formal C7
+(`2026-08-09-mo-calibration-llm-methodist-proxy-v1.md`).
 C8A выбирает provisional shadow methodology по уже готовому C7A proxy aggregate.
 C9A строит независимый July cohort ≥100 и повторяет blind+proxy сравнение.
 

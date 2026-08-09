@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C5 выполнены; C6 secure UI готов, human labels 0/22)
+Статус: **active** (C0-C5 выполнены; C6 human 0/22 waived → C6B LLM-proxy gold в работе)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -408,7 +408,9 @@ Uncertainty:
 - [x] **C4** GCE smoke 5 случаев ×2
 - [x] **C5** GCE pilot 30 ×2 + LLM adjudication
 - [ ] **C6** Methodist labels: ≥15 и все disagreements
-- [ ] **C7** Сравнение одиночных scores и ensembles с CI
+  (human gate waived 2026-08-09; substitute **C6B** LLM-proxy labels -
+  план `2026-08-09-mo-calibration-llm-methodist-proxy-v1.md`)
+- [ ] **C7** Сравнение одиночных scores и ensembles с CI (против C6B proxy-gold)
 - [ ] **C8** Pilot report + выбор provisional methodology
 - [ ] **C9** Confirmatory cohort ≥100 или ≥30 bad
 
@@ -468,8 +470,11 @@ Uncertainty:
   `0700`, файлы `0600`.
 - Текущий label gate: `complete_label_n=0/22`, `case_n=18`,
   `missing_n=0`, `extra_n=0`, `passed=false`.
-- C6 не отмечен выполненным: требуется реальная разметка методистом и
-  `passed=true`. LLM adjudication не считается human gold.
+- C6 human не отмечен выполненным: реальная разметка методистом всё ещё
+  желательна, но owner waived gate. LLM adjudication не считается human gold.
+- C6B (в работе): независимый Pro-proxy пишет 22 labels в тот же pack с
+  `reviewer_id=llm_proxy_c6b_not_human_gold`, затем formal C7 против этих
+  labels без изменения production scoring.
 - Защищённая форма доступна по `/methodist/calibration`: только роли
   methodist/lead/admin, API `no-store`, server-side reviewer/timestamp,
   file lock + atomic replace и отдельный access audit без clinical text.

@@ -11,6 +11,7 @@
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-methodist-pack
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-agent-proxy
 #   bash deploy/gcp-llm/run_on_gce.sh 2026-07-26 2026-07-31 --calibration-confirmatory-proxy
+#   bash deploy/gcp-llm/run_on_gce.sh 2026-08-01 2026-08-08 --calibration-llm-methodist-labels
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
@@ -26,7 +27,7 @@ MODE=""
 shift || true
 while [[ $# -gt 0 ]]; do
   case "$1" in
-    --foreground|--smoke|--calibration-smoke|--calibration-pilot|--calibration-methodist-pack|--calibration-agent-proxy|--calibration-confirmatory-proxy) MODE="$1" ;;
+    --foreground|--smoke|--calibration-smoke|--calibration-pilot|--calibration-methodist-pack|--calibration-agent-proxy|--calibration-confirmatory-proxy|--calibration-llm-methodist-labels) MODE="$1" ;;
     20[0-9][0-9]-[0-9][0-9]-[0-9][0-9]) LAST="$1" ;;
     *) echo "Unknown arg: $1" >&2; exit 2 ;;
   esac
@@ -53,10 +54,13 @@ gcloud compute scp \
   "$ROOT/scripts/eval_mo_score_calibration.py" \
   "$ROOT/scripts/eval_mo_score_agent_proxy.py" \
   "$ROOT/scripts/select_mo_calibration_provisional.py" \
+  "$ROOT/scripts/run_mo_calibration_llm_methodist_labels.py" \
+  "$ROOT/scripts/eval_mo_score_calibration_c7.py" \
   "$ROOT/scripts/build_mo_calibration_methodist_pack.py" \
   "$ROOT/clinical_knowledge/mo_icd_llm_review.py" \
   "$ROOT/clinical_knowledge/mo_dx_evidence_score.py" \
   "$ROOT/clinical_knowledge/mo_plan_protocol_score.py" \
+  "$ROOT/clinical_knowledge/mo_calibration_methodist_ui.py" \
   "${VM}:/tmp/" --zone="$ZONE" --quiet
 
 gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
@@ -67,10 +71,12 @@ sudo cp /tmp/mo_llm_range_runner.sh /tmp/grade_kz_llm.py \
   /tmp/recompute_mo_days.py /tmp/build_mo_score_calibration_sample.py \
   /tmp/run_mo_calibration_blind_judge.py /tmp/eval_mo_score_calibration.py \
   /tmp/eval_mo_score_agent_proxy.py /tmp/select_mo_calibration_provisional.py \
+  /tmp/run_mo_calibration_llm_methodist_labels.py /tmp/eval_mo_score_calibration_c7.py \
   /tmp/build_mo_calibration_methodist_pack.py \
   /opt/protocol/scripts/
 sudo cp /tmp/mo_icd_llm_review.py /tmp/mo_dx_evidence_score.py \
-  /tmp/mo_plan_protocol_score.py /opt/protocol/clinical_knowledge/
+  /tmp/mo_plan_protocol_score.py /tmp/mo_calibration_methodist_ui.py \
+  /opt/protocol/clinical_knowledge/
 sudo chmod +x /opt/protocol/scripts/mo_llm_range_runner.sh
 if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/scripts/mo_llm_range_runner.sh '${CONTAINER}':/app/scripts/
@@ -83,10 +89,13 @@ if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/scripts/eval_mo_score_calibration.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/eval_mo_score_agent_proxy.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/select_mo_calibration_provisional.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/run_mo_calibration_llm_methodist_labels.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/eval_mo_score_calibration_c7.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/build_mo_calibration_methodist_pack.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_icd_llm_review.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_dx_evidence_score.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_plan_protocol_score.py '${CONTAINER}':/app/clinical_knowledge/
+  sudo docker cp /opt/protocol/clinical_knowledge/mo_calibration_methodist_ui.py '${CONTAINER}':/app/clinical_knowledge/
 fi
 "
 
@@ -108,6 +117,42 @@ sudo docker exec '${CONTAINER}' wc -l /tmp/gcp_smoke_grades_${FIRST}.jsonl
 echo SMOKE_GRADE_OK
 "
   echo "[3/3] done smoke"
+  exit 0
+fi
+
+if [[ "$MODE" == "--calibration-llm-methodist-labels" ]]; then
+  CALIBRATION_DIR="${DATA}/calibration/mo-score-v3-${FIRST}-${LAST}"
+  PROXY_MODEL="${MO_CALIBRATION_PROXY_MODEL:-gemini-3.1-pro-preview}"
+  LABEL_SUMMARY="${CALIBRATION_DIR}/secret/methodist/llm_proxy_labels_summary.json"
+  C7_OUT="${CALIBRATION_DIR}/c7_against_llm_proxy_labels.json"
+  echo "[2/3] calibration C6B: LLM-proxy methodist labels + C7"
+  gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
+set -euo pipefail
+sudo docker exec \
+  -e MO_LLM_EXECUTION_HOST=gce -e RUN_HOST=gcp \
+  '${CONTAINER}' bash -lc \"
+set -euo pipefail
+cd /app
+test -f '${CALIBRATION_DIR}/secret/methodist/methodist_cases.jsonl'
+test -f '${CALIBRATION_DIR}/secret/methodist/methodist_labels.jsonl'
+python scripts/run_mo_calibration_llm_methodist_labels.py \\
+  --model '${PROXY_MODEL}' \\
+  --summary-out '${LABEL_SUMMARY}'
+python -c 'import json; value=json.load(open(\\\"${LABEL_SUMMARY}\\\")); assert value[\\\"passed\\\"] and value[\\\"comparison_unsealed\\\"] and value[\\\"error_n\\\"]==0 and value[\\\"proxy_not_human_gold\\\"]; print(\\\"LLM_METHODIST_LABELS_OK\\\", value[\\\"written_n\\\"], value[\\\"label_audit\\\"][\\\"complete_label_n\\\"])'
+python scripts/eval_mo_score_calibration_c7.py \\
+  --snapshot '${CALIBRATION_DIR}/secret/engine_snapshot.jsonl' \\
+  --replay '${CALIBRATION_DIR}/secret/engine_replay.jsonl' \\
+  --blind '${CALIBRATION_DIR}/secret/blind_pilot.jsonl' \\
+  --labels '${CALIBRATION_DIR}/secret/methodist/methodist_labels.jsonl' \\
+  --out '${C7_OUT}' \\
+  --gold-kind llm_proxy_c6b \\
+  --bootstrap-iterations 2000 --seed 42
+python -c 'import json; value=json.load(open(\\\"${C7_OUT}\\\")); assert value[\\\"production_decision_allowed\\\"] is False; print(json.dumps({\\\"dx_top\\\":(value[\\\"endpoints\\\"][\\\"dx\\\"][\\\"ranking_by_gold_pr_auc\\\"] or [None])[0],\\\"plan_top\\\":(value[\\\"endpoints\\\"][\\\"plan\\\"][\\\"ranking_by_gold_pr_auc\\\"] or [None])[0],\\\"dx_bad\\\":value[\\\"endpoints\\\"][\\\"dx\\\"][\\\"gold_bad_n\\\"],\\\"plan_bad\\\":value[\\\"endpoints\\\"][\\\"plan\\\"][\\\"gold_bad_n\\\"]}, ensure_ascii=False))'
+\"
+"
+  echo "[3/3] done LLM methodist labels on GCE ${VM}"
+  echo "LABEL_SUMMARY=${LABEL_SUMMARY}"
+  echo "C7_OUT=${C7_OUT}"
   exit 0
 fi
 
