@@ -237,22 +237,23 @@ UI:
 - [x] Тест fixture mo_1_test → pediatrist pack, ~70-75%, band `compliant_measures`
 
 ### Этап 2. Пайплайн + warehouse + API
-- [ ] Publish case fields + daily criterion agg
+- [x] Publish case fields (`reg55_section_pct/band/pack/weak_points`) + daily band counts / `avg_reg55_section_pct`
+- [ ] Per-point fact table `fact_mo_reg55_criterion` (опц.; weak_points_json достаточно для фильтров v1)
 - [x] deep axis D = `reg55_section.pct` (через `to_reg55_detail_payload`)
 - [x] Findings `D_reg55_gap` (якоря пунктов в detail; per-point codes - следующий шаг)
 - [x] `month-report.reg55` + `GET /reg55-section-summary` (вместо `/rubric-summary` на Обзоре)
-- [ ] Серверные фильтры `reg55_*` в cases/queue
+- [x] Серверные фильтры `reg55_point` / `reg55_band` / `reg55_pack` в cases/queue
 
 ### Этап 3. UI главной + таблицы + фильтры (фокус дашборда и градаций)
-- [ ] CSS-токены / легенда трёх band (§4.1a) + helper `bandFromPct`
+- [x] CSS-токены `--mo-band-*` + helpers `reg55BandTone` / `reg55BandPill`
 - [x] KPI-ряд: «Соответствие №55» + доли по градациям в `#month-reg55`; shadow «Рубрика МЗ» убрана с Обзора
-- [ ] Виджет распределения градаций (donut/stacked) с drill `reg55_band`
-- [x] Карточка top-fail пунктов разд. V (id `#month-rubric-mz` пока сохранён); stacked band - след. шаг
+- [x] Drill по band KPI → очередь с `reg55_band` (donut/stacked - след. шаг)
+- [x] Карточка top-fail пунктов разд. V; клик → `reg55_point` серверный фильтр
 - [ ] Heatmap/таблица специальность × градация; specialty × пункт с tooltip band_share
 - [ ] Тренд: avg №55 % + stacked доли band по дням
-- [ ] Колонки queue/documents: % + **pill градации** + row-tint; сортировка/priority с band
+- [x] Колонки queue/documents: pill градации + row-tint; sort `reg55`
 - [ ] Таблицы врачи/спец.: доли трёх band
-- [ ] Toolbar: «Градация №55», «Критерий №55», пресеты band; chips (client focus chip есть)
+- [x] Chips/URL: `reg55_point` / `reg55_band` / `reg55_pack` (toolbar filter-pop - след. шаг)
 - [x] Case detail: badge градации + текст п.13 + комплекс мер; shadow rubric block убран
 - [x] Удалить `/rubric-summary` из `loadOverview` (заменён на `/reg55-section-summary`)
 

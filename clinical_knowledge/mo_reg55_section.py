@@ -6,6 +6,7 @@
 """
 from __future__ import annotations
 
+import json
 import re
 from functools import lru_cache
 from pathlib import Path
@@ -507,6 +508,44 @@ def _criterion_ui_row(item: Mapping[str, Any]) -> dict[str, Any]:
         "how_checked_ru": item.get("reason") or "",
         "evidence": item.get("evidence") or "",
         "evidence_from_127": bool(item.get("evidence_from_127")),
+    }
+
+
+def warehouse_reg55_columns(section: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Плоские колонки №55 section-pack для fact_mo_case."""
+    if not isinstance(section, Mapping):
+        return {
+            "reg55_section_pct": None,
+            "reg55_band": "unscored",
+            "reg55_pack": None,
+            "reg55_applicable_n": None,
+            "reg55_weak_points_json": "[]",
+        }
+    if section.get("measures") is not None:
+        weak = [
+            str(m.get("point") or "").strip()
+            for m in (section.get("measures") or [])
+            if str(m.get("point") or "").strip()
+        ]
+    else:
+        weak = [
+            str(item.get("point") or "").strip()
+            for item in (section.get("criteria") or [])
+            if str(item.get("point") or "").strip()
+            and isinstance(item.get("score"), (int, float))
+            and float(item["score"]) < 1.0
+        ]
+    pct = section.get("reg55_section_pct")
+    return {
+        "reg55_section_pct": float(pct) if isinstance(pct, (int, float)) else None,
+        "reg55_band": str(section.get("reg55_band") or "unscored"),
+        "reg55_pack": str(section.get("pack_id") or "") or None,
+        "reg55_applicable_n": (
+            int(section["applicable_n"])
+            if isinstance(section.get("applicable_n"), (int, float))
+            else None
+        ),
+        "reg55_weak_points_json": json.dumps(weak, ensure_ascii=False),
     }
 
 

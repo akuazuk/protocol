@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-065724Z-mo-reg55-section"
+BUILD_VERSION = "2026-08-09-070604Z-mo-reg55-wh"
 
 
 def _app_version() -> str:
@@ -11512,6 +11512,9 @@ def api_methodist_mo_cases(
     attention_only: bool = Query(False),
     kp_status: str = Query("", max_length=32),
     history_tier: str = Query("", max_length=64),
+    reg55_point: str = Query("", max_length=500),
+    reg55_band: str = Query("", max_length=200),
+    reg55_pack: str = Query("", max_length=500),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
     sort_by: str = Query("date"),

@@ -6,6 +6,7 @@ from clinical_knowledge.mo_reg55_section import (
     evaluate_reg55_section,
     load_section_config,
     resolve_section_pack,
+    warehouse_reg55_columns,
 )
 
 # Сжатый клинический снимок clients_consult/mo_1_test.pdf (педиатр, первичный).
@@ -109,3 +110,40 @@ def test_evidence_127_does_not_change_denominator() -> None:
     assert result["reg55_section_pct"] == round(
         100.0 * sum(float(c["score"]) for c in applicable) / len(applicable), 1
     )
+
+
+def test_warehouse_reg55_columns_include_weak_points() -> None:
+    result = evaluate_reg55_section(MO_1_TEST_CASE)
+    cols = warehouse_reg55_columns(result)
+    assert cols["reg55_band"] == "compliant_measures"
+    assert isinstance(cols["reg55_section_pct"], float)
+    assert cols["reg55_pack"] == "pediatrist_district"
+    assert cols["reg55_applicable_n"] == result["applicable_n"]
+    assert "42." in cols["reg55_weak_points_json"] or "43." in cols["reg55_weak_points_json"]
+
+
+def test_filter_records_reg55_point_and_band() -> None:
+    from clinical_knowledge.mo_backend import _filter_records
+
+    rows = [
+        {
+            "case_id": "a",
+            "reg55_band": "noncompliant",
+            "reg55_pack": "pediatrist_district",
+            "reg55_weak_points": ["42.3", "43.6"],
+            "finding_codes": [],
+        },
+        {
+            "case_id": "b",
+            "reg55_band": "compliant_min",
+            "reg55_pack": "gp",
+            "reg55_weak_points": ["40.1"],
+            "finding_codes": [],
+        },
+    ]
+    by_band = _filter_records(rows, {"reg55_band": "noncompliant"})
+    assert [r["case_id"] for r in by_band] == ["a"]
+    by_point = _filter_records(rows, {"reg55_point": "42.3"})
+    assert [r["case_id"] for r in by_point] == ["a"]
+    by_pack = _filter_records(rows, {"reg55_pack": "gp"})
+    assert [r["case_id"] for r in by_pack] == ["b"]

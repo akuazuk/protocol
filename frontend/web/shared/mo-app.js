@@ -18,6 +18,7 @@
     var EXPERT_PAGES = { yesterday: true, reports: true };
     var state = {
       page: "yesterday", period: "yesterday", compare: "previous", methodology: "v3", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
+      reg55Band: "", reg55Pack: "",
       sortBy: "date", sortDir: "desc",
       zoneFilter: "", zoneBandFilter: "", attentionOnly: false, kpStatus: "", historyTier: "",
       doctorZoneMetric: "zone1",
@@ -166,6 +167,9 @@
       }
       if (state.search) q.set("q", state.search);
       if (state.findingCode) q.set("finding_codes", state.findingCode);
+      if (state.rubricCriterion) q.set("reg55_point", state.rubricCriterion);
+      if (state.reg55Band) q.set("reg55_band", state.reg55Band);
+      if (state.reg55Pack) q.set("reg55_pack", state.reg55Pack);
       q.set("sort_by", state.sortBy);
       q.set("sort_dir", state.sortDir);
       Object.keys(state.selected).forEach(function (key) {
@@ -614,6 +618,14 @@
         html.push('<span class="chip">№55 пункт: ' + esc(state.rubricCriterion) +
           '<button type="button" data-clear-rubric aria-label="Удалить фильтр пункта №55">×</button></span>');
       }
+      if (state.reg55Band) {
+        html.push('<span class="chip">Градация №55: ' + esc(reg55BandLabelRu(state.reg55Band)) +
+          '<button type="button" data-clear-reg55-band aria-label="Удалить фильтр градации №55">×</button></span>');
+      }
+      if (state.reg55Pack) {
+        html.push('<span class="chip">Pack №55: ' + esc(state.reg55Pack) +
+          '<button type="button" data-clear-reg55-pack aria-label="Удалить фильтр pack №55">×</button></span>');
+      }
       if (state.zoneFilter || state.zoneBandFilter) {
         html.push('<span class="chip">Раздел: ' +
           esc((ZONE_LABELS[state.zoneFilter] || state.zoneFilter || "любой") +
@@ -654,7 +666,17 @@
       var clearRubric = $("filter-chips").querySelector("[data-clear-rubric]");
       if (clearRubric) clearRubric.addEventListener("click", function () {
         state.rubricCriterion = "";
-        renderChips();
+        filtersChanged();
+      });
+      var clearReg55Band = $("filter-chips").querySelector("[data-clear-reg55-band]");
+      if (clearReg55Band) clearReg55Band.addEventListener("click", function () {
+        state.reg55Band = "";
+        filtersChanged();
+      });
+      var clearReg55Pack = $("filter-chips").querySelector("[data-clear-reg55-pack]");
+      if (clearReg55Pack) clearReg55Pack.addEventListener("click", function () {
+        state.reg55Pack = "";
+        filtersChanged();
       });
       var clearZone = $("filter-chips").querySelector("[data-clear-zone]");
       if (clearZone) clearZone.addEventListener("click", function () {
@@ -707,6 +729,9 @@
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
       state.search = q.get("q") || "";
       state.findingCode = q.get("finding_codes") || "";
+      state.rubricCriterion = q.get("reg55_point") || "";
+      state.reg55Band = q.get("reg55_band") || "";
+      state.reg55Pack = q.get("reg55_pack") || "";
       state.sortBy = q.get("sort_by") || "date";
       state.sortDir = q.get("sort_dir") || "desc";
       state.zoneFilter = q.get("zone") || "";
@@ -998,7 +1023,11 @@
       var share = reg55.band_share || {};
       function bandKpi(code, label) {
         var row = share[code] || {};
-        return kpi(label, (row.n != null ? row.n : "-"), (row.pct != null ? row.pct + "%" : "") + " выборки");
+        return '<button type="button" class="kpi kpi--clickable" data-reg55-band="' + esc(code) + '">' +
+          '<div class="kpi-label">' + esc(label) + "</div>" +
+          '<div class="kpi-value">' + esc(row.n != null ? row.n : "-") + "</div>" +
+          '<div class="kpi-meta">' + esc((row.pct != null ? row.pct + "%" : "") + " оценённых") +
+          "</div></button>";
       }
       if (hostKpi) {
         hostKpi.innerHTML =
@@ -1041,12 +1070,25 @@
           if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
           event.preventDefault();
           state.rubricCriterion = row.getAttribute("data-rubric-criterion") || "";
+          state.pageNo = 1;
           renderChips();
           switchPage("queue");
+          filtersChanged();
         }
         row.addEventListener("click", openCriterion);
         row.addEventListener("keydown", openCriterion);
       });
+      if (hostKpi) {
+        hostKpi.querySelectorAll("[data-reg55-band]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            state.reg55Band = btn.getAttribute("data-reg55-band") || "";
+            state.pageNo = 1;
+            renderChips();
+            switchPage("queue");
+            filtersChanged();
+          });
+        });
+      }
     }
     async function loadOverview() {
       var suffix = "?" + query().toString();
@@ -1105,11 +1147,37 @@
         kind: row.document_kind_label || row.kz_kind_label || row.kz_kind || "Не указан",
         coverage: firstNumeric([row.coverage_pct, row.coverage, row.deep_coverage_pct]),
         confidence: firstNumeric([row.confidence_pct, row.confidence, row.deep_confidence_pct]),
-        reg55: firstNumeric([row.reg55_pct, row.axis_regulatory, (row.axes || {}).regulatory]),
+        reg55: firstNumeric([
+          row.reg55_section_pct, row.reg55_pct, row.axis_regulatory, (row.axes || {}).regulatory
+        ]),
+        reg55Band: row.reg55_band || "",
+        reg55Pack: row.reg55_pack || "",
         zone1Band: row.zone1_band || "", zone2aBand: row.zone2a_band || "",
         zone2bBand: row.zone2b_band || "", zone2bKp: row.zone2b_kp_status || "",
         attentionPrimary: row.attention_primary || "",
         attentionReason: row.attention_reason_ru || "" };
+    }
+    function reg55BandLabelRu(code) {
+      return ({
+        compliant_min: "Соответствует (мин. меры)",
+        compliant_measures: "Соответствует (нужны меры)",
+        noncompliant: "Не соответствует",
+        unscored: "Не оценено"
+      })[code] || code || "Не оценено";
+    }
+    function reg55BandPill(code, pct) {
+      var c = String(code || "unscored");
+      var tone = reg55BandTone(c);
+      var label = reg55BandLabelRu(c);
+      var pctBit = pct == null || pct === "" || !Number.isFinite(Number(pct)) ? "" :
+        (' <b>' + Math.round(Number(pct)) + "%</b>");
+      return '<span class="status ' + tone + ' reg55-band-pill" title="' + esc(label) + '">' +
+        esc(label) + pctBit + "</span>";
+    }
+    function reg55RowClass(band) {
+      if (band === "noncompliant") return " reg55-row--noncompliant";
+      if (band === "compliant_measures") return " reg55-row--measures";
+      return "";
     }
     function zoneBandChip(band, kpStatus) {
       var b = String(band || "na");
@@ -1346,7 +1414,8 @@
     }
     function documentRow(item) {
       var reason = item.attentionReason || "";
-      return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
+      var band = item.reg55Band || (item.raw && item.raw.reg55_band) || "";
+      return '<tr tabindex="0" class="' + reg55RowClass(band).trim() + '" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
         icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
@@ -1356,7 +1425,7 @@
         '</td><td><span class="status ' + statusClass(item.status) + '">' +
         esc(statusLabel(item.status)) + "</span></td>" +
         '<td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td>' +
-        '<td><b>' + esc(score(item.reg55)) + '</b></td>' +
+        '<td>' + reg55BandPill(band, item.reg55) + '</td>' +
         '<td>' + esc(score(item.coverage)) + '</td>' +
         '<td>' + esc(score(item.confidence)) + '</td></tr>';
     }
@@ -1369,7 +1438,11 @@
       var pdfUrl = raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
       var layer = raw.layer_ru || layerLabelRu(item.attentionPrimary || raw.attention_primary);
       var reason = item.attentionReason || raw.attention_reason_ru || raw.reason || raw.comment || "Требует ручной проверки";
-      return '<tr tabindex="0" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
+      var band = item.reg55Band || raw.reg55_band || "";
+      if (band && band !== "compliant_min" && reason.indexOf("№55") < 0) {
+        reason = "№55 " + reg55BandLabelRu(band) + (reason ? " · " + reason : "");
+      }
+      return '<tr tabindex="0" class="' + reg55RowClass(band).trim() + '" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
         esc(tone) + '">' + esc(priority) + '</span></td><td>' + esc(layer || "-") +
         '</td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
@@ -1378,6 +1451,7 @@
         '</td><td>' + zoneBandChip(item.zone1Band || raw.zone1_band) +
         '</td><td>' + zoneBandChip(item.zone2aBand || raw.zone2a_band) +
         '</td><td>' + zoneBandChip(item.zone2bBand || raw.zone2b_band, item.zone2bKp || raw.zone2b_kp_status) +
+        '</td><td>' + reg55BandPill(band, item.reg55) +
         '</td><td>' + esc(reason) + '</td><td>' +
         esc(raw.assignee || crm.assignee || "Не назначен") + '</td><td>' + esc(raw.due_date || crm.due_date || "Сегодня") +
         '</td><td>' + esc(statusLabel(item.status)) +
@@ -3332,17 +3406,17 @@
       documents: [
         "Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз",
         "Оформление", "Диагноз (зона)", "План", "Причина", "Статус",
-        "Итог", "Балл №55", "Полнота проверки", "Надёжность"
+        "Итог", "№55 / градация", "Полнота проверки", "Надёжность"
       ],
       queue: [
         "Выбор", "Приоритет", "Раздел", "Визит", "Пациент", "Дата", "Филиал",
         "Врач / специальность", "Диагноз", "Оформление", "Диагноз (зона)", "План",
-        "Причина", "Ответственный", "Срок", "Статус", "МО"
+        "№55 / градация", "Причина", "Ответственный", "Срок", "Статус", "МО"
       ]
     };
     var COLUMN_DEFAULTS = {
-      documents: [true, true, true, true, true, true, true, true, true, true, true, false, false, false, false],
-      queue: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
+      documents: [true, true, true, true, true, true, true, true, true, true, true, false, true, false, false],
+      queue: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
     };
     function ensureColumnState() {
       if (!state.columnVisible.documents.length || state.columnVisible.documents.length !== COLUMN_MAP.documents.length) {
