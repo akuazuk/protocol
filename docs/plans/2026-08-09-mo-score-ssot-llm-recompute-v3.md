@@ -494,12 +494,15 @@ Uncertainty:
 - [ ] **S2** Zones подписаны отдельно
 - [ ] **S3** 0.5 = «Частично», 0 = «Не выполнено»
 - [ ] **S4** Live attach только с полным payload
-- [ ] **S5** Новые Endpoint C/D остаются shadow до C9
+- [x] **S5** Новые Endpoint C/D остаются shadow до C9 (и после: выбран вариант B)
 
 ### P1 - после confirmatory gate
 
 - [ ] **S6** Выбранный clinical selector становится primary queue signal
+  (**отложено**; вариант C не выбран. Вместо этого B:
+  `2026-08-09-mo-shadow-dx-plan-conservative-v1.md`)
 - [ ] **S7** Dx evidence и plan scores показываются отдельно в case review
+  (shadow-only, консервативные poor/critical; см. B-план)
 - [ ] **S8** Осторожный ICD mismatch code
 - [ ] **S9** LLM fallback маркируется как no-KP / lower trust
 - [ ] **S10** Gold tests из adjudicated pilot без PHI
