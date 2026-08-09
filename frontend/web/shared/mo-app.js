@@ -86,6 +86,279 @@
       return String(value == null ? "" : value).replace(/&/g, "&amp;").replace(/</g, "&lt;")
         .replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#39;");
     }
+    var tableChromeState = {};
+    var TABLE_FILTER_MAX_OPTIONS = 40;
+    function cellPlainText(node) {
+      return String((node && (node.innerText || node.textContent)) || "").replace(/\s+/g, " ").trim();
+    }
+    function rowLooksBad(tr) {
+      if (!tr) return false;
+      if (tr.querySelector(".status.critical, .status.important, .zone-band--bad, .band-bad, .zone-card--bad")) return true;
+      var text = cellPlainText(tr).toLowerCase();
+      return text.indexOf("плохо") >= 0 || text.indexOf("критич") >= 0 || text.indexOf("important") >= 0;
+    }
+    function columnIsUtility(th, colIndex, sampleRows) {
+      var label = cellPlainText(th).toLowerCase();
+      if (!label || label === "открыть" || label === "мо" || label.indexOf("выбрать") >= 0) return true;
+      if (th.querySelector('input[type="checkbox"]')) return true;
+      var utility = 0;
+      var checked = 0;
+      sampleRows.slice(0, 8).forEach(function (tr) {
+        var td = tr.cells[colIndex];
+        if (!td) return;
+        checked += 1;
+        var onlyControl = td.querySelector("button, input, a") && cellPlainText(td).length < 3;
+        if (onlyControl || !cellPlainText(td)) utility += 1;
+      });
+      return checked > 0 && utility >= checked;
+    }
+    function uniqueColumnValues(rows, colIndex) {
+      var counts = {};
+      rows.forEach(function (tr) {
+        var td = tr.cells[colIndex];
+        if (!td) return;
+        var value = cellPlainText(td);
+        if (!value || value === "-") return;
+        if (value.length > 64) value = value.slice(0, 61) + "...";
+        counts[value] = (counts[value] || 0) + 1;
+      });
+      return Object.keys(counts).sort(function (a, b) {
+        return counts[b] - counts[a] || a.localeCompare(b, "ru");
+      });
+    }
+    function parseSortValue(text) {
+      var raw = String(text || "").trim();
+      if (!raw || raw === "-") return { num: null, str: "" };
+      var pct = raw.replace(",", ".").match(/-?\d+(?:\.\d+)?/);
+      if (pct && (/%|п\.п|плохо|норм/.test(raw.toLowerCase()) || /^[\d\s.,+-]+%?$/.test(raw))) {
+        return { num: Number(pct[0]), str: raw.toLowerCase() };
+      }
+      if (/^\d{4}-\d{2}-\d{2}/.test(raw)) return { num: Date.parse(raw.slice(0, 10)), str: raw.toLowerCase() };
+      if (/^\d+$/.test(raw)) return { num: Number(raw), str: raw };
+      return { num: null, str: raw.toLowerCase() };
+    }
+    function compareCells(aText, bText, dir) {
+      var a = parseSortValue(aText);
+      var b = parseSortValue(bText);
+      var sign = dir === "desc" ? -1 : 1;
+      if (a.num != null && b.num != null && !isNaN(a.num) && !isNaN(b.num) && a.num !== b.num) {
+        return (a.num - b.num) * sign;
+      }
+      return a.str.localeCompare(b.str, "ru", { numeric: true, sensitivity: "base" }) * sign;
+    }
+    function applyTableChrome(table) {
+      var id = table && table.getAttribute("data-table-chrome");
+      if (!id || !tableChromeState[id]) return;
+      var st = tableChromeState[id];
+      var body = table.tBodies[0];
+      if (!body) return;
+      var rows = Array.prototype.slice.call(body.rows || []).filter(function (tr) {
+        return !tr.querySelector("td.empty, td[colspan]") || tr.cells.length > 1;
+      });
+      var dataRows = Array.prototype.slice.call(body.rows || []).filter(function (tr) {
+        return tr.cells.length && !tr.querySelector("td[colspan]");
+      });
+      if (st.sortCol != null && dataRows.length) {
+        dataRows.sort(function (ra, rb) {
+          return compareCells(
+            cellPlainText(ra.cells[st.sortCol]),
+            cellPlainText(rb.cells[st.sortCol]),
+            st.sortDir
+          );
+        });
+        dataRows.forEach(function (tr) { body.appendChild(tr); });
+      }
+      var visible = 0;
+      Array.prototype.forEach.call(body.rows || [], function (tr) {
+        if (tr.querySelector("td[colspan]")) {
+          tr.classList.remove("table-row-hidden");
+          return;
+        }
+        var show = true;
+        if (st.chip === "bad" && !rowLooksBad(tr)) show = false;
+        if (show && st.search) {
+          if (cellPlainText(tr).toLowerCase().indexOf(st.search) < 0) show = false;
+        }
+        if (show && st.colFilters) {
+          Object.keys(st.colFilters).forEach(function (idx) {
+            var want = st.colFilters[idx];
+            if (!want) return;
+            var got = cellPlainText(tr.cells[Number(idx)]);
+            if (got.length > 64) got = got.slice(0, 61) + "...";
+            if (got !== want) show = false;
+          });
+        }
+        tr.classList.toggle("table-row-hidden", !show);
+        if (show) visible += 1;
+      });
+      if (st.metaEl) {
+        var total = dataRows.length || rows.length;
+        st.metaEl.textContent = "Показано " + visible + " из " + total;
+      }
+      table.querySelectorAll("thead tr:first-child th").forEach(function (th) {
+        var col = Number(th.getAttribute("data-col-index"));
+        var key = th.getAttribute("data-sort-key") || "";
+        if (st.serverSort && key && key.indexOf("col:") !== 0) {
+          th.setAttribute("aria-sort", state.sortBy === key ? (state.sortDir === "asc" ? "ascending" : "descending") : "none");
+        } else if (st.sortCol === col) {
+          th.setAttribute("aria-sort", st.sortDir === "asc" ? "ascending" : "descending");
+        } else {
+          th.setAttribute("aria-sort", "none");
+        }
+      });
+    }
+    function attachTableChrome(table, options) {
+      options = options || {};
+      if (!table || !table.tHead || !table.tBodies || !table.tBodies[0]) return null;
+      var wrap = table.closest(".table-wrap") || table.parentElement;
+      if (!wrap || !wrap.parentElement) return null;
+      var host = wrap.parentElement;
+      var id = options.id || table.getAttribute("data-table-chrome") || ("tbl-" + Math.random().toString(36).slice(2, 8));
+      table.setAttribute("data-table-chrome", id);
+      var headerCells = Array.prototype.slice.call(table.tHead.rows[0].cells || []);
+      var sampleRows = Array.prototype.slice.call(table.tBodies[0].rows || []).filter(function (tr) {
+        return tr.cells.length && !tr.querySelector("td[colspan]");
+      });
+      var st = tableChromeState[id] || {
+        search: "",
+        chip: "all",
+        colFilters: {},
+        sortCol: null,
+        sortDir: "asc",
+        serverSort: !!options.serverSort,
+        clientSort: !options.serverSort,
+        metaEl: null
+      };
+      st.serverSort = !!options.serverSort;
+      st.clientSort = !options.serverSort;
+      tableChromeState[id] = st;
+
+      var toolbar = host.querySelector('[data-table-toolbar="' + id + '"]');
+      if (!toolbar) {
+        toolbar = document.createElement("div");
+        toolbar.className = "table-toolbar";
+        toolbar.setAttribute("data-table-toolbar", id);
+        host.insertBefore(toolbar, wrap);
+      }
+      toolbar.innerHTML =
+        '<label class="filter"><span>Поиск в таблице</span>' +
+        '<input class="control" type="search" data-table-search placeholder="Текст строки" autocomplete="off"></label>' +
+        '<div class="table-toolbar-chips" role="group" aria-label="Быстрый фильтр">' +
+        '<button type="button" class="chip-btn" data-chip="all" aria-pressed="true">Все</button>' +
+        '<button type="button" class="chip-btn" data-chip="bad" aria-pressed="false">Только плохо</button>' +
+        "</div>" +
+        '<div class="table-toolbar-meta" data-table-meta></div>';
+      st.metaEl = toolbar.querySelector("[data-table-meta]");
+      var searchInput = toolbar.querySelector("[data-table-search]");
+      searchInput.value = st.search || "";
+      searchInput.addEventListener("input", function () {
+        st.search = String(searchInput.value || "").trim().toLowerCase();
+        applyTableChrome(table);
+      });
+      toolbar.querySelectorAll("[data-chip]").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", btn.getAttribute("data-chip") === st.chip ? "true" : "false");
+        btn.addEventListener("click", function () {
+          st.chip = btn.getAttribute("data-chip") || "all";
+          toolbar.querySelectorAll("[data-chip]").forEach(function (other) {
+            other.setAttribute("aria-pressed", other.getAttribute("data-chip") === st.chip ? "true" : "false");
+          });
+          applyTableChrome(table);
+        });
+      });
+
+      var filterRow = table.tHead.querySelector("tr.col-filters");
+      if (filterRow) filterRow.remove();
+      filterRow = document.createElement("tr");
+      filterRow.className = "col-filters";
+      headerCells.forEach(function (th, colIndex) {
+        th.setAttribute("data-col-index", String(colIndex));
+        if (!th.classList.contains("sortable-th")) th.classList.add("sortable-th");
+        if (!th.getAttribute("data-sort-key")) th.setAttribute("data-sort-key", "col:" + colIndex);
+        var cell = document.createElement("th");
+        cell.scope = "col";
+        if (columnIsUtility(th, colIndex, sampleRows)) {
+          cell.innerHTML = '<span class="sr-only">Без фильтра</span>';
+          filterRow.appendChild(cell);
+          return;
+        }
+        var values = uniqueColumnValues(sampleRows, colIndex);
+        var select = document.createElement("select");
+        select.setAttribute("data-col-filter", String(colIndex));
+        select.setAttribute("aria-label", "Фильтр: " + cellPlainText(th));
+        var allOpt = document.createElement("option");
+        allOpt.value = "";
+        allOpt.textContent = "Все";
+        select.appendChild(allOpt);
+        if (!values.length) {
+          select.disabled = true;
+        } else {
+          values.slice(0, TABLE_FILTER_MAX_OPTIONS).forEach(function (value) {
+            var opt = document.createElement("option");
+            opt.value = value;
+            opt.textContent = value;
+            select.appendChild(opt);
+          });
+          if (values.length > TABLE_FILTER_MAX_OPTIONS) {
+            var more = document.createElement("option");
+            more.disabled = true;
+            more.textContent = "… ещё " + (values.length - TABLE_FILTER_MAX_OPTIONS) + " (поиск)";
+            select.appendChild(more);
+          }
+        }
+        if (st.colFilters[colIndex]) select.value = st.colFilters[colIndex];
+        select.addEventListener("change", function () {
+          if (select.value) st.colFilters[colIndex] = select.value;
+          else delete st.colFilters[colIndex];
+          applyTableChrome(table);
+        });
+        cell.appendChild(select);
+        filterRow.appendChild(cell);
+      });
+      table.tHead.appendChild(filterRow);
+
+      headerCells.forEach(function (th) {
+        if (th.__moSortBound) return;
+        th.__moSortBound = true;
+        th.addEventListener("click", function (event) {
+          if (event.target && event.target.closest("select, input, button, a, .col-filters")) return;
+          var col = Number(th.getAttribute("data-col-index"));
+          var key = th.getAttribute("data-sort-key") || "";
+          if (st.serverSort && key && key.indexOf("col:") !== 0) {
+            if (state.sortBy === key) state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
+            else {
+              state.sortBy = key;
+              state.sortDir = key === "date" ? "desc" : "asc";
+            }
+            state.pageNo = 1;
+            st.sortCol = null;
+            if ($("sort-by")) $("sort-by").value = state.sortBy;
+            if ($("sort-dir")) $("sort-dir").value = state.sortDir;
+            filtersChanged();
+            return;
+          }
+          if (st.sortCol === col) st.sortDir = st.sortDir === "asc" ? "desc" : "asc";
+          else {
+            st.sortCol = col;
+            st.sortDir = "asc";
+          }
+          applyTableChrome(table);
+        });
+      });
+      applyTableChrome(table);
+      return id;
+    }
+    function enhanceTablesIn(root, options) {
+      if (!root) return;
+      var tables = root.tagName === "TABLE" ? [root] : root.querySelectorAll("table");
+      Array.prototype.forEach.call(tables, function (table, index) {
+        var opts = Object.assign({}, options || {});
+        if (!opts.id) {
+          var body = table.tBodies[0];
+          opts.id = (body && body.id) ? ("chrome-" + body.id) : ((options && options.idPrefix || "chrome") + "-" + index);
+        }
+        attachTableChrome(table, opts);
+      });
+    }
     function downloadBlob(blob, filename) {
       var url = URL.createObjectURL(blob), link = document.createElement("a");
       link.href = url; link.download = filename; document.body.appendChild(link); link.click();
@@ -424,6 +697,7 @@
       var list = state.facets[key] || [];
       var selected = (state.selected[key] || []).slice();
       var draft = selected.slice();
+      details.classList.toggle("has-applied", selected.length > 0);
       details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
       details.querySelector(".filter-menu").innerHTML =
         '<input class="control" type="search" placeholder="Найти" aria-label="Поиск по фильтру">' +
@@ -1062,6 +1336,7 @@
             switchPage("documents");
           });
         });
+        enhanceTablesIn(look, { idPrefix: "chrome-month-look" });
       }
       if (hostActive("month-forecast")) {
         $("month-forecast").innerHTML=kpi("Прогноз записей",forecast.projected_source,forecast.method)+
@@ -1153,6 +1428,7 @@
         row.addEventListener("click", openCriterion);
         row.addEventListener("keydown", openCriterion);
       });
+      enhanceTablesIn(hostTable, { idPrefix: "chrome-month-rubric" });
       if (hostKpi) {
         hostKpi.querySelectorAll("[data-reg55-band]").forEach(function (btn) {
           btn.addEventListener("click", function () {
@@ -1229,6 +1505,7 @@
           row.addEventListener("click", openGap);
           row.addEventListener("keydown", openGap);
         });
+        enhanceTablesIn(host, { idPrefix: "chrome-month-gaps" });
       }
       host.querySelectorAll("[data-kp-unmatched]").forEach(function (btn) {
         btn.addEventListener("click", function () {
@@ -1626,18 +1903,10 @@
     }
     function bindSortableHeaders(table) {
       if (!table) return;
-      table.querySelectorAll("th[data-sort-key]").forEach(function (th) {
-        th.classList.add("sortable-th");
-        var key = th.getAttribute("data-sort-key");
-        th.setAttribute("aria-sort", state.sortBy === key ? (state.sortDir === "asc" ? "ascending" : "descending") : "none");
-        th.addEventListener("click", function () {
-          if (state.sortBy === key) state.sortDir = state.sortDir === "asc" ? "desc" : "asc";
-          else { state.sortBy = key; state.sortDir = key === "date" ? "desc" : "asc"; }
-          state.pageNo = 1;
-          if ($("sort-by")) $("sort-by").value = state.sortBy;
-          if ($("sort-dir")) $("sort-dir").value = state.sortDir;
-          filtersChanged();
-        });
+      var body = table.tBodies && table.tBodies[0];
+      attachTableChrome(table, {
+        id: body && body.id ? ("chrome-" + body.id) : "chrome-cases",
+        serverSort: true
       });
     }
     async function loadCases(queue) {
@@ -2677,6 +2946,7 @@
           return "<tr><td>" + esc(item.label) + "</td><td>" + esc(item.source) + "</td><td>" + esc(item.eligible) +
             "</td><td>" + esc(item.evaluated) + "</td><td>" + esc(item.excluded) + "</td></tr>";
         }).join("") : '<tr><td colspan="5" class="empty">Разбивка по типам документов недоступна.</td></tr>';
+      attachTableChrome($("yesterday-kind-rows").closest("table"), { id: "chrome-yesterday-kind-rows" });
     }
     function renderYesterdayIndices(data) {
       if (!hostActive("yesterday-index-cards")) return;
@@ -2856,6 +3126,7 @@
           '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">МО в PDF</button></td></tr>';
       }).join("") : '<tr><td colspan="10">' + unavailableBlock(section, "Случаев для разбора нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
+      attachTableChrome($("yesterday-action-rows").closest("table"), { id: "chrome-yesterday-action-rows" });
     }
     function renderYesterdayFlow(data, dimension) {
       if (!hostActive("yesterday-flow-chart")) return;
@@ -3101,6 +3372,7 @@
           openDoctorCases({ label: label, key: key }, state.doctorZoneMetric);
         });
       });
+      attachTableChrome($("doctor-rows").closest("table"), { id: "chrome-doctor-rows" });
       renderDoctorZoneChart(items);
       var plotted = items.filter(function (x) { return x.enough_data && !x.suppressed && x.delta != null; });
       var scatterHost = $("doctor-scatter-chart");
