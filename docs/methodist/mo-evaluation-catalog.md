@@ -231,6 +231,17 @@ Warehouse: `fact_mo_score_axis(mis_id, axis, score)`.
 - Код: `mo_icd_llm_review.py` (GCE).
 - Findings `B_icd_llm_review_{yes,partial,no}`; chip пайплайна МКБ.
 
+### 7.4 Shadow Dx/Plan (консервативный, вариант B)
+
+- Код: `mo_shadow_dx_plan.py`, runner `scripts/run_mo_shadow_dx_plan.py` (**только GCE**).
+- Поля sidecar: `shadow_dx_*`, `shadow_plan_*`, `case_attention_band`.
+- **Не SSOT:** не меняет `overall_pct`, зоны, №55, primary queue reason.
+- Attention красное только при verdict `poor`/`critical` после soften
+  (partial не флаг; poor только при score ≤45; critical ≤30 или harm≤45;
+  plan ensemble может только понизить severity).
+- UI: блок в разборе случая + опциональный фильтр очереди
+  `shadow_attention_only`.
+
 ---
 
 ## 8. МКБ / concordance / подбор КП

@@ -56,6 +56,20 @@ for d in "${days[@]}"; do
     --medical-exams-root "$DATA" \
     --out "$DATA/llm_action_judge/$y/$m/$day/judges.jsonl" >>"$LOG" 2>&1
   echo "judge_exit_$d=$?" | tee -a "$LOG"
+  # Shadow Dx/Plan (option B): conservative attention; does not touch SSOT
+  if [[ "${MO_SHADOW_DX_PLAN:-1}" == "1" || "${MO_SHADOW_DX_PLAN:-1}" == "true" ]]; then
+    mkdir -p "$DATA/llm_shadow_dx_plan/$y/$m/$day"
+    SHADOW_LIMIT="${MO_SHADOW_DX_PLAN_LIMIT:-0}"
+    echo "=== shadow dx/plan $d limit=$SHADOW_LIMIT $(date -u) ===" | tee -a "$LOG"
+    "$PYTHON" scripts/run_mo_shadow_dx_plan.py \
+      --date "$d" --medical-exams-root "$DATA" --resume --concurrency 2 \
+      --limit "$SHADOW_LIMIT" \
+      --warehouse "$DATA/warehouse/mo_analytics.sqlite" \
+      --out "$DATA/llm_shadow_dx_plan/$y/$m/$day/shadow.jsonl" >>"$LOG" 2>&1
+    echo "shadow_dx_plan_exit_$d=$?" | tee -a "$LOG"
+  else
+    echo "shadow_dx_plan_skip_$d=flag_off" | tee -a "$LOG"
+  fi
   # ICD grey-zone LLM review (фаза 4): default off
   if [[ "${MO_ICD_LLM_REVIEW:-0}" == "1" || "${MO_ICD_LLM_REVIEW:-0}" == "true" ]]; then
     mkdir -p "$DATA/llm_icd_review/$y/$m/$day"

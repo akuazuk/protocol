@@ -46,6 +46,7 @@ gcloud compute scp \
   "$ROOT/scripts/grade_kz_llm.py" \
   "$ROOT/scripts/run_mo_action_queue_llm_judge.py" \
   "$ROOT/scripts/run_mo_icd_llm_review.py" \
+  "$ROOT/scripts/run_mo_shadow_dx_plan.py" \
   "$ROOT/scripts/recompute_mo_days.py" \
   "$ROOT/scripts/build_mo_score_calibration_sample.py" \
   "$ROOT/scripts/run_mo_calibration_blind_judge.py" \
@@ -55,6 +56,7 @@ gcloud compute scp \
   "$ROOT/clinical_knowledge/mo_icd_llm_review.py" \
   "$ROOT/clinical_knowledge/mo_dx_evidence_score.py" \
   "$ROOT/clinical_knowledge/mo_plan_protocol_score.py" \
+  "$ROOT/clinical_knowledge/mo_shadow_dx_plan.py" \
   "${VM}:/tmp/" --zone="$ZONE" --quiet
 
 gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="
@@ -62,19 +64,22 @@ set -euo pipefail
 sudo mkdir -p /opt/protocol/scripts /opt/protocol/clinical_knowledge '${DATA}/logs'
 sudo cp /tmp/mo_llm_range_runner.sh /tmp/grade_kz_llm.py \
   /tmp/run_mo_action_queue_llm_judge.py /tmp/run_mo_icd_llm_review.py \
+  /tmp/run_mo_shadow_dx_plan.py \
   /tmp/recompute_mo_days.py /tmp/build_mo_score_calibration_sample.py \
   /tmp/run_mo_calibration_blind_judge.py /tmp/eval_mo_score_calibration.py \
   /tmp/eval_mo_score_agent_proxy.py \
   /tmp/build_mo_calibration_methodist_pack.py \
   /opt/protocol/scripts/
 sudo cp /tmp/mo_icd_llm_review.py /tmp/mo_dx_evidence_score.py \
-  /tmp/mo_plan_protocol_score.py /opt/protocol/clinical_knowledge/
+  /tmp/mo_plan_protocol_score.py /tmp/mo_shadow_dx_plan.py \
+  /opt/protocol/clinical_knowledge/
 sudo chmod +x /opt/protocol/scripts/mo_llm_range_runner.sh
 if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/scripts/mo_llm_range_runner.sh '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/grade_kz_llm.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/run_mo_action_queue_llm_judge.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/run_mo_icd_llm_review.py '${CONTAINER}':/app/scripts/
+  sudo docker cp /opt/protocol/scripts/run_mo_shadow_dx_plan.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/recompute_mo_days.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/build_mo_score_calibration_sample.py '${CONTAINER}':/app/scripts/
   sudo docker cp /opt/protocol/scripts/run_mo_calibration_blind_judge.py '${CONTAINER}':/app/scripts/
@@ -84,6 +89,7 @@ if sudo docker ps --format '{{.Names}}' | grep -qx '${CONTAINER}'; then
   sudo docker cp /opt/protocol/clinical_knowledge/mo_icd_llm_review.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_dx_evidence_score.py '${CONTAINER}':/app/clinical_knowledge/
   sudo docker cp /opt/protocol/clinical_knowledge/mo_plan_protocol_score.py '${CONTAINER}':/app/clinical_knowledge/
+  sudo docker cp /opt/protocol/clinical_knowledge/mo_shadow_dx_plan.py '${CONTAINER}':/app/clinical_knowledge/
 fi
 "
 
