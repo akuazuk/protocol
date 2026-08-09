@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-09-mo-case-review-quality-parity-v1.md](2026-08-09-mo-case-review-quality-parity-v1.md) | Разбор случая: качество как у экспертного разбора (brief, клиника, КП, врачу) | active |
 | [2026-08-08-mo-analytics-ui-target-v2.md](2026-08-08-mo-analytics-ui-target-v2.md) | Канон экранов МО: короткое меню, лаконичный разбор, всё на русском | active |
 | [2026-08-08-mo-analytics-implementation-blueprint-v1.md](2026-08-08-mo-analytics-implementation-blueprint-v1.md) | Blueprint склада/API/движка зон; UI в объёме ui-target-v2; релизы A-E в коде (PR #78) | active |
 | [2026-08-08-mo-analytics-mz-sheet-layers-v2.md](2026-08-08-mo-analytics-mz-sheet-layers-v2.md) | Канон зон: №127 без КП; диагноз/план с КП | active |
