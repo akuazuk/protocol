@@ -4,6 +4,7 @@
   "source": "Постановление Министерства здравоохранения Республики Беларусь от 21.05.2021 № 55 (в ред. 2023-2024)",
   "url": "https://minzdrav.gov.by/",
   "scope": "case_level_clinical_visit",
+  "deprecated_ru": "Legacy binary checklist (прил.2-стиль). Целевой case-level контур - config/mo_reg55_section_packs.yaml + clinical_knowledge/mo_reg55_section.py (прил.1 разд.V). См. docs/plans/2026-08-09-mo-reg55-section-pack-v1.md.",
   "note_ru": "Только проверяемые по тексту клинического приёма пункты прил. 2. Организационные критерии прил. 1 не входят. Неприменимые пункты (na) не входят в знаменатель формулы. Внутренние служебные флаги очереди не являются пунктами постановления и не влияют на средний балл.",
   "deferred_criteria_ru": "Кодирование диагноза по МКБ-10 (п. 4.2.9): при возврате в active criteria искать код по всему тексту МО (см. mo_icd_resolve / план 2026-08-06-mo-icd-full-document-search-v1), не только по графе «Диагноз».",
   "thresholds": {

@@ -1,0 +1,437 @@
+# Канон case-level оценки по пост. МЗ №55 прил.1 разд. V.
+# Формула: Инструкция об оценке качества, п.12-13 (0/0.5/1; n/a вне знаменателя).
+# №127 - только evidence helper (evidence_from_127), не отдельный %.
+schema_version: "1.0"
+scorer_version: "reg55-section-1.0.0"
+regulation: mz_2021_55
+appendix: "1"
+section: "V"
+formula: "sum(scores) / n_applicable * 100"
+bands:
+  compliant_min:
+    min_pct: 80.0
+    label_ru: "Соответствует (мин. меры)"
+    detail_ru: "80-100%: соответствует критериям; требуется минимальный комплекс мероприятий"
+  compliant_measures:
+    min_pct: 55.0
+    label_ru: "Соответствует (нужны меры)"
+    detail_ru: "55-79,9%: соответствует; нужен комплекс мероприятий по выявленным недостаткам"
+  noncompliant:
+    min_pct: 0.0
+    label_ru: "Не соответствует"
+    detail_ru: "≤54,9%: не соответствует; комплекс мероприятий в целом по организации"
+  unscored:
+    label_ru: "Не оценено"
+    detail_ru: "Нет применяемых критериев или оценка невозможна"
+
+# Роутер: первое совпадение specialty_markers (lowercase substring).
+router:
+  - pack_id: pediatrist_district
+    specialty_markers: ["педиатр"]
+  - pack_id: gp
+    specialty_markers: ["общей практики", "воп", "терапевт"]
+  - pack_id: obgyn
+    specialty_markers: ["акушер", "гинеколог"]
+  - pack_id: specialist_amb_core
+    specialty_markers: ["*"]
+
+packs:
+  pediatrist_district:
+    label_ru: "Врач-педиатр участковый (прил. 1 разд. V, п. 41-43)"
+    points_range: "41-43"
+    provenance: nearest_app1_role
+    criteria:
+      - point: "41.1"
+        title: "Льготная/бесплатная выписка ЛС"
+        group: general
+        rule: na_visit_level
+        na_reason: "Периодный/организационный критерий; не оценивается по одному МО"
+      - point: "41.2"
+        title: "ЛН и справки ВН по инструкции"
+        group: general
+        rule: na_unless_field
+        fields: [sick_leave, disability_certificate]
+        na_reason: "ЛН/справки в этом визите не оформлялись"
+      - point: "41.3"
+        title: "МО/наблюдение после передачи от СМП"
+        group: general
+        rule: na_unless_flag
+        flag: smp_handoff
+        na_reason: "Нет признаков передачи от бригады СМП"
+      - point: "41.4"
+        title: "Отсутствие обоснованных жалоб за год/период"
+        group: general
+        rule: na_visit_level
+        na_reason: "Периодный организационный критерий"
+
+      - point: "42.1"
+        title: "Диспансеризация детского населения по схеме"
+        group: clinical
+        rule: na_unless_flag
+        flag: dispensary_episode
+        na_reason: "Документ не является эпизодом диспансеризации"
+      - point: "42.2"
+        title: "План обследования по клиническим протоколам"
+        group: clinical
+        rule: plan_text
+        fields: [exam_recommendations, treatment_recommendations]
+        block_score_key: exams
+      - point: "42.3"
+        title: "Клинико-функциональный диагноз + МКБ-10"
+        group: clinical
+        rule: diagnosis_icd
+        fields: [clinical_diagnosis, mis_diagnos]
+      - point: "42.4"
+        title: "Диагностика выполнена в полном объёме по плану и КП"
+        group: clinical
+        rule: diagnostics_completed
+        fields: [exam_data]
+        na_reason: "На визите диагностика только назначена, не выполнена"
+      - point: "42.5"
+        title: "Коррекция плана обследования по динамике"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [exam_recommendations]
+        na_reason: "Нет предыдущего визита - коррекция не оценивается"
+      - point: "42.6"
+        title: "Лечение назначено по клиническим протоколам"
+        group: clinical
+        rule: plan_text
+        fields: [treatment_recommendations]
+        block_score_key: treatment
+      - point: "42.7"
+        title: "Коррекция лечения по динамике"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [treatment_recommendations]
+        na_reason: "Нет предыдущего визита - коррекция не оценивается"
+      - point: "42.8"
+        title: "Аудиоскрининг новорождённых/ранний возраст"
+        group: clinical
+        rule: na_unless_age_lt
+        max_age_years: 3
+        na_reason: "Критерий раннего возраста; пациент старше"
+      - point: "42.9"
+        title: "Скрининг аутизма раннего возраста"
+        group: clinical
+        rule: na_unless_age_lt
+        max_age_years: 3
+        na_reason: "Критерий раннего возраста; пациент старше"
+      - point: "42.10"
+        title: "Комплексная оценка здоровья, в т.ч. физразвития (≥1×/год)"
+        group: clinical
+        rule: physical_development
+        fields: [objective_status]
+      - point: "42.11"
+        title: "Определён риск синдрома внезапной смерти"
+        group: clinical
+        rule: na_unless_age_lt
+        max_age_years: 1
+        na_reason: "Критерий для младенцев"
+      - point: "42.12"
+        title: "Прививки по Нацкалендарю / эпидпоказаниям"
+        group: clinical
+        rule: vaccines
+        fields: [anamnesis_doctor, anamnesis_auto, objective_status]
+
+      - point: "43.1"
+        title: "Оформление документов по установленным формам"
+        group: documentation
+        rule: docs_structured
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "43.2"
+        title: "Ведение ЭМК (при наличии возможности)"
+        group: documentation
+        rule: emr_present
+        fields: [raw_text, result]
+      - point: "43.3"
+        title: "Результаты диспансеризации в Карте учёта"
+        group: documentation
+        rule: na_unless_flag
+        flag: dispensary_episode
+        na_reason: "Не эпизод диспансеризации"
+      - point: "43.4"
+        title: "Согласие законных представителей на вмешательства"
+        group: documentation
+        rule: consent_present
+        fields: [raw_text, result, consent_text]
+        evidence_from_127: true
+      - point: "43.5"
+        title: "Согласие/отказ на профилактическую прививку"
+        group: documentation
+        rule: na_unless_flag
+        flag: vaccine_administered
+        na_reason: "Прививка на визите не проводилась"
+      - point: "43.6"
+        title: "МО по Инструкции №127 с записью по форме"
+        group: documentation
+        rule: mo_per_127
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "43.7"
+        title: "Нет дублирования и необоснованных назначений исследований"
+        group: documentation
+        rule: exams_justified
+        fields: [exam_recommendations, treatment_recommendations]
+
+  gp:
+    label_ru: "Врач общей практики (прил. 1 разд. V, п. 38-40)"
+    points_range: "38-40"
+    provenance: app1_role
+    criteria:
+      - point: "38.1"
+        title: "Льготная/бесплатная выписка ЛС"
+        group: general
+        rule: na_visit_level
+        na_reason: "Периодный/организационный критерий"
+      - point: "38.2"
+        title: "ЛН и справки ВН"
+        group: general
+        rule: na_unless_field
+        fields: [sick_leave, disability_certificate]
+        na_reason: "ЛН/справки не оформлялись"
+      - point: "38.3"
+        title: "МО после передачи от СМП"
+        group: general
+        rule: na_unless_flag
+        flag: smp_handoff
+        na_reason: "Нет передачи от СМП"
+      - point: "38.4"
+        title: "Отсутствие запущенных ЗНО (период)"
+        group: general
+        rule: na_visit_level
+        na_reason: "Периодный критерий"
+      - point: "38.5"
+        title: "Отсутствие обоснованных жалоб (период)"
+        group: general
+        rule: na_visit_level
+        na_reason: "Периодный критерий"
+      - point: "39.1"
+        title: "Диспансеризация по схеме"
+        group: clinical
+        rule: na_unless_flag
+        flag: dispensary_episode
+        na_reason: "Не эпизод диспансеризации"
+      - point: "39.2"
+        title: "План обследования по КП"
+        group: clinical
+        rule: plan_text
+        fields: [exam_recommendations, treatment_recommendations]
+        block_score_key: exams
+      - point: "39.3"
+        title: "Диагноз + МКБ-10"
+        group: clinical
+        rule: diagnosis_icd
+        fields: [clinical_diagnosis, mis_diagnos]
+      - point: "39.4"
+        title: "Диагностика выполнена по плану и КП"
+        group: clinical
+        rule: diagnostics_completed
+        fields: [exam_data]
+        na_reason: "Диагностика на визите не выполнена"
+      - point: "39.5"
+        title: "Лечение по КП"
+        group: clinical
+        rule: plan_text
+        fields: [treatment_recommendations]
+        block_score_key: treatment
+      - point: "39.6"
+        title: "Коррекция плана обследования"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [exam_recommendations]
+        na_reason: "Нет предыдущего визита"
+      - point: "39.7"
+        title: "Коррекция лечения"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [treatment_recommendations]
+        na_reason: "Нет предыдущего визита"
+      - point: "39.8"
+        title: "Кратность медицинского наблюдения"
+        group: clinical
+        rule: follow_up
+        fields: [treatment_recommendations, exam_recommendations, follow_up]
+        evidence_from_127: true
+      - point: "40.1"
+        title: "Оформление документов по формам"
+        group: documentation
+        rule: docs_structured
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "40.2"
+        title: "Ведение ЭМК"
+        group: documentation
+        rule: emr_present
+        fields: [raw_text, result]
+      - point: "40.3"
+        title: "Согласие на вмешательства"
+        group: documentation
+        rule: consent_present
+        fields: [raw_text, result, consent_text]
+        evidence_from_127: true
+      - point: "40.4"
+        title: "Рентгенпрофилактика ОГК в документах"
+        group: documentation
+        rule: na_unless_age_gte
+        min_age_years: 18
+        na_reason: "Критерий взрослых / неприменим по возрасту"
+      - point: "40.5"
+        title: "МО по Инструкции №127"
+        group: documentation
+        rule: mo_per_127
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "40.6"
+        title: "АД и факторы риска по результатам МО"
+        group: documentation
+        rule: risk_vitals
+        fields: [objective_status, anamnesis_doctor]
+        evidence_from_127: true
+      - point: "40.7"
+        title: "Нет дублирования/необоснованных исследований"
+        group: documentation
+        rule: exams_justified
+        fields: [exam_recommendations, treatment_recommendations]
+
+  specialist_amb_core:
+    label_ru: "Амбулаторный специалист (клиническое ядро разд. V, analog)"
+    points_range: "core"
+    provenance: specialist_amb_core_analog
+    criteria:
+      - point: "C1"
+        title: "План обследования по КП"
+        group: clinical
+        rule: plan_text
+        fields: [exam_recommendations, treatment_recommendations]
+        block_score_key: exams
+      - point: "C2"
+        title: "Диагноз + МКБ-10 из клиники"
+        group: clinical
+        rule: diagnosis_icd
+        fields: [clinical_diagnosis, mis_diagnos]
+      - point: "C3"
+        title: "Диагностика выполнена по плану"
+        group: clinical
+        rule: diagnostics_completed
+        fields: [exam_data]
+        na_reason: "Диагностика на визите не выполнена"
+      - point: "C4"
+        title: "Лечение по КП"
+        group: clinical
+        rule: plan_text
+        fields: [treatment_recommendations]
+        block_score_key: treatment
+      - point: "C5"
+        title: "Коррекция плана обследования"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [exam_recommendations]
+        na_reason: "Нет предыдущего визита"
+      - point: "C6"
+        title: "Коррекция лечения"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [treatment_recommendations]
+        na_reason: "Нет предыдущего визита"
+      - point: "C7"
+        title: "Кратность наблюдения"
+        group: clinical
+        rule: follow_up
+        fields: [treatment_recommendations, exam_recommendations, follow_up]
+        evidence_from_127: true
+      - point: "D1"
+        title: "Документы по формам"
+        group: documentation
+        rule: docs_structured
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "D3"
+        title: "Согласие на вмешательства"
+        group: documentation
+        rule: consent_present
+        fields: [raw_text, result, consent_text]
+        evidence_from_127: true
+      - point: "D4"
+        title: "МО по Инструкции №127"
+        group: documentation
+        rule: mo_per_127
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "D5"
+        title: "Нет дублирования/необоснованных исследований"
+        group: documentation
+        rule: exams_justified
+        fields: [exam_recommendations, treatment_recommendations]
+
+  obgyn:
+    label_ru: "Врач-акушер-гинеколог (прил. 1 разд. V, п. 44-46) - ядро"
+    points_range: "44-46"
+    provenance: app1_role
+    # Минимальное ядро; полный pack 44-46 расширяется отдельно.
+    criteria:
+      - point: "45.1"
+        title: "План обследования по КП"
+        group: clinical
+        rule: plan_text
+        fields: [exam_recommendations, treatment_recommendations]
+        block_score_key: exams
+      - point: "45.2"
+        title: "Диагноз + МКБ-10"
+        group: clinical
+        rule: diagnosis_icd
+        fields: [clinical_diagnosis, mis_diagnos]
+      - point: "45.3"
+        title: "Диагностика выполнена"
+        group: clinical
+        rule: diagnostics_completed
+        fields: [exam_data]
+        na_reason: "Диагностика на визите не выполнена"
+      - point: "45.4"
+        title: "Коррекция плана обследования"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [exam_recommendations]
+        na_reason: "Нет предыдущего визита"
+      - point: "45.5"
+        title: "Лечение по КП"
+        group: clinical
+        rule: plan_text
+        fields: [treatment_recommendations]
+        block_score_key: treatment
+      - point: "45.6"
+        title: "Коррекция лечения"
+        group: clinical
+        rule: na_unless_prior_visit
+        fields: [treatment_recommendations]
+        na_reason: "Нет предыдущего визита"
+      - point: "45.7"
+        title: "Кратность наблюдения"
+        group: clinical
+        rule: follow_up
+        fields: [treatment_recommendations, exam_recommendations, follow_up]
+        evidence_from_127: true
+      - point: "46.1"
+        title: "Оформление документов по формам"
+        group: documentation
+        rule: docs_structured
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "46.3"
+        title: "Согласие на вмешательства"
+        group: documentation
+        rule: consent_present
+        fields: [raw_text, result, consent_text]
+        evidence_from_127: true
+      - point: "46.5"
+        title: "МО по Инструкции №127"
+        group: documentation
+        rule: mo_per_127
+        fields: [complaints, anamnesis_doctor, objective_status, clinical_diagnosis]
+        evidence_from_127: true
+      - point: "46.7"
+        title: "Нет дублирования/необоснованных исследований"
+        group: documentation
+        rule: exams_justified
+        fields: [exam_recommendations, treatment_recommendations]

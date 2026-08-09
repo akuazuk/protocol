@@ -8460,7 +8460,11 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-09-063242Z-auth-accounts-p0"
+<<<<<<< HEAD
+BUILD_VERSION = "2026-08-09-064132Z-mo-reg55-section"
+=======
+BUILD_VERSION = "2026-08-09-064103Z-mo-reg55-section"
+>>>>>>> fa807a27 (feat(mo): add №55 section-pack scorer (прил.1 разд.V))
 
 
 def _app_version() -> str:
