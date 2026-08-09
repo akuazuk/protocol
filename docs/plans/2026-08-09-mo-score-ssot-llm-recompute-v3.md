@@ -1,7 +1,7 @@
 # МО: клиническая цепочка + план по КП + калибровка всех оценок (v3)
 
 Дата: 2026-08-09
-Статус: **active** (C0-C5 выполнены; C6 methodist labels - следующий gate)
+Статус: **active** (C0-C5 выполнены; C6 pack готов, human labels 0/22)
 Преемник: `2026-08-09-mo-score-ssot-llm-recompute-v2.md`
 
 Связанные планы:
@@ -456,6 +456,20 @@ Uncertainty:
   plan median 0.5, mean 9.71, max 45 п.п. Большие outliers требуют обязательной
   проверки методистом в C6; provisional methodology по LLM-only данным не выбирается.
 - Production scoring, action queue, warehouse и UI не изменялись.
+
+#### Подготовка C6 от 2026-08-09
+
+- Secure blinded review pack создан на GCE для всех 18 случаев с
+  расхождениями: 22 endpoint labels, Dx 9 и plan 13.
+- Methodist видит только клинический case и разрешённый KP context; engine,
+  два LLM passes и LLM adjudication не входят в review directory. Comparison
+  создаётся только после успешной фиксации human labels.
+- Public status не содержит case IDs или clinical text; secret directory mode
+  `0700`, файлы `0600`.
+- Текущий label gate: `complete_label_n=0/22`, `case_n=18`,
+  `missing_n=0`, `extra_n=0`, `passed=false`.
+- C6 не отмечен выполненным: требуется реальная разметка методистом и
+  `passed=true`. LLM adjudication не считается human gold.
 
 ### P0 - после pilot gate
 
