@@ -24,6 +24,9 @@ COPY services/api/ services/api/
 COPY services/mo_pipeline/ services/mo_pipeline/
 COPY scripts/ scripts/
 COPY data/catalog/ data/catalog/
+# Drug safety seeds (DDInter pairs gitignored - mount /var/data/drug_safety at runtime)
+COPY data/drug_safety/high_alert.json data/drug_safety/high_alert.json
+COPY data/drug_safety/stopp_start_beers.json data/drug_safety/stopp_start_beers.json
 # RU МКБ справочник для mo_icd_* / icd_mkb (без xlsx/WHO dump)
 COPY data/icd_reference/icd10_ru_mkb10su.json data/icd_reference/icd10_ru_mkb10su.json
 COPY data/icd_reference/icd10_ru_mkb10su.meta.json data/icd_reference/icd10_ru_mkb10su.meta.json

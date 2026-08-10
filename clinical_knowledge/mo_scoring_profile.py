@@ -454,14 +454,24 @@ def _run_recompute_job(job: dict[str, Any], *, root: Path) -> None:
                 deep_item = deep_rescore_day(
                     day, data_root=root, update_primary_score=True
                 )
-                item = recompute_day(day, data_root=root, warehouse=warehouse, write_reports=True)
-                item = {
-                    **item,
-                    "deep_rescore": deep_item,
-                    "mode": mode,
-                }
-                if deep_item.get("status") not in {"success", "missing_cases"} and item.get("status") == "success":
-                    item["status"] = deep_item.get("status") or "error"
+                if deep_item.get("status") not in {"success", "missing_cases"}:
+                    # Не гоняем warehouse поверх сорванного deep (например без DDInter).
+                    item = {
+                        "date": day.isoformat(),
+                        "status": deep_item.get("status") or "error",
+                        "error": deep_item.get("error"),
+                        "deep_rescore": deep_item,
+                        "mode": mode,
+                    }
+                else:
+                    item = recompute_day(
+                        day, data_root=root, warehouse=warehouse, write_reports=True
+                    )
+                    item = {
+                        **item,
+                        "deep_rescore": deep_item,
+                        "mode": mode,
+                    }
             else:
                 item = recompute_day(day, data_root=root, warehouse=warehouse, write_reports=True)
         except Exception as exc:  # noqa: BLE001
