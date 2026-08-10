@@ -166,6 +166,7 @@ tar czf - \
   rag_server.py env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py \
   requirements.txt requirements-rag.txt \
   backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog \
+  data/drug_safety/high_alert.json data/drug_safety/stopp_start_beers.json \
   data/icd_reference/icd10_ru_mkb10su.json \
   data/icd_reference/icd10_ru_mkb10su.meta.json \
   data/icd_reference/dx_aliases_ru.json \
