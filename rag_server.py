@@ -1436,6 +1436,19 @@ def _run_load_data_background() -> None:
                 prewarm_protocol_icd_index()
             except Exception:
                 pass
+        if env_bool("MO_PREWARM_PROTOCOL_SUGGEST", True):
+            try:
+                from clinical_knowledge.mo_case_detail_latency import prewarm_protocol_suggest_match
+
+                warm = prewarm_protocol_suggest_match()
+                _log.info(
+                    "Prewarmed protocol suggest match cards=%s text_hits=%s icd_hits=%s",
+                    warm.get("cards"),
+                    warm.get("text_hits"),
+                    warm.get("icd_hits"),
+                )
+            except Exception as exc:
+                _log.warning("Protocol suggest prewarm failed: %s", exc)
         _chunks_load_error = None
     except SystemExit as e:
         code = e.code
@@ -8460,7 +8473,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-10-180007Z-followups-handoff"
+BUILD_VERSION = "2026-08-10-182542Z-case-detail-latency"
 
 
 def _app_version() -> str:
@@ -11885,8 +11898,20 @@ def api_methodist_mo_case_detail(
             "criteria": [],
             "llm_overlay": None,
         }
-    # E3: live analyzers только для clinical_visit.
-    if score_eligible and document.get("ok"):
+    # E3: live analyzers только для clinical_visit и только если явно нужны
+    # (пусто в витрине / ?live=1). Иначе drawer блокируется ~0.7-0.8 с.
+    from clinical_knowledge.mo_case_detail_latency import want_live_analyzers, want_prior_clinical
+
+    run_live = bool(
+        score_eligible
+        and document.get("ok")
+        and want_live_analyzers(
+            query_params=request.query_params,
+            findings=result.get("findings") if isinstance(result.get("findings"), list) else [],
+        )
+    )
+    result["live_analyzers"] = "ran" if run_live else "deferred"
+    if run_live:
         try:
             from clinical_knowledge.mo_concordance_findings import (
                 clinical_case_from_document,
@@ -12002,10 +12027,12 @@ def api_methodist_mo_case_detail(
             record = result.get("record") if isinstance(result.get("record"), dict) else {}
             visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
             prior = None
-            try:
-                prior = resolve_prior_clinical_for_case(case_id, visit_date=visit_date or None)
-            except Exception:
-                prior = None
+            run_prior = want_prior_clinical(query_params=request.query_params)
+            if run_prior:
+                try:
+                    prior = resolve_prior_clinical_for_case(case_id, visit_date=visit_date or None)
+                except Exception:
+                    prior = None
             prior_clinical = (prior or {}).get("clinical") if isinstance(prior, dict) else None
             rubric = evaluate_mo_rubric_mz(
                 clinical=clinical,
@@ -12024,6 +12051,7 @@ def api_methodist_mo_case_detail(
                 rubric["prior_available"] = True
             else:
                 rubric["prior_available"] = False
+            rubric["prior_deferred"] = not run_prior
             result["rubric_mz"] = rubric
         except Exception:
             result["rubric_mz"] = {"ok": False, "primary": False, "error": "rubric_mz_unavailable"}
@@ -12191,49 +12219,23 @@ def api_methodist_mo_case_detail(
             if zones_scores_enabled():
                 record_z = result.get("record") if isinstance(result.get("record"), dict) else {}
                 prior_clinical = None
-                try:
-                    from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
-
-                    prior_pack = resolve_prior_clinical_for_case(
-                        case_id,
-                        visit_date=str(
-                            record_z.get("date") or record_z.get("visit_date") or ""
-                        )[:10]
-                        or None,
-                    )
-                    if isinstance(prior_pack, dict):
-                        prior_clinical = prior_pack.get("clinical")
-                except Exception:  # noqa: BLE001
-                    prior_clinical = None
-                # Suggest нужен зонам плана и review_brief (раньше только async endpoint).
-                if not isinstance(result.get("protocol_suggest"), dict):
+                # Не сканируем prior и не гоняем suggest в критическом пути drawer:
+                # КП догружается отдельным /protocol-suggest; prior - по ?prior=1.
+                if want_prior_clinical(query_params=request.query_params):
                     try:
-                        from clinical_knowledge.case_protocol_suggest import (
-                            suggest_protocols_for_mo_case,
-                        )
+                        from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
 
-                        suggest_clinical = dict(clinical) if isinstance(clinical, dict) else {}
-                        if record_z.get("patient_age_years") is not None:
-                            suggest_clinical.setdefault(
-                                "patient_age_years", record_z.get("patient_age_years")
-                            )
-                        result["protocol_suggest"] = suggest_protocols_for_mo_case(
-                            clinical=suggest_clinical,
-                            record=record_z,
-                            findings=result.get("findings")
-                            if isinstance(result.get("findings"), list)
-                            else [],
-                            llm_judge=result.get("llm_action_judge")
-                            if isinstance(result.get("llm_action_judge"), dict)
-                            else None,
-                            history_bundle=result.get("patient_history")
-                            if isinstance(result.get("patient_history"), dict)
-                            else None,
-                            limit=5,
-                            attach_history=False,
+                        prior_pack = resolve_prior_clinical_for_case(
+                            case_id,
+                            visit_date=str(
+                                record_z.get("date") or record_z.get("visit_date") or ""
+                            )[:10]
+                            or None,
                         )
+                        if isinstance(prior_pack, dict):
+                            prior_clinical = prior_pack.get("clinical")
                     except Exception:  # noqa: BLE001
-                        pass
+                        prior_clinical = None
                 zones = compute_mo_zone_scores(
                     {
                         "clinical": clinical if isinstance(clinical, dict) else {},
@@ -12330,6 +12332,7 @@ def api_methodist_mo_protocol_suggest(
     from clinical_knowledge.case_protocol_suggest import suggest_protocols_for_mo_case
     from clinical_knowledge.mo_backend import build_case_detail, is_case_score_eligible
     from clinical_knowledge.mo_case_document import build_case_document_payload
+    from clinical_knowledge.mo_case_detail_latency import want_protocol_suggest_history
     from clinical_knowledge.mo_llm_action_judge import load_llm_action_judge_for_case
 
     detail = build_case_detail(case_id, month=month or None)
@@ -12349,29 +12352,31 @@ def api_methodist_mo_protocol_suggest(
             "reason": reason,
             "score_eligible": False,
         }
-    # patient_id / doctor_id - для эпизода Dx из истории на складе
-    try:
-        from clinical_knowledge.mo_review_pack import lookup_case_identity
+    attach_history = want_protocol_suggest_history(query_params=request.query_params)
+    # patient_id / doctor_id - только если нужен эпизод Dx из истории
+    if attach_history:
+        try:
+            from clinical_knowledge.mo_review_pack import lookup_case_identity
 
-        visit_date_hint = str(record.get("date") or record.get("visit_date") or "")[:10]
-        identity = lookup_case_identity(
-            case_id,
-            visit_date=visit_date_hint or None,
-            mis_id=str(record.get("mis_id") or "") or None,
-        ) or {}
-        if isinstance(identity, dict):
-            if identity.get("patient_id") and not record.get("patient_id"):
-                record["patient_id"] = identity.get("patient_id")
-            if identity.get("doctor_id") and not record.get("doctor_id"):
-                record["doctor_id"] = identity.get("doctor_id")
-            if identity.get("doctor_fio") and not record.get("doctor_fio"):
-                record["doctor_fio"] = identity.get("doctor_fio")
-            if identity.get("specialty") and not (
-                record.get("specialization") or record.get("specialty")
-            ):
-                record["specialization"] = identity.get("specialty")
-    except Exception:
-        pass
+            visit_date_hint = str(record.get("date") or record.get("visit_date") or "")[:10]
+            identity = lookup_case_identity(
+                case_id,
+                visit_date=visit_date_hint or None,
+                mis_id=str(record.get("mis_id") or "") or None,
+            ) or {}
+            if isinstance(identity, dict):
+                if identity.get("patient_id") and not record.get("patient_id"):
+                    record["patient_id"] = identity.get("patient_id")
+                if identity.get("doctor_id") and not record.get("doctor_id"):
+                    record["doctor_id"] = identity.get("doctor_id")
+                if identity.get("doctor_fio") and not record.get("doctor_fio"):
+                    record["doctor_fio"] = identity.get("doctor_fio")
+                if identity.get("specialty") and not (
+                    record.get("specialization") or record.get("specialty")
+                ):
+                    record["specialization"] = identity.get("specialty")
+        except Exception:
+            pass
     clinical: dict = {}
     try:
         document = build_case_document_payload(case_id, month=month or None, detail=detail)
@@ -12387,9 +12392,10 @@ def api_methodist_mo_protocol_suggest(
         clinical = dict(clinical)
         clinical["patient_age_years"] = record.get("patient_age_years")
     history_bundle = None
-    ph = detail.get("patient_history")
-    if isinstance(ph, dict) and ph.get("engine"):
-        history_bundle = ph
+    if attach_history:
+        ph = detail.get("patient_history")
+        if isinstance(ph, dict) and ph.get("engine"):
+            history_bundle = ph
     visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
     judge = load_llm_action_judge_for_case(case_id, visit_date=visit_date)
     return suggest_protocols_for_mo_case(
@@ -12399,7 +12405,7 @@ def api_methodist_mo_protocol_suggest(
         llm_judge=judge if isinstance(judge, dict) else {},
         history_bundle=history_bundle,
         limit=3,
-        attach_history=True,
+        attach_history=attach_history,
     )
 
 
