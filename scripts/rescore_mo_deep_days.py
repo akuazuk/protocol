@@ -117,6 +117,20 @@ def rescore_day(
             "cases_path": str(path),
         }
     drug_ctx = load_drug_ctx()
+    pairs = (drug_ctx.get("ddinter") or {}).get("pairs") if isinstance(drug_ctx.get("ddinter"), dict) else None
+    n_pairs = len(pairs or {})
+    if update_primary_score and n_pairs < 1000:
+        # Без DDInter deep rewrite стирает Major/Moderate DDI в cases - не допускаем.
+        return {
+            "date": day.isoformat(),
+            "status": "error",
+            "error": (
+                f"ddinter_pairs_missing_or_empty (n={n_pairs}). "
+                "Положите data/drug_safety/ddinter_pairs.json (scripts/fetch_ddinter.py) "
+                "и смонтируйте /var/data/drug_safety перед deep_rescore."
+            ),
+            "update_primary_score": True,
+        }
     rows: list[dict[str, Any]] = []
     changed = 0
     joined = 0

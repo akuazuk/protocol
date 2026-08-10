@@ -207,12 +207,17 @@ else
   echo "[5/5] run container WITHOUT protocol corpus (navigator will be empty; sync with deploy/gcp-app/sync_protocol_corpus.sh)" >&2
 fi
 
+# DDInter pairs are gitignored; keep them on the data disk and mount into the image.
+ssh_cmd "sudo mkdir -p /var/data/drug_safety && sudo cp -n '$REMOTE_DIR'/data/drug_safety/high_alert.json /var/data/drug_safety/ 2>/dev/null || true; sudo cp -n '$REMOTE_DIR'/data/drug_safety/stopp_start_beers.json /var/data/drug_safety/ 2>/dev/null || true; if [[ -f '$REMOTE_DIR'/data/drug_safety/ddinter_pairs.json ]]; then sudo cp '$REMOTE_DIR'/data/drug_safety/ddinter_pairs.json /var/data/drug_safety/; fi; ls -la /var/data/drug_safety || true"
+DRUG_SAFETY_MOUNT="-v /var/data/drug_safety:/app/data/drug_safety:ro"
+
 ssh_cmd "sudo docker rm -f '$CONTAINER' >/dev/null 2>&1 || true
 sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
   -p 8000:8000 \
   --env-file '$ENV_REMOTE' \
   -v /var/data:/var/data \
   $CORPUS_MOUNTS \
+  $DRUG_SAFETY_MOUNT \
   -e MO_DATA_ROOT=/var/data/medical_exams \
   -e PORT=8000 \
   '$IMAGE_TAG'
