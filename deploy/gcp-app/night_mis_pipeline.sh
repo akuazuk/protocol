@@ -5,6 +5,11 @@
 #   main   - always run (cron 02:00 server/UTC)
 #   retry  - only if yesterday main did not succeed (cron 03:00 = +1h)
 #
+# Speed / alerts (plan 2026-08-10-mo-night-speed-skip-alerts-v1):
+#   MO_DAILY_WORKERS=2 (default)
+#   skip --force / early exit when inbound sha256 unchanged
+#   Telegram / ALERT_NEEDED after retry fail
+#
 # On VM:
 #   bash /opt/protocol/deploy/gcp-app/night_mis_pipeline.sh main
 #   bash /opt/protocol/deploy/gcp-app/night_mis_pipeline.sh retry
@@ -14,6 +19,7 @@ MODE="${1:-main}"
 ROOT="${PROTOCOL_ROOT:-/opt/protocol}"
 DATA="${GCE_MO_DATA_ROOT:-/var/data/medical_exams}"
 ENV_MIS="${ENV_MIS_REMOTE:-/opt/protocol/.env.mis}"
+ENV_WEB="${ENV_WEB_REMOTE:-/opt/protocol/.env.gcp-staging}"
 VENV="${MIS_VENV:-/opt/protocol/venv-mis}"
 LOG_DIR="${DATA}/logs"
 STATE_DIR="${DATA}/state"
@@ -33,10 +39,14 @@ M="${DAY:5:2}"
 STATUS_FILE="${STATE_DIR}/gce_night_${DAY}.json"
 STAGING="${DATA}/staging/gce-night-${DAY}-$$"
 INBOUND="${DATA}/inbound/extract"
+SECURE_CSV="${DATA}/secure_cases/${Y}/${M}/mo_${DAY}.csv"
+CASES_JSONL="${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_cases.jsonl"
 LOCK="${STATE_DIR}/gce-night.lock"
 WITH_LLM="${MO_NIGHT_WITH_LLM:-1}"
 DB_ATTEMPTS="${MO_DB_RETRIES:-5}"
 DB_DELAY="${MO_DB_RETRY_DELAY_SEC:-5}"
+export MO_DAILY_WORKERS="${MO_DAILY_WORKERS:-2}"
+NIGHT_FORCE="${MO_NIGHT_FORCE:-0}"
 
 mkdir -p "$LOG_DIR" "$STATE_DIR" "$INBOUND" 2>/dev/null || true
 if [[ ! -w "$LOG_DIR" ]] || [[ ! -w "$STATE_DIR" ]]; then
@@ -44,7 +54,7 @@ if [[ ! -w "$LOG_DIR" ]] || [[ ! -w "$STATE_DIR" ]]; then
   sudo chown -R "$(whoami):$(whoami)" "$LOG_DIR" "$STATE_DIR" "$INBOUND" "${DATA}/staging"
 fi
 exec >>"${LOG_DIR}/gce-night-${MODE}.log" 2>&1
-echo "======== NIGHT ${MODE} day=${DAY} $(date -u +%Y-%m-%dT%H:%M:%SZ) ========"
+echo "======== NIGHT ${MODE} day=${DAY} workers=${MO_DAILY_WORKERS} $(date -u +%Y-%m-%dT%H:%M:%SZ) ========"
 
 if [[ ! -f "$ENV_MIS" ]]; then
   echo "ERROR: missing $ENV_MIS" >&2
@@ -87,31 +97,85 @@ release_lock() {
 acquire_lock
 trap release_lock EXIT INT TERM
 
+load_telegram_env() {
+  # Prefer already-exported; else pull names from web staging env (no MIS password print).
+  local key value line
+  [[ -f "$ENV_WEB" ]] || return 0
+  while IFS= read -r line || [[ -n "$line" ]]; do
+    case "$line" in
+      ''|\#*) continue ;;
+    esac
+    key="${line%%=*}"
+    value="${line#*=}"
+    case "$key" in
+      TELEGRAM_BOT_TOKEN|TELEGRAM_CHAT_ID|TELEGRAM_NOTIFY_ENABLED|TELEGRAM_INSECURE_SSL)
+        if [[ -z "${!key:-}" ]]; then
+          value="${value%\"}"
+          value="${value#\"}"
+          value="${value%\'}"
+          value="${value#\'}"
+          export "$key=$value"
+        fi
+        ;;
+    esac
+  done < "$ENV_WEB"
+}
+
+alert_fail() {
+  local detail="$1"
+  echo "ALERT_NEEDED day=${DAY} mode=${MODE} detail=${detail}"
+  load_telegram_env
+  if [[ -f "$ROOT/scripts/telegram_notify.py" ]]; then
+    python3 "$ROOT/scripts/telegram_notify.py" \
+      "МО GCE night FAIL day=${DAY} mode=${MODE} detail=${detail} host=gce" \
+      >/dev/null 2>&1 || echo "telegram notify failed or disabled"
+  else
+    echo "telegram_notify.py missing"
+  fi
+}
+
 write_status() {
   local status="$1"
   local detail="${2:-}"
-  python3 - <<PY
-import json
+  local sha="${3:-}"
+  local skipped="${4:-0}"
+  INBOUND_SHA="$sha" SKIPPED_SCORE="$skipped" DETAIL="$detail" STATUS="$status" \
+  DAY="$DAY" MODE="$MODE" WORKERS="$MO_DAILY_WORKERS" STATUS_FILE="$STATUS_FILE" \
+  python3 - <<'PY'
+import json, os
 from datetime import datetime, timezone
 from pathlib import Path
-path = Path("${STATUS_FILE}")
+path = Path(os.environ["STATUS_FILE"])
 payload = {
-  "day": "${DAY}",
-  "mode": "${MODE}",
-  "status": "${status}",
-  "detail": """${detail}""",
+  "day": os.environ["DAY"],
+  "mode": os.environ["MODE"],
+  "status": os.environ["STATUS"],
+  "detail": os.environ.get("DETAIL", ""),
+  "inbound_sha256": os.environ.get("INBOUND_SHA", ""),
+  "workers": int(os.environ.get("WORKERS") or 0),
+  "skipped_score": os.environ.get("SKIPPED_SCORE", "0") in ("1", "true", "yes"),
   "updated_at": datetime.now(timezone.utc).isoformat(),
   "host": "gce",
 }
 path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-print(f"wrote {path} status={payload['status']}")
+print(f"wrote {path} status={payload['status']} sha={payload['inbound_sha256'][:12]}…")
 PY
+}
+
+fail_exit() {
+  local detail="$1"
+  local rc="${2:-1}"
+  write_status "failed" "$detail" "${INBOUND_SHA:-}"
+  if [[ "$MODE" == "retry" ]]; then
+    alert_fail "$detail"
+  fi
+  exit "$rc"
 }
 
 if [[ "$MODE" == "retry" ]]; then
   if [[ -f "$STATUS_FILE" ]]; then
     prev="$(python3 -c "import json; print(json.load(open('${STATUS_FILE}')).get('status',''))")"
-    if [[ "$prev" == "success" ]]; then
+    if [[ "$prev" == "success" ]] && [[ "$NIGHT_FORCE" != "1" ]]; then
       echo "retry skip: day=${DAY} already success"
       exit 0
     fi
@@ -131,10 +195,9 @@ set +a
 export PYTHONPATH="$ROOT"
 export MO_DATA_ROOT="$DATA"
 export RUN_HOST=gcp
+export MO_DAILY_WORKERS
 
 mkdir -p "$STAGING"
-TAG="${DAY}"
-# exporter tag = day_next
 NEXT="$(python3 -c "from datetime import date,timedelta; d=date.fromisoformat('${DAY}'); print((d+timedelta(days=1)).isoformat())")"
 EXPORT_CSV="${STAGING}/mis_protocol_${DAY}_${NEXT}.csv"
 EXPORT_META="${STAGING}/mis_protocol_${DAY}_${NEXT}.meta.json"
@@ -154,11 +217,11 @@ while [[ "$attempt" -le "$DB_ATTEMPTS" ]]; do
 done
 
 if [[ "$export_ok" != "1" ]] || [[ ! -f "$EXPORT_CSV" ]]; then
-  write_status "failed" "export_failed_after_${DB_ATTEMPTS}"
-  exit 1
+  fail_exit "export_failed_after_${DB_ATTEMPTS}" 1
 fi
 
-# doctor join sanity (soft block like Mac gate: <50% on >=20 rows)
+# doctor join sanity + write inbound meta (sha filled after copy)
+set +e
 "${VENV}/bin/python" - <<PY
 import csv, json, sys
 from pathlib import Path
@@ -177,31 +240,90 @@ meta = {
   "doctor_fio_pct": round(pct, 2),
   "source": "kravira_mc.mis_protocol + mis_data",
   "mode": "${MODE}",
+  "workers": int("${MO_DAILY_WORKERS}"),
 }
 if n >= 20 and pct < 50.0:
   print("ERROR: doctor_join_broken", flush=True)
-  Path("${STATUS_FILE}").write_text(json.dumps({
-    "day": "${DAY}", "mode": "${MODE}", "status": "failed",
-    "detail": "doctor_join_broken", "doctor_fio_pct": pct, "rows": n,
-  }, ensure_ascii=False, indent=2) + "\n")
   sys.exit(3)
 Path("${INBOUND}/mo_${DAY}.meta.json").write_text(
   json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
 )
 print(json.dumps(meta, ensure_ascii=False))
 PY
+doctor_rc=$?
+set -e
+if [[ "$doctor_rc" -eq 3 ]]; then
+  fail_exit "doctor_join_broken" 3
+fi
+if [[ "$doctor_rc" -ne 0 ]]; then
+  fail_exit "doctor_join_script_error" "$doctor_rc"
+fi
 
 cp -f "$EXPORT_CSV" "${INBOUND}/mo_${DAY}.csv"
 if [[ -f "$EXPORT_META" ]]; then
   cp -f "$EXPORT_META" "${INBOUND}/mo_${DAY}.export.meta.json"
 fi
-echo "inbound ready ${INBOUND}/mo_${DAY}.csv"
+INBOUND_SHA="$(sha256sum "${INBOUND}/mo_${DAY}.csv" | awk '{print $1}')"
+printf '%s\n' "$INBOUND_SHA" > "${INBOUND}/mo_${DAY}.sha256"
+# patch meta with sha
+python3 - <<PY
+import json
+from pathlib import Path
+p = Path("${INBOUND}/mo_${DAY}.meta.json")
+meta = json.loads(p.read_text(encoding="utf-8"))
+meta["checksum_sha256"] = "${INBOUND_SHA}"
+p.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+print("inbound ready", "${INBOUND}/mo_${DAY}.csv", "sha=", "${INBOUND_SHA}"[:16]+"…")
+PY
 
-FORCE_ARGS=()
-if [[ "$MODE" == "retry" ]]; then
-  FORCE_ARGS+=(--force)
+PREV_SHA=""
+PREV_STATUS=""
+if [[ -f "$STATUS_FILE" ]]; then
+  PREV_SHA="$(python3 -c "import json; print(json.load(open('${STATUS_FILE}')).get('inbound_sha256') or '')")"
+  PREV_STATUS="$(python3 -c "import json; print(json.load(open('${STATUS_FILE}')).get('status') or '')")"
 fi
+
+SKIP_SCORE=0
+FORCE_ARGS=()
+if [[ "$NIGHT_FORCE" == "1" ]]; then
+  echo "MO_NIGHT_FORCE=1 → force score"
+  FORCE_ARGS+=(--force)
+elif [[ -n "$PREV_SHA" && "$PREV_SHA" == "$INBOUND_SHA" && -f "$CASES_JSONL" && -s "$CASES_JSONL" ]]; then
+  echo "inbound sha unchanged + cases present → skip score (unchanged)"
+  SKIP_SCORE=1
+elif [[ "$MODE" == "retry" ]]; then
+  # re-score without wipe if same secure csv exists and sha matches file we just wrote to inbound only
+  if [[ -f "$SECURE_CSV" ]]; then
+    SECURE_SHA="$(sha256sum "$SECURE_CSV" | awk '{print $1}')"
+    if [[ "$SECURE_SHA" == "$INBOUND_SHA" && -f "$CASES_JSONL" && -s "$CASES_JSONL" ]]; then
+      echo "secure csv sha matches inbound + cases → skip force score"
+      SKIP_SCORE=1
+    else
+      echo "retry: content changed or incomplete → --force"
+      FORCE_ARGS+=(--force)
+    fi
+  else
+    echo "retry: no secure csv → --force"
+    FORCE_ARGS+=(--force)
+  fi
+else
+  echo "main: resume score (no force); workers=${MO_DAILY_WORKERS}"
+fi
+
+SCORE_RC=0
+if [[ "$SKIP_SCORE" == "1" ]]; then
+  write_status "success" "unchanged_skip_score" "$INBOUND_SHA" 1
+  echo "NIGHT_OK mode=${MODE} day=${DAY} skipped_score=1"
+  exit 0
+fi
+
+set +e
 bash "$ROOT/deploy/gcp-app/score_inbound_day.sh" "$DAY" "${FORCE_ARGS[@]}"
+SCORE_RC=$?
+set -e
+if [[ "$SCORE_RC" -ne 0 ]]; then
+  fail_exit "score_failed_rc_${SCORE_RC}" "$SCORE_RC"
+fi
 
 if [[ "$WITH_LLM" == "1" ]]; then
   echo "LLM night for $DAY (background, non-fatal)"
@@ -220,5 +342,5 @@ if [[ "$WITH_LLM" == "1" ]]; then
   fi
 fi
 
-write_status "success" "extract_score_ok"
-echo "NIGHT_OK mode=${MODE} day=${DAY}"
+write_status "success" "extract_score_ok" "$INBOUND_SHA" 0
+echo "NIGHT_OK mode=${MODE} day=${DAY} workers=${MO_DAILY_WORKERS}"

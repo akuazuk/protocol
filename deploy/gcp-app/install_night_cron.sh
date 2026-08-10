@@ -40,10 +40,13 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 PROTOCOL_ROOT=${proto_root}
 GCE_MO_DATA_ROOT=${data}
+MO_DAILY_WORKERS=2
 # 02:00 server/UTC - main extract+score for yesterday (Europe/Minsk)
 0 2 * * * ${proto_root}/deploy/gcp-app/night_mis_pipeline.sh main
 # 03:00 server/UTC - retry +1h if main failed
 0 3 * * * ${proto_root}/deploy/gcp-app/night_mis_pipeline.sh retry
+# 03:15 server/UTC - alert if still not success
+15 3 * * * ${proto_root}/deploy/gcp-app/check_gce_night_status.sh
 EOF
   crontab "$cron_file"
   rm -f "$cron_file"
@@ -58,11 +61,14 @@ if [[ "$REMOTE" == "1" ]]; then
   tar czf - \
     -C "$ROOT" \
     deploy/gcp-app/night_mis_pipeline.sh \
+    deploy/gcp-app/check_gce_night_status.sh \
     deploy/gcp-app/setup_mis_venv.sh \
     deploy/gcp-app/install_night_cron.sh \
     deploy/gcp-app/score_inbound_day.sh \
     requirements-mis-bridge.txt \
     scripts/export_mis_protocol_month.py \
+    scripts/telegram_notify.py \
+    env_load.py \
     clinical_knowledge/mis_protocol_parse.py \
     | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command='
 set -euo pipefail
@@ -72,6 +78,8 @@ sudo mkdir -p /opt/protocol/deploy/gcp-app /opt/protocol/scripts /opt/protocol/c
 sudo cp -f ~/protocol-night-sync/deploy/gcp-app/*.sh /opt/protocol/deploy/gcp-app/
 sudo cp -f ~/protocol-night-sync/requirements-mis-bridge.txt /opt/protocol/
 sudo cp -f ~/protocol-night-sync/scripts/export_mis_protocol_month.py /opt/protocol/scripts/
+sudo cp -f ~/protocol-night-sync/scripts/telegram_notify.py /opt/protocol/scripts/
+sudo cp -f ~/protocol-night-sync/env_load.py /opt/protocol/
 sudo cp -f ~/protocol-night-sync/clinical_knowledge/mis_protocol_parse.py /opt/protocol/clinical_knowledge/
 sudo chmod +x /opt/protocol/deploy/gcp-app/*.sh
 sudo chown -R "$(whoami):$(whoami)" /opt/protocol/deploy/gcp-app

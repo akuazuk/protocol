@@ -48,6 +48,7 @@ run_inside() {
     -e MO_DATA_ROOT="$DATA" \
     -e DAY="$DAY" -e Y="$Y" -e M="$M" \
     -e FORCE="$FORCE" -e LIMIT="$LIMIT" \
+    -e MO_DAILY_WORKERS="${MO_DAILY_WORKERS:-2}" \
     "$CONTAINER" bash -lc '
 set -euo pipefail
 DATA="${MO_DATA_ROOT:-/var/data/medical_exams}"
@@ -71,7 +72,7 @@ LIMIT_ARGS=()
 if [[ "${LIMIT}" != "0" && -n "${LIMIT}" ]]; then
   LIMIT_ARGS=(--limit "$LIMIT")
 fi
-echo "SCORE inbound day=$DAY force=$FORCE limit=${LIMIT:-0}"
+echo "SCORE inbound day=$DAY force=$FORCE limit=${LIMIT:-0} workers=${MO_DAILY_WORKERS:-2}"
 python scripts/run_mis_protocol_l1_batch.py \
   --csv "$SECURE/mo_${DAY}.csv" \
   --out-dir "$SECURE" \
@@ -79,7 +80,7 @@ python scripts/run_mis_protocol_l1_batch.py \
   --direct --deep-eval \
   "${RESUME[@]}" \
   "${LIMIT_ARGS[@]}" \
-  --workers "${MO_DAILY_WORKERS:-1}"
+  --workers "${MO_DAILY_WORKERS:-2}"
 python scripts/recompute_mo_days.py \
   --data-root "$DATA" \
   --first-date "$DAY" \
