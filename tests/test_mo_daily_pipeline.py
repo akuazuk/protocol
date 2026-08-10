@@ -108,10 +108,7 @@ def test_document_taxonomy(changes: dict, expected: str) -> None:
 
 
 def test_batch_document_kind_gates_over_mo_score_eligible_flag() -> None:
-    """При известном document_kind оцениваем только clinical_visit.
-
-    Явный mo_score_eligible=true на medical_exam больше не открывает оценку.
-    """
+    """Eligibility через live classify; CSV mo_score_eligible не открывает medical_exam."""
     rows = [
         {
             "visit_id": "1",
@@ -119,6 +116,10 @@ def test_batch_document_kind_gates_over_mo_score_eligible_flag() -> None:
             "document_kind": "medical_exam",
             "mo_score_eligible": "true",
             "parse_ok": "1",
+            "pay_type": "12",
+            "doctor_specialization": "Офтальмолог",
+            "clinical_diagnosis": "Z00.0",
+            "objective_status": "осмотр",
         },
         {
             "visit_id": "2",
@@ -126,6 +127,11 @@ def test_batch_document_kind_gates_over_mo_score_eligible_flag() -> None:
             "document_kind": "clinical_visit",
             "mo_score_eligible": "false",
             "parse_ok": "1",
+            "doctor_specialization": "Терапевт",
+            "service_names": "Консультация врача-терапевта",
+            "complaints": "боль в горле",
+            "objective_status": "зев гиперемирован",
+            "clinical_diagnosis": "J06.9 ОРВИ",
         },
         {
             "visit_id": "3",
@@ -133,13 +139,42 @@ def test_batch_document_kind_gates_over_mo_score_eligible_flag() -> None:
             "document_kind": "certificate",
             "mo_score_eligible": "false",
             "parse_ok": "1",
+            "doctor_specialization": "стоматолог-терапевт",
+            "complaints": "боль",
+            "clinical_diagnosis": "K02",
+            "objective_status": "кариес",
         },
     ]
     scored, excluded = split_kz_rows(rows)
     assert [row["visit_id"] for row in scored] == ["2"]
+    assert scored[0]["document_kind"] == "clinical_visit"
     assert excluded["n_excluded"] == 2
-    assert excluded["excluded_top_specialties"]["medical_exam"][" - "] == 1
-    assert excluded["excluded_top_specialties"]["certificate"][" - "] == 1
+    assert "medical_exam" in excluded["excluded_top_specialties"]
+    assert "non_clinical" in excluded["excluded_top_specialties"]
+
+
+def test_batch_reclassifies_stale_csv_diagnostic_when_consult_plus_uzi() -> None:
+    """Устаревший CSV diagnostic не должен блокировать clinical_visit (баннер coverage)."""
+    rows = [
+        {
+            "visit_id": "9",
+            "kz_kind": "kz",
+            "document_kind": "diagnostic",
+            "mo_score_eligible": "False",
+            "parse_ok": "1",
+            "doctor_specialization": "Гинеколог",
+            "service_names": "Консультация врача-гинеколога | УЗИ органов малого таза",
+            "complaints": "боль",
+            "objective_status": "осмотр",
+            "clinical_diagnosis": "N94",
+        }
+    ]
+    scored, breakdown = split_kz_rows(rows)
+    assert [row["visit_id"] for row in scored] == ["9"]
+    assert scored[0]["document_kind"] == "clinical_visit"
+    assert scored[0]["document_kind_csv"] == "diagnostic"
+    assert breakdown["n_csv_kind_overridden"] == 1
+    assert breakdown["n_scored"] == 1
 
 
 def test_validation_blocks_duplicates_and_accepts_verified_empty_day() -> None:

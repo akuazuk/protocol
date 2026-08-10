@@ -29,6 +29,7 @@ if str(ROOT) not in sys.path:
 from clinical_knowledge.mo_daily import (  # noqa: E402
     assess_completeness,
     build_daily_report,
+    count_llm_queue_pending,
     initialize_warehouse,
     load_jsonl,
     upsert_warehouse,
@@ -42,34 +43,7 @@ def _days(first: date, last: date) -> list[date]:
 
 
 def _llm_queue_pending(secure_dir: Path, day: date) -> int:
-    path = secure_dir / f"kz_l1_{day.isoformat()}_llm_queue.json"
-    graded_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
-    if not path.is_file():
-        return 0
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return 0
-    queued: set[str] = set()
-    if isinstance(payload, dict):
-        for key in ("visit_ids", "pending", "queue", "items", "cases"):
-            value = payload.get(key)
-            if isinstance(value, list):
-                queued = {
-                    str(item.get("visit_id") if isinstance(item, dict) else item)
-                    for item in value
-                    if item not in (None, "")
-                }
-                break
-    graded: set[str] = set()
-    if graded_path.is_file():
-        for row in load_jsonl(graded_path):
-            if row.get("_error") or row.get("error"):
-                continue
-            vid = str(row.get("visit_id") or row.get("case_id") or "")
-            if vid:
-                graded.add(vid)
-    return len(queued - graded) if queued else 0
+    return count_llm_queue_pending(secure_dir, day)
 
 
 def _load_raw_csv(path: Path) -> list[dict[str, Any]]:

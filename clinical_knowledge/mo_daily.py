@@ -261,6 +261,73 @@ def is_scored_document_kind(kind: str | None) -> bool:
     return str(kind or "").strip() in SCORED_DOCUMENT_KINDS
 
 
+# Ошибки LLM, после которых визит не «ещё в очереди», а попытка исчерпана.
+# Иначе баннер partial висит вечно при spend cap / geo, хотя день уже не доделывается.
+_TERMINAL_LLM_ERROR_MARKERS = (
+    "spending cap",
+    "monthly spending",
+    "user location is not supported",
+    "location is not supported",
+)
+
+
+def llm_grade_resolves_queue(row: Mapping[str, Any]) -> bool:
+    """True, если grade снимает visit_id с pending (успех или терминальная ошибка)."""
+    vid = str(row.get("visit_id") or row.get("case_id") or "").strip()
+    if not vid:
+        return False
+    err = str(row.get("_error") or row.get("error") or "").strip()
+    if not err:
+        return True
+    low = err.lower()
+    return any(marker in low for marker in _TERMINAL_LLM_ERROR_MARKERS)
+
+
+def count_llm_queue_pending(secure_dir: Path, day: date) -> int:
+    """Сколько visit_id из llm_queue ещё без успешного или терминального grade."""
+    path = secure_dir / f"kz_l1_{day.isoformat()}_llm_queue.json"
+    if not path.is_file():
+        return 0
+    try:
+        payload = json.loads(path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError):
+        return 0
+    queued: set[str] = set()
+    if isinstance(payload, list):
+        queued = {
+            str(item.get("visit_id") if isinstance(item, Mapping) else item).strip()
+            for item in payload
+            if item not in (None, "")
+        }
+    elif isinstance(payload, Mapping):
+        for key in ("pending", "queue", "items", "cases", "visit_ids"):
+            value = payload.get(key)
+            if isinstance(value, list):
+                queued = {
+                    str(item.get("visit_id") if isinstance(item, Mapping) else item).strip()
+                    for item in value
+                    if item not in (None, "")
+                }
+                break
+        if not queued and isinstance(payload.get("n"), int) and not (
+            secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
+        ).is_file():
+            return int(payload["n"])
+    queued.discard("")
+    if not queued:
+        return 0
+    graded_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
+    graded: set[str] = set()
+    if graded_path.is_file():
+        for row in load_jsonl(graded_path):
+            if not llm_grade_resolves_queue(row):
+                continue
+            vid = str(row.get("visit_id") or row.get("case_id") or "").strip()
+            if vid:
+                graded.add(vid)
+    return len(queued - graded)
+
+
 def scored_kind_sql(alias: str | None = "c") -> str:
     """SQL-условие для витрины: clinical_visit + legacy consultation."""
     col = f"{alias}.document_kind" if alias else "document_kind"

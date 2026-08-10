@@ -30,6 +30,7 @@ from clinical_knowledge.mo_daily import (  # noqa: E402
     build_daily_report,
     case_overall_pct,
     classify_document_kind,
+    count_llm_queue_pending,
     initialize_warehouse,
     load_jsonl,
     upsert_warehouse,
@@ -43,47 +44,8 @@ def _days(first: date, last: date) -> list[date]:
 
 
 def _llm_queue_pending(secure_dir: Path, day: date) -> int:
-    """Сколько визитов из очереди ещё без успешного grade (как в orchestrator)."""
-    path = secure_dir / f"kz_l1_{day.isoformat()}_llm_queue.json"
-    if not path.is_file():
-        return 0
-    try:
-        payload = json.loads(path.read_text(encoding="utf-8"))
-    except json.JSONDecodeError:
-        return 0
-    queued: set[str] = set()
-    if isinstance(payload, list):
-        queued = {
-            str(item.get("visit_id") if isinstance(item, dict) else item)
-            for item in payload
-            if item not in (None, "")
-        }
-    elif isinstance(payload, dict):
-        for key in ("pending", "queue", "items", "cases", "visit_ids"):
-            value = payload.get(key)
-            if isinstance(value, list):
-                queued = {
-                    str(item.get("visit_id") if isinstance(item, dict) else item)
-                    for item in value
-                    if item not in (None, "")
-                }
-                break
-        if not queued and isinstance(payload.get("n"), int) and not (
-            secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
-        ).is_file():
-            return int(payload["n"])
-    if not queued:
-        return 0
-    graded_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
-    graded: set[str] = set()
-    if graded_path.is_file():
-        for row in load_jsonl(graded_path):
-            if row.get("_error") or row.get("error"):
-                continue
-            vid = str(row.get("visit_id") or row.get("case_id") or "")
-            if vid:
-                graded.add(vid)
-    return len(queued - graded)
+    """Сколько визитов из очереди ещё без успешного или терминального grade."""
+    return count_llm_queue_pending(secure_dir, day)
 
 
 def resolve_partition(data_root: Path, day: date) -> Path | None:
