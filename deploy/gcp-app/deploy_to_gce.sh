@@ -13,6 +13,7 @@ REMOTE_DIR="${REMOTE_DIR:-/opt/protocol}"
 IMAGE_TAG="${IMAGE_TAG:-protocol-gcp-app:staging}"
 CONTAINER="${CONTAINER:-protocol-web}"
 ENV_REMOTE="${ENV_REMOTE:-/opt/protocol/.env.gcp-staging}"
+ENV_MIS_REMOTE="${ENV_MIS_REMOTE:-/opt/protocol/.env.mis}"
 
 usage() {
   cat <<'EOF'
@@ -56,6 +57,7 @@ python3 - <<'PY'
 from pathlib import Path
 src = Path(".env")
 dst = Path("/tmp/protocol-gcp-staging.env")
+mis_dst = Path("/tmp/protocol-gcp-mis.env")
 want = {
     "GOOGLE_API_KEY",
     "GOOGLE_API_KEY_2",
@@ -67,15 +69,37 @@ want = {
     "GEMINI_METHODIST_MODEL",
     "GEMINI_GRADER_BULK_MODEL",
 }
+# E2: Marina / MIS from GCE (not Mac bridge). Password usually lives in sql_epam.
+mis_want = {
+    "KRAVIRA_DB_PASSWORD",
+    "KRAVIRA_DB_HOST",
+    "KRAVIRA_DB_PORT",
+    "KRAVIRA_DB_USER",
+    "KRAVIRA_DB_NAME",
+    "MIS_DB_CONNECT_TIMEOUT",
+    "MIS_DB_READ_TIMEOUT",
+}
 vals = {}
-for line in src.read_text(encoding="utf-8", errors="replace").splitlines():
-    s = line.strip()
-    if not s or s.startswith("#") or "=" not in s:
-        continue
-    k, v = s.split("=", 1)
-    k = k.strip()
-    if k in want and v.strip():
-        vals[k] = v.strip().strip('"').strip("'")
+mis_vals = {}
+
+
+def _ingest(path: Path, keys: set[str], into: dict) -> None:
+    if not path.is_file():
+        return
+    for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
+        s = line.strip()
+        if not s or s.startswith("#") or "=" not in s:
+            continue
+        k, v = s.split("=", 1)
+        k = k.strip()
+        if k in keys and v.strip() and k not in into:
+            into[k] = v.strip().strip('"').strip("'")
+
+
+_ingest(src, want, vals)
+_ingest(src, mis_want, mis_vals)
+# Prefer sql_epam for MIS password (Mac secrets home); do not override if .env set.
+_ingest(Path.home() / "CURSOR" / "sql_epam" / ".env", mis_want, mis_vals)
 if not vals.get("GOOGLE_API_KEY") and not vals.get("GEMINI_API_KEY"):
     raise SystemExit("ERROR: need GOOGLE_API_KEY or GEMINI_API_KEY in .env")
 # staging defaults
@@ -96,8 +120,38 @@ vals.setdefault("MO_ICD_PIPELINE_IN_PRIMARY", "0")
 # ICD LLM grey-zone (фаза 4): off until labeled sample; night runner can set =1
 vals.setdefault("MO_ICD_LLM_REVIEW", "0")
 vals.setdefault("MO_ICD_LLM_CLEAR_WEAK", "0")
+# MIS DSN defaults (password required separately)
+mis_vals.setdefault("KRAVIRA_DB_HOST", "178.163.240.131")
+mis_vals.setdefault("KRAVIRA_DB_PORT", "6330")
+mis_vals.setdefault("KRAVIRA_DB_USER", "kravira_mc_user")
+mis_vals.setdefault("KRAVIRA_DB_NAME", "kravira_mc")
+mis_vals.setdefault("MIS_DB_CONNECT_TIMEOUT", "30")
+mis_vals.setdefault("MIS_DB_READ_TIMEOUT", "600")
+mis_vals.setdefault("RUN_HOST", "gcp")
+have_mis_pw = bool(mis_vals.get("KRAVIRA_DB_PASSWORD"))
+# MIS stays in separate .env.mis (not in protocol-web) unless INCLUDE_MIS_IN_WEB_ENV=1.
+import os as _os
+
+if have_mis_pw and _os.environ.get("INCLUDE_MIS_IN_WEB_ENV", "").strip().lower() in (
+    "1",
+    "true",
+    "yes",
+):
+    vals.update(mis_vals)
 dst.write_text("".join(f"{k}={v}\n" for k, v in sorted(vals.items())), encoding="utf-8")
 dst.chmod(0o600)
+if have_mis_pw:
+    mis_dst.write_text(
+        "".join(f"{k}={v}\n" for k, v in sorted(mis_vals.items())), encoding="utf-8"
+    )
+    mis_dst.chmod(0o600)
+    print(f"wrote {mis_dst} mis_keys={len(mis_vals)} (password present)")
+else:
+    mis_dst.write_text("", encoding="utf-8")
+    print(
+        f"WARN: no KRAVIRA_DB_PASSWORD in .env/sql_epam; skip .env.mis upload "
+        f"(keep remote). Use deploy/gcp-app/push_mis_env.sh"
+    )
 print(f"wrote {dst} keys={len(vals)}")
 PY
 
@@ -122,9 +176,14 @@ tar czf - \
   deploy/gcp-app/Dockerfile .dockerignore \
   | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR'"
 
-gcloud compute scp /tmp/protocol-gcp-staging.env "${VM}:${ENV_REMOTE}" --zone="$ZONE" --quiet
-rm -f /tmp/protocol-gcp-staging.env
-ssh_cmd "chmod 600 '$ENV_REMOTE'"
+gcloud compute scp /tmp/protocol-gcp-staging.env "${VM}:~/protocol-gcp-staging.env" --zone="$ZONE" --quiet
+if [[ -s /tmp/protocol-gcp-mis.env ]]; then
+  gcloud compute scp /tmp/protocol-gcp-mis.env "${VM}:~/protocol-gcp-mis.env" --zone="$ZONE" --quiet
+  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && sudo mv ~/protocol-gcp-mis.env '$ENV_MIS_REMOTE' && sudo chown \"\$(whoami):\$(whoami)\" '$ENV_REMOTE' '$ENV_MIS_REMOTE' && chmod 600 '$ENV_REMOTE' '$ENV_MIS_REMOTE'"
+else
+  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && sudo chown \"\$(whoami):\$(whoami)\" '$ENV_REMOTE' && chmod 600 '$ENV_REMOTE'"
+fi
+rm -f /tmp/protocol-gcp-staging.env /tmp/protocol-gcp-mis.env
 
 if [[ "$SYNC_PROTOCOL_CORPUS" == "1" ]] \
   && [[ -d minzdrav_protocols ]] \

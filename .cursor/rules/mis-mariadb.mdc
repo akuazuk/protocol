@@ -5,12 +5,17 @@ alwaysApply: true
 
 # MariaDB MIS (Kravira)
 
-Источник правды по подключению - проект `~/CURSOR/sql_epam` (`sql_csv_compare.py`, `.env`).
+**Канон E2 (с 2026-08-10):** подключение к МИС для extract - **с GCE**
+(`protocol-app`), секреты в `/opt/protocol/.env.mis`
+(`bash deploy/gcp-app/push_mis_env.sh`, smoke: `mis_sql_smoke_on_gce.sh`).
 
-## VPN «Дядя Ваня» (обязательно перед SQL)
+Mac + `~/CURSOR/sql_epam/.env` - **fallback** (локальный ad-hoc SQL), не primary ETL.
 
-БД доступна **только при выключенном** VanyaVPN. Имя профиля меняется вместе со
-страной; helper определяет его по `com.vanyavpn.macos.client`. Перед любым запросом:
+## VPN «Дядя Ваня» (только Mac → SQL)
+
+С Mac БД стабильна **при выключенном** VanyaVPN. С GCE VPN не нужен.
+Имя профиля меняется вместе со страной; helper определяет его по
+`com.vanyavpn.macos.client`. Перед SQL **с Mac**:
 
 ```bash
 ~/CURSOR/bin/vanya_vpn.sh ensure-off
@@ -26,7 +31,8 @@ alwaysApply: true
 | Port | `6330` |
 | Database | `kravira_mc` |
 | User | `kravira_mc_user` |
-| Пароль | только из `~/CURSOR/sql_epam/.env` → `KRAVIRA_DB_PASSWORD` (не коммитить, не печатать) |
+| Пароль | GCE: `/opt/protocol/.env.mis` → `KRAVIRA_DB_PASSWORD`; Mac fallback: `~/CURSOR/sql_epam/.env` (не коммитить, не печатать) |
+| Опц. env | `KRAVIRA_DB_HOST` / `PORT` / `USER` / `NAME`, `MIS_DB_*_TIMEOUT` |
 
 URL (SQLAlchemy + PyMySQL):
 
@@ -81,7 +87,16 @@ mysql+pymysql://kravira_mc_user:<PASSWORD>@178.163.240.131:6330/kravira_mc?chars
 
 ## Как подключаться из агента
 
+**Preferred (E2):** с GCE, без печати пароля:
+
 ```bash
+bash deploy/gcp-app/mis_sql_smoke_on_gce.sh
+```
+
+**Mac fallback** (VanyaVPN off):
+
+```bash
+~/CURSOR/bin/vanya_vpn.sh ensure-off
 cd ~/CURSOR/sql_epam && python3 -c "
 from pathlib import Path
 import os

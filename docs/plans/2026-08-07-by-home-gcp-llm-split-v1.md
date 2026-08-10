@@ -226,9 +226,10 @@ $MO_DATA_ROOT/
 
 ### Фаза C - E2 МИС с GCP
 
-- [ ] C1. Сеть до Kravira с GCP (VPN/allowlist) - отдельное согласование с доступом к МИС.
-- [ ] C2. `mis_bridge` Job на GCP; Secret Manager для DB password.
-- [ ] C3. Mac bridge fallback-only.
+- [x] C1. Сеть до Kravira с GCP - TCP `:6330` с `protocol-app` (`34.118.21.47`) ok (2026-08-10).
+- [~] C2. Секреты на GCE: `/opt/protocol/.env.mis` + `push_mis_env.sh` / deploy allowlist;
+  export env-first. Secret Manager - следующий шаг.
+- [ ] C3. Mac bridge fallback-only (launchd extract выключить после 1–2 ночей с GCE extract).
 
 ### Фаза D - E3 BY home of truth
 
@@ -377,5 +378,5 @@ thin CLI `services.mis_bridge` / `services.llm_worker`.
 **Primary (2026-08-08):** UI/данные = GCP; Render = backup (не удалять). Автодеплой GCE после
 merge пока **выключен** - только `deploy_to_gce.sh`. Зафиксировано в `AGENTS.md`.
 Инвентарь: `deploy/gcp-app/INVENTORY.md`, `deploy/gcp-llm/README.md`, `deploy/mac-bridge/README.md`.
-Следующий шаг: Mac launchd `extract-upload-only`; 2–3 ночи на GCE; B6 rollback; потом решать
-про GitHub Action → GCE.
+Следующий шаг: Mac launchd `extract-upload-only` → fallback; MIS extract с GCE
+(`.env.mis`); 2–3 ночи; B6 rollback; потом Secret Manager + решение про GitHub Action → GCE.
