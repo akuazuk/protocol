@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-10-mo-case-detail-latency-v1.md](2026-08-10-mo-case-detail-latency-v1.md) | Разбор случая: &lt;500 ms detail; defer live/prior; prewarm protocol suggest | active |
 | [2026-08-10-mo-eval-quality-followups-v2.md](2026-08-10-mo-eval-quality-followups-v2.md) | После 3600047: drug-norm, справка, deep-rescore; дашборд колец приоритета + толстый donut-канон | active |
 | [2026-08-10-mo-severity-labels-clarity-v1.md](2026-08-10-mo-severity-labels-clarity-v1.md) | МО: Критично/Важно/Умеренно/Оформление вместо P0-P3 в UI | completed (прод; хвосты → followups-v2) |
 | [2026-08-10-mo-visit-patient-id-search-v1.md](2026-08-10-mo-visit-patient-id-search-v1.md) | МО: ingest визита + поиск по visit_id / patient_id | active |
