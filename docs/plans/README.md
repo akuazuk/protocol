@@ -18,6 +18,7 @@
 
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-10-mo-storage-parquet-dual-write-v1.md](2026-08-10-mo-storage-parquet-dual-write-v1.md) | Хранение МО: parquet+sqlite, dual-write без ломки night cron | active |
 | [2026-08-09-mo-scoring-strictness-settings-v1.md](2026-08-09-mo-scoring-strictness-settings-v1.md) | МО Настройки: жёсткость зон/порогов + пересчёт периода / next-load | completed |
 | [2026-08-09-mo-shadow-dx-plan-conservative-v1.md](2026-08-09-mo-shadow-dx-plan-conservative-v1.md) | Вариант B: shadow Dx/Plan; красное только poor/critical; SSOT не трогаем | active |
 | [2026-08-09-mo-calibration-agent-proxy-v1.md](2026-08-09-mo-calibration-agent-proxy-v1.md) | C6A/C7A: AI-proxy выполнен; Dx 25 scored/2 bad, plan 21/8; formal C6 не закрыт | completed |
