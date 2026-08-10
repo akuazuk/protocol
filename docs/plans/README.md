@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-10-mo-visit-patient-id-search-v1.md](2026-08-10-mo-visit-patient-id-search-v1.md) | МО: ingest визита + поиск по visit_id / patient_id | active |
 | [2026-08-10-mo-storage-parquet-dual-write-v1.md](2026-08-10-mo-storage-parquet-dual-write-v1.md) | Хранение МО: parquet+sqlite, dual-write без ломки night cron | active |
 | [2026-08-10-mo-night-speed-skip-alerts-v1.md](2026-08-10-mo-night-speed-skip-alerts-v1.md) | Night GCE: workers + skip unchanged + алерт fail | active |
 | [2026-08-09-mo-scoring-strictness-settings-v1.md](2026-08-09-mo-scoring-strictness-settings-v1.md) | МО Настройки: жёсткость зон/порогов + пересчёт периода / next-load | completed |

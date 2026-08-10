@@ -697,10 +697,47 @@ def _match_filters(rec: dict[str, Any], flt: dict[str, Any]) -> bool:
     doctor = (flt.get("doctor") or "").strip().lower()
     if doctor and doctor not in str(rec.get("doctor_fio") or "").lower():
         return False
+    visit_id = str(flt.get("visit_id") or "").strip()
+    if visit_id:
+        ids = {
+            str(rec.get("visit_id") or "").strip(),
+            str(rec.get("case_id") or "").strip(),
+            str(rec.get("mis_id") or "").strip(),
+        }
+        if visit_id not in ids:
+            return False
+    patient_id = str(flt.get("patient_id") or "").strip()
+    if patient_id:
+        try:
+            from clinical_knowledge.mo_daily import patient_key_for
+        except Exception:  # noqa: BLE001
+            patient_key_for = lambda value: ""  # type: ignore[misc, assignment]
+        rec_pid = str(rec.get("patient_id") or "").strip()
+        rec_key = str(rec.get("patient_key") or "").strip()
+        if rec_pid != patient_id and rec_key != patient_key_for(patient_id):
+            return False
     q = (flt.get("q") or "").strip().lower()
     if q:
-        hay = f"{rec.get('diagnosis_short','')} {rec.get('doctor_fio','')} {rec.get('mkb_code_main','')}".lower()
-        if q not in hay:
+        hay = " ".join(
+            str(rec.get(key) or "")
+            for key in (
+                "diagnosis_short",
+                "doctor_fio",
+                "mkb_code_main",
+                "visit_id",
+                "case_id",
+                "mis_id",
+                "patient_id",
+            )
+        ).lower()
+        matched = q in hay
+        if not matched and q.isdigit():
+            try:
+                from clinical_knowledge.mo_daily import patient_key_for
+            except Exception:  # noqa: BLE001
+                patient_key_for = lambda value: ""  # type: ignore[misc, assignment]
+            matched = str(rec.get("patient_key") or "") == patient_key_for(q)
+        if not matched:
             return False
     fa = (flt.get("finding_axis") or "").strip()
     if fa and fa not in (rec.get("finding_axes") or []):
