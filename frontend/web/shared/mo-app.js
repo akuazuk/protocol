@@ -1933,7 +1933,7 @@
     }
     function severityLabel(item) {
       return (item && (item.severity_label_ru || item.priority_label_ru)) ||
-        ({ P0: "Критично", P1: "Важно", P2: "Оформление", P3: "Формально" }[item && item.severity] ||
+        ({ P0: "Критично", P1: "Важно", P2: "Умеренно", P3: "Оформление" }[item && item.severity] ||
           (item && item.severity) || "Проверить");
     }
     function icdVisitChip(row) {
@@ -3364,8 +3364,8 @@
           '<button class="finding-link" type="button" data-yesterday-finding="' + esc(item.finding_code) +
           '" data-yesterday-label="' + esc(item.label || item.finding_code) +
           '" data-yesterday-day="' + esc(day) + '">' +
-          '<span class="status ' + (item.severity === "P0" || item.severity === "P1" ? "critical" : "review") + '">' +
-          esc(item.severity) + '</span> <b>' + esc(item.label || item.finding_code) + '</b>' +
+          '<span class="status ' + esc(severityTone(item)) + '">' +
+          esc(severityLabel(item)) + '</span> <b>' + esc(item.label || item.finding_code) + '</b>' +
           '<span class="finding-meta">' + esc(item.cases) + ' случаев · открыть список МО</span></button>' +
           (samples ? '<div class="finding-cases">' + samples + '</div>' : '') +
           '</div>';
@@ -3600,7 +3600,7 @@
     function renderEntityPages(summary) {
       if ($("diagnosis-findings")) {
         $("diagnosis-findings").innerHTML = (summary.findings || []).slice(0,8).map(function (x) {
-          return notice(x.severity || "Проверить", x.title || x.label || "Требуется ручная проверка", x.severity === "P0" ? "critical" : "review");
+          return notice(severityLabel(x) || "Проверить", x.title || x.label || "Требуется ручная проверка", severityTone(x));
         }).join("") || '<div class="empty">Замечаний по выбранному срезу нет.</div>';
       }
       if (!$("quality-kpis")) return;
@@ -3710,7 +3710,7 @@
       var chart = MO.moChart(scatterHost, {
         tooltip:{ formatter:function (p) { var x=plotted[p.dataIndex], ci=x.delta_ci95 || {};
           return esc(x.label)+"<br>Объём: "+x.n+"<br>Дельта: "+signed(x.delta)+
-            "<br>95% ДИ: "+signed(ci.low)+" - "+signed(ci.high)+"<br>P0: "+(x.p0_cases || 0); } },
+            "<br>95% ДИ: "+signed(ci.low)+" - "+signed(ci.high)+"<br>Критично: "+(x.p0_cases || 0); } },
         toolbox:{ feature:{ brush:{ type:["rect","clear"] }, dataZoom:{}, saveAsImage:{} } },
         brush:{ toolbox:["rect","clear"], xAxisIndex:"all", yAxisIndex:"all" },
         grid:{ left:58,right:30,top:55,bottom:55 },
@@ -3791,22 +3791,24 @@
     }
     async function loadSafetyDimension() {
       var data=await dimensionData("safety"), items=data.items || [], levels=["P0","P1","P2","P3"];
+      var levelLabels = { P0: "Критично", P1: "Важно", P2: "Умеренно", P3: "Оформление" };
       $("safety-kpis").innerHTML=levels.map(function (level) {
-        return kpi(level,items.reduce(function (sum,row) { return sum+(row[level] || 0); },0),"случаев с замечанием");
+        return kpi(levelLabels[level] || level,items.reduce(function (sum,row) { return sum+(row[level] || 0); },0),"случаев с замечанием");
       }).join("");
       var incidents=data.incidents || [];
+      var legend = levels.map(function (level) { return levelLabels[level] || level; });
       MO.moChart($("safety-severity-chart"),{
-        tooltip:{ trigger:"axis" },legend:{ data:levels },grid:{ left:50,right:25,top:50,bottom:55 },
+        tooltip:{ trigger:"axis" },legend:{ data:legend },grid:{ left:50,right:25,top:50,bottom:55 },
         xAxis:{ type:"category",data:items.map(function (x) { return x.date; }) },yAxis:{ type:"value",name:"Случаи" },
-        series:levels.map(function (level) { return { name:level,type:"bar",stack:"severity",
+        series:levels.map(function (level) { return { name:levelLabels[level] || level,type:"bar",stack:"severity",
           data:items.map(function (x) { return x[level] || 0; }),
           markPoint:level==="P0" ? { data:incidents.map(function (x) {
             return { name:x.finding_code,coord:[x.date,0],value:"!" };
           }) } : undefined }; })
-      },{ label:"Замечания по приоритету по дням",description:"Столбцы сложены по приоритету, маркеры обозначают P0." });
+      },{ label:"Замечания по приоритету по дням",description:"Столбцы сложены по приоритету; маркеры - случаи «Критично»." });
       $("safety-list").innerHTML=incidents.slice(0,30).map(function (x) {
-        return notice("P0 · "+x.finding_code,x.date+" · источник: "+(x.source_ref || "не указан"),"critical");
-      }).join("") || '<div class="empty">Инцидентов P0 в выбранном периоде нет.</div>';
+        return notice("Критично · "+x.finding_code,x.date+" · источник: "+(x.source_ref || "не указан"),"critical");
+      }).join("") || '<div class="empty">Инцидентов «Критично» в выбранном периоде нет.</div>';
     }
     async function loadDoctorCabinet() {
       if (!state.cabinetDoctorKey) {
@@ -4102,8 +4104,8 @@
         '<label class="filter span-3"><span>Зона «в норме» от, %</span><input class="control" id="score-ok-at" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         '<label class="filter span-3"><span>Статус «хорошо» от</span><input class="control" id="score-good" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         '<label class="filter span-3"><span>Статус «приемлемо» от</span><input class="control" id="score-acc" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
-        '<label class="filter span-3"><span>Потолок P0</span><input class="control" id="score-p0" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
-        '<label class="filter span-3"><span>Потолок P1</span><input class="control" id="score-p1" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок при «Критично»</span><input class="control" id="score-p0" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок при «Важно»</span><input class="control" id="score-p1" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         '<label class="filter span-3"><span>В очередь при балле ниже</span><input class="control" id="score-attention" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         "</div>" +
         '<p class="card-sub">Доступные дни витрины: ' +
