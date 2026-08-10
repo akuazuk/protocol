@@ -16,7 +16,8 @@
 
 - Нет `google.generativeai` / Gemini.
 - Нет `rag_server` / frontend.
-- Пароль МИС только env (`KRAVIRA_DB_PASSWORD`); не в git и не в llm-образ.
+- Пароль МИС только env (`KRAVIRA_DB_PASSWORD`); на GCE - `/opt/protocol/.env.mis`.
+  Не в git и не в llm-образ.
 
 ## CLI
 

@@ -10,7 +10,8 @@
 python3 scripts/export_mis_protocol_month.py --month 2026-07
 ```
 
-Нужен пароль в `~/CURSOR/sql_epam/.env` (`KRAVIRA_DB_PASSWORD`).
+Нужен `KRAVIRA_DB_PASSWORD`: на GCE `/opt/protocol/.env.mis`; локально
+`~/CURSOR/sql_epam/.env` (fallback).
 
 Схема полей: `epam/scheme_mis_protocols.docx`, парсер: `clinical_knowledge/mis_protocol_parse.py`.
 
