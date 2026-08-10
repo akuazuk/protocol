@@ -429,7 +429,11 @@
       q.set("period", state.period); q.set("compare_period", state.compare);
       q.set("methodology", state.methodology);
       var today = minskDateKey(0);
-      if (!state.selected.months.length) {
+      var searchRaw = String(state.search || "").trim();
+      var patientMatch = searchRaw.match(/^patient(?:_id)?\s*[:=]\s*(\d+)\s*$/i);
+      var visitMatch = searchRaw.match(/^visit(?:_id)?\s*[:=]\s*(\d+)\s*$/i);
+      var idLookup = !!(patientMatch || visitMatch || /^\d{4,}$/.test(searchRaw));
+      if (!idLookup && !state.selected.months.length) {
         if (state.period === "month") q.set("month", today.slice(0, 7));
         if (state.period === "yesterday") {
           q.set("date_from", minskDateKey(-1)); q.set("date_to", minskDateKey(-1));
@@ -441,7 +445,9 @@
           q.set("date_from", state.dateFrom); q.set("date_to", state.dateTo);
         }
       }
-      if (state.search) q.set("q", state.search);
+      if (patientMatch) q.set("patient_id", patientMatch[1]);
+      else if (visitMatch) q.set("visit_id", visitMatch[1]);
+      else if (searchRaw) q.set("q", searchRaw);
       if (state.findingCode) q.set("finding_codes", state.findingCode);
       if (state.rubricCriterion) q.set("reg55_point", state.rubricCriterion);
       if (state.reg55Band) q.set("reg55_band", state.reg55Band);

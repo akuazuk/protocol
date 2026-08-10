@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-10-111906Z-handoff-gce-night"
+BUILD_VERSION = "2026-08-10-145045Z-visit-patient-id-search"
 
 
 def _app_version() -> str:
@@ -11718,6 +11718,8 @@ def api_methodist_mo_cases(
     exclude_filials: str = Query("", max_length=2000),
     exclude_document_kinds: str = Query("", max_length=500),
     q: str = Query("", max_length=200),
+    visit_id: str = Query("", max_length=64),
+    patient_id: str = Query("", max_length=64),
     queue_only: bool = Query(False),
     score_eligible_only: str = Query("1", max_length=16),
     zone: str = Query("", max_length=32),

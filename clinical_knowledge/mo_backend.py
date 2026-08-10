@@ -541,20 +541,53 @@ def _jsonl_records(params: dict[str, Any]) -> list[dict[str, Any]]:
     return list(records_by_key.values())
 
 
+def _identity_lookup(params: Mapping[str, Any]) -> dict[str, str]:
+    """Точный поиск по visit_id / patient_id (или числовой q как ID)."""
+    visit_id = str(params.get("visit_id") or "").strip()
+    patient_id = str(params.get("patient_id") or "").strip()
+    q = str(params.get("q") or "").strip()
+    out: dict[str, str] = {}
+    if visit_id:
+        out["visit_id"] = visit_id
+    if patient_id:
+        out["patient_id"] = patient_id
+    if not out and q.isdigit() and len(q) >= 4:
+        # Числовой запрос: ищем и как визит, и как patient_id.
+        out["q_id"] = q
+    return out
+
+
 def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
     where: list[str] = []
     values: list[Any] = []
-    if params.get("date_from"):
-        where.append("c.visit_date >= ?")
-        values.append(str(params["date_from"])[:10])
-    if params.get("date_to"):
-        where.append("c.visit_date <= ?")
-        values.append(str(params["date_to"])[:10])
-    months = _selected_months(params)
-    if not params.get("date_from") and not params.get("date_to") and months:
-        marks = ",".join("?" for _ in months)
-        where.append(f"substr(c.visit_date, 1, 7) IN ({marks})")
-        values.extend(months)
+    identity = _identity_lookup(params)
+    if identity.get("visit_id"):
+        where.append("(CAST(c.visit_id AS TEXT) = ? OR CAST(c.mis_id AS TEXT) = ?)")
+        values.extend([identity["visit_id"], identity["visit_id"]])
+    elif identity.get("patient_id"):
+        from clinical_knowledge.mo_daily import patient_key_for
+
+        where.append("c.patient_key = ?")
+        values.append(patient_key_for(identity["patient_id"]))
+    elif identity.get("q_id"):
+        from clinical_knowledge.mo_daily import patient_key_for
+
+        where.append(
+            "(CAST(c.visit_id AS TEXT) = ? OR CAST(c.mis_id AS TEXT) = ? OR c.patient_key = ?)"
+        )
+        values.extend([identity["q_id"], identity["q_id"], patient_key_for(identity["q_id"])])
+    else:
+        if params.get("date_from"):
+            where.append("c.visit_date >= ?")
+            values.append(str(params["date_from"])[:10])
+        if params.get("date_to"):
+            where.append("c.visit_date <= ?")
+            values.append(str(params["date_to"])[:10])
+        months = _selected_months(params)
+        if not params.get("date_from") and not params.get("date_to") and months:
+            marks = ",".join("?" for _ in months)
+            where.append(f"substr(c.visit_date, 1, 7) IN ({marks})")
+            values.extend(months)
     has_reg55 = _warehouse_has_column(str(_db_path()), "fact_mo_case", "reg55_section_pct")
     if has_reg55:
         reg55_select = """
@@ -626,6 +659,7 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "case_id": str(item.get("visit_id") or item["mis_id"]),
                 "mis_id": str(item["mis_id"]),
                 "visit_id": str(item.get("visit_id") or ""),
+                "patient_key": str(item.get("patient_key") or ""),
                 "date": item["visit_date"],
                 "doctor_fio": item.get("doctor_fio") or "",
                 "specialization": specialization,
@@ -774,11 +808,13 @@ def _parse_reg55_weak_points(raw: Any) -> list[str]:
 
 
 def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -> list[dict[str, Any]]:
+    identity = _identity_lookup(params)
+    # Поиск по ID не режется периодом UI (иначе «вчера» прячет июньский визит).
+    date_keys = () if identity else ("date_from", "date_to")
     single = {
         key: params.get(key)
         for key in (
-            "date_from",
-            "date_to",
+            *date_keys,
             "specialization",
             "filial",
             "doctor",
@@ -792,6 +828,8 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
             "finding_axis",
             "min_severity",
             "q",
+            "visit_id",
+            "patient_id",
         )
         if params.get(key) not in (None, "")
     }
