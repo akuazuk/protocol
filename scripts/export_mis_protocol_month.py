@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 """Выгрузка mis_protocol за период: result разобран по столбцам схемы EPAM.
 
-Пароль: ~/CURSOR/sql_epam/.env → KRAVIRA_DB_PASSWORD
+Пароль (канон E2): env `KRAVIRA_DB_PASSWORD` на GCE (`/opt/protocol/.env.mis`
+или `.env.gcp-staging`). Fallback Mac: `~/CURSOR/sql_epam/.env`.
+Опционально: `KRAVIRA_DB_HOST`, `KRAVIRA_DB_PORT`, `KRAVIRA_DB_USER`, `KRAVIRA_DB_NAME`.
 Схема: epam/scheme_mis_protocols.docx / clinical_knowledge/mis_protocol_parse.py
 
 Пример:
@@ -15,12 +17,28 @@ import os
 import sys
 from datetime import date, datetime
 from pathlib import Path
+from urllib.parse import quote_plus
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT))
 
 SQL_EPAM = Path.home() / "CURSOR" / "sql_epam"
 DEFAULT_OUT = ROOT / "data" / "mis_protocol"
+
+# Defaults = Kravira MariaDB (allowlist from GCE verified 2026-08-10).
+_DEFAULT_HOST = "178.163.240.131"
+_DEFAULT_PORT = "6330"
+_DEFAULT_USER = "kravira_mc_user"
+_DEFAULT_NAME = "kravira_mc"
+
+
+def _path_for_meta(path: Path) -> str:
+    """Relative to repo when possible; absolute outside ROOT (GCE /var/data staging)."""
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(ROOT))
+    except ValueError:
+        return str(resolved)
 
 
 def _load_parse_module():
@@ -39,19 +57,29 @@ def _engine():
     from dotenv import load_dotenv
     from sqlalchemy import create_engine
 
-    load_dotenv(SQL_EPAM / ".env")
+    # Process env first (GCE docker --env-file). Mac fallback only if empty.
+    if not (os.environ.get("KRAVIRA_DB_PASSWORD") or "").strip():
+        sql_env = SQL_EPAM / ".env"
+        if sql_env.is_file():
+            load_dotenv(sql_env)
     pw = (os.environ.get("KRAVIRA_DB_PASSWORD") or "").strip()
     if not pw:
-        raise SystemExit("Нет KRAVIRA_DB_PASSWORD в ~/CURSOR/sql_epam/.env")
+        raise SystemExit(
+            "Нет KRAVIRA_DB_PASSWORD (GCE env / --env-file или ~/CURSOR/sql_epam/.env)"
+        )
+    host = (os.environ.get("KRAVIRA_DB_HOST") or _DEFAULT_HOST).strip()
+    port = (os.environ.get("KRAVIRA_DB_PORT") or _DEFAULT_PORT).strip()
+    user = (os.environ.get("KRAVIRA_DB_USER") or _DEFAULT_USER).strip()
+    name = (os.environ.get("KRAVIRA_DB_NAME") or _DEFAULT_NAME).strip()
     url = (
-        f"mysql+pymysql://kravira_mc_user:{pw}@178.163.240.131:6330/kravira_mc"
-        "?charset=utf8mb4"
+        f"mysql+pymysql://{quote_plus(user)}:{quote_plus(pw)}"
+        f"@{host}:{port}/{name}?charset=utf8mb4"
     )
     return create_engine(
         url,
         pool_pre_ping=True,
         connect_args={
-            "connect_timeout": 30,
+            "connect_timeout": int(os.environ.get("MIS_DB_CONNECT_TIMEOUT", "30")),
             "read_timeout": int(os.environ.get("MIS_DB_READ_TIMEOUT", "600")),
         },
     )
@@ -435,8 +463,8 @@ def main() -> int:
             "kz/certificate оцениваются; diagnostic (УЗИ/рентген/функц./эндоскопия/лаб.), "
             "non_clinical, empty - исключаются. См. classify_kz_kind."
         ),
-        "parquet": str(parquet_path.resolve().relative_to(ROOT)),
-        "csv": str(csv_path.resolve().relative_to(ROOT)),
+        "parquet": _path_for_meta(parquet_path),
+        "csv": _path_for_meta(csv_path),
         "source": "kravira_mc.mis_protocol + mis_data",
         "exported_at": datetime.now().isoformat(timespec="seconds"),
     }

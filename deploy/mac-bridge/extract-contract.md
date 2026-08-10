@@ -4,8 +4,10 @@
 
 ## Input (к МИС)
 
-- Env: `KRAVIRA_DB_PASSWORD`, optional DSN overrides.
-- VPN: для текущего host Kravira - VanyaVPN **off** (см. mis-mariadb rule).
+- Env: `KRAVIRA_DB_PASSWORD`, optional `KRAVIRA_DB_HOST` / `PORT` / `USER` / `NAME`.
+- **E2 канон:** ключи на GCE в `/opt/protocol/.env.mis` (`push_mis_env.sh`).
+- Mac fallback: `~/CURSOR/sql_epam/.env`; VanyaVPN **off** перед SQL с Mac.
+- С GCE VPN «Дядя Ваня» не нужен (прямой TCP к `:6330` с allowlist).
 
 ## Output (в `$MO_DATA_ROOT/inbound/extract/`)
 

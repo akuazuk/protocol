@@ -1,24 +1,7 @@
-# Планы работ Protocol (источник истины по задачам)
-
-Здесь лежат **версионированные планы** работ. Перед началом любой осмысленной задачи
-агент/разработчик **обязан** прочитать актуальный план из этого каталога и, при
-необходимости, создать новую версию.
-
-## Правила ведения
-
-1. Один файл - один план, имя: `YYYY-MM-DD-<тема>-vN.md` (латиница, kebab-case).
-2. Новая итерация плана - **новый файл** с `vN+1`, старую версию не редактируем задним числом,
-   а помечаем в этом индексе как `archived` и указываем преемника.
-3. Каждый план содержит: контекст, что изменено в проде, метрики (было / стало / цель),
-   шаги (сделано / в работе / дальше), риски.
-4. Перед коммитом задачи - обнови статус шагов и метрик в актуальном плане.
-5. Не плоди мусор: черновики и разовые заметки сюда не кладём.
-
-## Индекс планов
-
 | Файл | Тема | Статус |
 |------|------|--------|
 | [2026-08-10-mo-storage-parquet-dual-write-v1.md](2026-08-10-mo-storage-parquet-dual-write-v1.md) | Хранение МО: parquet+sqlite, dual-write без ломки night cron | active |
+| [2026-08-10-mo-night-speed-skip-alerts-v1.md](2026-08-10-mo-night-speed-skip-alerts-v1.md) | Night GCE: workers + skip unchanged + алерт fail | active |
 | [2026-08-09-mo-scoring-strictness-settings-v1.md](2026-08-09-mo-scoring-strictness-settings-v1.md) | МО Настройки: жёсткость зон/порогов + пересчёт периода / next-load | completed |
 | [2026-08-09-mo-shadow-dx-plan-conservative-v1.md](2026-08-09-mo-shadow-dx-plan-conservative-v1.md) | Вариант B: shadow Dx/Plan; красное только poor/critical; SSOT не трогаем | active |
 | [2026-08-09-mo-calibration-agent-proxy-v1.md](2026-08-09-mo-calibration-agent-proxy-v1.md) | C6A/C7A: AI-proxy выполнен; Dx 25 scored/2 bad, plan 21/8; formal C6 не закрыт | completed |

@@ -22,6 +22,8 @@ production. Cursor дополнительно загружает `.cursor/rules/
 - **Gemini / night LLM для МО** - не с Mac. Primary: `deploy/gcp-llm/run_on_gce.sh`.
   Legacy Render: `scripts/run_mo_render_llm_backfill.sh` (VanyaVPN `ensure-off` перед SSH).
   План контуров: `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`. Не смешивать MIS DSN в llm-образ.
+  MIS extract (E2): только GCE cron 02:00 UTC (+ retry 03:00); секреты `/opt/protocol/.env.mis`.
+  Mac launchd SQL extract выключен.
 
 ## 2. Обязательный preflight каждой сессии
 
@@ -147,5 +149,5 @@ Deploy primary считается завершённым, когда на `https
 
 **Сейчас (2026-08-08):** primary UI/данные - GCP `https://protocol.kravira.by`; Render -
 backup. План: `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`. Перед ночным cutover
-Mac launchd → `extract-upload-only` + score/LLM на GCE.
+Mac launchd → extract fallback-only; MIS + score/LLM на GCE.
 

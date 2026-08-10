@@ -24,8 +24,10 @@ Render = backup (`https://protocol-bimy.onrender.com`). Автодеплоя п�
 | Firewall | `protocol-allow-web` · tcp 80/443/8000 · tag `protocol-app` |
 | GCS inbound | `gs://protocol-home-e1-inbound` (`EUROPE-CENTRAL2`) |
 | Startup | `deploy/gcp-app/startup-protocol-app.sh` (Docker + mount) |
-| Redeploy | `bash deploy/gcp-app/deploy_to_gce.sh` (нужен локальный `.env`) |
-| Night LLM | `bash deploy/gcp-llm/run_on_gce.sh <day>` (smoke: `--smoke`) |
+| Redeploy | `bash deploy/gcp-app/deploy_to_gce.sh` (нужен локальный `.env` + sql_epam MIS) |
+| MIS env | `/opt/protocol/.env.mis` ← `push_mis_env.sh` / deploy; smoke `mis_sql_smoke_on_gce.sh` |
+| Night MIS | cron UTC `0 2` main + `0 3` retry + `15 3` check; `MO_DAILY_WORKERS=2`; skip unchanged sha |
+| Night LLM | `bash deploy/gcp-llm/run_on_gce.sh <day>` (smoke: `--smoke`); also after night extract |
 | Inbound GCS | `gs://protocol-home-e1-inbound/inbound/extract/` ← `extract_upload_day.sh` |
 | Inbound on VM | `/var/data/medical_exams/inbound/extract/` ← `pull_inbound_from_gcs.sh --remote` |
 | Score inbound | `bash deploy/gcp-app/score_inbound_day.sh <day> --remote` (no MIS) |
@@ -42,4 +44,4 @@ bash deploy/gcp-app/deploy_to_gce.sh
 ```
 
 Smoke HTTPS (2026-08-07): `/health/live` + `/api/version` via `34.118.21.47` ok.
-Следующее: Secret Manager; выключить Mac score в launchd.
+Следующее: Secret Manager; проверить 1–2 ночи GCE cron 02:00/03:00.
