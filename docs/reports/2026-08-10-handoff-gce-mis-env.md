@@ -1,31 +1,31 @@
-# Handoff: E2 MIS env on GCE
+# Handoff: GCE night MIS cron (Mac off)
 
 Date: 2026-08-10  
 Branch: `cursor/gce-mis-env-e2-pc1`  
-Worktree: `/private/tmp/protocol-task-gce-mis-env-pc1`
+PR: https://github.com/akuazuk/protocol/pull/121
 
 ## Done
 
-- Canonical MIS secrets on GCE: `/opt/protocol/.env.mis` (chmod 600).
-- Keys present: `KRAVIRA_DB_*`, `MIS_DB_*_TIMEOUT`, `RUN_HOST=gcp` (password not logged).
-- Smoke from VM: `SQL_OK`, `mis_protocol_max_date=2026-08-09`.
-- `export_mis_protocol_month.py` env-first (Mac `sql_epam` only fallback).
-- `deploy_to_gce.sh` uploads `.env.mis` when local password available.
-- Helpers: `push_mis_env.sh`, `mis_sql_smoke_on_gce.sh`.
-- Docs/plan/rules: E2 C1 done, C2 env-file in progress (Secret Manager next).
+- Night pipeline on GCE: `deploy/gcp-app/night_mis_pipeline.sh` (extract `mis_protocol`+`mis_data` → inbound → score → LLM bg).
+- Cron (server = **UTC**): **02:00** main, **03:00** retry if status ≠ success.
+- Day window: yesterday in **Europe/Minsk**.
+- Retries on DB: `MO_DB_RETRIES=5` with exponential backoff.
+- Mac `by.protocol.mo-daily*` launchd: **uninstalled** (no more Mac SQL pull).
+- Install: `bash deploy/gcp-app/install_night_cron.sh --remote`
 
 ## Not done
 
-- Secret Manager migration for MIS password.
-- GCE nightly MIS extract job (mis_bridge on VM); Mac launchd still possible fallback.
-- Full `deploy_to_gce.sh` not required for this secret-only change.
+- Secret Manager for password.
+- Multi-night soak observation.
+
+## Verify
+
+```bash
+gcloud compute ssh protocol-app --zone=europe-central2-a --command='crontab -l; tail -40 /var/data/medical_exams/logs/gce-night-main.log'
+```
 
 ## Next safe command
 
 ```bash
-bash deploy/gcp-app/mis_sql_smoke_on_gce.sh
+MO_NIGHT_DAY=2026-08-09 bash /opt/protocol/deploy/gcp-app/night_mis_pipeline.sh main
 ```
-
-## Do not touch in parallel
-
-- `deploy/gcp-app/deploy_to_gce.sh`, `ENV-MIGRATION.md`, `/opt/protocol/.env.mis` on VM.

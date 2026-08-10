@@ -227,9 +227,10 @@ $MO_DATA_ROOT/
 ### Фаза C - E2 МИС с GCP
 
 - [x] C1. Сеть до Kravira с GCP - TCP `:6330` с `protocol-app` (`34.118.21.47`) ok (2026-08-10).
-- [~] C2. Секреты на GCE: `/opt/protocol/.env.mis` + `push_mis_env.sh` / deploy allowlist;
-  export env-first. Secret Manager - следующий шаг.
-- [ ] C3. Mac bridge fallback-only (launchd extract выключить после 1–2 ночей с GCE extract).
+- [x] C2. Секреты `/opt/protocol/.env.mis` + night extract на GCE:
+  cron **02:00 UTC** main, **03:00 UTC** retry (+1h); Mac launchd SQL **выключен**.
+  Secret Manager - следующий шаг.
+- [x] C3. Mac bridge fallback-only / off для extract (uninstall launchd).
 
 ### Фаза D - E3 BY home of truth
 

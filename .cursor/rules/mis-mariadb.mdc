@@ -5,11 +5,11 @@ alwaysApply: true
 
 # MariaDB MIS (Kravira)
 
-**Канон E2 (с 2026-08-10):** подключение к МИС для extract - **с GCE**
-(`protocol-app`), секреты в `/opt/protocol/.env.mis`
-(`bash deploy/gcp-app/push_mis_env.sh`, smoke: `mis_sql_smoke_on_gce.sh`).
+**Канон E2 (с 2026-08-10):** ночной extract только с **GCE**
+(`protocol-app` cron **02:00 UTC**, retry **03:00 UTC**), секреты в
+`/opt/protocol/.env.mis`. Mac launchd SQL **выключен**.
 
-Mac + `~/CURSOR/sql_epam/.env` - **fallback** (локальный ad-hoc SQL), не primary ETL.
+Ad-hoc SQL с Mac: `~/CURSOR/sql_epam/.env` + VanyaVPN off - только вручную.
 
 ## VPN «Дядя Ваня» (только Mac → SQL)
 

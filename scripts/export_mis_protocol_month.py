@@ -32,6 +32,15 @@ _DEFAULT_USER = "kravira_mc_user"
 _DEFAULT_NAME = "kravira_mc"
 
 
+def _path_for_meta(path: Path) -> str:
+    """Relative to repo when possible; absolute outside ROOT (GCE /var/data staging)."""
+    resolved = path.resolve()
+    try:
+        return str(resolved.relative_to(ROOT))
+    except ValueError:
+        return str(resolved)
+
+
 def _load_parse_module():
     """Импорт без clinical_knowledge.__init__ (там pydantic и прочий стек)."""
     import importlib.util
@@ -454,8 +463,8 @@ def main() -> int:
             "kz/certificate оцениваются; diagnostic (УЗИ/рентген/функц./эндоскопия/лаб.), "
             "non_clinical, empty - исключаются. См. classify_kz_kind."
         ),
-        "parquet": str(parquet_path.resolve().relative_to(ROOT)),
-        "csv": str(csv_path.resolve().relative_to(ROOT)),
+        "parquet": _path_for_meta(parquet_path),
+        "csv": _path_for_meta(csv_path),
         "source": "kravira_mc.mis_protocol + mis_data",
         "exported_at": datetime.now().isoformat(timespec="seconds"),
     }

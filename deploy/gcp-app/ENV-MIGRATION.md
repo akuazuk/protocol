@@ -34,6 +34,13 @@ bash deploy/gcp-app/push_mis_env.sh
 bash deploy/gcp-app/mis_sql_smoke_on_gce.sh
 ```
 
+Ночной extract (только GCE, Mac launchd off):
+
+```bash
+bash deploy/gcp-app/install_night_cron.sh --remote
+# cron UTC: 02:00 main, 03:00 retry
+```
+
 ## Канон дальше (ближе к прод-cutover)
 
 ### 1. Снять список с Render (имена, без печати секретов в чат)

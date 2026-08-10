@@ -26,7 +26,8 @@ Render = backup (`https://protocol-bimy.onrender.com`). Автодеплоя п�
 | Startup | `deploy/gcp-app/startup-protocol-app.sh` (Docker + mount) |
 | Redeploy | `bash deploy/gcp-app/deploy_to_gce.sh` (нужен локальный `.env` + sql_epam MIS) |
 | MIS env | `/opt/protocol/.env.mis` ← `push_mis_env.sh` / deploy; smoke `mis_sql_smoke_on_gce.sh` |
-| Night LLM | `bash deploy/gcp-llm/run_on_gce.sh <day>` (smoke: `--smoke`) |
+| Night MIS | cron UTC `0 2` main + `0 3` retry → `night_mis_pipeline.sh` (Mac launchd off) |
+| Night LLM | `bash deploy/gcp-llm/run_on_gce.sh <day>` (smoke: `--smoke`); also after night extract |
 | Inbound GCS | `gs://protocol-home-e1-inbound/inbound/extract/` ← `extract_upload_day.sh` |
 | Inbound on VM | `/var/data/medical_exams/inbound/extract/` ← `pull_inbound_from_gcs.sh --remote` |
 | Score inbound | `bash deploy/gcp-app/score_inbound_day.sh <day> --remote` (no MIS) |
@@ -43,4 +44,4 @@ bash deploy/gcp-app/deploy_to_gce.sh
 ```
 
 Smoke HTTPS (2026-08-07): `/health/live` + `/api/version` via `34.118.21.47` ok.
-Следующее: Secret Manager для MIS/Gemini; Mac extract → fallback-only.
+Следующее: Secret Manager; проверить 1–2 ночи GCE cron 02:00/03:00.
