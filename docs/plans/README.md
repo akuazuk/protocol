@@ -1,6 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-08-10-mo-eval-quality-followups-v2.md](2026-08-10-mo-eval-quality-followups-v2.md) | После 3600047: fix meloxicam→diclofenac, справка потолков, deep-rescore; без ложных ручек таксономии | active |
+| [2026-08-10-mo-eval-quality-followups-v2.md](2026-08-10-mo-eval-quality-followups-v2.md) | После 3600047: drug-norm, справка, deep-rescore; дашборд колец приоритета + толстый donut-канон | active |
 | [2026-08-10-mo-severity-labels-clarity-v1.md](2026-08-10-mo-severity-labels-clarity-v1.md) | МО: Критично/Важно/Умеренно/Оформление вместо P0-P3 в UI | completed (прод; хвосты → followups-v2) |
 | [2026-08-10-mo-visit-patient-id-search-v1.md](2026-08-10-mo-visit-patient-id-search-v1.md) | МО: ingest визита + поиск по visit_id / patient_id | active |
 | [2026-08-10-mo-partial-banner-coverage-v1.md](2026-08-10-mo-partial-banner-coverage-v1.md) | Баннер partial: live taxonomy в L1 + terminal LLM errors не держат pending | active |
