@@ -71,7 +71,7 @@
 - [x] Найти и убрать ложный override `мелоксикам` → `diclofenac` (seed high_alert/stopp или конфликт словаря)
 - [x] Явно в `_BRAND_TO_INN`: `мелоксикам`/`мовалис` → `meloxicam`; бренды триптанов и эсциталопрама (ципралекс и т.п.)
 - [x] Регрессия unit: extract на тексте плана 3600047 → inns содержат `escitalopram`, `sumatriptan`, `meloxicam`, **не** `diclofenac`
-- [ ] Re-score визита на GCE + сверка findings в UI
+- [x] Re-score визита на GCE + сверка findings в UI
 - [x] В тексте finding показывать **surface + INN** («Мелоксикам / meloxicam»), чтобы ложный матч был заметен
 
 Не делать: «не смотреть анамнез» - уже так; не трогать DDInter целиком.
