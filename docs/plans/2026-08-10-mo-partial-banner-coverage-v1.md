@@ -31,5 +31,6 @@
 ## Статус
 
 - [x] код + тесты
-- [ ] resume score + recompute на GCE
-- [ ] PR / deploy
+- [x] resume score + recompute на GCE (04..09: coverage 100%, partial=false)
+- [x] PR https://github.com/akuazuk/protocol/pull/126
+- [ ] merge / deploy image (hot-patch в контейнере до redeploy)
