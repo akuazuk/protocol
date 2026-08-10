@@ -24,6 +24,7 @@ from clinical_knowledge.mo_daily import (
     build_daily_report,
     case_overall_pct,
     catch_up_dates,
+    count_llm_queue_pending,
     exclusive_lock,
     install_daily_partition,
     load_jsonl,
@@ -685,38 +686,7 @@ class MoDailyPipeline:
 
     @staticmethod
     def _llm_queue_pending(secure_dir: Path, day: date) -> int:
-        path = secure_dir / f"kz_l1_{day.isoformat()}_llm_queue.json"
-        if not path.is_file():
-            return 0
-        try:
-            payload = json.loads(path.read_text(encoding="utf-8"))
-        except (OSError, json.JSONDecodeError):
-            return 0
-        queued: set[str] = set()
-        if isinstance(payload, list):
-            queued = {str(item.get("visit_id") if isinstance(item, Mapping) else item) for item in payload}
-        if isinstance(payload, Mapping):
-            for key in ("pending", "queue", "items", "cases", "visit_ids"):
-                value = payload.get(key)
-                if isinstance(value, list):
-                    queued = {
-                        str(item.get("visit_id") if isinstance(item, Mapping) else item)
-                        for item in value
-                    }
-                    break
-                if isinstance(value, int):
-                    return value
-            if not queued and isinstance(payload.get("n"), int):
-                return int(payload["n"])
-        if not queued:
-            return 0
-        graded_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
-        graded = {
-            str(row.get("visit_id") or "")
-            for row in load_jsonl(graded_path)
-            if not row.get("_error")
-        }
-        return len(queued - graded)
+        return count_llm_queue_pending(secure_dir, day)
 
     def _same_weekday_counts(self, day: date) -> list[int]:
         counts = []

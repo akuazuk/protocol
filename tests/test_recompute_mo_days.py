@@ -99,3 +99,90 @@ def test_recompute_day_updates_llm_pending_from_grades(tmp_path: Path) -> None:
     assert result["was_llm_queue_pending"] == 1
     updated = json.loads((reports / "report.json").read_text(encoding="utf-8"))
     assert updated["completeness"]["llm_queue_pending"] == 0
+
+
+def test_recompute_day_spend_cap_errors_clear_llm_pending(tmp_path: Path) -> None:
+    day = date(2026, 8, 2)
+    secure = tmp_path / "secure_cases" / "2026" / "08"
+    secure.mkdir(parents=True)
+    reports = tmp_path / "reports" / "2026" / "08" / "02"
+    reports.mkdir(parents=True)
+    warehouse = tmp_path / "warehouse" / "mo_analytics.sqlite"
+    warehouse.parent.mkdir(parents=True)
+
+    with (secure / "mo_2026-08-02.csv").open("w", encoding="utf-8", newline="") as handle:
+        writer = csv.DictWriter(
+            handle,
+            fieldnames=[
+                "visit_id",
+                "mis_id",
+                "date",
+                "doctor_fio",
+                "doctor_specialization",
+                "filial",
+                "kz_kind",
+                "service_names",
+                "complaints",
+                "objective_status",
+                "clinical_diagnosis",
+            ],
+        )
+        writer.writeheader()
+        writer.writerow(
+            {
+                "visit_id": "200",
+                "mis_id": "m2",
+                "date": "2026-08-02",
+                "doctor_fio": "Петров П.П.",
+                "doctor_specialization": "терапевт",
+                "filial": "ул. Захарова, 50Д",
+                "kz_kind": "kz",
+                "service_names": "Консультация врача-терапевта",
+                "complaints": "боль",
+                "objective_status": "норма",
+                "clinical_diagnosis": "J06",
+            }
+        )
+
+    case = {
+        "visit_id": "200",
+        "mis_id": "m2",
+        "date": "2026-08-02",
+        "overall_pct": 70.0,
+        "status": "review",
+        "doctor_fio": "Петров П.П.",
+        "doctor_specialization": "терапевт",
+        "filial": "ул. Захарова, 50Д",
+        "deep": {"findings": [], "axes": {}, "n_by_severity": {}},
+    }
+    (secure / "kz_l1_2026-08-02_cases.jsonl").write_text(
+        json.dumps(case, ensure_ascii=False) + "\n", encoding="utf-8"
+    )
+    (secure / "kz_l1_2026-08-02_llm_queue.json").write_text(
+        json.dumps({"visit_ids": ["200"], "n": 1}), encoding="utf-8"
+    )
+    (secure / "kz_l1_2026-08-02_llm_grades.jsonl").write_text(
+        json.dumps(
+            {
+                "visit_id": "200",
+                "_error": (
+                    "all_llm_models_failed:gemini-3.6-flash:429 Your project has exceeded "
+                    "its monthly spending cap."
+                ),
+            },
+            ensure_ascii=False,
+        )
+        + "\n",
+        encoding="utf-8",
+    )
+    (reports / "report.json").write_text(
+        json.dumps({"run_id": "t2", "revision": 1, "summary": {"avg_score": 70.0}}),
+        encoding="utf-8",
+    )
+
+    result = recompute_day(day, data_root=tmp_path, warehouse=warehouse, write_reports=True)
+    assert result["status"] == "success"
+    assert result["llm_queue_pending"] == 0
+    updated = json.loads((reports / "report.json").read_text(encoding="utf-8"))
+    assert updated["completeness"]["llm_queue_pending"] == 0
+    assert updated["partial"] is False

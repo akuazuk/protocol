@@ -46,9 +46,8 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 try:
-    from clinical_knowledge.mis_protocol_parse import KZ_SCORED_KINDS, classify_kz_kind
+    from clinical_knowledge.mis_protocol_parse import classify_kz_kind
 except ImportError:  # pragma: no cover - fallback if copied alone on Render
-    KZ_SCORED_KINDS = frozenset({"kz", "certificate"})
 
     def classify_kz_kind(row):  # type: ignore[misc]
         return ("kz", "")
@@ -463,26 +462,23 @@ def kz_kind_of(row: dict) -> str:
 def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
     """Разделить строки на оцениваемые медицинские документы и исключённые.
 
-    Для нового МО-контура приоритетен ``mo_score_eligible``. В старых выгрузках
-    сохраняется совместимое правило ``kz_kind``.
+    Eligibility всегда через live ``classify_document_kind`` - тот же классификатор,
+    что у recompute / ``assess_completeness``. Столбцы CSV ``document_kind`` и
+    ``mo_score_eligible`` часто устаревают (например ``diagnostic`` при
+    консультации+УЗИ) и не должны сужать покрытие относительно отчёта.
     """
+    from clinical_knowledge.mo_daily import (
+        classify_document_kind,
+        is_scored_document_kind,
+    )
+
     scored: list[dict] = []
     by_kind: Counter = Counter()
     by_spec: dict[str, Counter] = defaultdict(Counter)
     n_corrupt = 0
+    n_csv_kind_overridden = 0
     for row in rows:
         kind = kz_kind_of(row)
-        document_kind = str(row.get("document_kind") or "").strip()
-        if not document_kind or document_kind.lower() == "nan":
-            try:
-                from clinical_knowledge.mo_daily import classify_document_kind
-
-                document_kind, _reason = classify_document_kind(row)
-                row["document_kind"] = document_kind
-                from clinical_knowledge.mo_daily import is_scored_document_kind
-                row["mo_score_eligible"] = is_scored_document_kind(document_kind)
-            except Exception:  # noqa: BLE001
-                document_kind = ""
         by_kind[kind] += 1
         # Битая ::-строка (обрезана - слотов меньше схемы) в оценку не идёт: parse_ok=='0'.
         # Это не «плохой КЗ», а некорректно выгруженная строка. При отсутствии столбца
@@ -490,50 +486,43 @@ def split_kz_rows(rows: list[dict]) -> tuple[list[dict], dict]:
         if str(row.get("parse_ok", "1")).strip() == "0":
             n_corrupt += 1
             continue
-        # МО: при известном document_kind - только clinical_visit (is_scored_document_kind).
-        # Fallback kz/certificate - только если kind документа не определён.
-        mo_eligible_raw = str(row.get("mo_score_eligible") or "").strip().lower()
-        if document_kind:
-            try:
-                from clinical_knowledge.mo_daily import is_scored_document_kind
 
-                mo_eligible = is_scored_document_kind(document_kind)
-            except Exception:  # noqa: BLE001
-                mo_eligible = document_kind == "clinical_visit"
-            row["mo_score_eligible"] = bool(mo_eligible)
-            if mo_eligible:
-                scored.append(row)
-                continue
-            excluded_kind = document_kind or kind
-            spec = (row.get("doctor_specialization") or "").strip() or " - "
-            by_spec[excluded_kind][spec] += 1
-        elif mo_eligible_raw:
-            mo_eligible = mo_eligible_raw in {"1", "true", "yes", "on"}
-            if mo_eligible:
-                scored.append(row)
-                continue
-            excluded_kind = document_kind or kind
-            spec = (row.get("doctor_specialization") or "").strip() or " - "
-            by_spec[excluded_kind][spec] += 1
-        elif kind in KZ_SCORED_KINDS:
+        csv_kind = str(row.get("document_kind") or "").strip()
+        if csv_kind.lower() == "nan":
+            csv_kind = ""
+        try:
+            document_kind, reason = classify_document_kind(row)
+        except Exception:  # noqa: BLE001
+            document_kind = csv_kind
+            reason = "classify_failed_fallback_csv"
+        if csv_kind and csv_kind != document_kind:
+            n_csv_kind_overridden += 1
+            row["document_kind_csv"] = csv_kind
+        row["document_kind"] = document_kind
+        row["document_kind_reason"] = reason
+        mo_eligible = bool(is_scored_document_kind(document_kind))
+        row["mo_score_eligible"] = mo_eligible
+        if mo_eligible:
             scored.append(row)
-        else:
-            spec = (row.get("doctor_specialization") or "").strip() or " - "
-            by_spec[kind][spec] += 1
+            continue
+        excluded_kind = document_kind or kind or "unknown"
+        spec = (row.get("doctor_specialization") or "").strip() or " - "
+        by_spec[excluded_kind][spec] += 1
     breakdown = {
         "n_total": len(rows),
         "n_scored": len(scored),
         "n_excluded": len(rows) - len(scored),
         "n_corrupt_parse": n_corrupt,
+        "n_csv_kind_overridden": n_csv_kind_overridden,
         "by_kind": dict(by_kind),
         "excluded_top_specialties": {
             kind: dict(sorted(spec.items(), key=lambda x: -x[1])[:8])
             for kind, spec in by_spec.items()
         },
         "rule_ru": (
-            "В МО-контуре при известном document_kind оценивается только clinical_visit; "
-            "для старых выгрузок без document_kind - совместимо kz/certificate. "
-            "неклинические, пустые и битые ::-строки исключаются. Неполный клинический "
+            "В МО-контуре eligibility через live classify_document_kind "
+            "(clinical_visit + legacy consultation); CSV document_kind не блокирует. "
+            "Неклинические, пустые и битые ::-строки исключаются. Неполный клинический "
             "документ не считается мусором и получает соответствующую низкую оценку."
         ),
     }
