@@ -132,6 +132,7 @@
           <div class="kpis kpis--ops" id="month-kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
           <div class="attention-strip" id="month-attention"><div class="skeleton"></div></div>
           <div class="grid">
+            <article class="card span-12"><h2>Приоритет замечаний</h2><p class="card-sub">Худший уровень замечания за период. Клик открывает случаи с этим фильтром</p><div id="month-severity-ring" class="score-ring score-ring--wide"></div></article>
             <article class="card span-12"><h2>Тренд трёх оценок</h2><p class="card-sub">Оформление · Диагноз · План по протоколу</p><div id="month-zone-trend"></div></article>
             <article class="card span-12"><h2>Куда смотреть</h2><p class="card-sub">Врачи с высокой долей «плохо» по зонам</p><div id="month-look-where"></div></article>
             <details class="card span-12 mo-secondary-details"><summary>Подробнее: №55, МКБ и клиника</summary>
@@ -140,15 +141,9 @@
             <article class="card span-6"><h2>№55: слабые пункты разд. V</h2><p class="card-sub">Top-fail по пунктам section-pack; клик открывает очередь с фокусом пункта</p><div id="month-rubric-mz"></div></article>
             <article class="card span-6"><h2>Чип МКБ за период</h2><p class="card-sub">Не зона «Диагноз» - только сопоставление со справочником. Клик открывает случаи</p><div id="month-icd-status"></div></article>
             <article class="card span-6"><h2>Клинические разрывы</h2><p class="card-sub">Жалоба↔осмотр, Dx без осмотра и др. (shadow). Клик - фильтр по коду замечания</p><div id="month-clinical-gaps"></div></article>
-            <div id="month-forecast" hidden></div>
-            <div id="month-compare" hidden></div>
-            <div id="month-trend-chart" hidden></div>
-            <div id="month-heatmap-chart" hidden></div>
-            <div id="month-doctor-chart" hidden></div>
-            <div id="month-doctor-note" hidden></div>
-            <div id="month-pareto-chart" hidden></div>
-            <div id="month-funnel-chart" hidden></div>
-            <div id="month-crm-chart" hidden></div>
+            <div id="month-forecast" hidden></div><div id="month-compare" hidden></div><div id="month-trend-chart" hidden></div>
+            <div id="month-heatmap-chart" hidden></div><div id="month-doctor-chart" hidden></div><div id="month-doctor-note" hidden></div>
+            <div id="month-pareto-chart" hidden></div><div id="month-funnel-chart" hidden></div><div id="month-crm-chart" hidden></div>
             </div></details>
           </div>
         </section>
@@ -280,12 +275,13 @@
                 <div class="settings-zone"><h3>План по протоколу</h3><p>Обследование и лечение по клиническому протоколу МЗ.</p><p class="card-sub">Плохо только если протокол подобран. Иначе «протокол не подобран», не «0%».</p></div>
                 <div class="settings-zone"><h3>Риск</h3><p>Опасные вещи: лекарства, красные флаги, маршрутизация.</p><p class="card-sub">Не процент на первом экране - «есть / нет» в очереди и в разборе.</p></div>
               </div>
-              <p class="card-sub" style="margin-top:12px"><b>№55</b> - проверка «по инструкции» (постановление МЗ) для роли врача. Это не замена трёх зон; смотрим глубже в разборе случая, не вместо «Сегодня».</p>
+              <p class="card-sub" style="margin-top:12px"><b>Приоритет замечания</b> (Критично / Важно / Умеренно / Оформление) - это уровень findings, не статус всей записи. Бейдж «Критично» у замечания ≠ статус записи «Критично».</p>
+              <p class="card-sub"><b>№55</b> - проверка «по инструкции» (постановление МЗ) для роли врача. Это не замена трёх зон; смотрим глубже в разборе случая, не вместо «Сегодня».</p>
               <div id="scoring-method" hidden></div>
             </article>
             <article class="card span-12">
               <h2>Жёсткость оценок</h2>
-              <p class="card-sub">Пороги зон и статусов. После сохранения можно пересчитать витрину сразу или на следующей подгрузке данных.</p>
+              <p class="card-sub">Пороги зон и статусов. Потолки ограничивают итоговый балл, если замечание уже выставлено; не меняют таксономию «что считать Важно». Пересчёт витрины обновляет зоны без rewrite deep; deep-пересчёт переписывает findings и может обновить overall в cases.</p>
               <div id="scoring-strictness"><div class="skeleton"></div></div>
             </article>
             <article class="card span-6">

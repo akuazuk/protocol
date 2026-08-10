@@ -385,6 +385,18 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
         penalty += 20
 
     # C3: DDI по DDInter среди назначенных
+    def _ddi_label(drug: dict | None, inn: str) -> str:
+        surface = str((drug or {}).get("surface") or "").strip()
+        canon = str(inn or "").strip()
+        if surface and canon and surface.lower() != canon.lower():
+            return f"{surface} / {canon}"
+        return surface or canon
+
+    drug_by_inn = {
+        str(d.get("inn") or "").lower(): d
+        for d in drugs
+        if d.get("inn")
+    }
     pairs = (drug_ctx.get("ddinter") or {}).get("pairs") if isinstance(drug_ctx.get("ddinter"), dict) else None
     if pairs and len(inns) >= 2:
         seen = set()
@@ -398,12 +410,15 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
                 lvl = pairs.get(key)
                 if lvl in ("Major", "Moderate"):
                     sev = "P1" if lvl == "Major" else "P2"
-                    evidence = f"{inns[i]} + {inns[j]}"
+                    left = _ddi_label(drug_by_inn.get(inns[i].lower()), inns[i])
+                    right = _ddi_label(drug_by_inn.get(inns[j].lower()), inns[j])
+                    pair_label = f"{left} + {right}"
+                    evidence = pair_label
                     if treatment:
                         evidence = f"{evidence}. Фрагмент плана: {treatment[:280]}"
                     findings.append(_finding(
                         "C_ddi", "safety", sev, False,
-                        f"Лекарственное взаимодействие ({lvl}): {inns[i]} + {inns[j]}",
+                        f"Лекарственное взаимодействие ({lvl}): {pair_label}",
                         evidence=evidence,
                         source_ref="DDInter", needs_human=True,
                     ))

@@ -99,7 +99,12 @@ def _compact_deep(deep: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def rescore_day(day: date, *, data_root: Path) -> dict[str, Any]:
+def rescore_day(
+    day: date,
+    *,
+    data_root: Path,
+    update_primary_score: bool = False,
+) -> dict[str, Any]:
     secure = data_root / "secure_cases" / f"{day:%Y}" / f"{day:%m}"
     path = secure / f"kz_l1_{day.isoformat()}_cases.jsonl"
     if not path.is_file():
@@ -115,6 +120,7 @@ def rescore_day(day: date, *, data_root: Path) -> dict[str, Any]:
     rows: list[dict[str, Any]] = []
     changed = 0
     joined = 0
+    primary_updated = 0
     for line in path.read_text(encoding="utf-8").splitlines():
         if not line.strip():
             continue
@@ -132,8 +138,17 @@ def rescore_day(day: date, *, data_root: Path) -> dict[str, Any]:
             protocol_ctx=None,
             drug_ctx=drug_ctx,
         )
-        # Не трогаем overall_pct / evaluation_v4 - primary score живёт отдельно.
+        # Не трогаем overall_pct / evaluation_v4 по умолчанию - primary score живёт отдельно.
         row["deep"] = _compact_deep(deep)
+        if update_primary_score:
+            before_primary = (row.get("overall_pct"), row.get("status"))
+            if deep.get("overall_pct") is not None:
+                row["overall_pct"] = deep.get("overall_pct")
+            status = deep.get("overall_status") or deep.get("status")
+            if status:
+                row["status"] = status
+            if before_primary != (row.get("overall_pct"), row.get("status")):
+                primary_updated += 1
         after = json.dumps(row.get("deep") or {}, ensure_ascii=False, sort_keys=True)
         if before != after:
             changed += 1
@@ -143,13 +158,16 @@ def rescore_day(day: date, *, data_root: Path) -> dict[str, Any]:
         for row in rows:
             handle.write(json.dumps(row, ensure_ascii=False) + "\n")
     tmp.replace(path)
-    return {
+    out = {
         "date": day.isoformat(),
         "status": "success",
         "cases": len(rows),
         "joined_csv": joined,
         "changed": changed,
     }
+    if update_primary_score:
+        out["primary_updated"] = primary_updated
+    return out
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -157,9 +175,18 @@ def main(argv: list[str] | None = None) -> int:
     ap.add_argument("--data-root", type=Path, required=True)
     ap.add_argument("--first-date", type=date.fromisoformat, required=True)
     ap.add_argument("--last-date", type=date.fromisoformat, required=True)
+    ap.add_argument(
+        "--update-primary-score",
+        action="store_true",
+        help="Также обновить overall_pct/status кейса из deep (по умолчанию только deep-блок).",
+    )
     args = ap.parse_args(argv)
     results = [
-        rescore_day(day, data_root=args.data_root.expanduser())
+        rescore_day(
+            day,
+            data_root=args.data_root.expanduser(),
+            update_primary_score=bool(args.update_primary_score),
+        )
         for day in _days(args.first_date, args.last_date)
     ]
     print(json.dumps(results, ensure_ascii=False, indent=2))

@@ -22,6 +22,7 @@
       reg55Band: "", reg55Pack: "", icdVisitStatus: "",
       sortBy: "date", sortDir: "desc",
       zoneFilter: "", zoneBandFilter: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
+      worstSeverity: "",
       doctorZoneMetric: "zone1",
       caseNavIds: [],
       protocolSuggest: null,
@@ -468,6 +469,7 @@
       if (state.kpStatus) q.set("kp_status", state.kpStatus);
       if (state.historyTier) q.set("history_tier", state.historyTier);
       if (state.icdVisitStatus) q.set("icd_visit_status", state.icdVisitStatus);
+      if (state.worstSeverity) q.set("worst_severity", state.worstSeverity);
       return q;
     }
     function applyScoreEligibleOnly(on, silent) {
@@ -879,6 +881,7 @@
         if (options.attentionOnly !== undefined) state.attentionOnly = !!options.attentionOnly;
         if (options.kpStatus !== undefined) state.kpStatus = options.kpStatus || "";
         if (options.historyTier !== undefined) state.historyTier = options.historyTier || "";
+        if (options.worstSeverity !== undefined) state.worstSeverity = options.worstSeverity || "";
         renderChips();
         switchPage(options.page || state.page);
       };
@@ -933,6 +936,11 @@
       if (state.icdVisitStatus) {
         html.push('<span class="chip">МКБ: ' + esc(state.icdVisitStatus) +
           '<button type="button" data-clear-icd-status aria-label="Удалить фильтр МКБ">×</button></span>');
+      }
+      if (state.worstSeverity) {
+        var sevChip = ({ P0: "Критично", P1: "Важно", P2: "Умеренно", P3: "Оформление" })[state.worstSeverity] || state.worstSeverity;
+        html.push('<span class="chip">Худший уровень: ' + esc(sevChip) +
+          '<button type="button" data-clear-worst-severity aria-label="Сбросить фильтр приоритета">×</button></span>');
       }
       $("filter-chips").innerHTML = html.join("");
       $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
@@ -995,6 +1003,11 @@
         state.icdVisitStatus = "";
         filtersChanged();
       });
+      var clearWorst = $("filter-chips").querySelector("[data-clear-worst-severity]");
+      if (clearWorst) clearWorst.addEventListener("click", function () {
+        state.worstSeverity = "";
+        filtersChanged();
+      });
     }
     function syncUrl(replace) {
       var q = query();
@@ -1037,6 +1050,7 @@
       state.kpStatus = q.get("kp_status") || "";
       state.historyTier = q.get("history_tier") || "";
       state.icdVisitStatus = q.get("icd_visit_status") || "";
+      state.worstSeverity = (q.get("worst_severity") || "").toUpperCase();
       Object.keys(state.selected).forEach(function (key) {
         state.selected[key] = (q.get(API_FILTER_KEYS[key] || key) || "").split(/[|,]/).filter(Boolean);
       });
@@ -1367,56 +1381,66 @@
         '<div class="score-ring-chart"></div>' +
         '<p class="score-ring-meta">' + esc(centerText || "") + "</p>";
       var chartHost = card.querySelector(".score-ring-chart");
-      var data = (segments || []).filter(function (s) { return Number(s.value) > 0; });
-      if (!data.length) {
-        chartHost.innerHTML = '<p class="empty">Нет оценок</p>';
+      if (!MO.moDonut) {
+        chartHost.innerHTML = '<p class="empty">Нет диаграмм</p>';
         return;
       }
-      var chart = MO.moChart(chartHost, {
-        tooltip: {
-          trigger: "item",
-          formatter: function (p) {
-            return esc(p.name) + ": " + esc(p.value) + " (" + (p.percent != null ? p.percent : "") + "%)";
-          }
-        },
-        series: [{
-          type: "pie",
-          radius: ["56%", "78%"],
-          center: ["50%", "52%"],
-          avoidLabelOverlap: true,
-          label: { show: false },
-          labelLine: { show: false },
-          data: data.map(function (s) {
-            return {
-              name: s.name,
-              value: Number(s.value) || 0,
-              band: s.band,
-              itemStyle: { color: s.color }
-            };
-          })
-        }],
-        graphic: [{
-          type: "text",
-          left: "center",
-          top: "44%",
-          style: {
-            text: String(centerText || "").split("\n")[0] || "-",
-            fill: cssToken("--ink", "#1c2430"),
-            font: "700 16px Avenir Next, Avenir, Helvetica Neue, sans-serif",
-            align: "center",
-            verticalAlign: "middle"
-          }
-        }]
-      }, {
+      MO.moDonut(chartHost, segments, {
+        centerText: String(centerText || "").split("\n")[0] || "-",
         label: title,
-        description: "Распределение оценок. Клик по сегменту открывает случаи."
+        description: "Распределение оценок. Клик по сегменту открывает случаи.",
+        onSelect: onSelect,
+        emptyText: "Нет оценок"
       });
-      if (chart && typeof onSelect === "function") {
-        chart.on("click", function (params) {
-          var band = params && params.data && params.data.band;
-          if (band) onSelect(band);
-        });
+    }
+    function renderSeverityPriorityRing(counts) {
+      var host = $("month-severity-ring");
+      if (!host) return;
+      counts = counts || {};
+      var labels = { P0: "Критично", P1: "Важно", P2: "Умеренно", P3: "Оформление" };
+      var colors = {
+        P0: cssToken("--sev-p0", "#c0455a"),
+        P1: cssToken("--sev-p1", "#c47830"),
+        P2: cssToken("--sev-p2", "#8a7a3a"),
+        P3: cssToken("--sev-p3", "#5b6f8f")
+      };
+      var segments = ["P0", "P1", "P2", "P3"].map(function (key) {
+        return {
+          key: key,
+          band: key,
+          name: labels[key],
+          value: Number(counts[key] || 0),
+          color: colors[key]
+        };
+      });
+      var total = segments.reduce(function (sum, s) { return sum + (Number(s.value) || 0); }, 0);
+      var noneN = Number(counts.none || 0);
+      host.innerHTML =
+        '<p class="score-ring-title">Худший уровень замечания</p>' +
+        '<div class="score-ring-chart"></div>' +
+        '<p class="score-ring-meta">' +
+        (total ? ("с замечаниями: " + total + (noneN ? " · без: " + noneN : "")) : "Нет замечаний за период") +
+        "</p>";
+      var chartHost = host.querySelector(".score-ring-chart");
+      if (!MO.moDonut) {
+        chartHost.innerHTML = '<p class="empty">Нет диаграмм</p>';
+        return;
       }
+      MO.moDonut(chartHost, segments, {
+        centerText: String(total || 0),
+        centerSub: "случаев",
+        label: "Приоритет замечаний",
+        description: "Клик по сегменту открывает случаи с этим худшим уровнем замечания.",
+        onSelect: function (key) {
+          var page = (key === "P0" || key === "P1") ? "queue" : "documents";
+          applyDrill({
+            label: "Худший уровень: " + (labels[key] || key),
+            worstSeverity: key,
+            page: page
+          });
+        },
+        emptyText: "Нет замечаний"
+      });
     }
     function renderScoreRings(dash) {
       var host = $("yesterday-score-rings");
@@ -1577,6 +1601,7 @@
       var attention = data.attention || (data.overview && data.overview.attention) || null;
       if (!attention && state.data.overviewAttention) attention = state.data.overviewAttention;
       renderAttentionStrip("month-attention", attention);
+      renderSeverityPriorityRing(data.worst_severity_cases || {});
       renderZoneTrendHost("month-zone-trend", (attention && attention.zone_trends) || data.zone_trends || []);
       var look = $("month-look-where");
       if (look) {
@@ -1826,6 +1851,8 @@
         if (ov.icd_visit_status) raw.icd_visit_status = ov.icd_visit_status;
         if (ov.clinical_gaps) raw.clinical_gaps = ov.clinical_gaps;
         if (ov.kp_unmatched) raw.kp_unmatched = ov.kp_unmatched;
+        if (ov.worst_severity_cases) raw.worst_severity_cases = ov.worst_severity_cases;
+        if (ov.severity_totals && !raw.severity_totals) raw.severity_totals = ov.severity_totals;
       }
       renderOverview(raw);
       buildFacets(normalizeSummary(raw), raw.facets);
@@ -4091,7 +4118,7 @@
         : "";
       host.innerHTML =
         '<div class="settings-stack scoring-strictness-form">' +
-        '<p class="card-sub">Меняет полосы зон и пороги внимания. Пересчёт обновляет витрину без повторного LLM.</p>' +
+        '<p class="card-sub">Меняет полосы зон и пороги внимания. Пересчёт витрины обновляет зоны без повторного LLM; deep-пересчёт переписывает findings.</p>' +
         '<label class="filter"><span>Пресет жёсткости</span>' +
         '<select class="control" id="score-preset"' + disabled + ">" +
         '<option value="soft">Мягкая</option>' +
@@ -4108,6 +4135,7 @@
         '<label class="filter span-3"><span>Потолок при «Важно»</span><input class="control" id="score-p1" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         '<label class="filter span-3"><span>В очередь при балле ниже</span><input class="control" id="score-attention" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         "</div>" +
+        '<p class="card-sub">Потолки ограничивают итоговый балл, если замечание уже выставлено. Не меняют правила, какое замечание считать Важно или Критично (это не таксономия).</p>' +
         '<p class="card-sub">Доступные дни витрины: ' +
         (days.n ? (esc(days.first) + " - " + esc(days.last) + " (" + esc(days.n) + ")") : "пока нет") +
         ". Версия профиля: " + esc(profile.profile_version || 1) +
@@ -4120,6 +4148,7 @@
             '<button class="button" type="button" id="score-save">Сохранить</button>' +
             '<button class="button secondary" type="button" id="score-recompute-range">Пересчитать период</button>' +
             '<button class="button secondary" type="button" id="score-recompute-all">Пересчитать всё</button>' +
+            '<button class="button secondary" type="button" id="score-deep-rescore-range">Deep-пересчёт периода</button>' +
             '<button class="button secondary" type="button" id="score-next-load-days">На след. загрузку (новые дни)</button>' +
             '<button class="button secondary" type="button" id="score-next-load-range">На след. загрузку (период)</button>' +
             '<button class="button secondary" type="button" id="score-next-load-all">На след. загрузку (вся история)</button>' +
@@ -4229,6 +4258,7 @@
         $("score-recompute-range").addEventListener("click", function () {
           runRecompute({
             apply_mode: "now",
+            mode: "warehouse_zones",
             date_from: $("score-date-from").value,
             date_to: $("score-date-to").value
           });
@@ -4237,18 +4267,30 @@
       if ($("score-recompute-all")) {
         $("score-recompute-all").addEventListener("click", function () {
           if (!window.confirm("Пересчитать всю доступную витрину? Это может занять время.")) return;
-          runRecompute({ apply_mode: "now", whole_range: true });
+          runRecompute({ apply_mode: "now", mode: "warehouse_zones", whole_range: true });
+        });
+      }
+      if ($("score-deep-rescore-range")) {
+        $("score-deep-rescore-range").addEventListener("click", function () {
+          if (!window.confirm("Deep-пересчёт периода перепишет findings и может обновить overall в cases. Продолжить?")) return;
+          runRecompute({
+            apply_mode: "now",
+            mode: "deep_rescore",
+            date_from: $("score-date-from").value,
+            date_to: $("score-date-to").value
+          });
         });
       }
       if ($("score-next-load-days")) {
         $("score-next-load-days").addEventListener("click", function () {
-          runRecompute({ apply_mode: "next_load" });
+          runRecompute({ apply_mode: "next_load", mode: "warehouse_zones" });
         });
       }
       if ($("score-next-load-range")) {
         $("score-next-load-range").addEventListener("click", function () {
           runRecompute({
             apply_mode: "next_load",
+            mode: "warehouse_zones",
             date_from: $("score-date-from").value,
             date_to: $("score-date-to").value
           });
@@ -4257,7 +4299,7 @@
       if ($("score-next-load-all")) {
         $("score-next-load-all").addEventListener("click", function () {
           if (!window.confirm("На следующей загрузке пересчитать всю историю витрины?")) return;
-          runRecompute({ apply_mode: "next_load", whole_range: true });
+          runRecompute({ apply_mode: "next_load", mode: "warehouse_zones", whole_range: true });
         });
       }
     }

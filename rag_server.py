@@ -8460,7 +8460,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-10-160502Z-severity-labels-ru"
+BUILD_VERSION = "2026-08-10-170153Z-mo-eval-followups"
 
 
 def _app_version() -> str:
@@ -11028,6 +11028,7 @@ def api_methodist_mis_kz_cases(
     score_band: str = Query(""),
     finding_axis: str = Query(""),
     min_severity: str = Query(""),
+    worst_severity: str = Query(""),
     needs_human: bool = Query(False),
     potential_harm: bool = Query(False),
     date_mismatch: bool = Query(False),
@@ -11058,6 +11059,7 @@ def api_methodist_mis_kz_cases(
         score_band=score_band,
         finding_axis=finding_axis,
         min_severity=min_severity,
+        worst_severity=worst_severity,
         needs_human=needs_human,
         potential_harm=potential_harm,
         date_mismatch=date_mismatch,
@@ -11731,6 +11733,8 @@ def api_methodist_mo_cases(
     reg55_point: str = Query("", max_length=500),
     reg55_band: str = Query("", max_length=200),
     reg55_pack: str = Query("", max_length=500),
+    min_severity: str = Query("", max_length=8),
+    worst_severity: str = Query("", max_length=8),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
     sort_by: str = Query("date"),

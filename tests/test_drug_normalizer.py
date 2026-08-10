@@ -7,7 +7,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
-from clinical_knowledge.drug_normalizer import extract_drugs, normalize_drug, transliterate
+from clinical_knowledge.drug_normalizer import (
+    clear_cache,
+    extract_drugs,
+    normalize_drug,
+    transliterate,
+)
 
 
 def test_override_brand():
@@ -45,6 +50,31 @@ def test_extract_from_treatment_text():
 def test_multiword_override():
     r = normalize_drug("калия хлорид")
     assert r["inn"] == "potassium chloride", r
+
+
+def test_meloxicam_not_diclofenac_override():
+    """Регрессия 3600047: мелоксикам не должен мапиться в diclofenac через STOPP-seed."""
+    clear_cache()
+    assert normalize_drug("мелоксикам")["inn"] == "meloxicam"
+    assert normalize_drug("мовалис")["inn"] == "meloxicam"
+    assert normalize_drug("диклофенак")["inn"] == "diclofenac"
+    assert normalize_drug("эсциталопрам")["inn"] == "escitalopram"
+    assert normalize_drug("суматриптан")["inn"] == "sumatriptan"
+    assert normalize_drug("ципралекс")["inn"] == "escitalopram"
+
+
+def test_extract_visit_3600047_plan_drugs():
+    """План мигрени: SSRI + триптан + мелоксикам, без ложного diclofenac."""
+    clear_cache()
+    txt = (
+        "Эсциталопрам 10 мг утром постоянно; Суматриптан 50 мг при приступе мигрени; "
+        "Мелоксикам 7,5 мг при головной боли."
+    )
+    inns = {d["inn"] for d in extract_drugs(txt)}
+    assert "escitalopram" in inns, inns
+    assert "sumatriptan" in inns, inns
+    assert "meloxicam" in inns, inns
+    assert "diclofenac" not in inns, inns
 
 
 if __name__ == "__main__":

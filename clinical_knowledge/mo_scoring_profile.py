@@ -412,11 +412,16 @@ def scoring_config_public(*, root: Path | None = None) -> dict[str, Any]:
         },
         "recompute_job": job,
         "notes_ru": [
-            "Пересчёт из настроек обновляет витрину и полосы зон (Оформление / Диагноз / План) без повторного LLM.",
-            "Пороги статусов и потолки P0/P1 влияют на новый deep/v4-прогон; уже записанный overall в cases.jsonl сам не меняется.",
+            "Потолки ограничивают итоговый балл, если замечание уже выставлено. Не меняют правила, какое замечание считать Важно или Критично.",
+            "«Пересчитать период/всё» обновляет витрину и полосы зон (Оформление / Диагноз / План) без повторного LLM и без rewrite deep в cases.jsonl.",
+            "«Deep-пересчёт периода» заново считает findings/deep и может обновить overall/status в cases, затем пересобирает витрину.",
             "«На следующую загрузку» применит профиль при ночном прогоне или inbound score + recompute.",
         ],
         "recompute_mode": "warehouse_zones",
+        "recompute_modes": [
+            {"mode": "warehouse_zones", "label_ru": "Витрина и зоны"},
+            {"mode": "deep_rescore", "label_ru": "Deep-пересчёт + витрина"},
+        ],
     }
 
 
@@ -439,9 +444,26 @@ def _run_recompute_job(job: dict[str, Any], *, root: Path) -> None:
     days = [first + timedelta(days=i) for i in range((last - first).days + 1)]
     results: list[dict[str, Any]] = []
     success_n = 0
+    mode = str(job.get("mode") or "warehouse_zones").strip().lower()
+    deep_modes = {"deep_rescore", "deep", "cases_deep"}
     for index, day in enumerate(days, start=1):
         try:
-            item = recompute_day(day, data_root=root, warehouse=warehouse, write_reports=True)
+            if mode in deep_modes:
+                from scripts.rescore_mo_deep_days import rescore_day as deep_rescore_day
+
+                deep_item = deep_rescore_day(
+                    day, data_root=root, update_primary_score=True
+                )
+                item = recompute_day(day, data_root=root, warehouse=warehouse, write_reports=True)
+                item = {
+                    **item,
+                    "deep_rescore": deep_item,
+                    "mode": mode,
+                }
+                if deep_item.get("status") not in {"success", "missing_cases"} and item.get("status") == "success":
+                    item["status"] = deep_item.get("status") or "error"
+            else:
+                item = recompute_day(day, data_root=root, warehouse=warehouse, write_reports=True)
         except Exception as exc:  # noqa: BLE001
             item = {"date": day.isoformat(), "status": "error", "error": f"{type(exc).__name__}: {exc}"[:240]}
         results.append(item)
