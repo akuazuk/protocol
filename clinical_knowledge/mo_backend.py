@@ -5188,7 +5188,7 @@ def build_methodology_status(params: dict[str, Any]) -> dict[str, Any]:
             "explained": explained,
             "coverage_pct": round(100 * explained / shown, 2) if shown else 100.0,
         },
-        "attention_rule": "P0/P1 или низкая доказательность; порог общего балла не используется",
+        "attention_rule": "Приоритет «Критично»/«Важно» или низкая доказательность; порог общего балла не используется",
         "trust_rule": "Штраф и risk-cap применяются только к правилам trust A/B",
     }
 

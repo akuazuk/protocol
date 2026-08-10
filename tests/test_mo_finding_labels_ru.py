@@ -48,8 +48,8 @@ def test_enrich_replaces_generic_template_why() -> None:
 def test_severity_label_ru_plain_words() -> None:
     assert severity_label_ru("P0") == "Критично"
     assert severity_label_ru("P1") == "Важно"
-    assert severity_label_ru("P2") == "Оформление"
-    assert severity_label_ru("P3") == "Формально"
+    assert severity_label_ru("P2") == "Умеренно"
+    assert severity_label_ru("P3") == "Оформление"
     assert "P0" not in severity_label_ru("P0")
     assert severity_tone_css("P0") == "critical"
     assert severity_tone_css("P1") == "important"
@@ -72,8 +72,8 @@ def test_demote_stale_reg55_p0_when_catalog_has_no_p0() -> None:
 def test_priority_from_score_bands() -> None:
     assert priority_from_score(35)["label_ru"] == "Критично"
     assert priority_from_score(55)["label_ru"] == "Важно"
-    assert priority_from_score(70)["label_ru"] == "Оформление"
-    assert priority_from_score(90)["label_ru"] == "Формально"
+    assert priority_from_score(70)["label_ru"] == "Умеренно"
+    assert priority_from_score(90)["label_ru"] == "Оформление"
 
 
 def test_queue_priority_uses_formula_after_demote() -> None:
