@@ -22,5 +22,5 @@
 ## Статус
 
 - [x] код поиска
-- [ ] ingest 3468853 на GCE
-- [ ] PR
+- [x] ingest 3468853 на GCE (overall 83.5, zones weak/ok/bad)
+- [x] PR https://github.com/akuazuk/protocol/pull/127
