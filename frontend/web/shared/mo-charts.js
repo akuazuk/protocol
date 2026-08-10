@@ -158,7 +158,93 @@
     return true;
   }
 
+  function moDonut(element, segments, config) {
+    config = config || {};
+    var radius = config.radius || ["42%", "82%"];
+    var centerText = config.centerText || "";
+    var centerSub = config.centerSub || "";
+    var onSelect = config.onSelect;
+    var data = (segments || []).filter(function (s) { return Number(s.value) > 0; });
+    if (!element) return null;
+    if (!data.length) {
+      element.innerHTML = '<p class="empty">' + (config.emptyText || "Нет данных") + "</p>";
+      return null;
+    }
+    var chart = moChart(element, {
+      tooltip: {
+        trigger: "item",
+        formatter: function (p) {
+          var openHint = onSelect ? "<br>Открыть случаи" : "";
+          return (p.name || "") + ": " + (p.value != null ? p.value : "") +
+            (p.percent != null ? " (" + p.percent + "%)" : "") + openHint;
+        }
+      },
+      legend: config.legend === false ? { show: false } : {
+        bottom: 0,
+        left: "center",
+        textStyle: { fontSize: 11 }
+      },
+      series: [{
+        type: "pie",
+        radius: radius,
+        center: config.center || ["50%", "46%"],
+        avoidLabelOverlap: true,
+        label: { show: false },
+        labelLine: { show: false },
+        itemStyle: {
+          borderRadius: 2,
+          borderColor: token("--surface-solid", "#ffffff"),
+          borderWidth: 3
+        },
+        data: data.map(function (s) {
+          return {
+            name: s.name,
+            value: Number(s.value) || 0,
+            key: s.key || s.band || s.name,
+            band: s.band,
+            itemStyle: s.color ? { color: s.color } : undefined
+          };
+        })
+      }],
+      graphic: [{
+        type: "text",
+        left: "center",
+        top: centerSub ? "38%" : "42%",
+        style: {
+          text: String(centerText || "").split("\n")[0] || "-",
+          fill: token("--ink", "#1c2430"),
+          font: "700 18px Avenir Next, Avenir, Helvetica Neue, sans-serif",
+          align: "center",
+          verticalAlign: "middle"
+        }
+      }].concat(centerSub ? [{
+        type: "text",
+        left: "center",
+        top: "50%",
+        style: {
+          text: String(centerSub),
+          fill: token("--muted", "#5b6f6a"),
+          font: "500 11px Avenir Next, Avenir, Helvetica Neue, sans-serif",
+          align: "center",
+          verticalAlign: "middle"
+        }
+      }] : [])
+    }, {
+      label: config.label || "Кольцевая диаграмма",
+      description: config.description || "Клик по сегменту открывает случаи.",
+      fallback: config.fallback
+    });
+    if (chart && typeof onSelect === "function") {
+      chart.on("click", function (params) {
+        var key = params && params.data && (params.data.key || params.data.band);
+        if (key) onSelect(key, params.data);
+      });
+    }
+    return chart;
+  }
+
   MO.moChart = moChart;
+  MO.moDonut = moDonut;
   MO.exportChartPng = exportChartPng;
   MO.disposeChart = dispose;
   MO.themeAxis = themeAxis;

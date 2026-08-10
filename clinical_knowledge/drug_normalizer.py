@@ -47,8 +47,15 @@ _BRAND_TO_INN: dict[str, str] = {
     "но-шпа": "drotaverine", "дротаверин": "drotaverine", "спазмалгон": "metamizole",
     "анальгин": "metamizole", "парацетамол": "paracetamol", "панадол": "paracetamol",
     "нурофен": "ibuprofen", "ибуклин": "ibuprofen", "найз": "nimesulide",
-    "нимесил": "nimesulide", "аркоксия": "etoricoxib", "мовалис": "meloxicam",
-    "вольтарен": "diclofenac", "ортофен": "diclofenac", "кеторол": "ketorolac",
+    "нимесил": "nimesulide", "аркоксия": "etoricoxib",
+    "мовалис": "meloxicam", "мелоксикам": "meloxicam", "мелбек": "meloxicam",
+    "вольтарен": "diclofenac", "ортофен": "diclofenac", "диклофенак": "diclofenac",
+    "эсциталопрам": "escitalopram", "ципралекс": "escitalopram",
+    "селектра": "escitalopram", "ленуксин": "escitalopram", "элицея": "escitalopram",
+    "суматриптан": "sumatriptan", "имигран": "sumatriptan",
+    "амигренин": "sumatriptan", "сумамигрен": "sumatriptan", "рапимед": "sumatriptan",
+    "грандаксин": "tofisopam", "тофизопам": "tofisopam",
+    "кеторол": "ketorolac",
     "кетанов": "ketorolac", "трамал": "tramadol", "лантус": "insulin glargine",
     "левемир": "insulin detemir", "тресиба": "insulin degludec", "хумулин": "insulin",
     "новорапид": "insulin aspart", "апидра": "insulin glulisine",
@@ -104,7 +111,11 @@ def _inn_vocab() -> tuple[str, ...]:
 
 @lru_cache(maxsize=1)
 def _overrides() -> dict[str, str]:
-    """RU/бренд → INN из курируемого словаря + seed high_alert/stopp."""
+    """RU/бренд → INN из курируемого словаря + seed high_alert/stopp.
+
+    Важно: если в seed ``inn`` - список, нельзя мапить все ``ru`` на ``inn[0]``
+    (ломало «мелоксикам» → diclofenac). Парим по индексу или пропускаем.
+    """
     out = dict(_BRAND_TO_INN)
     for path in (_HIGH_ALERT, _STOPP):
         if not path.is_file():
@@ -115,12 +126,21 @@ def _overrides() -> dict[str, str]:
             continue
         rows = d.get("high_alert") or d.get("rules") or []
         for r in rows:
-            inn = r.get("inn")
-            inn = inn[0] if isinstance(inn, list) and inn else inn
-            if not isinstance(inn, str):
-                continue
-            for ru in r.get("ru") or []:
-                out.setdefault(_norm(ru), _norm(inn))
+            inns_raw = r.get("inn")
+            ru_list = [
+                x for x in (r.get("ru") or [])
+                if isinstance(x, str) and x.strip()
+            ]
+            if isinstance(inns_raw, list):
+                inns = [
+                    x for x in inns_raw
+                    if isinstance(x, str) and x.strip()
+                ]
+                for ru, inn in zip(ru_list, inns):
+                    out.setdefault(_norm(ru), _norm(inn))
+            elif isinstance(inns_raw, str) and inns_raw.strip():
+                for ru in ru_list:
+                    out.setdefault(_norm(ru), _norm(inns_raw))
     return {_norm(k): _norm(v) for k, v in out.items()}
 
 

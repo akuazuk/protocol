@@ -751,6 +751,20 @@ def _match_filters(rec: dict[str, Any], flt: dict[str, Any]) -> bool:
         return False
     if sev == "P1" and (rec.get("p0", 0) + rec.get("p1", 0)) < 1:
         return False
+    worst = (flt.get("worst_severity") or "").strip().upper()
+    if worst in ("P0", "P1", "P2", "P3"):
+        p0 = int(rec.get("p0") or 0)
+        p1 = int(rec.get("p1") or 0)
+        p2 = int(rec.get("p2") or 0)
+        p3 = int(rec.get("p3") or 0)
+        if worst == "P0" and p0 < 1:
+            return False
+        if worst == "P1" and (p0 > 0 or p1 < 1):
+            return False
+        if worst == "P2" and (p0 > 0 or p1 > 0 or p2 < 1):
+            return False
+        if worst == "P3" and (p0 > 0 or p1 > 0 or p2 > 0 or p3 < 1):
+            return False
     if flt.get("date_mismatch") and rec.get("date_mismatch") not in ("1", "true", "True"):
         return False
     df, dt = (flt.get("date_from") or "").strip(), (flt.get("date_to") or "").strip()
@@ -820,6 +834,18 @@ def _filtered_agg(records: list[dict[str, Any]]) -> dict[str, Any]:
 
     n = len(records)
     sev_tot = {s: sum(int(r.get(s.lower(), 0) or 0) for r in records) for s in ("P0", "P1", "P2", "P3")}
+    worst_cases = {"P0": 0, "P1": 0, "P2": 0, "P3": 0, "none": 0}
+    for r in records:
+        if int(r.get("p0") or 0) > 0:
+            worst_cases["P0"] += 1
+        elif int(r.get("p1") or 0) > 0:
+            worst_cases["P1"] += 1
+        elif int(r.get("p2") or 0) > 0:
+            worst_cases["P2"] += 1
+        elif int(r.get("p3") or 0) > 0:
+            worst_cases["P3"] += 1
+        else:
+            worst_cases["none"] += 1
     status_dist = dict(Counter(str(r.get("status") or "unknown") for r in records))
     band_dist = dict(Counter(str(r.get("score_band") or "нет скора") for r in records))
     axis_dist = dict(Counter(a for r in records for a in (r.get("finding_axes") or [])))
@@ -902,6 +928,7 @@ def _filtered_agg(records: list[dict[str, Any]]) -> dict[str, Any]:
             "regulatory": _mean([r.get("axis_regulatory") for r in records]),
         },
         "severity_totals": sev_tot,
+        "worst_severity_cases": worst_cases,
         "status_distribution": status_dist,
         "score_band_distribution": band_dist,
         "finding_axis_distribution": axis_dist,
