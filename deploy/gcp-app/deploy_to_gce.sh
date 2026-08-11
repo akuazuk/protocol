@@ -13,6 +13,7 @@ REMOTE_DIR="${REMOTE_DIR:-/opt/protocol}"
 IMAGE_TAG="${IMAGE_TAG:-protocol-gcp-app:staging}"
 CONTAINER="${CONTAINER:-protocol-web}"
 ENV_REMOTE="${ENV_REMOTE:-/opt/protocol/.env.gcp-staging}"
+ENV_WEB_PUBLIC="${ENV_WEB_PUBLIC:-/opt/protocol/.env.gcp-public}"
 ENV_MIS_REMOTE="${ENV_MIS_REMOTE:-/opt/protocol/.env.mis}"
 MIS_SM_SECRET="${MIS_SM_SECRET:-kravira-db-password}"
 # Cron owner on protocol-app; deploy SSH login may differ (pavel vs pavelkuzauka).
@@ -55,22 +56,55 @@ SYNC_PROTOCOL_CORPUS="${SYNC_PROTOCOL_CORPUS:-1}"
 echo "[1/5] prepare remote dir"
 ssh_cmd "sudo mkdir -p '$REMOTE_DIR' /var/data/medical_exams '$CORPUS_REMOTE' && sudo chown -R \"\$(whoami):\$(whoami)\" '$REMOTE_DIR' '$CORPUS_REMOTE'"
 
-echo "[2/5] build staging env (no values printed)"
+echo "[2/5] build staging env + Secret Manager payloads (no values printed)"
 python3 - <<'PY'
 from pathlib import Path
+import shutil
+
 src = Path(".env")
-dst = Path("/tmp/protocol-gcp-staging.env")
+public_dst = Path("/tmp/protocol-gcp-public.env")
 mis_dst = Path("/tmp/protocol-gcp-mis.env")
-want = {
+sm_dir = Path("/tmp/protocol-web-sm")
+if sm_dir.exists():
+    shutil.rmtree(sm_dir)
+sm_dir.mkdir(parents=True)
+
+secret_keys = {
     "GOOGLE_API_KEY",
     "GOOGLE_API_KEY_2",
     "GEMINI_API_KEY",
     "GEMINI_API_KEY_2",
     "GENERATIVE_LANGUAGE_API_KEY",
     "METHODIST_TOKEN",
+    "TELEGRAM_BOT_TOKEN",
+    "TELEGRAM_CHAT_ID",
+    "RENDER_API_KEY",
+}
+sm_map = {
+    "GOOGLE_API_KEY": "google-api-key",
+    "GOOGLE_API_KEY_2": "google-api-key-2",
+    "GEMINI_API_KEY": "gemini-api-key",
+    "GEMINI_API_KEY_2": "gemini-api-key-2",
+    "GENERATIVE_LANGUAGE_API_KEY": "generative-language-api-key",
+    "METHODIST_TOKEN": "methodist-token",
+    "TELEGRAM_BOT_TOKEN": "telegram-bot-token",
+    "TELEGRAM_CHAT_ID": "telegram-chat-id",
+    "RENDER_API_KEY": "render-api-key",
+}
+want = secret_keys | {
     "GEMINI_MODEL",
     "GEMINI_METHODIST_MODEL",
     "GEMINI_GRADER_BULK_MODEL",
+    "METHODIST_REVIEWER",
+    "METHODIST_UI_AUTO_LOGIN",
+    "ML_FEEDBACK_DIR",
+    "RAG_CHUNKS_JSONL",
+    "RENDER_URL",
+    "TELEGRAM_NOTIFY_ENABLED",
+    "TELEGRAM_NOTIFY_GIT",
+    "TELEGRAM_NOTIFY_RENDER",
+    "TELEGRAM_ALERTS",
+    "TELEGRAM_INSECURE_SSL",
 }
 # E2: Marina / MIS from GCE (not Mac bridge). Password usually lives in sql_epam.
 mis_want = {
@@ -82,8 +116,8 @@ mis_want = {
     "MIS_DB_CONNECT_TIMEOUT",
     "MIS_DB_READ_TIMEOUT",
 }
-vals = {}
-mis_vals = {}
+vals: dict[str, str] = {}
+mis_vals: dict[str, str] = {}
 
 
 def _ingest(path: Path, keys: set[str], into: dict) -> None:
@@ -105,7 +139,7 @@ _ingest(src, mis_want, mis_vals)
 _ingest(Path.home() / "CURSOR" / "sql_epam" / ".env", mis_want, mis_vals)
 if not vals.get("GOOGLE_API_KEY") and not vals.get("GEMINI_API_KEY"):
     raise SystemExit("ERROR: need GOOGLE_API_KEY or GEMINI_API_KEY in .env")
-# staging defaults
+# staging defaults (non-secret)
 vals.setdefault("PORT", "8000")
 vals.setdefault("MO_DATA_ROOT", "/var/data/medical_exams")
 vals.setdefault("RAG_STARTUP_MODE", "manifest")
@@ -115,12 +149,9 @@ vals.setdefault("RAG_MANIFEST_PATH", "data/catalog/corpus_path_manifest.jsonl")
 vals.setdefault("RAG_FORBID_FULL_CORPUS_RETRIEVE", "1")
 vals.setdefault("ALLOWED_ORIGINS", "*")
 vals.setdefault("PYTHONUNBUFFERED", "1")
-# ICD pipeline v3 phase 3: NAME findings in primary after calibration;
-# DIR / full pipeline primary stay off until day hand-labels.
 vals.setdefault("MO_ICD_NAME_IN_PRIMARY", "1")
 vals.setdefault("MO_ICD_DIR_IN_PRIMARY", "0")
 vals.setdefault("MO_ICD_PIPELINE_IN_PRIMARY", "0")
-# ICD LLM grey-zone (фаза 4): off until labeled sample; night runner can set =1
 vals.setdefault("MO_ICD_LLM_REVIEW", "0")
 vals.setdefault("MO_ICD_LLM_CLEAR_WEAK", "0")
 # MIS DSN defaults (password required separately)
@@ -132,18 +163,33 @@ mis_vals.setdefault("MIS_DB_CONNECT_TIMEOUT", "30")
 mis_vals.setdefault("MIS_DB_READ_TIMEOUT", "600")
 mis_vals.setdefault("RUN_HOST", "gcp")
 have_mis_pw = bool(mis_vals.get("KRAVIRA_DB_PASSWORD"))
-# MIS stays in separate .env.mis (not in protocol-web) unless INCLUDE_MIS_IN_WEB_ENV=1.
-# Password goes to Secret Manager; .env.mis keeps only non-secret DSN fields.
 import os as _os
 
+# Optional: include MIS DSN (still without preferring password in web) for debug.
 if have_mis_pw and _os.environ.get("INCLUDE_MIS_IN_WEB_ENV", "").strip().lower() in (
     "1",
     "true",
     "yes",
 ):
-    vals.update(mis_vals)
-dst.write_text("".join(f"{k}={v}\n" for k, v in sorted(vals.items())), encoding="utf-8")
-dst.chmod(0o600)
+    for k, v in mis_vals.items():
+        if k != "KRAVIRA_DB_PASSWORD":
+            vals[k] = v
+
+# Web secrets → SM files; public → .env.gcp-public
+for env_key, secret_id in sm_map.items():
+    val = vals.get(env_key)
+    if not val:
+        continue
+    p = sm_dir / secret_id
+    p.write_text(val, encoding="utf-8")
+    p.chmod(0o600)
+
+public_vals = {k: v for k, v in vals.items() if k not in secret_keys}
+public_dst.write_text(
+    "".join(f"{k}={v}\n" for k, v in sorted(public_vals.items())), encoding="utf-8"
+)
+public_dst.chmod(0o600)
+
 public_mis = {k: v for k, v in mis_vals.items() if k != "KRAVIRA_DB_PASSWORD"}
 if have_mis_pw:
     pw_path = Path("/tmp/protocol-sm-mis-pw")
@@ -157,30 +203,46 @@ if have_mis_pw:
 else:
     mis_dst.write_text("", encoding="utf-8")
     print(
-        f"WARN: no KRAVIRA_DB_PASSWORD in .env/sql_epam; skip .env.mis/SM upload "
-        f"(keep remote). Use deploy/gcp-app/push_mis_env.sh"
+        "WARN: no KRAVIRA_DB_PASSWORD in .env/sql_epam; skip .env.mis/SM upload "
+        "(keep remote). Use deploy/gcp-app/push_mis_env.sh"
     )
-print(f"wrote {dst} keys={len(vals)}")
+print(
+    f"wrote {public_dst} public_keys={len(public_vals)} "
+    f"web_sm_files={len(list(sm_dir.iterdir()))}"
+)
 PY
 
-if [[ -s /tmp/protocol-sm-mis-pw ]]; then
-  if gcloud secrets describe "$MIS_SM_SECRET" --project="$PROJECT" >/dev/null 2>&1; then
-    gcloud secrets versions add "$MIS_SM_SECRET" --data-file=/tmp/protocol-sm-mis-pw --project="$PROJECT" >/dev/null
-    echo "[2b] SM version added secret=$MIS_SM_SECRET"
+SA="$(gcloud compute instances describe "$VM" --zone="$ZONE" --project="$PROJECT" \
+  --format='get(serviceAccounts[0].email)')"
+
+upsert_sm() {
+  local secret_id="$1"
+  local file="$2"
+  if gcloud secrets describe "$secret_id" --project="$PROJECT" >/dev/null 2>&1; then
+    gcloud secrets versions add "$secret_id" --data-file="$file" --project="$PROJECT" >/dev/null
+    echo "[2b] SM version added secret=$secret_id"
   else
-    gcloud secrets create "$MIS_SM_SECRET" --data-file=/tmp/protocol-sm-mis-pw \
+    gcloud secrets create "$secret_id" --data-file="$file" \
       --project="$PROJECT" --replication-policy=automatic >/dev/null
-    SA="$(gcloud compute instances describe "$VM" --zone="$ZONE" --project="$PROJECT" \
-      --format='get(serviceAccounts[0].email)')"
-    gcloud secrets add-iam-policy-binding "$MIS_SM_SECRET" \
+    gcloud secrets add-iam-policy-binding "$secret_id" \
       --project="$PROJECT" \
       --member="serviceAccount:${SA}" \
       --role="roles/secretmanager.secretAccessor" \
       --quiet >/dev/null
-    echo "[2b] SM created secret=$MIS_SM_SECRET"
+    echo "[2b] SM created secret=$secret_id"
   fi
+}
+
+if [[ -s /tmp/protocol-sm-mis-pw ]]; then
+  upsert_sm "$MIS_SM_SECRET" /tmp/protocol-sm-mis-pw
   rm -f /tmp/protocol-sm-mis-pw
 fi
+
+shopt -s nullglob
+for f in /tmp/protocol-web-sm/*; do
+  upsert_sm "$(basename "$f")" "$f"
+done
+rm -rf /tmp/protocol-web-sm
 
 if [[ "$DRY" == "1" ]]; then
   echo "dry-run: skip sync/build/run"
@@ -204,14 +266,13 @@ tar czf - \
   deploy/gcp-app/*.sh deploy/gcp-app/Dockerfile .dockerignore \
   | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR'"
 
-gcloud compute scp /tmp/protocol-gcp-staging.env "${VM}:~/protocol-gcp-staging.env" --zone="$ZONE" --quiet
+gcloud compute scp /tmp/protocol-gcp-public.env "${VM}:~/protocol-gcp-public.env" --zone="$ZONE" --quiet
 if [[ -s /tmp/protocol-gcp-mis.env ]]; then
   gcloud compute scp /tmp/protocol-gcp-mis.env "${VM}:~/protocol-gcp-mis.env" --zone="$ZONE" --quiet
-  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && sudo mv ~/protocol-gcp-mis.env '$ENV_MIS_REMOTE' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_REMOTE' '$ENV_MIS_REMOTE' && sudo chmod 600 '$ENV_REMOTE' '$ENV_MIS_REMOTE' && if grep -qE '^KRAVIRA_DB_PASSWORD=' '$ENV_MIS_REMOTE'; then echo 'ERROR: password must not be in .env.mis' >&2; exit 2; fi"
-else
-  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_REMOTE' && sudo chmod 600 '$ENV_REMOTE'"
+  ssh_cmd "sudo mv ~/protocol-gcp-mis.env '$ENV_MIS_REMOTE' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_MIS_REMOTE' && sudo chmod 600 '$ENV_MIS_REMOTE' && if grep -qE '^KRAVIRA_DB_PASSWORD=' '$ENV_MIS_REMOTE'; then echo 'ERROR: password must not be in .env.mis' >&2; exit 2; fi"
 fi
-rm -f /tmp/protocol-gcp-staging.env /tmp/protocol-gcp-mis.env
+ssh_cmd "sudo mv ~/protocol-gcp-public.env '$ENV_WEB_PUBLIC' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_WEB_PUBLIC' && sudo chmod 600 '$ENV_WEB_PUBLIC' && bash '$REMOTE_DIR'/deploy/gcp-app/assemble_web_env_from_sm.sh"
+rm -f /tmp/protocol-gcp-public.env /tmp/protocol-gcp-mis.env
 
 if [[ "$SYNC_PROTOCOL_CORPUS" == "1" ]] \
   && [[ -d minzdrav_protocols ]] \
