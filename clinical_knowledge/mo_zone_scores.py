@@ -222,8 +222,12 @@ def _safety_from_findings(findings: Sequence[Mapping[str, Any]] | None) -> dict[
             continue
         if not code.startswith("C_"):
             continue
-        codes.append(code)
         sev = str(finding.get("severity") or "").upper()
+        # Умеренно/оформление (P2/P3) не поднимают attention safety -
+        # иначе топический Major→P2 снова выглядит как «важный риск».
+        if sev not in {"P0", "P1"}:
+            continue
+        codes.append(code)
         title = str(finding.get("title_ru") or finding.get("detail_ru") or "").lower()
         if sev == "P0" or "критич" in title or code in {"C_red_flag", "C_red_flag_unrouted"}:
             critical = True

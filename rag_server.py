@@ -8473,7 +8473,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-11-183912Z-ddi-topical-demote"
+BUILD_VERSION = "2026-08-11-191552Z-safety-zone-p2"
 
 
 def _app_version() -> str:

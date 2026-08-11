@@ -281,3 +281,24 @@ def test_warehouse_zone_columns_helper() -> None:
     flat = warehouse_zone_columns(zones)
     assert "zone1_pct" in flat
     assert flat["layer_engine"] == "mo_zones_v1"
+
+
+def test_safety_ignores_p2_ddi():
+    from clinical_knowledge.mo_zone_scores import _safety_from_findings
+
+    safety = _safety_from_findings(
+        [
+            {
+                "code": "C_ddi",
+                "severity": "P2",
+                "title_ru": "Лекарственное взаимодействие (Major, топический путь - понижено): a + b",
+            }
+        ]
+    )
+    assert safety["band"] == "none"
+    assert safety["codes"] == []
+
+    safety_p1 = _safety_from_findings(
+        [{"code": "C_ddi", "severity": "P1", "title_ru": "Major: a + b"}]
+    )
+    assert safety_p1["band"] == "important"
