@@ -124,9 +124,21 @@ def _blob(*parts: Any) -> str:
 def ddi_is_major(row: Mapping[str, Any] | None) -> bool:
     """Major/contraindicated DDI (по тексту finding или severity P0)."""
     row = row or {}
+    # Топический путь уже понижен / не должен поднимать очередь в «Критично».
+    try:
+        from clinical_knowledge.medication_safety import finding_suggests_topical_ddi
+
+        if finding_suggests_topical_ddi(row):
+            return False
+    except Exception:  # noqa: BLE001
+        pass
     sev = str(row.get("severity") or row.get("finding_severity") or "").strip().upper()
     if sev == "P0":
         return True
+    # После demote effective level - не Major для очереди
+    effective = str(row.get("ddi_level_effective") or "").strip().lower()
+    if effective and effective != "major":
+        return False
     blob = _blob(
         row.get("finding_title"),
         row.get("title_ru"),
@@ -150,6 +162,14 @@ def signal_band_for_finding(row: Mapping[str, Any] | None) -> str | None:
         return None
     if code == "C_ddi":
         # Moderate (обычно P2) - не тикет; Major / P0-P1 - да.
+        # Топический Major понижен до Умеренно - вне очереди (как Moderate).
+        try:
+            from clinical_knowledge.medication_safety import finding_suggests_topical_ddi
+
+            if finding_suggests_topical_ddi(row):
+                return None
+        except Exception:  # noqa: BLE001
+            pass
         sev = str(row.get("severity") or "").strip().upper()
         if ddi_is_major(row):
             return str(meta.get("major_lifts_to") or BAND_CRITICAL)
