@@ -8473,7 +8473,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-11-062430Z-web-secrets-sm"
+BUILD_VERSION = "2026-08-11-074447Z-llm-pending-no-advisory"
 
 
 def _app_version() -> str:

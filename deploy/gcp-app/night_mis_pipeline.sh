@@ -335,19 +335,48 @@ fi
 
 if [[ "$WITH_LLM" == "1" ]]; then
   echo "LLM night for $DAY (background, non-fatal)"
+  LLM_STARTED=0
   if sudo docker ps --format '{{.Names}}' | grep -qx protocol-web \
     && sudo docker exec protocol-web test -f /app/scripts/mo_llm_range_runner.sh; then
-    sudo docker exec -d \
+    if sudo docker exec -d \
       -e FIRST="$DAY" -e LAST="$DAY" \
       -e SRC_ROOT=/app -e DATA="$DATA" \
       -e PYTHON=python -e RUN_HOST=gcp -e RUN_ID_PREFIX=gcp-night \
       -e MO_LLM_EXECUTION_HOST=gce \
       -e MO_ACTION_JUDGE_LIMIT="${MO_ACTION_JUDGE_LIMIT:-0}" \
-      protocol-web bash /app/scripts/mo_llm_range_runner.sh \
-      || echo "LLM start failed (non-fatal)"
+      protocol-web bash /app/scripts/mo_llm_range_runner.sh; then
+      LLM_STARTED=1
+      # Clear prior skip if we actually launched LLM.
+      rm -f "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json"
+    else
+      echo "LLM start failed (non-fatal)"
+    fi
   else
     echo "LLM runner not in container; score done. Manual: deploy/gcp-llm/run_on_gce.sh $DAY"
   fi
+  if [[ "$LLM_STARTED" != "1" ]]; then
+    mkdir -p "${DATA}/secure_cases/${Y}/${M}"
+    printf '%s\n' "{\"day\":\"${DAY}\",\"reason\":\"llm_not_started\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
+      > "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json"
+    echo "wrote llm_skip for $DAY"
+  fi
+else
+  mkdir -p "${DATA}/secure_cases/${Y}/${M}"
+  printf '%s\n' "{\"day\":\"${DAY}\",\"reason\":\"with_llm_0\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
+    > "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json"
+  echo "WITH_LLM=0 → llm_skip for $DAY"
+fi
+
+# Refresh completeness after skip / before background LLM finishes (clears stale advisory).
+if sudo docker ps --format '{{.Names}}' | grep -qx protocol-web; then
+  sudo docker exec \
+    -e FIRST="$DAY" -e LAST="$DAY" \
+    -e DATA="$DATA" \
+    protocol-web python /app/scripts/recompute_mo_days.py \
+      --data-root /var/data/medical_exams \
+      --first-date "$DAY" --last-date "$DAY" \
+      --warehouse /var/data/medical_exams/warehouse/mo_analytics.sqlite \
+    || echo "post-score recompute failed (non-fatal)"
 fi
 
 write_status "success" "extract_score_ok" "$INBOUND_SHA" 0

@@ -284,8 +284,15 @@ def llm_grade_resolves_queue(row: Mapping[str, Any]) -> bool:
 
 
 def count_llm_queue_pending(secure_dir: Path, day: date) -> int:
-    """Сколько visit_id из llm_queue ещё без успешного или терминального grade."""
-    path = secure_dir / f"kz_l1_{day.isoformat()}_llm_queue.json"
+    """Сколько visit_id из llm_queue ещё без успешного или терминального grade.
+
+    Очередь LLM - grey-zone: spend cap / geo / явный skip дня не держат pending.
+    После rescore очередь может обновиться (другие top-80), а grades - старые;
+    если все имеющиеся grades терминальные и успехов нет - pending = 0.
+    """
+    day_s = day.isoformat()
+    skip_path = secure_dir / f"kz_l1_{day_s}_llm_skip.json"
+    path = secure_dir / f"kz_l1_{day_s}_llm_queue.json"
     if not path.is_file():
         return 0
     try:
@@ -310,21 +317,42 @@ def count_llm_queue_pending(secure_dir: Path, day: date) -> int:
                 }
                 break
         if not queued and isinstance(payload.get("n"), int) and not (
-            secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
+            secure_dir / f"kz_l1_{day_s}_llm_grades.jsonl"
         ).is_file():
+            if skip_path.is_file():
+                return 0
             return int(payload["n"])
     queued.discard("")
     if not queued:
         return 0
-    graded_path = secure_dir / f"kz_l1_{day.isoformat()}_llm_grades.jsonl"
+    graded_path = secure_dir / f"kz_l1_{day_s}_llm_grades.jsonl"
     graded: set[str] = set()
+    any_grade = False
+    any_success = False
+    all_terminal = True
     if graded_path.is_file():
         for row in load_jsonl(graded_path):
-            if not llm_grade_resolves_queue(row):
-                continue
             vid = str(row.get("visit_id") or row.get("case_id") or "").strip()
-            if vid:
+            if not vid:
+                continue
+            any_grade = True
+            err = str(row.get("_error") or row.get("error") or "").strip()
+            if not err:
+                any_success = True
+                all_terminal = False
                 graded.add(vid)
+                continue
+            low = err.lower()
+            if any(marker in low for marker in _TERMINAL_LLM_ERROR_MARKERS):
+                graded.add(vid)
+            else:
+                all_terminal = False
+    # Явный skip (LLM выключен / не стартовал) - не копить «замечание» на UI.
+    if skip_path.is_file() and not any_success:
+        return 0
+    # Пакет упёрся в spend/geo: после пересборки queue ID могут не совпасть с grades.
+    if any_grade and not any_success and all_terminal:
+        return 0
     return len(queued - graded)
 
 
@@ -778,8 +806,9 @@ def assess_completeness(
 ) -> dict[str, Any]:
     """День `partial`, если оценка не покрыла допущенные записи или есть ошибки.
 
-    Очередь LLM сама по себе - advisory: при coverage >= цели и без scoring_errors
-    день может быть `success`, а `llm_queue_pending` остаётся в advisory_reasons.
+    Очередь LLM - grey-zone: при coverage >= цели и без scoring_errors день
+    `success` без UI-замечания. Счётчик `llm_queue_pending` остаётся в метриках;
+    в reasons попадает только вместе с дырами покрытия/ошибками оценки.
     """
     eligible = [row for row in raw_rows if is_scored_document_kind(row.get("document_kind"))]
     failures = [row for row in scored_cases if row.get("error")]
@@ -803,12 +832,9 @@ def assess_completeness(
     if failures:
         reasons.append("scoring_errors")
     pending = int(llm_queue_pending)
-    if pending > 0:
+    if pending > 0 and reasons:
         # Очередь LLM блокирует день только вместе с дырами в оценке.
-        if reasons:
-            reasons.append("llm_queue_pending")
-        else:
-            advisory_reasons.append("llm_queue_pending")
+        reasons.append("llm_queue_pending")
     return {
         "eligible_rows": len(eligible),
         "covered_rows": covered,
@@ -844,11 +870,8 @@ def apply_completeness_policy(completeness: Mapping[str, Any]) -> dict[str, Any]
         for code in (result.get("advisory_reasons") or [])
         if str(code) != "llm_queue_pending"
     ]
-    if pending > 0:
-        if blocking:
-            blocking.append("llm_queue_pending")
-        else:
-            advisory.append("llm_queue_pending")
+    if pending > 0 and blocking and "llm_queue_pending" not in blocking:
+        blocking.append("llm_queue_pending")
     result["reasons"] = blocking
     result["advisory_reasons"] = advisory
     result["partial"] = bool(blocking)

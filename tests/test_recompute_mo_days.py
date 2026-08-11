@@ -186,3 +186,36 @@ def test_recompute_day_spend_cap_errors_clear_llm_pending(tmp_path: Path) -> Non
     updated = json.loads((reports / "report.json").read_text(encoding="utf-8"))
     assert updated["completeness"]["llm_queue_pending"] == 0
     assert updated["partial"] is False
+
+def test_count_llm_queue_pending_terminal_batch_clears_mismatch(tmp_path: Path) -> None:
+    from clinical_knowledge.mo_daily import count_llm_queue_pending
+
+    day = date(2026, 8, 8)
+    secure = tmp_path / "2026" / "08"
+    secure.mkdir(parents=True)
+    (secure / "kz_l1_2026-08-08_llm_queue.json").write_text(
+        json.dumps({"visit_ids": ["1", "2", "3"], "n": 3}), encoding="utf-8"
+    )
+    lines = [
+        json.dumps({"visit_id": "1", "_error": "all_llm_models_failed:429 monthly spending cap"}),
+        json.dumps({"visit_id": "2", "_error": "gemini: spending cap exceeded"}),
+    ]
+    (secure / "kz_l1_2026-08-08_llm_grades.jsonl").write_text("\n".join(lines) + "\n", encoding="utf-8")
+    assert count_llm_queue_pending(secure, day) == 0
+
+
+def test_count_llm_queue_pending_skip_file(tmp_path: Path) -> None:
+    from clinical_knowledge.mo_daily import count_llm_queue_pending
+
+    day = date(2026, 8, 10)
+    secure = tmp_path / "2026" / "08"
+    secure.mkdir(parents=True)
+    (secure / "kz_l1_2026-08-10_llm_queue.json").write_text(
+        json.dumps({"visit_ids": [str(i) for i in range(80)], "n": 80}),
+        encoding="utf-8",
+    )
+    assert count_llm_queue_pending(secure, day) == 80
+    (secure / "kz_l1_2026-08-10_llm_skip.json").write_text(
+        json.dumps({"reason": "with_llm_0"}), encoding="utf-8"
+    )
+    assert count_llm_queue_pending(secure, day) == 0
