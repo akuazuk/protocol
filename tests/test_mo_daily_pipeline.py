@@ -534,7 +534,7 @@ def test_complete_day_is_not_partial_and_blocked_day_wins() -> None:
 
     queued = assess_completeness(raw, cases, llm_queue_pending=4)
     assert queued["reasons"] == []
-    assert queued["advisory_reasons"] == ["llm_queue_pending"]
+    assert queued["advisory_reasons"] == []
     assert not queued["partial"]
     assert queued["llm_queue_pending"] == 4
 

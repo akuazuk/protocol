@@ -33,4 +33,6 @@
 - [x] код + тесты
 - [x] resume score + recompute на GCE (04..09: coverage 100%, partial=false)
 - [x] PR https://github.com/akuazuk/protocol/pull/126
-- [ ] merge / deploy image (hot-patch в контейнере до redeploy)
+- [x] merge / deploy
+- [x] 2026-08-11: убран ежедневный advisory-баннер `llm_queue_pending (80)`
+  (grey-zone/spend cap; метрика остаётся; skip-файл + terminal-batch clear)
