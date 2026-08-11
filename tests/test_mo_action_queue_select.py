@@ -55,6 +55,29 @@ def test_ddi_major_in_queue_moderate_out() -> None:
     assert signal_band_for_finding(moderate) is None
 
 
+def test_topical_major_ddi_not_queue_critical() -> None:
+    """Ксарелто + диклофенак гель: не полоса Критично (кейс 3665385)."""
+    topical = {
+        "finding_code": "C_ddi",
+        "severity": "P1",
+        "finding_title": "Лекарственное взаимодействие (Major): ксарелто / rivaroxaban + диклофенак / diclofenac",
+        "evidence": (
+            "ксарелто / rivaroxaban + диклофенак / diclofenac. Фрагмент плана: "
+            "Ксарелто 20 мг. Местно: диклофенак гель."
+        ),
+    }
+    assert signal_band_for_finding(topical) is None
+    assert not finding_eligible_for_action_queue(topical)
+
+    marked = {
+        "finding_code": "C_ddi",
+        "severity": "P2",
+        "topical_ddi": True,
+        "finding_title": "Лекарственное взаимодействие (Major, топический путь - понижено): a + b",
+    }
+    assert signal_band_for_finding(marked) is None
+
+
 def test_pick_primary_prefers_critical_over_important() -> None:
     picked = pick_primary_queue_finding(
         [

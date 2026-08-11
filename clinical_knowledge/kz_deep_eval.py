@@ -373,7 +373,7 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
     low_conf = [d for d in drugs if 0 < d.get("confidence", 0) < 0.86]
 
     # C2: дублирование системных НПВП (не скобки-альтернативы, не гель+таблетка)
-    from .medication_safety import concurrent_systemic_nsaids
+    from .medication_safety import concurrent_systemic_nsaids, ddi_pair_has_topical_partner
 
     nsaids = concurrent_systemic_nsaids(treatment)
     if len(nsaids) >= 2:
@@ -409,20 +409,44 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
                 seen.add(key)
                 lvl = pairs.get(key)
                 if lvl in ("Major", "Moderate"):
-                    sev = "P1" if lvl == "Major" else "P2"
                     left = _ddi_label(drug_by_inn.get(inns[i].lower()), inns[i])
                     right = _ddi_label(drug_by_inn.get(inns[j].lower()), inns[j])
                     pair_label = f"{left} + {right}"
+                    topical = ddi_pair_has_topical_partner(
+                        treatment,
+                        surfaces=[
+                            str((drug_by_inn.get(inns[i].lower()) or {}).get("surface") or ""),
+                            str((drug_by_inn.get(inns[j].lower()) or {}).get("surface") or ""),
+                            left,
+                            right,
+                        ],
+                        inns=[inns[i], inns[j]],
+                    )
+                    # Топический НПВП (гель/мазь) + системный партнёр: DDInter Major
+                    # часто избыточен - понижаем до Умеренно, не в полосу «Критично».
+                    effective_lvl = lvl
+                    sev = "P1" if lvl == "Major" else "P2"
+                    title_lvl = lvl
+                    if topical and lvl == "Major":
+                        effective_lvl = "Moderate"
+                        sev = "P2"
+                        title_lvl = "Major, топический путь - понижено"
                     evidence = pair_label
                     if treatment:
                         evidence = f"{evidence}. Фрагмент плана: {treatment[:280]}"
-                    findings.append(_finding(
+                    finding = _finding(
                         "C_ddi", "safety", sev, False,
-                        f"Лекарственное взаимодействие ({lvl}): {pair_label}",
+                        f"Лекарственное взаимодействие ({title_lvl}): {pair_label}",
                         evidence=evidence,
                         source_ref="DDInter", needs_human=True,
-                    ))
-                    penalty += 20 if lvl == "Major" else 10
+                    )
+                    if topical:
+                        finding["topical_ddi"] = True
+                        finding["route"] = "topical"
+                        finding["ddi_level_raw"] = lvl
+                        finding["ddi_level_effective"] = effective_lvl
+                    findings.append(finding)
+                    penalty += 20 if sev == "P1" else 10
 
     # C4: high-alert без дозы/мониторинга
     ha = (drug_ctx.get("high_alert") or {}).get("high_alert") if isinstance(drug_ctx.get("high_alert"), dict) else None

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import re
+from typing import Any, Mapping
 
 from .consult_schema import ConsultationDocument, SafetyAssessment
 from .medication_parser import looks_like_medication_item
@@ -97,6 +98,81 @@ def concurrent_systemic_nsaids(text: str) -> list[str]:
     """Список системных НПВП при реальном дубле (≥2 разных)."""
     labels = sorted(set(nsaid_labels_in_text(text)))
     return labels if len(labels) >= 2 else []
+
+
+def drug_mention_is_topical(text: str, needle: str, *, window: int = 36) -> bool:
+    """True, если упоминание ЛС рядом с гель/мазь/местно/свечи и т.п."""
+    blob = str(text or "")
+    token = str(needle or "").strip()
+    if not blob or not token or len(token) < 3:
+        return False
+    pattern = re.compile(re.escape(token), re.I)
+    for match in pattern.finditer(blob):
+        start = max(0, match.start() - window)
+        end = min(len(blob), match.end() + window)
+        if _TOPICAL_NEAR.search(blob[start:end]):
+            return True
+    return False
+
+
+def ddi_pair_has_topical_partner(
+    text: str,
+    *,
+    surfaces: list[str] | tuple[str, ...] = (),
+    inns: list[str] | tuple[str, ...] = (),
+) -> bool:
+    """Хотя бы один участник DDI в тексте выглядит как топический путь."""
+    needles: list[str] = []
+    for value in list(surfaces) + list(inns):
+        raw = str(value or "").strip()
+        if not raw:
+            continue
+        needles.append(raw)
+        # surface вида «ксарелто / rivaroxaban» - проверяем обе части
+        if "/" in raw:
+            needles.extend(part.strip() for part in raw.split("/") if part.strip())
+    seen: set[str] = set()
+    for needle in needles:
+        key = needle.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        if drug_mention_is_topical(text, needle):
+            return True
+    return False
+
+
+def finding_suggests_topical_ddi(row: Mapping[str, Any] | None) -> bool:
+    """Для уже сохранённых findings: топический DDI по evidence/title."""
+    row = row or {}
+    if row.get("topical_ddi") or str(row.get("route") or "").lower() == "topical":
+        return True
+    blob = " ".join(
+        str(row.get(key) or "")
+        for key in (
+            "finding_title",
+            "title_ru",
+            "detail",
+            "detail_ru",
+            "evidence",
+            "why_important",
+            "reason",
+        )
+    )
+    if not blob:
+        return False
+    low = blob.lower()
+    if "топическ" in low or "topical" in low:
+        return True
+    # Участники пары в title: «…: a + b» или surface/INN
+    for match in re.finditer(
+        r"([A-Za-zА-Яа-яЁё-]{4,})(?:\s*/\s*[A-Za-zА-Яа-яЁё-]{3,})?",
+        blob,
+    ):
+        for part in re.split(r"\s*/\s*", match.group(0)):
+            if drug_mention_is_topical(blob, part.strip()):
+                return True
+    return False
 
 
 def detect_concurrent_nsaids(doc: ConsultationDocument) -> SafetyAssessment | None:

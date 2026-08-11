@@ -37,6 +37,57 @@ def test_oral_plus_topical_gel_not_nsaid_dup():
     assert "C_nsaid_dup" not in codes
 
 
+def test_xarelto_plus_diclofenac_gel_ddi_demoted():
+    """3665385: Major DDInter + топический диклофенак → P2, не очередь Критично."""
+    from clinical_knowledge.mo_action_queue_select import signal_band_for_finding
+
+    treatment = (
+        "Ксарелто 20 мг в сутки месяц.\n"
+        "Местно: диклофенак гель.\n"
+        "Контроль УЗИ вен через 1 месяц."
+    )
+    drug_ctx = {
+        "ddinter": {
+            "pairs": {
+                "diclofenac||rivaroxaban": "Major",
+            }
+        }
+    }
+    deep = evaluate_kz_deep(
+        {
+            "treatment_recommendations": treatment,
+            "clinical_diagnosis": "Тромбофлебит",
+            "fields_present": {"diagnosis": True, "treatment_recommendations": True},
+        },
+        protocol_ctx=None,
+        drug_ctx=drug_ctx,
+    )
+    ddi = [f for f in (deep.get("findings") or []) if f.get("code") == "C_ddi"]
+    assert ddi, deep.get("findings")
+    assert ddi[0]["severity"] == "P2"
+    assert ddi[0].get("topical_ddi") is True
+    assert "топический" in (ddi[0].get("title_ru") or "").lower()
+    assert signal_band_for_finding(ddi[0]) is None
+
+
+def test_systemic_diclofenac_plus_xarelto_stays_major():
+    treatment = "Ксарелто 20 мг. Диклофенак 50 мг 2 раза в сутки."
+    drug_ctx = {"ddinter": {"pairs": {"diclofenac||rivaroxaban": "Major"}}}
+    deep = evaluate_kz_deep(
+        {
+            "treatment_recommendations": treatment,
+            "clinical_diagnosis": "Тромбофлебит",
+            "fields_present": {"diagnosis": True, "treatment_recommendations": True},
+        },
+        protocol_ctx=None,
+        drug_ctx=drug_ctx,
+    )
+    ddi = [f for f in (deep.get("findings") or []) if f.get("code") == "C_ddi"]
+    assert ddi
+    assert ddi[0]["severity"] == "P1"
+    assert not ddi[0].get("topical_ddi")
+
+
 def test_two_systemic_nsaids_still_flagged():
     text = "Ибупрофен 400 мг 3 р/д. Дополнительно мелоксикам 15 мг 1 р/д."
     assert set(concurrent_systemic_nsaids(text)) >= {"ибупрофен", "мелоксикам"}
