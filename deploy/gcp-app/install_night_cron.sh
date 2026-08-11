@@ -62,6 +62,7 @@ if [[ "$REMOTE" == "1" ]]; then
     -C "$ROOT" \
     deploy/gcp-app/night_mis_pipeline.sh \
     deploy/gcp-app/check_gce_night_status.sh \
+    deploy/gcp-app/load_mis_env.sh \
     deploy/gcp-app/setup_mis_venv.sh \
     deploy/gcp-app/install_night_cron.sh \
     deploy/gcp-app/score_inbound_day.sh \
@@ -82,10 +83,21 @@ sudo cp -f ~/protocol-night-sync/scripts/telegram_notify.py /opt/protocol/script
 sudo cp -f ~/protocol-night-sync/env_load.py /opt/protocol/
 sudo cp -f ~/protocol-night-sync/clinical_knowledge/mis_protocol_parse.py /opt/protocol/clinical_knowledge/
 sudo chmod +x /opt/protocol/deploy/gcp-app/*.sh
-sudo chown -R "$(whoami):$(whoami)" /opt/protocol/deploy/gcp-app
+OPS_USER="${GCE_OPS_USER:-pavel}"
+if ! getent passwd "$OPS_USER" >/dev/null 2>&1; then
+  OPS_USER="$(whoami)"
+fi
+sudo chown -R "$OPS_USER:$OPS_USER" /opt/protocol/deploy/gcp-app
+# Keep non-secret env readable by cron user (SSH login may differ).
+for f in /opt/protocol/.env.mis /opt/protocol/.env.gcp-staging; do
+  if [[ -f "$f" ]]; then
+    sudo chown "$OPS_USER:$OPS_USER" "$f"
+    sudo chmod 600 "$f"
+  fi
+done
 # venv may be root-owned from prior attempt
 if [[ -d /opt/protocol/venv-mis ]]; then
-  sudo chown -R "$(whoami):$(whoami)" /opt/protocol/venv-mis || true
+  sudo chown -R "$OPS_USER:$OPS_USER" /opt/protocol/venv-mis || true
 fi
 bash /opt/protocol/deploy/gcp-app/install_night_cron.sh
 '

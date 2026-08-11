@@ -20,7 +20,12 @@ ROOT="${PROTOCOL_ROOT:-/opt/protocol}"
 DATA="${GCE_MO_DATA_ROOT:-/var/data/medical_exams}"
 ENV_MIS="${ENV_MIS_REMOTE:-/opt/protocol/.env.mis}"
 ENV_WEB="${ENV_WEB_REMOTE:-/opt/protocol/.env.gcp-staging}"
+LOAD_MIS="${ROOT}/deploy/gcp-app/load_mis_env.sh"
 VENV="${MIS_VENV:-/opt/protocol/venv-mis}"
+# Password from Secret Manager (kravira-db-password); .env.mis is non-secret only.
+export GCP_PROJECT="${GCP_PROJECT:-protocol-home-e1}"
+export MIS_SM_SECRET="${MIS_SM_SECRET:-kravira-db-password}"
+export MIS_PASSWORD_SOURCE="${MIS_PASSWORD_SOURCE:-secretmanager}"
 LOG_DIR="${DATA}/logs"
 STATE_DIR="${DATA}/state"
 # Clinic calendar day (Belarus), not UTC date at 02:00.
@@ -56,8 +61,12 @@ fi
 exec >>"${LOG_DIR}/gce-night-${MODE}.log" 2>&1
 echo "======== NIGHT ${MODE} day=${DAY} workers=${MO_DAILY_WORKERS} $(date -u +%Y-%m-%dT%H:%M:%SZ) ========"
 
-if [[ ! -f "$ENV_MIS" ]]; then
-  echo "ERROR: missing $ENV_MIS" >&2
+if [[ ! -f "$LOAD_MIS" ]]; then
+  echo "ERROR: missing $LOAD_MIS" >&2
+  exit 2
+fi
+if [[ -f "$ENV_MIS" ]] && [[ ! -r "$ENV_MIS" ]]; then
+  echo "ERROR: cannot read $ENV_MIS as $(whoami) (cron user must own non-secret env; GCE_OPS_USER=pavel)" >&2
   exit 2
 fi
 if [[ ! -x "${VENV}/bin/python" ]]; then
@@ -188,10 +197,9 @@ elif [[ "$MODE" != "main" ]]; then
   exit 2
 fi
 
-set -a
 # shellcheck disable=SC1090
-source "$ENV_MIS"
-set +a
+# shellcheck disable=SC1091
+source "$LOAD_MIS"
 export PYTHONPATH="$ROOT"
 export MO_DATA_ROOT="$DATA"
 export RUN_HOST=gcp

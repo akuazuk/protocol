@@ -8473,7 +8473,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-10-182542Z-case-detail-latency"
+BUILD_VERSION = "2026-08-11-055942Z-mis-secret-manager"
 
 
 def _app_version() -> str:

@@ -14,6 +14,9 @@ IMAGE_TAG="${IMAGE_TAG:-protocol-gcp-app:staging}"
 CONTAINER="${CONTAINER:-protocol-web}"
 ENV_REMOTE="${ENV_REMOTE:-/opt/protocol/.env.gcp-staging}"
 ENV_MIS_REMOTE="${ENV_MIS_REMOTE:-/opt/protocol/.env.mis}"
+MIS_SM_SECRET="${MIS_SM_SECRET:-kravira-db-password}"
+# Cron owner on protocol-app; deploy SSH login may differ (pavel vs pavelkuzauka).
+GCE_OPS_USER="${GCE_OPS_USER:-pavel}"
 
 usage() {
   cat <<'EOF'
@@ -130,6 +133,7 @@ mis_vals.setdefault("MIS_DB_READ_TIMEOUT", "600")
 mis_vals.setdefault("RUN_HOST", "gcp")
 have_mis_pw = bool(mis_vals.get("KRAVIRA_DB_PASSWORD"))
 # MIS stays in separate .env.mis (not in protocol-web) unless INCLUDE_MIS_IN_WEB_ENV=1.
+# Password goes to Secret Manager; .env.mis keeps only non-secret DSN fields.
 import os as _os
 
 if have_mis_pw and _os.environ.get("INCLUDE_MIS_IN_WEB_ENV", "").strip().lower() in (
@@ -140,20 +144,43 @@ if have_mis_pw and _os.environ.get("INCLUDE_MIS_IN_WEB_ENV", "").strip().lower()
     vals.update(mis_vals)
 dst.write_text("".join(f"{k}={v}\n" for k, v in sorted(vals.items())), encoding="utf-8")
 dst.chmod(0o600)
+public_mis = {k: v for k, v in mis_vals.items() if k != "KRAVIRA_DB_PASSWORD"}
 if have_mis_pw:
+    pw_path = Path("/tmp/protocol-sm-mis-pw")
+    pw_path.write_text(mis_vals["KRAVIRA_DB_PASSWORD"], encoding="utf-8")
+    pw_path.chmod(0o600)
     mis_dst.write_text(
-        "".join(f"{k}={v}\n" for k, v in sorted(mis_vals.items())), encoding="utf-8"
+        "".join(f"{k}={v}\n" for k, v in sorted(public_mis.items())), encoding="utf-8"
     )
     mis_dst.chmod(0o600)
-    print(f"wrote {mis_dst} mis_keys={len(mis_vals)} (password present)")
+    print(f"wrote {mis_dst} mis_public_keys={len(public_mis)} (password→Secret Manager)")
 else:
     mis_dst.write_text("", encoding="utf-8")
     print(
-        f"WARN: no KRAVIRA_DB_PASSWORD in .env/sql_epam; skip .env.mis upload "
+        f"WARN: no KRAVIRA_DB_PASSWORD in .env/sql_epam; skip .env.mis/SM upload "
         f"(keep remote). Use deploy/gcp-app/push_mis_env.sh"
     )
 print(f"wrote {dst} keys={len(vals)}")
 PY
+
+if [[ -s /tmp/protocol-sm-mis-pw ]]; then
+  if gcloud secrets describe "$MIS_SM_SECRET" --project="$PROJECT" >/dev/null 2>&1; then
+    gcloud secrets versions add "$MIS_SM_SECRET" --data-file=/tmp/protocol-sm-mis-pw --project="$PROJECT" >/dev/null
+    echo "[2b] SM version added secret=$MIS_SM_SECRET"
+  else
+    gcloud secrets create "$MIS_SM_SECRET" --data-file=/tmp/protocol-sm-mis-pw \
+      --project="$PROJECT" --replication-policy=automatic >/dev/null
+    SA="$(gcloud compute instances describe "$VM" --zone="$ZONE" --project="$PROJECT" \
+      --format='get(serviceAccounts[0].email)')"
+    gcloud secrets add-iam-policy-binding "$MIS_SM_SECRET" \
+      --project="$PROJECT" \
+      --member="serviceAccount:${SA}" \
+      --role="roles/secretmanager.secretAccessor" \
+      --quiet >/dev/null
+    echo "[2b] SM created secret=$MIS_SM_SECRET"
+  fi
+  rm -f /tmp/protocol-sm-mis-pw
+fi
 
 if [[ "$DRY" == "1" ]]; then
   echo "dry-run: skip sync/build/run"
@@ -174,15 +201,15 @@ tar czf - \
   data/regulations \
   output/registry/protocol_cards.jsonl \
   services \
-  deploy/gcp-app/Dockerfile .dockerignore \
+  deploy/gcp-app/*.sh deploy/gcp-app/Dockerfile .dockerignore \
   | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR'"
 
 gcloud compute scp /tmp/protocol-gcp-staging.env "${VM}:~/protocol-gcp-staging.env" --zone="$ZONE" --quiet
 if [[ -s /tmp/protocol-gcp-mis.env ]]; then
   gcloud compute scp /tmp/protocol-gcp-mis.env "${VM}:~/protocol-gcp-mis.env" --zone="$ZONE" --quiet
-  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && sudo mv ~/protocol-gcp-mis.env '$ENV_MIS_REMOTE' && sudo chown \"\$(whoami):\$(whoami)\" '$ENV_REMOTE' '$ENV_MIS_REMOTE' && chmod 600 '$ENV_REMOTE' '$ENV_MIS_REMOTE'"
+  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && sudo mv ~/protocol-gcp-mis.env '$ENV_MIS_REMOTE' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_REMOTE' '$ENV_MIS_REMOTE' && sudo chmod 600 '$ENV_REMOTE' '$ENV_MIS_REMOTE' && if grep -qE '^KRAVIRA_DB_PASSWORD=' '$ENV_MIS_REMOTE'; then echo 'ERROR: password must not be in .env.mis' >&2; exit 2; fi"
 else
-  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && sudo chown \"\$(whoami):\$(whoami)\" '$ENV_REMOTE' && chmod 600 '$ENV_REMOTE'"
+  ssh_cmd "sudo mv ~/protocol-gcp-staging.env '$ENV_REMOTE' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_REMOTE' && sudo chmod 600 '$ENV_REMOTE'"
 fi
 rm -f /tmp/protocol-gcp-staging.env /tmp/protocol-gcp-mis.env
 
