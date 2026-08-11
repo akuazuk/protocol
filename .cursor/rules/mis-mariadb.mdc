@@ -6,8 +6,9 @@ alwaysApply: true
 # MariaDB MIS (Kravira)
 
 **Канон E2 (с 2026-08-10):** ночной extract только с **GCE**
-(`protocol-app` cron **02:00 UTC**, retry **03:00 UTC**), секреты в
-`/opt/protocol/.env.mis`. Mac launchd SQL **выключен**.
+(`protocol-app` cron **02:00 UTC**, retry **03:00 UTC**). Пароль MIS - в
+**Secret Manager** `kravira-db-password`; non-secret DSN - `/opt/protocol/.env.mis`
+(owner `pavel`). Mac launchd SQL **выключен**.
 
 Ad-hoc SQL с Mac: `~/CURSOR/sql_epam/.env` + VanyaVPN off - только вручную.
 
@@ -31,7 +32,7 @@ Ad-hoc SQL с Mac: `~/CURSOR/sql_epam/.env` + VanyaVPN off - только вру
 | Port | `6330` |
 | Database | `kravira_mc` |
 | User | `kravira_mc_user` |
-| Пароль | GCE: `/opt/protocol/.env.mis` → `KRAVIRA_DB_PASSWORD`; Mac fallback: `~/CURSOR/sql_epam/.env` (не коммитить, не печатать) |
+| Пароль | GCE: Secret Manager `kravira-db-password` (через `load_mis_env.sh`); Mac fallback: `~/CURSOR/sql_epam/.env` (не коммитить, не печатать) |
 | Опц. env | `KRAVIRA_DB_HOST` / `PORT` / `USER` / `NAME`, `MIS_DB_*_TIMEOUT` |
 
 URL (SQLAlchemy + PyMySQL):
