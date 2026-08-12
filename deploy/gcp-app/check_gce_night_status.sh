@@ -23,9 +23,16 @@ mkdir -p "$LOG_DIR"
 exec >>"${LOG_DIR}/gce-night-check.log" 2>&1
 echo "======== CHECK day=${DAY} $(date -u +%Y-%m-%dT%H:%M:%SZ) ========"
 
+# Self-heal: deploy may leave env 600 as another SSH user.
+if [[ -f "$ENV_WEB" ]] && [[ ! -r "$ENV_WEB" ]] && command -v sudo >/dev/null 2>&1; then
+  sudo chown "$(whoami):$(whoami)" "$ENV_WEB" 2>/dev/null || true
+  sudo chmod 600 "$ENV_WEB" 2>/dev/null || true
+fi
+
 load_telegram_env() {
   local key value line
   [[ -f "$ENV_WEB" ]] || return 0
+  [[ -r "$ENV_WEB" ]] || return 0
   while IFS= read -r line || [[ -n "$line" ]]; do
     case "$line" in
       ''|\#*) continue ;;

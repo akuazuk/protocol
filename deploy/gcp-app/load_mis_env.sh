@@ -18,14 +18,24 @@ MIS_PASSWORD_SOURCE="${MIS_PASSWORD_SOURCE:-secretmanager}"
 
 if [[ -f "$ENV_MIS" ]]; then
   if [[ ! -r "$ENV_MIS" ]]; then
-    echo "ERROR: cannot read $ENV_MIS as $(whoami) (owner/mode mismatch for cron user)" >&2
-    return 2 2>/dev/null || exit 2
+    # Deploy SSH may land as another user and leave 600 files unreadable to cron.
+    OPS="${GCE_OPS_USER:-pavel}"
+    if command -v sudo >/dev/null 2>&1; then
+      sudo chown "$(whoami):$(whoami)" "$ENV_MIS" 2>/dev/null \
+        || sudo chown "$OPS:$OPS" "$ENV_MIS" 2>/dev/null \
+        || true
+      sudo chmod 600 "$ENV_MIS" 2>/dev/null || true
+    fi
   fi
-  set -a
-  # shellcheck disable=SC1090
-  # shellcheck disable=SC1091
-  source "$ENV_MIS"
-  set +a
+  if [[ ! -r "$ENV_MIS" ]]; then
+    echo "WARN: cannot read $ENV_MIS as $(whoami); using DSN defaults + Secret Manager" >&2
+  else
+    set -a
+    # shellcheck disable=SC1090
+    # shellcheck disable=SC1091
+    source "$ENV_MIS"
+    set +a
+  fi
 fi
 
 export KRAVIRA_DB_HOST="${KRAVIRA_DB_HOST:-178.163.240.131}"

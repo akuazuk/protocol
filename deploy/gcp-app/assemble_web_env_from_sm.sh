@@ -103,4 +103,11 @@ else
   sudo chown "$(whoami):$(whoami)" "$OUT_ENV"
 fi
 sudo chmod 600 "$OUT_ENV"
+# Keep public + assembled env owned by cron user even if SSH login differs.
+for f in "$PUBLIC_ENV" "$OUT_ENV" /opt/protocol/.env.mis; do
+  if [[ -f "$f" ]] && getent passwd "$OPS_USER" >/dev/null 2>&1; then
+    sudo chown "$OPS_USER:$OPS_USER" "$f" 2>/dev/null || true
+    sudo chmod 600 "$f" 2>/dev/null || true
+  fi
+done
 echo "WEB_ENV_ASSEMBLED path=$OUT_ENV keys=$(grep -cE '^[A-Z]' "$OUT_ENV" || true)"

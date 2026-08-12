@@ -65,10 +65,25 @@ if [[ ! -f "$LOAD_MIS" ]]; then
   echo "ERROR: missing $LOAD_MIS" >&2
   exit 2
 fi
-if [[ -f "$ENV_MIS" ]] && [[ ! -r "$ENV_MIS" ]]; then
-  echo "ERROR: cannot read $ENV_MIS as $(whoami) (cron user must own non-secret env; GCE_OPS_USER=pavel)" >&2
-  exit 2
-fi
+# Self-heal env ownership: deploy SSH user may differ from cron user (pavel).
+ensure_env_readable() {
+  local path="$1"
+  [[ -f "$path" ]] || return 0
+  if [[ -r "$path" ]]; then
+    return 0
+  fi
+  echo "WARN: $path not readable by $(whoami); attempting chown"
+  if command -v sudo >/dev/null 2>&1; then
+    sudo chown "$(whoami):$(whoami)" "$path" 2>/dev/null || true
+    sudo chmod 600 "$path" 2>/dev/null || true
+  fi
+  if [[ ! -r "$path" ]]; then
+    echo "WARN: still cannot read $path; continuing (SM defaults for MIS)"
+  fi
+}
+ensure_env_readable "$ENV_MIS"
+ensure_env_readable "$ENV_WEB"
+ensure_env_readable "${ENV_WEB_PUBLIC:-/opt/protocol/.env.gcp-public}"
 if [[ ! -x "${VENV}/bin/python" ]]; then
   echo "ERROR: missing MIS venv at $VENV (run setup_mis_venv.sh)" >&2
   exit 2
@@ -333,6 +348,22 @@ if [[ "$SCORE_RC" -ne 0 ]]; then
   fail_exit "score_failed_rc_${SCORE_RC}" "$SCORE_RC"
 fi
 
+write_llm_skip() {
+  local reason="$1"
+  local dir="${DATA}/secure_cases/${Y}/${M}"
+  local path="${dir}/kz_l1_${DAY}_llm_skip.json"
+  mkdir -p "$dir" 2>/dev/null || sudo mkdir -p "$dir"
+  if [[ ! -w "$dir" ]]; then
+    sudo chown "$(whoami):$(whoami)" "$dir" 2>/dev/null || true
+  fi
+  if ! printf '%s\n' "{\"day\":\"${DAY}\",\"reason\":\"${reason}\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" >"$path" 2>/dev/null; then
+    printf '%s\n' "{\"day\":\"${DAY}\",\"reason\":\"${reason}\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
+      | sudo tee "$path" >/dev/null
+    sudo chown "$(whoami):$(whoami)" "$path" 2>/dev/null || true
+  fi
+  echo "wrote llm_skip for $DAY reason=${reason}"
+}
+
 if [[ "$WITH_LLM" == "1" ]]; then
   echo "LLM night for $DAY (background, non-fatal)"
   LLM_STARTED=0
@@ -346,8 +377,9 @@ if [[ "$WITH_LLM" == "1" ]]; then
       -e MO_ACTION_JUDGE_LIMIT="${MO_ACTION_JUDGE_LIMIT:-0}" \
       protocol-web bash /app/scripts/mo_llm_range_runner.sh; then
       LLM_STARTED=1
-      # Clear prior skip if we actually launched LLM.
-      rm -f "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json"
+      rm -f "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json" 2>/dev/null \
+        || sudo rm -f "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json" 2>/dev/null \
+        || true
     else
       echo "LLM start failed (non-fatal)"
     fi
@@ -355,16 +387,10 @@ if [[ "$WITH_LLM" == "1" ]]; then
     echo "LLM runner not in container; score done. Manual: deploy/gcp-llm/run_on_gce.sh $DAY"
   fi
   if [[ "$LLM_STARTED" != "1" ]]; then
-    mkdir -p "${DATA}/secure_cases/${Y}/${M}"
-    printf '%s\n' "{\"day\":\"${DAY}\",\"reason\":\"llm_not_started\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
-      > "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json"
-    echo "wrote llm_skip for $DAY"
+    write_llm_skip "llm_not_started" || echo "WARN: llm_skip write failed (non-fatal)"
   fi
 else
-  mkdir -p "${DATA}/secure_cases/${Y}/${M}"
-  printf '%s\n' "{\"day\":\"${DAY}\",\"reason\":\"with_llm_0\",\"at\":\"$(date -u +%Y-%m-%dT%H:%M:%SZ)\"}" \
-    > "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json"
-  echo "WITH_LLM=0 → llm_skip for $DAY"
+  write_llm_skip "with_llm_0" || echo "WARN: llm_skip write failed (non-fatal)"
 fi
 
 # Refresh completeness after skip / before background LLM finishes (clears stale advisory).
