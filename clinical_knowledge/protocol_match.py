@@ -368,6 +368,15 @@ def compute_match_score(
         elif rel <= 0.05:
             raw *= 0.08
 
+    # Свежий пост МЗ при сопоставимом ICD не должен проигрывать КП 8-12 лет назад.
+    if icd_part >= 0.5:
+        try:
+            from clinical_knowledge.kp_sync.recency import recency_multiplier
+
+            raw *= recency_multiplier(card)
+        except Exception:  # noqa: BLE001
+            pass
+
     return round(max(0.0, min(100.0, raw * 100)), 2)
 
 
@@ -445,6 +454,10 @@ def match_protocol_cards(
     out: list[dict[str, Any]] = []
     seen_keys: set[str] = set()
     for sc, card in scored:
+        if card.get("superseded_by") or str(card.get("status") or "") == "superseded":
+            continue
+        if card.get("alias_of"):
+            continue
         # Дедуп: один протокол (по source_path/protocol_id) - одна строка с лучшим score.
         key = str(card.get("source_path") or card.get("protocol_id") or id(card))
         if key in seen_keys:

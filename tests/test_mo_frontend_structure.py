@@ -43,7 +43,7 @@ def _visible_text(html: str) -> str:
 
 
 def test_mo_dashboard_has_complete_crm_navigation() -> None:
-    # Канон меню ui-target-v2 / zones-first D6: 6 видимых + hidden settings; без legacy pages.
+    # Канон меню: 7 видимых (включая Протоколы МЗ) + hidden settings; без legacy pages.
     for page in (
         "overview",
         "yesterday",
@@ -51,12 +51,13 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "documents",
         "doctors",
         "reports",
+        "kp-sync",
         "settings",
     ):
         assert f'data-page="{page}"' in SOURCE
     for gone in ("specialties", "diagnoses", "safety", "doctor-cabinet"):
         assert f'id="page-{gone}"' not in HTML
-    for label in ("Сегодня", "Период", "Очередь", "Все случаи", "Врачи", "Отчёты"):
+    for label in ("Сегодня", "Период", "Очередь", "Все случаи", "Врачи", "Отчёты", "Протоколы МЗ"):
         assert label in HTML
     assert 'id="breadcrumbs"' in HTML
     assert 'id="doctor-zone-chart"' in HTML

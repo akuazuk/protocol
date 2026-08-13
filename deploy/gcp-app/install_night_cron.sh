@@ -40,7 +40,14 @@ SHELL=/bin/bash
 PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
 PROTOCOL_ROOT=${proto_root}
 GCE_MO_DATA_ROOT=${data}
+PROTOCOL_CORPUS_ROOT=/var/data/protocol_corpus
+PROTOCOL_ICD_PROFILE_INDEX=/var/data/protocol_corpus/protocol_icd_profiles.jsonl
+PROTOCOL_CARDS_PATH=/var/data/protocol_corpus/output/registry/protocol_cards.jsonl
 MO_DAILY_WORKERS=2
+# 01:00 UTC - КП МЗ crawl/diff (до extract+score 02:00)
+0 1 * * * ${proto_root}/deploy/gcp-app/night_kp_sync.sh
+# 01:40 UTC - повтор КП, если main не написал success stamp
+40 1 * * * ${proto_root}/deploy/gcp-app/night_kp_sync.sh
 # 02:00 server/UTC - main extract+score for yesterday (Europe/Minsk)
 0 2 * * * ${proto_root}/deploy/gcp-app/night_mis_pipeline.sh main
 # 03:00 server/UTC - retry +1h if main failed
@@ -61,6 +68,7 @@ if [[ "$REMOTE" == "1" ]]; then
   tar czf - \
     -C "$ROOT" \
     deploy/gcp-app/night_mis_pipeline.sh \
+    deploy/gcp-app/night_kp_sync.sh \
     deploy/gcp-app/check_gce_night_status.sh \
     deploy/gcp-app/load_mis_env.sh \
     deploy/gcp-app/setup_mis_venv.sh \

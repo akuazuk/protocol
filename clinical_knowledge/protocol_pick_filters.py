@@ -37,7 +37,15 @@ def is_administrative_protocol(card: dict[str, Any]) -> bool:
     if any(m in blob for m in _ADMIN_TITLE_MARKERS):
         return True
     kind = str(card.get("protocol_kind") or "").lower()
-    if kind in ("general_program", "general_care", "screening_dispanser"):
+    if kind in (
+        "general_program",
+        "general_care",
+        "screening_dispanser",
+        "admin",
+        "rehab",
+        "rehabilitation",
+        "algorithm",
+    ):
         return True
     icd = list(card.get("icd10_all") or card.get("icd10_primary") or [])
     if not icd and "утверждении" in blob and "клиническ" in blob:
