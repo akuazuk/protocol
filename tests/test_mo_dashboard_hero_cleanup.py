@@ -1,4 +1,4 @@
-"""Smoke: меню 6 видимых пунктов; legacy charts не на hero Сегодня/Период."""
+"""Smoke: меню 7 видимых пунктов; legacy charts не на hero Сегодня/Период."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,15 +12,15 @@ def _nav_block() -> str:
     return HTML.split('id="app-nav"')[1].split("</ul>")[0]
 
 
-def test_left_menu_has_exactly_six_visible_pages() -> None:
+def test_left_menu_has_exactly_seven_visible_pages() -> None:
     nav = _nav_block()
     visible = [
         line for line in nav.splitlines()
         if 'class="nav-button" data-page=' in line and "<li hidden>" not in line
     ]
     # settings stays hidden for accounts admin (#89)
-    assert len(visible) == 6
-    for page in ("yesterday", "overview", "queue", "documents", "doctors", "reports"):
+    assert len(visible) == 7
+    for page in ("yesterday", "overview", "queue", "documents", "doctors", "reports", "kp-sync"):
         assert f'data-page="{page}"' in nav
     assert 'data-page="settings"' in nav
     assert "<li hidden>" in nav
@@ -58,7 +58,7 @@ def test_today_hero_has_table_and_score_rings() -> None:
 
 
 if __name__ == "__main__":
-    test_left_menu_has_exactly_six_visible_pages()
+    test_left_menu_has_exactly_seven_visible_pages()
     test_period_hero_keeps_zones_not_heatmap()
     test_today_hero_has_table_and_score_rings()
     print("ok")

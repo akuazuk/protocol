@@ -1,4 +1,4 @@
-"""D6: hidden legacy pages removed; nav stays 6 + settings."""
+"""D6: hidden legacy pages removed; nav stays 7 + settings."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -8,10 +8,10 @@ HTML = (ROOT / "frontend/web/methodist/mis-kz-quality.html").read_text(encoding=
 APP = (ROOT / "frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
 
 
-def test_nav_only_six_visible_and_settings_hidden() -> None:
+def test_nav_only_seven_visible_and_settings_hidden() -> None:
     nav = HTML.split('id="app-nav"')[1].split("</ul>")[0]
     visible = [l for l in nav.splitlines() if "nav-button" in l and "<li hidden>" not in l]
-    assert len(visible) == 6
+    assert len(visible) == 7
     assert 'data-page="settings"' in nav
     assert "<li hidden>" in nav
 
@@ -33,6 +33,6 @@ def test_legacy_pages_removed_from_dom() -> None:
 
 
 if __name__ == "__main__":
-    test_nav_only_six_visible_and_settings_hidden()
+    test_nav_only_seven_visible_and_settings_hidden()
     test_legacy_pages_removed_from_dom()
     print("ok")

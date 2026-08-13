@@ -323,7 +323,7 @@ def test_yesterday_http_requires_auth_and_returns_private_contract(
 def test_yesterday_markup_rendering_and_minsk_date_contract() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
     app = APP_PATH.read_text(encoding="utf-8")
-    assert len(html.splitlines()) < 360
+    assert len(html.splitlines()) < 380
     for marker in (
         'id="yesterday-attention"',
         'id="yesterday-score-kpis"',
