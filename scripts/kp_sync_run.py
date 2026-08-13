@@ -43,6 +43,27 @@ def _load_manifest(path: Path) -> list[dict]:
     return rows
 
 
+def local_docs_from_pdf_root(pdf_root: Path) -> list[dict]:
+    """Манифест с диска, если _manifest.jsonl ещё нет."""
+    rows: list[dict] = []
+    if not pdf_root.is_dir():
+        return rows
+    for p in sorted(pdf_root.rglob("*.pdf")):
+        try:
+            rel_inside = p.relative_to(pdf_root).as_posix()
+        except ValueError:
+            continue
+        slug = rel_inside.split("/", 1)[0] if "/" in rel_inside else "unknown"
+        rows.append(
+            {
+                "relative_path": f"minzdrav_protocols/{rel_inside}",
+                "filename": p.name,
+                "slug": slug,
+            }
+        )
+    return rows
+
+
 def cmd_diff(args: argparse.Namespace) -> int:
     site = _load_json_list(Path(args.site))
     local = _load_manifest(Path(args.local))
@@ -121,7 +142,15 @@ def cmd_apply(args: argparse.Namespace) -> int:
     diff = json.loads(Path(args.diff).read_text(encoding="utf-8"))
     dest_root = Path(args.dest)
     cap = int(args.max_downloads)
-    todo = list(diff.get("added") or []) + list(diff.get("updated") or [])
+    raw_todo = list(diff.get("added") or []) + list(diff.get("updated") or [])
+    todo: list[dict] = []
+    skipped_exist = 0
+    for rec in raw_todo:
+        dest = dest_root / str(rec.get("slug") or "") / str(rec.get("filename") or "")
+        if dest.is_file() and str(rec.get("action") or "") != "updated":
+            skipped_exist += 1
+            continue
+        todo.append(rec)
     downloaded: list[str] = []
     errors: list[dict] = []
     for rec in todo[:cap]:
@@ -141,15 +170,27 @@ def cmd_apply(args: argparse.Namespace) -> int:
         "downloaded": downloaded,
         "errors": errors,
         "leftover": leftover,
+        "skipped_exist": skipped_exist,
         "applied_utc": _now(),
     }
     if args.out:
         Path(args.out).write_text(json.dumps(summary, ensure_ascii=False, indent=2), encoding="utf-8")
     print(
-        f"downloaded={len(downloaded)} errors={len(errors)} leftover={leftover}",
+        f"downloaded={len(downloaded)} skipped_exist={skipped_exist} errors={len(errors)} leftover={leftover}",
         file=sys.stderr,
     )
     return 1 if errors and not downloaded else 0
+
+
+def cmd_scan_local(args: argparse.Namespace) -> int:
+    rows = local_docs_from_pdf_root(Path(args.dest))
+    out = Path(args.out)
+    out.parent.mkdir(parents=True, exist_ok=True)
+    with out.open("w", encoding="utf-8") as fh:
+        for row in rows:
+            fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+    print(f"local_pdfs={len(rows)} → {out}", file=sys.stderr)
+    return 0
 
 
 def cmd_merge_indexes(args: argparse.Namespace) -> int:
@@ -204,6 +245,11 @@ def main() -> int:
     a.add_argument("--max-downloads", type=int, default=int(os.environ.get("KP_SYNC_MAX_DOWNLOADS", "8")))
     a.add_argument("--out", default="")
     a.set_defaults(func=cmd_apply)
+
+    s = sub.add_parser("scan-local", help="Манифест из PDF на диске")
+    s.add_argument("--dest", required=True)
+    s.add_argument("--out", required=True)
+    s.set_defaults(func=cmd_scan_local)
 
     m = sub.add_parser("merge-indexes", help="Влить ICD-профили и catalog только для changed paths")
     m.add_argument("--paths", required=True, help="Файл со списком relative_path")

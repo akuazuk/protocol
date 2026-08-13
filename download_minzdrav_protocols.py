@@ -115,7 +115,7 @@ def _now_utc_iso() -> str:
 def download_file(url: str, dest: Path) -> tuple[bool, int, str | None]:
     """Скачивает файл. Возвращает (успех, http_status, текст_ошибки)."""
     dest.parent.mkdir(parents=True, exist_ok=True)
-    tmp = dest.with_suffix(dest.suffix + ".part")
+    tmp = dest.parent / f".dl-{hashlib.sha256(dest.name.encode()).hexdigest()[:12]}.part"
     try:
         req = Request(encode_iri(url), headers=HEADERS)
         with urlopen(req, timeout=300, context=CTX) as r:

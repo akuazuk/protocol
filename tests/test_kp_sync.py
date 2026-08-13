@@ -293,3 +293,15 @@ def test_public_kp_sync_payload(tmp_path: Path):
     assert pub["site_count"] == 10
     assert pub["changed_n"] == 1
     assert pub["added"][0]["filename"] == "a.pdf"
+
+
+def test_scan_local_from_pdf_root(tmp_path: Path):
+    import runpy
+
+    mod = runpy.run_path(str(Path(__file__).resolve().parents[1] / "scripts" / "kp_sync_run.py"))
+    slug = tmp_path / "revmatologiya"
+    slug.mkdir()
+    (slug / "KP1.pdf").write_bytes(b"%PDF")
+    rows = mod["local_docs_from_pdf_root"](tmp_path)
+    assert rows[0]["filename"] == "KP1.pdf"
+    assert rows[0]["relative_path"] == "minzdrav_protocols/revmatologiya/KP1.pdf"
