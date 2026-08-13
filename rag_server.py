@@ -8311,6 +8311,12 @@ def api_corpus_stats() -> dict:
         out["chunks_loaded"] = None
         out["protocols_loaded"] = None
         out["protocol_meta_entries"] = None
+    try:
+        from clinical_knowledge.kp_sync.status import load_latest_kp_sync, public_kp_sync_payload
+
+        out["kp_sync"] = public_kp_sync_payload(load_latest_kp_sync())
+    except Exception:
+        out["kp_sync"] = {"ok": True, "status": "unavailable"}
     return out
 
 
@@ -8473,7 +8479,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-13-094905Z-kp-daily-sync"
+BUILD_VERSION = "2026-08-13-102737Z-kp-mo-tab"
 
 
 def _app_version() -> str:
@@ -12633,6 +12639,18 @@ def api_methodist_mo_health(request: "Request") -> dict:
     from clinical_knowledge.mo_backend import build_mo_health
 
     return build_mo_health()
+
+
+@app.get("/api/methodist/mo/kp-sync")
+def api_methodist_mo_kp_sync(
+    request: "Request",
+    days: int = Query(30, ge=1, le=90),
+) -> dict:
+    """Свежесть каталога КП МЗ (без клинических текстов и ПДн)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.kp_sync.status import load_latest_kp_sync, public_kp_sync_payload
+
+    return public_kp_sync_payload(load_latest_kp_sync(), days=days)
 
 
 @app.get("/api/methodist/mo/capabilities")

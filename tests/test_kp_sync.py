@@ -228,3 +228,68 @@ def test_parse_post():
         "28.04.2026",
         "44",
     )
+
+
+def test_canonical_alias_same_filename():
+    from clinical_knowledge.kp_sync.parse import mark_canonical_aliases
+
+    docs = mark_canonical_aliases(
+        [
+            {"filename": "same.pdf", "relative_path": "minzdrav_protocols/a/same.pdf", "slug": "a"},
+            {"filename": "same.pdf", "relative_path": "minzdrav_protocols/b/same.pdf", "slug": "b"},
+        ]
+    )
+    assert docs[0]["canonical"] == "1"
+    assert docs[1]["alias_of"] == docs[0]["relative_path"]
+
+
+def test_merge_indexes_keeps_other_paths(tmp_path: Path):
+    from clinical_knowledge.kp_sync.indexes import merge_catalog_for_paths, merge_icd_profiles_for_paths
+    from clinical_knowledge.kp_sync.jsonl_merge import write_jsonl
+
+    cat = tmp_path / "catalog.jsonl"
+    write_jsonl(
+        cat,
+        [{"path": "minzdrav_protocols/x/old.pdf", "title": "keep"}],
+    )
+    chunks = {
+        "minzdrav_protocols/y/new.pdf": [
+            {"source_path": "minzdrav_protocols/y/new.pdf", "icd10_codes": ["I21.0"], "text": "диагностика ЭКГ"}
+        ]
+    }
+    stats = merge_catalog_for_paths(
+        ["minzdrav_protocols/y/new.pdf"],
+        chunks_by_path=chunks,
+        out_path=cat,
+    )
+    assert stats["after"] == 2
+    icd_path = tmp_path / "icd.jsonl"
+    write_jsonl(icd_path, [{"path": "minzdrav_protocols/x/old.pdf", "diagnostics": [{"text": "keep"}]}])
+    icd_stats = merge_icd_profiles_for_paths(
+        ["minzdrav_protocols/y/new.pdf"],
+        chunks_by_path=chunks,
+        out_path=icd_path,
+    )
+    assert icd_stats["after"] == 2
+    empty_stats = merge_icd_profiles_for_paths(
+        ["minzdrav_protocols/z/missing.pdf"],
+        chunks_by_path={},
+        out_path=icd_path,
+    )
+    assert empty_stats["incoming"] == 0
+    assert empty_stats["after"] == 2
+
+
+def test_public_kp_sync_payload(tmp_path: Path):
+    from clinical_knowledge.kp_sync.status import load_latest_kp_sync, public_kp_sync_payload
+
+    p = tmp_path / "kp_sync_2026-08-13.json"
+    p.write_text(
+        '{"status":"success","site_count":10,"local_count":9,"added":[{"filename":"a.pdf","slug":"cardio","relative_path":"minzdrav_protocols/cardio/a.pdf","action":"downloaded"}],"updated":[],"superseded":[],"changed_paths":["minzdrav_protocols/cardio/a.pdf"]}',
+        encoding="utf-8",
+    )
+    raw = load_latest_kp_sync(tmp_path)
+    pub = public_kp_sync_payload(raw)
+    assert pub["site_count"] == 10
+    assert pub["changed_n"] == 1
+    assert pub["added"][0]["filename"] == "a.pdf"

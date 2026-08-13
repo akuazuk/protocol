@@ -456,6 +456,8 @@ def match_protocol_cards(
     for sc, card in scored:
         if card.get("superseded_by") or str(card.get("status") or "") == "superseded":
             continue
+        if card.get("alias_of"):
+            continue
         # Дедуп: один протокол (по source_path/protocol_id) - одна строка с лучшим score.
         key = str(card.get("source_path") or card.get("protocol_id") or id(card))
         if key in seen_keys:

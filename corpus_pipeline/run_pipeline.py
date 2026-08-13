@@ -366,14 +366,25 @@ def main(argv: list[str] | None = None) -> None:
     try:
         from corpus_pipeline.protocol_cards import build_all_protocol_cards, write_protocol_cards_jsonl
 
-        cards = build_all_protocol_cards(ROOT)
+        cards = build_all_protocol_cards(
+            ROOT,
+            documents_dir=OUT_DOCS,
+            manifest_path=PDF_ROOT / "_manifest.jsonl",
+        )
         cards_path = OUT_REGISTRY / "protocol_cards.jsonl"
+        if changed_only and cards_path.is_file():
+            from clinical_knowledge.kp_sync.jsonl_merge import load_jsonl, merge_jsonl_by_path
+
+            cards = merge_jsonl_by_path(
+                load_jsonl(cards_path), cards, replace_paths=replace_paths
+            )
         write_protocol_cards_jsonl(cards, cards_path)
-        gastro = [c for c in cards if c.get("specialty_slug") == "gastroenterologiya"]
-        gastro_dir = ROOT / "data" / "gastro_mvp"
-        gastro_dir.mkdir(parents=True, exist_ok=True)
-        write_protocol_cards_jsonl(gastro, gastro_dir / "protocol_registry.jsonl")
-        print(f"Карточки протоколов: {len(cards)} → {cards_path} (гастро: {len(gastro)})")
+        if not changed_only:
+            gastro = [c for c in cards if c.get("specialty_slug") == "gastroenterologiya"]
+            gastro_dir = ROOT / "data" / "gastro_mvp"
+            gastro_dir.mkdir(parents=True, exist_ok=True)
+            write_protocol_cards_jsonl(gastro, gastro_dir / "protocol_registry.jsonl")
+        print(f"Карточки протоколов: {len(cards)} → {cards_path}")
     except Exception as e:
         print(f"WARN: protocol_cards не собраны: {e}")
 

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import json
+import os
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
@@ -32,6 +33,9 @@ def load_protocol_cards_registry() -> list[dict[str, Any]]:
         ROOT / "output" / "registry" / "protocol_cards.jsonl",
         GASTRO_MVP / "protocol_registry.jsonl",
     ]
+    env_path = (os.environ.get("PROTOCOL_CARDS_PATH") or "").strip()
+    if env_path:
+        paths.insert(0, Path(env_path))
     for p in paths:
         rows = _read_jsonl(p)
         if rows:

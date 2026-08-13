@@ -4329,6 +4329,7 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
             "access_log": normalized_role == "admin",
             "data_quality": can_view_population and not is_expert,
             "reports": can_view_population or is_expert,
+            "kp_sync": can_view_population and not is_expert,
             "settings": normalized_role in {"methodist", "lead", "admin"},
         },
         "actions": {

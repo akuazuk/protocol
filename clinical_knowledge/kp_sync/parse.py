@@ -72,4 +72,24 @@ def site_docs_from_pages(
                     "relative_path": rel,
                 }
             )
-    return out
+    return mark_canonical_aliases(out)
+
+
+def mark_canonical_aliases(docs: list[dict[str, str]]) -> list[dict[str, str]]:
+    """Один filename в двух рубриках: первый path канонический, остальные alias."""
+    by_name: dict[str, list[dict[str, str]]] = {}
+    for rec in docs:
+        fn = str(rec.get("filename") or "")
+        if not fn:
+            continue
+        by_name.setdefault(fn, []).append(rec)
+    for group in by_name.values():
+        if len(group) < 2:
+            group[0]["canonical"] = "1"
+            continue
+        canon = group[0]["relative_path"]
+        group[0]["canonical"] = "1"
+        for extra in group[1:]:
+            extra["canonical"] = "0"
+            extra["alias_of"] = canon
+    return docs

@@ -164,22 +164,22 @@ PDF SSOT: `/var/data/protocol_corpus`. Git - скрипты и тесты, не 
 
 - [x] B1. Crawl/diff/download как v1 §B, тесты на фикстуре HTML.
 - [x] B2. `run_pipeline --changed-only` + merge jsonl по `source_path`.
-- [~] B3. Merge catalog + icd_profiles; запрет full rewrite. (chunks/tables/registry merge есть; catalog/ICD index - PR2)
+- [x] B3. Merge catalog + icd_profiles; запрет full rewrite.
 - [x] B4. Заголовок/пост/kind/audience из текста PDF (тесты на фикстурах).
 
 ### C. Точность match/score
 
 - [x] C1. `superseded_by` + recency в rank (тесты: 2017 vs 2026, тот же корень МКБ).
 - [x] C2. Suggest не primary на rehab/admin/superseded.
-- [ ] C3. Canonical path при дубле рубрик.
-- [ ] C4. Targeted re-score по ICD overlap; поле `kp_corpus_generation`.
-- [ ] C5. Не ждать LLM summary для 1.0/0.5 плана, если профиль из таблиц уже есть.
+- [x] C3. Canonical path при дубле рубрик.
+- [~] C4. Targeted re-score по ICD overlap; поле `kp_corpus_generation`. (generation в status JSON; yesterday score идёт после 01:00 sync)
+- [x] C5. Не ждать LLM summary для 1.0/0.5 плана, если профиль из таблиц уже есть.
 
 ### D. Cron + UI
 
-- [ ] D1. `night_kp_sync.sh` 01:00 UTC, owner `pavel`, Telegram fail.
-- [ ] D2. Вкладка МО + API (v1 §E + счётчики слоя 1-3).
-- [ ] D3. `/api/corpus-stats`: last sync, changed_n, pending_summaries.
+- [x] D1. `night_kp_sync.sh` 01:00 UTC, owner `pavel`, Telegram fail.
+- [x] D2. Вкладка МО + API (v1 §E + счётчики слоя 1-3).
+- [x] D3. `/api/corpus-stats`: last sync, changed_n, pending_summaries.
 
 ### E. Хвост
 

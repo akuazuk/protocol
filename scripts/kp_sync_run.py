@@ -152,6 +152,31 @@ def cmd_apply(args: argparse.Namespace) -> int:
     return 1 if errors and not downloaded else 0
 
 
+def cmd_merge_indexes(args: argparse.Namespace) -> int:
+    from clinical_knowledge.kp_sync.indexes import merge_catalog_for_paths, merge_icd_profiles_for_paths
+    from clinical_knowledge.kp_sync.jsonl_merge import load_jsonl
+
+    paths = [
+        ln.strip()
+        for ln in Path(args.paths).read_text(encoding="utf-8").splitlines()
+        if ln.strip()
+    ]
+    chunks = load_jsonl(Path(args.chunks))
+    by_path: dict[str, list] = {}
+    for ch in chunks:
+        p = str(ch.get("source_path") or "").replace("\\", "/")
+        if p:
+            by_path.setdefault(p, []).append(ch)
+    icd = merge_icd_profiles_for_paths(
+        paths, chunks_by_path=by_path, out_path=Path(args.icd_index) if args.icd_index else None
+    )
+    cat = merge_catalog_for_paths(
+        paths, chunks_by_path=by_path, out_path=Path(args.catalog) if args.catalog else None
+    )
+    print(json.dumps({"icd_profiles": icd, "catalog": cat}, ensure_ascii=False))
+    return 0
+
+
 def main() -> int:
     p = argparse.ArgumentParser(description="КП МЗ: diff сайта и локального манифеста")
     sub = p.add_subparsers(dest="cmd", required=True)
@@ -179,6 +204,13 @@ def main() -> int:
     a.add_argument("--max-downloads", type=int, default=int(os.environ.get("KP_SYNC_MAX_DOWNLOADS", "8")))
     a.add_argument("--out", default="")
     a.set_defaults(func=cmd_apply)
+
+    m = sub.add_parser("merge-indexes", help="Влить ICD-профили и catalog только для changed paths")
+    m.add_argument("--paths", required=True, help="Файл со списком relative_path")
+    m.add_argument("--chunks", required=True, help="chunks.jsonl")
+    m.add_argument("--icd-index", default="")
+    m.add_argument("--catalog", default="")
+    m.set_defaults(func=cmd_merge_indexes)
 
     args = p.parse_args()
     return int(args.func(args) or 0)

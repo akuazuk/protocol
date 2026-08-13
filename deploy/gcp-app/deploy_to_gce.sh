@@ -253,6 +253,7 @@ echo "[3/5] sync sources to VM"
 # shellcheck disable=SC2086
 tar czf - \
   rag_server.py env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py \
+  download_minzdrav_protocols.py \
   requirements.txt requirements-rag.txt \
   backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog \
   data/drug_safety/high_alert.json data/drug_safety/stopp_start_beers.json \
@@ -291,7 +292,10 @@ HAS_CORPUS="$(ssh_cmd "if [[ -d '$CORPUS_REMOTE/minzdrav_protocols' && -d '$CORP
 CORPUS_MOUNTS=""
 if [[ "$HAS_CORPUS" == "yes" ]]; then
   echo "[5/5] run container with protocol corpus mounts"
+  ssh_cmd "sudo mkdir -p '$CORPUS_REMOTE'/output/registry '$CORPUS_REMOTE'/_sync; if [[ ! -f '$CORPUS_REMOTE'/protocol_icd_profiles.jsonl && -f '$REMOTE_DIR'/data/catalog/protocol_icd_profiles.jsonl ]]; then sudo cp '$REMOTE_DIR'/data/catalog/protocol_icd_profiles.jsonl '$CORPUS_REMOTE'/protocol_icd_profiles.jsonl; fi; if [[ ! -f '$CORPUS_REMOTE'/output/registry/protocol_cards.jsonl && -f '$REMOTE_DIR'/output/registry/protocol_cards.jsonl ]]; then sudo cp '$REMOTE_DIR'/output/registry/protocol_cards.jsonl '$CORPUS_REMOTE'/output/registry/protocol_cards.jsonl; fi"
   CORPUS_MOUNTS="-v $CORPUS_REMOTE/minzdrav_protocols:/app/minzdrav_protocols:ro -v $CORPUS_REMOTE/protocol_summaries:/app/data/protocol_summaries:ro -v $CORPUS_REMOTE/protocol_catalog.jsonl:/app/data/protocol_catalog.jsonl:ro"
+  CORPUS_MOUNTS="$CORPUS_MOUNTS -v $CORPUS_REMOTE/protocol_icd_profiles.jsonl:/app/data/catalog/protocol_icd_profiles.jsonl:ro"
+  CORPUS_MOUNTS="$CORPUS_MOUNTS -v $CORPUS_REMOTE/output/registry/protocol_cards.jsonl:/app/output/registry/protocol_cards.jsonl:ro"
 else
   echo "[5/5] run container WITHOUT protocol corpus (navigator will be empty; sync with deploy/gcp-app/sync_protocol_corpus.sh)" >&2
 fi
@@ -308,6 +312,9 @@ sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
   $CORPUS_MOUNTS \
   $DRUG_SAFETY_MOUNT \
   -e MO_DATA_ROOT=/var/data/medical_exams \
+  -e PROTOCOL_CORPUS_ROOT=/var/data/protocol_corpus \
+  -e PROTOCOL_ICD_PROFILE_INDEX=/app/data/catalog/protocol_icd_profiles.jsonl \
+  -e PROTOCOL_CARDS_PATH=/app/output/registry/protocol_cards.jsonl \
   -e PORT=8000 \
   '$IMAGE_TAG'
 sleep 3

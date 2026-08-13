@@ -197,6 +197,12 @@ fi
 CORPUS_MOUNTS=''
 if [[ -d /var/data/protocol_corpus/minzdrav_protocols && -d /var/data/protocol_corpus/protocol_summaries/json && -f /var/data/protocol_corpus/protocol_catalog.jsonl ]]; then
   CORPUS_MOUNTS='-v /var/data/protocol_corpus/minzdrav_protocols:/app/minzdrav_protocols:ro -v /var/data/protocol_corpus/protocol_summaries:/app/data/protocol_summaries:ro -v /var/data/protocol_corpus/protocol_catalog.jsonl:/app/data/protocol_catalog.jsonl:ro'
+  if [[ -f /var/data/protocol_corpus/protocol_icd_profiles.jsonl ]]; then
+    CORPUS_MOUNTS=\"\$CORPUS_MOUNTS -v /var/data/protocol_corpus/protocol_icd_profiles.jsonl:/app/data/catalog/protocol_icd_profiles.jsonl:ro\"
+  fi
+  if [[ -f /var/data/protocol_corpus/output/registry/protocol_cards.jsonl ]]; then
+    CORPUS_MOUNTS=\"\$CORPUS_MOUNTS -v /var/data/protocol_corpus/output/registry/protocol_cards.jsonl:/app/output/registry/protocol_cards.jsonl:ro\"
+  fi
 fi
 # shellcheck disable=SC2086
 sudo docker run -d --name protocol-web --restart unless-stopped \
@@ -206,6 +212,9 @@ sudo docker run -d --name protocol-web --restart unless-stopped \
   -v /var/data/drug_safety:/app/data/drug_safety:ro \
   \$CORPUS_MOUNTS \
   -e MO_DATA_ROOT=/var/data/medical_exams \
+  -e PROTOCOL_CORPUS_ROOT=/var/data/protocol_corpus \
+  -e PROTOCOL_ICD_PROFILE_INDEX=/app/data/catalog/protocol_icd_profiles.jsonl \
+  -e PROTOCOL_CARDS_PATH=/app/output/registry/protocol_cards.jsonl \
   -e PORT=8000 \
   \"\$IMG\"
 sleep 3

@@ -1,6 +1,7 @@
 """Сверка сайта МЗ с локальным манифестом. Файлы с диска не удаляем."""
 from __future__ import annotations
 
+import hashlib
 import re
 from typing import Any
 
@@ -139,4 +140,13 @@ def diff_catalog(
             for r in added + updated
             if r.get("relative_path")
         ],
+        "kp_corpus_generation": hashlib.sha256(
+            "|".join(
+                sorted(
+                    str(r.get("relative_path") or "")
+                    for r in added + updated
+                    if r.get("relative_path")
+                )
+            ).encode("utf-8")
+        ).hexdigest()[:16],
     }

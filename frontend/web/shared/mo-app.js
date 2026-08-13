@@ -44,7 +44,7 @@
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Сегодня", queue: "Очередь",
       documents: "Все случаи", doctors: "Врачи",
-      reports: "Отчёты", settings: "Справка"
+      reports: "Отчёты", "kp-sync": "Протоколы МЗ", settings: "Справка"
     };
     var REMOVED_PAGES = {
       specialties: true, diagnoses: true, safety: true,
@@ -4390,9 +4390,39 @@
         aboutHost.innerHTML =
           "<p><b>Сборка:</b> " + versionText + "</p>" +
           "<p><b>Данные:</b> " + freshText + "</p>" +
-          '<p class="card-sub">Справка открывается ссылкой внизу меню. Основные 6 пунктов меню не меняются.</p>';
+          '<p class="card-sub">Справка открывается ссылкой внизу меню.</p>';
       }
       await loadScoringStrictness();
+    }
+    async function loadKpSync() {
+      var kpis = $("kp-sync-kpis");
+      var changed = $("kp-sync-changed");
+      var superseded = $("kp-sync-superseded");
+      if (!kpis) return;
+      var response = await request("/kp-sync?days=30", "/kp-sync");
+      if (!response.ok) throw new Error("Не удалось загрузить сверку протоколов МЗ.");
+      var data = await response.json();
+      var status = data.status || "missing";
+      var tone = status === "success" || status === "missing" ? "good" : "review";
+      if ($("kp-sync-freshness")) $("kp-sync-freshness").textContent = data.crawled_utc || "нет сверки";
+      kpis.innerHTML =
+        kpi("На сайте", data.site_count, "уникальных файлов") +
+        kpi("В корпусе", data.local_count, "локальных PDF") +
+        kpi("Изменено", data.changed_n, "новых или обновлённых") +
+        kpi("Сверка", status === "missing" ? "ещё не было" : status, data.crawled_utc || "");
+      function rowsHtml(items) {
+        if (!items || !items.length) return '<div class="empty">Нет записей</div>';
+        return '<table class="data-table"><thead><tr><th>Рубрика</th><th>Файл</th><th>Статус</th></tr></thead><tbody>' +
+          items.map(function (row) {
+            var viewer = row.relative_path
+              ? '<a href="/proto-viewer.html?path=' + encodeURIComponent(row.relative_path) + '" target="_blank" rel="noopener noreferrer">' + esc(row.filename || row.relative_path) + "</a>"
+              : esc(row.filename || "");
+            return "<tr><td>" + esc(row.slug || "") + "</td><td>" + viewer + "</td><td>" + esc(row.action || "") + "</td></tr>";
+          }).join("") + "</tbody></table>";
+      }
+      if (changed) changed.innerHTML = rowsHtml([].concat(data.added || [], data.updated || []));
+      if (superseded) superseded.innerHTML = rowsHtml(data.superseded || []);
+      kpis.setAttribute("data-tone", tone);
     }
     async function loadPage(page) {
       $("global-error").hidden = true;
@@ -4407,6 +4437,7 @@
           try { await loadAccessLog(); } catch (e) {}
           try { await loadDataQuality(); } catch (e) {}
         }
+        else if (page === "kp-sync") await loadKpSync();
         else if (page === "settings") await loadSettingsPage();
         else await ensureSummary();
       } catch (e) { showError(e.message || String(e)); }
