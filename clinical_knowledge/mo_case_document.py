@@ -355,6 +355,7 @@ def build_case_document_payload(
     *,
     month: str | None = None,
     detail: Mapping[str, Any] | None = None,
+    include_demographics: bool = False,
 ) -> dict[str, Any]:
     from clinical_knowledge.mo_backend import build_case_detail
 
@@ -441,6 +442,13 @@ def build_case_document_payload(
         "generated_at": datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z"),
         "detail_ok": bool(detail.get("ok")),
     }
+    if include_demographics:
+        # Только для server-side suggest. Не отдавать в document API / печать.
+        payload["_demographics"] = {
+            "patient_age_years": src.get("patient_age_years") or record.get("patient_age_years"),
+            "patient_bdate": src.get("patient_bdate") or record.get("patient_bdate"),
+            "visit_date": payload.get("visit_date"),
+        }
     if not meta and not source and not detail.get("ok"):
         return {"ok": False, "error": "case_not_found", "case_id": case_id}
     return payload

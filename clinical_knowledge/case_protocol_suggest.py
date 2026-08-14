@@ -284,45 +284,10 @@ def _audience_from_case(
     clinical: dict[str, Any],
     record: dict[str, Any],
 ) -> str:
-    """adult|child|unknown по возрасту; unknown не должен убивать pediatric КП в matcher."""
-    for key in (
-        "patient_age_years",
-        "age_years",
-        "age",
-        "patient_age",
-    ):
-        for src in (clinical, record):
-            raw = src.get(key)
-            if raw is None or raw == "":
-                continue
-            try:
-                age = float(str(raw).replace(",", ".").strip())
-            except ValueError:
-                continue
-            if age < 0 or age > 120:
-                continue
-            return "child" if age < 18 else "adult"
-    for key in ("patient_bdate", "birth_date", "bdate"):
-        for src in (clinical, record):
-            raw = str(src.get(key) or "").strip()
-            if not raw or len(raw) < 8:
-                continue
-            m = re.match(r"(\d{4})[-./](\d{1,2})[-./](\d{1,2})", raw)
-            if not m:
-                m = re.match(r"(\d{1,2})[-./](\d{1,2})[-./](\d{4})", raw)
-                if m:
-                    year = int(m.group(3))
-                else:
-                    continue
-            else:
-                year = int(m.group(1))
-            # грубо по году относительно «сегодня» UTC
-            from datetime import date
+    """adult|child|unknown: годы, иначе ДР + дата визита (не сегодня)."""
+    from clinical_knowledge.patient_age import resolve_patient_age
 
-            age = date.today().year - year
-            if 0 <= age <= 120:
-                return "child" if age < 18 else "adult"
-    return "unknown"
+    return str(resolve_patient_age(clinical, record).get("audience") or "unknown")
 
 
 def _search_query(graph: dict[str, Any]) -> str:
@@ -426,7 +391,10 @@ def build_case_fact_graph(
             }
         )
 
-    audience = _audience_from_case(clinical, record)
+    from clinical_knowledge.patient_age import resolve_patient_age
+
+    age_meta = resolve_patient_age(clinical, record)
+    audience = str(age_meta.get("audience") or "unknown")
     if not specialty_slug and codes_in_dir:
         try:
             from clinical_knowledge.rubric_extractors import rubric_from_icd
@@ -438,6 +406,9 @@ def build_case_fact_graph(
     return {
         "case_id": str(record.get("visit_id") or record.get("case_id") or record.get("mis_id") or ""),
         "audience": audience,
+        "age_years": age_meta.get("age_years"),
+        "visit_date": age_meta.get("visit_date"),
+        "age_source": age_meta.get("age_source"),
         "specialty": {"label": specialty, "slug": specialty_slug},
         "complaints": complaints,
         "diagnoses": diagnoses,
@@ -606,13 +577,27 @@ def _rank_rows(
     """Предпочесть clinical; внутри - ICD fit, primary hit, score; штраф rehab."""
     codes = [str(c).upper() for c in (case_codes or graph.get("icd10_in_directory") or []) if c]
     filtered = [row for row in matched if not _path_blocked_for_specialty(row, graph)]
-    decorated: list[tuple[int, int, float, int, float, dict[str, Any]]] = []
+    decorated: list[tuple[int, int, int, float, int, float, dict[str, Any]]] = []
+    audience = str(graph.get("audience") or "unknown").lower()
+    unknown_aud = audience in {"", "unknown", "any"}
     for row in filtered:
         kind = _match_kind(row, graph)
         tier = {"clinical": 0, "ddx": 1, "specialty": 2}.get(kind, 3)
+        child_unknown = 0
+        if unknown_aud:
+            blob = (
+                str(row.get("source_path") or "")
+                + " "
+                + str(row.get("title") or "")
+                + " "
+                + str(row.get("population") or "")
+            ).lower()
+            if "дет_нас" in blob or "детс_нас" in blob or str(row.get("population") or "") == "child":
+                child_unknown = 1
         decorated.append(
             (
                 tier,
+                child_unknown,
                 _rehab_or_noise_penalty(row, graph),
                 -_best_icd_fit_weight(row),
                 -_icd_primary_hits(row, codes),
@@ -620,7 +605,7 @@ def _rank_rows(
                 row,
             )
         )
-    decorated.sort(key=lambda item: (item[0], item[1], item[2], item[3], item[4]))
+    decorated.sort(key=lambda item: (item[0], item[1], item[2], item[3], item[4], item[5]))
     strong = [row for tier, *_rest, row in decorated if tier == 0]
     if len(strong) >= limit:
         return strong[:limit]
@@ -787,7 +772,11 @@ def suggest_protocols_for_case(
     mode = str(resolved.get("mode") or ("icd_first" if use_icd else "text"))
     audience = str(graph.get("audience") or "unknown")
     facts = {
-        "patient_context": {"adult_or_child": audience},
+        "patient_context": {
+            "adult_or_child": audience,
+            "age_years": graph.get("age_years"),
+            "visit_date": graph.get("visit_date"),
+        },
         "consultation": {
             "icd10": list(codes_in_dir) if use_icd else [],
             "diagnosis_text": match_diag,

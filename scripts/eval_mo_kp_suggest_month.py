@@ -133,11 +133,16 @@ def main() -> int:
                 "anamnesis_doctor": row.get("anamnesis_doctor"),
                 "anamnesis_auto": row.get("anamnesis_auto"),
                 "patient_age_years": row.get("patient_age_years") or row.get("age_years"),
+                "patient_bdate": row.get("patient_bdate"),
+                "visit_date": row.get("date") or row.get("visit_date") or day.isoformat(),
                 "doctor_specialization": row.get("doctor_specialization"),
             }
             record = {
                 "visit_id": "x",
                 "specialty": row.get("doctor_specialization") or row.get("specialty"),
+                "visit_date": row.get("date") or row.get("visit_date") or day.isoformat(),
+                "date": row.get("date") or row.get("visit_date") or day.isoformat(),
+                "patient_bdate": row.get("patient_bdate"),
             }
             result = suggest_protocols_for_case(
                 clinical=clinical,

@@ -39,6 +39,13 @@ def load_protocol_cards_registry() -> list[dict[str, Any]]:
     for p in paths:
         rows = _read_jsonl(p)
         if rows:
+            try:
+                from clinical_knowledge.kp_validity import attach_validity_fields
+
+                for row in rows:
+                    attach_validity_fields(row)
+            except Exception:  # noqa: BLE001
+                pass
             return rows
     return []
 
