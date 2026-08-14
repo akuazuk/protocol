@@ -44,8 +44,16 @@ _DX_ALIAS_PATTERNS: list[tuple[re.Pattern[str], str]] = [
         "острая инфекция верхних дыхательных путей",
     ),
     (
-        re.compile(r"\bгэрб\b|\bgerd\b", re.IGNORECASE),
-        "гастроэзофагеальный рефлюкс",
+        re.compile(r"\bгэрб\b|\bgerd\b|гастроэзофагеальн\w*|рефлюксн\w*\s+болезн\w*", re.IGNORECASE),
+        "гастроэзофагеальный рефлюкс пищевод желудок гэрб",
+    ),
+    (
+        re.compile(r"гипотиреоз\w*", re.IGNORECASE),
+        "гипотиреоз щитовидной железы щитовидн",
+    ),
+    (
+        re.compile(r"диспепс\w*", re.IGNORECASE),
+        "диспепсия пищевод желудок двенадцатиперстн",
     ),
     (
         re.compile(r"\bхобл\b", re.IGNORECASE),

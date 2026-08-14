@@ -95,7 +95,9 @@ def main() -> int:
     data_root = Path(args.data_root)
 
     from clinical_knowledge.case_protocol_suggest import suggest_protocols_for_case
+    from clinical_knowledge.kp_validity import looks_omnibus
     from clinical_knowledge.mo_daily import is_scored_document_kind
+    from clinical_knowledge.patient_age import resolve_patient_age
 
     os.environ.setdefault("CASE_PROTOCOL_SUGGEST", "1")
 
@@ -104,6 +106,8 @@ def main() -> int:
     n_available = 0
     n_empty = 0
     n_adult_child_kp = 0
+    n_age_resolved = 0
+    n_omnibus_top1 = 0
     sources: Counter[str] = Counter()
     modes: Counter[str] = Counter()
     reasons: Counter[str] = Counter()
@@ -144,6 +148,9 @@ def main() -> int:
                 "date": row.get("date") or row.get("visit_date") or day.isoformat(),
                 "patient_bdate": row.get("patient_bdate"),
             }
+            age_meta = resolve_patient_age(clinical, record)
+            if age_meta.get("audience") in {"adult", "child"}:
+                n_age_resolved += 1
             result = suggest_protocols_for_case(
                 clinical=clinical,
                 record=record,
@@ -173,6 +180,13 @@ def main() -> int:
                     adult = False
                 if adult and "дет_нас" in fname:
                     n_adult_child_kp += 1
+                if looks_omnibus(
+                    {
+                        "title": top.get("title"),
+                        "source_path": top.get("source_path"),
+                    }
+                ):
+                    n_omnibus_top1 += 1
             else:
                 n_empty += 1
                 reasons[str(result.get("reason") or "empty")] += 1
@@ -199,6 +213,9 @@ def main() -> int:
         "available_pct": round(100.0 * n_available / max(1, n_available + n_empty), 1),
         "empty_pct": round(100.0 * n_empty / max(1, n_available + n_empty), 1),
         "adult_with_child_kp": n_adult_child_kp,
+        "age_resolved": n_age_resolved,
+        "age_resolved_pct": round(100.0 * n_age_resolved / max(1, n_available + n_empty), 1),
+        "omnibus_top1": n_omnibus_top1,
         "query_source": dict(sources),
         "mode": dict(modes),
         "empty_reason": reasons.most_common(8),
