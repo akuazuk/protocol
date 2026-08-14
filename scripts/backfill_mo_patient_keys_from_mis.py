@@ -2,6 +2,7 @@
 """Проставить patient_key на складе из MIS (только id/date/visit_id/patient_id).
 
 Канон: GCE, пароль из Secret Manager / .env.mis. Сырой patient_id в логи не пишем.
+Не импортирует clinical_knowledge на старте: venv-mis без pydantic.
 
   source /opt/protocol/deploy/gcp-app/load_mis_env.sh
   PYTHONPATH=/opt/protocol python3 /opt/protocol/scripts/backfill_mo_patient_keys_from_mis.py
@@ -9,10 +10,10 @@
 from __future__ import annotations
 
 import argparse
+import hashlib
 import os
 import sqlite3
 import sys
-from collections import defaultdict
 from datetime import date
 from pathlib import Path
 
@@ -20,8 +21,63 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
-from clinical_knowledge.mo_daily import patient_key_for  # noqa: E402
-from clinical_knowledge.mo_patient_history_bundle import build_patient_history_bundle  # noqa: E402
+
+def patient_key_for(patient_id: object) -> str:
+    normalized = str(patient_id or "").strip()
+    return hashlib.sha256(normalized.encode("utf-8")).hexdigest()[:20] if normalized else ""
+
+
+def apply_keys(
+    db: sqlite3.Connection,
+    *,
+    by_visit: dict[str, str],
+    by_mis: dict[str, str],
+) -> dict[str, int]:
+    db.execute("DROP TABLE IF EXISTS tmp_key_visit")
+    db.execute("DROP TABLE IF EXISTS tmp_key_mis")
+    db.execute(
+        "CREATE TEMP TABLE tmp_key_visit (visit_id TEXT PRIMARY KEY, patient_key TEXT NOT NULL)"
+    )
+    db.execute(
+        "CREATE TEMP TABLE tmp_key_mis (mis_id TEXT PRIMARY KEY, patient_key TEXT NOT NULL)"
+    )
+    if by_visit:
+        db.executemany(
+            "INSERT OR REPLACE INTO tmp_key_visit VALUES (?,?)",
+            by_visit.items(),
+        )
+    if by_mis:
+        db.executemany(
+            "INSERT OR REPLACE INTO tmp_key_mis VALUES (?,?)",
+            by_mis.items(),
+        )
+    cur_visit = db.execute(
+        """
+        UPDATE fact_mo_case
+           SET patient_key = (
+                SELECT patient_key FROM tmp_key_visit
+                 WHERE tmp_key_visit.visit_id = fact_mo_case.visit_id
+           )
+         WHERE length(trim(coalesce(patient_key, ''))) = 0
+           AND visit_id IN (SELECT visit_id FROM tmp_key_visit)
+        """
+    )
+    cur_mis = db.execute(
+        """
+        UPDATE fact_mo_case
+           SET patient_key = (
+                SELECT patient_key FROM tmp_key_mis
+                 WHERE tmp_key_mis.mis_id = fact_mo_case.mis_id
+           )
+         WHERE length(trim(coalesce(patient_key, ''))) = 0
+           AND mis_id IN (SELECT mis_id FROM tmp_key_mis)
+        """
+    )
+    db.commit()
+    return {
+        "updated_by_visit": int(cur_visit.rowcount or 0),
+        "updated_by_mis": int(cur_mis.rowcount or 0),
+    }
 
 
 def _fetch_identity(date_from: str, date_to: str) -> list[tuple[str, str, str, str]]:
@@ -60,49 +116,56 @@ def _fetch_identity(date_from: str, date_to: str) -> list[tuple[str, str, str, s
         con.close()
 
 
-def _refresh_history(db: sqlite3.Connection) -> dict[str, int]:
+def _refresh_history(db: sqlite3.Connection, *, since: str = "") -> dict[str, int]:
+    try:
+        from clinical_knowledge.mo_patient_history_bundle import build_patient_history_bundle
+    except ImportError:
+        print("history_refresh_skipped no_clinical_knowledge_deps", flush=True)
+        return {"refreshed": 0, "skipped": 1}
+
     cols = {row[1] for row in db.execute("PRAGMA table_info(fact_mo_case)")}
     if "patient_key" not in cols or "history_prior_n" not in cols:
         return {"refreshed": 0}
-    keyed = db.execute(
-        """
+    sql = """
         SELECT mis_id, visit_id, visit_date, patient_key, doctor_key, doctor_id,
                specialty, diagnosis_code
         FROM fact_mo_case
         WHERE TRIM(COALESCE(patient_key,'')) != ''
-        ORDER BY patient_key, visit_date, mis_id
-        """
-    ).fetchall()
-    by_key: dict[str, list[sqlite3.Row]] = defaultdict(list)
-    for row in keyed:
-        by_key[str(row["patient_key"])].append(row)
+    """
+    params: tuple[str, ...] = ()
+    if since:
+        sql += " AND visit_date >= ?"
+        params = (since,)
+    sql += " ORDER BY visit_date, mis_id"
+    keyed = db.execute(sql, params).fetchall()
     updated = 0
-    for key, rows in by_key.items():
-        for idx, row in enumerate(rows):
-            prior_n = idx
-            day = str(row["visit_date"] or "")[:10]
-            bundle = build_patient_history_bundle(
-                patient_key=key,
-                as_of_date=day,
-                doctor_id=str(row["doctor_id"] or "") if "doctor_id" in row.keys() else "",
-                doctor_key=str(row["doctor_key"] or ""),
-                specialty=str(row["specialty"] or ""),
-                current_code=str(row["diagnosis_code"] or ""),
-                exclude_ids={str(row["mis_id"] or ""), str(row["visit_id"] or "")},
-                warehouse=db,
-            )
-            summary = bundle.get("summary") or {}
-            tier = str(bundle.get("tier") or "")
-            prior_n = int(summary.get("n_visits") or prior_n)
-            db.execute(
-                """UPDATE fact_mo_case
-                   SET history_prior_n=?, history_tier=?
-                   WHERE mis_id=?""",
-                (prior_n, tier, row["mis_id"]),
-            )
-            updated += 1
+    for idx, row in enumerate(keyed, 1):
+        day = str(row["visit_date"] or "")[:10]
+        bundle = build_patient_history_bundle(
+            patient_key=str(row["patient_key"] or ""),
+            as_of_date=day,
+            doctor_id=str(row["doctor_id"] or "") if "doctor_id" in row.keys() else "",
+            doctor_key=str(row["doctor_key"] or ""),
+            specialty=str(row["specialty"] or ""),
+            current_code=str(row["diagnosis_code"] or ""),
+            exclude_ids={str(row["mis_id"] or ""), str(row["visit_id"] or "")},
+            warehouse=db,
+        )
+        summary = bundle.get("summary") or {}
+        prior_n = int(summary.get("n_visits") or 0)
+        tier = str(bundle.get("tier") or "")
+        db.execute(
+            """UPDATE fact_mo_case
+               SET history_prior_n=?, history_tier=?
+               WHERE mis_id=?""",
+            (prior_n, tier, row["mis_id"]),
+        )
+        updated += 1
+        if idx % 2000 == 0:
+            db.commit()
+            print("history_refresh_progress", idx, flush=True)
     db.commit()
-    return {"refreshed": updated, "patients": len(by_key)}
+    return {"refreshed": updated}
 
 
 def main() -> int:
@@ -116,9 +179,12 @@ def main() -> int:
     )
     parser.add_argument("--dry-run", action="store_true")
     parser.add_argument("--skip-history-refresh", action="store_true")
+    parser.add_argument("--refresh-since", default="")
     args = parser.parse_args()
     date.fromisoformat(args.date_from)
     date.fromisoformat(args.date_to)
+    if args.refresh_since:
+        date.fromisoformat(args.refresh_since)
 
     ident = _fetch_identity(args.date_from, args.date_to)
     print("mis_identity_rows", len(ident), flush=True)
@@ -139,29 +205,21 @@ def main() -> int:
         raise SystemExit(f"no_warehouse:{path}")
     db = sqlite3.connect(str(path))
     db.row_factory = sqlite3.Row
-    updated = 0
+    updated = {"updated_by_visit": 0, "updated_by_mis": 0}
     if not args.dry_run:
-        for visit_id, key in by_visit.items():
-            cur = db.execute(
-                """UPDATE fact_mo_case SET patient_key=?
-                   WHERE visit_id=? AND TRIM(COALESCE(patient_key,''))=''""",
-                (key, visit_id),
-            )
-            updated += cur.rowcount or 0
-        for mid, key in by_mis.items():
-            cur = db.execute(
-                """UPDATE fact_mo_case SET patient_key=?
-                   WHERE mis_id=? AND TRIM(COALESCE(patient_key,''))=''""",
-                (key, mid),
-            )
-            updated += cur.rowcount or 0
-        db.commit()
+        updated = apply_keys(db, by_visit=by_visit, by_mis=by_mis)
     keyed = db.execute(
         "SELECT COUNT(*) FROM fact_mo_case WHERE TRIM(COALESCE(patient_key,''))!=''"
     ).fetchone()[0]
-    print("warehouse_updated", updated, "keyed_now", keyed, flush=True)
+    print(
+        "warehouse_updated",
+        updated,
+        "keyed_now",
+        keyed,
+        flush=True,
+    )
     if not args.dry_run and not args.skip_history_refresh:
-        stats = _refresh_history(db)
+        stats = _refresh_history(db, since=args.refresh_since)
         print("history_refresh", stats, flush=True)
     db.close()
     return 0
