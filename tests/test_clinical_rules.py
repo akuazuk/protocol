@@ -67,4 +67,32 @@ def test_match_protocol_cards_by_icd():
     top = matched[0]
     assert top.get("match_score", 0) > 0
     blob = ((top.get("title") or "") + " " + (top.get("source_path") or "")).lower()
+    assert "дет_нас" not in blob
     assert top.get("population") == "adult" or "пищевод" in blob or "желудк" in blob
+
+
+def test_infer_population_from_det_nas_filename() -> None:
+    from clinical_knowledge.applicability import infer_card_population
+
+    child = infer_card_population(
+        {
+            "population": "any",
+            "title": "КЛИНИЧЕСКИЙ ПРОТОКОЛ",
+            "source_path": (
+                "minzdrav_protocols/gastroenterologiya/"
+                "КП_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой.pdf"
+            ),
+        }
+    )
+    adult = infer_card_population(
+        {
+            "population": "any",
+            "title": "КЛИНИЧЕСКИЙ ПРОТОКОЛ",
+            "source_path": (
+                "minzdrav_protocols/gastroenterologiya/"
+                "КП_пациентов_вз_нас_заболеваниями_пищевода_желудка.pdf"
+            ),
+        }
+    )
+    assert child == "child"
+    assert adult == "adult"

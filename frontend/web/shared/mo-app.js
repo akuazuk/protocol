@@ -2469,19 +2469,21 @@
       state.protocolSuggest = suggest || null;
       if (!suggest || !suggest.available) {
         return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-          '<p class="empty">' + esc((suggest && suggest.reason) || "Подбор протоколов пока недоступен для этого случая.") +
+          '<p class="empty">' + esc((suggest && suggest.reason) || "Нет клинического протокола МЗ по этому диагнозу") +
           '</p><p class="card-sub">Без подобранного протокола план не штрафуем за несоответствие протоколу.</p>' +
           '<button type="button" class="button secondary compact" data-retry-protocol-suggest>Повторить подбор</button></div>';
       }
       var list = suggest.items || [];
       if (!list.length) {
         return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-          '<p class="empty">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
+          '<p class="empty">' + esc(suggest.reason || "Нет клинического протокола МЗ по этому диагнозу") +
+          '</p><p class="card-sub">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
       }
       var top = list[0];
       var topViewer = protocolViewerUrl(top);
+      var topSearchQ = top.search_query || suggest.search_query || "";
       var topSearch = top.search_url || suggest.search_url ||
-        ("/doctor/search?q=" + encodeURIComponent(top.search_query || suggest.search_query || top.title || ""));
+        (topSearchQ ? ("/doctor/search?q=" + encodeURIComponent(topSearchQ)) : "");
       var topBar = '<div class="protocol-suggest-top"><span>Протокол:</span><b>' +
         esc(top.title || "без названия") + '</b>' +
         (topViewer ? '<a class="button compact" href="' + esc(topViewer) + '" target="_blank" rel="noopener">Открыть протокол</a>' : "") +
@@ -2495,8 +2497,9 @@
           return '<li>' + esc(reason.text || reason.code || "") + '</li>';
         }).join("");
         var viewer = protocolViewerUrl(item);
+        var searchQ = item.search_query || suggest.search_query || "";
         var searchUrl = item.search_url || suggest.search_url ||
-          ("/doctor/search?q=" + encodeURIComponent(item.search_query || suggest.search_query || item.title || ""));
+          (searchQ ? ("/doctor/search?q=" + encodeURIComponent(searchQ)) : "");
         var titleHtml = viewer
           ? ('<a class="protocol-suggest-title-link" href="' + esc(viewer) + '" target="_blank" rel="noopener">' +
             esc(item.title || "Протокол") + '</a>')
@@ -3172,7 +3175,7 @@
           }
         }
       } catch (e) {
-        host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
+        host.innerHTML = renderProtocolSuggest({ available: false, reason: "Нет клинического протокола МЗ по этому диагнозу" });
         bindProtocolSuggestHost(host);
       }
     }

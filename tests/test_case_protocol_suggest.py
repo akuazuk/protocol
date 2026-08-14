@@ -249,3 +249,100 @@ def test_suggest_f41_2_psychotherapist_icd_first() -> None:
         str(r.get("text") or "") for r in (top.get("reasons") or [])
     ).lower()
     assert "мкб" in blob or any(r.get("code") == "icd_fit" for r in top.get("reasons") or [])
+
+
+def test_resolve_kp_query_cascade() -> None:
+    from clinical_knowledge.case_protocol_suggest import resolve_kp_query
+
+    by_dx = resolve_kp_query(diag_text="Геморрой неуточненный", codes_in_dir=["K64.9"])
+    assert by_dx["source"] == "diagnosis"
+    assert by_dx["use_icd"] is False
+    by_icd = resolve_kp_query(diag_text="", codes_in_dir=["F41.2"])
+    assert by_icd["source"] == "icd"
+    assert by_icd["use_icd"] is True
+    by_complaints = resolve_kp_query(
+        diag_text="",
+        codes_in_dir=[],
+        graph={
+            "complaints": ["боль в заднем проходе", "кровь при дефекации"],
+            "anamnesis": "симптомы несколько месяцев",
+        },
+    )
+    assert by_complaints["source"] == "complaints_anamnesis"
+    assert "боль" in by_complaints["query"]
+    empty = resolve_kp_query(diag_text="", codes_in_dir=[], graph={})
+    assert empty["source"] == "none"
+
+
+def test_suggest_i84_9_does_not_fill_with_aneurysm() -> None:
+    """I84.9 (геморрой) → КП прямой кишки по диагнозу/содержанию, не аорта/ОПН."""
+    import os
+
+    os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
+    result = suggest_protocols_for_case(
+        clinical={
+            "clinical_diagnosis": "Геморрой неуточненный",
+            "mis_diagnos": "I84.9",
+            "patient_age_years": 41,
+        },
+        record={"visit_id": "3676800"},
+        limit=3,
+    )
+    titles = " ".join(str(item.get("title") or "") for item in result.get("items") or []).lower()
+    paths = " ".join(str(item.get("source_path") or "") for item in result.get("items") or []).lower()
+    blob = titles + " " + paths
+    assert "аневризм" not in blob
+    assert "почечн" not in blob
+    assert all(item.get("match_kind") == "clinical" for item in result.get("items") or [])
+    assert result.get("query_source") == "diagnosis"
+    assert result.get("available") is True
+    assert result.get("items")
+    assert "прямой" in blob or "параректал" in blob or "22" in blob
+
+
+def test_suggest_empty_says_no_protocol(monkeypatch) -> None:
+    monkeypatch.setenv("CASE_PROTOCOL_SUGGEST", "1")
+    monkeypatch.setattr(
+        "clinical_knowledge.protocol_match.match_protocol_cards_by_diagnosis_text",
+        lambda facts, specialty_slug=None, limit=8: [],
+    )
+    result = suggest_protocols_for_case(
+        clinical={"clinical_diagnosis": "Редкая нозология xyzzy без протокола"},
+        record={"visit_id": "no-kp"},
+        limit=3,
+    )
+    assert result["available"] is False
+    assert result["items"] == []
+    assert "Нет клинического протокола" in (result.get("reason") or "")
+
+
+def test_protocol_dedup_collapses_same_pdf_in_two_rubrics() -> None:
+    from clinical_knowledge.case_protocol_suggest import _dedup_protocol_rows
+
+    rows = [
+        {
+            "protocol_id": "a",
+            "title": "Аневризма",
+            "source_path": "minzdrav_protocols/khirurgiya/КП аневризма 01.06.2017 № 47.pdf",
+            "approval": {"date": "2017-06-01", "number": "47"},
+        },
+        {
+            "protocol_id": "b",
+            "title": "Аневризма",
+            "source_path": (
+                "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/"
+                "КП аневризма 01.06.2017 № 47.pdf"
+            ),
+            "approval": {"date": "2017-06-01", "number": "47"},
+        },
+    ]
+    out = _dedup_protocol_rows(rows)
+    assert len(out) == 1
+
+
+def test_i84_is_not_venous_leg_boost() -> None:
+    from clinical_knowledge.protocol_match import _is_venous_icd
+
+    assert _is_venous_icd(["I83.9"]) is True
+    assert _is_venous_icd(["I84.9"]) is False
+    assert _is_venous_icd(["K64.9"]) is False
