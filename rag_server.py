@@ -8479,7 +8479,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-14-054846Z-kp-sync-stats"
+BUILD_VERSION = "2026-08-14-064130Z-history-continuity"
 
 
 def _app_version() -> str:
@@ -12291,6 +12291,38 @@ def api_methodist_mo_case_detail(
                     result["record"]["attention_reason_ru"] = zones.get("attention_reason_ru")
         except Exception:  # noqa: BLE001
             result["zones"] = {"ok": False, "engine": "mo_zones_v1", "error": "zones_unavailable"}
+    if isinstance(result, dict) and role in {"methodist", "lead", "admin", "expert"}:
+        try:
+            from clinical_knowledge.mo_history_continuity import (
+                attach_continuity_to_public_bundle,
+                evaluate_history_continuity,
+            )
+
+            rec = result.get("record") if isinstance(result.get("record"), dict) else {}
+            zones = result.get("zones") if isinstance(result.get("zones"), dict) else {}
+            live_ph = result.get("patient_history") if isinstance(result.get("patient_history"), dict) else {}
+            continuity = evaluate_history_continuity(
+                current_code=str(rec.get("diagnosis_code") or rec.get("mkb_code_main") or ""),
+                current_text=str(rec.get("diagnosis_short") or rec.get("diagnosis_text") or ""),
+                history_bundle=live_ph,
+                zones={
+                    "zone1_band": zones.get("zone1_band") or rec.get("zone1_band"),
+                    "zone2a_band": zones.get("zone2a_band") or rec.get("zone2a_band"),
+                    "zone2b_band": zones.get("zone2b_band") or rec.get("zone2b_band"),
+                },
+                attention_primary=str(zones.get("attention_primary") or rec.get("attention_primary") or ""),
+                overall_pct=rec.get("overall_pct"),
+                history_prior_n=rec.get("history_prior_n"),
+                history_tier=str(rec.get("history_tier") or live_ph.get("tier") or ""),
+            )
+            result["history_continuity"] = continuity
+            result["patient_history"] = attach_continuity_to_public_bundle(live_ph, continuity)
+            if rec:
+                rec["deep_run_track"] = continuity.get("deep_run_track")
+                rec["deep_run_score"] = continuity.get("deep_run_score")
+                result["record"] = rec
+        except Exception:  # noqa: BLE001
+            pass
     # Итог разбора (machine brief) - после зон / findings / МКБ / suggest.
     if score_eligible and isinstance(result, dict):
         try:

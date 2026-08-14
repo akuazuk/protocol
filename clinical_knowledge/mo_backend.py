@@ -1883,12 +1883,18 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
             else "NULL AS zone1_band, NULL AS zone2a_band, NULL AS zone2b_band, "
             "NULL AS zone2b_kp_status, NULL AS attention_primary, NULL AS attention_reason_ru,"
         )
+        _hist_select = (
+            "c.history_prior_n, c.history_tier,"
+            if _warehouse_has_column(str(_db_path()), "fact_mo_case", "history_prior_n")
+            else "0 AS history_prior_n, '' AS history_tier,"
+        )
         action_raw = conn.execute(
             """SELECT c.mis_id, c.visit_id, c.visit_date, c.filial, c.specialty, c.diagnosis_code,
                       c.overall_pct, c.document_kind,
                       c.scorer_version, c.score_schema_version,
                       """
             + _zone_select
+            + _hist_select
             + """
                       COALESCE(NULLIF(dx.diagnosis_label,''), c.diagnosis_code) AS diagnosis,
                       COALESCE(NULLIF(d.doctor_fio,''), 'Врач не указан') AS doctor,
@@ -2244,6 +2250,10 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
         if (not doctor_name or doctor_name == "Врач не указан") and doctor_id:
             doctor_name = f"ID врача: {doctor_id}"
         seen_cases.add(case_id)
+        history_prior_n = (
+            int(row["history_prior_n"] or 0) if "history_prior_n" in row.keys() else 0
+        )
+        history_tier = str(row["history_tier"] or "") if "history_tier" in row.keys() else ""
         attention_primary = (
             str(row["attention_primary"] or "")
             if "attention_primary" in row.keys()
@@ -2322,19 +2332,39 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                     if isinstance(display_score, (int, float))
                     else ""
                 ),
+                "history_prior_n": history_prior_n,
+                "history_tier": history_tier,
             }
         )
         if len(action_cases) >= 100:
             break
-    # Сортировка: Критично → Важно → ниже формула.
+    from clinical_knowledge.mo_history_continuity import evaluate_history_continuity, rank_for_deep_run
+
+    for item in action_cases:
+        continuity = evaluate_history_continuity(
+            current_code=str(item.get("diagnosis_code") or ""),
+            current_text=str(item.get("diagnosis") or ""),
+            zones={
+                "zone1_band": item.get("zone1_band"),
+                "zone2a_band": item.get("zone2a_band"),
+                "zone2b_band": item.get("zone2b_band"),
+            },
+            attention_primary=str(item.get("attention_primary") or ""),
+            overall_pct=item.get("overall_pct"),
+            history_prior_n=int(item.get("history_prior_n") or 0),
+            history_tier=str(item.get("history_tier") or ""),
+        )
+        item["history_continuity"] = continuity
+        item["deep_run_track"] = continuity.get("deep_run_track")
+        item["deep_run_track_ru"] = continuity.get("deep_run_track_ru")
+        item["deep_run_score"] = continuity.get("deep_run_score")
+        item["history_mode_ru"] = continuity.get("mode_ru")
+    # Сортировка: safety / история-может-сменить-вердикт → Critically/Важно → ниже формула.
     _rank = {"P0": 0, "P1": 1, "P2": 2, "P3": 3}
     action_cases.sort(
         key=lambda item: (
+            rank_for_deep_run(item),
             _rank.get(str(item.get("severity") or ""), 9),
-            float(item["overall_pct"])
-            if isinstance(item.get("overall_pct"), (int, float))
-            else 999.0,
-            str(item.get("case_id") or ""),
         )
     )
     try:

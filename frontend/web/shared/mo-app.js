@@ -2660,6 +2660,20 @@
       return '<div class="detail-block"><h3>Что не так</h3>' + chips + llmLine +
         '<div class="findings-compact-list">' + list + '</div></div>';
     }
+    function renderHistoryContinuity(cont) {
+      if (!cont || !cont.mode) return "";
+      var track = cont.deep_run_track || "";
+      var tone = track === "safety" || track === "history" ? "review" : (track === "strong_model" ? "review" : "good");
+      var already = (cont.already_described || []).length
+        ? "Уже встречалось: " + (cont.already_described.indexOf("diagnosis") >= 0 ? "диагноз" : "описание") +
+          (cont.last_matched_date ? (" (" + cont.last_matched_date + ")") : "")
+        : "";
+      return '<p><b>' + esc(cont.mode_ru || "") + "</b></p>" +
+        (already ? '<p class="card-sub">' + esc(already) + "</p>" : "") +
+        '<p class="card-sub"><span class="status ' + tone + '">' + esc(cont.deep_run_track_ru || "") +
+        "</span></p>" +
+        (cont.usage_ru ? '<p class="card-sub">' + esc(cont.usage_ru) + "</p>" : "");
+    }
     function renderHistoryCompact(bundle) {
       if (!bundle || !bundle.summary) {
         return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
@@ -2671,9 +2685,10 @@
       var sameSpec = (bundle.same_specialty || []).length;
       var prior = n > 0 ? "есть prior" : "нет prior";
       return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
+        renderHistoryContinuity(bundle.continuity) +
         '<p>К этому врачу: ' + sameDoc + ' · К специальности: ' + sameSpec +
         ' · Всего: ' + n + ' · Для коррекций плана: ' + prior + '</p>' +
-        (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются.</p>' : "") +
+        (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются, если на складе нет более ранних визитов с ключом пациента.</p>' : "") +
         '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
     }
     function renderReviewBrief(brief, narrative) {
@@ -2888,7 +2903,11 @@
           renderReviewBrief(data.review_brief, data.case_narrative) +
           renderFindingsCompact(findings, crm, llmJudge) +
           renderZonesCriteriaDetails(zones) +
-          renderHistoryCompact(data.patient_history) +
+          renderHistoryCompact((function () {
+            var hist = data.patient_history || {};
+            if (!hist.continuity && data.history_continuity) hist.continuity = data.history_continuity;
+            return hist;
+          })()) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
           serviceHtml +
           '</div>' +
@@ -3455,6 +3474,8 @@
         var visitId = item.visit_id || item.case_id || "-";
         var layer = item.layer_ru || layerLabelRu(item.attention_primary) || "-";
         var reason = item.attention_reason_ru || item.reason || item.finding_title || item.finding_code || "";
+        var deep = item.deep_run_track_ru || item.history_mode_ru || "";
+        if (deep) reason = (reason ? reason + " · " : "") + deep;
         return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
           esc(severityTone(item)) + '">' + esc(severityLabel(item)) +
           '</span></td><td>' + esc(layer) +
