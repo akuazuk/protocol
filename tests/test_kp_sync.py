@@ -203,6 +203,8 @@ def test_superseded_and_rehab_not_primary():
     ]
     from unittest.mock import patch
 
+    from clinical_knowledge.protocol_candidate_index import clear_candidate_index
+
     facts = {
         "consultation": {
             "icd10": ["I21"],
@@ -211,25 +213,23 @@ def test_superseded_and_rehab_not_primary():
         "patient_context": {"adult_or_child": "adult", "visit_date": "2026-07-15"},
     }
     with patch(
-        "clinical_knowledge.protocol_match.load_protocol_cards_registry",
+        "clinical_knowledge.loader.load_protocol_cards_registry",
         return_value=cards,
     ):
+        clear_candidate_index()
         out = match_protocol_cards(
             facts,
             specialty_slug="bolezni-sistemy-krovoobrashcheniya",
             limit=3,
         )
-    assert out == []
-    facts["patient_context"]["visit_date"] = "2017-06-01"
-    with patch(
-        "clinical_knowledge.protocol_match.load_protocol_cards_registry",
-        return_value=cards,
-    ):
+        assert out == []
+        facts["patient_context"]["visit_date"] = "2017-06-01"
         historic = match_protocol_cards(
             facts,
             specialty_slug="bolezni-sistemy-krovoobrashcheniya",
             limit=3,
         )
+    clear_candidate_index()
     assert historic
     assert historic[0]["protocol_id"] == "old"
 

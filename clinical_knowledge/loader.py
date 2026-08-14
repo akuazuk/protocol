@@ -40,10 +40,12 @@ def load_protocol_cards_registry() -> list[dict[str, Any]]:
         rows = _read_jsonl(p)
         if rows:
             try:
+                from clinical_knowledge.kp_card_enrich import attach_icd_from_content
                 from clinical_knowledge.kp_validity import attach_validity_fields
 
                 for row in rows:
                     attach_validity_fields(row)
+                    attach_icd_from_content(row)
             except Exception:  # noqa: BLE001
                 pass
             return rows

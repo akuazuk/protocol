@@ -8,8 +8,8 @@ from .applicability import assess_card_applicability, infer_card_population
 from .condition_registry import score_card_for_hint
 from .diagnosis_icd import is_symptom_code, prioritize_codes
 from .kp_validity import card_in_force_on, looks_omnibus
-from .loader import load_protocol_cards_registry
 from .patient_age import parse_iso_date
+from .protocol_candidate_index import select_candidate_cards
 from .protocol_pick_filters import (
     clinical_relevance_multiplier,
     icd_fit_for_card,
@@ -412,8 +412,8 @@ def compute_match_score(
             pass
 
     # Омнибус без нозологии в содержании - даже если формально ещё в силе.
-    if looks_omnibus(card) and diag_part < 0.35:
-        raw *= 0.22
+    if looks_omnibus(card) and diag_part < 0.5:
+        raw *= 0.12
 
     return round(max(0.0, min(100.0, raw * 100)), 2)
 
@@ -430,10 +430,6 @@ def match_protocol_cards(
     use_icd=True (consult/default): МКБ + популяция + нозология.
     use_icd=False (МО Suggest): текст диагноза, без поиска по МКБ.
     """
-    cards = load_protocol_cards_registry()
-    if specialty_slug:
-        cards = [c for c in cards if c.get("specialty_slug") == specialty_slug]
-
     ctx = consult_facts.get("patient_context") or {}
     cons = consult_facts.get("consultation") or {}
     icd_list = (
@@ -448,10 +444,20 @@ def match_protocol_cards(
     complaints = list(cons.get("complaints") or [])
     performed = list(cons.get("performed_exams") or [])
     bridge_cands: list[dict[str, Any]] = []
-    if not use_icd and diag_text.strip():
+    if diag_text.strip():
         from clinical_knowledge.dx_query_expand import bridge_icd_candidates
 
         bridge_cands = bridge_icd_candidates(diag_text)
+    bridge_codes = [
+        str(item.get("code") or "").strip().upper()
+        for item in bridge_cands
+        if item.get("code")
+    ]
+    cards = select_candidate_cards(
+        diag_text=diag_text,
+        icd_list=list(icd_list) + bridge_codes,
+        specialty_slug=specialty_slug,
+    )
 
     scored: list[tuple[float, dict[str, Any]]] = []
     for card in cards:

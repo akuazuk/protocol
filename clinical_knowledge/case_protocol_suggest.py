@@ -815,6 +815,16 @@ def suggest_protocols_for_case(
             seen_ids.add(pid)
 
     matched = _dedup_protocol_rows(matched)
+    try:
+        from clinical_knowledge.kp_validity import looks_omnibus
+
+        matched = [
+            row
+            for row in matched
+            if not looks_omnibus(row) or _diag_overlap(row, graph) >= 0.5
+        ]
+    except Exception:  # noqa: BLE001
+        pass
     if use_icd:
         # Отсечь specialty baseline без ICD/text clinical сигнала.
         # Содержание КП (геморрой в тексте №22) тоже clinical, даже если кода нет на карточке.
