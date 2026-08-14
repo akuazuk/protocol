@@ -1,6 +1,6 @@
 # МО: точность подбора КП после выкладки content-search
 
-Статус: **active**  
+Статус: **archived** (преемник: `2026-08-14-mo-kp-suggest-accuracy-v2.md`)  
 Дата: 2026-08-14  
 База: merge `#149` (`8d69404`), прод `2026-08-14-090123Z-kp-adult-pop-fix` на `protocol.kravira.by`.  
 Преемник точности для: `2026-08-08-mo-icd-first-kp-suggest-v1.md` (каскад и «нет протокола» уже в проде).

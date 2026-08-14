@@ -1,6 +1,7 @@
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-08-14-mo-kp-suggest-accuracy-v1.md](2026-08-14-mo-kp-suggest-accuracy-v1.md) | Точность подбора КП: прогон июля после #149, омнибус/пусто/возраст | active |
+| [2026-08-14-mo-kp-suggest-accuracy-v2.md](2026-08-14-mo-kp-suggest-accuracy-v2.md) | Точность КП: возраст с ДР + не искать КП, отменённый до визита | active |
+| [2026-08-14-mo-kp-suggest-accuracy-v1.md](2026-08-14-mo-kp-suggest-accuracy-v1.md) | Точность подбора КП: прогон июля после #149 | archived (преемник: mo-kp-suggest-accuracy-v2) |
 | [2026-08-14-mo-history-continuity-deep-run-v1.md](2026-08-14-mo-history-continuity-deep-run-v1.md) | Плохая оценка МО: непрерывность эпизода + отбор на глубокий прогон истории | active |
 | [2026-08-14-minzdrav-kp-sync-stats-v1.md](2026-08-14-minzdrav-kp-sync-stats-v1.md) | Вкладка Протоколы МЗ: даты постов/сверок, сводки периодов и диаграммы | active |
 | [2026-08-13-minzdrav-kp-daily-sync-v2.md](2026-08-13-minzdrav-kp-daily-sync-v2.md) | Daily КП: только новые PDF на GCE; cards/ICD/tables для точного suggest и plan-score | active |

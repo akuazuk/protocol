@@ -4,10 +4,13 @@
 - production SHA: `8d69404228faf3817098682eccabffcffbabe8b6`
 - `BUILD_VERSION` на `protocol.kravira.by`: `2026-08-14-090123Z-kp-adult-pop-fix`
 - `/health/live`: ok
-- план точности: `docs/plans/2026-08-14-mo-kp-suggest-accuracy-v1.md`
+- план точности: `docs/plans/2026-08-14-mo-kp-suggest-accuracy-v2.md` (v1 archived)
 - ветка плана: `cursor/kp-suggest-accuracy-plan-pc1`
 
 ## Сделано
+
+- v2 плана: возраст = готовые годы или расчёт от `patient_bdate` на дату визита;
+  не искать КП, отменённый до визита (исторический визит может брать старый КП).
 
 - Merge PR #149 (CI зелёный после фикса `дет_нас` vs взрослый K21.9).
 - Deploy GCE из worktree `origin/main` @ `8d69404`.
