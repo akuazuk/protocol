@@ -94,7 +94,7 @@ L1 (как сейчас)  →  зоны + whitelist-очередь
 - [x] S2. Слой B: слоты prior + shadow + live prior_clinical.
 - [x] S3. Слой C: GCE runner с `--llm`.
 - [x] S4. Backfill `patient_key` из MIS (identity only).
-- [ ] S5. Merge → deploy → backfill на GCE → deep run вчера.
+- [x] S5. Merge #145 → deploy `2026-08-14-065244Z-history-deep` → backfill ключей (100129) → слой B вчера → слой C (Gemini ResourceExhausted).
 
 ## Риски
 
