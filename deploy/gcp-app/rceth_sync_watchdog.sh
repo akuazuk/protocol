@@ -107,13 +107,14 @@ NEED=0
 REASON=""
 case "$STATUS_NAME" in
   running|queued)
-    if [[ "$STALE" == "1" ]]; then
-      NEED=1
-      REASON="running_stale age=${AGE}"
-    else
-      log "wait: status=${STATUS_NAME} but no process yet (age=${AGE})"
+    # Process already confirmed dead above. Do not wait for heartbeat stale -
+    # otherwise UI stays interrupted for minutes after container kill/OOM.
+    if [[ -n "$AGE" && "$AGE" != "None" && "$AGE" -lt 45 ]]; then
+      log "wait: status=${STATUS_NAME} just updated (age=${AGE}s), grace before restart"
       exit 0
     fi
+    NEED=1
+    REASON="running_without_process age=${AGE}"
     ;;
   interrupted|error)
     NEED=1
@@ -130,8 +131,56 @@ case "$STATUS_NAME" in
 esac
 
 if [[ ! -f "$JOB_ENV" ]]; then
-  log "skip: need restart (${REASON}) but missing ${JOB_ENV}"
-  exit 0
+  # Синтез knobs из status + volume (пилот мог стартовать без last_job.env).
+  python3 - "$STATUS" "$DATA" "$JOB_ENV" <<'PY'
+import json, os, sys
+from pathlib import Path
+status_path, data, out = Path(sys.argv[1]), Path(sys.argv[2]), Path(sys.argv[3])
+total, phase = 0, ""
+if status_path.is_file():
+    try:
+        d = json.loads(status_path.read_text(encoding="utf-8"))
+        prog = d.get("progress") if isinstance(d.get("progress"), dict) else {}
+        total = int(prog.get("total") or 0)
+        phase = str(d.get("phase") or "")
+    except Exception:
+        pass
+pdf_n = len(list((data / "pdfs" / "instr").glob("*_s.pdf"))) if (data / "pdfs" / "instr").is_dir() else 0
+labels_n = len(list((data / "labels").glob("*.json"))) if (data / "labels").is_dir() else 0
+manifest = data / "manifest.jsonl"
+has_manifest = manifest.is_file() and manifest.stat().st_size > 0
+if not has_manifest and pdf_n == 0:
+    raise SystemExit("no_volume")
+# Prefer parse-only resume when PDFs already on disk.
+limit = total if total > 0 else (50 if pdf_n and pdf_n <= 200 else 0)
+skip_dl = "1" if pdf_n > 0 else "0"
+skip_crawl = "1" if has_manifest else "0"
+lines = [
+    "RCETH_MODE=resume",
+    f"RCETH_LIMIT={limit}",
+    "RCETH_THROTTLE=0.6",
+    "RCETH_MAX_LETTERS=",
+    "RCETH_HTTP_TIMEOUT=30",
+    "RCETH_HTTP_RETRIES=3",
+    "RCETH_INSECURE_SSL=1",
+    "RCETH_SYNC_CONTAINER=protocol-web",
+    "RCETH_PARSE=1",
+    f"RCETH_SKIP_CRAWL={skip_crawl}",
+    f"RCETH_SKIP_DOWNLOAD={skip_dl}",
+    f"RCETH_DATA_ROOT={data}",
+    "RCETH_PDF_MAX_BYTES=8388608",
+    "PROTOCOL_ROOT=/opt/protocol",
+]
+out.parent.mkdir(parents=True, exist_ok=True)
+out.write_text("\n".join(lines) + "\n", encoding="utf-8")
+print(f"synthesized limit={limit} pdfs={pdf_n} labels={labels_n} phase={phase} skip_dl={skip_dl}")
+PY
+  syn_rc=$?
+  if [[ "$syn_rc" -ne 0 ]]; then
+    log "skip: need restart (${REASON}) but cannot synthesize ${JOB_ENV}"
+    exit 0
+  fi
+  log "synthesized ${JOB_ENV}"
 fi
 if [[ ! -x "$JOB_SCRIPT" ]]; then
   log "skip: job script missing ${JOB_SCRIPT}"
@@ -144,22 +193,24 @@ if [[ "$COUNT" == "blocked" ]]; then
   exit 0
 fi
 
-# Resume: skip crawl (manifest already on disk); download is resume-safe.
+# Resume: skip crawl by default; download resume-safe; parse skips existing labels.
 # shellcheck disable=SC1090
 set -a
-# defaults then overlay last job
 RCETH_SKIP_CRAWL=1
 RCETH_SKIP_DOWNLOAD=0
 RCETH_PARSE=1
 # shellcheck source=/dev/null
 source "$JOB_ENV"
 set +a
-# Force resume knobs for crash recovery (keep LIMIT/MODE from last job).
-export RCETH_SKIP_CRAWL=1
+export RCETH_SKIP_CRAWL="${RCETH_SKIP_CRAWL:-1}"
 export RCETH_DATA_ROOT="${RCETH_DATA_ROOT:-$DATA}"
 export RCETH_SYNC_CONTAINER="${RCETH_SYNC_CONTAINER:-$CONTAINER}"
+# If PDFs already present, skip re-download on crash recovery.
+if [[ -d "${RCETH_DATA_ROOT}/pdfs/instr" ]] && ls "${RCETH_DATA_ROOT}/pdfs/instr"/*_s.pdf >/dev/null 2>&1; then
+  export RCETH_SKIP_DOWNLOAD=1
+fi
 
-log "restart #${COUNT}: ${REASON} script=${JOB_SCRIPT} limit=${RCETH_LIMIT:-?} mode=${RCETH_MODE:-?}"
+log "restart #${COUNT}: ${REASON} script=${JOB_SCRIPT} limit=${RCETH_LIMIT:-?} mode=${RCETH_MODE:-?} skip_dl=${RCETH_SKIP_DOWNLOAD}"
 if [[ "$DRY" == "1" || "$DRY" == "true" ]]; then
   log "dry-run: not starting"
   exit 0
@@ -175,7 +226,7 @@ nohup env \
   RCETH_INSECURE_SSL="${RCETH_INSECURE_SSL:-1}" \
   RCETH_SYNC_CONTAINER="${RCETH_SYNC_CONTAINER}" \
   RCETH_PARSE="${RCETH_PARSE:-1}" \
-  RCETH_SKIP_CRAWL=1 \
+  RCETH_SKIP_CRAWL="${RCETH_SKIP_CRAWL:-1}" \
   RCETH_SKIP_DOWNLOAD="${RCETH_SKIP_DOWNLOAD:-0}" \
   RCETH_DATA_ROOT="${RCETH_DATA_ROOT}" \
   RCETH_PDF_MAX_BYTES="${RCETH_PDF_MAX_BYTES:-8388608}" \
