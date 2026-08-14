@@ -44,7 +44,7 @@
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Сегодня", queue: "Очередь",
       documents: "Все случаи", doctors: "Врачи",
-      reports: "Отчёты", "kp-sync": "Протоколы МЗ", settings: "Справка"
+      reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции ЛС", settings: "Справка"
     };
     var REMOVED_PAGES = {
       specialties: true, diagnoses: true, safety: true,
@@ -1080,6 +1080,7 @@
       if (REMOVED_PAGES[page]) page = (page === "access-log" || page === "data-quality") ? "reports" : "documents";
       if (!PAGE_TITLES[page]) page = "yesterday";
       if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
+      if (page !== "rceth-sync" && typeof stopRcethSyncPoll === "function") stopRcethSyncPoll();
       state.page = page;
       document.querySelectorAll(".page").forEach(function (section) { section.hidden = section.getAttribute("data-page") !== page; });
       document.querySelectorAll(".nav-button").forEach(function (button) {
@@ -2469,21 +2470,19 @@
       state.protocolSuggest = suggest || null;
       if (!suggest || !suggest.available) {
         return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-          '<p class="empty">' + esc((suggest && suggest.reason) || "Нет клинического протокола МЗ по этому диагнозу") +
+          '<p class="empty">' + esc((suggest && suggest.reason) || "Подбор протоколов пока недоступен для этого случая.") +
           '</p><p class="card-sub">Без подобранного протокола план не штрафуем за несоответствие протоколу.</p>' +
           '<button type="button" class="button secondary compact" data-retry-protocol-suggest>Повторить подбор</button></div>';
       }
       var list = suggest.items || [];
       if (!list.length) {
         return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-          '<p class="empty">' + esc(suggest.reason || "Нет клинического протокола МЗ по этому диагнозу") +
-          '</p><p class="card-sub">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
+          '<p class="empty">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
       }
       var top = list[0];
       var topViewer = protocolViewerUrl(top);
-      var topSearchQ = top.search_query || suggest.search_query || "";
       var topSearch = top.search_url || suggest.search_url ||
-        (topSearchQ ? ("/doctor/search?q=" + encodeURIComponent(topSearchQ)) : "");
+        ("/doctor/search?q=" + encodeURIComponent(top.search_query || suggest.search_query || top.title || ""));
       var topBar = '<div class="protocol-suggest-top"><span>Протокол:</span><b>' +
         esc(top.title || "без названия") + '</b>' +
         (topViewer ? '<a class="button compact" href="' + esc(topViewer) + '" target="_blank" rel="noopener">Открыть протокол</a>' : "") +
@@ -2497,9 +2496,8 @@
           return '<li>' + esc(reason.text || reason.code || "") + '</li>';
         }).join("");
         var viewer = protocolViewerUrl(item);
-        var searchQ = item.search_query || suggest.search_query || "";
         var searchUrl = item.search_url || suggest.search_url ||
-          (searchQ ? ("/doctor/search?q=" + encodeURIComponent(searchQ)) : "");
+          ("/doctor/search?q=" + encodeURIComponent(item.search_query || suggest.search_query || item.title || ""));
         var titleHtml = viewer
           ? ('<a class="protocol-suggest-title-link" href="' + esc(viewer) + '" target="_blank" rel="noopener">' +
             esc(item.title || "Протокол") + '</a>')
@@ -3175,7 +3173,7 @@
           }
         }
       } catch (e) {
-        host.innerHTML = renderProtocolSuggest({ available: false, reason: "Нет клинического протокола МЗ по этому диагнозу" });
+        host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
         bindProtocolSuggestHost(host);
       }
     }
@@ -4507,6 +4505,91 @@
       renderKpSyncCharts(data);
       kpis.setAttribute("data-tone", tone);
     }
+    var rcethSyncPollTimer = null;
+    function stopRcethSyncPoll() {
+      if (rcethSyncPollTimer) {
+        window.clearInterval(rcethSyncPollTimer);
+        rcethSyncPollTimer = null;
+      }
+    }
+    function renderRcethSyncLive(data) {
+      var banner = $("rceth-sync-live");
+      var text = $("rceth-sync-live-text");
+      if (!banner || !text) return false;
+      var live = data.live || {};
+      var running = !!data.running || live.status === "running" || live.status === "queued";
+      banner.hidden = !running;
+      if (!running) return false;
+      var done = live.done != null ? live.done : "?";
+      var total = live.total != null ? live.total : "?";
+      text.textContent =
+        (live.phase || "sync") +
+        " · " + done + "/" + total +
+        (live.message ? " · " + live.message : "") +
+        (live.current_reg_id ? " · " + live.current_reg_id : "") +
+        (live.errors ? " · ошибок " + live.errors : "");
+      return true;
+    }
+    function startRcethSyncPoll() {
+      stopRcethSyncPoll();
+      var ticks = 0;
+      rcethSyncPollTimer = window.setInterval(async function () {
+        ticks += 1;
+        try {
+          var response = await request("/rceth-sync", "/rceth-sync");
+          if (!response.ok) return;
+          var data = await response.json();
+          renderRcethSync(data);
+          if (!data.running || ticks >= 900) stopRcethSyncPoll();
+        } catch (error) {}
+      }, 2000);
+    }
+    function renderRcethSync(data) {
+      var kpis = $("rceth-sync-kpis");
+      if (!kpis) return;
+      var latest = data.latest || {};
+      var history = data.history || [];
+      var running = renderRcethSyncLive(data);
+      if ($("rceth-sync-freshness")) {
+        $("rceth-sync-freshness").textContent = latest.sync_day
+          ? ("сверка " + latest.sync_day)
+          : (data.status === "unavailable" ? "нет данных" : (data.status || "idle"));
+      }
+      kpis.innerHTML =
+        kpi("В манифесте", latest.manifest_count, "действующих записей") +
+        kpi("С инструкцией", latest.with_s_pdf, "есть ссылка на _s.pdf") +
+        kpi("Скачано", latest.downloaded, "PDF на volume") +
+        kpi("Ошибки", latest.failed || 0, (latest.no_pdf != null ? ("без PDF: " + latest.no_pdf) : ""));
+      var hist = $("rceth-sync-history-table");
+      if (hist) {
+        if (!history.length) {
+          hist.innerHTML = '<p class="empty">Пока нет прогонов rceth_sync_*.json</p>';
+        } else {
+          hist.innerHTML =
+            '<table class="data-table"><thead><tr><th>День</th><th>Манифест</th><th>С инструкцией</th><th>Скачано</th><th>Ошибки</th><th>Без PDF</th></tr></thead><tbody>' +
+            history.slice().reverse().map(function (row) {
+              return "<tr><td>" + esc(row.sync_day || "") +
+                "</td><td>" + esc(row.manifest_count != null ? row.manifest_count : "") +
+                "</td><td>" + esc(row.with_s_pdf != null ? row.with_s_pdf : "") +
+                "</td><td>" + esc(row.downloaded != null ? row.downloaded : "") +
+                "</td><td>" + esc(row.failed || 0) +
+                "</td><td>" + esc(row.no_pdf != null ? row.no_pdf : "") +
+                "</td></tr>";
+            }).join("") + "</tbody></table>";
+        }
+      }
+      kpis.setAttribute("data-tone", running ? "review" : "good");
+      if (running && !rcethSyncPollTimer) startRcethSyncPoll();
+      if (!running) stopRcethSyncPoll();
+    }
+    async function loadRcethSync() {
+      var kpis = $("rceth-sync-kpis");
+      if (!kpis) return;
+      var response = await request("/rceth-sync", "/rceth-sync");
+      if (!response.ok) throw new Error("Не удалось загрузить статус инструкций ЛС.");
+      var data = await response.json();
+      renderRcethSync(data);
+    }
     function renderKpSyncCharts(data) {
       var history = data.history || [];
       var years = (data.by_year || []).filter(function (row) { return row.year !== "нет даты"; });
@@ -4595,6 +4678,7 @@
           try { await loadDataQuality(); } catch (e) {}
         }
         else if (page === "kp-sync") await loadKpSync();
+        else if (page === "rceth-sync") await loadRcethSync();
         else if (page === "settings") await loadSettingsPage();
         else await ensureSummary();
       } catch (e) { showError(e.message || String(e)); }

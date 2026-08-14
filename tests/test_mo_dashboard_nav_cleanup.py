@@ -1,4 +1,4 @@
-"""D6: hidden legacy pages removed; nav stays 7 + settings."""
+"""D6: hidden legacy pages removed; nav stays 8 + settings (КП + Инструкции ЛС)."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -11,7 +11,8 @@ APP = (ROOT / "frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
 def test_nav_only_seven_visible_and_settings_hidden() -> None:
     nav = HTML.split('id="app-nav"')[1].split("</ul>")[0]
     visible = [l for l in nav.splitlines() if "nav-button" in l and "<li hidden>" not in l]
-    assert len(visible) == 7
+    assert len(visible) == 8
+    assert 'data-page="rceth-sync"' in nav
     assert 'data-page="settings"' in nav
     assert "<li hidden>" in nav
 

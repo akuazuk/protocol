@@ -8317,6 +8317,12 @@ def api_corpus_stats() -> dict:
         out["kp_sync"] = public_kp_sync_payload(load_latest_kp_sync())
     except Exception:
         out["kp_sync"] = {"ok": True, "status": "unavailable"}
+    try:
+        from clinical_knowledge.rceth_sync.status import public_rceth_sync_payload
+
+        out["rceth_sync"] = public_rceth_sync_payload()
+    except Exception:
+        out["rceth_sync"] = {"ok": True, "status": "unavailable"}
     return out
 
 
@@ -8479,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-14-090123Z-kp-adult-pop-fix"
+BUILD_VERSION = "2026-08-14-091632Z-rceth-sync-ui"
 
 
 def _app_version() -> str:
@@ -12717,6 +12723,15 @@ def api_methodist_mo_kp_sync(
     from clinical_knowledge.kp_sync.status import load_latest_kp_sync, public_kp_sync_payload
 
     return public_kp_sync_payload(load_latest_kp_sync(), days=days)
+
+
+@app.get("/api/methodist/mo/rceth-sync")
+def api_methodist_mo_rceth_sync(request: "Request") -> dict:
+    """Статус корпуса инструкций ЛС rceth (без текстов PDF и ПДн)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.rceth_sync.status import public_rceth_sync_payload
+
+    return public_rceth_sync_payload()
 
 
 @app.get("/api/methodist/mo/capabilities")

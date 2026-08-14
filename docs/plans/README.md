@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-14-rceth-drug-labels-mo-v1.md](2026-08-14-rceth-drug-labels-mo-v1.md) | Rceth ЛС: GCE download/sync + UI как КП (live progress) + разметка ОХЛП для МО | active |
 | [2026-08-14-mo-history-continuity-deep-run-v1.md](2026-08-14-mo-history-continuity-deep-run-v1.md) | Плохая оценка МО: непрерывность эпизода + отбор на глубокий прогон истории | active |
 | [2026-08-14-minzdrav-kp-sync-stats-v1.md](2026-08-14-minzdrav-kp-sync-stats-v1.md) | Вкладка Протоколы МЗ: даты постов/сверок, сводки периодов и диаграммы | active |
 | [2026-08-13-minzdrav-kp-daily-sync-v2.md](2026-08-13-minzdrav-kp-daily-sync-v2.md) | Daily КП: только новые PDF на GCE; cards/ICD/tables для точного suggest и plan-score | active |

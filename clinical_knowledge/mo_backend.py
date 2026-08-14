@@ -4360,6 +4360,7 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
             "data_quality": can_view_population and not is_expert,
             "reports": can_view_population or is_expert,
             "kp_sync": can_view_population and not is_expert,
+            "rceth_sync": can_view_population and not is_expert,
             "settings": normalized_role in {"methodist", "lead", "admin"},
         },
         "actions": {
