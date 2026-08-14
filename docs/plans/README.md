@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-14-minzdrav-kp-sync-stats-v1.md](2026-08-14-minzdrav-kp-sync-stats-v1.md) | Вкладка Протоколы МЗ: даты постов/сверок, сводки периодов и диаграммы | active |
 | [2026-08-13-minzdrav-kp-daily-sync-v2.md](2026-08-13-minzdrav-kp-daily-sync-v2.md) | Daily КП: только новые PDF на GCE; cards/ICD/tables для точного suggest и plan-score | active |
 | [2026-08-13-minzdrav-kp-daily-sync-v1.md](2026-08-13-minzdrav-kp-daily-sync-v1.md) | Ежедневная сверка КП МЗ + вкладка МО (черновик пайплайна) | archived (преемник: minzdrav-kp-daily-sync-v2) |
 | [2026-08-11-mo-ddi-topical-demote-v1.md](2026-08-11-mo-ddi-topical-demote-v1.md) | Major DDI с топическим НПВП (гель) → Умеренно, не очередь Критично | completed (хвост: backfill данных; handoff 2026-08-11) |

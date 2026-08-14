@@ -289,10 +289,58 @@ def test_public_kp_sync_payload(tmp_path: Path):
         encoding="utf-8",
     )
     raw = load_latest_kp_sync(tmp_path)
-    pub = public_kp_sync_payload(raw)
+    pub = public_kp_sync_payload(raw, history=[], catalog=[])
     assert pub["site_count"] == 10
     assert pub["changed_n"] == 1
     assert pub["added"][0]["filename"] == "a.pdf"
+
+
+def test_kp_sync_stats_dates_history_and_periods(tmp_path: Path):
+    from clinical_knowledge.kp_sync.status import load_all_kp_syncs, public_kp_sync_payload
+
+    (tmp_path / "kp_sync_2026-08-01.json").write_text(
+        '{"status":"success","site_count":500,"local_count":450,"added":[{"filename":"пост. МЗ РБ от 28.04.2026 №44_КП_ОКС.pdf","slug":"bolezni-sistemy-krovoobrashcheniya","relative_path":"minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/a.pdf","action":"downloaded"}],"updated":[],"superseded":[],"changed_paths":["minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/a.pdf"]}',
+        encoding="utf-8",
+    )
+    (tmp_path / "kp_sync_2026-08-13.json").write_text(
+        '{"status":"success","site_count":544,"local_count":532,"added":[],"updated":[{"filename":"КП2.pdf","slug":"revmatologiya","relative_path":"minzdrav_protocols/revmatologiya/КП2.pdf","action":"updated"}],"superseded":[],"changed_paths":["minzdrav_protocols/revmatologiya/КП2.pdf"]}',
+        encoding="utf-8",
+    )
+    hist = load_all_kp_syncs(tmp_path)
+    assert [row["_sync_day"] for row in hist] == ["2026-08-01", "2026-08-13"]
+    catalog = [
+        {
+            "path": "minzdrav_protocols/bolezni-sistemy-krovoobrashcheniya/пост. МЗ РБ от 28.04.2026 №44_КП_ОКС.pdf",
+            "specialty_slug": "bolezni-sistemy-krovoobrashcheniya",
+            "display_title": "ОКС 28.04.2026 №44",
+            "protocol_kind": "clinical",
+        },
+        {
+            "path": "minzdrav_protocols/gastroenterologiya/old_2017.pdf",
+            "specialty_slug": "gastroenterologiya",
+            "display_title": "инфаркт 06.06.2017 №59",
+            "protocol_kind": "clinical",
+        },
+    ]
+    pub = public_kp_sync_payload(hist[-1], history=hist, catalog=catalog)
+    first = public_kp_sync_payload(hist[0], history=hist, catalog=catalog)
+    assert first["added"][0]["post_date"] == "28.04.2026"
+    assert first["added"][0]["post_number"] == "44"
+    assert first["added"][0]["synced_on"] == "2026-08-01"
+    assert [row["date"] for row in pub["history"]] == ["2026-08-01", "2026-08-13"]
+    assert pub["history"][0]["added"] == 1
+    assert pub["history"][1]["updated"] == 1
+    assert pub["post_periods"]["y2026"] == 1
+    years = {row["year"]: row["n"] for row in pub["by_year"]}
+    assert years["2026"] == 1
+    assert years["2017"] == 1
+    months = {row["month"]: row["n"] for row in pub["by_month"]}
+    assert months["2026-04"] == 1
+    assert months["2017-06"] == 1
+    assert pub["sync_periods"]["ytd"]["added"] == 1
+    assert pub["sync_periods"]["ytd"]["updated"] == 1
+    assert pub["sync_periods"]["ytd"]["nights"] == 2
+    assert pub["catalog_n"] == 2
 
 
 def test_scan_local_from_pdf_root(tmp_path: Path):

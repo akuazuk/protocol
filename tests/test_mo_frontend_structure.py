@@ -63,6 +63,17 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
     assert 'id="doctor-zone-chart"' in HTML
     assert 'data-zone-preset="dx"' in HTML
     assert 'id="access-log-content"' in HTML  # secondary under Отчёты
+    for chart_id in (
+        "kp-sync-history-chart",
+        "kp-sync-history-table",
+        "kp-sync-month-chart",
+        "kp-sync-year-chart",
+        "kp-sync-slug-chart",
+        "kp-sync-period-kpis",
+        "kp-sync-period-table",
+        "kp-sync-recent",
+    ):
+        assert f'id="{chart_id}"' in HTML
 
 
 def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
