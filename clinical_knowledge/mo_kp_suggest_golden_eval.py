@@ -1,7 +1,8 @@
 """Golden-eval: верно / неверно найден КП по диагнозу МО.
 
 Fixture: tests/fixtures/mo_kp_suggest_golden.jsonl
-План: docs/plans/2026-08-08-mo-kp-history-episode-suggest-v1.md
+Планы: docs/plans/2026-08-08-mo-kp-history-episode-suggest-v1.md,
+docs/plans/2026-08-14-mo-kp-suggest-accuracy-v2.md
 """
 from __future__ import annotations
 
@@ -94,6 +95,11 @@ def evaluate_mo_kp_suggest_row(
         errors.append(f"min_top_score {min_score} got {top_score}")
     if expect_no_clinical and any(k == "clinical" for k in kinds):
         errors.append("expect_no_clinical but clinical present in top")
+    if "expect_available" in row:
+        want_avail = bool(row.get("expect_available"))
+        got_avail = bool(result.get("available"))
+        if got_avail != want_avail:
+            errors.append(f"expect_available={want_avail} got={got_avail} top={top_path[:80]}")
     if reject_any:
         bad = [p for p in paths if _path_has_any(p, reject_any)]
         if bad:
