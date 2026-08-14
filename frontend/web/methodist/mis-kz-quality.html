@@ -277,13 +277,13 @@
         </section>
         <section class="page" id="page-rceth-sync" data-page="rceth-sync" hidden aria-labelledby="title-rceth-sync">
           <div class="page-head"><div><h1 id="title-rceth-sync">Инструкции ЛС</h1><p>Корпус инструкций специалиста с Refbank (rceth): манифест действующих ЛС и скачивание PDF на GCE.</p></div><span class="freshness" id="rceth-sync-freshness">Сверка</span></div>
-          <div class="card" id="rceth-sync-live" hidden>
-            <h2>Идёт синхронизация</h2>
-            <p class="card-sub" id="rceth-sync-live-text">Ожидание статуса...</p>
+          <div class="card" id="rceth-sync-live">
+            <h2 id="rceth-sync-live-title">Статус синхронизации</h2>
+            <p class="card-sub" id="rceth-sync-live-text">Загрузка статуса с GCE...</p>
           </div>
           <div class="kpis" id="rceth-sync-kpis"></div>
           <div class="card"><h2>Журнал прогонов</h2><p class="card-sub">Итоги дневных сверок на data volume</p><div id="rceth-sync-history-table"></div></div>
-          <div class="card"><h2>Замечания</h2><p class="card-sub">Label-check findings появятся после пилота на GCE. Сейчас только статус корпуса.</p><div id="rceth-sync-notes"><p class="empty">Пилот и bulk - только на GCE (/var/data/rceth).</p></div></div>
+          <div class="card"><h2>Замечания по назначениям</h2><p class="card-sub">Это не лог синка. Label-check findings появятся после разметки корпуса (шаг F). Сейчас смотрите статус и журнал выше.</p><div id="rceth-sync-notes"><p class="empty">Пока нет findings - пилот и bulk идут на GCE (/var/data/rceth).</p></div></div>
         </section>
         <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">
           <div class="page-head"><div><h1 id="title-settings">Справка и настройки</h1><p>Как мы смотрим запись, кто вошёл и личные настройки экрана.</p></div></div>

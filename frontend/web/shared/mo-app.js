@@ -4515,20 +4515,34 @@
     function renderRcethSyncLive(data) {
       var banner = $("rceth-sync-live");
       var text = $("rceth-sync-live-text");
+      var title = $("rceth-sync-live-title");
       if (!banner || !text) return false;
       var live = data.live || {};
       var running = !!data.running || live.status === "running" || live.status === "queued";
-      banner.hidden = !running;
-      if (!running) return false;
+      var interrupted = data.status === "interrupted" || live.status === "interrupted" || !!live.stale;
+      banner.hidden = false;
+      if (title) {
+        title.textContent = running
+          ? "Идёт синхронизация"
+          : (interrupted ? "Синхронизация прервана" : "Статус синхронизации");
+      }
+      if (!live || (!live.phase && !live.message && !live.updated_at && !data.latest)) {
+        text.textContent = data.status === "unavailable"
+          ? "Нет status.json на volume - запустите пилот на GCE."
+          : "Ожидание первого прогона...";
+        return running;
+      }
       var done = live.done != null ? live.done : "?";
       var total = live.total != null ? live.total : "?";
-      text.textContent =
-        (live.phase || "sync") +
-        " · " + done + "/" + total +
-        (live.message ? " · " + live.message : "") +
-        (live.current_reg_id ? " · " + live.current_reg_id : "") +
-        (live.errors ? " · ошибок " + live.errors : "");
-      return true;
+      var parts = [];
+      if (live.phase) parts.push(String(live.phase));
+      if (live.done != null || live.total != null) parts.push(done + "/" + total);
+      if (live.message) parts.push(String(live.message));
+      if (live.current_reg_id && running) parts.push(String(live.current_reg_id));
+      if (live.errors) parts.push("ошибок " + live.errors);
+      if (live.updated_at) parts.push("обновлено " + live.updated_at);
+      text.textContent = parts.join(" · ") || (data.status || "idle");
+      return running;
     }
     function startRcethSyncPoll() {
       stopRcethSyncPoll();
@@ -4578,7 +4592,10 @@
             }).join("") + "</tbody></table>";
         }
       }
-      kpis.setAttribute("data-tone", running ? "review" : "good");
+      kpis.setAttribute(
+        "data-tone",
+        running ? "review" : (data.status === "interrupted" || (data.live && data.live.stale) ? "warn" : "good")
+      );
       if (running && !rcethSyncPollTimer) startRcethSyncPoll();
       if (!running) stopRcethSyncPoll();
     }
