@@ -28,9 +28,14 @@ ts() { date -u +%Y-%m-%dT%H:%M:%SZ; }
 log() { echo "$(ts) $*" | tee -a "$LOG" >&2; }
 
 process_alive() {
-  docker top "$CONTAINER" 2>/dev/null | grep -q rceth_sync_run && return 0
-  # host-side nohup bash job (download/crawl wrapper)
-  pgrep -f 'rceth_sync_job.sh' >/dev/null 2>&1 && return 0
+  # Container worker (real parse/crawl/download). Avoid matching this shell's argv.
+  if docker top "$CONTAINER" 2>/dev/null | grep -E 'rceth_sync_run\.py' >/dev/null 2>&1; then
+    return 0
+  fi
+  # Host wrapper: only bash executing the job script, not SSH helpers that mention the path.
+  if pgrep -f 'bash (/opt/protocol/deploy/gcp-app|/var/data/rceth/_code/scripts)/rceth_sync_job\.sh' >/dev/null 2>&1; then
+    return 0
+  fi
   return 1
 }
 
