@@ -67,13 +67,14 @@ L1 (как сейчас)  →  зоны + whitelist-очередь
 
 ---
 
-## Что в проде после v1
+## Что в проде после этого PR
 
-- `history_continuity` в разборе случая (вердикт + что уже встречалось).
-- В очереди дня: `deep_run_score`, `deep_run_track` (`history` / `strong_model` / `safety` / `skip`), сортировка с учётом этого.
-- Тесты на эпизод и ранжирование.
+- Слой A: `history_continuity` в разборе + сортировка очереди дня.
+- Слой B: точечное чтение слотов prior из secure CSV, shadow-finding, prior_clinical в live-зонах (официальный балл склада не переписываем).
+- Слой C: `scripts/run_mo_history_deep.py --llm` только на GCE.
+- Backfill ключей: `scripts/backfill_mo_patient_keys_from_mis.py` (identity из MIS, без полного result).
 
-Ещё не в этом PR: extract января-июля, чтение слотов prior, вызов сильной модели.
+Полный dump января-июля в secure_cases не делаем: для ключей достаточно id/visit_id/patient_id; слоты prior читаются точечно.
 
 ---
 
@@ -86,6 +87,14 @@ L1 (как сейчас)  →  зоны + whitelist-очередь
 | SSOT балл | не меняется | не меняется |
 
 ---
+
+## Шаги
+
+- [x] S1. Слой A: непрерывность + сортировка очереди.
+- [x] S2. Слой B: слоты prior + shadow + live prior_clinical.
+- [x] S3. Слой C: GCE runner с `--llm`.
+- [x] S4. Backfill `patient_key` из MIS (identity only).
+- [ ] S5. Merge → deploy → backfill на GCE → deep run вчера.
 
 ## Риски
 

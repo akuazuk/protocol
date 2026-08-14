@@ -8479,7 +8479,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-14-064130Z-history-continuity"
+BUILD_VERSION = "2026-08-14-065244Z-history-deep"
 
 
 def _app_version() -> str:
@@ -12225,9 +12225,25 @@ def api_methodist_mo_case_detail(
             if zones_scores_enabled():
                 record_z = result.get("record") if isinstance(result.get("record"), dict) else {}
                 prior_clinical = None
-                # Не сканируем prior и не гоняем suggest в критическом пути drawer:
-                # КП догружается отдельным /protocol-suggest; prior - по ?prior=1.
-                if want_prior_clinical(query_params=request.query_params):
+                hist_z = result.get("patient_history") if isinstance(result.get("patient_history"), dict) else {}
+                if int(((hist_z.get("summary") or {}) if isinstance(hist_z.get("summary"), dict) else {}).get("n_visits") or 0) > 0:
+                    try:
+                        from clinical_knowledge.mo_history_deep import pick_episode_prior, public_deep_for_ui
+
+                        deep = pick_episode_prior(
+                            history_bundle=hist_z,
+                            current_code=str(record_z.get("diagnosis_code") or record_z.get("mkb_code_main") or ""),
+                            current_text=str(record_z.get("diagnosis_short") or record_z.get("diagnosis_text") or ""),
+                        )
+                        result["history_deep"] = public_deep_for_ui(deep)
+                        if isinstance(deep.get("prior_clinical"), dict) and deep.get("prior_clinical"):
+                            prior_clinical = deep.get("prior_clinical")
+                            hist_z["prior_visit_date"] = deep.get("prior_visit_date")
+                            result["patient_history"] = hist_z
+                    except Exception:  # noqa: BLE001
+                        pass
+                # CSV-скан 90 дней - только по ?prior=1; эпизод выше уже точечный.
+                if prior_clinical is None and want_prior_clinical(query_params=request.query_params):
                     try:
                         from clinical_knowledge.mo_case_document import resolve_prior_clinical_for_case
 
@@ -12321,6 +12337,24 @@ def api_methodist_mo_case_detail(
                 rec["deep_run_track"] = continuity.get("deep_run_track")
                 rec["deep_run_score"] = continuity.get("deep_run_score")
                 result["record"] = rec
+            try:
+                from clinical_knowledge.mo_history_deep import shadow_history_credit_finding
+
+                deep = result.get("history_deep") if isinstance(result.get("history_deep"), dict) else {}
+                credit = shadow_history_credit_finding(
+                    {
+                        "continuity": continuity,
+                        "already_slots": deep.get("already_slots") or [],
+                        "prior_visit_date": deep.get("prior_visit_date") or continuity.get("last_matched_date"),
+                    }
+                )
+                if credit:
+                    findings = result.get("findings") if isinstance(result.get("findings"), list) else []
+                    if not any(str(item.get("code") or item.get("finding_code")) == credit["code"] for item in findings if isinstance(item, dict)):
+                        findings.append(credit)
+                        result["findings"] = findings
+            except Exception:  # noqa: BLE001
+                pass
         except Exception:  # noqa: BLE001
             pass
     # Итог разбора (machine brief) - после зон / findings / МКБ / suggest.

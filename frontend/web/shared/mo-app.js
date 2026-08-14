@@ -2684,8 +2684,15 @@
       var sameDoc = (bundle.same_doctor || []).length;
       var sameSpec = (bundle.same_specialty || []).length;
       var prior = n > 0 ? "есть prior" : "нет prior";
+      var deep = bundle.deep || {};
+      var deepSlots = (deep.already_slots || []).join(", ");
+      var deepLine = deep.prior_visit_date
+        ? ('<p class="card-sub">Слоты прошлого визита ' + esc(deep.prior_visit_date) +
+          (deepSlots ? (": " + esc(deepSlots)) : "") + "</p>")
+        : "";
       return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
         renderHistoryContinuity(bundle.continuity) +
+        deepLine +
         '<p>К этому врачу: ' + sameDoc + ' · К специальности: ' + sameSpec +
         ' · Всего: ' + n + ' · Для коррекций плана: ' + prior + '</p>' +
         (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются, если на складе нет более ранних визитов с ключом пациента.</p>' : "") +
@@ -2906,6 +2913,7 @@
           renderHistoryCompact((function () {
             var hist = data.patient_history || {};
             if (!hist.continuity && data.history_continuity) hist.continuity = data.history_continuity;
+            if (!hist.deep && data.history_deep) hist.deep = data.history_deep;
             return hist;
           })()) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
