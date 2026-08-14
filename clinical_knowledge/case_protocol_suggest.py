@@ -2,8 +2,8 @@
 
 См. docs/plans/2026-08-08-mo-icd-first-kp-suggest-v1.md.
 
-Cascade: валидный код МКБ → RU title + поиск по ICD; иначе текст Dx;
-specialty-filler без clinical hit не показываем.
+Cascade: текст диагноза → иначе МКБ (RU title) → иначе жалобы/анамнез.
+Ищем по названию и по содержанию КП. Нет clinical hit → «нет протокола».
 """
 from __future__ import annotations
 
@@ -208,13 +208,76 @@ def _diag_text_for_match(diag_text: str, codes_in_dir: list[str]) -> str:
 
 
 def _prefer_icd_path(diag_text: str, codes_in_dir: list[str]) -> bool:
-    """ICD-first: валидный код и (нет substantive text или text согласуется с title)."""
+    """МКБ как основа поиска только если диагноза нет (код определяет формулировку)."""
     if not codes_in_dir:
         return False
-    if not _free_text_substantive(diag_text):
-        return True
-    titles = _ru_titles_for_codes(codes_in_dir)
-    return _text_fits_icd_titles(diag_text, titles)
+    return not _free_text_substantive(diag_text)
+
+
+def _complaints_anamnesis_query(graph: dict[str, Any]) -> str:
+    parts: list[str] = []
+    for complaint in (graph.get("complaints") or [])[:6]:
+        text = str(complaint or "").strip()
+        if text:
+            parts.append(text)
+    anamnesis = str(graph.get("anamnesis") or "").strip()
+    if anamnesis:
+        parts.append(anamnesis[:400])
+    return re.sub(r"\s+", " ", " ".join(parts)).strip()
+
+
+def resolve_kp_query(
+    *,
+    diag_text: str,
+    codes_in_dir: list[str],
+    graph: dict[str, Any] | None = None,
+) -> dict[str, Any]:
+    """Основа поиска КП: диагноз, иначе МКБ, иначе жалобы и анамнез."""
+    graph = graph if isinstance(graph, dict) else {}
+    if _free_text_substantive(diag_text):
+        titles = _ru_titles_for_codes(codes_in_dir)
+        query = diag_text
+        if titles and _text_fits_icd_titles(diag_text, titles):
+            query = _diag_text_for_match(diag_text, codes_in_dir)
+        return {
+            "source": "diagnosis",
+            "query": query,
+            "use_icd": False,
+            "mode": "text",
+        }
+    if codes_in_dir:
+        titles = _ru_titles_for_codes(codes_in_dir)
+        query = _diag_text_for_match(" ".join(titles), codes_in_dir) or " ".join(codes_in_dir)
+        return {
+            "source": "icd",
+            "query": query,
+            "use_icd": True,
+            "mode": "icd_first",
+        }
+    fallback = _complaints_anamnesis_query(graph)
+    if _free_text_substantive(fallback):
+        return {
+            "source": "complaints_anamnesis",
+            "query": fallback,
+            "use_icd": False,
+            "mode": "complaints",
+        }
+    return {
+        "source": "none",
+        "query": "",
+        "use_icd": False,
+        "mode": "none",
+    }
+
+
+def _empty_protocol_reason(source: str) -> str:
+    if source == "icd":
+        return "Нет клинического протокола МЗ по этому коду МКБ"
+    if source == "complaints_anamnesis":
+        return "Нет клинического протокола МЗ по жалобам и анамнезу"
+    if source == "none":
+        return "Нет данных, чтобы подобрать протокол МЗ"
+    return "Нет клинического протокола МЗ по этому диагнозу"
 
 
 def _audience_from_case(
@@ -271,11 +334,8 @@ def _search_query(graph: dict[str, Any]) -> str:
     for complaint in (graph.get("complaints") or [])[:2]:
         if complaint and not parts:
             parts.append(str(complaint)[:80])
-    specialty = str((graph.get("specialty") or {}).get("label") or "").strip()
-    if specialty and not parts:
-        parts.append(specialty)
     query = " ".join(parts).strip()
-    return query[:160] or "клинический протокол"
+    return query[:160]
 
 
 def _search_url(query: str) -> str:
@@ -403,6 +463,8 @@ def _diag_overlap(item: dict[str, Any], graph: dict[str, Any]) -> float:
     from clinical_knowledge.protocol_match import _diag_text_overlap, _text_icd_bridge_score
 
     diag = " ".join(str(d.get("text") or "") for d in (graph.get("diagnoses") or []))
+    if not _free_text_substantive(diag):
+        diag = _complaints_anamnesis_query(graph)
     if not diag.strip():
         return 0.0
     cardish = {
@@ -684,7 +746,7 @@ def suggest_protocols_for_case(
     history_visits: list[dict[str, Any]] | None = None,
     limit: int = 3,
 ) -> dict[str, Any]:
-    """Top-K протоколов МЗ: ICD-first при валидном коде, иначе текст Dx."""
+    """Top-K протоколов МЗ: диагноз → МКБ → жалобы/анамнез; иначе нет протокола."""
     if not suggest_enabled():
         return {
             "ok": True,
@@ -705,10 +767,24 @@ def suggest_protocols_for_case(
         history_bundle=history_bundle,
         history_visits=history_visits,
     )
-    diag_text = " ".join(str(item.get("text") or "") for item in (graph.get("diagnoses") or [])).strip()
+    clinical = clinical if isinstance(clinical, dict) else {}
+    raw_diag = _diagnosis_text(clinical)
+    graph_diag = " ".join(str(item.get("text") or "") for item in (graph.get("diagnoses") or [])).strip()
     codes_in_dir = [str(c).upper() for c in (graph.get("icd10_in_directory") or []) if c]
-    use_icd = _prefer_icd_path(diag_text, codes_in_dir)
-    match_diag = _diag_text_for_match(diag_text, codes_in_dir) if use_icd else diag_text
+    # Граф может подставить RU title кода - это не «диагноз известен».
+    # Эпизод истории - да, если там есть своя формулировка.
+    episode_n = int((graph.get("dx_episode") or {}).get("matched_n") or 0)
+    if _free_text_substantive(raw_diag):
+        resolve_text = raw_diag
+    elif episode_n and _free_text_substantive(graph_diag):
+        resolve_text = graph_diag
+    else:
+        resolve_text = raw_diag
+    resolved = resolve_kp_query(diag_text=resolve_text, codes_in_dir=codes_in_dir, graph=graph)
+    use_icd = bool(resolved.get("use_icd"))
+    match_diag = str(resolved.get("query") or "")
+    query_source = str(resolved.get("source") or "none")
+    mode = str(resolved.get("mode") or ("icd_first" if use_icd else "text"))
     audience = str(graph.get("audience") or "unknown")
     facts = {
         "patient_context": {"adult_or_child": audience},
@@ -751,12 +827,14 @@ def suggest_protocols_for_case(
 
     matched = _dedup_protocol_rows(matched)
     if use_icd:
-        # Отсечь specialty baseline (~15) без ICD/text clinical сигнала
+        # Отсечь specialty baseline без ICD/text clinical сигнала.
+        # Содержание КП (геморрой в тексте №22) тоже clinical, даже если кода нет на карточке.
         matched = [
             row
             for row in matched
             if float(row.get("match_score") or 0) >= _ICD_PATH_MIN_SCORE
             or _best_icd_fit_weight(row) >= _ICD_FIT_WEAK
+            or _diag_overlap(row, graph) >= 0.5
         ]
 
     ranked = _rank_rows(
@@ -772,11 +850,8 @@ def suggest_protocols_for_case(
         ranked = clinical_ranked[:limit]
     else:
         ranked = []
-    search_query = _search_query(graph)
-    if use_icd and codes_in_dir and not search_query:
-        titles = _ru_titles_for_codes(codes_in_dir)
-        search_query = (titles[0] if titles else codes_in_dir[0])[:160]
-    search_url = _search_url(search_query)
+    search_query = (match_diag or _search_query(graph))[:160]
+    search_url = _search_url(search_query) if search_query else ""
     items: list[dict[str, Any]] = []
     for row in ranked:
         kind = _match_kind(row, graph)
@@ -786,8 +861,15 @@ def suggest_protocols_for_case(
         if use_icd and icd_label and kind == "clinical":
             reasons.append({"code": "icd_fit", "text": f"Совпадение по МКБ: {icd_label}"})
         if match_diag and kind == "clinical":
-            short = match_diag[:120] + ("…" if len(match_diag) > 120 else "")
-            reasons.append({"code": "diagnosis_fit", "text": f"Совпадение с диагнозом: {short}"})
+            short = match_diag[:120] + ("..." if len(match_diag) > 120 else "")
+            reason_code = "diagnosis_fit"
+            reason_prefix = "Совпадение с диагнозом"
+            if query_source == "complaints_anamnesis":
+                reason_code = "complaints_fit"
+                reason_prefix = "Совпадение с жалобами/анамнезом"
+            elif query_source == "icd":
+                reason_prefix = "Совпадение с формулировкой МКБ"
+            reasons.append({"code": reason_code, "text": f"{reason_prefix}: {short}"})
         if specialty_label and kind == "specialty":
             reasons.append({"code": "specialty", "text": f"Специальность случая: {specialty_label}"})
         elif specialty_label and specialty_slug and str(row.get("specialty_slug") or "") == specialty_slug:
@@ -827,16 +909,13 @@ def suggest_protocols_for_case(
         )
     reason = None
     if not items:
-        reason = (
-            "Не удалось подобрать протоколы по коду/тексту диагноза"
-            if use_icd
-            else "Не удалось подобрать протоколы по тексту диагноза"
-        )
+        reason = _empty_protocol_reason(query_source)
     return {
         "ok": True,
         "available": bool(items),
         "engine": ENGINE,
-        "mode": "icd_first" if use_icd else "text",
+        "mode": mode,
+        "query_source": query_source,
         "case_id": graph.get("case_id"),
         "gaps": graph.get("gaps") or [],
         "dx_episode": graph.get("dx_episode") or {},

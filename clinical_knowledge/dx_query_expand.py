@@ -51,6 +51,10 @@ _DX_ALIAS_PATTERNS: list[tuple[re.Pattern[str], str]] = [
         re.compile(r"\bхобл\b", re.IGNORECASE),
         "хроническая обструктивная болезнь легких",
     ),
+    (
+        re.compile(r"геморро(й|я|ем|ев|идал)\w*", re.IGNORECASE),
+        "геморрой геморроидальный прямой кишки параректальной копчиковой",
+    ),
 ]
 
 _STOP = frozenset(
@@ -117,6 +121,7 @@ def _bridge_icd_candidates_cached(
             "острая инфекция верхних дыхательных путей",
             "гастроэзофагеальный рефлюкс",
             "хроническая обструктивная болезнь легких",
+            "геморрой",
         ):
             if nugget in phrase.lower() and nugget not in queries:
                 queries.append(nugget)

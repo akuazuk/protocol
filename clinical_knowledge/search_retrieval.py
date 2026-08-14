@@ -370,7 +370,13 @@ def _title_match_paths(
             return
         if _domain_mismatch_for_query(sp, title, throat=throat, gi=gi):
             return
-        blob = f"{sp} {title}".lower().replace("_", " ").replace("-", " ")
+        try:
+            from clinical_knowledge.protocol_content_index import content_text_for_path
+
+            body = content_text_for_path(sp)
+        except Exception:
+            body = ""
+        blob = f"{sp} {title} {body}".lower().replace("_", " ").replace("-", " ")
         blob = re.sub(r"\s+", " ", blob).strip()
         ql = _query_blob(query)
         if "orvi_uri" in routes or "орви" in ql or "орз" in ql or re.search(r"\bj06", ql):
@@ -429,6 +435,13 @@ def _title_match_paths(
                 score -= 8.0
         else:
             score = base
+            tokens = [t for t in re.findall(r"[а-яёa-z0-9]{4,}", ql, flags=re.I) if t]
+            if tokens:
+                hits = sum(1 for tok in tokens if tok.lower() in blob)
+                if hits:
+                    score = base + 10.0 * (hits / len(tokens))
+                    if any(len(tok) >= 6 and tok.lower() in blob for tok in tokens):
+                        score += 8.0
         if routes:
             route_score = title_match_score_for_routes(sp, title, route_ids=routes, base=6.0)
             if route_score is not None:

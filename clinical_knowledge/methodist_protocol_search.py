@@ -58,7 +58,13 @@ def search_catalog_protocols(query: str, *, limit: int = 10) -> list[dict[str, A
                 cat = (row.get("category") or "").strip()
                 path = rel if rel.startswith("minzdrav_protocols/") else f"minzdrav_protocols/{rel.lstrip('/')}"
                 title = protocol_display_name(path, fallback=fn, prefer_filename_if_truncated=True)
-                sc = _score_match(q, title, rel, fn, cat)
+                try:
+                    from clinical_knowledge.protocol_content_index import content_text_for_path
+
+                    body = content_text_for_path(path)
+                except Exception:
+                    body = ""
+                sc = _score_match(q, title, rel, fn, cat, body)
                 if sc < 0.32:
                     continue
                 seen.add(rel)
@@ -94,7 +100,13 @@ def search_catalog_protocols(query: str, *, limit: int = 10) -> list[dict[str, A
                 registry_title=str(raw_title or ""),
                 prefer_filename_if_truncated=True,
             )
-            sc = _score_match(q, title, path, summary.protocol_id, str(raw_title or ""))
+            try:
+                from clinical_knowledge.protocol_content_index import content_text_for_path
+
+                body = content_text_for_path(path)
+            except Exception:
+                body = ""
+            sc = _score_match(q, title, path, summary.protocol_id, str(raw_title or ""), body)
             if sc < 0.32:
                 continue
             seen.add(path)

@@ -118,11 +118,11 @@ def _card_match_blob(
     *,
     focus_codes: set[str] | None = None,
 ) -> str:
-    """Текст карточки для lexical Dx-match: title, label, path + RU-названия кодов карточки.
+    """Текст карточки для lexical Dx-match: title, path, содержание КП, RU-коды.
 
-    Коды на карточке - источник русских формулировок (не gate по коду случая).
-    focus_codes: если заданы (text→ICD bridge), раскрываем titles только для
-    пересечения с карточкой - быстро и точно на omnibus-КП.
+    Содержание берётся из protocol_content_index (summary quotes/conditions),
+    не только из названия файла. Коды на карточке - русские формулировки,
+    не gate по коду случая.
     """
     focus_key = ",".join(sorted(focus_codes)) if focus_codes else "*"
     cache_key = "|".join(
@@ -144,6 +144,14 @@ def _card_match_blob(
     path_words = re.sub(r"[_\-/]+", " ", path.split("/")[-1] if path else "")
     path_words = re.sub(r"\.(pdf|json|html?)$", "", path_words, flags=re.IGNORECASE)
     parts = [title, cond, path, path_words]
+    try:
+        from clinical_knowledge.protocol_content_index import content_text_for_card
+
+        content = content_text_for_card(card)
+        if content:
+            parts.append(content)
+    except Exception:  # noqa: BLE001
+        pass
     all_codes = [
         str(x).strip().upper()
         for x in list(card.get("icd10_primary") or []) + list(card.get("icd10_all") or [])
@@ -312,9 +320,7 @@ def compute_match_score(
         spec_part = 0.2
 
     title_low = (card.get("title") or "").lower()
-    path_low = (card.get("source_path") or "").lower()
-    cond_low = (card.get("condition_label") or "").lower()
-    blob = title_low + " " + path_low + " " + cond_low
+    blob = _card_match_blob(card)
     hint_score = 0.0
     for hint in hints:
         hint_score += score_card_for_hint(str(hint), blob, icd_list if use_icd else []) / 100.0

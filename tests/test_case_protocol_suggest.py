@@ -251,8 +251,31 @@ def test_suggest_f41_2_psychotherapist_icd_first() -> None:
     assert "мкб" in blob or any(r.get("code") == "icd_fit" for r in top.get("reasons") or [])
 
 
+def test_resolve_kp_query_cascade() -> None:
+    from clinical_knowledge.case_protocol_suggest import resolve_kp_query
+
+    by_dx = resolve_kp_query(diag_text="Геморрой неуточненный", codes_in_dir=["K64.9"])
+    assert by_dx["source"] == "diagnosis"
+    assert by_dx["use_icd"] is False
+    by_icd = resolve_kp_query(diag_text="", codes_in_dir=["F41.2"])
+    assert by_icd["source"] == "icd"
+    assert by_icd["use_icd"] is True
+    by_complaints = resolve_kp_query(
+        diag_text="",
+        codes_in_dir=[],
+        graph={
+            "complaints": ["боль в заднем проходе", "кровь при дефекации"],
+            "anamnesis": "симптомы несколько месяцев",
+        },
+    )
+    assert by_complaints["source"] == "complaints_anamnesis"
+    assert "боль" in by_complaints["query"]
+    empty = resolve_kp_query(diag_text="", codes_in_dir=[], graph={})
+    assert empty["source"] == "none"
+
+
 def test_suggest_i84_9_does_not_fill_with_aneurysm() -> None:
-    """I84.9 (геморрой, retired) не должен давать specialty-мусор про аорту/ОПН."""
+    """I84.9 (геморрой) → КП прямой кишки по диагнозу/содержанию, не аорта/ОПН."""
     import os
 
     os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
@@ -271,8 +294,26 @@ def test_suggest_i84_9_does_not_fill_with_aneurysm() -> None:
     assert "аневризм" not in blob
     assert "почечн" not in blob
     assert all(item.get("match_kind") == "clinical" for item in result.get("items") or [])
-    if result.get("items"):
-        assert result.get("mode") == "icd_first"
+    assert result.get("query_source") == "diagnosis"
+    assert result.get("available") is True
+    assert result.get("items")
+    assert "прямой" in blob or "параректал" in blob or "22" in blob
+
+
+def test_suggest_empty_says_no_protocol(monkeypatch) -> None:
+    monkeypatch.setenv("CASE_PROTOCOL_SUGGEST", "1")
+    monkeypatch.setattr(
+        "clinical_knowledge.protocol_match.match_protocol_cards_by_diagnosis_text",
+        lambda facts, specialty_slug=None, limit=8: [],
+    )
+    result = suggest_protocols_for_case(
+        clinical={"clinical_diagnosis": "Редкая нозология xyzzy без протокола"},
+        record={"visit_id": "no-kp"},
+        limit=3,
+    )
+    assert result["available"] is False
+    assert result["items"] == []
+    assert "Нет клинического протокола" in (result.get("reason") or "")
 
 
 def test_protocol_dedup_collapses_same_pdf_in_two_rubrics() -> None:
