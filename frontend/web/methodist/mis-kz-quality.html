@@ -260,9 +260,18 @@
           </details>
         </section>
         <section class="page" id="page-kp-sync" data-page="kp-sync" hidden aria-labelledby="title-kp-sync">
-          <div class="page-head"><div><h1 id="title-kp-sync">Протоколы МЗ</h1><p>Ежедневная сверка клинических протоколов с сайтом Минздрава. Новые файлы подтягиваются на GCE; старые PDF не удаляем.</p></div><span class="freshness" id="kp-sync-freshness">Сверка</span></div>
+          <div class="page-head"><div><h1 id="title-kp-sync">Протоколы МЗ</h1><p>Сверка с сайтом Минздрава: даты постов, поступления к нам и состав корпуса. Старые PDF не удаляем.</p></div><span class="freshness" id="kp-sync-freshness">Сверка</span></div>
           <div class="kpis" id="kp-sync-kpis"></div>
-          <div class="card"><h2>Новые и изменённые</h2><p class="card-sub">Последняя ночная сверка</p><div id="kp-sync-changed"></div></div>
+          <div class="kpis" id="kp-sync-period-kpis"></div>
+          <div class="card"><h2>Сводка по периодам</h2><p class="card-sub">Две шкалы: дата постановления МЗ и дата ночной сверки у нас</p><div id="kp-sync-period-table"></div></div>
+          <div class="grid">
+            <article class="card span-12"><h2>Поступления к нам</h2><p class="card-sub">Ночные сверки: новые и обновлённые файлы</p><div id="kp-sync-history-chart"></div><div id="kp-sync-history-table"></div></article>
+            <article class="card span-12"><h2>Посты МЗ по месяцам</h2><p class="card-sub">Дата постановления в названии файла</p><div id="kp-sync-month-chart"></div></article>
+            <article class="card span-6"><h2>Посты МЗ по годам</h2><p class="card-sub">Дата постановления в названии файла</p><div id="kp-sync-year-chart"></div></article>
+            <article class="card span-6"><h2>По рубрикам</h2><p class="card-sub">Состав корпуса сейчас</p><div id="kp-sync-slug-chart"></div></article>
+          </div>
+          <div class="card"><h2>Свежие посты МЗ</h2><p class="card-sub">По дате постановления, не по ночи загрузки</p><div id="kp-sync-recent"></div></div>
+          <div class="card"><h2>Новые и изменённые у нас</h2><p class="card-sub">Последняя ночная сверка</p><div id="kp-sync-changed"></div></div>
           <div class="card"><h2>Заменены на сайте</h2><p class="card-sub">Файл остаётся в корпусе, в подборе не основной</p><div id="kp-sync-superseded"></div></div>
         </section>
         <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">

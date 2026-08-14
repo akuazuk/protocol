@@ -4396,33 +4396,158 @@
     }
     async function loadKpSync() {
       var kpis = $("kp-sync-kpis");
+      var periodKpis = $("kp-sync-period-kpis");
+      var periodTable = $("kp-sync-period-table");
       var changed = $("kp-sync-changed");
       var superseded = $("kp-sync-superseded");
+      var recent = $("kp-sync-recent");
       if (!kpis) return;
-      var response = await request("/kp-sync?days=30", "/kp-sync");
+      var response = await request("/kp-sync?days=90", "/kp-sync");
       if (!response.ok) throw new Error("Не удалось загрузить сверку протоколов МЗ.");
       var data = await response.json();
       var status = data.status || "missing";
       var tone = status === "success" || status === "missing" ? "good" : "review";
-      if ($("kp-sync-freshness")) $("kp-sync-freshness").textContent = data.crawled_utc || "нет сверки";
+      var posts = data.post_periods || {};
+      var syncP = data.sync_periods || {};
+      if ($("kp-sync-freshness")) {
+        $("kp-sync-freshness").textContent = data.sync_day
+          ? ("сверка " + data.sync_day)
+          : (data.crawled_utc || "нет сверки");
+      }
       kpis.innerHTML =
         kpi("На сайте", data.site_count, "уникальных файлов") +
-        kpi("В корпусе", data.local_count, "локальных PDF") +
-        kpi("Изменено", data.changed_n, "новых или обновлённых") +
-        kpi("Сверка", status === "missing" ? "ещё не было" : status, data.crawled_utc || "");
-      function rowsHtml(items) {
-        if (!items || !items.length) return '<div class="empty">Нет записей</div>';
-        return '<table class="data-table"><thead><tr><th>Рубрика</th><th>Файл</th><th>Статус</th></tr></thead><tbody>' +
-          items.map(function (row) {
-            var viewer = row.relative_path
-              ? '<a href="/proto-viewer.html?path=' + encodeURIComponent(row.relative_path) + '" target="_blank" rel="noopener noreferrer">' + esc(row.filename || row.relative_path) + "</a>"
-              : esc(row.filename || "");
-            return "<tr><td>" + esc(row.slug || "") + "</td><td>" + viewer + "</td><td>" + esc(row.action || "") + "</td></tr>";
+        kpi("В корпусе", data.catalog_n || data.local_count, "карточек каталога") +
+        kpi("За ночь", data.changed_n, (data.added_n || 0) + " новых · " + (data.updated_n || 0) + " обновлённых") +
+        kpi("Сверка", data.sync_day || (status === "missing" ? "ещё не было" : status), data.crawled_utc || "");
+      if (periodKpis) {
+        periodKpis.innerHTML =
+          kpi("Посты за 7 дн", posts.d7, "по дате постановления МЗ") +
+          kpi("Посты за 30 дн", posts.d30, "по дате постановления МЗ") +
+          kpi("Посты за 90 дн", posts.d90, "по дате постановления МЗ") +
+          kpi("Посты с начала года", posts.ytd, "год постановления = текущий") +
+          kpi("Посты 2026", posts.y2026, "год в названии файла") +
+          kpi("К нам за 30 дн", (syncP.d30 && syncP.d30.changed) || 0,
+            ((syncP.d30 && syncP.d30.nights) || 0) + " ночей сверки");
+      }
+      if (periodTable) {
+        var periodDefs = [
+          ["7 дней", "d7"],
+          ["30 дней", "d30"],
+          ["90 дней", "d90"],
+          ["С начала года", "ytd"]
+        ];
+        periodTable.innerHTML =
+          '<table class="data-table"><thead><tr><th>Период</th><th>Посты МЗ</th><th>К нам новых</th><th>К нам обновлённых</th><th>Ночей сверки</th></tr></thead><tbody>' +
+          periodDefs.map(function (pair) {
+            var bucket = syncP[pair[1]] || {};
+            return "<tr><td>" + esc(pair[0]) + "</td><td>" + esc(posts[pair[1]] || 0) +
+              "</td><td>" + esc(bucket.added || 0) + "</td><td>" + esc(bucket.updated || 0) +
+              "</td><td>" + esc(bucket.nights || 0) + "</td></tr>";
           }).join("") + "</tbody></table>";
       }
-      if (changed) changed.innerHTML = rowsHtml([].concat(data.added || [], data.updated || []));
-      if (superseded) superseded.innerHTML = rowsHtml(data.superseded || []);
+      function fmtDate(iso, dotted) {
+        if (dotted) return dotted;
+        if (iso && iso.length >= 10) return iso.slice(8, 10) + "." + iso.slice(5, 7) + "." + iso.slice(0, 4);
+        return "";
+      }
+      function rowsHtml(items, extraCols) {
+        if (!items || !items.length) return '<div class="empty">Нет записей</div>';
+        return '<table class="data-table"><thead><tr><th>Рубрика</th><th>Файл</th><th>Пост МЗ</th>' +
+          (extraCols ? "<th>Сверка</th><th>Статус</th>" : "") +
+          "</tr></thead><tbody>" +
+          items.map(function (row) {
+            var viewer = row.relative_path
+              ? '<a href="/proto-viewer.html?path=' + encodeURIComponent(row.relative_path) + '" target="_blank" rel="noopener noreferrer">' + esc(row.filename || row.title || row.relative_path) + "</a>"
+              : esc(row.filename || row.title || "");
+            var rubric = row.slug_ru || row.slug || "";
+            var post = fmtDate(row.post_date_iso, row.post_date);
+            if (row.post_number) post = post ? (post + " №" + row.post_number) : ("№" + row.post_number);
+            var cells = "<tr><td>" + esc(rubric) + "</td><td>" + viewer + "</td><td>" + esc(post || "нет даты") + "</td>";
+            if (extraCols) {
+              cells += "<td>" + esc(row.synced_on || "") + "</td><td>" + esc(row.action || "") + "</td>";
+            }
+            return cells + "</tr>";
+          }).join("") + "</tbody></table>";
+      }
+      if (changed) changed.innerHTML = rowsHtml([].concat(data.added || [], data.updated || []), true);
+      if (superseded) superseded.innerHTML = rowsHtml(data.superseded || [], true);
+      if (recent) recent.innerHTML = rowsHtml(data.recent_posts || [], false);
+      renderKpSyncCharts(data);
       kpis.setAttribute("data-tone", tone);
+    }
+    function renderKpSyncCharts(data) {
+      var history = data.history || [];
+      var years = (data.by_year || []).filter(function (row) { return row.year !== "нет даты"; });
+      var months = data.by_month || [];
+      var slugs = data.by_slug || [];
+      var histHost = $("kp-sync-history-chart");
+      var histTable = $("kp-sync-history-table");
+      if (histHost) {
+        if (!history.length) {
+          histHost.innerHTML = '<p class="empty">Пока одна или ни одной ночной сверки. Ряд появится после нескольких ночей.</p>';
+        } else {
+          MO.moChart(histHost, {
+            tooltip: { trigger: "axis" },
+            legend: { data: ["Новые", "Обновлённые"] },
+            xAxis: { type: "category", data: history.map(function (row) { return row.date; }) },
+            yAxis: { type: "value", minInterval: 1 },
+            series: [
+              { name: "Новые", type: "bar", stack: "in", barMaxWidth: 28, data: history.map(function (row) { return row.added; }) },
+              { name: "Обновлённые", type: "bar", stack: "in", barMaxWidth: 28, data: history.map(function (row) { return row.updated; }) }
+            ]
+          }, { label: "Поступления протоколов по ночам сверки" });
+        }
+      }
+      if (histTable) {
+        if (!history.length) {
+          histTable.innerHTML = "";
+        } else {
+          histTable.innerHTML =
+            '<table class="data-table"><thead><tr><th>Дата сверки</th><th>Новые</th><th>Обновлённые</th><th>Заменены</th><th>На сайте</th><th>У нас</th></tr></thead><tbody>' +
+            history.slice().reverse().map(function (row) {
+              return "<tr><td>" + esc(row.date || "") + "</td><td>" + esc(row.added || 0) +
+                "</td><td>" + esc(row.updated || 0) + "</td><td>" + esc(row.superseded || 0) +
+                "</td><td>" + esc(row.site_count || 0) + "</td><td>" + esc(row.local_count || 0) + "</td></tr>";
+            }).join("") + "</tbody></table>";
+        }
+      }
+      var monthHost = $("kp-sync-month-chart");
+      if (monthHost) {
+        if (!months.length) {
+          monthHost.innerHTML = '<p class="empty">В каталоге нет дат постановлений</p>';
+        } else {
+          MO.moChart(monthHost, {
+            tooltip: { trigger: "axis" },
+            xAxis: { type: "category", data: months.map(function (row) { return row.month; }) },
+            yAxis: { type: "value", minInterval: 1 },
+            series: [{ name: "Протоколы", type: "bar", barMaxWidth: 18, data: months.map(function (row) { return row.n; }) }]
+          }, { label: "Число протоколов по месяцу постановления МЗ" });
+        }
+      }
+      var yearHost = $("kp-sync-year-chart");
+      if (yearHost) {
+        if (!years.length) {
+          yearHost.innerHTML = '<p class="empty">В каталоге нет дат постановлений</p>';
+        } else {
+          MO.moChart(yearHost, {
+            tooltip: { trigger: "axis" },
+            xAxis: { type: "category", data: years.map(function (row) { return row.year; }) },
+            yAxis: { type: "value", minInterval: 1 },
+            series: [{ name: "Протоколы", type: "bar", barMaxWidth: 22, data: years.map(function (row) { return row.n; }) }]
+          }, { label: "Число протоколов по году постановления МЗ" });
+        }
+      }
+      var slugHost = $("kp-sync-slug-chart");
+      if (slugHost && MO.moDonut) {
+        MO.moDonut(slugHost, slugs.slice(0, 8).map(function (row) {
+          return { name: row.label || row.slug, value: row.n };
+        }), {
+          label: "Состав корпуса по рубрикам",
+          centerText: String(data.catalog_n || 0),
+          centerSub: "в каталоге",
+          emptyText: "Каталог пуст"
+        });
+      }
     }
     async function loadPage(page) {
       $("global-error").hidden = true;
