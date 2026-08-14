@@ -29,7 +29,9 @@ def _icd_root(code: str) -> str:
     return c[:3] if len(c) >= 3 else c
 
 
-_VENOUS_ICD_ROOTS = frozenset({"I80", "I81", "I82", "I83", "I84", "I85", "I86", "I87", "I88", "I89"})
+# I84 - старый код геморроя, не вены ног. Не усиливать варикоз/ТГВ.
+_VENOUS_ICD_ROOTS = frozenset({"I80", "I81", "I82", "I83", "I85", "I86", "I87", "I88", "I89"})
+_NOT_VENOUS_ICD_ROOTS = frozenset({"I84"})
 _VENOUS_CARD_NEEDLES = (
     "тромбоз", "тгв", "тромбоэмбол", "флеб", "вен ", "веноз", "варикоз", "тромбофлеб",
     "флеботромб", "глубоких вен", "поверхностн",
@@ -75,6 +77,8 @@ def _card_spine_bladder_relevance(card: dict[str, Any], icd_list: list[str]) -> 
 def _is_venous_icd(icd_list: list[str]) -> bool:
     for c in icd_list:
         root = _icd_root(c)
+        if root in _NOT_VENOUS_ICD_ROOTS:
+            continue
         if root in _VENOUS_ICD_ROOTS or (len(root) >= 2 and root.startswith("I8")):
             return True
     return False
@@ -458,8 +462,20 @@ def match_protocol_cards(
             continue
         if card.get("alias_of"):
             continue
-        # Дедуп: один протокол (по source_path/protocol_id) - одна строка с лучшим score.
-        key = str(card.get("source_path") or card.get("protocol_id") or id(card))
+        # Дедуп: один PDF в двух рубриках (разный source_path) - одна строка.
+        path = str(card.get("source_path") or "").replace("\\", "/")
+        fname = path.rsplit("/", 1)[-1].strip().lower()
+        approval = card.get("approval") if isinstance(card.get("approval"), dict) else {}
+        key = (
+            str(card.get("sha256") or "").strip().lower()
+            or (
+                f"{approval.get('date')}|{approval.get('number')}"
+                if approval.get("number")
+                else ""
+            )
+            or fname
+            or str(card.get("protocol_id") or id(card))
+        )
         if key in seen_keys:
             continue
         appl, _, _ = assess_card_applicability(card, patient)
@@ -485,6 +501,7 @@ def match_protocol_cards(
                 "approval": card.get("approval"),
                 "matched_condition": card.get("condition_label") or card.get("title"),
                 "specialty_slug": card.get("specialty_slug"),
+                "sha256": card.get("sha256"),
             }
         )
         if len(out) >= limit:

@@ -143,7 +143,17 @@ def _codes_in_directory(codes: list[str]) -> list[str]:
     try:
         import icd_mkb
 
-        return [c for c in codes if icd_mkb.is_code_in_ru_reference(c)]
+        out: list[str] = []
+        seen: set[str] = set()
+        for raw in codes:
+            mapped = icd_mkb.canonical_ru_code(raw)
+            if not mapped or not icd_mkb.is_code_in_ru_reference(mapped):
+                continue
+            if mapped in seen:
+                continue
+            seen.add(mapped)
+            out.append(mapped)
+        return out
     except Exception:  # noqa: BLE001
         return []
 
@@ -455,6 +465,35 @@ def _path_blocked_for_specialty(row: dict[str, Any], graph: dict[str, Any]) -> b
     return False
 
 
+def _protocol_dedup_key(row: dict[str, Any]) -> str:
+    """Один PDF в двух рубриках (хирургия + кровообращение) - одна карточка."""
+    sha = str(row.get("sha256") or "").strip().lower()
+    if sha:
+        return f"sha:{sha}"
+    approval = row.get("approval") if isinstance(row.get("approval"), dict) else {}
+    number = str(approval.get("number") or "").strip()
+    day = str(approval.get("date") or "").strip()
+    if number and day:
+        return f"apr:{day}:{number}"
+    path = str(row.get("source_path") or "").replace("\\", "/")
+    name = path.rsplit("/", 1)[-1].strip().lower()
+    if name:
+        return f"file:{name}"
+    return str(row.get("protocol_id") or id(row))
+
+
+def _dedup_protocol_rows(rows: list[dict[str, Any]]) -> list[dict[str, Any]]:
+    seen: set[str] = set()
+    out: list[dict[str, Any]] = []
+    for row in rows:
+        key = _protocol_dedup_key(row)
+        if key in seen:
+            continue
+        seen.add(key)
+        out.append(row)
+    return out
+
+
 def _icd_primary_hits(row: dict[str, Any], codes: list[str]) -> int:
     primary = {str(x).upper() for x in (row.get("icd10_primary") or []) if x}
     return sum(1 for c in codes if c in primary)
@@ -710,6 +749,7 @@ def suggest_protocols_for_case(
             matched.append(row)
             seen_ids.add(pid)
 
+    matched = _dedup_protocol_rows(matched)
     if use_icd:
         # Отсечь specialty baseline (~15) без ICD/text clinical сигнала
         matched = [
@@ -725,12 +765,12 @@ def suggest_protocols_for_case(
         limit=limit,
         case_codes=codes_in_dir if use_icd else None,
     )
-    # Если есть clinical-хиты - не разбавляем specialty-filler'ами в топе
+    # Если есть clinical-хиты - не разбавляем specialty-filler'ами в топе.
+    # Без clinical не показываем 33-балльный мусор (аневризма/ОПН при I84/K64).
     clinical_ranked = [row for row in ranked if _match_kind(row, graph) == "clinical"]
     if clinical_ranked:
         ranked = clinical_ranked[:limit]
-    elif use_icd:
-        # При ICD-пути не отдаём specialty-мусор вместо диагноза
+    else:
         ranked = []
     search_query = _search_query(graph)
     if use_icd and codes_in_dir and not search_query:

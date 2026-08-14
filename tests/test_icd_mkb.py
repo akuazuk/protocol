@@ -56,3 +56,12 @@ def test_short_word_kale_no_substring_false_positives() -> None:
     codes = [r["code"] for r in ru_lexicon_scored_entries(q)[:10]]
     assert "X18" not in codes
     assert "Z91.7" not in codes
+
+
+def test_retired_i84_maps_to_k64() -> None:
+    from icd_mkb import canonical_ru_code, is_code_in_ru_reference, ru_title
+
+    assert canonical_ru_code("I84.9") == "K64.9"
+    assert is_code_in_ru_reference("I84.9") is True
+    title = (ru_title("I84.9") or "").lower()
+    assert "геморрой" in title

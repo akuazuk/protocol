@@ -63,7 +63,8 @@
 3. [x] Directory eval: mismatch только на substantive free text
 4. [x] Рубрика плана: 1.0 только с clinical KP
 5. [x] Тесты (F41.2, code-only ok, contradiction mismatch, wrong-code+good-text)
-6. [~] PR #69 открыт → merge → GCE deploy → smoke кейса
+6. [x] PR #69 открыт → merge → GCE deploy → smoke кейса
+7. [ ] I84.9 (геморрой, retired в K64): не показывать specialty-мусор 33 балла; дедуп одного PDF в двух рубриках
 
 ## Риски
 

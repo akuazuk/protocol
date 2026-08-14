@@ -450,8 +450,49 @@ def _ru_valid_codes() -> frozenset[str]:
     )
 
 
+# МКБ-10-СУ убрал I84 (геморрой) в K64. МИС РБ ещё пишет I84.
+_RETIRED_RU_CODES = {
+    "I84": "K64",
+    "I84.0": "K64.8",
+    "I84.1": "K64.1",
+    "I84.2": "K64.2",
+    "I84.3": "K64.3",
+    "I84.4": "K64.4",
+    "I84.5": "K64.5",
+    "I84.6": "K64.8",
+    "I84.7": "K64.8",
+    "I84.8": "K64.8",
+    "I84.9": "K64.9",
+}
+
+
+def canonical_ru_code(code: str) -> str:
+    """Код справочника МКБ-10-СУ: живой код или преемник retired (I84→K64)."""
+    raw = _norm_icd_code(code)
+    if not raw:
+        return ""
+    valid = _ru_valid_codes()
+    if raw in valid:
+        return raw
+    if raw in _RETIRED_RU_CODES:
+        mapped = _RETIRED_RU_CODES[raw]
+        return mapped if mapped in valid else raw
+    root = raw[:3]
+    if root in _RETIRED_RU_CODES:
+        mapped_root = _RETIRED_RU_CODES[root]
+        candidate = mapped_root + raw[3:]
+        if candidate in valid:
+            return candidate
+        nine = f"{mapped_root}.9"
+        if nine in valid:
+            return nine
+        if mapped_root in valid:
+            return mapped_root
+    return raw
+
+
 def is_code_in_ru_reference(code: str) -> bool:
-    c = _norm_icd_code(code)
+    c = canonical_ru_code(code)
     return bool(c) and c in _ru_valid_codes()
 
 
@@ -468,7 +509,7 @@ def who_title_en(code: str) -> str | None:
 
 
 def ru_title(code: str) -> str | None:
-    c = _norm_icd_code(code)
+    c = canonical_ru_code(code)
     for row in _ru_rows():
         if _norm_icd_code(row.get("code") or "") == c:
             t = (row.get("title_ru") or "").strip()
