@@ -53,6 +53,8 @@ def parse_downloaded_labels(
     missing_pdf = 0
     empty_text = 0
     errors = 0
+    skipped_existing = 0
+    force = (os.environ.get("RCETH_PARSE_FORCE") or "").strip().lower() in {"1", "true", "yes"}
     for i, row in enumerate(rows, start=1):
         rid = str(row.get("reg_id") or "")
         write_status(
@@ -65,6 +67,18 @@ def parse_downloaded_labels(
             errors=errors,
             root=root,
         )
+        label_path = out_dir / f"{rid}.json"
+        if not force and label_path.is_file():
+            skipped_existing += 1
+            try:
+                prev = json.loads(label_path.read_text(encoding="utf-8"))
+                if isinstance(prev, dict) and (prev.get("parse") or {}).get("ok"):
+                    ok_n += 1
+                else:
+                    needs_human_n += 1
+            except (OSError, json.JSONDecodeError):
+                needs_human_n += 1
+            continue
         pdf_path = pdf_dir(root) / f"{rid}_s.pdf"
         if not pdf_path.is_file():
             missing_pdf += 1
@@ -94,7 +108,7 @@ def parse_downloaded_labels(
                 "error": f"pdf_too_large:{pdf_size}>{max_bytes}",
                 "found_keys": [],
             }
-            (out_dir / f"{rid}.json").write_text(
+            label_path.write_text(
                 json.dumps(label, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
@@ -116,7 +130,7 @@ def parse_downloaded_labels(
                 "error": str(exc)[:200],
                 "found_keys": [],
             }
-            (out_dir / f"{rid}.json").write_text(
+            label_path.write_text(
                 json.dumps(label, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
@@ -129,7 +143,7 @@ def parse_downloaded_labels(
             label["parse"]["needs_human"] = True
             label["parse"]["extract_error"] = err or "empty_text"
             label["parse"]["extract_warnings"] = warns[:8]
-            (out_dir / f"{rid}.json").write_text(
+            label_path.write_text(
                 json.dumps(label, ensure_ascii=False, indent=2) + "\n",
                 encoding="utf-8",
             )
@@ -154,7 +168,7 @@ def parse_downloaded_labels(
             ok_n += 1
         else:
             needs_human_n += 1
-        (out_dir / f"{rid}.json").write_text(
+        label_path.write_text(
             json.dumps(label, ensure_ascii=False, indent=2) + "\n",
             encoding="utf-8",
         )
@@ -167,6 +181,7 @@ def parse_downloaded_labels(
         "needs_human": needs_human_n,
         "missing_pdf": missing_pdf,
         "empty_text": empty_text,
+        "skipped_existing": skipped_existing,
         "failed": errors,
         "with_s_pdf": sum(
             1 for r in load_manifest(manifest_path(root)) if r.get("url_s") or r.get("has_s_pdf")
@@ -181,7 +196,7 @@ def parse_downloaded_labels(
         status="done",
         done=total,
         total=total,
-        message=f"parse_ok={ok_n} needs_human={needs_human_n}",
+        message=f"parse_ok={ok_n} needs_human={needs_human_n} skipped={skipped_existing}",
         errors=errors,
         root=root,
         extra={"summary": summary},

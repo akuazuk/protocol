@@ -272,14 +272,47 @@ Refbank search (действующие)
 
 **Выход F:** shadow findings + калибровка 30 кейсов.
 
-### G. Weekly sync job на GCE
+### G. Full corpus + weekly sync + автослежение (GCE)
 
-- [ ] Cron: refresh manifest → diff → download/parse changed → write sync JSON.
-- [ ] Inactive mark; алерт 503/parse_fail.
-- [ ] Один writer; UI отражает running через `status.json`.
+**Решение владельца (2026-08-14):** готовим full + автослежение в скриптах/плане; старт full - отдельной командой после пилота 50.
 
-**Выход G:** runbook + cron.
+#### ETA полного прогона (~3.5-4k `_s`)
 
+| Этап | Оценка | Комментарий |
+|--|--|--|
+| Crawl manifest | 20-60 мин | все буквы; throttle ~0.6s |
+| Download | **1-5 ч** | resume (skip existing sha); 503 retry |
+| Parse/OCR | **ночь+** | пилот ~1 файл/мин на сканах; текстовые PDF быстрее; >8MB skip |
+| Итого первый full | закладывать **сутки wall-clock** с resume | не «как 50 за час» |
+
+Повторный weekly: в основном diff/changed PDF - обычно **десятки минут - пара часов**, не полный OCR заново (пока parse перезаписывает; follow-up: skip existing labels).
+
+#### Автослежение (что есть в скриптах)
+
+| Компонент | Файл | Поведение |
+|--|--|--|
+| One writer | `rceth_sync_job.sh` | `flock` на `/var/data/rceth/_sync/rceth_sync.lock` |
+| Job knobs | `_sync/last_job.env` | LIMIT/MODE/PARSE для resume |
+| Watchdog | `rceth_sync_watchdog.sh` | если process мёртв и status `interrupted`/`error` или `running`+stale → restart с `RCETH_SKIP_CRAWL=1`; max **6** restarts/day |
+| Full launcher | `run_rceth_full_on_gce.sh` | `RCETH_LIMIT=0`, все буквы |
+| Cron install | `install_rceth_cron.sh` | `--enable-watchdog` (*/10), `--enable-weekly` (вс 04:00 UTC) |
+| Live UI | уже в E | poll + interrupted |
+
+**Не включено по умолчанию:** cron на VM ставится только с `--enable-*` (не ломает night MIS/KP).
+
+#### Чеклист G
+
+- [x] `flock` + `last_job.env` в `rceth_sync_job.sh`.
+- [x] Watchdog resume (`rceth_sync_watchdog.sh`).
+- [x] Full launcher (`run_rceth_full_on_gce.sh`).
+- [x] Install cron helper (`install_rceth_cron.sh --remote --enable-watchdog [--enable-weekly]`).
+- [ ] Включить watchdog на GCE после merge (`--enable-watchdog`).
+- [ ] Первый full: `bash deploy/gcp-app/run_rceth_full_on_gce.sh` (когда пилот 50 ок).
+- [ ] Weekly cron (`--enable-weekly`) после первого успешного full.
+- [ ] Follow-up: parse skip existing `labels/*.json`; алерт Telegram при blocked restarts.
+- [x] UI отражает running/interrupted через `status.json` (шаг E).
+
+**Выход G:** runbook + скрипты; cron включается явным флагом.
 ### H. Primary findings (решение владельца)
 
 - [ ] После precision shadow: whitelist / severity.
@@ -373,13 +406,13 @@ diagnosis
 
 | Шаг | Статус |
 |--|--|
-| A Манифест (GCE) | in progress (код+тесты+пагинация; полный crawl на GCE) |
-| B Пилот GCE | in progress (parser+fixtures; GCE job запускается) |
-| C Полный корпус GCE | pending |
+| A Манифест (GCE) | done (crawl+пагинация; на GCE ~2k в пилоте букв) |
+| B Пилот GCE | in progress (parse 50 на GCE; OCR) |
+| C Полный корпус GCE | ready-to-run (скрипт full; ждать ок пилота) |
 | D Identity | pending |
-| E UI аналитика + live progress | done (каркас KPI/live/history; графики после первых прогонов) |
+| E UI аналитика + live progress | done |
 | F Shadow findings | pending |
-| G Weekly sync GCE | pending |
+| G Weekly sync + watchdog | scripts ready; cron off until --enable-* |
 | H Primary | pending (решение владельца) |
 
 ---
@@ -407,11 +440,16 @@ diagnosis
 | Dx не через rceth | да |
 | План в индексе `docs/plans/README.md` | да |
 
-**Шаг A (код) стартовал** (скелет `scripts/rceth/` + status writer + GCE smoke) после вашего «поехали» / merge или продолжения в этой же task-ветке.
+**Шаг G (скрипты):** full launcher + watchdog + optional cron. Пилот 50 ещё может идти.
 
 ```bash
-cd /private/tmp/protocol-task-rceth-drug-labels-mo-pc1
-# следующий PR-коммит: scripts/rceth/ manifest crawl + status.json
-```
+# после merge: поставить watchdog (не стартует full сам)
+bash deploy/gcp-app/install_rceth_cron.sh --remote --enable-watchdog
 
-Первый кодовый deliverable: `scripts/rceth/` (manifest crawl + download resume + `_sync/status.json`) и fixtures 3 карточек (Фенибут, Ибупрофен Дансон, Нимесулид Фармлэнд).
+# когда пилот ок - первый полный корпус:
+bash deploy/gcp-app/run_rceth_full_on_gce.sh
+bash deploy/gcp-app/watch_rceth_sync.sh
+
+# позже weekly:
+bash deploy/gcp-app/install_rceth_cron.sh --remote --enable-watchdog --enable-weekly
+```
