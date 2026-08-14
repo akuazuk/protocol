@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-14-100901Z-rceth-status-visible"
+BUILD_VERSION = "2026-08-14-102839Z-kp-age-valid"
 
 
 def _app_version() -> str:
@@ -12456,19 +12456,43 @@ def api_methodist_mo_protocol_suggest(
         except Exception:
             pass
     clinical: dict = {}
+    document: dict = {}
     try:
-        document = build_case_document_payload(case_id, month=month or None, detail=detail)
+        document = build_case_document_payload(
+            case_id,
+            month=month or None,
+            detail=detail,
+            include_demographics=True,
+        )
         if document.get("ok"):
             clinical = document.get("clinical") or {}
+        else:
+            document = {}
     except Exception:
         clinical = {}
-    # возраст для audience child/adult
-    if clinical.get("patient_age_years") in (None, "") and record.get("patient_age_years") not in (
-        None,
-        "",
-    ):
-        clinical = dict(clinical)
-        clinical["patient_age_years"] = record.get("patient_age_years")
+        document = {}
+    # возраст для audience child/adult: годы или ДР + дата визита
+    clinical = dict(clinical)
+    record = dict(record)
+    visit_date = str(
+        record.get("date")
+        or record.get("visit_date")
+        or (document.get("visit_date") if isinstance(document, dict) else "")
+        or ""
+    )[:10]
+    if visit_date:
+        record["visit_date"] = visit_date
+        record.setdefault("date", visit_date)
+        clinical.setdefault("visit_date", visit_date)
+    demo = document.get("_demographics") if isinstance(document.get("_demographics"), dict) else {}
+    for key in ("patient_age_years", "age_years", "patient_bdate", "birth_date", "bdate"):
+        if clinical.get(key) not in (None, ""):
+            continue
+        val = record.get(key)
+        if val in (None, ""):
+            val = demo.get(key)
+        if val not in (None, ""):
+            clinical[key] = val
     history_bundle = None
     if attach_history:
         ph = detail.get("patient_history")

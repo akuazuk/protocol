@@ -7,6 +7,36 @@ from clinical_knowledge.case_protocol_suggest import (
 from clinical_knowledge.protocol_links import protocol_display_name, title_looks_truncated
 
 
+def test_build_case_fact_graph_age_from_bdate_and_visit() -> None:
+    graph = build_case_fact_graph(
+        clinical={"clinical_diagnosis": "плоскостопие", "patient_bdate": "2019-03-01"},
+        record={"visit_id": "v-age", "visit_date": "2026-07-15", "specialty": "Ортопед"},
+    )
+    assert graph["audience"] == "child"
+    assert graph["age_years"] == 7
+    assert graph["visit_date"] == "2026-07-15"
+    assert graph["age_source"] == "bdate_visit"
+
+
+def test_suggest_adult_does_not_pick_det_nas() -> None:
+    import os
+
+    os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
+    result = suggest_protocols_for_case(
+        clinical={
+            "clinical_diagnosis": "Геморрой неуточненный",
+            "mis_diagnos": "I84.9",
+            "patient_age_years": 41,
+            "visit_date": "2026-07-15",
+        },
+        record={"visit_id": "adult-kp", "date": "2026-07-15"},
+        limit=3,
+    )
+    paths = " ".join(str(item.get("source_path") or "") for item in result.get("items") or []).lower()
+    assert "дет_нас" not in paths
+    assert "детс_нас" not in paths
+
+
 def test_build_case_fact_graph_uses_diagnosis_text_not_icd() -> None:
     graph = build_case_fact_graph(
         clinical={

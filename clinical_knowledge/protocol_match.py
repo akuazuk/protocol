@@ -7,7 +7,9 @@ from typing import Any
 from .applicability import assess_card_applicability, infer_card_population
 from .condition_registry import score_card_for_hint
 from .diagnosis_icd import is_symptom_code, prioritize_codes
+from .kp_validity import card_in_force_on, looks_omnibus
 from .loader import load_protocol_cards_registry
+from .patient_age import parse_iso_date
 from .protocol_pick_filters import (
     clinical_relevance_multiplier,
     icd_fit_for_card,
@@ -107,6 +109,28 @@ def _population_match(card: dict[str, Any], consult_audience: str | None) -> flo
     if cp == ca:
         return 1.0
     return 0.0
+
+
+def _prefer_non_child_if_unknown(
+    rows: list[dict[str, Any]],
+    audience: str | None,
+) -> list[dict[str, Any]]:
+    """При unknown не ставить детский КП top-1, если есть взрослый/any с тем же сигналом."""
+    ca = (audience or "").lower().strip()
+    if ca in {"adult", "child", "newborn"} or len(rows) < 2:
+        return rows
+    top = rows[0]
+    top_pop = infer_card_population(top)
+    if top_pop != "child":
+        return rows
+    top_score = float(top.get("match_score") or 0)
+    for idx, row in enumerate(rows[1:], start=1):
+        pop = infer_card_population(row)
+        if pop == "child":
+            continue
+        if float(row.get("match_score") or 0) >= top_score * 0.85:
+            return [row] + [r for i, r in enumerate(rows) if i != idx]
+    return rows
 
 
 _CARD_BLOB_CACHE: dict[str, str] = {}
@@ -387,6 +411,10 @@ def compute_match_score(
         except Exception:  # noqa: BLE001
             pass
 
+    # Омнибус без нозологии в содержании - даже если формально ещё в силе.
+    if looks_omnibus(card) and diag_part < 0.35:
+        raw *= 0.22
+
     return round(max(0.0, min(100.0, raw * 100)), 2)
 
 
@@ -414,6 +442,7 @@ def match_protocol_cards(
         else []
     )
     audience = ctx.get("adult_or_child")
+    visit_day = parse_iso_date(ctx.get("visit_date"))
     hints = set(cons.get("conditions_hint") or [])
     diag_text = str(cons.get("diagnosis_text") or "")
     complaints = list(cons.get("complaints") or [])
@@ -427,6 +456,8 @@ def match_protocol_cards(
     scored: list[tuple[float, dict[str, Any]]] = []
     for card in cards:
         if is_administrative_protocol(card):
+            continue
+        if not card_in_force_on(card, visit_day):
             continue
         score = compute_match_score(
             card,
@@ -464,8 +495,6 @@ def match_protocol_cards(
     out: list[dict[str, Any]] = []
     seen_keys: set[str] = set()
     for sc, card in scored:
-        if card.get("superseded_by") or str(card.get("status") or "") == "superseded":
-            continue
         if card.get("alias_of"):
             continue
         # Дедуп: один PDF в двух рубриках (разный source_path) - одна строка.
@@ -513,6 +542,7 @@ def match_protocol_cards(
         if len(out) >= limit:
             break
 
+    out = _prefer_non_child_if_unknown(out, audience)
     # Applicability-gate (ТЗ №2, §A): честный статус результата + безопасный re-rank,
     # чтобы неподтверждённый population-specific (особенно детский) протокол не стал
     # рекомендуемым Top-1 при взрослом/неопределённом запросе. Аддитивно, за флагом.

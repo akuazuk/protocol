@@ -197,30 +197,41 @@ def test_superseded_and_rehab_not_primary():
             "population": "adult",
             "status": "superseded",
             "superseded_by": "minzdrav_protocols/cardio/new.pdf",
+            "valid_to": "2018-01-01",
             "protocol_kind": "clinical",
         }
     ]
-    # match_protocol_cards loads registry; inject via monkeypatch in caller if needed.
-    # Filter is inside the function after scoring - use compute path by calling
-    # with a patched loader.
     from unittest.mock import patch
 
+    facts = {
+        "consultation": {
+            "icd10": ["I21"],
+            "diagnosis_text": "инфаркт",
+        },
+        "patient_context": {"adult_or_child": "adult", "visit_date": "2026-07-15"},
+    }
     with patch(
         "clinical_knowledge.protocol_match.load_protocol_cards_registry",
         return_value=cards,
     ):
         out = match_protocol_cards(
-            {
-                "consultation": {
-                    "icd10": ["I21"],
-                    "diagnosis_text": "инфаркт",
-                },
-                "patient_context": {"adult_or_child": "adult"},
-            },
+            facts,
             specialty_slug="bolezni-sistemy-krovoobrashcheniya",
             limit=3,
         )
     assert out == []
+    facts["patient_context"]["visit_date"] = "2017-06-01"
+    with patch(
+        "clinical_knowledge.protocol_match.load_protocol_cards_registry",
+        return_value=cards,
+    ):
+        historic = match_protocol_cards(
+            facts,
+            specialty_slug="bolezni-sistemy-krovoobrashcheniya",
+            limit=3,
+        )
+    assert historic
+    assert historic[0]["protocol_id"] == "old"
 
 
 def test_parse_post():
