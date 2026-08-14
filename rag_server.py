@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-14-091632Z-rceth-sync-ui"
+BUILD_VERSION = "2026-08-14-100901Z-rceth-status-visible"
 
 
 def _app_version() -> str:

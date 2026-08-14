@@ -13,6 +13,7 @@ from clinical_knowledge.rceth_sync.parse import (
 from clinical_knowledge.rceth_sync.status import (
     public_rceth_sync_payload,
     read_status,
+    resolve_live_status,
     write_status,
     write_sync_summary,
 )
@@ -126,6 +127,58 @@ def test_status_roundtrip(tmp_path: Path):
     assert pub["latest"]["with_s_pdf"] == 3
     assert pub["running"] is False
     assert pub["history"]
+
+
+def test_resolve_live_status_marks_dead_pid_interrupted():
+    from datetime import datetime, timezone
+
+    live = {
+        "status": "running",
+        "phase": "parse",
+        "progress": {"done": 0, "total": 50},
+        "message": "parse 10000_12_16_17_24",
+        "updated_at": "2026-08-14T09:12:40Z",
+        "pid": 99999999,
+    }
+    view, running, top = resolve_live_status(
+        live,
+        now=datetime(2026, 8, 14, 10, 0, 0, tzinfo=timezone.utc),
+        stale_sec=180,
+    )
+    assert running is False
+    assert top == "interrupted"
+    assert view["stale"] is True
+    assert view["stale_reason"] == "process_gone"
+    pub = public_rceth_sync_payload(
+        {"sync_day": "2026-08-14", "manifest_count": 1, "with_s_pdf": 1, "downloaded": 1},
+        live,
+        history=[],
+    )
+    # public payload re-resolves; dead pid → not running
+    assert pub["running"] is False
+    assert pub["status"] == "interrupted"
+    assert pub["live"]["stale"] is True
+
+
+def test_resolve_live_status_marks_stale_heartbeat():
+    from datetime import datetime, timezone
+
+    live = {
+        "status": "running",
+        "phase": "parse",
+        "progress": {"done": 0, "total": 50},
+        "message": "parse hung",
+        "updated_at": "2026-08-14T09:00:00Z",
+        # no pid → heartbeat age decides
+    }
+    view, running, top = resolve_live_status(
+        live,
+        now=datetime(2026, 8, 14, 9, 10, 0, tzinfo=timezone.utc),
+        stale_sec=180,
+    )
+    assert running is False
+    assert top == "interrupted"
+    assert view["stale_reason"] == "heartbeat_stale"
 
 
 def test_page_pairs_requires_query_string_and_postback():

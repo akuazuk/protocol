@@ -128,6 +128,96 @@ def load_latest_rceth_sync(root: Path | None = None) -> dict[str, Any] | None:
     return rows[-1] if rows else None
 
 
+def _parse_utc(ts: str | None) -> datetime | None:
+    if not ts or not isinstance(ts, str):
+        return None
+    raw = ts.strip()
+    if raw.endswith("Z"):
+        raw = raw[:-1] + "+00:00"
+    try:
+        dt = datetime.fromisoformat(raw)
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return dt.astimezone(timezone.utc)
+
+
+def _pid_alive(pid: Any) -> bool | None:
+    """True/False if checkable; None if unknown."""
+    try:
+        n = int(pid)
+    except (TypeError, ValueError):
+        return None
+    if n <= 1:
+        return None
+    try:
+        os.kill(n, 0)
+    except ProcessLookupError:
+        return False
+    except PermissionError:
+        return True
+    except OSError:
+        return None
+    return True
+
+
+def resolve_live_status(
+    live: dict[str, Any] | None,
+    *,
+    now: datetime | None = None,
+    stale_sec: int | None = None,
+) -> tuple[dict[str, Any] | None, bool, str]:
+    """Нормализовать live: dead PID / старый heartbeat → interrupted, running=false.
+
+    Returns: (live_view, running, top_status).
+    """
+    if not live:
+        return None, False, "unavailable"
+    view = dict(live)
+    raw_status = str(view.get("status") or "")
+    claimed = raw_status in {"running", "queued"}
+    if not claimed:
+        return view, False, raw_status or "idle"
+
+    if stale_sec is None:
+        try:
+            stale_sec = int(os.environ.get("RCETH_STATUS_STALE_SEC", "180") or "180")
+        except ValueError:
+            stale_sec = 180
+    stale_sec = max(30, stale_sec)
+    now = now or datetime.now(timezone.utc)
+    updated = _parse_utc(str(view.get("updated_at") or ""))
+    age_sec = int((now - updated).total_seconds()) if updated else None
+    pid_ok = _pid_alive(view.get("pid"))
+
+    reason = ""
+    if pid_ok is False:
+        reason = "process_gone"
+    elif age_sec is not None and age_sec > stale_sec and pid_ok is not True:
+        reason = "heartbeat_stale"
+    elif age_sec is not None and age_sec > max(stale_sec * 10, 1800) and pid_ok is True:
+        # OCR на одном файле слишком долго - считаем зависшим даже при живом PID.
+        reason = "heartbeat_stale_long"
+
+    if reason:
+        prog = view.get("progress") if isinstance(view.get("progress"), dict) else {}
+        msg = (view.get("message") or "").strip()
+        view["status"] = "interrupted"
+        view["stale"] = True
+        view["stale_reason"] = reason
+        view["age_sec"] = age_sec
+        view["message"] = (
+            f"прерван ({reason})"
+            + (f": {msg}" if msg else "")
+            + (f" · last {prog.get('done')}/{prog.get('total')}" if prog else "")
+        )
+        view.setdefault("finished_at", view.get("updated_at") or _now())
+        return view, False, "interrupted"
+
+    return view, True, "running"
+
+
 def public_rceth_sync_payload(
     latest: dict[str, Any] | None = None,
     live: dict[str, Any] | None = None,
@@ -140,29 +230,34 @@ def public_rceth_sync_payload(
         latest = load_latest_rceth_sync()
     if history is None:
         history = load_all_rceth_syncs()
-    running = bool(live and live.get("status") in {"running", "queued"})
+    live_view, running, top_status = resolve_live_status(live)
+    if top_status == "unavailable" and latest:
+        top_status = "idle"
     out: dict[str, Any] = {
         "ok": True,
-        "status": (live or {}).get("status") or ("unavailable" if not latest else "idle"),
+        "status": top_status,
         "running": running,
         "live": None,
         "latest": None,
         "history": [],
     }
-    if live:
-        prog = live.get("progress") if isinstance(live.get("progress"), dict) else {}
+    if live_view:
+        prog = live_view.get("progress") if isinstance(live_view.get("progress"), dict) else {}
         out["live"] = {
-            "phase": live.get("phase"),
-            "status": live.get("status"),
+            "phase": live_view.get("phase"),
+            "status": live_view.get("status"),
             "done": prog.get("done"),
             "total": prog.get("total"),
-            "message": live.get("message") or "",
-            "current_reg_id": live.get("current_reg_id") or "",
-            "errors": live.get("errors") or 0,
-            "retries_503": live.get("retries_503") or 0,
-            "updated_at": live.get("updated_at"),
-            "started_at": live.get("started_at"),
-            "finished_at": live.get("finished_at"),
+            "message": live_view.get("message") or "",
+            "current_reg_id": live_view.get("current_reg_id") or "",
+            "errors": live_view.get("errors") or 0,
+            "retries_503": live_view.get("retries_503") or 0,
+            "updated_at": live_view.get("updated_at"),
+            "started_at": live_view.get("started_at"),
+            "finished_at": live_view.get("finished_at"),
+            "stale": bool(live_view.get("stale")),
+            "stale_reason": live_view.get("stale_reason") or "",
+            "age_sec": live_view.get("age_sec"),
         }
     if latest:
         out["latest"] = {
@@ -175,7 +270,8 @@ def public_rceth_sync_payload(
             "parse_ok": latest.get("parse_ok"),
             "written_at": latest.get("written_at"),
         }
-        out["status"] = "running" if running else "idle"
+        if top_status not in {"running", "queued", "interrupted", "error"}:
+            out["status"] = "idle"
         out["sync_day"] = out["latest"]["sync_day"]
     hist_pub: list[dict[str, Any]] = []
     for row in history[-30:]:

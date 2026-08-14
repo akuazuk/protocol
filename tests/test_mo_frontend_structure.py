@@ -84,8 +84,11 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "kp-sync-recent",
         "rceth-sync-kpis",
         "rceth-sync-live",
+        "rceth-sync-live-title",
+        "rceth-sync-live-text",
         "rceth-sync-history-table",
         "rceth-sync-freshness",
+        "rceth-sync-notes",
     ):
         assert f'id="{chart_id}"' in HTML
 

@@ -254,10 +254,12 @@ Refbank search (действующие)
 
 - [x] `clinical_knowledge/rceth_sync/status.py`: `load_latest`, `public_rceth_sync_payload`.
 - [x] `GET /api/methodist/mo/rceth-sync` (+ краткий блок в corpus-stats).
-- [x] Page в МО: KPI, freshness, **live-баннер при running**, журнал прогонов (графики/fail-таблицы - после первого GCE прогона).
+- [x] Page в МО: KPI, freshness, **всегда видимый статус-баннер** (running / idle / interrupted), журнал прогонов (графики/fail-таблицы - после первого GCE прогона).
 - [x] Poll 2 с по образцу scoring-strictness job.
 - [x] Тесты payload + якоря HTML (`rceth-sync-*`), по аналогии с kp-sync.
 - [x] Права methodist: page flag `rceth_sync` как у `kp_sync`.
+- [x] Stale/dead-pid: `resolve_live_status` не держит UI в вечном `running` после смерти job.
+- [x] Карточка «Замечания» явно не лог синка (findings = шаг F).
 
 **Выход E:** методист видит и историю, и текущий download online.
 

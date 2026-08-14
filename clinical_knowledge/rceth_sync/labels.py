@@ -70,6 +70,37 @@ def parse_downloaded_labels(
             missing_pdf += 1
             continue
         try:
+            max_bytes = int(os.environ.get("RCETH_PDF_MAX_BYTES", str(8 * 1024 * 1024)) or 0)
+        except ValueError:
+            max_bytes = 8 * 1024 * 1024
+        pdf_size = pdf_path.stat().st_size
+        if max_bytes > 0 and pdf_size > max_bytes:
+            label = build_label_record(
+                reg_id=rid,
+                text="",
+                meta={
+                    **row,
+                    "pdf_s": {
+                        "url": row.get("url_s"),
+                        "sha256": row.get("pdf_s_sha256"),
+                        "bytes": pdf_size,
+                    },
+                },
+            )
+            label["parse"] = {
+                "ok": False,
+                "method": "heading_regex_v1",
+                "needs_human": True,
+                "error": f"pdf_too_large:{pdf_size}>{max_bytes}",
+                "found_keys": [],
+            }
+            (out_dir / f"{rid}.json").write_text(
+                json.dumps(label, ensure_ascii=False, indent=2) + "\n",
+                encoding="utf-8",
+            )
+            needs_human_n += 1
+            continue
+        try:
             text, warns, err = _extract_pdf_text(pdf_path)
         except Exception as exc:  # noqa: BLE001
             errors += 1
