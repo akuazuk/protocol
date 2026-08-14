@@ -1,4 +1,4 @@
-"""Smoke: меню 7 видимых пунктов; legacy charts не на hero Сегодня/Период."""
+"""Smoke: меню 8 видимых пунктов; legacy charts не на hero Сегодня/Период."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -18,9 +18,9 @@ def test_left_menu_has_exactly_seven_visible_pages() -> None:
         line for line in nav.splitlines()
         if 'class="nav-button" data-page=' in line and "<li hidden>" not in line
     ]
-    # settings stays hidden for accounts admin (#89)
-    assert len(visible) == 7
-    for page in ("yesterday", "overview", "queue", "documents", "doctors", "reports", "kp-sync"):
+    # settings stays hidden for accounts admin (#89); + Инструкции ЛС (rceth)
+    assert len(visible) == 8
+    for page in ("yesterday", "overview", "queue", "documents", "doctors", "reports", "kp-sync", "rceth-sync"):
         assert f'data-page="{page}"' in nav
     assert 'data-page="settings"' in nav
     assert "<li hidden>" in nav

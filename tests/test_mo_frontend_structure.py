@@ -43,7 +43,7 @@ def _visible_text(html: str) -> str:
 
 
 def test_mo_dashboard_has_complete_crm_navigation() -> None:
-    # Канон меню: 7 видимых (включая Протоколы МЗ) + hidden settings; без legacy pages.
+    # Канон меню: 8 видимых (включая Протоколы МЗ и Инструкции ЛС) + hidden settings.
     for page in (
         "overview",
         "yesterday",
@@ -52,12 +52,22 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "doctors",
         "reports",
         "kp-sync",
+        "rceth-sync",
         "settings",
     ):
         assert f'data-page="{page}"' in SOURCE
     for gone in ("specialties", "diagnoses", "safety", "doctor-cabinet"):
         assert f'id="page-{gone}"' not in HTML
-    for label in ("Сегодня", "Период", "Очередь", "Все случаи", "Врачи", "Отчёты", "Протоколы МЗ"):
+    for label in (
+        "Сегодня",
+        "Период",
+        "Очередь",
+        "Все случаи",
+        "Врачи",
+        "Отчёты",
+        "Протоколы МЗ",
+        "Инструкции ЛС",
+    ):
         assert label in HTML
     assert 'id="breadcrumbs"' in HTML
     assert 'id="doctor-zone-chart"' in HTML
@@ -72,6 +82,10 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "kp-sync-period-kpis",
         "kp-sync-period-table",
         "kp-sync-recent",
+        "rceth-sync-kpis",
+        "rceth-sync-live",
+        "rceth-sync-history-table",
+        "rceth-sync-freshness",
     ):
         assert f'id="{chart_id}"' in HTML
 

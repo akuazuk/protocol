@@ -28,6 +28,7 @@
           <li><button class="nav-button" data-page="doctors"><span class="nav-icon">Вр</span><span class="nav-text">Врачи</span></button></li>
           <li><button class="nav-button" data-page="reports"><span class="nav-icon">⇩</span><span class="nav-text">Отчёты</span></button></li>
           <li><button class="nav-button" data-page="kp-sync"><span class="nav-icon">КП</span><span class="nav-text">Протоколы МЗ</span></button></li>
+          <li><button class="nav-button" data-page="rceth-sync"><span class="nav-icon">ЛС</span><span class="nav-text">Инструкции ЛС</span></button></li>
           <li hidden><button class="nav-button" data-page="settings" id="nav-settings" aria-hidden="true"><span class="nav-text">Справка</span></button></li>
         </ul>
       </nav>
@@ -273,6 +274,16 @@
           <div class="card"><h2>Свежие посты МЗ</h2><p class="card-sub">По дате постановления, не по ночи загрузки</p><div id="kp-sync-recent"></div></div>
           <div class="card"><h2>Новые и изменённые у нас</h2><p class="card-sub">Последняя ночная сверка</p><div id="kp-sync-changed"></div></div>
           <div class="card"><h2>Заменены на сайте</h2><p class="card-sub">Файл остаётся в корпусе, в подборе не основной</p><div id="kp-sync-superseded"></div></div>
+        </section>
+        <section class="page" id="page-rceth-sync" data-page="rceth-sync" hidden aria-labelledby="title-rceth-sync">
+          <div class="page-head"><div><h1 id="title-rceth-sync">Инструкции ЛС</h1><p>Корпус инструкций специалиста с Refbank (rceth): манифест действующих ЛС и скачивание PDF на GCE.</p></div><span class="freshness" id="rceth-sync-freshness">Сверка</span></div>
+          <div class="card" id="rceth-sync-live" hidden>
+            <h2>Идёт синхронизация</h2>
+            <p class="card-sub" id="rceth-sync-live-text">Ожидание статуса...</p>
+          </div>
+          <div class="kpis" id="rceth-sync-kpis"></div>
+          <div class="card"><h2>Журнал прогонов</h2><p class="card-sub">Итоги дневных сверок на data volume</p><div id="rceth-sync-history-table"></div></div>
+          <div class="card"><h2>Замечания</h2><p class="card-sub">Label-check findings появятся после пилота на GCE. Сейчас только статус корпуса.</p><div id="rceth-sync-notes"><p class="empty">Пилот и bulk - только на GCE (/var/data/rceth).</p></div></div>
         </section>
         <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">
           <div class="page-head"><div><h1 id="title-settings">Справка и настройки</h1><p>Как мы смотрим запись, кто вошёл и личные настройки экрана.</p></div></div>
