@@ -34,8 +34,10 @@
 
 ## Deploy / smoke
 
-Фиксируется после `deploy_to_gce.sh`: `/health/live` и `/api/version` на
-`protocol.kravira.by` должны показать `2026-08-14-123546Z-kp-golden-40`.
+- merge SHA: `b6c7381` (#155)
+- GCE deploy 2026-08-17: `deploy_to_gce.sh` ok
+- `https://protocol.kravira.by/health/live` ok
+- `/api/version` = `2026-08-14-123546Z-kp-golden-40` (`git_commit` null, версия совпала)
 
 ## Не трогать параллельно
 
