@@ -51,8 +51,32 @@ def test_looks_omnibus_urology_and_dispanser() -> None:
             "source_path": "minzdrav_protocols/otorinolaringologiya/КП_2017.pdf",
         }
     )
+    assert looks_omnibus(
+        {
+            "title": "Клинический протокол",
+            "source_path": "кп_оториноларингология (взрослые) в ред. пост. мз рб от 25.06.2026 №78.pdf",
+        }
+    )
+    assert looks_omnibus(
+        {
+            "title": "Диагностика и лечение взрослого населения с общехирургическими болезнями",
+            "source_path": "khirurgiya/кп 12.02.2007 №82.pdf",
+        }
+    )
+    assert not looks_omnibus(
+        {
+            "title": "Медицинское наблюдение и оказание медицинской помощи женщинам в акушерстве и гинекологии",
+            "source_path": "akusherstvo/КП_2018_№_17.pdf",
+        }
+    )
     assert not looks_omnibus(
         {"title": "Геморрой у взрослого населения", "source_path": "khirurgiya/kp22.pdf"}
+    )
+    assert not looks_omnibus(
+        {
+            "title": "Хронический синусит у взрослых",
+            "source_path": "кп_диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_мз_2025_25.pdf",
+        }
     )
 
 
@@ -64,6 +88,28 @@ def test_omnibus_ent_icd_dump_does_not_score_high() -> None:
         "source_path": "minzdrav_protocols/otorinolaringologiya/КП_2017.pdf",
         "icd10_all": ["J06.9", "J03.9", "H66.9", "J32.9", "J00"],
         "icd10_primary": ["J06.9"],
+    }
+    score = compute_match_score(
+        card,
+        icd_list=["J06.9"],
+        audience="adult",
+        hints=set(),
+        specialty_slug=None,
+        diag_text="Острая инфекция верхних дыхательных путей",
+        complaints=[],
+        performed_exams=[],
+        use_icd=True,
+    )
+    assert score < 40, score
+
+
+def test_omnibus_ent_2026_revision_does_not_score_high() -> None:
+    from clinical_knowledge.protocol_match import compute_match_score
+
+    card = {
+        "title": "Клинический протокол",
+        "source_path": "кп_оториноларингология (взрослые) в ред. пост. мз рб от 25.06.2026 №78.pdf",
+        "icd10_all": ["J06.9", "J32.9", "H66.9"],
     }
     score = compute_match_score(
         card,
