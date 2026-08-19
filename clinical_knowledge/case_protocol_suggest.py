@@ -13,6 +13,7 @@ from datetime import datetime, timezone
 from typing import Any
 from urllib.parse import quote
 
+from clinical_knowledge.applicability import is_child_only_kp_name
 from clinical_knowledge.protocol_links import protocol_display_name, protocol_nav_api_path
 
 ENGINE = "case_protocol_suggest_v5"
@@ -590,17 +591,20 @@ def _rank_rows(
     for row in filtered:
         kind = _match_kind(row, graph)
         tier = {"clinical": 0, "ddx": 1, "specialty": 2}.get(kind, 3)
+        blob = (
+            str(row.get("source_path") or "")
+            + " "
+            + str(row.get("title") or "")
+            + " "
+            + str(row.get("population") or "")
+        )
+        if audience == "adult" and is_child_only_kp_name(blob):
+            continue
         child_unknown = 0
-        if unknown_aud:
-            blob = (
-                str(row.get("source_path") or "")
-                + " "
-                + str(row.get("title") or "")
-                + " "
-                + str(row.get("population") or "")
-            ).lower()
-            if "дет_нас" in blob or "детс_нас" in blob or str(row.get("population") or "") == "child":
-                child_unknown = 1
+        if unknown_aud and (
+            is_child_only_kp_name(blob) or str(row.get("population") or "") == "child"
+        ):
+            child_unknown = 1
         decorated.append(
             (
                 tier,

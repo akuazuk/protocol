@@ -55,6 +55,33 @@ def _title_population_marker(title: str) -> str | None:
     return None
 
 
+_DUAL_POP_MARKERS = (
+    "взр_и_дет",
+    "взр_дет",
+    "взр и дет",
+    "взрослых и детей",
+    "дет и взр",
+    "взрослого и детского",
+)
+
+
+def is_dual_population_kp_name(text: str) -> bool:
+    blob = (text or "").lower()
+    return any(marker in blob for marker in _DUAL_POP_MARKERS)
+
+
+def is_child_only_kp_name(text: str) -> bool:
+    """Только детский КП. Не путать с «взр_и_дет_население» (там есть подстрока дет_нас)."""
+    blob = (text or "").lower()
+    if is_dual_population_kp_name(blob):
+        return False
+    if re.search(r"дет_нас(?!елен)", blob):
+        return True
+    if any(m in blob for m in ("детс_нас", "д-нас", "дети_пост", "мп_дети")):
+        return True
+    return "дет_население" in blob
+
+
 def infer_card_population(card: dict[str, Any]) -> str:
     """population из карточки или по маркерам в названии/path (детское/взрослое население)."""
     title_pop = _title_population_marker(str(card.get("title") or ""))
@@ -68,6 +95,10 @@ def infer_card_population(card: dict[str, Any]) -> str:
     if raw not in ("any", "", "unknown"):
         return raw
     text = _card_text(card)
+    if is_dual_population_kp_name(text):
+        return "any"
+    if is_child_only_kp_name(text):
+        return "child"
     has_ped = any(m in text for m in PED_TITLE_MARKERS)
     has_adult = any(m in text for m in ADULT_TITLE_MARKERS)
     if has_ped and not has_adult:
