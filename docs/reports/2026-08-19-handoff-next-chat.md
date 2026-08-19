@@ -17,13 +17,12 @@ Primary: `https://protocol.kravira.by`
 
 - Rceth parse GCE **done** (2026-08-18 12:24 UTC); #159 identity, #161 shadow, #162 омнибус ЛОР, #163 child-only метрика - в `main`.
 - #163 влит: https://github.com/akuazuk/protocol/pull/163 (`fae7266`).
-- Eval **без рестарта** `protocol-web`: clone `/tmp/protocol-eval` @ `fae7266`, one-off контейнер `kp-eval-sample` (новые `clinical_knowledge` поверх `protocol-gcp-app:staging`). Smoke 8 случаев - ок. Идёт выборка 500 (`--from 2026-07-26 --to 2026-08-13`).
-- Старый полный отчёт: `/var/data/medical_exams/reports/kp_suggest_eval_2026-07-26_08-13.json` - hit 71.2% (5411/7605), omnibus 568 (ЛОР 426 + урология 2011 ×81).
+- Eval sample 500 без рестарта UI: hit **70.2%**, omnibus **16** (4.6%), adult child-only **0**. Отчёт `/var/data/medical_exams/reports/kp_suggest_eval_sample_post163.json`.
+- В этой ветке: `looks_omnibus` на ЛОР №78 (2026) и общехирургию 2007. Гин. 2018 №17 не демоутить.
 
 ## Делается
 
-- Контейнер `kp-eval-sample` на `protocol-app`. Отчёт: `/var/data/medical_exams/reports/kp_suggest_eval_sample_post163.json`.
-- Ожидание: hit **упадёт** к ~65%, если 426 ЛОР-омнибус станут честным «нет» (J06 в golden - пусто). Цель ≥75% после этого не закрыть без новых нозологических хитов.
+Нет живого eval-контейнера после sample (exit 0). Полный CSV - после merge этого PR.
 
 ## Нужно
 
