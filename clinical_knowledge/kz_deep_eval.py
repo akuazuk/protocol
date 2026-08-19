@@ -588,7 +588,13 @@ def resolve_protocol_ctx(case: dict) -> dict | None:
     }
 
 
-def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None, icd_client=None) -> dict:
+def evaluate_kz_deep(
+    case: dict,
+    protocol_ctx=None,
+    drug_ctx: dict | None = None,
+    icd_client=None,
+    label_ctx: dict | None = None,
+) -> dict:
     """Главная точка входа. См. модульную документацию."""
     # Бандл истории один раз на case - до concordance / name_only (читают summary)
     try:
@@ -718,6 +724,23 @@ def evaluate_kz_deep(case: dict, protocol_ctx=None, drug_ctx: dict | None = None
                 shadow_findings = list(shadow_findings) + list(hist_shadow)
                 if patient_history_primary_enabled():
                     findings.extend({**item, "shadow": False} for item in hist_shadow)
+    except Exception:  # noqa: BLE001
+        pass
+
+    # Rceth label-check: только shadow, не в overall / risk-gate / очередь Критично
+    try:
+        from .rceth_label_findings import (
+            evaluate_rceth_label_findings,
+            rceth_label_findings_enabled,
+            rceth_label_primary_enabled,
+        )
+
+        if rceth_label_findings_enabled():
+            rceth_shadow = evaluate_rceth_label_findings(case, label_ctx=label_ctx)
+            if rceth_shadow:
+                shadow_findings = list(shadow_findings) + list(rceth_shadow)
+                if rceth_label_primary_enabled():
+                    findings.extend({**item, "shadow": False} for item in rceth_shadow)
     except Exception:  # noqa: BLE001
         pass
 

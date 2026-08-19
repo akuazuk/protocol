@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-19-052707Z-rceth-identity-d"
+BUILD_VERSION = "2026-08-19-055149Z-rceth-label-shadow"
 
 
 def _app_version() -> str:
@@ -11957,6 +11957,15 @@ def api_methodist_mo_case_detail(
                 result.get("findings") if isinstance(result.get("findings"), list) else [],
                 live_case,
             )
+            try:
+                from clinical_knowledge.rceth_label_findings import merge_rceth_label_into_findings
+
+                result["findings"] = merge_rceth_label_into_findings(
+                    result.get("findings") if isinstance(result.get("findings"), list) else [],
+                    live_case,
+                )
+            except Exception:  # noqa: BLE001
+                pass
             try:
                 from clinical_knowledge.mo_patient_history_bundle import (
                     merge_patient_history_into_findings,

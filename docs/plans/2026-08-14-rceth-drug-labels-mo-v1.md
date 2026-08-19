@@ -266,12 +266,13 @@ Refbank search (действующие)
 
 ### F. Label-check в МО (shadow)
 
-- [ ] `load_rceth_label_ctx()` / lookup by INN+form.
-- [ ] Findings shadow: `off_label_vs_dx`, `label_contraindication`, `age_outside_label`.
-- [ ] В тексте: surface + INN + «инструкция rceth, ред. {date}».
-- [ ] **Не** менять Dx-зону / protocol suggest scoring.
+- [x] `load_rceth_label_ctx()` / lookup by INN+form (`rceth_sync/label_ctx.py`).
+- [x] Findings shadow: `C_rceth_off_label`, `C_rceth_contraindication`, `C_rceth_age_outside_label` (P2, `shadow=True`).
+- [x] В тексте: surface + INN + «инструкция rceth {reg_id}, ред. …».
+- [x] **Не** менять Dx-зону / protocol suggest scoring; `MO_RCETH_LABEL_PRIMARY` default off; очередь не берёт `is_shadow`.
+- [ ] Калибровка 30 кейсов (false positive off-label < 15%) - после выкладки на GCE.
 
-**Выход F:** shadow findings + калибровка 30 кейсов.
+**Выход F:** shadow findings в deep/live; калибровка 30 кейсов остаётся.
 
 ### G. Full corpus + weekly sync + автослежение (GCE)
 
@@ -412,7 +413,7 @@ diagnosis
 | C Полный корпус GCE | done 2026-08-18: download 3017/0 fail; parse 3017; 4.1+4.3 = 74% |
 | D Identity | done (seed 20 + merge setdefault; runtime manifest на GCE) |
 | E UI аналитика + live progress | done |
-| F Shadow findings | pending - следующий код-шаг |
+| F Shadow findings | done в коде (калибровка 30 кейсов - после deploy) |
 | G Weekly sync + watchdog | watchdog on; weekly cron off until --enable-weekly |
 | H Primary | pending (решение владельца) |
 
