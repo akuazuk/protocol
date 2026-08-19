@@ -438,6 +438,8 @@ def _diag_overlap(item: dict[str, Any], graph: dict[str, Any]) -> float:
         diag = _complaints_anamnesis_query(graph)
     if not diag.strip():
         return 0.0
+    from clinical_knowledge.kp_validity import looks_omnibus, omnibus_lexical_card
+
     cardish = {
         "title": item.get("title"),
         "condition_label": item.get("matched_condition"),
@@ -445,6 +447,8 @@ def _diag_overlap(item: dict[str, Any], graph: dict[str, Any]) -> float:
         "icd10_primary": item.get("icd10_primary") or [],
         "icd10_all": item.get("icd10_all") or [],
     }
+    if looks_omnibus(cardish) or looks_omnibus(item):
+        cardish = omnibus_lexical_card(cardish)
     cands = bridge_icd_candidates(diag)
     focus = {str(c.get("code") or "").upper() for c in cands if c.get("code")} or None
     return max(
@@ -462,11 +466,14 @@ def _best_icd_fit_weight(item: dict[str, Any]) -> float:
 def _match_kind(item: dict[str, Any], graph: dict[str, Any]) -> str:
     score = float(item.get("match_score") or 0)
     icd_w = _best_icd_fit_weight(item)
-    # Exact / root МКБ на карточке КП - clinical даже без lexical overlap title
-    if icd_w >= _ICD_FIT_CLINICAL and score >= _ICD_PATH_MIN_SCORE:
-        return "clinical"
-    if icd_w >= _ICD_FIT_WEAK and score >= 55:
-        return "clinical"
+    from clinical_knowledge.kp_validity import looks_omnibus
+
+    # Омнибус с dump МКБ не считать clinical только из-за попадания кода в длинный список.
+    if not looks_omnibus(item):
+        if icd_w >= _ICD_FIT_CLINICAL and score >= _ICD_PATH_MIN_SCORE:
+            return "clinical"
+        if icd_w >= _ICD_FIT_WEAK and score >= 55:
+            return "clinical"
     overlap = _diag_overlap(item, graph)
     # clinical только при уверенном Dx-fit (bridge/lexical), не при specialty≈50
     if overlap >= 0.5 or (overlap >= 0.35 and score >= 70):

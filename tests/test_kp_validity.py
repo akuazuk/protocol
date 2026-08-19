@@ -45,6 +45,35 @@ def test_looks_omnibus_urology_and_dispanser() -> None:
         }
     )
     assert looks_omnibus({"title": "Диспансеризация взрослого населения", "source_path": "dn.pdf"})
+    assert looks_omnibus(
+        {
+            "title": "Диагностика и лечение пациентов с оториноларингологическими заболеваниями",
+            "source_path": "minzdrav_protocols/otorinolaringologiya/КП_2017.pdf",
+        }
+    )
     assert not looks_omnibus(
         {"title": "Геморрой у взрослого населения", "source_path": "khirurgiya/kp22.pdf"}
     )
+
+
+def test_omnibus_ent_icd_dump_does_not_score_high() -> None:
+    from clinical_knowledge.protocol_match import compute_match_score
+
+    card = {
+        "title": "Диагностика и лечение пациентов с оториноларингологическими заболеваниями",
+        "source_path": "minzdrav_protocols/otorinolaringologiya/КП_2017.pdf",
+        "icd10_all": ["J06.9", "J03.9", "H66.9", "J32.9", "J00"],
+        "icd10_primary": ["J06.9"],
+    }
+    score = compute_match_score(
+        card,
+        icd_list=["J06.9"],
+        audience="adult",
+        hints=set(),
+        specialty_slug=None,
+        diag_text="Острая инфекция верхних дыхательных путей",
+        complaints=[],
+        performed_exams=[],
+        use_icd=True,
+    )
+    assert score < 40, score

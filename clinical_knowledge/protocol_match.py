@@ -7,7 +7,7 @@ from typing import Any
 from .applicability import assess_card_applicability, infer_card_population
 from .condition_registry import score_card_for_hint
 from .diagnosis_icd import is_symptom_code, prioritize_codes
-from .kp_validity import card_in_force_on, looks_omnibus
+from .kp_validity import card_in_force_on, looks_omnibus, omnibus_lexical_card
 from .patient_age import parse_iso_date
 from .protocol_candidate_index import select_candidate_cards
 from .protocol_pick_filters import (
@@ -309,9 +309,10 @@ def compute_match_score(
     use_icd=False: путь МО Suggest - только текст диагноза (+ слабые жалобы/specialty),
     без recall/гейтов по МКБ случая. text→ICD bridge - отдельный soft-сигнал.
     """
-    card_icd = [str(x).upper() for x in (card.get("icd10_all") or card.get("icd10_primary") or [])]
+    score_card = omnibus_lexical_card(card) if looks_omnibus(card) else card
+    card_icd = [str(x).upper() for x in (score_card.get("icd10_all") or score_card.get("icd10_primary") or [])]
     icd_part = 0.0
-    if use_icd:
+    if use_icd and not looks_omnibus(card):
         case_codes = [c for c in icd_list if c and not is_symptom_code(c)]
         card_set = set(card_icd)
         exact_n = sum(1 for c in case_codes if c in card_set)
@@ -343,8 +344,8 @@ def compute_match_score(
     elif specialty_slug:
         spec_part = 0.2
 
-    title_low = (card.get("title") or "").lower()
-    blob = _card_match_blob(card)
+    title_low = (score_card.get("title") or "").lower()
+    blob = _card_match_blob(score_card)
     hint_score = 0.0
     for hint in hints:
         hint_score += score_card_for_hint(str(hint), blob, icd_list if use_icd else []) / 100.0
@@ -357,9 +358,10 @@ def compute_match_score(
             for item in bridge_cands
             if item.get("code")
         }
-    diag_part = _diag_text_overlap(diag_text, card, focus_codes=focus_codes)
-    if not use_icd:
-        # МО Suggest: lexical + text→ICD bridge (не код из случая)
+    diag_part = _diag_text_overlap(diag_text, score_card, focus_codes=focus_codes)
+    if not use_icd and not looks_omnibus(card):
+        # МО Suggest: lexical + text→ICD bridge (не код из случая).
+        # Омнибус: bridge по icd10_all слишком широкий (ЛОР 2017 × все J/H).
         diag_part = max(
             diag_part,
             _text_icd_bridge_score(diag_text, card, bridge_cands=bridge_cands),

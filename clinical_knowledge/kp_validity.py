@@ -83,11 +83,31 @@ def looks_omnibus(card: dict[str, Any] | None) -> bool:
     broad = (
         "урологическими заболеваниями",
         "оториноларингологическими заболеваниями",
+        "оториноларингологическ",
+        "отоларингологическ",
         "болезнями кожи",
         "кардиологическими заболеваниями",
         "с заболеваниями нервной системы",
     )
     return any(n in blob for n in broad)
+
+
+def omnibus_lexical_card(card: dict[str, Any] | None) -> dict[str, Any]:
+    """Для омнибуса не брать dump icd10_all: иначе любой J/H/N код выглядит как clinical."""
+    card = card if isinstance(card, dict) else {}
+    return {
+        "title": card.get("title"),
+        "condition_label": card.get("condition_label") or card.get("matched_condition"),
+        "source_path": card.get("source_path"),
+        "icd10_primary": [],
+        "icd10_all": [],
+        "specialty_slug": card.get("specialty_slug"),
+        "population": card.get("population"),
+        "status": card.get("status"),
+        "approval": card.get("approval"),
+        "valid_from": card.get("valid_from"),
+        "valid_to": card.get("valid_to"),
+    }
 
 
 def attach_validity_fields(card: dict[str, Any] | None) -> dict[str, Any]:
