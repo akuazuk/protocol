@@ -122,9 +122,32 @@
 
 10. [x] Омнибус ЛОР/урология: не считать clinical по dump `icd10_all`.
     Только title/path. J06/ОРВИ не должны брать КП «оториноларингологическими
-    заболеваниями» 2017.
+    заболеваниями» 2017. Merge #162 `dd41297`.
+11. [x] Метрика adult `дет_нас`: не считать `взр_и_дет_население`. Merge #163 `fae7266`.
+12. [ ] CSV-прогон на коде `fae7266` **без** рестарта `protocol-web`:
+    one-off `kp-eval-sample` → затем полный период 26.07-13.08.
+    Старый 71.2% включал 426 ЛОР-омнибус; после #162 hit скорее уйдёт к ~65%.
+    Цель ≥75% - только если появятся нозологические хиты вместо омнибуса.
+13. [ ] Гинекология: КП 2018 №17 (276 МКБ, 216 top-1) vs ревизия 18.06.2026 №73
+    (карточка есть, ICD пустой). Пустые N80/D25 не закрывать омнибусом 2018.
 
 ## Следующая команда
 
-После merge: прогон CSV на GCE (цель hit ≥75%, omnibus top-1 ≤5%).
+На GCE, не трогая `protocol-web`:
+
+```bash
+sudo docker logs --tail 20 kp-eval-sample
+# после sample:
+sudo docker run --rm --name kp-eval-full --volumes-from protocol-web \
+  -v /tmp/protocol-eval/clinical_knowledge:/app/clinical_knowledge:ro \
+  -v /tmp/protocol-eval/scripts/eval_mo_kp_suggest_month.py:/app/scripts/eval_mo_kp_suggest_month.py:ro \
+  -e PYTHONPATH=/app -e CASE_PROTOCOL_SUGGEST=1 \
+  -e PROTOCOL_CARDS_PATH=/app/output/registry/protocol_cards.jsonl \
+  -e MO_DATA_ROOT=/var/data/medical_exams \
+  protocol-gcp-app:staging \
+  python3 /app/scripts/eval_mo_kp_suggest_month.py \
+    --from 2026-07-26 --to 2026-08-13 \
+    --out /var/data/medical_exams/reports/kp_suggest_eval_post163.json
+```
+
 Не смешивать с Rceth deploy.

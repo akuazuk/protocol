@@ -442,6 +442,6 @@ diagnosis
 | Dx не через rceth | да |
 | План в индексе `docs/plans/README.md` | да |
 
-**Следующий код-шаг - F (shadow findings).** Full parse уже `done`. Weekly cron не включать до калибровки F. Watchdog `*/10` уже стоит и idle.
+F shadow в `main` (#161). Калибровка 30 кейсов - после `deploy_to_gce.sh` (или one-off контейнер с `/var/data/rceth`, без рестарта UI). Weekly cron не включать. Watchdog `*/10` idle.
 
-После merge этого PR координатор может выложить runtime на GCE (`deploy_to_gce.sh`), чтобы `drug_normalizer` подхватил полный манифест с `/var/data/rceth`. Без деплоя seed 20 брендов работает везде; полный словарь - только на GCE после выкладки.
+Координатор: `bash deploy/gcp-app/deploy_to_gce.sh`. Ожидаемый `/api/version` после выкладки `main` `fae7266`: `2026-08-19-102831Z-kp-child-only-metric`. Без деплоя seed 20 брендов; полный identity с манифеста - только на GCE после выкладки.
