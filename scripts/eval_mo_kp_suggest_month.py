@@ -16,6 +16,8 @@ ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+from clinical_knowledge.applicability import is_child_only_kp_name  # noqa: E402
+
 def _days(first: date, last: date) -> list[date]:
     return [first + timedelta(days=i) for i in range((last - first).days + 1)]
 
@@ -178,7 +180,7 @@ def main() -> int:
                     adult = float(str(age).replace(",", ".")) >= 18
                 except (TypeError, ValueError):
                     adult = False
-                if adult and "дет_нас" in fname:
+                if adult and is_child_only_kp_name(fname):
                     n_adult_child_kp += 1
                 if looks_omnibus(
                     {

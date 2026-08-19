@@ -96,3 +96,17 @@ def test_infer_population_from_det_nas_filename() -> None:
     )
     assert child == "child"
     assert adult == "adult"
+
+
+def test_dual_population_filename_is_not_child_only() -> None:
+    from clinical_knowledge.applicability import (
+        infer_card_population,
+        is_child_only_kp_name,
+    )
+
+    dual = "кп_диагностика_взр_и_дет_население_с_открытым_прикусом.pdf"
+    assert is_child_only_kp_name(dual) is False
+    assert infer_card_population({"title": "КП", "source_path": dual, "population": "any"}) == "any"
+    assert is_child_only_kp_name(
+        "КП_диагностика_и_лечение_пациентов_дет_нас_с_гастродуоденальной_язвой.pdf"
+    )

@@ -2,19 +2,19 @@
 
 Дата: 2026-08-19  
 Репозиторий: `akuazuk/protocol`  
-Предшественник: `docs/reports/2026-08-18-handoff-next-chat.md`  
-Worktree: `/private/tmp/protocol-task-rceth-identity-d-pc1`  
+Канон: `origin/main` `dd41297` (#162)  
 Грязный `/Users/pavel/CURSOR/Protocol/protocol` на `main` не использовать.
 
-Primary: `https://protocol.kravira.by`
+Primary: `https://protocol.kravira.by`  
+Прод runtime всё ещё старый (`2026-08-14-123546Z-kp-golden-40`), пока координатор не выложит.
 
 ---
 
 ## Сделано
 
-- Rceth full parse на GCE **done** 2026-08-18 12:24 UTC: 3017/3017, fail 0; 4.1+4.3 = 74%.
-- Шаг D: identity бренд → МНН. PR **#159** (lint fix `cefd1f3`, unused import).
-- Шаг F: shadow findings `C_rceth_off_label` / `C_rceth_contraindication` / `C_rceth_age_outside_label` (P2, не в overall, не в очередь). Ветка `cursor/rceth-label-shadow-f-pc1`.
+- Rceth parse GCE **done**; #159 identity и #161 shadow findings влиты в `main` (`34e2f72`, `43ab48f`).
+- #162 омнибус ЛОР: не clinical по dump МКБ (`dd41297`).
+- Метрика «6 дет_нас у взрослых»: скорее `взр_и_дет_население` (подстрока `дет_нас`). Правка в этой ветке.
 
 ## Делается
 
@@ -22,14 +22,12 @@ Primary: `https://protocol.kravira.by`
 
 ## Нужно
 
-1. Merge **#159**, затем PR шага F (база - ветка D, пока #159 не влит).
-2. После merge F координатор: `deploy_to_gce.sh` + `/api/version`. На GCE подхватится полный манифест и labels.
-3. Калибровка 30 кейсов (цель FP off-label < 15%). Пока не primary и не weekly cron.
-4. КП hit 71.2% → 75% - отдельный PR.
-5. Render не удалять. Чужие PR не брать.
+1. Координатор: `deploy_to_gce.sh`. `/api/version` сначала `2026-08-19-055149Z-rceth-label-shadow`, после этого PR - новая версия.
+2. После деплоя: CSV KP eval на GCE (цель hit ≥75%, omnibus ≤5%).
+3. Калибровка Rceth 30 кейсов. Не `MO_RCETH_LABEL_PRIMARY`, не weekly cron.
+4. Render не удалять. Чужие PR не брать.
 
 ## Запрет
 
 - Второй full parse / `RCETH_PARSE_FORCE=1`
-- `MO_RCETH_LABEL_PRIMARY=1` до калибровки
 - Gemini с Mac, push в `main`, грязный checkout, PHI
