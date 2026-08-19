@@ -166,7 +166,7 @@
 |--|--|--|
 | Действующие `_s` в манифесте | 0 | ≥ 90% от найденных ссылок в Refbank |
 | Parse success 4.1+4.3 | 0 | ≥ 80% пилота; ≥ 70% полного корпуса |
-| Identity: бренд РБ → INN (top МО) | частично ручной словарь | + покрытие частых белорусских торговых имён |
+| Identity: бренд РБ → INN (top МО) | seed 20 + runtime `/var/data/rceth/manifest.jsonl` (GCE) | + покрытие частых белорусских торговых имён; курируемый словарь не затирается |
 | False positive off-label на gold 30 МО | n/a | < 15% в shadow до primary |
 | Влияние на Dx-зону | не должно | 0 изменений SSOT диагноза |
 | Sync latency | n/a | weekly на GCE; changed PDF < 24h после обнаружения |
@@ -244,11 +244,12 @@ Refbank search (действующие)
 
 ### D. Identity-словарь для drug_normalizer
 
-- [ ] Из карточек: trade_name (ru) → INN, ATC, form keywords.
-- [ ] Merge с `_BRAND_TO_INN` без ложных override (регрессия meloxicam).
-- [ ] Unit-тесты на 20 белорусских брендов из пилота.
+- [x] Из карточек: trade_name (ru) → INN, form keywords; ATC если есть в seed/карточке (в full-манифесте ATC пока пустой - HTML details не качали).
+- [x] Merge с `_BRAND_TO_INN` через `setdefault` (регрессия meloxicam≠diclofenac).
+- [x] Unit-тесты на 20 белорусских брендов (`data/drug_safety/rceth_identity_seed.json` + fixture выдачи).
+- [x] Runtime: seed из git + `manifest.jsonl` на GCE (`load_identity_index`). Combo (`+` / «и») и коллизия двух INN на бренд - пропуск.
 
-**Выход D:** улучшение нормализации до label findings.
+**Выход D:** нормализатор видит белорусские торговые имена до label findings.
 
 ### E. Вкладка аналитики + онлайн-прогресс (обязательно до primary findings)
 
@@ -406,13 +407,13 @@ diagnosis
 
 | Шаг | Статус |
 |--|--|
-| A Манифест (GCE) | done (crawl+пагинация; на GCE ~2k в пилоте букв) |
-| B Пилот GCE | in progress (parse 50 на GCE; OCR) |
-| C Полный корпус GCE | ready-to-run (скрипт full; ждать ок пилота) |
-| D Identity | pending |
+| A Манифест (GCE) | done (7352 действующих; 3017 с `_s`) |
+| B Пилот GCE | done (пилот 50 + full parse) |
+| C Полный корпус GCE | done 2026-08-18: download 3017/0 fail; parse 3017; 4.1+4.3 = 74% |
+| D Identity | done (seed 20 + merge setdefault; runtime manifest на GCE) |
 | E UI аналитика + live progress | done |
-| F Shadow findings | pending |
-| G Weekly sync + watchdog | scripts ready; cron off until --enable-* |
+| F Shadow findings | pending - следующий код-шаг |
+| G Weekly sync + watchdog | watchdog on; weekly cron off until --enable-weekly |
 | H Primary | pending (решение владельца) |
 
 ---
@@ -421,8 +422,8 @@ diagnosis
 
 - Отдельная task-ветка `cursor/rceth-drug-labels-mo-v1-pc1` / свой worktree; не `main`, не чужие ветки.
 - Общий файл `docs/plans/README.md` - частый конфликт: перед merge rebase на свежий `origin/main`.
-- Не трогать параллельно: night GCE KP sync scripts, `drug_normalizer.py` до шага D (тогда узкий PR).
-- Bulk download - один writer на `/var/data/rceth` (GCE job), не два агента одновременно.
+- Не трогать параллельно: night GCE KP sync scripts. `drug_normalizer.py` уже в шаге D (этот PR).
+- `/var/data/rceth` - не второй writer, пока weekly cron выключен.
 
 ---
 
@@ -440,16 +441,6 @@ diagnosis
 | Dx не через rceth | да |
 | План в индексе `docs/plans/README.md` | да |
 
-**Шаг G (скрипты):** full launcher + watchdog + optional cron. Пилот 50 ещё может идти.
+**Следующий код-шаг - F (shadow findings).** Full parse уже `done`. Weekly cron не включать до калибровки F. Watchdog `*/10` уже стоит и idle.
 
-```bash
-# после merge: поставить watchdog (не стартует full сам)
-bash deploy/gcp-app/install_rceth_cron.sh --remote --enable-watchdog
-
-# когда пилот ок - первый полный корпус:
-bash deploy/gcp-app/run_rceth_full_on_gce.sh
-bash deploy/gcp-app/watch_rceth_sync.sh
-
-# позже weekly:
-bash deploy/gcp-app/install_rceth_cron.sh --remote --enable-watchdog --enable-weekly
-```
+После merge этого PR координатор может выложить runtime на GCE (`deploy_to_gce.sh`), чтобы `drug_normalizer` подхватил полный манифест с `/var/data/rceth`. Без деплоя seed 20 брендов работает везде; полный словарь - только на GCE после выкладки.

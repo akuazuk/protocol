@@ -141,6 +141,16 @@ def _overrides() -> dict[str, str]:
             elif isinstance(inns_raw, str) and inns_raw.strip():
                 for ru in ru_list:
                     out.setdefault(_norm(ru), _norm(inns_raw))
+    try:
+        from clinical_knowledge.rceth_sync.identity import (
+            merge_brand_overrides,
+            rceth_brand_to_inn,
+        )
+
+        out = merge_brand_overrides(out, rceth_brand_to_inn())
+    except Exception:  # noqa: BLE001
+        out = {_norm(k): _norm(v) for k, v in out.items()}
+        return out
     return {_norm(k): _norm(v) for k, v in out.items()}
 
 
@@ -158,6 +168,21 @@ def _save_rxnorm_cache(cache: dict[str, str]) -> None:
     _RXNORM_CACHE.write_text(json.dumps(cache, ensure_ascii=False), encoding="utf-8")
 
 
+def _rceth_meta(key: str) -> dict:
+    try:
+        from clinical_knowledge.rceth_sync.identity import load_identity_index
+
+        rec = load_identity_index().get(key) or {}
+    except Exception:  # noqa: BLE001
+        return {}
+    extra: dict = {}
+    if rec.get("forms"):
+        extra["forms"] = list(rec["forms"])
+    if rec.get("atc"):
+        extra["atc"] = rec["atc"]
+    return extra
+
+
 def normalize_drug(name: str, *, use_rxnorm: bool = False) -> dict:
     """name → {surface, inn, confidence(0..1), method}. inn=None если не распознано."""
     surface = (name or "").strip()
@@ -167,7 +192,14 @@ def normalize_drug(name: str, *, use_rxnorm: bool = False) -> dict:
 
     ov = _overrides()
     if key in ov:
-        return {"surface": surface, "inn": ov[key], "confidence": 0.98, "method": "override"}
+        rec = {
+            "surface": surface,
+            "inn": ov[key],
+            "confidence": 0.98,
+            "method": "override",
+        }
+        rec.update(_rceth_meta(key))
+        return rec
 
     vocab = _inn_vocab()
     vocab_set = set(vocab)
@@ -253,3 +285,9 @@ def extract_drugs(text: str, *, use_rxnorm: bool = False) -> list[dict]:
 def clear_cache() -> None:
     _inn_vocab.cache_clear()
     _overrides.cache_clear()
+    try:
+        from clinical_knowledge.rceth_sync.identity import clear_identity_cache
+
+        clear_identity_cache()
+    except Exception:  # noqa: BLE001
+        pass
