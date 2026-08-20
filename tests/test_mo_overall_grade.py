@@ -125,6 +125,21 @@ def test_rceth_contra_lifts_only_when_primary() -> None:
     assert primary["grade"] == "important"
 
 
+def test_attach_from_warehouse_row() -> None:
+    from clinical_knowledge.mo_overall_grade import attach_overall_grade
+
+    rec = attach_overall_grade(
+        {
+            "zone1_band": "ok",
+            "zone2a_band": "ok",
+            "zone2b_band": "bad",
+            "zone2b_kp_status": "unmatched",
+            "attention_primary": "none",
+        }
+    )
+    assert rec["overall_grade"]["grade"] == "fair"
+
+
 def test_live_zone_engine_thin_orvi_is_not_good() -> None:
     zones = compute_mo_zone_scores(
         {

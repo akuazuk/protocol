@@ -148,6 +148,28 @@ def test_plan_empty_with_kp_zone2b_bad() -> None:
     assert zones["zone2b_band"] == "bad"
 
 
+def test_plan_empty_without_kp_is_na_not_bad() -> None:
+    zones = compute_mo_zone_scores(
+        {
+            "clinical": {
+                **_rich_clinical(),
+                "exam_recommendations": "",
+                "treatment_recommendations": "",
+            },
+            "meta": {
+                "visit_date": "2026-08-02",
+                "visit_time": "10:00",
+                "diagnosis_code": "J03.9",
+            },
+            "block_scores": {"exams": 10, "treatment": 10},
+            "protocol_suggest": {"items": []},
+            "document_kind": "clinical_visit",
+        }
+    )
+    assert zones["zone2b_kp_status"] == "unmatched"
+    assert zones["zone2b_band"] == "na"
+
+
 def test_plan_without_kp_not_fake_protocol_fail() -> None:
     zones = compute_mo_zone_scores(
         {
@@ -281,6 +303,7 @@ def test_warehouse_zone_columns_helper() -> None:
     flat = warehouse_zone_columns(zones)
     assert "zone1_pct" in flat
     assert flat["layer_engine"] == "mo_zones_v1"
+    assert flat.get("overall_grade") in {"critical", "important", "poor", "fair", "good"}
 
 
 def test_safety_ignores_p2_ddi():

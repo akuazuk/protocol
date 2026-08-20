@@ -21,7 +21,7 @@
       page: "yesterday", period: "yesterday", compare: "previous", methodology: "v4", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
       reg55Band: "", reg55Pack: "", icdVisitStatus: "",
       sortBy: "date", sortDir: "desc",
-      zoneFilter: "", zoneBandFilter: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
+      zoneFilter: "", zoneBandFilter: "", overallGrade: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
       worstSeverity: "",
       doctorZoneMetric: "zone1",
       caseNavIds: [],
@@ -464,6 +464,7 @@
       q.set("score_eligible_only", "1");
       if (state.zoneFilter) q.set("zone", state.zoneFilter);
       if (state.zoneBandFilter) q.set("zone_band", state.zoneBandFilter);
+      if (state.overallGrade) q.set("overall_grade", state.overallGrade);
       if (state.attentionOnly) q.set("attention_only", "1");
       if (state.shadowAttentionOnly) q.set("shadow_attention_only", "1");
       if (state.kpStatus) q.set("kp_status", state.kpStatus);
@@ -878,6 +879,7 @@
         if (options.dateTo !== undefined) { state.dateTo = options.dateTo; $("date-to").value = state.dateTo; }
         if (options.zoneFilter !== undefined) state.zoneFilter = options.zoneFilter;
         if (options.zoneBandFilter !== undefined) state.zoneBandFilter = options.zoneBandFilter;
+        if (options.overallGrade !== undefined) state.overallGrade = options.overallGrade || "";
         if (options.attentionOnly !== undefined) state.attentionOnly = !!options.attentionOnly;
         if (options.kpStatus !== undefined) state.kpStatus = options.kpStatus || "";
         if (options.historyTier !== undefined) state.historyTier = options.historyTier || "";
@@ -921,6 +923,10 @@
           esc((ZONE_LABELS[state.zoneFilter] || state.zoneFilter || "любой") +
             (state.zoneBandFilter ? " · " + state.zoneBandFilter : "")) +
           '<button type="button" data-clear-zone aria-label="Удалить фильтр раздела">×</button></span>');
+      }
+      if (state.overallGrade) {
+        html.push('<span class="chip">Оценка: ' + esc(state.overallGrade) +
+          '<button type="button" data-clear-overall-grade aria-label="Удалить фильтр оценки">×</button></span>');
       }
       if (state.attentionOnly) {
         html.push('<span class="chip">Только внимание<button type="button" data-clear-attention aria-label="Снять фильтр внимания">×</button></span>');
@@ -981,6 +987,13 @@
       if (clearZone) clearZone.addEventListener("click", function () {
         state.zoneFilter = "";
         state.zoneBandFilter = "";
+        filtersChanged();
+      });
+      var clearGrade = $("filter-chips").querySelector("[data-clear-overall-grade]");
+      if (clearGrade) clearGrade.addEventListener("click", function () {
+        state.overallGrade = "";
+        var gradeSel = $("overall-grade-filter");
+        if (gradeSel) gradeSel.value = "";
         filtersChanged();
       });
       var clearAttention = $("filter-chips").querySelector("[data-clear-attention]");
@@ -1045,6 +1058,7 @@
       state.sortDir = q.get("sort_dir") || "desc";
       state.zoneFilter = q.get("zone") || "";
       state.zoneBandFilter = q.get("zone_band") || "";
+      state.overallGrade = q.get("overall_grade") || "";
       state.attentionOnly = q.get("attention_only") === "1" || q.get("attention_only") === "true";
       state.shadowAttentionOnly = q.get("shadow_attention_only") === "1" || q.get("shadow_attention_only") === "true";
       state.kpStatus = q.get("kp_status") || "";
@@ -1882,7 +1896,8 @@
         zone1Band: row.zone1_band || "", zone2aBand: row.zone2a_band || "",
         zone2bBand: row.zone2b_band || "", zone2bKp: row.zone2b_kp_status || "",
         attentionPrimary: row.attention_primary || "",
-        attentionReason: row.attention_reason_ru || "" };
+        attentionReason: row.attention_reason_ru || "",
+        overallGrade: row.overall_grade || null };
     }
     function reg55BandLabelRu(code) {
       return ({
@@ -1905,6 +1920,22 @@
       if (band === "noncompliant") return " reg55-row--noncompliant";
       if (band === "compliant_measures") return " reg55-row--measures";
       return "";
+    }
+    function overallGradeChip(grade) {
+      var g = grade && typeof grade === "object" ? grade : {};
+      var id = String(g.grade || grade || "");
+      var label = g.label_ru || ({
+        critical: "Критично", important: "Важно", poor: "Слабо",
+        fair: "С замечанием", good: "Хорошо"
+      })[id] || "";
+      if (!label) return '<span class="status muted">нет оценки</span>';
+      var tone = ({
+        critical: "critical", important: "warn", poor: "review",
+        fair: "muted", good: "good"
+      })[id] || "muted";
+      var hint = g.reason_ru || g.hint_ru || label;
+      return '<span class="status ' + tone + ' overall-grade-chip overall-grade--' + esc(id) +
+        '" title="' + esc(hint) + '">' + esc(label) + "</span>";
     }
     function zoneBandChip(band, kpStatus) {
       var b = String(band || "na");
@@ -2146,6 +2177,7 @@
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
         icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
+        '</td><td>' + overallGradeChip(item.overallGrade) +
         '</td><td>' + zoneBandChip(item.zone1Band) + '</td><td>' + zoneBandChip(item.zone2aBand) +
         '</td><td>' + zoneBandChip(item.zone2bBand, item.zone2bKp) +
         '</td><td>' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
@@ -2181,6 +2213,7 @@
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
         '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
+        '</td><td>' + overallGradeChip(item.overallGrade || raw.overall_grade) +
         '</td><td>' + zoneBandChip(item.zone1Band || raw.zone1_band) +
         '</td><td>' + zoneBandChip(item.zone2aBand || raw.zone2a_band) +
         '</td><td>' + zoneBandChip(item.zone2bBand || raw.zone2b_band, item.zone2bKp || raw.zone2b_kp_status) +
@@ -2617,8 +2650,14 @@
       }).join("");
       var safety = (zones.safety || {}).band;
       var risk = safety && safety !== "none" ? '<span class="status critical zone-risk-badge">Риск</span>' : "";
+      var grade = zones.overall_grade || {};
+      var gradeLine = grade.label_ru
+        ? ('<div class="overall-grade-hero">' + overallGradeChip(grade) +
+          (grade.reason_ru ? '<span class="overall-grade-why">' + esc(grade.reason_ru) + "</span>" : "") +
+          "</div>")
+        : "";
       return '<div class="zones-hero"><div class="zones-hero-head"><h3>Оценка случая</h3>' + risk +
-        '</div><div class="zones-hero-grid">' + cards + '</div></div>';
+        '</div>' + gradeLine + '<div class="zones-hero-grid">' + cards + '</div></div>';
     }
     function renderFindingsCompact(findings, crm, llmJudge) {
       var filters = [
@@ -4837,18 +4876,18 @@
     var COLUMN_MAP = {
       documents: [
         "Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз",
-        "Оформление", "Диагноз (зона)", "План", "Причина", "Статус",
+        "Оценка", "Оформление", "Диагноз (зона)", "План", "Причина", "Статус",
         "Итог", "№55 / градация", "Полнота проверки", "Надёжность"
       ],
       queue: [
         "Выбор", "Приоритет", "Раздел", "Визит", "Пациент", "Дата", "Филиал",
-        "Врач / специальность", "Диагноз", "Оформление", "Диагноз (зона)", "План",
+        "Врач / специальность", "Диагноз", "Оценка", "Оформление", "Диагноз (зона)", "План",
         "№55 / градация", "Причина", "Ответственный", "Срок", "Статус", "МО"
       ]
     };
     var COLUMN_DEFAULTS = {
-      documents: [true, true, true, true, true, true, true, true, true, true, true, false, true, false, false],
-      queue: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
+      documents: [true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, false],
+      queue: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
     };
     function ensureColumnState() {
       if (!state.columnVisible.documents.length || state.columnVisible.documents.length !== COLUMN_MAP.documents.length) {
@@ -4970,6 +5009,14 @@
       $("date-from").addEventListener("change", function () { state.dateFrom = this.value; filtersChanged(); });
       $("date-to").addEventListener("change", function () { state.dateTo = this.value; filtersChanged(); });
       $("compare").addEventListener("change", function () { state.compare = this.value; filtersChanged(); });
+      var gradeFilter = $("overall-grade-filter");
+      if (gradeFilter) {
+        gradeFilter.value = state.overallGrade || "";
+        gradeFilter.addEventListener("change", function () {
+          state.overallGrade = this.value || "";
+          filtersChanged();
+        });
+      }
       $("case-search-form").addEventListener("submit", function (event) {
         event.preventDefault();
         state.search = $("case-search").value.trim();
@@ -5007,6 +5054,9 @@
         state.sortDir = "desc";
         state.zoneFilter = "";
         state.zoneBandFilter = "";
+        state.overallGrade = "";
+        var gradeSel = $("overall-grade-filter");
+        if (gradeSel) gradeSel.value = "";
         state.attentionOnly = false;
         state.kpStatus = "";
         state.historyTier = "";
