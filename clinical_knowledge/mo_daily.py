@@ -1584,6 +1584,9 @@ def initialize_warehouse(path: Path) -> None:
                 "zone2b_kp_status": "TEXT",
                 "attention_primary": "TEXT",
                 "attention_reason_ru": "TEXT",
+                "overall_grade": "TEXT",
+                "overall_grade_ru": "TEXT",
+                "overall_grade_reason_ru": "TEXT",
                 "rubric_json": "TEXT",
                 "rubric_pct": "REAL",
                 "layer_engine": "TEXT",
@@ -2189,6 +2192,18 @@ def upsert_warehouse(
                 ),
             )
             written["fact_mo_case"] += 1
+            if zone_cols.get("overall_grade"):
+                db.execute(
+                    """UPDATE fact_mo_case
+                       SET overall_grade=?, overall_grade_ru=?, overall_grade_reason_ru=?
+                       WHERE mis_id=?""",
+                    (
+                        zone_cols.get("overall_grade"),
+                        zone_cols.get("overall_grade_ru"),
+                        zone_cols.get("overall_grade_reason_ru"),
+                        mis_id,
+                    ),
+                )
 
             if doctor_key:
                 db.execute(

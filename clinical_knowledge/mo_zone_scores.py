@@ -413,7 +413,8 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
     zone1_band = band_for_zone(zone1_pct, z1_scored, bands=bands_cfg)
     zone2a_band = band_for_zone(zone2a_pct, z2a_scored, bands=bands_cfg)
     zone2b_band = band_for_zone(zone2b_pct, z2b_scored, bands=bands_cfg)
-    if kp_status == "unmatched" and zone2b_pct is None:
+    if kp_status != "matched":
+        # Без подобранного КП план нельзя звать «не по протоколу».
         zone2b_band = "na"
 
     safety = _safety_from_findings(findings)
@@ -545,6 +546,9 @@ def warehouse_zone_columns(zones: Mapping[str, Any]) -> dict[str, Any]:
         "zone2b_kp_status": zones.get("zone2b_kp_status") or "unmatched",
         "attention_primary": zones.get("attention_primary") or "none",
         "attention_reason_ru": (zones.get("attention_reason_ru") or "")[:240],
+        "overall_grade": (zones.get("overall_grade") or {}).get("grade"),
+        "overall_grade_ru": (zones.get("overall_grade") or {}).get("label_ru"),
+        "overall_grade_reason_ru": ((zones.get("overall_grade") or {}).get("reason_ru") or "")[:240],
         "rubric_json": zones.get("rubric_json"),
         "rubric_pct": zones.get("rubric_pct"),
         "layer_engine": zones.get("layer_engine") or ENGINE,

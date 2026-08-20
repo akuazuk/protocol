@@ -96,3 +96,36 @@ def compute_mo_overall_grade(
         "reason_ru": reason,
         "rank": GRADE_ORDER.index(grade),
     }
+
+
+def attach_overall_grade(record: Mapping[str, Any] | None) -> dict[str, Any]:
+    """Добавить overall_grade к строке склада / списка. Не печатает клинику."""
+    rec = dict(record or {})
+    stored = rec.get("overall_grade")
+    if isinstance(stored, Mapping) and stored.get("grade") in GRADE_LABEL_RU:
+        return rec
+    stored_id = str(stored or rec.get("overall_grade_id") or "").strip().lower()
+    if stored_id in GRADE_LABEL_RU:
+        rec["overall_grade"] = {
+            "ok": True,
+            "engine": ENGINE,
+            "grade": stored_id,
+            "label_ru": rec.get("overall_grade_ru") or GRADE_LABEL_RU[stored_id],
+            "hint_ru": GRADE_HINT_RU[stored_id],
+            "reason_ru": rec.get("overall_grade_reason_ru") or "",
+            "rank": GRADE_ORDER.index(stored_id),
+        }
+        return rec
+    safety_band = "none"
+    if str(rec.get("attention_primary") or "") == "safety":
+        safety_band = "important"
+    rec["overall_grade"] = compute_mo_overall_grade(
+        {
+            "zone1_band": rec.get("zone1_band"),
+            "zone2a_band": rec.get("zone2a_band"),
+            "zone2b_band": rec.get("zone2b_band"),
+            "zone2b_kp_status": rec.get("zone2b_kp_status"),
+            "safety": {"band": safety_band},
+        }
+    )
+    return rec

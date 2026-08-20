@@ -18,6 +18,7 @@ from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo
 
 from .mo_daily import CRM_SCHEMA_SQL, initialize_warehouse, migrate_crm, sanitize_mo_org_label
+from .mo_overall_grade import attach_overall_grade
 from .mo_metrics import (
     METRICS,
     SCHEMA_VERSION,
@@ -754,6 +755,7 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "_source": "warehouse",
             }
         )
+        attach_overall_grade(output[-1])
     return output
 
 
@@ -892,6 +894,12 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
         if str(params.get("attention_only") or "").lower() in {"1", "true", "yes"}:
             primary = str(rec.get("attention_primary") or "none")
             if primary in {"", "none"}:
+                continue
+        overall_grade = str(params.get("overall_grade") or "").strip().lower()
+        if overall_grade:
+            attach_overall_grade(rec)
+            rec_grade = rec.get("overall_grade") if isinstance(rec.get("overall_grade"), Mapping) else {}
+            if str(rec_grade.get("grade") or rec.get("overall_grade") or "").lower() != overall_grade:
                 continue
         kp_status = str(params.get("kp_status") or "").strip().lower()
         if kp_status and str(rec.get("zone2b_kp_status") or "").lower() != kp_status:
@@ -2336,6 +2344,7 @@ def _daily_warehouse_contract(chosen: date, stored: dict[str, Any] | None) -> di
                 "history_tier": history_tier,
             }
         )
+        attach_overall_grade(action_cases[-1])
         if len(action_cases) >= 100:
             break
     from clinical_knowledge.mo_history_continuity import evaluate_history_continuity, rank_for_deep_run
