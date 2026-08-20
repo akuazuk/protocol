@@ -17,6 +17,7 @@ from typing import Any, Mapping, Sequence
 import yaml
 
 from clinical_knowledge.mo_action_queue_select import QUEUE_INCLUDE_CODES
+from clinical_knowledge.mo_overall_grade import compute_mo_overall_grade
 from clinical_knowledge.mo_rubric_mz import evaluate_mo_rubric_mz, load_rubric_config
 
 ROOT = Path(__file__).resolve().parent.parent
@@ -455,7 +456,7 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
     ]
 
     now = datetime.now(timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
-    return {
+    payload = {
         "ok": True,
         "engine": ENGINE,
         "skipped": False,
@@ -504,6 +505,8 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
         "layer_updated_at": now,
         "scorer_version": rubric.get("scorer_version"),
     }
+    payload["overall_grade"] = compute_mo_overall_grade(payload)
+    return payload
 
 
 def zones_api_payload(zones: Mapping[str, Any]) -> dict[str, Any]:
@@ -519,6 +522,7 @@ def zones_api_payload(zones: Mapping[str, Any]) -> dict[str, Any]:
         "safety": zones.get("safety") or {"band": "none", "codes": []},
         "attention_primary": zones.get("attention_primary") or "none",
         "attention_reason_ru": zones.get("attention_reason_ru") or "",
+        "overall_grade": zones.get("overall_grade") or compute_mo_overall_grade(zones),
         "criteria": zones.get("criteria") or [],
         "rubric_pct": zones.get("rubric_pct"),
         "llm_overlay": zones.get("llm_overlay"),
