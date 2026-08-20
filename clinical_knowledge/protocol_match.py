@@ -168,14 +168,22 @@ def _card_match_blob(
     path_words = re.sub(r"[_\-/]+", " ", path.split("/")[-1] if path else "")
     path_words = re.sub(r"\.(pdf|json|html?)$", "", path_words, flags=re.IGNORECASE)
     parts = [title, cond, path, path_words]
+    skip_content = False
     try:
-        from clinical_knowledge.protocol_content_index import content_text_for_card
+        from clinical_knowledge.kp_validity import looks_omnibus
 
-        content = content_text_for_card(card)
-        if content:
-            parts.append(content)
+        skip_content = looks_omnibus(card)
     except Exception:  # noqa: BLE001
-        pass
+        skip_content = False
+    if not skip_content:
+        try:
+            from clinical_knowledge.protocol_content_index import content_text_for_card
+
+            content = content_text_for_card(card)
+            if content:
+                parts.append(content)
+        except Exception:  # noqa: BLE001
+            pass
     all_codes = [
         str(x).strip().upper()
         for x in list(card.get("icd10_primary") or []) + list(card.get("icd10_all") or [])
