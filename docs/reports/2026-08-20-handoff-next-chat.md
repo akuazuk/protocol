@@ -2,36 +2,34 @@
 
 Дата: 2026-08-20  
 Репозиторий: `akuazuk/protocol`  
-Канон: `origin/main` `3bf14f3` (#166)  
+Канон: `origin/main` `bf1e26e` (#167)  
 Грязный `/Users/pavel/CURSOR/Protocol/protocol` на `main` не использовать.
 
-Worktree волн 1-2: `/private/tmp/protocol-task-mo-grade-ui-pc1`  
-ветка `cursor/mo-grade-ui-pc1`.
-
 Primary: `https://protocol.kravira.by`  
-Прод runtime: **`2026-08-20-055730Z-mo-grade-verify`** (merge #166).
+Прод runtime: **`2026-08-20-061113Z-mo-grade-ui`**.
 
 ---
 
 ## Сделано
 
-- Волна 0 в проде: JSON зон содержит `overall_grade`. Smoke HTTPS + контейнер: пустые жалобы → «Важно».
-- Rceth `done` (3017/3017). Deploy `protocol-web` не убил `kp-eval-full`.
-- Волны 1-2 в этой ветке: чип/фильтр/колонка; unmatched план → `na`; колонки склада + `scripts/ops/backfill_mo_overall_grade.py`.
+- Волна 0: PR #166 merge `3bf14f3`, deploy. JSON зон содержит `overall_grade`.
+- Волны 1-2: PR #167 merge `bf1e26e`, deploy. Чип/фильтр/колонка Оценка.
+- Backfill склада: 9736 clinical 26.07-19.08. unmatched+bad план **3946 → 0**.
+  Оценки: Важно 228, Слабо 2060, С замечанием 7075, Хорошо 373.
+- Rceth shadow не двигает итог (contra → всё ещё good, пока primary выключен).
+- `kp-eval-full` жив. Rceth `done`.
 
 ## Делается
 
-`kp-eval-full` на GCE (`kp_suggest_eval_post165.json`, ещё нет файла).
+`kp-eval-full` пишет `kp_suggest_eval_post165.json` (файла ещё нет).
 
 ## Нужно
 
-1. Merge PR волны 1-2, затем `deploy_to_gce.sh`.
-2. На GCE: `docker exec protocol-web python3 /app/scripts/ops/backfill_mo_overall_grade.py`
-3. Приёмка: leftover unmatched+bad = 0; чип на карточке = `label_ru`.
-4. Rceth в итог не включать. Калибровка 30 - после UI.
+1. Методист: 20 карточек (4/4/8/4) - слово vs зоны на той же карточке.
+2. Волна 3: калибровка Rceth 30 кейсов. **Не** включать `MO_RCETH_LABEL_PRIMARY`.
+3. Не деплоить повторно без новой причины.
 
 ## Запрет
 
 - Второй full Rceth parse / `RCETH_PARSE_FORCE=1`
 - Gemini с Mac, push в `main`, грязный checkout, PHI
-- `MO_RCETH_LABEL_PRIMARY=1`

@@ -146,11 +146,12 @@ Rceth-кодов в складе **нет** (shadow ещё не в runtime).
 
 - [x] Колонки `overall_grade*` в `fact_mo_case` + backfill-скрипт.
 - [x] unmatched план больше не пишется как `bad`.
-- [ ] Прогон backfill на GCE после merge+deploy этой волны.
+- [x] Прогон backfill на GCE 2026-08-20: n=9736, unmatched_bad_fixed=3946, leftover=0.
+  Доли: Важно 228 (2.3%), Слабо 2060 (21%), С замечанием 7075 (73%), Хорошо 373 (3.8%).
 
 ### Волна 3 - Rceth в разборе
 
-- Deploy `main` (`419cbbf`+). Калибровка 30 кейсов shadow.
+- Deploy `main` (`bf1e26e`, UI `2026-08-20-061113Z-mo-grade-ui`). Калибровка 30 кейсов shadow.
 - Справка: КП vs инструкция vs DDI.
 - Решение владельца: какие Rceth-коды в primary. По умолчанию только contra.
 
