@@ -103,6 +103,33 @@ def test_omnibus_ent_icd_dump_does_not_score_high() -> None:
     assert score < 40, score
 
 
+def test_omnibus_blob_ignores_content_index(monkeypatch) -> None:
+    from clinical_knowledge import protocol_content_index as pci
+    from clinical_knowledge.protocol_match import _CARD_BLOB_CACHE, _card_match_blob
+
+    _CARD_BLOB_CACHE.clear()
+    monkeypatch.setattr(
+        pci,
+        "content_text_for_card",
+        lambda _card: "острая инфекция верхних дыхательных путей орви насморк",
+    )
+    blob = _card_match_blob(
+        {
+            "title": "Диагностика и лечение пациентов с оториноларингологическими заболеваниями",
+            "source_path": "minzdrav_protocols/otorinolaringologiya/КП_2017.pdf",
+        }
+    )
+    assert "орви" not in blob
+    assert "оториноларинголог" in blob
+    sinus = _card_match_blob(
+        {
+            "title": "Хронический синусит у взрослых",
+            "source_path": "кп_диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_мз_2025_25.pdf",
+        }
+    )
+    assert "орви" in sinus
+
+
 def test_omnibus_ent_2026_revision_does_not_score_high() -> None:
     from clinical_knowledge.protocol_match import compute_match_score
 
