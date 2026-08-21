@@ -470,6 +470,27 @@ def _card_primary_roots(item: dict[str, Any]) -> set[str]:
     }
 
 
+def _overlap_query(graph: dict[str, Any]) -> str:
+    diag = " ".join(str(d.get("text") or "") for d in (graph.get("diagnoses") or []))
+    if not _free_text_substantive(diag):
+        diag = " ".join(_ru_titles_for_codes(list(graph.get("icd10_in_directory") or [])))
+    return diag.strip()
+
+
+def _strong_nosology_hit(item: dict[str, Any], graph: dict[str, Any]) -> bool:
+    """Есть нозологический токен диагноза в названии/пути, не «лечение пациентов»."""
+    from clinical_knowledge.dx_query_expand import diagnosis_tokens, token_weight
+
+    diag = _overlap_query(graph)
+    if not diag:
+        return False
+    blob = " ".join(
+        str(item.get(key) or "")
+        for key in ("title", "matched_condition", "source_path")
+    ).lower()
+    return any(token_weight(word) >= 1.25 and word in blob for word in diagnosis_tokens(diag))
+
+
 def _passes_dx_gate(item: dict[str, Any], graph: dict[str, Any]) -> bool:
     """Карта должна пересекаться с диагнозом по названию или коду. Иначе отсекаем."""
     from clinical_knowledge.kp_validity import looks_omnibus
@@ -477,15 +498,11 @@ def _passes_dx_gate(item: dict[str, Any], graph: dict[str, Any]) -> bool:
     overlap = _diag_overlap(item, graph)
     if looks_omnibus(item):
         return overlap >= 0.75
-    if overlap >= 0.5:
-        return True
-    case_roots = _case_icd_roots(graph)
     primary = _card_primary_roots(item)
-    if primary:
-        return bool(primary & case_roots) or overlap >= 0.35
-    if not case_roots:
-        return overlap >= 0.35
-    return overlap >= 0.35
+    case_roots = _case_icd_roots(graph)
+    if primary & case_roots:
+        return True
+    return overlap >= 0.35 and _strong_nosology_hit(item, graph)
 
 
 def _best_icd_fit_weight(item: dict[str, Any]) -> float:
