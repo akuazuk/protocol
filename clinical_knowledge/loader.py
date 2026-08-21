@@ -41,13 +41,11 @@ def load_protocol_cards_registry() -> list[dict[str, Any]]:
         if rows:
             try:
                 from clinical_knowledge.kp_card_enrich import attach_icd_from_content
-                from clinical_knowledge.kp_icd_passport import apply_icd_passport
                 from clinical_knowledge.kp_validity import attach_validity_fields
 
                 for row in rows:
                     attach_validity_fields(row)
                     attach_icd_from_content(row)
-                    apply_icd_passport(row)
             except Exception:  # noqa: BLE001
                 pass
             return rows
