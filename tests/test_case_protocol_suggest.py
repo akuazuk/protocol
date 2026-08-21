@@ -422,3 +422,24 @@ def test_j06_does_not_pick_rare_or_omnibus_ent() -> None:
     assert "2018_60" not in blob
     assert "нейрохирургическ" not in blob
     assert "миелом" not in blob
+
+
+def test_dorsalgia_does_not_pick_neuro_omnibus() -> None:
+    import os
+
+    os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
+    result = suggest_protocols_for_case(
+        clinical={
+            "clinical_diagnosis": "Дорсалгия",
+            "mis_diagnos": "M54.5",
+            "patient_age_years": 42,
+        },
+        record={"visit_id": "m54", "date": "2026-07-15", "specialty": "Невролог"},
+        limit=3,
+    )
+    blob = " ".join(
+        str(item.get("source_path") or "") + " " + str(item.get("title") or "")
+        for item in result.get("items") or []
+    ).lower()
+    assert "нейрохирургическ" not in blob
+    assert result.get("available") is False

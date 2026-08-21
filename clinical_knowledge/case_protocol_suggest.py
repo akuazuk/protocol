@@ -475,12 +475,12 @@ def _passes_dx_gate(item: dict[str, Any], graph: dict[str, Any]) -> bool:
     from clinical_knowledge.kp_validity import looks_omnibus
 
     overlap = _diag_overlap(item, graph)
+    if looks_omnibus(item):
+        return overlap >= 0.75
     if overlap >= 0.5:
         return True
     case_roots = _case_icd_roots(graph)
     primary = _card_primary_roots(item)
-    if looks_omnibus(item):
-        return bool(primary & case_roots) and overlap >= 0.35
     if primary:
         return bool(primary & case_roots) or overlap >= 0.35
     if not case_roots:
@@ -865,7 +865,7 @@ def suggest_protocols_for_case(
         matched = [
             row
             for row in matched
-            if not looks_omnibus(row) or _diag_overlap(row, graph) >= 0.5
+            if not looks_omnibus(row) or _diag_overlap(row, graph) >= 0.75
         ]
     except Exception:  # noqa: BLE001
         pass
