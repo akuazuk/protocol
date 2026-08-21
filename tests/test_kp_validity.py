@@ -63,6 +63,12 @@ def test_looks_omnibus_urology_and_dispanser() -> None:
             "source_path": "khirurgiya/кп 12.02.2007 №82.pdf",
         }
     )
+    assert looks_omnibus(
+        {
+            "title": "Диагностика и лечение пациентов взрослых с заболеваниями нейрохирургического профиля в стационарных условиях",
+            "source_path": "nevrologiya/КП_2021_117.pdf",
+        }
+    )
     assert not looks_omnibus(
         {
             "title": "Медицинское наблюдение и оказание медицинской помощи женщинам в акушерстве и гинекологии",
@@ -127,7 +133,8 @@ def test_omnibus_blob_ignores_content_index(monkeypatch) -> None:
             "source_path": "кп_диагностика_лечение_пациентов_в-нас_хроническим_синуситом_пост_мз_2025_25.pdf",
         }
     )
-    assert "орви" in sinus
+    assert "орви" not in sinus
+    assert "синусит" in sinus
 
 
 def test_omnibus_ent_2026_revision_does_not_score_high() -> None:

@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-21-045144Z-kp-dx-gate"
+BUILD_VERSION = "2026-08-21-051603Z-kp-no-pdf-overlap"
 
 
 def _app_version() -> str:

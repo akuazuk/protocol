@@ -420,3 +420,5 @@ def test_j06_does_not_pick_rare_or_omnibus_ent() -> None:
     assert "онколог" not in blob
     assert "2018_17" not in blob
     assert "2018_60" not in blob
+    assert "нейрохирургическ" not in blob
+    assert "миелом" not in blob

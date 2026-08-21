@@ -16,7 +16,7 @@
 |--|--|
 | `kp-eval-full` | exit 0, 2026-08-20 13:20 UTC, 31707 с |
 | Rceth | `done` с 2026-08-18 |
-| UI | `2026-08-20-061113Z-mo-grade-ui` на `protocol.kravira.by` |
+| UI | `2026-08-20-061113Z-mo-grade-ui` на `protocol.kravira.by` (код #169/#170 ещё не задеплоен) |
 
 Отчёт без PHI: `/var/data/medical_exams/reports/kp_suggest_eval_post165.json`.
 
@@ -100,7 +100,9 @@ J06 / M54 честно пустые - нозологического КП нет
    только сильное совпадение названия / RU title кода.
 3. [x] `match_kind=clinical` только при gate + (primary-корень или overlap).
    Жалобы в matcher не передаём.
-4. Прогон sample 300 + полный CSV на GCE, one-off, не рестарт UI.
+4. Sample 300 после #170: hit 61.3%, омнибус 0, жалобы 0, ПЦД/ГСК/экстренка 0.
+   Остаток: нейрохирургия 2021 №117 ×13 (тело PDF). Чиним: overlap без PDF,
+   «нейрохирургического профиля» = омнибус. Затем повтор sample + полный CSV.
 5. Паспорта карт: вынести ICD из тела в `icd10_mentions`, suggest их не видит.
 
 ---
@@ -129,6 +131,6 @@ J06 / M54 честно пустые - нозологического КП нет
 
 ## 8. Следующая команда
 
-`#169` влит (`a6f7f7d`). Волна 2-3 в `cursor/mo-kp-dx-gate-pc1`.
-После merge: sample 300 на GCE (one-off, не `protocol-web`).
-Если ПЦД / ГСК / экстренка = 0 - полный CSV, затем `deploy_to_gce.sh`.
+`#169` `a6f7f7d`, `#170` `2a2d6e0` в `origin/main`.
+После merge омнибус/no-PDF-overlap: sample 300, если нейрохирургия = 0 -
+полный CSV, затем `deploy_to_gce.sh`.
