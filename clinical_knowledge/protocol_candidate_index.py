@@ -7,7 +7,6 @@ from functools import lru_cache
 from typing import Any
 
 from clinical_knowledge.dx_query_expand import diagnosis_tokens, expand_diagnosis_query
-from clinical_knowledge.kp_validity import looks_omnibus
 
 _TOKEN_RE = re.compile(r"[а-яёa-z0-9]{4,}")
 
@@ -38,11 +37,9 @@ def _built_index() -> tuple[dict[str, frozenset[int]], dict[str, frozenset[int]]
         blob = _card_index_blob(card)
         for token in _TOKEN_RE.findall(blob):
             token_map[token].add(idx)
-        primary = [str(x).strip().upper() for x in (card.get("icd10_primary") or []) if x]
-        extra = []
-        if not looks_omnibus(card):
-            extra = [str(x).strip().upper() for x in (card.get("icd10_all") or []) if x]
-        codes = list(dict.fromkeys(primary + extra))
+        from clinical_knowledge.kp_icd_passport import suggest_icd_codes
+
+        codes = suggest_icd_codes(card)
         for code in codes:
             icd_map[code].add(idx)
             root = _icd_root(code)
