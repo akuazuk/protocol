@@ -16,7 +16,7 @@
 |--|--|
 | `kp-eval-full` | exit 0, 2026-08-20 13:20 UTC, 31707 с |
 | Rceth | `done` с 2026-08-18 |
-| UI | `2026-08-20-061113Z-mo-grade-ui` на `protocol.kravira.by` (код #169/#170 ещё не задеплоен) |
+| UI | `2026-08-21-062249Z-kp-omnibus-norm` на `protocol.kravira.by` (`22806bb`) |
 
 Отчёт без PHI: `/var/data/medical_exams/reports/kp_suggest_eval_post165.json`.
 
@@ -132,5 +132,7 @@ J06 / M54 честно пустые - нозологического КП нет
 ## 8. Следующая команда
 
 `#169` `a6f7f7d`, `#170` `2a2d6e0` в `origin/main`.
-После merge whole-token: sample 300. Если нейрохирургия и миелома-на-J06 = 0 -
-полный CSV, затем `deploy_to_gce.sh`. Не деплоить по sample #172.
+Sample 300 после #174: hit 40.3%, чужие top-1 из цели = 0.
+Полный CSV идёт на GCE (`kp-eval-full` → `kp_suggest_eval_post174.json`).
+Прод уже на `2026-08-21-062249Z-kp-omnibus-norm`. Не рестартовать UI
+пока full eval running, без нужды.
