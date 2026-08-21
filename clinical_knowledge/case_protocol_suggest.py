@@ -488,16 +488,22 @@ def _strong_nosology_hit(item: dict[str, Any], graph: dict[str, Any]) -> bool:
         str(item.get(key) or "")
         for key in ("title", "matched_condition", "source_path")
     ).lower()
-    return any(token_weight(word) >= 1.25 and word in blob for word in diagnosis_tokens(diag))
+    from clinical_knowledge.protocol_match import blob_word_set, token_hits_words
+
+    words = blob_word_set(blob)
+    return any(
+        token_weight(word) >= 1.25 and token_hits_words(word, words)
+        for word in diagnosis_tokens(diag)
+    )
 
 
 def _passes_dx_gate(item: dict[str, Any], graph: dict[str, Any]) -> bool:
     """Карта должна пересекаться с диагнозом по названию или коду. Иначе отсекаем."""
     from clinical_knowledge.kp_validity import looks_omnibus
 
-    overlap = _diag_overlap(item, graph)
     if looks_omnibus(item):
-        return overlap >= 0.75
+        return False
+    overlap = _diag_overlap(item, graph)
     primary = _card_primary_roots(item)
     case_roots = _case_icd_roots(graph)
     if primary & case_roots:

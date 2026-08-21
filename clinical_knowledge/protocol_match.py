@@ -206,6 +206,29 @@ def _card_match_blob(
     return blob
 
 
+_BLOB_TOKEN_RE = re.compile(r"[а-яёa-z0-9]{3,}", re.IGNORECASE)
+
+
+def blob_word_set(blob: str) -> set[str]:
+    return {match.group(0).lower() for match in _BLOB_TOKEN_RE.finditer(blob or "")}
+
+
+def token_hits_words(word: str, words: set[str]) -> bool:
+    """Целое слово или основа: пищевод→пищевода. Не хирург→нейрохирургического."""
+    token = (word or "").lower()
+    if not token:
+        return False
+    if token in words:
+        return True
+    if len(token) < 5:
+        return False
+    return any(
+        (other.startswith(token) or token.startswith(other))
+        for other in words
+        if len(other) >= 5
+    )
+
+
 def _diag_text_overlap(
     diag_text: str,
     card: dict[str, Any],
@@ -222,13 +245,14 @@ def _diag_text_overlap(
     blob = _card_match_blob(card, focus_codes=focus_codes)
     if not blob.strip():
         return 0.0
+    blob_words = blob_word_set(blob)
     hit_w = 0.0
     total_w = 0.0
     strong_hit = False
     for word in words:
         weight = token_weight(word)
         total_w += weight
-        if word in blob:
+        if token_hits_words(word, blob_words):
             hit_w += weight
             if weight >= 1.25:
                 strong_hit = True
