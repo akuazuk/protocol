@@ -503,9 +503,14 @@ def _passes_dx_gate(item: dict[str, Any], graph: dict[str, Any]) -> bool:
 
     if looks_omnibus(item):
         return False
+    case_roots = _case_icd_roots(graph)
+    path_blob = (
+        str(item.get("source_path") or "") + " " + str(item.get("title") or "")
+    ).lower()
+    if "миелом" in path_blob:
+        return bool(case_roots & {"C90"})
     overlap = _diag_overlap(item, graph)
     primary = _card_primary_roots(item)
-    case_roots = _case_icd_roots(graph)
     if primary & case_roots:
         return True
     return overlap >= 0.35 and _strong_nosology_hit(item, graph)
