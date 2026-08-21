@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-08-21-mo-kp-diagnosis-only-v1.md](2026-08-21-mo-kp-diagnosis-only-v1.md) | КП только от диагноза/МКБ; пусто лучше чужого протокола | active |
 | [2026-08-20-mo-grade-ladder-v1.md](2026-08-20-mo-grade-ladder-v1.md) | Итог МО: Критично / Важно / Слабо / С замечанием / Хорошо + роль Rceth | active |
 | [2026-08-14-mo-kp-suggest-accuracy-v2.md](2026-08-14-mo-kp-suggest-accuracy-v2.md) | Точность КП: возраст с ДР + не искать КП, отменённый до визита | active |
 | [2026-08-14-mo-kp-suggest-accuracy-v1.md](2026-08-14-mo-kp-suggest-accuracy-v1.md) | Точность подбора КП: прогон июля после #149 | archived (преемник: mo-kp-suggest-accuracy-v2) |
