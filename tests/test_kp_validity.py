@@ -78,6 +78,16 @@ def test_looks_omnibus_urology_and_dispanser() -> None:
             "source_path": "nevrologiya/КП_2021_117.pdf",
         }
     )
+    assert looks_omnibus(
+        {
+            "title": "КЛИНИЧЕСКИЙ ПРОТОКОЛ",
+            "source_path": (
+                "nevrologiya-neyrokhirurgiya/"
+                "КП_Диагностика_и_лечение_пациентов_взросл_с_заболеваниями_"
+                "нейрохирургического_профиля_в_стационарных_условиях_пост_МЗ__29102021_117.pdf"
+            ),
+        }
+    )
     assert not looks_omnibus(
         {
             "title": "Медицинское наблюдение и оказание медицинской помощи женщинам в акушерстве и гинекологии",

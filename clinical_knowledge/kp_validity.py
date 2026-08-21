@@ -77,7 +77,7 @@ def looks_omnibus(card: dict[str, Any] | None) -> bool:
         + str(card.get("source_path") or "")
         + " "
         + str(card.get("condition_label") or "")
-    ).lower()
+    ).lower().replace("_", " ").replace("-", " ")
     if any(n in blob for n in ("диспансер", "дн (", "дн_", "мед_осмотр", "профосмотр")):
         return True
     broad = (
