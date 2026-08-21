@@ -428,7 +428,7 @@ def _diag_overlap(item: dict[str, Any], graph: dict[str, Any]) -> float:
 
     diag = " ".join(str(d.get("text") or "") for d in (graph.get("diagnoses") or []))
     if not _free_text_substantive(diag):
-        diag = _complaints_anamnesis_query(graph)
+        diag = " ".join(_ru_titles_for_codes(list(graph.get("icd10_in_directory") or [])))
     if not diag.strip():
         return 0.0
     from clinical_knowledge.kp_validity import looks_omnibus, omnibus_lexical_card
@@ -449,6 +449,45 @@ def _diag_overlap(item: dict[str, Any], graph: dict[str, Any]) -> float:
         _text_icd_bridge_score(diag, cardish, bridge_cands=cands),
     )
 
+def _icd_root(code: str) -> str:
+    text = (code or "").upper().strip()
+    return text[:3] if len(text) >= 3 else text
+
+
+def _case_icd_roots(graph: dict[str, Any]) -> set[str]:
+    return {
+        _icd_root(str(code))
+        for code in (graph.get("icd10_in_directory") or [])
+        if code
+    }
+
+
+def _card_primary_roots(item: dict[str, Any]) -> set[str]:
+    return {
+        _icd_root(str(code))
+        for code in (item.get("icd10_primary") or [])
+        if code
+    }
+
+
+def _passes_dx_gate(item: dict[str, Any], graph: dict[str, Any]) -> bool:
+    """Карта должна пересекаться с диагнозом по названию или коду. Иначе отсекаем."""
+    from clinical_knowledge.kp_validity import looks_omnibus
+
+    overlap = _diag_overlap(item, graph)
+    if overlap >= 0.5:
+        return True
+    case_roots = _case_icd_roots(graph)
+    primary = _card_primary_roots(item)
+    if looks_omnibus(item):
+        return bool(primary & case_roots) and overlap >= 0.35
+    if primary:
+        return bool(primary & case_roots) or overlap >= 0.35
+    if not case_roots:
+        return overlap >= 0.35
+    return overlap >= 0.35
+
+
 def _best_icd_fit_weight(item: dict[str, Any]) -> float:
     fits = item.get("icd_fit") or []
     if not isinstance(fits, list) or not fits:
@@ -461,14 +500,15 @@ def _match_kind(item: dict[str, Any], graph: dict[str, Any]) -> str:
     icd_w = _best_icd_fit_weight(item)
     from clinical_knowledge.kp_validity import looks_omnibus
 
-    # Омнибус с dump МКБ не считать clinical только из-за попадания кода в длинный список.
-    if not looks_omnibus(item):
-        if icd_w >= _ICD_FIT_CLINICAL and score >= _ICD_PATH_MIN_SCORE:
-            return "clinical"
-        if icd_w >= _ICD_FIT_WEAK and score >= 55:
-            return "clinical"
+    if not _passes_dx_gate(item, graph):
+        return "specialty"
     overlap = _diag_overlap(item, graph)
-    # clinical только при уверенном Dx-fit (bridge/lexical), не при specialty≈50
+    primary_hit = bool(_card_primary_roots(item) & _case_icd_roots(graph))
+    if not looks_omnibus(item) and primary_hit and score >= _ICD_PATH_MIN_SCORE:
+        return "clinical"
+    if not looks_omnibus(item) and icd_w >= _ICD_FIT_CLINICAL and score >= _ICD_PATH_MIN_SCORE:
+        if primary_hit or overlap >= 0.35:
+            return "clinical"
     if overlap >= 0.5 or (overlap >= 0.35 and score >= 70):
         return "clinical"
     if graph.get("gaps") and score >= 55 and overlap >= 0.25:
@@ -783,7 +823,7 @@ def suggest_protocols_for_case(
         "consultation": {
             "icd10": list(codes_in_dir) if use_icd else [],
             "diagnosis_text": match_diag,
-            "complaints": list(graph.get("complaints") or []),
+            "complaints": [],
             "conditions_hint": [match_diag] if match_diag else [],
             "performed_exams": [],
         },
@@ -818,6 +858,7 @@ def suggest_protocols_for_case(
             seen_ids.add(pid)
 
     matched = _dedup_protocol_rows(matched)
+    matched = [row for row in matched if _passes_dx_gate(row, graph)]
     try:
         from clinical_knowledge.kp_validity import looks_omnibus
 
