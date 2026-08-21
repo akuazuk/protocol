@@ -438,7 +438,7 @@ def _diag_overlap(item: dict[str, Any], graph: dict[str, Any]) -> float:
         "condition_label": item.get("matched_condition"),
         "source_path": item.get("source_path"),
         "icd10_primary": item.get("icd10_primary") or [],
-        "icd10_all": item.get("icd10_all") or [],
+        "icd10_all": [],
     }
     if looks_omnibus(cardish) or looks_omnibus(item):
         cardish = omnibus_lexical_card(cardish)
