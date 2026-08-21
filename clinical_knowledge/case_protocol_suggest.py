@@ -233,7 +233,7 @@ def resolve_kp_query(
     codes_in_dir: list[str],
     graph: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    """Основа поиска КП: диагноз, иначе МКБ, иначе жалобы и анамнез."""
+    """Основа поиска КП: диагноз, иначе МКБ. Жалобы КП не ищут."""
     graph = graph if isinstance(graph, dict) else {}
     if _free_text_substantive(diag_text):
         titles = _ru_titles_for_codes(codes_in_dir)
@@ -254,14 +254,6 @@ def resolve_kp_query(
             "query": query,
             "use_icd": True,
             "mode": "icd_first",
-        }
-    fallback = _complaints_anamnesis_query(graph)
-    if _free_text_substantive(fallback):
-        return {
-            "source": "complaints_anamnesis",
-            "query": fallback,
-            "use_icd": False,
-            "mode": "complaints",
         }
     return {
         "source": "none",
@@ -742,7 +734,7 @@ def suggest_protocols_for_case(
     history_visits: list[dict[str, Any]] | None = None,
     limit: int = 3,
 ) -> dict[str, Any]:
-    """Top-K протоколов МЗ: диагноз → МКБ → жалобы/анамнез; иначе нет протокола."""
+    """Top-K протоколов МЗ: диагноз, иначе МКБ; иначе нет протокола."""
     if not suggest_enabled():
         return {
             "ok": True,

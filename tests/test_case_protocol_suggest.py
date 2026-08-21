@@ -298,8 +298,7 @@ def test_resolve_kp_query_cascade() -> None:
             "anamnesis": "симптомы несколько месяцев",
         },
     )
-    assert by_complaints["source"] == "complaints_anamnesis"
-    assert "боль" in by_complaints["query"]
+    assert by_complaints["source"] == "none"
     empty = resolve_kp_query(diag_text="", codes_in_dir=[], graph={})
     assert empty["source"] == "none"
 
@@ -376,3 +375,43 @@ def test_i84_is_not_venous_leg_boost() -> None:
     assert _is_venous_icd(["I83.9"]) is True
     assert _is_venous_icd(["I84.9"]) is False
     assert _is_venous_icd(["K64.9"]) is False
+
+
+def test_suggest_without_diagnosis_is_empty() -> None:
+    import os
+
+    os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
+    result = suggest_protocols_for_case(
+        clinical={
+            "complaints": "кашель сухой 3 дня",
+            "anamnesis_doctor": "болеет неделю без температуры",
+            "patient_age_years": 40,
+        },
+        record={"visit_id": "no-dx"},
+        limit=3,
+    )
+    assert result["available"] is False
+    assert not result.get("items")
+
+
+def test_j06_does_not_pick_rare_or_omnibus_ent() -> None:
+    import os
+
+    os.environ["CASE_PROTOCOL_SUGGEST"] = "1"
+    result = suggest_protocols_for_case(
+        clinical={
+            "clinical_diagnosis": "ОРВИ",
+            "mis_diagnos": "J06.9",
+            "patient_age_years": 34,
+        },
+        record={"visit_id": "j06", "date": "2026-08-02"},
+        limit=3,
+    )
+    blob = " ".join(
+        str(item.get("source_path") or "") + " " + str(item.get("title") or "")
+        for item in result.get("items") or []
+    ).lower()
+    assert "цилиарн" not in blob
+    assert "гемопоэтическ" not in blob
+    assert "оториноларинголог" not in blob
+    assert "2017_49" not in blob

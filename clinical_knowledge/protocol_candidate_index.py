@@ -6,8 +6,8 @@ from collections import defaultdict
 from functools import lru_cache
 from typing import Any
 
-from clinical_knowledge.dx_query_expand import diagnosis_tokens
-from clinical_knowledge.protocol_content_index import content_text_for_card
+from clinical_knowledge.dx_query_expand import diagnosis_tokens, expand_diagnosis_query
+from clinical_knowledge.kp_validity import looks_omnibus
 
 _TOKEN_RE = re.compile(r"[а-яёa-z0-9]{4,}")
 
@@ -18,17 +18,12 @@ def _icd_root(code: str) -> str:
 
 
 def _card_index_blob(card: dict[str, Any]) -> str:
+    # Только паспорт карты. Тело PDF даёт чужие КП (ПЦД, ГСК, омнибус).
     parts = [
         str(card.get("title") or ""),
         str(card.get("condition_label") or ""),
         str(card.get("source_path") or "").replace("_", " ").replace("-", " ").replace("/", " "),
     ]
-    try:
-        content = content_text_for_card(card)
-        if content:
-            parts.append(content)
-    except Exception:  # noqa: BLE001
-        pass
     return " ".join(parts).lower()
 
 
@@ -43,11 +38,11 @@ def _built_index() -> tuple[dict[str, frozenset[int]], dict[str, frozenset[int]]
         blob = _card_index_blob(card)
         for token in _TOKEN_RE.findall(blob):
             token_map[token].add(idx)
-        codes = [
-            str(x).strip().upper()
-            for x in list(card.get("icd10_primary") or []) + list(card.get("icd10_all") or [])
-            if x
-        ]
+        primary = [str(x).strip().upper() for x in (card.get("icd10_primary") or []) if x]
+        extra = []
+        if not looks_omnibus(card):
+            extra = [str(x).strip().upper() for x in (card.get("icd10_all") or []) if x]
+        codes = list(dict.fromkeys(primary + extra))
         for code in codes:
             icd_map[code].add(idx)
             root = _icd_root(code)
@@ -76,7 +71,8 @@ def select_candidate_cards(
     registry = load_protocol_cards_registry()
     token_map, icd_map = _built_index()
     hits: set[int] = set()
-    for token in diagnosis_tokens(diag_text, min_len=4, limit=28):
+    expanded = expand_diagnosis_query(diag_text) if diag_text else ""
+    for token in diagnosis_tokens(expanded or diag_text, min_len=4, limit=28):
         found = token_map.get(token)
         if found:
             hits |= set(found)
