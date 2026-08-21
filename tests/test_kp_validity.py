@@ -37,6 +37,15 @@ def test_attach_validity_fills_valid_from_from_approval_date() -> None:
     assert card.get("valid_to") in (None, "")
 
 
+def test_token_hits_words_stem_not_infix() -> None:
+    from clinical_knowledge.protocol_match import blob_word_set, token_hits_words
+
+    neuro = blob_word_set("заболеваниями нейрохирургического профиля")
+    assert not token_hits_words("хирург", neuro)
+    gi = blob_word_set("заболеваниями пищевода желудка")
+    assert token_hits_words("пищевод", gi)
+
+
 def test_looks_omnibus_urology_and_dispanser() -> None:
     assert looks_omnibus(
         {
