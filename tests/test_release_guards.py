@@ -43,6 +43,10 @@ def test_release_scripts_require_exact_origin_main_commit() -> None:
     assert 'MAIN_SHA="$(git rev-parse origin/main)"' in gce_deploy
     assert 'export GIT_COMMIT_SHA="$RELEASE_SHA"' in gce_deploy
     assert 'vals["GIT_COMMIT_SHA"] = os.environ["GIT_COMMIT_SHA"]' in gce_deploy
+    assert "SSH_USER=\\$(whoami)" in gce_deploy
+    assert "\\$SSH_USER:\\$SSH_USER" in gce_deploy
+    assert "GCE_OPS_USER=" in gce_deploy
+    assert "assemble_web_env_from_sm.sh" in gce_deploy
 
 
 def test_release_scripts_have_valid_bash_syntax() -> None:

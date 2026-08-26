@@ -94,6 +94,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
    на GCE можно выставить после merge, это не оценка цифр.
 6. **[x] Release guard:** GCE deploy допускает только точный `origin/main`,
    передаёт merge SHA в `GIT_COMMIT_SHA` и явно фиксирует lab-флаги.
+   Public env сначала собирается SSH-пользователем, затем передаётся cron-владельцу.
    Primary по умолчанию остаётся `0`; включение выполняется отдельным rollout.
 
 ---
