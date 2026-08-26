@@ -95,6 +95,7 @@ if ! grep -qE '^(GOOGLE_API_KEY|GEMINI_API_KEY)=' "$tmp"; then
   exit 2
 fi
 
+key_count="$(grep -cE '^[A-Z]' "$tmp" || true)"
 sudo mkdir -p "$(dirname "$OUT_ENV")"
 sudo cp "$tmp" "$OUT_ENV"
 if getent passwd "$OPS_USER" >/dev/null 2>&1; then
@@ -110,4 +111,4 @@ for f in "$PUBLIC_ENV" "$OUT_ENV" /opt/protocol/.env.mis; do
     sudo chmod 600 "$f" 2>/dev/null || true
   fi
 done
-echo "WEB_ENV_ASSEMBLED path=$OUT_ENV keys=$(grep -cE '^[A-Z]' "$OUT_ENV" || true)"
+echo "WEB_ENV_ASSEMBLED path=$OUT_ENV keys=$key_count"

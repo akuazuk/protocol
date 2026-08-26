@@ -2,6 +2,8 @@ from __future__ import annotations
 
 import json
 import sqlite3
+import subprocess
+import sys
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
@@ -12,6 +14,8 @@ from clinical_knowledge.mo_lab_rollout import (
     lab_primary_guard,
     rollout_report_path,
 )
+
+ROOT = Path(__file__).resolve().parents[1]
 
 
 def _seed_databases(root: Path) -> tuple[Path, Path]:
@@ -92,6 +96,27 @@ def test_guard_requires_shadow_days_and_successful_nights(
     assert blocked["allowed"] is False
     assert "successful_nights_incomplete" in blocked["block_reasons"]
     assert lab_primary_enabled() is False
+
+
+def test_rollout_runner_works_without_site_packages(tmp_path: Path) -> None:
+    result = subprocess.run(
+        [
+            sys.executable,
+            "-S",
+            str(ROOT / "scripts" / "run_mo_lab_rollout_metrics.py"),
+            "--data-root",
+            str(tmp_path),
+            "--init-shadow-state-only",
+            "--git-sha",
+            "c" * 40,
+        ],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode == 0, result.stderr
+    assert json.loads(result.stdout)["ok"] is True
 
 
 def test_report_is_aggregate_only_and_unlocks_guard(
