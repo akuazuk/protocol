@@ -744,6 +744,23 @@ def evaluate_kz_deep(
     except Exception:  # noqa: BLE001
         pass
 
+    try:
+        from .mo_lab_bundle import lab_bundle_enabled
+        from .mo_lab_shadow import (
+            evaluate_lab_for_case,
+            lab_shadow_enabled,
+        )
+
+        if lab_bundle_enabled() and lab_shadow_enabled():
+            _, extra = evaluate_lab_for_case(case)
+            for item in extra:
+                if item.get("is_shadow") or item.get("shadow"):
+                    shadow_findings.append(item)
+                else:
+                    findings.append(item)
+    except Exception:  # noqa: BLE001
+        pass
+
     # overall: среднее доступных осей (объективность - без штрафа за отсутствие протокола)
     present_axes = [v for k, v in axes.items() if v is not None]
     overall = round(sum(present_axes) / len(present_axes), 1) if present_axes else None

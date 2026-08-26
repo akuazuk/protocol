@@ -1963,7 +1963,7 @@
         return "zone2a";
       }
       if (/^B_dx|^B_icd|diagnosis/i.test(code)) return "zone2a";
-      if (/plan|exam_rec|treat|follow|D_reg55|B_complaint_not_addressed/i.test(code)) return "zone2b";
+      if (/plan|exam_rec|treat|follow|D_reg55|B_complaint_not_addressed|B_lab_/i.test(code)) return "zone2b";
       if (/^A_|missing|complain|anamnes|objective|mo_complete/i.test(code)) return "zone1";
       var axis = String((finding && finding.axis) || "");
       if (axis === "safety") return "safety";
@@ -2675,7 +2675,10 @@
         var linked = finding.linked_fields || [];
         return '<article class="finding-card finding-card--compact" data-finding-zone-item="' + zkey + '">' +
           '<div class="finding-card-head"><span class="status muted">' + esc(layerLabelRu(zkey) || "Прочее") +
-          '</span><span class="status ' + esc(finding.severity_tone || severityTone(finding)) + '">' +
+          '</span>' +
+          ((finding.shadow || finding.is_shadow)
+            ? '<span class="status muted">не в оценке</span>' : "") +
+          '<span class="status ' + esc(finding.severity_tone || severityTone(finding)) + '">' +
           esc(finding.severity_label_ru || severityLabel(finding) || "Проверить") + '</span></div>' +
           '<div class="finding-card-title">' + esc(title) + '</div>' +
           (finding.detail_ru || finding.detail ? '<p class="finding-detail">' +
@@ -2737,6 +2740,86 @@
         ' · Всего: ' + n + ' · Для коррекций плана: ' + prior + '</p>' +
         (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются, если на складе нет более ранних визитов с ключом пациента.</p>' : "") +
         '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
+    }
+    function renderLabReconcile(recon) {
+      if (!recon) return "";
+      function line(title, rows, extra) {
+        rows = rows || [];
+        if (!rows.length) return "";
+        var bits = rows.slice(0, 6).map(function (row) {
+          return esc(row.label || "") + (row.test_date ? (" (" + esc(row.test_date) + ")") : "");
+        }).join(", ");
+        return '<p class="card-sub"><b>' + esc(title) + "</b> " + bits +
+          (extra ? (" - " + esc(extra)) : "") + "</p>";
+      }
+      var body = line("Назначены и уже есть", recon.ordered_and_present) +
+        line("Есть на складе, в МО не указаны", recon.present_not_in_mo) +
+        line("Назначены, на складе за окно нет", recon.ordered_not_in_warehouse,
+          "не штраф, покрытие склада неполное") +
+        line("Получены после визита", recon.post_visit_present,
+          "контекст, замечание не создаётся");
+      if (!body) return "";
+      return '<div class="lab-reconcile">' + body + "</div>";
+    }
+    function renderLabBundle(bundle) {
+      if (bundle && bundle.reason === "disabled") return "";
+      if (!bundle) {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">Нет данных лаборатории в ответе разбора.</p></div>';
+      }
+      if (bundle.reason === "db_missing") {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">Склад лаборатории недоступен. Блок пустой лучше, чем чужие результаты.</p></div>';
+      }
+      if (bundle.reason === "missing_key") {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">Нет ключа пациента - лабораторию не клеим (лучше пусто, чем чужие результаты).</p></div>';
+      }
+      var summary = (bundle && bundle.summary) || {};
+      var nRows = Number(summary.n_rows || 0);
+      var win = (bundle && bundle.window) || {};
+      var windowLine = win.from && win.to
+        ? ("Окно " + win.from + " ... " + win.to + " (визит -14д ... +1д).")
+        : "Окно визит -14д ... +1д.";
+      var usage = (bundle && bundle.usage_for_scores_ru) ||
+        "Лаборатория - контекст для методиста. Не входит в итоговую оценку. Не подменяет графу «Данные обследований».";
+      if (!nRows) {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">За 14 дней до визита и день визита анализов на складе нет. Это нормально; не означает, что блок сломан.</p>' +
+          '<p class="card-sub">' + esc(windowLine) + "</p>" +
+          renderLabReconcile(bundle.reconcile) +
+          '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
+          '<p class="card-sub">' + esc(usage) + "</p></details></div>";
+      }
+      var days = bundle.days || [];
+      var dayHtml = days.map(function (day) {
+        var types = day.types || [];
+        var typeNames = types.map(function (t) { return t.type_name || "анализ"; }).join(", ");
+        var open = day.same_day ? " open" : "";
+        var same = day.same_day ? " · день визита" : "";
+        var tables = types.map(function (t) {
+          var rows = (t.indicators || []).map(function (ind) {
+            return "<tr><td>" + esc(ind.name || "") + "</td><td>" + esc(ind.value || "") +
+              "</td><td>" + esc(ind.unit || "") + "</td></tr>";
+          }).join("");
+          return "<h4 class=\"lab-type-name\">" + esc(t.type_name || "анализ") + "</h4>" +
+            '<div class="table-wrap compact-table"><table><thead><tr><th>Показатель</th><th>Значение</th><th>Ед.</th></tr></thead><tbody>' +
+            rows + "</tbody></table></div>";
+        }).join("");
+        return "<details class=\"lab-day\"" + open + "><summary>" +
+          esc(day.test_date || "") + esc(same) + " · " + esc(typeNames) +
+          "</summary>" + tables + "</details>";
+      }).join("");
+      var truncated = summary.truncated
+        ? '<p class="card-sub">Показаны первые строки окна; полный заказ на складе шире.</p>'
+        : "";
+      return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+        '<p>' + nRows + " показатель(ей) · " + Number(summary.n_types || 0) + " вид(ов) · " +
+        Number(summary.n_dates || 0) + " дат(ы)</p>" +
+        '<p class="card-sub">' + esc(windowLine) + " Не входит в оценку.</p>" +
+        truncated + renderLabReconcile(bundle.reconcile) + dayHtml +
+        '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
+        '<p class="card-sub">' + esc(usage) + "</p></details></div>";
     }
     function renderReviewBrief(brief, narrative) {
       if (!brief || !brief.available || !brief.ok) {
@@ -2956,6 +3039,7 @@
             if (!hist.deep && data.history_deep) hist.deep = data.history_deep;
             return hist;
           })()) +
+          renderLabBundle(data.lab) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
           serviceHtml +
           '</div>' +
@@ -2968,6 +3052,7 @@
           '</div><div class="case-workspace-decision">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderPatientHistory(data.patient_history) +
+          renderLabBundle(data.lab) +
           renderShadowDxPlan(shadowDxPlan) +
           renderLlmActionJudge(llmJudge, sourceDocument, item) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
