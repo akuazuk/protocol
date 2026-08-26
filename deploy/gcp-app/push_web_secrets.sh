@@ -62,6 +62,12 @@ public_allow = {
     "MO_ICD_PIPELINE_IN_PRIMARY",
     "MO_ICD_LLM_REVIEW",
     "MO_ICD_LLM_CLEAR_WEAK",
+    "MO_LAB_BUNDLE",
+    "MO_LAB_SHADOW",
+    "MO_LAB_IN_PRIMARY",
+    "MO_LAB_MIN_SHADOW_DAYS",
+    "MO_LAB_MIN_REVIEWED",
+    "MO_LAB_MAX_FALSE_POSITIVE_PCT",
     "GEMINI_MODEL",
     "GEMINI_METHODIST_MODEL",
     "GEMINI_GRADER_BULK_MODEL",
@@ -126,6 +132,12 @@ public.setdefault("MO_ICD_DIR_IN_PRIMARY", "0")
 public.setdefault("MO_ICD_PIPELINE_IN_PRIMARY", "0")
 public.setdefault("MO_ICD_LLM_REVIEW", "0")
 public.setdefault("MO_ICD_LLM_CLEAR_WEAK", "0")
+public.setdefault("MO_LAB_BUNDLE", "1")
+public.setdefault("MO_LAB_SHADOW", "1")
+public.setdefault("MO_LAB_IN_PRIMARY", "0")
+public.setdefault("MO_LAB_MIN_SHADOW_DAYS", "7")
+public.setdefault("MO_LAB_MIN_REVIEWED", "5")
+public.setdefault("MO_LAB_MAX_FALSE_POSITIVE_PCT", "20")
 
 out = Path("/tmp/protocol-gcp-public.env")
 out.write_text("".join(f"{k}={v}\n" for k, v in sorted(public.items())), encoding="utf-8")

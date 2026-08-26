@@ -96,6 +96,11 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
    передаёт merge SHA в `GIT_COMMIT_SHA` и явно фиксирует lab-флаги.
    Public env сначала собирается SSH-пользователем, затем передаётся cron-владельцу.
    Primary по умолчанию остаётся `0`; включение выполняется отдельным rollout.
+7. **[x] Shadow rollout guard:** дата первого deploy хранится в `/var/data`, ночь
+   пишет PHI-safe агрегаты за 7 дней и считает успешные lab nights. Даже при
+   `MO_LAB_IN_PRIMARY=1` primary блокируется до 7 дней и свежего отчёта.
+   Нужны минимум 5 решений методиста; false-positive >20% автоматически блокирует
+   primary. Статус доступен в `/api/methodist/mo/health`; rollback - вернуть flag в `0`.
 
 ---
 

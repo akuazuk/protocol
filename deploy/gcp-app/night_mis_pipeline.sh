@@ -340,7 +340,6 @@ else
   echo "lab ingest failed (non-fatal)"
   write_lab_status "failed" "append_failed"
 fi
-
 PREV_SHA=""
 PREV_STATUS=""
 if [[ -f "$STATUS_FILE" ]]; then
@@ -445,6 +444,12 @@ if sudo docker ps --format '{{.Names}}' | grep -qx protocol-web; then
       --first-date "$DAY" --last-date "$DAY" \
       --warehouse /var/data/medical_exams/warehouse/mo_analytics.sqlite \
     || echo "post-score recompute failed (non-fatal)"
+fi
+if "${VENV}/bin/python" "$ROOT/scripts/run_mo_lab_rollout_metrics.py" \
+    --data-root "$DATA" --end-date "$DAY"; then
+  echo "lab rollout metrics ok"
+else
+  echo "lab rollout metrics failed (non-fatal)"
 fi
 
 write_status "success" "extract_score_ok" "$INBOUND_SHA" 0

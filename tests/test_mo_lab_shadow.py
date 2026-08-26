@@ -153,6 +153,10 @@ def test_primary_flag_promotes_gap_only(tmp_path: Path, monkeypatch) -> None:
     db = tmp_path / "mo_lab.sqlite"
     _seed(db)
     monkeypatch.setenv("MO_LAB_IN_PRIMARY", "1")
+    monkeypatch.setattr(
+        "clinical_knowledge.mo_lab_rollout.lab_primary_guard",
+        lambda: {"effective": True},
+    )
     result = {"findings": []}
     apply_lab_to_result(
         result,
@@ -174,6 +178,10 @@ def test_primary_flag_keeps_prior_only_gap_in_shadow(tmp_path: Path, monkeypatch
     db = tmp_path / "mo_lab.sqlite"
     _seed(db)
     monkeypatch.setenv("MO_LAB_IN_PRIMARY", "1")
+    monkeypatch.setattr(
+        "clinical_knowledge.mo_lab_rollout.lab_primary_guard",
+        lambda: {"effective": True},
+    )
     result = {"findings": []}
     apply_lab_to_result(
         result,

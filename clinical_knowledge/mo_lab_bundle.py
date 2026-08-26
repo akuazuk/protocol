@@ -34,7 +34,11 @@ def lab_bundle_enabled() -> bool:
 def lab_primary_enabled() -> bool:
     """Документационный gap в primary. «Плохой анализ» из value - нет (волна 4)."""
     raw = (os.environ.get("MO_LAB_IN_PRIMARY") or "0").strip().lower()
-    return raw in {"1", "true", "yes", "on"}
+    if raw not in {"1", "true", "yes", "on"}:
+        return False
+    from clinical_knowledge.mo_lab_rollout import lab_primary_guard
+
+    return bool(lab_primary_guard().get("effective"))
 
 
 def lookback_days() -> int:

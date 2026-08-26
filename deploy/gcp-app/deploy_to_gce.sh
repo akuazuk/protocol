@@ -120,6 +120,9 @@ want = secret_keys | {
     "MO_LAB_BUNDLE",
     "MO_LAB_SHADOW",
     "MO_LAB_IN_PRIMARY",
+    "MO_LAB_MIN_SHADOW_DAYS",
+    "MO_LAB_MIN_REVIEWED",
+    "MO_LAB_MAX_FALSE_POSITIVE_PCT",
 }
 # E2: Marina / MIS from GCE (not Mac bridge). Password usually lives in sql_epam.
 mis_want = {
@@ -173,6 +176,9 @@ vals.setdefault("MO_ICD_LLM_CLEAR_WEAK", "0")
 vals.setdefault("MO_LAB_BUNDLE", "1")
 vals.setdefault("MO_LAB_SHADOW", "1")
 vals.setdefault("MO_LAB_IN_PRIMARY", "0")
+vals.setdefault("MO_LAB_MIN_SHADOW_DAYS", "7")
+vals.setdefault("MO_LAB_MIN_REVIEWED", "5")
+vals.setdefault("MO_LAB_MAX_FALSE_POSITIVE_PCT", "20")
 for key in ("MO_LAB_BUNDLE", "MO_LAB_SHADOW", "MO_LAB_IN_PRIMARY"):
     if os.environ.get(key):
         vals[key] = os.environ[key]
@@ -232,6 +238,8 @@ print(
     f"web_sm_files={len(list(sm_dir.iterdir()))}"
 )
 PY
+LAB_PRIMARY_REQUESTED="$(awk -F= '$1=="MO_LAB_IN_PRIMARY"{v=$2} END{print v}' /tmp/protocol-gcp-public.env)"
+LAB_PRIMARY_REQUESTED="${LAB_PRIMARY_REQUESTED:-0}"
 
 SA="$(gcloud compute instances describe "$VM" --zone="$ZONE" --project="$PROJECT" \
   --format='get(serviceAccounts[0].email)')"
@@ -294,6 +302,7 @@ if [[ -s /tmp/protocol-gcp-mis.env ]]; then
   ssh_cmd "sudo mv ~/protocol-gcp-mis.env '$ENV_MIS_REMOTE' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_MIS_REMOTE' && sudo chmod 600 '$ENV_MIS_REMOTE' && if grep -qE '^KRAVIRA_DB_PASSWORD=' '$ENV_MIS_REMOTE'; then echo 'ERROR: password must not be in .env.mis' >&2; exit 2; fi"
 fi
 ssh_cmd "sudo mv ~/protocol-gcp-public.env '$ENV_WEB_PUBLIC' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); SSH_USER=\$(whoami); sudo chown \"\$SSH_USER:\$SSH_USER\" '$ENV_WEB_PUBLIC' && sudo chmod 600 '$ENV_WEB_PUBLIC' && GCE_OPS_USER=\"\$OPS\" bash '$REMOTE_DIR'/deploy/gcp-app/assemble_web_env_from_sm.sh"
+ssh_cmd "OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo -u \"\$OPS\" env MO_DATA_ROOT=/var/data/medical_exams GIT_COMMIT_SHA='$RELEASE_SHA' python3 '$REMOTE_DIR'/scripts/run_mo_lab_rollout_metrics.py --init-shadow-state-only --git-sha '$RELEASE_SHA' && sudo -u \"\$OPS\" env MO_DATA_ROOT=/var/data/medical_exams MO_LAB_IN_PRIMARY='$LAB_PRIMARY_REQUESTED' python3 '$REMOTE_DIR'/scripts/run_mo_lab_rollout_metrics.py --check-primary"
 rm -f /tmp/protocol-gcp-public.env /tmp/protocol-gcp-mis.env
 
 if [[ "$SYNC_PROTOCOL_CORPUS" == "1" ]] \
