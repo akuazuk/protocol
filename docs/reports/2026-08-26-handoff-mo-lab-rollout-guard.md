@@ -5,7 +5,8 @@
 Ветка: `cursor/mo-lab-rollout-guard-agent1-pc1`
 Worktree: `/private/tmp/protocol-task-mo-lab-rollout-guard-pc1`
 Base: `2ae18d4e0c3ac343bffc087f254ecca0fac376c4`
-PR: будет создан после push
+HEAD implementation commit: `c1422ef0`
+PR: https://github.com/akuazuk/protocol/pull/182
 
 ## Production до этого PR
 
@@ -39,7 +40,7 @@ PR: будет создан после push
 BUILD_VERSION: `2026-08-26-120249Z-mo-lab-rollout-guard`.
 
 Следующая безопасная команда после публикации:
-`gh pr checks <PR> --repo akuazuk/protocol --watch`
+`gh pr checks 182 --repo akuazuk/protocol --watch`
 
 Не трогать параллельно:
 `clinical_knowledge/mo_lab_*.py`, `deploy/gcp-app/night_mis_pipeline.sh`,
