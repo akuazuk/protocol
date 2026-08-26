@@ -49,6 +49,8 @@ def test_release_scripts_require_exact_origin_main_commit() -> None:
     assert "assemble_web_env_from_sm.sh" in gce_deploy
     assert "--init-shadow-state-only" in gce_deploy
     assert "--check-primary" in gce_deploy
+    assert "/var/data/medical_exams/reports" in gce_deploy
+    assert "medical_exams/state /var/data/medical_exams/reports" in gce_deploy
     rollout_runner = (
         ROOT / "scripts" / "run_mo_lab_rollout_metrics.py"
     ).read_text(encoding="utf-8")
