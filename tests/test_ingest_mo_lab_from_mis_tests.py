@@ -48,6 +48,7 @@ def test_night_pipeline_appends_lab_warehouse() -> None:
     assert 'write_lab_status "success"' in text
     assert "run_mo_lab_rollout_metrics.py" in text
     assert "lab rollout metrics failed (non-fatal)" in text
+    assert 'sudo chown "$(whoami):$(whoami)" "$DATA/reports"' in text
     checker = (_ROOT / "deploy" / "gcp-app" / "check_gce_night_status.sh").read_text(
         encoding="utf-8"
     )

@@ -102,6 +102,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
    Нужны минимум 5 решений методиста; false-positive >20% автоматически блокирует
    primary. Статус доступен в `/api/methodist/mo/health`; rollback - вернуть flag в `0`.
    Night/deploy runner использует только Python stdlib и не зависит от web `pydantic`.
+   Deploy и night гарантируют cron-владельцу запись `state/` и `reports/`.
 
 ---
 

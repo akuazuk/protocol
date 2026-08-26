@@ -445,6 +445,10 @@ if sudo docker ps --format '{{.Names}}' | grep -qx protocol-web; then
       --warehouse /var/data/medical_exams/warehouse/mo_analytics.sqlite \
     || echo "post-score recompute failed (non-fatal)"
 fi
+mkdir -p "$DATA/reports" 2>/dev/null || sudo mkdir -p "$DATA/reports"
+if [[ ! -w "$DATA/reports" ]]; then
+  sudo chown "$(whoami):$(whoami)" "$DATA/reports"
+fi
 if "${VENV}/bin/python" "$ROOT/scripts/run_mo_lab_rollout_metrics.py" \
     --data-root "$DATA" --end-date "$DAY"; then
   echo "lab rollout metrics ok"
