@@ -5,7 +5,7 @@
 Ветка: `cursor/mo-lab-production-ready-agent1-pc1`
 Worktree: `/private/tmp/protocol-task-mo-lab-production-ready-pc1`
 Base: `9e4e5322` (`origin/main`)
-HEAD implementation commit: `9b88e9b2`
+HEAD implementation commit: `e958e28c`
 PR: https://github.com/akuazuk/protocol/pull/179
 Предыдущий PR #178 закрыт как superseded.
 
@@ -28,8 +28,9 @@ PR: https://github.com/akuazuk/protocol/pull/179
 ## Тесты
 
 - `pytest -q` - полный suite прошёл, один штатный skip.
-- Узкий lab suite - 31 passed.
+- Узкий lab suite после final guard - 33 passed.
 - `ruff check .` - passed.
+- GitHub CI run `32960564377` для `e958e28c` - passed.
 - `python3 -m py_compile` изменённых Python runtime-файлов - ok.
 - `node --check frontend/web/shared/mo-app.js` - ok.
 - `bash -n` nightly/check scripts - ok.
