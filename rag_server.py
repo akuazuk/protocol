@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-21-093740Z-kp-icd-mentions"
+BUILD_VERSION = "2026-08-26-081852Z-handoff-kp-mentions"
 
 
 def _app_version() -> str:

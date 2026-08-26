@@ -1,5 +1,7 @@
 # Handoff для нового чата / вкладки Cursor
 
+Преемник: [2026-08-26-handoff-next-chat.md](2026-08-26-handoff-next-chat.md)
+
 Дата: 2026-08-21  
 Репозиторий: `akuazuk/protocol`  
 Канон: `origin/main` `5cb75f9` (#175)  

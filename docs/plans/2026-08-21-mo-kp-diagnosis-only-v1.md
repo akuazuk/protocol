@@ -14,9 +14,10 @@
 
 | Job | Статус |
 |--|--|
-| `kp-eval-full` | exit 0, 2026-08-20 13:20 UTC, 31707 с |
+| `kp-eval-full` post174 | exit 0, 2026-08-21 11:46 UTC, 18427 с; hit 41.9%, омнибус 0 |
+| `kp-eval-sample` post176 | exit 0, 2026-08-26 08:09 UTC, 752 с; hit 40.3%, омнибус 0 |
 | Rceth | `done` с 2026-08-18 |
-| UI | `2026-08-21-062249Z-kp-omnibus-norm` на `protocol.kravira.by` (`22806bb`) |
+| UI | `2026-08-21-093740Z-kp-icd-mentions` на `protocol.kravira.by` (`9e4e532`, #176) |
 
 Отчёт без PHI: `/var/data/medical_exams/reports/kp_suggest_eval_post165.json`.
 
@@ -106,6 +107,8 @@ J06 / M54 честно пустые - нозологического КП нет
 5. [x] Паспорт: `icd10_mentions` = тело PDF / внешние причины (Y/W/V/T).
    Suggest и индекс кандидатов их не видят. Primary из Y-кодов чистим.
    Каталог поверх реестра не кладём - там коморбидный dump (I21 на колене).
+   Merge #176 `9e4e532`. Sample 300: hit 40.3%, омнибус 0, adult+child 0,
+   ПЦД / ГСК / экстренка / нейрохирургия / миелома 0. Прод выложен.
 
 ---
 
@@ -133,8 +136,6 @@ J06 / M54 честно пустые - нозологического КП нет
 
 ## 8. Следующая команда
 
-`#169` `a6f7f7d`, `#170` `2a2d6e0` в `origin/main`.
-Sample 300 после #174: hit 40.3%, чужие top-1 из цели = 0.
-Полный CSV идёт на GCE (`kp-eval-full` → `kp_suggest_eval_post174.json`).
-Волна 5 в `cursor/mo-kp-icd-mentions-pc1`. Не деплоить и не рестартовать UI,
-пока `kp-eval-full` running.
+Волна 5 закрыта: `#176` в `origin/main`, прод `2026-08-21-093740Z-kp-icd-mentions`.
+Не включать `MO_RCETH_LABEL_PRIMARY`. Дальше: ночной score новым матчером
+(склад всё ещё unmatched) и калибровка Rceth 30 кейсов shadow.
