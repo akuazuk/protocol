@@ -27,6 +27,9 @@ def test_release_scripts_require_exact_origin_main_commit() -> None:
     apply_deploy = (OPS / "render_apply_deploy.sh").read_text(encoding="utf-8")
     render_deploy = (OPS / "render_deploy.sh").read_text(encoding="utf-8")
     deploy_guard = (ROOT / "scripts" / "git_deploy_guard.sh").read_text(encoding="utf-8")
+    gce_deploy = (ROOT / "deploy" / "gcp-app" / "deploy_to_gce.sh").read_text(
+        encoding="utf-8"
+    )
 
     assert "--commit=MERGE_SHA" in release
     assert 'if [[ "$requested_sha" != "$main_sha" ]]' in release
@@ -37,6 +40,9 @@ def test_release_scripts_require_exact_origin_main_commit() -> None:
     assert "local $branch is not exact" in deploy_guard
     assert 'COMMIT_SHA="$(git rev-parse HEAD)"' not in apply_deploy
     assert 'COMMIT_SHA="$(git rev-parse HEAD)"' not in render_deploy
+    assert 'MAIN_SHA="$(git rev-parse origin/main)"' in gce_deploy
+    assert 'export GIT_COMMIT_SHA="$RELEASE_SHA"' in gce_deploy
+    assert 'vals["GIT_COMMIT_SHA"] = os.environ["GIT_COMMIT_SHA"]' in gce_deploy
 
 
 def test_release_scripts_have_valid_bash_syntax() -> None:
@@ -46,6 +52,7 @@ def test_release_scripts_have_valid_bash_syntax() -> None:
         OPS / "render_deploy.sh",
         OPS / "render_promote_main.sh",
         ROOT / "scripts" / "deploy_promote_main_after_push.sh",
+        ROOT / "deploy" / "gcp-app" / "deploy_to_gce.sh",
     ):
         result = subprocess.run(
             ["bash", "-n", str(script)],
