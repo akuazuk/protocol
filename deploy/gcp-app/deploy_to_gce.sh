@@ -293,7 +293,7 @@ if [[ -s /tmp/protocol-gcp-mis.env ]]; then
   gcloud compute scp /tmp/protocol-gcp-mis.env "${VM}:~/protocol-gcp-mis.env" --zone="$ZONE" --quiet
   ssh_cmd "sudo mv ~/protocol-gcp-mis.env '$ENV_MIS_REMOTE' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_MIS_REMOTE' && sudo chmod 600 '$ENV_MIS_REMOTE' && if grep -qE '^KRAVIRA_DB_PASSWORD=' '$ENV_MIS_REMOTE'; then echo 'ERROR: password must not be in .env.mis' >&2; exit 2; fi"
 fi
-ssh_cmd "sudo mv ~/protocol-gcp-public.env '$ENV_WEB_PUBLIC' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); sudo chown \"\$OPS:\$OPS\" '$ENV_WEB_PUBLIC' && sudo chmod 600 '$ENV_WEB_PUBLIC' && bash '$REMOTE_DIR'/deploy/gcp-app/assemble_web_env_from_sm.sh"
+ssh_cmd "sudo mv ~/protocol-gcp-public.env '$ENV_WEB_PUBLIC' && OPS='${GCE_OPS_USER}'; getent passwd \"\$OPS\" >/dev/null || OPS=\$(whoami); SSH_USER=\$(whoami); sudo chown \"\$SSH_USER:\$SSH_USER\" '$ENV_WEB_PUBLIC' && sudo chmod 600 '$ENV_WEB_PUBLIC' && GCE_OPS_USER=\"\$OPS\" bash '$REMOTE_DIR'/deploy/gcp-app/assemble_web_env_from_sm.sh"
 rm -f /tmp/protocol-gcp-public.env /tmp/protocol-gcp-mis.env
 
 if [[ "$SYNC_PROTOCOL_CORPUS" == "1" ]] \
