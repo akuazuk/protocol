@@ -5,7 +5,8 @@
 Ветка: `hotfix/mo-lab-rollout-host-python-agent1-pc1`
 Worktree: `/private/tmp/protocol-task-mo-lab-rollout-host-python-pc1`
 Base: `085ff7d6f212f855f1e79947c88c0356193fd245`
-PR: будет создан после push.
+HEAD implementation commit: `e5a4f5c2`
+PR: https://github.com/akuazuk/protocol/pull/183
 
 ## Причина
 
@@ -28,7 +29,7 @@ Deploy PR #182 остановился до Docker build/run: host Python не с
 BUILD_VERSION: `2026-08-26-121434Z-mo-lab-host-python`.
 
 Следующая безопасная команда после публикации:
-`gh pr checks <PR> --repo akuazuk/protocol --watch`
+`gh pr checks 183 --repo akuazuk/protocol --watch`
 
 Не трогать параллельно:
 `scripts/run_mo_lab_rollout_metrics.py`,
