@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-26-090844Z-mo-lab-ingest-plan"
+BUILD_VERSION = "2026-08-26-092927Z-mo-lab-case-ui"
 
 
 def _app_version() -> str:
@@ -11999,6 +11999,12 @@ def api_methodist_mo_case_detail(
                 result["patient_history"] = public_bundle_for_ui(live_case.get("_patient_history"))
             except Exception:  # noqa: BLE001
                 pass
+            try:
+                from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
+
+                result["lab"] = lab_payload_for_case(live_case)
+            except Exception:  # noqa: BLE001
+                pass
             from clinical_knowledge.mo_backend import _normalize_finding_row
             from clinical_knowledge.mo_icd_match_pipeline import evaluate_mo_icd_match
             from clinical_knowledge.mo_icd_visit_status import compute_icd_visit_status
@@ -12203,6 +12209,18 @@ def api_methodist_mo_case_detail(
             record["history_prior_n"] = int(summary.get("n_visits") or 0)
             record["history_tier"] = str(live_ph.get("tier") or "")
             result["record"] = record
+        except Exception:  # noqa: BLE001
+            pass
+        try:
+            from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
+
+            result["lab"] = lab_payload_for_case(
+                {
+                    "patient_id": patient_id,
+                    "patient_key": str(record.get("patient_key") or ""),
+                    "visit_date": visit_date,
+                }
+            )
         except Exception:  # noqa: BLE001
             pass
         try:

@@ -39,7 +39,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 
 ## 2. Что меняется в проде
 
-Пока **данные на диске GCE**, UI/score не трогаем, пока не влита волна 1.
+Волна 0: данные на диске GCE. Волна 1: бандл + блок в разборе; score не трогаем.
 
 Целевой файл (отдельный, чтобы не лочить BI-sqlite):
 
@@ -70,8 +70,10 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
    (2025-12-19 … 2026-08-26). `scripts/ingest_mo_lab_from_mis_tests.py`.
    Файл `/var/data/medical_exams/warehouse/mo_lab.sqlite` (427045 строк).
    Отчёт: `/var/data/medical_exams/reports/mo_lab_ingest_meta.json` (без PHI).
-1. Бандл + блок «Лаборатория» в разборе случая (как history bundle).
-   Группировка `type_name` → показатели. Live SQL на клик не делаем.
+1. **[x] Бандл + блок «Лаборатория»** в разборе случая
+   (`clinical_knowledge/mo_lab_bundle.py`, `result.lab`, UI рядом с историей).
+   Группировка дата → `type_name` → показатели. Live SQL на клик нет.
+   `MO_LAB_BUNDLE=1` по умолчанию; `MO_LAB_IN_PRIMARY` в v1 игнорируется.
 2. Shadow-сверка: «Рекомендации по обследованию» ↔ `type_name` (ОАК назначен /
    ОАК есть). Finding только shadow.
 3. Night: дописывать вчерашний день в том же sqlite из `night_mis_pipeline.sh`.
@@ -98,6 +100,5 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 
 ## 7. Следующая команда
 
-Волна 1: бандл + блок «Лаборатория» в разборе случая, читать
-`/var/data/medical_exams/warehouse/mo_lab.sqlite`. Night hook и primary - позже.
-Не включать `MO_LAB_IN_PRIMARY`.
+Волна 2: shadow-сверка «Рекомендации по обследованию» ↔ `type_name`.
+Night hook и primary - позже. Не включать `MO_LAB_IN_PRIMARY`.

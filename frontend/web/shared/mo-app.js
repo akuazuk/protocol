@@ -2738,6 +2738,65 @@
         (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются, если на складе нет более ранних визитов с ключом пациента.</p>' : "") +
         '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
     }
+    function renderLabBundle(bundle) {
+      if (bundle && bundle.reason === "disabled") return "";
+      if (!bundle) {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">Нет данных лаборатории в ответе разбора.</p></div>';
+      }
+      if (bundle.reason === "db_missing") {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">Склад лаборатории недоступен. Блок пустой лучше, чем чужие результаты.</p></div>';
+      }
+      if (bundle.reason === "missing_key") {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">Нет ключа пациента - лабораторию не клеим (лучше пусто, чем чужие результаты).</p></div>';
+      }
+      var summary = (bundle && bundle.summary) || {};
+      var nRows = Number(summary.n_rows || 0);
+      var win = (bundle && bundle.window) || {};
+      var windowLine = win.from && win.to
+        ? ("Окно " + win.from + " ... " + win.to + " (визит -14д ... +1д).")
+        : "Окно визит -14д ... +1д.";
+      var usage = (bundle && bundle.usage_for_scores_ru) ||
+        "Лаборатория - контекст для методиста. Не входит в итоговую оценку. Не подменяет графу «Данные обследований».";
+      if (!nRows) {
+        return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+          '<p class="empty">За 14 дней до визита и день визита анализов на складе нет. Это нормально; не означает, что блок сломан.</p>' +
+          '<p class="card-sub">' + esc(windowLine) + "</p>" +
+          '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
+          '<p class="card-sub">' + esc(usage) + "</p></details></div>";
+      }
+      var days = bundle.days || [];
+      var dayHtml = days.map(function (day) {
+        var types = day.types || [];
+        var typeNames = types.map(function (t) { return t.type_name || "анализ"; }).join(", ");
+        var open = day.same_day ? " open" : "";
+        var same = day.same_day ? " · день визита" : "";
+        var tables = types.map(function (t) {
+          var rows = (t.indicators || []).map(function (ind) {
+            return "<tr><td>" + esc(ind.name || "") + "</td><td>" + esc(ind.value || "") +
+              "</td><td>" + esc(ind.unit || "") + "</td></tr>";
+          }).join("");
+          return "<h4 class=\"lab-type-name\">" + esc(t.type_name || "анализ") + "</h4>" +
+            '<div class="table-wrap compact-table"><table><thead><tr><th>Показатель</th><th>Значение</th><th>Ед.</th></tr></thead><tbody>' +
+            rows + "</tbody></table></div>";
+        }).join("");
+        return "<details class=\"lab-day\"" + open + "><summary>" +
+          esc(day.test_date || "") + esc(same) + " · " + esc(typeNames) +
+          "</summary>" + tables + "</details>";
+      }).join("");
+      var truncated = summary.truncated
+        ? '<p class="card-sub">Показаны первые строки окна; полный заказ на складе шире.</p>'
+        : "";
+      return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
+        '<p>' + nRows + " показатель(ей) · " + Number(summary.n_types || 0) + " вид(ов) · " +
+        Number(summary.n_dates || 0) + " дат(ы)</p>" +
+        '<p class="card-sub">' + esc(windowLine) + " Не входит в оценку.</p>" +
+        truncated + dayHtml +
+        '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
+        '<p class="card-sub">' + esc(usage) + "</p></details></div>";
+    }
     function renderReviewBrief(brief, narrative) {
       if (!brief || !brief.available || !brief.ok) {
         return '<div class="detail-block review-brief-block"><h3>Итог разбора</h3>' +
@@ -2956,6 +3015,7 @@
             if (!hist.deep && data.history_deep) hist.deep = data.history_deep;
             return hist;
           })()) +
+          renderLabBundle(data.lab) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
           serviceHtml +
           '</div>' +
@@ -2968,6 +3028,7 @@
           '</div><div class="case-workspace-decision">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderPatientHistory(data.patient_history) +
+          renderLabBundle(data.lab) +
           renderShadowDxPlan(shadowDxPlan) +
           renderLlmActionJudge(llmJudge, sourceDocument, item) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
