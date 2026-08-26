@@ -190,7 +190,7 @@ def build_lab_bundle(
             ORDER BY test_date DESC, type_name, indicator_name
             LIMIT ?
             """,
-            (key, start, end, ROW_CAP),
+            (key, start, end, ROW_CAP + 1),
         ).fetchall()
     except sqlite3.Error:
         if own_conn and conn is not None:
@@ -202,6 +202,8 @@ def build_lab_bundle(
         out = empty_bundle(reason="empty")
         out["window"] = window_meta
         return out
+    truncated = len(rows) > ROW_CAP
+    rows = rows[:ROW_CAP]
     days = _group_rows(rows, visit_date=window_meta["visit_date"])
     type_names = {
         item["type_name"]
@@ -223,7 +225,7 @@ def build_lab_bundle(
             "n_dates": len(days),
             "n_types": len(type_names),
             "same_day_rows": same_day_rows,
-            "truncated": len(rows) >= ROW_CAP,
+            "truncated": truncated,
         },
         "days": days,
         "reason": "",

@@ -170,6 +170,30 @@ def test_primary_flag_promotes_gap_only(tmp_path: Path, monkeypatch) -> None:
     assert "132" not in str(result["findings"])
 
 
+def test_primary_flag_keeps_prior_only_gap_in_shadow(tmp_path: Path, monkeypatch) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    _seed(db)
+    monkeypatch.setenv("MO_LAB_IN_PRIMARY", "1")
+    result = {"findings": []}
+    apply_lab_to_result(
+        result,
+        {
+            "patient_id": "1001",
+            "visit_date": "2026-08-20",
+            "exam_recommendations": "",
+            "exam_data": "Биохимический анализ крови",
+        },
+        lab_db=db,
+    )
+    gap = [
+        item for item in result["findings"]
+        if item.get("code") == CODE_PRESENT_GAP
+    ]
+    assert gap
+    assert all(item.get("is_shadow") is True for item in gap)
+    assert "ОАК" in str(gap)
+
+
 def test_post_visit_result_never_creates_gap(tmp_path: Path, monkeypatch) -> None:
     db = tmp_path / "mo_lab.sqlite"
     _seed(db)

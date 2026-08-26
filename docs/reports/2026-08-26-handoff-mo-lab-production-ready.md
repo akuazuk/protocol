@@ -17,6 +17,8 @@ PR: https://github.com/akuazuk/protocol/pull/179
 - `indicator_name` участвует в распознавании панели; указание родительской панели
   не создаёт ложный gap по вложенному показателю.
 - Результаты после даты визита видны как контекст, но не создают finding.
+- При включённом primary только same-day documentation gap становится P3;
+  результаты lookback остаются shadow.
 - Live и batch evaluation используют один путь с одинаковым primary/shadow поведением.
 - Ingest заменяет диапазон после полного чтения МИС, удаляет точные дубли и создаёт
   unique-индекс.
@@ -39,7 +41,7 @@ PR: https://github.com/akuazuk/protocol/pull/179
 - `MO_LAB_IN_PRIMARY=1` в GCE env не включён.
 - Числовые значения не влияют на score без референсов и калибровки.
 
-BUILD_VERSION: `2026-08-26-104633Z-mo-lab-ready`.
+BUILD_VERSION: `2026-08-26-105337Z-mo-lab-same-day`.
 Production SHA / smoke: отсутствуют, deploy не выполнялся.
 
 Следующая безопасная команда после публикации:

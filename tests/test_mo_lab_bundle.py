@@ -124,3 +124,33 @@ def test_public_ui_has_no_identity(tmp_path: Path) -> None:
     dumped = str(pub)
     assert "1001" not in dumped
     assert patient_key_for("1001") not in dumped
+
+
+def test_exact_row_cap_is_not_reported_as_truncated(tmp_path: Path) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    pk = _seed(db)
+    with sqlite3.connect(db) as conn:
+        conn.executemany(
+            "INSERT INTO fact_mo_lab VALUES (?,?,?,?,?,?,?,?,?)",
+            [
+                (
+                    pk,
+                    "2026-08-20",
+                    1000 + idx,
+                    90,
+                    "Прочее",
+                    1000 + idx,
+                    f"Показатель {idx}",
+                    str(idx),
+                    "",
+                )
+                for idx in range(397)
+            ],
+        )
+    bundle = build_lab_bundle(
+        patient_key=pk,
+        visit_date="2026-08-20",
+        lab_db=db,
+    )
+    assert bundle["summary"]["n_rows"] == 400
+    assert bundle["summary"]["truncated"] is False

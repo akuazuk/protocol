@@ -60,7 +60,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 | Пересечение с `fact_mo_case` | 0 | **9340 / 51917** ключей | не цель 100% |
 | Случаи с лаб в окне −14д…+1д | 0 | **23121 / 105888 (21.8%)** | честно показывать пусто |
 | `exam_data` врача | как есть | не трогали | не переписываем |
-| Primary score | без лаб | без лаб (флаг 0) | `MO_LAB_IN_PRIMARY=1` только gap «не в МО» |
+| Primary score | без лаб | без лаб (флаг 0) | `MO_LAB_IN_PRIMARY=1` только same-day gap «не в МО» |
 | Shadow-сверка план ↔ лаб | нет | finding P3 + блок сверки | не в формуле |
 
 ---
@@ -89,6 +89,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 4. **[x] Production hardening:** reconcile считает полный индекс без UI cap,
    панели ищутся также по `indicator_name`, live и batch используют один evaluator.
    Лаборатория даты `visit+1d` показывается как контекст, но не создаёт finding.
+   Primary P3 разрешён только для результата в день визита; lookback остаётся shadow.
 5. «Плохой анализ» из `value` - **не в v1** (нет референса). `MO_LAB_IN_PRIMARY=1`
    на GCE можно выставить после merge, это не оценка цифр.
 

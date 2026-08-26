@@ -281,7 +281,11 @@ def build_lab_reconcile(
                 )
             ):
                 present_not_in_mo.append(
-                    {"label": row["label"], "test_date": row["test_date"]}
+                    {
+                        "label": row["label"],
+                        "test_date": row["test_date"],
+                        "same_day": row["test_date"] == visit_date,
+                    }
                 )
     return {
         "engine": ENGINE,
@@ -294,6 +298,9 @@ def build_lab_reconcile(
         "ordered_and_present": ordered_and_present[:8],
         "ordered_not_in_warehouse": ordered_not_in_warehouse[:8],
         "present_not_in_mo": present_not_in_mo[:8],
+        "primary_present_not_in_mo": [
+            row for row in present_not_in_mo if row.get("same_day")
+        ][:8],
         "post_visit_present": [
             {"label": row["label"], "test_date": row["test_date"]}
             for row in post_visit.values()
@@ -350,12 +357,18 @@ def lab_shadow_findings(reconcile: Mapping[str, Any] | None) -> list[dict[str, A
             )
         )
     gap = list(reconcile.get("present_not_in_mo") or [])
+    primary_gap = list(reconcile.get("primary_present_not_in_mo") or [])
+    gap_for_finding = (
+        primary_gap
+        if lab_primary_enabled() and primary_gap
+        else gap
+    )
     if gap:
         bits = ", ".join(
             f"{item.get('label')} ({item.get('test_date')})"
             if item.get("test_date")
             else str(item.get("label") or "")
-            for item in gap[:6]
+            for item in gap_for_finding[:6]
         )
         out.append(
             _finding(
@@ -372,7 +385,7 @@ def lab_shadow_findings(reconcile: Mapping[str, Any] | None) -> list[dict[str, A
         promoted = []
         for item in out:
             row = dict(item)
-            if str(row.get("code")) == CODE_PRESENT_GAP:
+            if str(row.get("code")) == CODE_PRESENT_GAP and primary_gap:
                 row["shadow"] = False
                 row["is_shadow"] = False
                 row["detail_ru"] = str(row.get("detail_ru") or "").replace(
@@ -415,6 +428,9 @@ def evaluate_lab_for_case(
         "ordered_and_present": list(recon.get("ordered_and_present") or []),
         "ordered_not_in_warehouse": list(recon.get("ordered_not_in_warehouse") or []),
         "present_not_in_mo": list(recon.get("present_not_in_mo") or []),
+        "primary_present_not_in_mo": list(
+            recon.get("primary_present_not_in_mo") or []
+        ),
         "post_visit_present": list(recon.get("post_visit_present") or []),
         "note_ru": recon.get("note_ru") or "",
     }
