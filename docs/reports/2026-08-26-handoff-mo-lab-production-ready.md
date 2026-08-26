@@ -5,8 +5,9 @@
 Ветка: `cursor/mo-lab-production-ready-agent1-pc1`
 Worktree: `/private/tmp/protocol-task-mo-lab-production-ready-pc1`
 Base: `9e4e5322` (`origin/main`)
-HEAD: будет зафиксирован после commit
-PR: будет создан после push; заменяет PR #178
+HEAD implementation commit: `9b88e9b2`
+PR: https://github.com/akuazuk/protocol/pull/179
+Предыдущий PR #178 закрыт как superseded.
 
 ## Сделано
 
@@ -42,7 +43,7 @@ BUILD_VERSION: `2026-08-26-104633Z-mo-lab-ready`.
 Production SHA / smoke: отсутствуют, deploy не выполнялся.
 
 Следующая безопасная команда после публикации:
-`gh pr checks --watch <replacement-pr>`
+`gh pr checks 179 --repo akuazuk/protocol --watch`
 
 Не трогать параллельно:
 `clinical_knowledge/mo_lab_*.py`, `scripts/ingest_mo_lab_from_mis_tests.py`,
