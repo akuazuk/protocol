@@ -3971,6 +3971,18 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
         detail["patient_history"] = public_bundle_for_ui(attach_bundle_to_case(hist_case))
     except Exception:  # noqa: BLE001
         pass
+    try:
+        from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
+
+        detail["lab"] = lab_payload_for_case(
+            {
+                "patient_id": patient_id_raw or "",
+                "patient_key": str(record.get("patient_key") or ""),
+                "visit_date": str(record.get("date") or record.get("visit_date") or "")[:10],
+            }
+        )
+    except Exception:  # noqa: BLE001
+        pass
     return detail
 
 

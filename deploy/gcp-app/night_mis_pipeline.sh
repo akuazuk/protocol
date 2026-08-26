@@ -42,6 +42,7 @@ fi
 Y="${DAY:0:4}"
 M="${DAY:5:2}"
 STATUS_FILE="${STATE_DIR}/gce_night_${DAY}.json"
+LAB_STATUS_FILE="${STATE_DIR}/gce_lab_${DAY}.json"
 STAGING="${DATA}/staging/gce-night-${DAY}-$$"
 INBOUND="${DATA}/inbound/extract"
 SECURE_CSV="${DATA}/secure_cases/${Y}/${M}/mo_${DAY}.csv"
@@ -186,6 +187,27 @@ print(f"wrote {path} status={payload['status']} sha={payload['inbound_sha256'][:
 PY
 }
 
+write_lab_status() {
+  local status="$1"
+  local detail="${2:-}"
+  LAB_STATUS="$status" LAB_DETAIL="$detail" LAB_DAY="$DAY" \
+  LAB_STATUS_FILE="$LAB_STATUS_FILE" python3 - <<'PY'
+import json, os
+from datetime import datetime, timezone
+from pathlib import Path
+path = Path(os.environ["LAB_STATUS_FILE"])
+payload = {
+  "day": os.environ["LAB_DAY"],
+  "status": os.environ["LAB_STATUS"],
+  "detail": os.environ.get("LAB_DETAIL", ""),
+  "updated_at": datetime.now(timezone.utc).isoformat(),
+  "host": "gce",
+}
+path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+print(f"wrote {path} status={payload['status']}")
+PY
+}
+
 fail_exit() {
   local detail="$1"
   local rc="${2:-1}"
@@ -199,11 +221,16 @@ fail_exit() {
 if [[ "$MODE" == "retry" ]]; then
   if [[ -f "$STATUS_FILE" ]]; then
     prev="$(python3 -c "import json; print(json.load(open('${STATUS_FILE}')).get('status',''))")"
-    if [[ "$prev" == "success" ]] && [[ "$NIGHT_FORCE" != "1" ]]; then
+    lab_prev=""
+    if [[ -f "$LAB_STATUS_FILE" ]]; then
+      lab_prev="$(python3 -c "import json; print(json.load(open('${LAB_STATUS_FILE}')).get('status',''))")"
+    fi
+    if [[ "$prev" == "success" ]] && [[ "$lab_prev" == "success" ]] \
+      && [[ "$NIGHT_FORCE" != "1" ]]; then
       echo "retry skip: day=${DAY} already success"
       exit 0
     fi
-    echo "retry: previous status=${prev}"
+    echo "retry: previous status=${prev} lab_status=${lab_prev:-missing}"
   else
     echo "retry: no status file; will run"
   fi
@@ -298,6 +325,21 @@ meta["checksum_sha256"] = "${INBOUND_SHA}"
 p.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
 print("inbound ready", "${INBOUND}/mo_${DAY}.csv", "sha=", "${INBOUND_SHA}"[:16]+"…")
 PY
+
+# Лаборатория: вчера + 1 день overlap (опоздавшие строки). Host venv, не protocol-web.
+LAB_FROM="$(python3 -c "from datetime import date,timedelta; d=date.fromisoformat('${DAY}'); print((d-timedelta(days=1)).isoformat())")"
+echo "lab ingest ${LAB_FROM}..${NEXT} (skip-coverage)"
+mkdir -p "$DATA/warehouse" 2>/dev/null || sudo mkdir -p "$DATA/warehouse"
+if "${VENV}/bin/python" "$ROOT/scripts/ingest_mo_lab_from_mis_tests.py" \
+    --from "$LAB_FROM" --to "$NEXT" \
+    --out "$DATA/warehouse/mo_lab.sqlite" \
+    --skip-coverage; then
+  echo "lab ingest ok"
+  write_lab_status "success" "append_ok"
+else
+  echo "lab ingest failed (non-fatal)"
+  write_lab_status "failed" "append_failed"
+fi
 
 PREV_SHA=""
 PREV_STATUS=""

@@ -19,6 +19,7 @@ PY
 )"
 fi
 STATUS_FILE="${STATE_DIR}/gce_night_${DAY}.json"
+LAB_STATUS_FILE="${STATE_DIR}/gce_lab_${DAY}.json"
 mkdir -p "$LOG_DIR"
 exec >>"${LOG_DIR}/gce-night-check.log" 2>&1
 echo "======== CHECK day=${DAY} $(date -u +%Y-%m-%dT%H:%M:%SZ) ========"
@@ -51,8 +52,11 @@ load_telegram_env() {
   done < "$ENV_WEB"
 }
 
-if [[ ! -f "$STATUS_FILE" ]]; then
+if [[ ! -f "$STATUS_FILE" ]] || [[ ! -f "$LAB_STATUS_FILE" ]]; then
   detail="missing_status_file"
+  if [[ -f "$STATUS_FILE" ]]; then
+    detail="missing_lab_status_file"
+  fi
   echo "ALERT_NEEDED day=${DAY} detail=${detail}"
   load_telegram_env
   python3 "$ROOT/scripts/telegram_notify.py" \
@@ -60,26 +64,38 @@ if [[ ! -f "$STATUS_FILE" ]]; then
   exit 1
 fi
 
+set +e
 python3 - <<PY
 import json, sys
 from pathlib import Path
 p = Path("${STATUS_FILE}")
 d = json.loads(p.read_text(encoding="utf-8"))
+lab_path = Path("${LAB_STATUS_FILE}")
+lab = json.loads(lab_path.read_text(encoding="utf-8"))
 status = d.get("status") or ""
 detail = d.get("detail") or ""
-print(f"status={status} detail={detail} sha={(d.get('inbound_sha256') or '')[:12]}")
-if status == "success":
+lab_status = lab.get("status") or ""
+lab_detail = lab.get("detail") or ""
+print(
+    f"status={status} detail={detail} lab_status={lab_status} "
+    f"lab_detail={lab_detail} sha={(d.get('inbound_sha256') or '')[:12]}"
+)
+if status == "success" and lab_status == "success":
     print("CHECK_OK")
     sys.exit(0)
-print(f"ALERT_NEEDED day=${DAY} detail=status_{status}_{detail}")
+print(
+    f"ALERT_NEEDED day=${DAY} "
+    f"detail=case_{status}_{detail}_lab_{lab_status}_{lab_detail}"
+)
 sys.exit(2)
 PY
 rc=$?
+set -e
 if [[ "$rc" -eq 0 ]]; then
   exit 0
 fi
 load_telegram_env
-detail="$(python3 -c "import json; d=json.load(open('${STATUS_FILE}')); print(d.get('detail') or d.get('status') or 'failed')")"
+detail="$(python3 -c "import json; c=json.load(open('${STATUS_FILE}')); l=json.load(open('${LAB_STATUS_FILE}')); print('case_'+str(c.get('status') or 'missing')+'_lab_'+str(l.get('status') or 'missing'))")"
 python3 "$ROOT/scripts/telegram_notify.py" \
   "МО GCE night FAIL day=${DAY} mode=check detail=${detail} host=gce" >/dev/null 2>&1 || true
 exit "$rc"
