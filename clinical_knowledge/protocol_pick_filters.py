@@ -58,7 +58,7 @@ def icd_fit_for_card(
     icd_codes: list[str],
 ) -> list[dict[str, Any]]:
     """Метки МКБ с весом подходимости для карточки протокола."""
-    card_icd = [str(x).upper() for x in (card.get("icd10_all") or card.get("icd10_primary") or []) if x]
+    card_icd = [str(x).upper() for x in (card.get("icd10_primary") or []) if x]
     card_set = set(card_icd)
     card_roots = {_icd_root(c) for c in card_icd}
     out: list[dict[str, Any]] = []

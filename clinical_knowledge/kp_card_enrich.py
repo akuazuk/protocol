@@ -43,7 +43,15 @@ def attach_icd_from_content(card: dict[str, Any] | None) -> dict[str, Any]:
     extra = [code for code in found if code not in have]
     if not extra:
         return card
-    card["icd10_all"] = (current + extra)[:64]
+    mentions = [
+        str(x).strip().upper()
+        for x in (card.get("icd10_mentions") or [])
+        if x
+    ]
+    have_mentions = set(mentions)
+    mentions.extend(code for code in extra if code not in have_mentions)
+    card["icd10_mentions"] = mentions[:80]
+    card["icd10_all"] = (current + extra)[:80]
     if not card.get("icd10_primary"):
-        card["icd10_primary"] = extra[:8]
+        card["icd10_primary"] = [code for code in extra if not code.startswith(("Y", "W", "V", "T"))][:8]
     return card
