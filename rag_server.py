@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-26-092927Z-mo-lab-case-ui"
+BUILD_VERSION = "2026-08-26-101134Z-mo-lab-shadow-recon"
 
 
 def _app_version() -> str:
@@ -12000,9 +12000,13 @@ def api_methodist_mo_case_detail(
             except Exception:  # noqa: BLE001
                 pass
             try:
-                from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
+                from clinical_knowledge.mo_lab_shadow import apply_lab_to_result
 
-                result["lab"] = lab_payload_for_case(live_case)
+                lab_case = dict(live_case) if isinstance(live_case, dict) else {}
+                if isinstance(clinical, dict):
+                    lab_case["exam_recommendations"] = clinical.get("exam_recommendations") or ""
+                    lab_case["exam_data"] = clinical.get("exam_data") or ""
+                apply_lab_to_result(result, lab_case)
             except Exception:  # noqa: BLE001
                 pass
             from clinical_knowledge.mo_backend import _normalize_finding_row
@@ -12212,15 +12216,17 @@ def api_methodist_mo_case_detail(
         except Exception:  # noqa: BLE001
             pass
         try:
-            from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
+            from clinical_knowledge.mo_lab_shadow import apply_lab_to_result
 
-            result["lab"] = lab_payload_for_case(
-                {
-                    "patient_id": patient_id,
-                    "patient_key": str(record.get("patient_key") or ""),
-                    "visit_date": visit_date,
-                }
-            )
+            lab_case = {
+                "patient_id": patient_id,
+                "patient_key": str(record.get("patient_key") or ""),
+                "visit_date": visit_date,
+            }
+            if document.get("ok") and isinstance(clinical, dict):
+                lab_case["exam_recommendations"] = clinical.get("exam_recommendations") or ""
+                lab_case["exam_data"] = clinical.get("exam_data") or ""
+            apply_lab_to_result(result, lab_case)
         except Exception:  # noqa: BLE001
             pass
         try:

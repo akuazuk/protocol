@@ -1963,7 +1963,7 @@
         return "zone2a";
       }
       if (/^B_dx|^B_icd|diagnosis/i.test(code)) return "zone2a";
-      if (/plan|exam_rec|treat|follow|D_reg55|B_complaint_not_addressed/i.test(code)) return "zone2b";
+      if (/plan|exam_rec|treat|follow|D_reg55|B_complaint_not_addressed|B_lab_/i.test(code)) return "zone2b";
       if (/^A_|missing|complain|anamnes|objective|mo_complete/i.test(code)) return "zone1";
       var axis = String((finding && finding.axis) || "");
       if (axis === "safety") return "safety";
@@ -2675,7 +2675,10 @@
         var linked = finding.linked_fields || [];
         return '<article class="finding-card finding-card--compact" data-finding-zone-item="' + zkey + '">' +
           '<div class="finding-card-head"><span class="status muted">' + esc(layerLabelRu(zkey) || "Прочее") +
-          '</span><span class="status ' + esc(finding.severity_tone || severityTone(finding)) + '">' +
+          '</span>' +
+          ((finding.shadow || finding.is_shadow)
+            ? '<span class="status muted">не в оценке</span>' : "") +
+          '<span class="status ' + esc(finding.severity_tone || severityTone(finding)) + '">' +
           esc(finding.severity_label_ru || severityLabel(finding) || "Проверить") + '</span></div>' +
           '<div class="finding-card-title">' + esc(title) + '</div>' +
           (finding.detail_ru || finding.detail ? '<p class="finding-detail">' +
@@ -2738,6 +2741,24 @@
         (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются, если на складе нет более ранних визитов с ключом пациента.</p>' : "") +
         '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
     }
+    function renderLabReconcile(recon) {
+      if (!recon) return "";
+      function line(title, rows, extra) {
+        rows = rows || [];
+        if (!rows.length) return "";
+        var bits = rows.slice(0, 6).map(function (row) {
+          return esc(row.label || "") + (row.test_date ? (" (" + esc(row.test_date) + ")") : "");
+        }).join(", ");
+        return '<p class="card-sub"><b>' + esc(title) + "</b> " + bits +
+          (extra ? (" - " + esc(extra)) : "") + "</p>";
+      }
+      var body = line("Назначены и уже есть", recon.ordered_and_present) +
+        line("Есть на складе, в МО не указаны", recon.present_not_in_mo) +
+        line("Назначены, на складе за окно нет", recon.ordered_not_in_warehouse,
+          "не штраф, покрытие склада неполное");
+      if (!body) return "";
+      return '<div class="lab-reconcile">' + body + "</div>";
+    }
     function renderLabBundle(bundle) {
       if (bundle && bundle.reason === "disabled") return "";
       if (!bundle) {
@@ -2764,6 +2785,7 @@
         return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
           '<p class="empty">За 14 дней до визита и день визита анализов на складе нет. Это нормально; не означает, что блок сломан.</p>' +
           '<p class="card-sub">' + esc(windowLine) + "</p>" +
+          renderLabReconcile(bundle.reconcile) +
           '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
           '<p class="card-sub">' + esc(usage) + "</p></details></div>";
       }
@@ -2793,7 +2815,7 @@
         '<p>' + nRows + " показатель(ей) · " + Number(summary.n_types || 0) + " вид(ов) · " +
         Number(summary.n_dates || 0) + " дат(ы)</p>" +
         '<p class="card-sub">' + esc(windowLine) + " Не входит в оценку.</p>" +
-        truncated + dayHtml +
+        truncated + renderLabReconcile(bundle.reconcile) + dayHtml +
         '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
         '<p class="card-sub">' + esc(usage) + "</p></details></div>";
     }

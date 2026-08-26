@@ -134,7 +134,9 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert 'id="drawer-prev"' in HTML
     assert "renderPatientHistory" in JS
     assert "renderLabBundle" in JS
+    assert "renderLabReconcile" in JS
     assert "Лаборатория" in JS
+    assert "B_lab_" in JS
     assert "Как история влияет на оценки" in JS
     assert "historyTierLabelRu" in JS
     assert "zoneFilter" in JS

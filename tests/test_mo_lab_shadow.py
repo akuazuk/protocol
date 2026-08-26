@@ -1,0 +1,146 @@
+"""Shadow lab reconcile: exam_recommendations vs type_name, no primary score."""
+from __future__ import annotations
+
+import sqlite3
+from pathlib import Path
+
+from clinical_knowledge.mo_daily import patient_key_for
+from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
+from clinical_knowledge.mo_lab_shadow import (
+    CODE_ORDERED_DONE,
+    CODE_PRESENT_GAP,
+    apply_lab_to_result,
+    build_lab_reconcile,
+    lab_shadow_findings,
+    ordered_panels,
+)
+
+DDL = """
+CREATE TABLE fact_mo_lab (
+  patient_key TEXT NOT NULL,
+  test_date TEXT NOT NULL,
+  test_id INTEGER NOT NULL,
+  type_id INTEGER,
+  type_name TEXT,
+  indicator_id INTEGER,
+  indicator_name TEXT,
+  value TEXT,
+  unit TEXT
+);
+"""
+
+
+def _seed(path: Path) -> None:
+    pk = patient_key_for("1001")
+    db = sqlite3.connect(path)
+    db.executescript(DDL)
+    rows = [
+        (pk, "2026-08-10", 1, 10, "Общий анализ крови", 101, "Гемоглобин", "132", "г/л"),
+        (pk, "2026-08-20", 2, 20, "Биохимический анализ крови", 201, "Глюкоза", "5.4", "ммоль/л"),
+        (patient_key_for("9999"), "2026-08-20", 4, 10, "Общий анализ крови", 101, "Чужой", "1", ""),
+    ]
+    db.executemany("INSERT INTO fact_mo_lab VALUES (?,?,?,?,?,?,?,?,?)", rows)
+    db.commit()
+    db.close()
+
+
+def test_ordered_oak_already_on_warehouse(tmp_path: Path) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    _seed(db)
+    payload = lab_payload_for_case(
+        {"patient_id": "1001", "visit_date": "2026-08-20"},
+        lab_db=db,
+    )
+    recon = build_lab_reconcile(
+        payload,
+        {"exam_recommendations": "Контроль ОАК, глюкоза крови", "exam_data": ""},
+    )
+    labels_present = {row["label"] for row in recon["present"]}
+    assert "ОАК" in labels_present
+    assert "БАК" in labels_present
+    done = {row["label"] for row in recon["ordered_and_present"]}
+    assert "ОАК" in done
+    assert "глюкоза" in {row["label"] for row in recon["ordered_not_in_warehouse"]}
+    findings = lab_shadow_findings(recon)
+    codes = {f["code"] for f in findings}
+    assert CODE_ORDERED_DONE in codes
+    assert all(f.get("shadow") and f.get("is_shadow") for f in findings)
+    assert "132" not in str(findings)
+
+
+def test_present_not_written_in_mo(tmp_path: Path) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    _seed(db)
+    payload = lab_payload_for_case(
+        {"patient_id": "1001", "visit_date": "2026-08-20"},
+        lab_db=db,
+    )
+    recon = build_lab_reconcile(
+        payload,
+        {"exam_recommendations": "УЗИ ОБП", "exam_data": "без патологии"},
+    )
+    gap = {row["label"] for row in recon["present_not_in_mo"]}
+    assert "ОАК" in gap
+    assert "БАК" in gap
+    codes = {f["code"] for f in lab_shadow_findings(recon)}
+    assert CODE_PRESENT_GAP in codes
+    assert CODE_ORDERED_DONE not in codes
+
+
+def test_no_finding_when_ordered_missing_from_warehouse(tmp_path: Path) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    _seed(db)
+    payload = lab_payload_for_case(
+        {"patient_id": "1001", "visit_date": "2026-08-20"},
+        lab_db=db,
+    )
+    recon = build_lab_reconcile(
+        payload,
+        {"exam_recommendations": "ПСА, ТТГ", "exam_data": "ОАК от 10.08, биохимия крови"},
+    )
+    missing = {row["label"] for row in recon["ordered_not_in_warehouse"]}
+    assert "ПСА" in missing
+    assert "ТТГ" in missing
+    codes = {f["code"] for f in lab_shadow_findings(recon)}
+    assert CODE_ORDERED_DONE not in codes
+    assert CODE_PRESENT_GAP not in codes
+
+
+def test_skip_gap_if_exam_slots_not_loaded(tmp_path: Path) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    _seed(db)
+    payload = lab_payload_for_case(
+        {"patient_id": "1001", "visit_date": "2026-08-20"},
+        lab_db=db,
+    )
+    recon = build_lab_reconcile(payload, {"patient_id": "1001"})
+    assert recon["present_not_in_mo"] == []
+    assert lab_shadow_findings(recon) == []
+
+
+def test_bak_token_does_not_hit_bacteriology() -> None:
+    ordered = ordered_panels("бак посев мочи, бактериологическое исследование")
+    assert "bak" not in ordered
+
+
+def test_apply_does_not_touch_primary(tmp_path: Path, monkeypatch) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    _seed(db)
+    monkeypatch.setenv("MO_LAB_IN_PRIMARY", "1")
+    result = {
+        "findings": [{"code": "B_dx_absent", "severity": "P1", "shadow": False}],
+    }
+    apply_lab_to_result(
+        result,
+        {
+            "patient_id": "1001",
+            "visit_date": "2026-08-20",
+            "exam_recommendations": "ОАК",
+            "exam_data": "",
+        },
+        lab_db=db,
+    )
+    assert result["lab"]["reconcile"]["ordered_and_present"]
+    shadows = [f for f in result["findings"] if f.get("code", "").startswith("B_lab_")]
+    assert shadows and all(f.get("is_shadow") for f in shadows)
+    assert any(f.get("code") == "B_dx_absent" and not f.get("is_shadow") for f in result["findings"])

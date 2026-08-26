@@ -39,7 +39,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 
 ## 2. Что меняется в проде
 
-Волна 0: данные на диске GCE. Волна 1: бандл + блок в разборе; score не трогаем.
+Волна 0-1: данные и блок в разборе. Волна 2: shadow-сверка плана с `type_name`; score не трогаем.
 
 Целевой файл (отдельный, чтобы не лочить BI-sqlite):
 
@@ -61,6 +61,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 | Случаи с лаб в окне −14д…+1д | 0 | **23121 / 105888 (21.8%)** | честно показывать пусто |
 | `exam_data` врача | как есть | не трогали | не переписываем |
 | Primary score | без лаб | без лаб | `MO_LAB_IN_PRIMARY=0` |
+| Shadow-сверка план ↔ лаб | нет | finding P3 + блок сверки | не в формуле |
 
 ---
 
@@ -74,8 +75,11 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
    (`clinical_knowledge/mo_lab_bundle.py`, `result.lab`, UI рядом с историей).
    Группировка дата → `type_name` → показатели. Live SQL на клик нет.
    `MO_LAB_BUNDLE=1` по умолчанию; `MO_LAB_IN_PRIMARY` в v1 игнорируется.
-2. Shadow-сверка: «Рекомендации по обследованию» ↔ `type_name` (ОАК назначен /
-   ОАК есть). Finding только shadow.
+2. **[x] Shadow-сверка** «Рекомендации по обследованию» ↔ `type_name`
+   (`clinical_knowledge/mo_lab_shadow.py`). Finding только shadow (P3):
+   назначено и уже есть; есть на складе, в МО не указано.
+   «Назначено, на складе нет» - строка в блоке, не finding и не штраф.
+   `MO_LAB_IN_PRIMARY` по-прежнему игнорируется.
 3. Night: дописывать вчерашний день в том же sqlite из `night_mis_pipeline.sh`.
    Индекс МИС `(patient_id, date)` - просьба к владельцу МИС, не блокер склада.
 4. Primary / «плохой анализ» из `value` - **не в v1** (нет референса).
@@ -100,5 +104,5 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 
 ## 7. Следующая команда
 
-Волна 2: shadow-сверка «Рекомендации по обследованию» ↔ `type_name`.
-Night hook и primary - позже. Не включать `MO_LAB_IN_PRIMARY`.
+Волна 3: night append вчерашнего дня в `mo_lab.sqlite` из `night_mis_pipeline.sh`.
+Primary и «плохой анализ» из `value` - не в v1. Не включать `MO_LAB_IN_PRIMARY`.
