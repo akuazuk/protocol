@@ -4295,6 +4295,35 @@ def build_mo_health() -> dict[str, Any]:
         for code in yesterday_reasons:
             reason_codes.append(f"yesterday_{code}")
 
+    try:
+        from .mo_lab_bundle import lab_bundle_enabled, lab_primary_enabled
+        from .mo_lab_rollout import lab_primary_guard, read_rollout_report
+        from .mo_lab_shadow import lab_shadow_enabled
+
+        lab_report = read_rollout_report()
+        lab_rollout = {
+            "flags": {
+                "bundle": lab_bundle_enabled(),
+                "shadow": lab_shadow_enabled(),
+                "primary_requested": (
+                    os.environ.get("MO_LAB_IN_PRIMARY") or "0"
+                ).strip().lower()
+                in {"1", "true", "yes", "on"},
+                "primary_effective": lab_primary_enabled(),
+            },
+            "guard": lab_primary_guard(),
+            "generated_date": lab_report.get("generated_date"),
+            "metrics": lab_report.get("metrics") or {},
+            "review_pack": lab_report.get("review_pack") or {},
+            "guard_inputs": lab_report.get("guard_inputs") or {},
+            "phi_check": lab_report.get("phi_check") or {},
+        }
+    except Exception:  # noqa: BLE001
+        lab_rollout = {
+            "flags": {"bundle": False, "shadow": False, "primary_effective": False},
+            "guard": {"allowed": False, "block_reasons": ["rollout_unavailable"]},
+        }
+
     components = {
         "warehouse": {
             "status": "ready" if _warehouse_available() else "missing",
@@ -4316,6 +4345,7 @@ def build_mo_health() -> dict[str, Any]:
             "status": ((freshness.get("state") or {}).get("last_stage") or "unknown"),
             "heartbeat": (freshness.get("state") or {}).get("last_heartbeat"),
         },
+        "lab_rollout": lab_rollout,
         "yesterday": {
             "date": yesterday.isoformat(),
             "partial": yesterday_partial,
@@ -4343,6 +4373,7 @@ def build_mo_health() -> dict[str, Any]:
             "case_pdf": True,
             "methodology_toggle": True,
             "llm_costs": True,
+            "lab_rollout_guard": True,
             "v4_primary": False,
         },
         "checked_at": _utc(),

@@ -47,6 +47,8 @@ def test_release_scripts_require_exact_origin_main_commit() -> None:
     assert "\\$SSH_USER:\\$SSH_USER" in gce_deploy
     assert "GCE_OPS_USER=" in gce_deploy
     assert "assemble_web_env_from_sm.sh" in gce_deploy
+    assert "--init-shadow-state-only" in gce_deploy
+    assert "--check-primary" in gce_deploy
 
 
 def test_release_scripts_have_valid_bash_syntax() -> None:
