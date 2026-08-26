@@ -21,6 +21,7 @@ ROW_CAP = 400
 USAGE_FOR_SCORES_RU = (
     "Лаборатория - контекст для методиста из склада mis_tests. "
     "По умолчанию не меняет итоговую оценку (MO_LAB_IN_PRIMARY=0). "
+    "Флаг включает только замечание «анализы есть, в МО не указаны» (P3). "
     "Не подменяет графу «Данные обследований» и не ставит «плохой анализ» без референса."
 )
 
@@ -31,8 +32,9 @@ def lab_bundle_enabled() -> bool:
 
 
 def lab_primary_enabled() -> bool:
-    """В v1 не подключаем к primary, даже если флаг случайно включён."""
-    return False
+    """Документационный gap в primary. «Плохой анализ» из value - нет (волна 4)."""
+    raw = (os.environ.get("MO_LAB_IN_PRIMARY") or "0").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
 
 
 def lookback_days() -> int:

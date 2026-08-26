@@ -34,3 +34,10 @@ def test_month_chunks_cover_range() -> None:
         assert start < end
         cursor = end
     assert cursor == date(2026, 2, 3)
+
+
+def test_night_pipeline_appends_lab_warehouse() -> None:
+    text = (_ROOT / "deploy" / "gcp-app" / "night_mis_pipeline.sh").read_text(encoding="utf-8")
+    assert "ingest_mo_lab_from_mis_tests.py" in text
+    assert "--skip-coverage" in text
+    assert "lab ingest failed (non-fatal)" in text

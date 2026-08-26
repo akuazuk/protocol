@@ -745,14 +745,31 @@ def evaluate_kz_deep(
         pass
 
     try:
-        from .mo_lab_bundle import attach_lab_to_case, lab_bundle_enabled, public_lab_for_ui
-        from .mo_lab_shadow import build_lab_reconcile, lab_shadow_enabled, lab_shadow_findings
+        from .mo_lab_bundle import (
+            attach_lab_to_case,
+            lab_bundle_enabled,
+            lab_primary_enabled,
+            public_lab_for_ui,
+        )
+        from .mo_lab_shadow import (
+            CODE_PRESENT_GAP,
+            build_lab_reconcile,
+            lab_shadow_enabled,
+            lab_shadow_findings,
+        )
 
         if lab_bundle_enabled() and lab_shadow_enabled():
             bundle = attach_lab_to_case(case)
             extra = lab_shadow_findings(build_lab_reconcile(public_lab_for_ui(bundle), case))
             if extra:
-                shadow_findings = list(shadow_findings) + extra
+                if lab_primary_enabled():
+                    for item in extra:
+                        if str(item.get("code")) == CODE_PRESENT_GAP:
+                            findings.append({**item, "shadow": False, "is_shadow": False})
+                        else:
+                            shadow_findings.append(item)
+                else:
+                    shadow_findings = list(shadow_findings) + extra
     except Exception:  # noqa: BLE001
         pass
 

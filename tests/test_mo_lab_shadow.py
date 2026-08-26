@@ -123,10 +123,10 @@ def test_bak_token_does_not_hit_bacteriology() -> None:
     assert "bak" not in ordered
 
 
-def test_apply_does_not_touch_primary(tmp_path: Path, monkeypatch) -> None:
+def test_apply_does_not_touch_primary_by_default(tmp_path: Path, monkeypatch) -> None:
     db = tmp_path / "mo_lab.sqlite"
     _seed(db)
-    monkeypatch.setenv("MO_LAB_IN_PRIMARY", "1")
+    monkeypatch.delenv("MO_LAB_IN_PRIMARY", raising=False)
     result = {
         "findings": [{"code": "B_dx_absent", "severity": "P1", "shadow": False}],
     }
@@ -140,7 +140,27 @@ def test_apply_does_not_touch_primary(tmp_path: Path, monkeypatch) -> None:
         },
         lab_db=db,
     )
-    assert result["lab"]["reconcile"]["ordered_and_present"]
     shadows = [f for f in result["findings"] if f.get("code", "").startswith("B_lab_")]
     assert shadows and all(f.get("is_shadow") for f in shadows)
     assert any(f.get("code") == "B_dx_absent" and not f.get("is_shadow") for f in result["findings"])
+
+
+def test_primary_flag_promotes_gap_only(tmp_path: Path, monkeypatch) -> None:
+    db = tmp_path / "mo_lab.sqlite"
+    _seed(db)
+    monkeypatch.setenv("MO_LAB_IN_PRIMARY", "1")
+    result = {"findings": []}
+    apply_lab_to_result(
+        result,
+        {
+            "patient_id": "1001",
+            "visit_date": "2026-08-20",
+            "exam_recommendations": "ОАК",
+            "exam_data": "",
+        },
+        lab_db=db,
+    )
+    by_code = {f["code"]: f for f in result["findings"] if str(f.get("code") or "").startswith("B_lab_")}
+    assert by_code[CODE_ORDERED_DONE].get("is_shadow") is True
+    assert by_code[CODE_PRESENT_GAP].get("is_shadow") is False
+    assert "132" not in str(result["findings"])

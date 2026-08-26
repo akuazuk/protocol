@@ -10,6 +10,8 @@ import os
 import re
 from typing import Any, Mapping
 
+from clinical_knowledge.mo_lab_bundle import lab_payload_for_case, lab_primary_enabled
+
 ENGINE = "mo_lab_shadow_v1"
 _SOURCE = "mo_lab_shadow_v1"
 CODE_ORDERED_DONE = "B_lab_ordered_already_done"
@@ -280,6 +282,18 @@ def lab_shadow_findings(reconcile: Mapping[str, Any] | None) -> list[dict[str, A
                 ),
             )
         )
+    if lab_primary_enabled():
+        promoted = []
+        for item in out:
+            row = dict(item)
+            if str(row.get("code")) == CODE_PRESENT_GAP:
+                row["shadow"] = False
+                row["is_shadow"] = False
+                row["detail_ru"] = str(row.get("detail_ru") or "").replace(
+                    " Черновик, не входит в оценку.", ""
+                )
+            promoted.append(row)
+        return promoted
     return out
 
 
@@ -305,9 +319,8 @@ def apply_lab_to_result(
     *,
     lab_db: Any = None,
 ) -> dict[str, Any]:
-    """Положить result['lab'] и shadow-findings. Primary score не трогаем."""
-    from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
-
+    """Положить result['lab'] и lab-findings. Primary только при MO_LAB_IN_PRIMARY=1
+    и только для «есть на складе, в МО не указаны»."""
     payload = lab_payload_for_case(case, lab_db=lab_db)
     recon = build_lab_reconcile(payload, case)
     payload["reconcile"] = {

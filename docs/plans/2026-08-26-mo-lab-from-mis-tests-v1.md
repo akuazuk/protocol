@@ -39,7 +39,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 
 ## 2. Что меняется в проде
 
-Волна 0-1: данные и блок в разборе. Волна 2: shadow-сверка плана с `type_name`; score не трогаем.
+Волна 0-2: данные, блок, shadow-сверка. Волна 3: ночной append. `MO_LAB_IN_PRIMARY` default 0.
 
 Целевой файл (отдельный, чтобы не лочить BI-sqlite):
 
@@ -60,7 +60,7 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 | Пересечение с `fact_mo_case` | 0 | **9340 / 51917** ключей | не цель 100% |
 | Случаи с лаб в окне −14д…+1д | 0 | **23121 / 105888 (21.8%)** | честно показывать пусто |
 | `exam_data` врача | как есть | не трогали | не переписываем |
-| Primary score | без лаб | без лаб | `MO_LAB_IN_PRIMARY=0` |
+| Primary score | без лаб | без лаб (флаг 0) | `MO_LAB_IN_PRIMARY=1` только gap «не в МО» |
 | Shadow-сверка план ↔ лаб | нет | finding P3 + блок сверки | не в формуле |
 
 ---
@@ -74,15 +74,18 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 1. **[x] Бандл + блок «Лаборатория»** в разборе случая
    (`clinical_knowledge/mo_lab_bundle.py`, `result.lab`, UI рядом с историей).
    Группировка дата → `type_name` → показатели. Live SQL на клик нет.
-   `MO_LAB_BUNDLE=1` по умолчанию; `MO_LAB_IN_PRIMARY` в v1 игнорируется.
+   `MO_LAB_BUNDLE=1` по умолчанию. `MO_LAB_IN_PRIMARY` читается, default 0:
+   в primary идёт только «анализы есть, в МО не указаны» (P3), не цифры.
 2. **[x] Shadow-сверка** «Рекомендации по обследованию» ↔ `type_name`
    (`clinical_knowledge/mo_lab_shadow.py`). Finding только shadow (P3):
    назначено и уже есть; есть на складе, в МО не указано.
    «Назначено, на складе нет» - строка в блоке, не finding и не штраф.
-   `MO_LAB_IN_PRIMARY` по-прежнему игнорируется.
-3. Night: дописывать вчерашний день в том же sqlite из `night_mis_pipeline.sh`.
+   `MO_LAB_IN_PRIMARY` default 0; при `=1` в оценку идёт только gap «не указано в МО».
+3. **[x] Night:** дописывать вчерашний день (+1д overlap) в `mo_lab.sqlite`
+   из `night_mis_pipeline.sh` (host `venv-mis`, `--skip-coverage`, non-fatal).
    Индекс МИС `(patient_id, date)` - просьба к владельцу МИС, не блокер склада.
-4. Primary / «плохой анализ» из `value` - **не в v1** (нет референса).
+4. «Плохой анализ» из `value` - **не в v1** (нет референса). `MO_LAB_IN_PRIMARY=1`
+   на GCE можно выставить после merge, это не оценка цифр.
 
 ---
 
@@ -104,5 +107,6 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 
 ## 7. Следующая команда
 
-Волна 3: night append вчерашнего дня в `mo_lab.sqlite` из `night_mis_pipeline.sh`.
-Primary и «плохой анализ» из `value` - не в v1. Не включать `MO_LAB_IN_PRIMARY`.
+Merge PR + выкладка GCE (скрипт ночи должен попасть в `/opt/protocol`).
+`MO_LAB_IN_PRIMARY=1` - только если нужна P3 за «анализы не отражены в МО».
+Не оценивать «плохой анализ» из `value` без референса.

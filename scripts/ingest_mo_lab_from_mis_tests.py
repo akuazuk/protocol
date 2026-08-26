@@ -246,6 +246,11 @@ def main() -> int:
         type=Path,
         default=Path("/var/data/medical_exams/warehouse/mo_analytics.sqlite"),
     )
+    ap.add_argument(
+        "--skip-coverage",
+        action="store_true",
+        help="не считать пересечение с fact_mo_case (ночь)",
+    )
     args = ap.parse_args()
     d0 = date.fromisoformat(args.date_from)
     d1 = date.fromisoformat(args.date_to)
@@ -257,7 +262,7 @@ def main() -> int:
         "test_date_min", "test_date_max", "date_from", "date_to_exclusive",
     )}, ensure_ascii=False))
     cov_path = args.cases_db.expanduser()
-    if cov_path.is_file():
+    if cov_path.is_file() and not args.skip_coverage:
         try:
             cov = coverage_vs_cases(args.out.expanduser(), cov_path)
         except sqlite3.OperationalError as exc:
