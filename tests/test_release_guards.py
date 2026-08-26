@@ -49,6 +49,11 @@ def test_release_scripts_require_exact_origin_main_commit() -> None:
     assert "assemble_web_env_from_sm.sh" in gce_deploy
     assert "--init-shadow-state-only" in gce_deploy
     assert "--check-primary" in gce_deploy
+    rollout_runner = (
+        ROOT / "scripts" / "run_mo_lab_rollout_metrics.py"
+    ).read_text(encoding="utf-8")
+    assert "spec_from_file_location" in rollout_runner
+    assert "from clinical_knowledge.mo_lab_rollout import" not in rollout_runner
 
 
 def test_release_scripts_have_valid_bash_syntax() -> None:
@@ -59,6 +64,7 @@ def test_release_scripts_have_valid_bash_syntax() -> None:
         OPS / "render_promote_main.sh",
         ROOT / "scripts" / "deploy_promote_main_after_push.sh",
         ROOT / "deploy" / "gcp-app" / "deploy_to_gce.sh",
+        ROOT / "deploy" / "gcp-app" / "assemble_web_env_from_sm.sh",
     ):
         result = subprocess.run(
             ["bash", "-n", str(script)],

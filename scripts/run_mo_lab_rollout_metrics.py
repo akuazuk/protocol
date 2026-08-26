@@ -3,21 +3,23 @@
 from __future__ import annotations
 
 import argparse
+import importlib.util
 import json
 import os
-import sys
 from datetime import date, timedelta
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-if str(ROOT) not in sys.path:
-    sys.path.insert(0, str(ROOT))
-
-from clinical_knowledge.mo_lab_rollout import (  # noqa: E402
-    build_rollout_report,
-    ensure_shadow_state,
-    lab_primary_guard,
+_SPEC = importlib.util.spec_from_file_location(
+    "mo_lab_rollout_standalone",
+    ROOT / "clinical_knowledge" / "mo_lab_rollout.py",
 )
+assert _SPEC and _SPEC.loader
+_ROLLOUT = importlib.util.module_from_spec(_SPEC)
+_SPEC.loader.exec_module(_ROLLOUT)
+build_rollout_report = _ROLLOUT.build_rollout_report
+ensure_shadow_state = _ROLLOUT.ensure_shadow_state
+lab_primary_guard = _ROLLOUT.lab_primary_guard
 
 
 def main() -> int:
