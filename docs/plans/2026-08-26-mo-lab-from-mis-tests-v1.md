@@ -92,6 +92,9 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
    Primary P3 разрешён только для результата в день визита; lookback остаётся shadow.
 5. «Плохой анализ» из `value` - **не в v1** (нет референса). `MO_LAB_IN_PRIMARY=1`
    на GCE можно выставить после merge, это не оценка цифр.
+6. **[x] Release guard:** GCE deploy допускает только точный `origin/main`,
+   передаёт merge SHA в `GIT_COMMIT_SHA` и явно фиксирует lab-флаги.
+   Primary по умолчанию остаётся `0`; включение выполняется отдельным rollout.
 
 ---
 

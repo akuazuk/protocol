@@ -6,6 +6,16 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
+git fetch origin main --quiet
+RELEASE_SHA="${GIT_COMMIT_SHA:-$(git rev-parse HEAD)}"
+MAIN_SHA="$(git rev-parse origin/main)"
+if [[ "$RELEASE_SHA" != "$MAIN_SHA" ]] || [[ "$(git rev-parse HEAD)" != "$MAIN_SHA" ]]; then
+  echo "ERROR: GCE deploy requires local HEAD and GIT_COMMIT_SHA at exact origin/main." >&2
+  echo "release=${RELEASE_SHA} head=$(git rev-parse HEAD) origin/main=${MAIN_SHA}" >&2
+  exit 2
+fi
+export GIT_COMMIT_SHA="$RELEASE_SHA"
+
 PROJECT="${GCP_PROJECT:-protocol-home-e1}"
 ZONE="${GCP_ZONE:-europe-central2-a}"
 VM="${GCP_VM:-protocol-app}"
@@ -59,6 +69,7 @@ ssh_cmd "sudo mkdir -p '$REMOTE_DIR' /var/data/medical_exams '$CORPUS_REMOTE' &&
 echo "[2/5] build staging env + Secret Manager payloads (no values printed)"
 python3 - <<'PY'
 from pathlib import Path
+import os
 import shutil
 
 src = Path(".env")
@@ -92,6 +103,7 @@ sm_map = {
     "RENDER_API_KEY": "render-api-key",
 }
 want = secret_keys | {
+    "GIT_COMMIT_SHA",
     "GEMINI_MODEL",
     "GEMINI_METHODIST_MODEL",
     "GEMINI_GRADER_BULK_MODEL",
@@ -105,6 +117,9 @@ want = secret_keys | {
     "TELEGRAM_NOTIFY_RENDER",
     "TELEGRAM_ALERTS",
     "TELEGRAM_INSECURE_SSL",
+    "MO_LAB_BUNDLE",
+    "MO_LAB_SHADOW",
+    "MO_LAB_IN_PRIMARY",
 }
 # E2: Marina / MIS from GCE (not Mac bridge). Password usually lives in sql_epam.
 mis_want = {
@@ -135,6 +150,7 @@ def _ingest(path: Path, keys: set[str], into: dict) -> None:
 
 _ingest(src, want, vals)
 _ingest(src, mis_want, mis_vals)
+vals["GIT_COMMIT_SHA"] = os.environ["GIT_COMMIT_SHA"]
 # Prefer sql_epam for MIS password (Mac secrets home); do not override if .env set.
 _ingest(Path.home() / "CURSOR" / "sql_epam" / ".env", mis_want, mis_vals)
 if not vals.get("GOOGLE_API_KEY") and not vals.get("GEMINI_API_KEY"):
@@ -154,6 +170,12 @@ vals.setdefault("MO_ICD_DIR_IN_PRIMARY", "0")
 vals.setdefault("MO_ICD_PIPELINE_IN_PRIMARY", "0")
 vals.setdefault("MO_ICD_LLM_REVIEW", "0")
 vals.setdefault("MO_ICD_LLM_CLEAR_WEAK", "0")
+vals.setdefault("MO_LAB_BUNDLE", "1")
+vals.setdefault("MO_LAB_SHADOW", "1")
+vals.setdefault("MO_LAB_IN_PRIMARY", "0")
+for key in ("MO_LAB_BUNDLE", "MO_LAB_SHADOW", "MO_LAB_IN_PRIMARY"):
+    if os.environ.get(key):
+        vals[key] = os.environ[key]
 # MIS DSN defaults (password required separately)
 mis_vals.setdefault("KRAVIRA_DB_HOST", "178.163.240.131")
 mis_vals.setdefault("KRAVIRA_DB_PORT", "6330")
@@ -163,10 +185,9 @@ mis_vals.setdefault("MIS_DB_CONNECT_TIMEOUT", "30")
 mis_vals.setdefault("MIS_DB_READ_TIMEOUT", "600")
 mis_vals.setdefault("RUN_HOST", "gcp")
 have_mis_pw = bool(mis_vals.get("KRAVIRA_DB_PASSWORD"))
-import os as _os
 
 # Optional: include MIS DSN (still without preferring password in web) for debug.
-if have_mis_pw and _os.environ.get("INCLUDE_MIS_IN_WEB_ENV", "").strip().lower() in (
+if have_mis_pw and os.environ.get("INCLUDE_MIS_IN_WEB_ENV", "").strip().lower() in (
     "1",
     "true",
     "yes",
