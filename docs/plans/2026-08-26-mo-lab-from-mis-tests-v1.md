@@ -103,6 +103,10 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
    primary. Статус доступен в `/api/methodist/mo/health`; rollback - вернуть flag в `0`.
    Night/deploy runner использует только Python stdlib и не зависит от web `pydantic`.
    Deploy и night гарантируют cron-владельцу запись `state/` и `reports/`.
+8. **[x] Endpoint C lab evidence:** слот `lab` в eligibility и blind-промпте
+   (названия панелей + даты, без `value`). Диагноз + пустой текст врача больше
+   не `blocked`, если на складе есть панели. Finding `B_dx_lab_context` только
+   shadow. Primary и `exam_data` не меняются.
 
 ---
 
@@ -124,6 +128,6 @@ concordance `2026-08-05-mo-eval-smirnova-concordance-v1.md`,
 
 ## 7. Следующая команда
 
-Merge replacement PR + выкладка GCE (скрипт ночи должен попасть в `/opt/protocol`).
-`MO_LAB_IN_PRIMARY=1` - только если нужна P3 за «анализы не отражены в МО».
+После merge волны 8: shadow Dx/Plan на GCE, чтобы Endpoint C увидел слот `lab`.
+`MO_LAB_IN_PRIMARY=1` - только после 7 здоровых lab-ночей и 5 решений методиста.
 Не оценивать «плохой анализ» из `value` без референса.
