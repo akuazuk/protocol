@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-09-03-rz-quality-article-layout-v1.md](2026-09-03-rz-quality-article-layout-v1.md) | Статья РЗ: единая оценка качества МО, «Здоровье нации», печатная вёрстка без разрывов | active |
 | [2026-08-26-mo-lab-from-mis-tests-v1.md](2026-08-26-mo-lab-from-mis-tests-v1.md) | Лаборатория из `mis_tests` в МО: patient_id + окно дат, склад, shadow-сверка | active |
 | [2026-08-21-mo-kp-diagnosis-only-v1.md](2026-08-21-mo-kp-diagnosis-only-v1.md) | КП только от диагноза/МКБ; пусто лучше чужого протокола | active |
 | [2026-08-20-mo-grade-ladder-v1.md](2026-08-20-mo-grade-ladder-v1.md) | Итог МО: Критично / Важно / Слабо / С замечанием / Хорошо + роль Rceth | active |

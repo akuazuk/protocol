@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Оценка качества медицинской помощи – П. Л. Кузавка</title>
+  <style>
+    @page { size: A4; margin: 15mm 14mm; }
+    :root {
+      --ink: #2f3339; --muted: #6d737c; --head: #33475a; --accent: #5d8570;
+      --paper: #faf9f6; --line: #dcd7cd; --hair: #ebe7df;
+      --sage: #7fa389; --sand: #cfa25f; --sandl: #e6d3a8; --clay: #bd8274; --clayd: #a3675a;
+      --dusty: #7d9bb5; --plum: #94879f;
+    }
+    * { box-sizing: border-box; }
+    html { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    body { margin: 0; color: var(--ink); background: #e8e6e1; font-family: Georgia, "Times New Roman", Times, serif; font-size: 10.8pt; line-height: 1.43; }
+    .sheet { max-width: 190mm; margin: 0 auto; background: #fff; padding: 11mm 10.5mm 13mm; }
+    .eyebrow { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; letter-spacing: 0.15em; text-transform: uppercase; color: var(--accent); margin: 0 0 6px; }
+    h1 { font-family: Arial, Helvetica, sans-serif; font-size: 17pt; line-height: 1.16; color: var(--head); margin: 0 0 9px; font-weight: 700; letter-spacing: -0.015em; }
+    .byline { font-size: 10pt; color: var(--muted); margin: 0 0 13px; padding-bottom: 9px; border-bottom: 2.5px solid var(--accent); }
+    .byline strong { color: var(--ink); }
+    h2 { font-family: Arial, Helvetica, sans-serif; font-size: 12pt; line-height: 1.22; color: var(--head); margin: 12px 0 5px; padding-top: 3px; border-top: 1px solid var(--hair); page-break-after: avoid; break-after: avoid-page; }
+    h3 { font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; color: var(--accent); margin: 10px 0 5px; page-break-after: avoid; }
+    p { margin: 0 0 6px; text-align: justify; widows: 3; orphans: 3; }
+    .lead { font-size: 11.6pt; line-height: 1.48; color: #303b45; }
+    ul, ol { margin: 0 0 6px 18px; padding: 0; }
+    li { margin: 0 0 4px; }
+    .pull { border-left: 4px solid var(--accent); background: #eef2ee; padding: 10px 12px; margin: 11px 0; page-break-inside: avoid; break-inside: avoid-page; }
+    .pull p { margin: 0 0 5px; } .pull p:last-child { margin: 0; }
+    .pull .src { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: var(--accent); }
+    .fig { border: 1px solid var(--line); border-radius: 3px; background: var(--paper); padding: 7px 8px 6px; margin: 7px 0 8px; page-break-inside: avoid; break-inside: avoid-page; }
+    .fig.brk { page-break-inside: avoid; break-inside: avoid-page; }
+    .fig.flow { border: 0; border-radius: 0; background: transparent; padding: 0; page-break-inside: auto; break-inside: auto; }
+    .fig.flow > .fig-head { page-break-after: avoid; break-after: avoid-page; }
+    .fig-head { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; letter-spacing: 0.09em; text-transform: uppercase; color: var(--muted); margin: 0 0 4px; }
+    .fig-title { font-family: Arial, Helvetica, sans-serif; font-size: 10.5pt; font-weight: 700; color: var(--head); margin: 0 0 8px; line-height: 1.3; }
+    .note { font-family: Arial, Helvetica, sans-serif; font-size: 8pt; color: var(--muted); margin: 6px 0 0; line-height: 1.4; }
+    .legend { display: flex; gap: 14px; flex-wrap: wrap; margin-top: 6px; font-family: Arial, Helvetica, sans-serif; font-size: 7.5pt; color: var(--muted); }
+    .legend i { display: inline-block; width: 10px; height: 10px; margin-right: 4px; vertical-align: -1px; }
+    table.t { width: 100%; border-collapse: collapse; font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; line-height: 1.25; margin: 0; page-break-inside: avoid; break-inside: avoid-page; }
+    table.t th, table.t td { border: 1px solid var(--line); padding: 4px 6px; vertical-align: middle; text-align: left; }
+    table.t thead th { background: #eceae4; color: var(--head); font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: 700; }
+    table.t td.k { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 9pt; }
+    table.t td.n { font-family: Arial, Helvetica, sans-serif; font-weight: 700; text-align: center; white-space: nowrap; }
+    table.t td.c { text-align: center; }
+    table.t td.viz { padding: 4px 6px; width: 1%; white-space: nowrap; }
+    table.t tr { page-break-inside: avoid; break-inside: avoid-page; }
+    table.t tr.hi td { background: #f3e2dc; }
+    table.t tr.tot td { background: #eceae4; font-weight: 700; }
+    .panel { border: 1px solid var(--line); border-radius: 3px; background: #fff; padding: 8px 9px; margin: 0; page-break-inside: avoid; break-inside: avoid-page; }
+    .panel-h { font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; font-weight: 700; color: var(--head); margin: 0 0 6px; letter-spacing: 0.04em; }
+    .drill { page-break-after: avoid; break-after: avoid-page; display: flex; align-items: center; gap: 8px; margin: 4px 0 4px 18px; font-family: Arial, Helvetica, sans-serif; font-size: 8.5pt; color: var(--clayd); font-weight: 700; }
+    .big { display: flex; gap: 16px; align-items: center; }
+    .big .num { font-family: Arial, Helvetica, sans-serif; font-size: 30pt; font-weight: 700; color: var(--clayd); line-height: 1; }
+    .big .num small { display: block; font-size: 8pt; color: var(--muted); font-weight: 400; margin-top: 4px; letter-spacing: 0.06em; }
+    .quad td { vertical-align: top; font-size: 9pt; }
+    .quad td.hdr { background: #eceae4; font-family: Arial, Helvetica, sans-serif; font-size: 8pt; font-weight: 700; text-align: center; color: var(--head); }
+    .quad b { font-family: Arial, Helvetica, sans-serif; font-size: 9pt; display: block; margin-bottom: 2px; }
+    .g1 { background: #cfe3d5; } .g2 { background: #e0eae2; } .m1 { background: #f4e9d5; } .m2 { background: #ecdcbe; } .b1 { background: #f0dcd5; }
+    .stages { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; }
+    .stage { border-top: 4px solid var(--sage); background: #fff; border: 1px solid var(--line); border-top-width: 4px; padding: 8px 9px; font-size: 9.5pt; }
+    .stage:nth-child(2) { border-top-color: var(--dusty); } .stage:nth-child(3) { border-top-color: var(--plum); }
+    .stage h4 { margin: 0 0 4px; font-family: Arial, Helvetica, sans-serif; font-size: 9pt; color: var(--head); }
+    .stage p { text-align: left; margin: 0 0 4px; }
+    .program {
+      display: grid; grid-template-columns: 1fr 54px 1fr; gap: 9px; align-items: stretch;
+      margin: 9px 0 11px; page-break-inside: avoid; break-inside: avoid-page;
+    }
+    .program-card { border: 1px solid var(--line); border-top: 4px solid var(--sage); border-radius: 3px; background: #f6f8f5; padding: 9px 10px; }
+    .program-card:nth-child(3) { border-top-color: var(--dusty); background: #f4f7f9; }
+    .program-card h3 { margin: 0 0 4px; color: var(--head); font-size: 9.5pt; }
+    .program-card p { margin: 0; text-align: left; font-size: 9pt; }
+    .program-link { display: flex; align-items: center; justify-content: center; font: 700 8pt Arial, sans-serif; color: var(--accent); text-align: center; }
+    .benefits { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; margin: 8px 0 10px; }
+    .benefit { border: 1px solid var(--line); border-left: 4px solid var(--accent); border-radius: 3px; background: #fff; padding: 8px 9px; page-break-inside: avoid; break-inside: avoid-page; }
+    .benefit h3 { margin: 0 0 3px; color: var(--head); font-size: 9.5pt; }
+    .benefit p { margin: 0; text-align: left; font-size: 9.2pt; }
+    .theses { margin: 0 0 8px; padding-left: 18px; } .theses li { margin-bottom: 5px; }
+    .foot { margin-top: 4px; padding-top: 4px; border-top: 1px solid var(--line); font-family: Arial, Helvetica, sans-serif; font-size: 6.3pt; color: var(--muted); line-height: 1.2; widows: 1; orphans: 1; }
+    @media print { body { background: #fff; } .sheet { max-width: none; padding: 0; } }
+  </style>
+</head>
+<body>
+<article class="sheet">
+
+  <p class="eyebrow">Управление качеством · цифровая трансформация · сентябрь 2026</p>
+  <h1>Проверка перед подписью: как оценка каждого медицинского заключения помогает поднять качество помощи в клинике и в стране</h1>
+  <p class="byline">
+    <strong>Павел Леонидович Кузавка</strong>, заместитель директора по финансам, заместитель директора по цифровой трансформации бизнеса и информационным технологиям ОДО «Медицинский центр «Кравира»»
+  </p>
+
+  <p class="lead">Представьте: врач закончил приём, нажимает «сохранить» – и до того, как он подпишет заключение, программа показывает ему три строки. «У пациента есть тревожный признак, но нет направления». «Готов анализ, но он не учтён в диагнозе». «Не указана дата повторного визита». Врач тратит две минуты и исправляет. Пациент уходит с нормальным заключением, а не с претензией через полгода. Именно так работает система, о которой пойдёт речь. Каждому заключению она выставляет оценку по 100-балльной шкале, а из этих оценок складывается понятная картина: как работает конкретный врач, специальность, филиал, вся клиника – и, если систему принять в масштабе страны, каждая поликлиника Беларуси.</p>
+
+  <div class="pull">
+    <p>27 мая 2026 года мы показали эту разработку на личном приёме первому заместителю министра здравоохранения <strong>Елене Леонидовне Богдан</strong>. От медицинского центра на приёме были учредитель <strong>Александр Петрович Прокопович</strong> и автор этих строк. Разговор оказался для нас поворотным. Елена Леонидовна отвечает и за организацию медицинской помощи, и за цифровое развитие отрасли, поэтому сразу задала вопрос не о технологии, а о пользе: что именно изменится для врача на приёме и для пациента. После этого мы перестали делать «ещё один отчёт для руководства» и стали делать подсказку врачу.</p>
+    <p>15 июля 2026 года Министерство здравоохранения ответило письмом № 12-2-7/К-6127. В нём сказано, что подход перспективный: система действительно понимает медицинский текст, проверяет диагнозы и находит отклонения от клинических протоколов. Разработку направили на рассмотрение как помощника врача в составе республиканской информационной системы здравоохранения – в рамках Государственной программы «Здоровье нации» на 2026–2030 годы.</p>
+    <p class="src">Личный приём 27.05.2026 · письмо Минздрава от 15.07.2026 № 12-2-7/К-6127</p>
+  </div>
+
+  <div class="program">
+    <div class="program-card">
+      <h3>«Профилактика, диагностика, лечение»</h3>
+      <p>Высокие стандарты качественной медицинской помощи должны быть доступны независимо от места проживания пациента.</p>
+    </div>
+    <div class="program-link">ОДНА<br>СИСТЕМА<br>ОЦЕНКИ</div>
+    <div class="program-card">
+      <h3>«Цифровизация и высокотехнологичная медицина»</h3>
+      <p>Программа предусматривает развитие республиканской информационной системы здравоохранения, применение искусственного интеллекта и программ-помощников для врача.</p>
+    </div>
+  </div>
+  <p>Обратите внимание, как две подпрограммы «Здоровья нации» сходятся в одной точке. Первая требует, чтобы качество помощи было одинаково высоким и в областном центре, и в райцентре. Вторая даёт для этого цифровые инструменты. Наша система соединяет их буквально: она использует компьютер не для того, чтобы просто переслать документ в электронном виде, а для того, чтобы до отправки проверить, всё ли сделано для пациента. Сегодня мы оцифровали учёт. Следующий шаг – оцифровать качество.</p>
+
+  <h2>1. Откуда это началось</h2>
+  <p>Всё началось с неприятного открытия. Медицинский центр «Кравира» в Минске готовился передавать электронные документы в республиканскую систему, и мы стали смотреть, что именно уходит. Формально – идеально: все поля заполнены, реквизиты на месте, документ примут без единого замечания. А по сути в одном заключении готовый анализ никак не отражён в диагнозе, в другом нет даты повторного визита, в третьем пациенту с настораживающим симптомом не выписано направление. Компьютер такие документы пропускает, потому что проверяет форму. Пациенту от идеальной формы не легче.</p>
+  <p>Дальше был год работы. Сначала мы научили программу читать заключение и находить нужный клинический протокол Минздрава. Потом добавили проверку: примет ли документ республиканская система. Обе проверки перенесли на момент до подписи врача – только так замечание можно исправить за две минуты, а не разбирать через месяц. Последним шагом собрали оценки в таблицы, которые заведующий и директор открывают утром вместо запроса отчётов.</p>
+  <p>После приёма у Е. Л. Богдан задача выросла. Мы принесли инструмент для одной клиники, а нас спросили о другом: подойдёт ли эта проверка любой поликлинике страны и что из неё увидит Министерство здравоохранения. Об этом и статья.</p>
+
+  <div class="fig">
+    <p class="fig-head">Схема 1. Как всё развивалось</p>
+    <svg width="100%" viewBox="0 0 660 110" role="img" aria-label="Хронология проекта">
+      <line x1="30" y1="40" x2="630" y2="40" stroke="#dcd7cd" stroke-width="2"/>
+      <g font-family="Arial" font-size="8.5" fill="#2f3339" text-anchor="middle">
+        <circle cx="50" cy="40" r="7" fill="#7fa389"/>
+        <text x="50" y="62">Проверка заключений</text><text x="50" y="74" fill="#6d737c">по протоколам Минздрава</text>
+        <circle cx="166" cy="40" r="7" fill="#7fa389"/>
+        <text x="166" y="62">Готовность документа</text><text x="166" y="74" fill="#6d737c">к отправке в Минздрав</text>
+        <circle cx="282" cy="40" r="7" fill="#7fa389"/>
+        <text x="282" y="62">Оценка до подписи</text><text x="282" y="74" fill="#6d737c">на собственном потоке</text>
+        <circle cx="398" cy="40" r="8" fill="#5d8570" stroke="#2f3339" stroke-width="1.2"/>
+        <text x="398" y="62" font-weight="700">Приём у Е. Л. Богдан</text><text x="398" y="74" fill="#6d737c">27 мая 2026</text>
+        <circle cx="514" cy="40" r="8" fill="#5d8570" stroke="#2f3339" stroke-width="1.2"/>
+        <text x="514" y="62" font-weight="700">Письмо Минздрава</text><text x="514" y="74" fill="#6d737c">15 июля 2026</text>
+        <circle cx="620" cy="40" r="7" fill="#7d9bb5"/>
+        <text x="620" y="62">Проверка в Минздраве</text><text x="620" y="74" fill="#6d737c">общая для страны</text>
+      </g>
+      <text x="50" y="22" font-family="Arial" font-size="8" fill="#6d737c" text-anchor="middle">2025</text>
+      <text x="398" y="22" font-family="Arial" font-size="8" fill="#6d737c" text-anchor="middle">2026</text>
+      <text x="620" y="22" font-family="Arial" font-size="8" fill="#6d737c" text-anchor="middle">2026–2030</text>
+      <text x="330" y="100" font-family="Arial" font-size="8" fill="#6d737c" text-anchor="middle">Каждый шаг проверялся на реальных приёмах в медицинском центре, а не на учебных примерах.</text>
+    </svg>
+  </div>
+
+  <h2>2. Как это устроено целиком</h2>
+  <p>Устройство системы простое. Оценку получает каждое отдельное заключение. Дальше эти оценки сами суммируются: по врачу, по специальности, по филиалу, по клинике, по району, по области, по стране. Никто ничего не считает вручную и не заполняет никаких новых форм. Цифра в отчёте области – это не то, что написала о себе поликлиника, а сумма оценок реальных заключений реальных врачей.</p>
+  <p>Из кабинета врача выходят два разных потока, и их важно не путать. Подписанное заключение уходит в республиканскую информационную систему здравоохранения – так же, как уходит сегодня. А оценка этого заключения идёт в отдельную систему контроля качества. Внутри своей клиники в ней видны фамилии врачей: иначе заведующий не сможет помочь конкретному человеку. Выше клиники видны только проценты и средние значения. Спуститься до фамилии врача может специалист Министерства с соответствующим допуском – по установленному порядку, а не любой желающий. Никаких публичных рейтингов врачей система не публикует.</p>
+
+  <div class="fig">
+    <p class="fig-head">Схема 2. Как устроена система: от одного заключения до страны</p>
+    <svg width="100%" viewBox="0 0 660 250" role="img" aria-label="Единая вертикаль качества">
+      <defs><marker id="a1" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0,0 L6,3 L0,6 Z" fill="#6d737c"/></marker></defs>
+      <!-- base -->
+      <rect x="14" y="196" width="632" height="44" rx="4" fill="#e7eee9" stroke="#a9c4b4"/>
+      <text x="330" y="214" text-anchor="middle" font-family="Arial" font-size="10" font-weight="700" fill="#2f3339">Медицинское заключение и результаты исследований</text>
+      <text x="330" y="229" text-anchor="middle" font-family="Arial" font-size="8.5" fill="#4a5058">оценка появляется сразу после приёма, до того как врач подпишет документ</text>
+      <!-- left flow: document to CISZ -->
+      <rect x="14" y="120" width="170" height="52" rx="4" fill="#eceae4" stroke="#dcd7cd"/>
+      <text x="99" y="140" text-anchor="middle" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">Подписанный документ</text>
+      <text x="99" y="153" text-anchor="middle" font-family="Arial" font-size="8.5" fill="#4a5058">уходит в республиканскую</text>
+      <text x="99" y="164" text-anchor="middle" font-family="Arial" font-size="8.5" fill="#4a5058">систему здравоохранения</text>
+      <line x1="99" y1="196" x2="99" y2="176" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <!-- right ladder: quality contour -->
+      <text x="420" y="16" text-anchor="middle" font-family="Arial" font-size="8.5" font-weight="700" fill="#5f7f9b" letter-spacing="0.08em">СИСТЕМА КОНТРОЛЯ КАЧЕСТВА</text>
+      <g font-family="Arial" font-size="9" fill="#2f3339" text-anchor="middle">
+        <rect x="222" y="160" width="130" height="26" rx="3" fill="#e7eee9" stroke="#a9c4b4"/><text x="287" y="177">Врач</text>
+        <rect x="362" y="160" width="130" height="26" rx="3" fill="#e7eee9" stroke="#a9c4b4"/><text x="427" y="177">Специальность</text>
+        <rect x="502" y="160" width="144" height="26" rx="3" fill="#e7eee9" stroke="#a9c4b4"/><text x="574" y="177">Филиал · организация</text>
+        <rect x="222" y="94" width="130" height="26" rx="3" fill="#e4ecf1" stroke="#a8c0d1"/><text x="287" y="111">Район, город</text>
+        <rect x="362" y="94" width="130" height="26" rx="3" fill="#e4ecf1" stroke="#a8c0d1"/><text x="427" y="111">Область</text>
+        <rect x="502" y="94" width="144" height="26" rx="3" fill="#d7e3ec" stroke="#a8c0d1"/><text x="574" y="111" font-weight="700">Республика</text>
+      </g>
+      <line x1="287" y1="196" x2="287" y2="190" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <line x1="427" y1="196" x2="427" y2="190" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <line x1="574" y1="196" x2="574" y2="190" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <line x1="352" y1="173" x2="358" y2="173" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <line x1="492" y1="173" x2="498" y2="173" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <line x1="352" y1="107" x2="358" y2="107" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <line x1="492" y1="107" x2="498" y2="107" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <path d="M574,160 L574,146 L287,146 L287,124" fill="none" stroke="#6d737c" stroke-width="1.3" marker-end="url(#a1)"/>
+      <line x1="222" y1="140" x2="646" y2="140" stroke="#bd8274" stroke-width="1.2" stroke-dasharray="5 4"/>
+      <text x="646" y="135" text-anchor="end" font-family="Arial" font-size="7.5" fill="#a3675a">выше этой границы фамилий врачей нет: только проценты</text>
+      <text x="14" y="62" font-family="Arial" font-size="8.5" fill="#6d737c">Из кабинета выходят два потока: сам документ – в республиканскую систему,</text>
+      <text x="14" y="74" font-family="Arial" font-size="8.5" fill="#6d737c">оценка – в систему контроля качества. Ни одна цифра наверху</text>
+      <text x="14" y="86" font-family="Arial" font-size="8.5" fill="#6d737c">не заполняется вручную: она посчитана из самих записей.</text>
+    </svg>
+  </div>
+
+  <h2>3. Откуда система знает, что правильно, а что нет</h2>
+  <p>Первый вопрос, который задаёт любой врач: кто дал компьютеру право меня оценивать? Отвечаю прямо: никакого «мнения машины» здесь нет. Система сверяет заключение с теми же документами, по которым работает сам врач. В неё загружены 477 клинических протоколов Министерства здравоохранения – из них выписано 11 259 конкретных требований вида «при таком диагнозе обязательно такое обследование». Загружен справочник МКБ-10, чтобы проверить, совпадает ли код с формулировкой диагноза. Загружены лекарственные справочники, чтобы система понимала: «Аэртал» и «Диклофенак» – это два препарата одной группы, и назначать их вместе не следует. Добавлены правила по опасным сочетаниям лекарств и по симптомам, при которых пациента нужно направить дальше. Наконец, проверяется, примет ли документ республиканская система.</p>
+  <p>Тогда зачем здесь искусственный интеллект? Только для одного – чтобы понять живой текст. Врач пишет не кодами, а словами: «боли в правом подреберье после жирной пищи, около двух недель». Никакая обычная программа не поймёт, что это относится к определённому разделу протокола. Модель, которую мы обучили в «Кравире» на медицинских текстах, разбирает запись на части – жалобы, осмотр, диагноз, обследования, назначения – и уже к ним применяет требования протоколов. То есть интеллект отвечает за чтение, а решение об ошибке принимают правила из официальных документов.</p>
+  <p>Модель не совершенствуется сама по себе. Каждое её замечание может проверить врач-методист: согласиться или отклонить. Именно эти решения врачей становятся учебным материалом для следующей версии. Проще говоря, систему учат живые эксперты, а не она сама себя.</p>
+  <p>И самое важное для доверия: к каждому замечанию система показывает цитату из самой записи и ссылку на пункт протокола. Врач может открыть этот пункт и проверить. Если он считает, что система не права, – он говорит об этом методисту, замечание снимают, а модель учится на его правоте.</p>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 1. На какие документы опирается каждое замечание</p>
+    <table class="t">
+      <thead><tr><th style="width:24%">Документ или справочник</th><th style="width:40%">Что из него берёт система</th><th style="width:36%">Что без него невозможно заметить</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Клинические протоколы Минздрава</td><td>Что при каждом заболевании обязательно обследовать, чем лечить и когда направлять пациента дальше</td><td>Не назначены обязательные обследования</td></tr>
+        <tr><td class="k">Справочник МКБ-10</td><td>Совпадает ли код с тем диагнозом, который врач написал словами</td><td>Код МКБ-10 в тексте не совпадает с диагнозом в системе</td></tr>
+        <tr><td class="k">Лекарственные справочники и Государственный реестр</td><td>Какие торговые названия скрывают одно и то же действующее вещество и к какой группе относится препарат</td><td>В плане лечения одновременно указаны несколько препаратов одной группы</td></tr>
+        <tr><td class="k">Правила лекарственной безопасности</td><td>Какие лекарства нельзя сочетать, кому они противопоказаны и какие требуют особой осторожности</td><td>Потенциально значимое лекарственное взаимодействие</td></tr>
+        <tr><td class="k">Тревожные признаки</td><td>Симптомы, при которых пациента нельзя отпускать без дообследования или консультации</td><td>Тревожный симптом, а направление не выписано</td></tr>
+        <tr><td class="k">Требования к электронному документу</td><td>Какие данные и связи между ними нужны, чтобы республиканская система приняла документ</td><td>Диагноз не связан с визитом; визит не закрыт</td></tr>
+        <tr class="tot"><td class="k">Модель, обученная в «Кравире»</td><td>Понимает написанное врачом обычными словами и с сокращениями, разбирает запись на части и сверяет их с документами выше</td><td>Диагноз не подкреплён жалобами, анамнезом или осмотром</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Протоколы и справочники обновляются вместе с приказами Минздрава: как только выходит новый протокол, система начинает проверять по нему.</p>
+  </div>
+
+  <h2>4. Из чего складывается оценка заключения</h2>
+  <p>Оценка выставляется по 100-балльной шкале и складывается из четырёх частей. Две трети баллов – это лечебная суть: правильно ли поставлен диагноз, назначено ли всё, что требует протокол, не пропущена ли опасность для пациента. Оставшаяся треть – полнота записи и оформление. Такое распределение выбрано намеренно: аккуратно оформленное, но пустое по содержанию заключение хорошей оценки не получит.</p>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 2. Из чего складываются 100 баллов</p>
+    <table class="t">
+      <thead><tr><th style="width:22%">За что баллы</th><th style="width:16%">Сколько</th><th style="width:62%">Что именно проверяется</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Лечение по протоколу</td><td class="viz"><svg width="104" height="14"><rect width="80" height="14" rx="2" fill="#ebe7df"/><rect width="80" height="14" rx="2" fill="#5d8570"/><text x="86" y="11" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">35</text></svg></td><td>Тот ли протокол применён; назначено ли всё обязательное; подтверждают ли жалобы и осмотр поставленный диагноз; совпадает ли код с диагнозом; учтены ли готовые анализы</td></tr>
+        <tr><td class="k">Безопасность</td><td class="viz"><svg width="104" height="14"><rect width="80" height="14" rx="2" fill="#ebe7df"/><rect width="69" height="14" rx="2" fill="#7fa389"/><text x="86" y="11" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">30</text></svg></td><td>Замечен ли тревожный симптом и выписано ли направление; сочетаются ли назначенные препараты; нет ли двух лекарств одной группы</td></tr>
+        <tr><td class="k">Полнота записи</td><td class="viz"><svg width="104" height="14"><rect width="80" height="14" rx="2" fill="#ebe7df"/><rect width="57" height="14" rx="2" fill="#7d9bb5"/><text x="86" y="11" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">25</text></svg></td><td>Есть ли жалобы, анамнез, данные осмотра, диагноз, назначения и дата повторного визита; не скопирована ли запись у другого пациента</td></tr>
+        <tr><td class="k">Оформление</td><td class="viz"><svg width="104" height="14"><rect width="80" height="14" rx="2" fill="#ebe7df"/><rect width="23" height="14" rx="2" fill="#94879f"/><text x="86" y="11" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">10</text></svg></td><td>Указан ли вид диагноза, верны ли даты и реквизиты, закрыт ли визит</td></tr>
+        <tr class="tot"><td class="k">Примут ли документ</td><td class="c">считается отдельно</td><td>Проверяется, все ли данные на месте для республиканской системы. Итоговой оценкой становится худшая из двух: за лечение или за готовность документа</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <p>Замечания делятся на четыре степени серьёзности, и от степени зависит не только количество снятых баллов. Если в заключении есть критическое замечание – то, что угрожает пациенту, – оценка не поднимется выше 40 баллов, сколько бы аккуратно ни была оформлена остальная запись. Хорошим оформлением нельзя компенсировать пропущенный тревожный симптом. И ещё одно правило: если заключение технически готово к отправке на 93 балла, а по лечебной части набрало 64, итогом будет 64. Мы берём худшее из двух, а не среднее, потому что среднее скрывает проблему.</p>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 3. Четыре степени серьёзности замечаний</p>
+    <table class="t">
+      <thead><tr><th style="width:16%">Степень</th><th style="width:38%">Что это значит</th><th style="width:24%">Выше этого оценка не поднимется</th><th style="width:22%">Что происходит</th></tr></thead>
+      <tbody>
+        <tr><td class="k" style="color:#a3675a">Критично</td><td>Есть риск навредить пациенту</td><td class="viz"><svg width="130" height="16"><rect y="4" width="100" height="8" rx="2" fill="#ebe7df"/><rect y="4" width="40" height="8" rx="2" fill="#a3675a"/><line x1="40" y1="1" x2="40" y2="15" stroke="#2f3339" stroke-width="1.2"/><text x="106" y="12" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">40</text></svg></td><td>Подписать нельзя, пока врач не примет решение (оно фиксируется)</td></tr>
+        <tr><td class="k" style="color:#ad8340">Клинически важно</td><td>Влияет на диагноз, обследование или лечение</td><td class="viz"><svg width="130" height="16"><rect y="4" width="100" height="8" rx="2" fill="#ebe7df"/><rect y="4" width="60" height="8" rx="2" fill="#cfa25f"/><line x1="60" y1="1" x2="60" y2="15" stroke="#2f3339" stroke-width="1.2"/><text x="106" y="12" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">60</text></svg></td><td>Список того, что стоит поправить до подписи</td></tr>
+        <tr><td class="k" style="color:#5f7f9b">Оформление</td><td>Запись оформлена неправильно, но пациенту это не вредит</td><td class="viz"><svg width="130" height="16"><rect y="4" width="100" height="8" rx="2" fill="#ebe7df"/><rect y="4" width="100" height="8" rx="2" fill="#e6d3a8"/><text x="106" y="12" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">нет</text></svg></td><td>Замечание показывается, но подписать можно</td></tr>
+        <tr><td class="k" style="color:#6d737c">Формально</td><td>Мелкие расхождения</td><td class="viz"><svg width="130" height="16"><rect y="4" width="100" height="8" rx="2" fill="#ebe7df"/><rect y="4" width="100" height="8" rx="2" fill="#c6c1b7"/><text x="106" y="12" font-family="Arial" font-size="9" font-weight="700" fill="#2f3339">нет</text></svg></td><td>Учитывается только при разборе за месяц</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Отдельные ограничения, если чего-то нет совсем: без диагноза оценка не выше 45, без рекомендаций по лечению – не выше 55, без данных осмотра на первичном приёме – не выше 65. Проходной балл клиника устанавливает сама; у нас это 65–70.</p>
+  </div>
+
+  <h2>5. Что именно система находит: десять типичных проблем</h2>
+  <p>Средний балл по клинике – цифра почти бесполезная. Она успокаивает и ничего не подсказывает. Ценность системы в другом: она находит то, что при выборочной проверке двадцати карт в квартал заметить почти невозможно. Например, что у одного невролога в каждой седьмой записи пациент с тревожным симптомом остаётся без направления. Или что в терапии обязательное обследование не назначается в трети случаев. Ниже – десять таких проблем: как система их видит и что именно читает на экране врач или заведующий.</p>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 4а. Проблемы в отдельном заключении и в работе врача</p>
+    <table class="t">
+      <thead><tr><th style="width:4%">№</th><th style="width:24%">Что находит система</th><th style="width:30%">Как она это видит</th><th style="width:26%">Что написано на экране</th><th style="width:16%">Кто реагирует</th></tr></thead>
+      <tbody>
+        <tr><td class="c">1</td><td class="k">Пациент в опасности</td><td>Система сверяет жалобы и осмотр со списком тревожных симптомов, а назначения – с правилами сочетаемости лекарств</td><td>Тревожный симптом, а направление не выписано. Два назначенных препарата плохо сочетаются</td><td>Врач до подписи; заведующий в тот же день</td></tr>
+        <tr><td class="c">2</td><td class="k">Анализ сделан, но не учтён</td><td>Результат исследования лежит в карте, но в диагнозе и назначениях о нём ни слова</td><td>Готов результат исследования, но он не отражён в диагнозе и плане лечения</td><td>Врач до подписи</td></tr>
+        <tr><td class="c">3</td><td class="k">Пропущено обязательное обследование</td><td>Протокол по этому диагнозу требует обследование, в записи его нет и причина не указана</td><td>Не назначены обследования, обязательные по клиническому протоколу</td><td>Врач; заведующий при повторении</td></tr>
+        <tr><td class="c">4</td><td class="k">Диагноз ничем не подтверждён</td><td>В жалобах, анамнезе и данных осмотра нет ничего, что подтверждало бы такой диагноз</td><td>Диагноз не подкреплён жалобами, анамнезом или осмотром</td><td>Врач до подписи</td></tr>
+        <tr><td class="c">5</td><td class="k">Одна и та же ошибка у врача</td><td>Замечание одного вида встречается в трети записей врача и чаще</td><td>У врача повторяется: не указана дата повторного визита</td><td>Заведующий: разговор с врачом на конкретных примерах</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 4б. Проблемы уровня клиники, района и области</p>
+    <table class="t">
+      <thead><tr><th style="width:4%">№</th><th style="width:24%">Что находит система</th><th style="width:30%">Как она это видит</th><th style="width:26%">Что написано на экране</th><th style="width:16%">Кто реагирует</th></tr></thead>
+      <tbody>
+        <tr><td class="c">6</td><td class="k">Записи под копирку</td><td>У разных пациентов совпадают куски текста осмотра или анамнеза</td><td>Похоже, запись скопирована из другого случая</td><td>Заведующий; методист</td></tr>
+        <tr><td class="c">7</td><td class="k">Целая специальность отстаёт</td><td>Критичных заключений в специальности вдвое больше и более, чем в среднем по клинике</td><td>Неврология: критичных в 2,5 раза больше, чем по клинике</td><td>Директор: тема для клинической конференции</td></tr>
+        <tr><td class="c">8</td><td class="k">Врач работает хуже, чем позволяет его поток</td><td>Оценка на 10 баллов ниже той, что ожидается при таких пациентах (сравнение только от 20 случаев)</td><td>Оценка на 16 баллов ниже ожидаемой при таком составе пациентов</td><td>Заведующий</td></tr>
+        <tr><td class="c">9</td><td class="k">Резкое ухудшение за неделю</td><td>Критичных заключений стало в полтора раза больше, чем неделей раньше</td><td>Резкий рост критичных замечаний: проверьте новый шаблон приёма или недавно принятых врачей</td><td>Директор; информационная служба</td></tr>
+        <tr><td class="c">10</td><td class="k">Документы лучше, чем лечение</td><td>Оценка за оформление документа на 15 баллов и более выше оценки за лечебную часть</td><td>Документы оформлены хорошо, а качество приёма отстаёт</td><td>Директор; управление здравоохранения</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Система не выносит приговор врачу. Она показывает, где именно проблема – в какой записи, у какого врача, в какой специальности, – и что с этим делать.</p>
+  </div>
+
+  <h2>6. Что видит директор клиники: от общей цифры до конкретной записи</h2>
+  <p>Покажу на условном примере, как это выглядит в работе. Директор открывает экран и видит главную цифру месяца: 2,1 % заключений содержат критические замечания. Дальше он не пишет запросов и не собирает совещание – он просто нажимает на цифру. Раскрывается список специальностей, и видно, что неврология выбивается: там критичных 5,2 % при 2,1 % по клинике. Нажимает на неврологию – четыре фамилии, и у одного врача 13,6 % против нуля у коллеги. Нажимает на фамилию – перед ним само заключение с подчёркнутыми проблемными местами. Четыре нажатия от общей цифры до конкретной строки, и ни один человек не заполнял для этого отчёт.</p>
+
+  <div class="fig flow">
+    <p class="fig-head">Рисунок 1. Четыре нажатия: от цифры по клинике до конкретной записи</p>
+    <div class="panel">
+      <p class="panel-h">ШАГ 1 · ВСЯ КЛИНИКА ЗА МЕСЯЦ</p>
+      <div class="big">
+        <div class="num">2,1 %<small>ЗАКЛЮЧЕНИЙ С КРИТИЧЕСКИМИ ЗАМЕЧАНИЯМИ</small></div>
+        <div style="flex:1">
+          <svg width="100%" viewBox="0 0 400 22" preserveAspectRatio="none" style="height:22px;display:block">
+            <rect x="0" y="0" width="8.4" height="22" fill="#a3675a"/>
+            <rect x="8.4" y="0" width="68" height="22" fill="#cfa25f"/>
+            <rect x="76.4" y="0" width="116" height="22" fill="#e6d3a8"/>
+            <rect x="192.4" y="0" width="207.6" height="22" fill="#7fa389"/>
+          </svg>
+          <div class="legend"><span><i style="background:#a3675a"></i>критично 2,1 %</span><span><i style="background:#cfa25f"></i>клинически важно 17 %</span><span><i style="background:#e6d3a8"></i>оформление 29 %</span><span><i style="background:#7fa389"></i>без замечаний 52 %</span></div>
+          <p class="note" style="margin-top:4px">Средняя оценка 81 · документы примут в 91 случае из 100 · проверено 99 % приёмов</p>
+        </div>
+      </div>
+    </div>
+    <div class="drill">▼ раскрыть по специальностям</div>
+    <div class="panel">
+      <p class="panel-h">ШАГ 2 · ПО СПЕЦИАЛЬНОСТЯМ</p>
+      <table class="t">
+        <thead><tr><th style="width:24%">Специальность</th><th style="width:11%">Доля приёмов</th><th style="width:11%">Критично</th><th style="width:9%">Оценка</th><th style="width:45%">Из чего состоит поток заключений</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Стоматология</td><td class="n">23 %</td><td class="n">0,7 %</td><td class="n">87</td><td class="viz"><svg width="160" height="12"><rect x="0" width="1.1" height="12" fill="#a3675a"/><rect x="1.1" width="14.4" height="12" fill="#cfa25f"/><rect x="15.5" width="38.4" height="12" fill="#e6d3a8"/><rect x="53.9" width="106.1" height="12" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Педиатрия</td><td class="n">16 %</td><td class="n">1,0 %</td><td class="n">84</td><td class="viz"><svg width="160" height="12"><rect x="0" width="1.6" height="12" fill="#a3675a"/><rect x="1.6" width="19.2" height="12" fill="#cfa25f"/><rect x="20.8" width="43.2" height="12" fill="#e6d3a8"/><rect x="64" width="96" height="12" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Хирургия</td><td class="n">13 %</td><td class="n">1,6 %</td><td class="n">80</td><td class="viz"><svg width="160" height="12"><rect x="0" width="2.6" height="12" fill="#a3675a"/><rect x="2.6" width="24" height="12" fill="#cfa25f"/><rect x="26.6" width="48" height="12" fill="#e6d3a8"/><rect x="74.6" width="85.4" height="12" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Кардиология</td><td class="n">11 %</td><td class="n">2,0 %</td><td class="n">78</td><td class="viz"><svg width="160" height="12"><rect x="0" width="3.2" height="12" fill="#a3675a"/><rect x="3.2" width="28.8" height="12" fill="#cfa25f"/><rect x="32" width="49.6" height="12" fill="#e6d3a8"/><rect x="81.6" width="78.4" height="12" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Терапия и общая практика</td><td class="n">29 %</td><td class="n">2,8 %</td><td class="n">75</td><td class="viz"><svg width="160" height="12"><rect x="0" width="4.5" height="12" fill="#a3675a"/><rect x="4.5" width="33.6" height="12" fill="#cfa25f"/><rect x="38.1" width="51.2" height="12" fill="#e6d3a8"/><rect x="89.3" width="70.7" height="12" fill="#7fa389"/></svg></td></tr>
+          <tr class="hi"><td class="k">Неврология</td><td class="n">8 %</td><td class="n" style="color:#a3675a">5,2 %</td><td class="n">70</td><td class="viz"><svg width="160" height="12"><rect x="0" width="8.3" height="12" fill="#a3675a"/><rect x="8.3" width="43.2" height="12" fill="#cfa25f"/><rect x="51.5" width="52.8" height="12" fill="#e6d3a8"/><rect x="104.3" width="55.7" height="12" fill="#7fa389"/></svg></td></tr>
+        </tbody>
+      </table>
+      <p class="note">Строку с неврологией система подсветила сама: критичных заключений там в 2,5 раза больше, чем в среднем по клинике.</p>
+    </div>
+    <div class="drill">▼ раскрыть по врачам неврологии</div>
+    <div class="panel">
+      <p class="panel-h">ШАГ 3 · ВРАЧИ НЕВРОЛОГИИ</p>
+      <table class="t">
+        <thead><tr><th style="width:12%">Врач</th><th style="width:13%">Доля случаев</th><th style="width:11%">Критично</th><th style="width:26%">Диаграмма (0–15 %)</th><th style="width:9%">Оценка</th><th style="width:29%">Что повторяется чаще всего</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Врач А</td><td class="n">31 %</td><td class="n">0,0 %</td><td class="viz"><svg width="150" height="12"><rect width="150" height="12" rx="2" fill="#ebe7df"/></svg></td><td class="n">82</td><td>Ничего не повторяется</td></tr>
+          <tr><td class="k">Врач Б</td><td class="n">27 %</td><td class="n">2,4 %</td><td class="viz"><svg width="150" height="12"><rect width="150" height="12" rx="2" fill="#ebe7df"/><rect width="24" height="12" rx="2" fill="#cfa25f"/></svg></td><td class="n">76</td><td>Не указана дата повторного визита</td></tr>
+          <tr class="hi"><td class="k">Врач В</td><td class="n">28 %</td><td class="n" style="color:#a3675a">13,6 %</td><td class="viz"><svg width="150" height="12"><rect width="150" height="12" rx="2" fill="#ebe7df"/><rect width="136" height="12" rx="2" fill="#a3675a"/></svg></td><td class="n">63</td><td>Тревожный симптом, а направление не выписано</td></tr>
+          <tr><td class="k">Врач Г</td><td class="n">14 %</td><td class="n">4,8 %</td><td class="viz"><svg width="150" height="12"><rect width="150" height="12" rx="2" fill="#ebe7df"/><rect width="48" height="12" rx="2" fill="#cfa25f"/></svg></td><td class="n">71</td><td>Готовый анализ не учтён в диагнозе</td></tr>
+        </tbody>
+      </table>
+      <p class="note">У врача В повторяется одно и то же критическое замечание. Это не «плохой врач», а понятный пробел в работе: пациентов с тревожными симптомами он не направляет дальше. Такой разговор заведующего с врачом занимает пятнадцать минут и меняет практику; общий призыв «повысить качество» не меняет ничего.</p>
+    </div>
+    <div class="drill">▼ открыть заключение врача В</div>
+    <div class="panel">
+      <p class="panel-h">ШАГ 4 · САМО ЗАКЛЮЧЕНИЕ</p>
+      <div style="display:flex; gap:14px; align-items:center">
+        <svg width="100" height="100" viewBox="0 0 100 100" role="img" aria-label="Итог 38">
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#ebe7df" stroke-width="12"/>
+          <circle cx="50" cy="50" r="38" fill="none" stroke="#a3675a" stroke-width="12" stroke-dasharray="90.7 238.8" transform="rotate(-90 50 50)"/>
+          <text x="50" y="50" text-anchor="middle" font-family="Arial" font-size="22" font-weight="700" fill="#2f3339">38</text>
+          <text x="50" y="64" text-anchor="middle" font-family="Arial" font-size="6.5" fill="#6d737c">ВЫШЕ 40 НЕЛЬЗЯ</text>
+        </svg>
+        <table class="t" style="flex:1">
+          <thead><tr><th style="width:14%">Степень</th><th style="width:40%">Замечание</th><th style="width:46%">Что сделать</th></tr></thead>
+          <tbody>
+            <tr><td class="k" style="color:#a3675a">критично</td><td>Тревожный симптом, а направление не выписано</td><td>Направить на дообследование или консультацию по протоколу либо письменно обосновать, почему это не нужно</td></tr>
+            <tr><td class="k" style="color:#ad8340">важно</td><td>Готовый анализ не учтён в диагнозе и плане</td><td>Указать результат в разделе обследований и учесть его в рекомендациях</td></tr>
+            <tr><td class="k" style="color:#5f7f9b">оформл.</td><td>Не указана дата повторного визита</td><td>Написать дату повторного приёма или срок, через который ждём пациента</td></tr>
+          </tbody>
+        </table>
+      </div>
+      <p class="note">Рядом с каждым замечанием система показывает цитату из записи и пункт протокола. Исправить это перед подписью – две минуты. Разбирать после жалобы пациента – недели переписки и объяснительных.</p>
+    </div>
+    <p class="note">Цифры условные, важна сама логика. Директор посмотрел одну цифру, заведующий нашёл своего врача, врач увидел свою запись. Никто не заполнял отчёт.</p>
+  </div>
+
+  <h2>7. Что увидит Министерство здравоохранения</h2>
+  <p>Сегодня о качестве работы поликлиник в министерстве судят по статистическим отчётам, по проверкам и по обращениям граждан. Всё это нужно, но у всего этого один недостаток: информация приходит поздно и в общем виде. Проверка охватывает несколько десятков карт, жалоба приходит, когда пациенту уже причинён вред, а отчёт показывает количество приёмов, но не их содержание.</p>
+  <p>Система добавляет то, чего сейчас нет: ежедневную картину, посчитанную из самих врачебных записей, по одинаковым правилам для государственной поликлиники и частного центра, для областного города и для сельского района. И раскрывается она так же просто, как в клинике. Специалист министерства видит цифру по стране, нажимает – получает области, нажимает на отстающую область – получает районы, дальше поликлиники, дальше специальности. Пять нажатий отделяют показатель по республике от конкретного врача, которому нужна помощь. Фамилию на последней ступени видит только сотрудник с допуском, в отчётах фамилий нет.</p>
+
+  <div class="fig flow">
+    <p class="fig-head">Рисунок 2. Пять нажатий: от показателя по стране до конкретного врача</p>
+    <div class="panel">
+      <p class="panel-h">СТУПЕНЬ 1 · РЕСПУБЛИКА, МЕСЯЦ</p>
+      <div class="big">
+        <div class="num">2,4 %<small>ЗАКЛЮЧЕНИЙ С КРИТИЧЕСКИМИ ЗАМЕЧАНИЯМИ</small></div>
+        <div style="flex:1">
+          <svg width="100%" viewBox="0 0 400 22" preserveAspectRatio="none" style="height:22px;display:block">
+            <rect x="0" y="0" width="9.6" height="22" fill="#a3675a"/>
+            <rect x="9.6" y="0" width="76" height="22" fill="#cfa25f"/>
+            <rect x="85.6" y="0" width="124" height="22" fill="#e6d3a8"/>
+            <rect x="209.6" y="0" width="190.4" height="22" fill="#7fa389"/>
+          </svg>
+          <div class="legend"><span><i style="background:#a3675a"></i>критично 2,4 %</span><span><i style="background:#cfa25f"></i>важно 19 %</span><span><i style="background:#e6d3a8"></i>оформление 31 %</span><span><i style="background:#7fa389"></i>без замечаний 48 %</span></div>
+          <p class="note" style="margin-top:4px">Средняя оценка за лечение 77 · за оформление документов 86 · расхождение 9 баллов</p>
+        </div>
+      </div>
+    </div>
+    <div class="drill">▼ по областям</div>
+    <div class="panel">
+      <p class="panel-h">СТУПЕНЬ 2 · ОБЛАСТИ</p>
+      <table class="t">
+        <thead><tr><th style="width:22%">Территория</th><th style="width:11%">Критично</th><th style="width:9%">Лечение</th><th style="width:11%">Документы</th><th style="width:9%">Разница</th><th style="width:38%">Критично (шкала 0–4 %)</th></tr></thead>
+        <tbody>
+          <tr><td class="k">г. Минск</td><td class="n">1,9 %</td><td class="n">80</td><td class="n">90</td><td class="n">10</td><td class="viz"><svg width="170" height="11"><rect width="160" height="11" rx="2" fill="#ebe7df"/><rect width="76" height="11" rx="2" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Брестская область</td><td class="n">2,0 %</td><td class="n">78</td><td class="n">88</td><td class="n">10</td><td class="viz"><svg width="170" height="11"><rect width="160" height="11" rx="2" fill="#ebe7df"/><rect width="80" height="11" rx="2" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Гродненская область</td><td class="n">2,1 %</td><td class="n">77</td><td class="n">87</td><td class="n">10</td><td class="viz"><svg width="170" height="11"><rect width="160" height="11" rx="2" fill="#ebe7df"/><rect width="84" height="11" rx="2" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Минская область</td><td class="n">2,5 %</td><td class="n">75</td><td class="n">83</td><td class="n">8</td><td class="viz"><svg width="170" height="11"><rect width="160" height="11" rx="2" fill="#ebe7df"/><rect width="100" height="11" rx="2" fill="#cfa25f"/></svg></td></tr>
+          <tr><td class="k">Гомельская область</td><td class="n">2,6 %</td><td class="n">75</td><td class="n">84</td><td class="n">9</td><td class="viz"><svg width="170" height="11"><rect width="160" height="11" rx="2" fill="#ebe7df"/><rect width="104" height="11" rx="2" fill="#cfa25f"/></svg></td></tr>
+          <tr><td class="k">Витебская область</td><td class="n">2,9 %</td><td class="n">74</td><td class="n">81</td><td class="n">7</td><td class="viz"><svg width="170" height="11"><rect width="160" height="11" rx="2" fill="#ebe7df"/><rect width="116" height="11" rx="2" fill="#cfa25f"/></svg></td></tr>
+          <tr class="hi"><td class="k">Могилёвская область</td><td class="n" style="color:#a3675a">3,1 %</td><td class="n">72</td><td class="n">80</td><td class="n">8</td><td class="viz"><svg width="170" height="11"><rect width="160" height="11" rx="2" fill="#ebe7df"/><rect width="124" height="11" rx="2" fill="#a3675a"/></svg></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="drill">▼ по районам Могилёвской области</div>
+    <div class="panel">
+      <p class="panel-h">СТУПЕНЬ 3 · РАЙОНЫ</p>
+      <table class="t">
+        <thead><tr><th style="width:26%">Район</th><th style="width:12%">Критично</th><th style="width:10%">Оценка</th><th style="width:52%">Критично (шкала 0–6 %)</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Район А</td><td class="n">2,2 %</td><td class="n">76</td><td class="viz"><svg width="230" height="11"><rect width="220" height="11" rx="2" fill="#ebe7df"/><rect width="81" height="11" rx="2" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Район В</td><td class="n">2,7 %</td><td class="n">74</td><td class="viz"><svg width="230" height="11"><rect width="220" height="11" rx="2" fill="#ebe7df"/><rect width="99" height="11" rx="2" fill="#cfa25f"/></svg></td></tr>
+          <tr><td class="k">Район Г</td><td class="n">3,0 %</td><td class="n">73</td><td class="viz"><svg width="230" height="11"><rect width="220" height="11" rx="2" fill="#ebe7df"/><rect width="110" height="11" rx="2" fill="#cfa25f"/></svg></td></tr>
+          <tr class="hi"><td class="k">Район Б</td><td class="n" style="color:#a3675a">4,8 %</td><td class="n">68</td><td class="viz"><svg width="230" height="11"><rect width="220" height="11" rx="2" fill="#ebe7df"/><rect width="176" height="11" rx="2" fill="#a3675a"/></svg></td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="drill">▼ по организациям района Б</div>
+    <div class="panel">
+      <p class="panel-h">СТУПЕНЬ 4 · ОРГАНИЗАЦИИ</p>
+      <table class="t">
+        <thead><tr><th style="width:34%">Организация</th><th style="width:14%">Группа</th><th style="width:12%">Критично</th><th style="width:10%">Оценка</th><th style="width:30%">Критично (шкала 0–8 %)</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Частный медицинский центр</td><td class="c">частные</td><td class="n">1,4 %</td><td class="n">81</td><td class="viz"><svg width="140" height="11"><rect width="130" height="11" rx="2" fill="#ebe7df"/><rect width="23" height="11" rx="2" fill="#7fa389"/></svg></td></tr>
+          <tr><td class="k">Городская поликлиника № 1</td><td class="c">государств.</td><td class="n">3,0 %</td><td class="n">73</td><td class="viz"><svg width="140" height="11"><rect width="130" height="11" rx="2" fill="#ebe7df"/><rect width="49" height="11" rx="2" fill="#cfa25f"/></svg></td></tr>
+          <tr class="hi"><td class="k">Поликлиника центральной районной больницы</td><td class="c">государств.</td><td class="n" style="color:#a3675a">6,2 %</td><td class="n">65</td><td class="viz"><svg width="140" height="11"><rect width="130" height="11" rx="2" fill="#ebe7df"/><rect width="101" height="11" rx="2" fill="#a3675a"/></svg></td></tr>
+        </tbody>
+      </table>
+      <p class="note">Сравнивают похожие с похожими: районную поликлинику с районной, частный центр с частным. Но правила проверки для всех одинаковые.</p>
+    </div>
+    <div class="drill">▼ по специальностям поликлиники</div>
+    <div class="panel">
+      <p class="panel-h">СТУПЕНЬ 5 · СПЕЦИАЛЬНОСТИ</p>
+      <table class="t">
+        <thead><tr><th style="width:30%">Специальность</th><th style="width:12%">Критично</th><th style="width:10%">Оценка</th><th style="width:48%">Что повторяется чаще всего</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Педиатрия</td><td class="n">4,1 %</td><td class="n">70</td><td>Не указана дата повторного визита</td></tr>
+          <tr><td class="k">Хирургия</td><td class="n">5,5 %</td><td class="n">67</td><td>Готовый анализ не учтён в диагнозе</td></tr>
+          <tr><td class="k">Неврология</td><td class="n">6,8 %</td><td class="n">64</td><td>Тревожный симптом без направления</td></tr>
+          <tr class="hi"><td class="k">Терапия</td><td class="n" style="color:#a3675a">8,0 %</td><td class="n">62</td><td>Не назначены обязательные обследования</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <div class="drill">▼ по врачам терапии</div>
+    <div class="panel">
+      <p class="panel-h">СТУПЕНЬ 6 · ВРАЧИ (ДОСТУП УПОЛНОМОЧЕННОГО ЛИЦА)</p>
+      <table class="t">
+        <thead><tr><th style="width:30%">Врач</th><th style="width:14%">Доля случаев</th><th style="width:12%">Критично</th><th style="width:10%">Оценка</th><th style="width:34%">Что повторяется чаще всего</th></tr></thead>
+        <tbody>
+          <tr><td class="k">Врач 1</td><td class="n">33 %</td><td class="n">3,1 %</td><td class="n">72</td><td>Не указана дата повторного визита</td></tr>
+          <tr><td class="k">Врач 2</td><td class="n">28 %</td><td class="n">4,0 %</td><td class="n">70</td><td>Анамнез слишком короткий для такой давности жалоб</td></tr>
+          <tr class="hi"><td class="k">Врач 3</td><td class="n">24 %</td><td class="n" style="color:#a3675a">15,2 %</td><td class="n">58</td><td>Не назначены обязательные обследования</td></tr>
+          <tr><td class="k">Врач 4</td><td class="n">15 %</td><td class="n">6,3 %</td><td class="n">66</td><td>Готовый анализ не учтён</td></tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="note">Цифры условные. Смысл в другом: область сразу видит, какой район отстаёт, район – какая поликлиника, поликлиника – какая специальность и кому из врачей нужна помощь. Сегодня, чтобы получить эту цепочку, нужны месяцы и выездная комиссия.</p>
+  </div>
+
+  <h2>8. Кто и что делает с этими цифрами</h2>
+  <p>Сами по себе цифры качество не улучшат. Улучшат конкретные действия конкретных людей. Поясню на том же примере с неврологом, у которого 13,6 % критичных заключений.</p>
+  <p>Сам врач получает замечание сразу на приёме и исправляет запись до подписи – две минуты. Заведующий отделением видит на следующий день, что замечание повторяется, и садится с врачом разбирать три конкретных случая: вот пациент, вот симптом, вот пункт протокола, который требовал направления. Директор клиники видит уже другое – что проблема не только у одного невролога, и выносит тему на клиническую конференцию, а заодно поручает добавить в шаблон приёма поле для направления. Управление здравоохранения района замечает, что в одной поликлинике таких случаев втрое больше, чем в соседней, и направляет туда методиста, а не выговор. Министерство видит, что определённое требование протокола не исполняется по всей стране, и решает: это пробел в обучении или само требование сформулировано так, что его невозможно выполнить.</p>
+  <p>Каждое из этих действий короткое и понятное. Так происходит потому, что система приносит не абстрактную новость «качество низкое», а точный адрес: вот врач, вот запись, вот пункт протокола, вот что нужно сделать.</p>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 5. Кто что видит и что с этим делает</p>
+    <table class="t">
+      <thead><tr><th style="width:16%">Где</th><th style="width:16%">Кто</th><th style="width:30%">Что видит</th><th style="width:28%">Что делает</th><th style="width:10%">Когда</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Кабинет</td><td>Врач</td><td>Замечания к своей записи прямо на приёме и свои показатели за месяц</td><td>Исправляет запись до подписи; по критическому замечанию принимает решение сам</td><td>минуты</td></tr>
+        <tr><td class="k">Отделение</td><td>Заведующий</td><td>Список критичных случаев за день и врачей, у которых ошибки повторяются</td><td>Разбирает случаи и говорит с врачом на конкретных примерах</td><td>тот же день</td></tr>
+        <tr><td class="k">Клиника</td><td>Директор, главный врач, методист</td><td>Какие специальности и филиалы отстают, пять самых частых ошибок, расхождение между оформлением и лечением</td><td>Меняет шаблоны приёма, назначает тему конференции, ставит задачу программистам</td><td>неделя, месяц</td></tr>
+        <tr><td class="k">Район, область</td><td>Управление здравоохранения</td><td>Как выглядят похожие поликлиники рядом друг с другом и куда меняется ситуация</td><td>Направляет методиста туда, где хуже; распространяет опыт тех, у кого получается</td><td>месяц, квартал</td></tr>
+        <tr><td class="k">Республика</td><td>Министерство здравоохранения</td><td>Картину по стране: какие специальности и регионы отстают, какие требования протоколов не исполняются</td><td>Определяет темы обучения, пересматривает невыполнимые требования протоколов, следит за внедрением</td><td>квартал, год</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <div class="fig">
+    <p class="fig-head">Схема 3. Двух цифр достаточно, чтобы понять, что делать</p>
+    <table class="t quad">
+      <thead><tr><th style="width:16%"></th><th style="width:42%">Документы часто не принимает республиканская система</th><th style="width:42%">Документы принимаются нормально</th></tr></thead>
+      <tbody>
+        <tr>
+          <td class="hdr">Лечим правильно</td>
+          <td class="m1"><b>Проблема у программистов, а не у врачей</b>Врачи работают верно, но документ не доходит до республиканской системы. Нужно поручение информационной службе: обновить справочники, связать диагноз с визитом, закрывать визиты вовремя. Собирать врачей на конференцию бессмысленно – они ни при чём.</td>
+          <td class="g2"><b>Всё в порядке</b>Хватит выборочного контроля. Можно двигаться к более тонким показателям: как часто пациент возвращается с той же жалобой, как быстро подтверждается диагноз, доходят ли пациенты по выданным направлениям.</td>
+        </tr>
+        <tr>
+          <td class="hdr">В лечении есть пробелы</td>
+          <td class="b1"><b>Проблемы и там, и там</b>Отстают и техника, и содержание работы. Нужно всё сразу: наставник для врачей, пересмотр порядка приёма и настройка программы. В одиночку клиника обычно не справляется, нужна помощь извне.</td>
+          <td class="m2"><b>Отчётность красивая, лечение хромает</b>Самый частый и самый опасный случай: наверх уходят безупречные документы, а пациент недополучает помощь. Силы нужно тратить на разбор случаев с врачами и на обучение по тем ошибкам, которые повторяются чаще всего.</td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>9. Кому это выгодно</h2>
+  <p>Любая проверка работает, только если она выгодна всем, кого касается. Если врач видит в ней инструмент наказания, он научится заполнять поля так, чтобы система молчала, – и мы получим красивые цифры вместо качества. Поэтому выгоду мы просчитывали для каждого участника отдельно.</p>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 6. Что получает каждый</p>
+    <table class="t">
+      <thead><tr><th style="width:18%">Кто</th><th style="width:82%">Что получает</th></tr></thead>
+      <tbody>
+        <tr><td class="k">Пациент</td><td>Его анализ не потеряется между кабинетами, а тревожный симптом не останется без направления. Ошибку исправят в день приёма, а не после осложнения. Заключение на руках будет связным: жалобы, осмотр, диагноз и анализы соответствуют друг другу.</td></tr>
+        <tr><td class="k">Врач</td><td>Подсказка на приёме вместо разбирательства через месяц – по сути, страховка от случайной оплошности в конце тяжёлой смены. Никаких новых бумаг заполнять не нужно. Сравнивают его только с поправкой на то, каких пациентов он принимает, и только если случаев набралось не меньше двадцати.</td></tr>
+        <tr><td class="k">Клиника</td><td>Заведующий и директор каждое утро видят реальную картину, а не ждут итогов квартала. Меньше документов возвращается из республиканской системы, меньше претензий от пациентов. При проверке есть чем подтвердить свою работу. Обучение идёт по конкретным ошибкам, а не «всем повысить качество».</td></tr>
+        <tr><td class="k">Министерство здравоохранения</td><td>Единые правила оценки для всех: и для столичного частного центра, и для районной поликлиники. Видно, какие требования протоколов не исполняются массово и почему, кому нужна помощь и куда направить ресурсы. И данные в республиканской системе становятся пригодными для анализа.</td></tr>
+      </tbody>
+    </table>
+  </div>
+
+  <h2>10. Что уже работает, а что ещё нет</h2>
+  <p>Расскажу честно и о том, что сделано, и о том, что не доделано. Странно было бы предлагать систему контроля качества и умалчивать о качестве самой системы.</p>
+
+  <div class="fig">
+    <p class="fig-head">Таблица 7. Что сделано в медицинском центре «Кравира»</p>
+    <table class="t">
+      <thead><tr><th style="width:44%">Что именно</th><th style="width:18%">Результат</th><th style="width:38%">Пояснение</th></tr></thead>
+      <tbody>
+        <tr><td>Оценено медицинских заключений</td><td class="n">свыше 93 000</td><td>За 209 дней работы на реальном потоке пациентов, а не на учебных примерах</td></tr>
+        <tr><td>Выдано замечаний врачам</td><td class="n">свыше 158 000</td><td>К каждому – цитата из записи и пункт документа, который нарушен</td></tr>
+        <tr><td>Загружено клинических протоколов Минздрава</td><td class="n">477</td><td>Из них выписано 11 259 конкретных проверяемых требований</td></tr>
+        <tr><td>Заключений проверяется за сутки</td><td class="n">99 %</td><td>Практически весь поток, а не отдельная выборка</td></tr>
+        <tr><td>Сводные таблицы по врачам, специальностям и филиалам</td><td class="n">работают</td><td>Период можно пересчитать за минуты, заново оценивать записи не нужно</td></tr>
+        <tr><td>Строгость проверки</td><td class="n">три режима</td><td>Мягкий, обычный и строгий – клиника выбирает сама</td></tr>
+        <tr><td>Обучение модели на решениях врачей</td><td class="n">налажено</td><td>Каждое подтверждённое или снятое методистом замечание идёт в учебный материал</td></tr>
+        <tr><td>Проверка: совпадает ли оценка системы с мнением врача-эксперта</td><td class="n">не завершена</td><td><strong>Главная незакрытая задача.</strong> Нужно набрать не менее 300 случаев, размеченных врачами вручную, и подтвердить высокий уровень совпадения</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Из-за последней строки мы и настаиваем: сначала апробация, потом широкое внедрение. Пока совпадение с мнением эксперта не доказано, оценка остаётся подсказкой врачу и рабочим инструментом методиста. Никаких взысканий по ней быть не должно.</p>
+  </div>
+
+  <h2>11. Как это можно внедрять</h2>
+  <p>Такую систему нельзя запустить по всей стране одним приказом. Её собирают снизу: сначала в отдельных клиниках, потом в районе и области, потом в республике. Важно, что каждый этап приносит пользу сам по себе. Если второй этап задержится на год, первый всё это время будет исправлять ошибки в заключениях.</p>
+
+  <div class="fig">
+    <p class="fig-head">Схема 4. Три этапа внедрения</p>
+    <div class="stages">
+      <div class="stage">
+        <h4>Этап 1 · Отдельная клиника</h4>
+        <p>Проверка встраивается в ту программу, в которой врач уже работает, и срабатывает при сохранении приёма. Появляются три экрана: врачу, заведующему, директору. Первые месяцы система только подсказывает и ничего не блокирует – людям нужно к ней привыкнуть.</p>
+        <p style="color:#6d737c; font-size:8.5pt">Так уже работает в «Кравире».</p>
+      </div>
+      <div class="stage">
+        <h4>Этап 2 · Район и область</h4>
+        <p>Клиники передают наверх обезличенные итоги по порядку, который утверждает Минздрав. Поликлиники сравнивают между собой только похожие с похожими. Управление здравоохранения видит, кому нужна помощь, и распространяет опыт тех, у кого получается лучше.</p>
+        <p style="color:#6d737c; font-size:8.5pt">Нужен утверждённый порядок передачи данных.</p>
+      </div>
+      <div class="stage">
+        <h4>Этап 3 · Республика</h4>
+        <p>Единая система контроля качества в составе республиканской информационной системы. Появляется и обратная связь: если требование протокола не исполняется повсеместно, это повод его пересмотреть, а не только наказывать врачей.</p>
+        <p style="color:#6d737c; font-size:8.5pt">Это цель, к которой идём по итогам апробации.</p>
+      </div>
+    </div>
+  </div>
+
+  <p>И пять правил, без которых любая система показателей превращается в лишнюю нагрузку на врача. Первое: ни одной новой формы – оценка считается из того текста, который врач и так пишет. Второе: подсказка до подписи, а не разбор через месяц. Третье: сравнивать врачей только при наличии хотя бы двадцати случаев и обязательно с поправкой на тяжесть пациентов – у невролога в районной поликлинике и у невролога в областном центре разный поток. Четвёртое: никаких публичных рейтингов врачей. Пятое: пока не доказано, что оценка совпадает с мнением эксперта, она не должна влиять ни на зарплату, ни на аттестацию.</p>
+
+  <h2>12. Что это даст стране</h2>
+  <div class="pull">
+    <p><strong>Государственная программа «Здоровье нации» на 2026–2030 годы ставит две цели: довести ожидаемую продолжительность жизни до 76,5 года и снизить общий коэффициент смертности до 11,5 промилле.</strong> Проверка заключений сама по себе этих цифр, конечно, не даст. Но за ними стоят миллионы обычных приёмов, и на каждом из них решается, вовремя ли замечен тревожный симптом и назначено ли нужное обследование. Именно на этом уровне система и работает.</p>
+    <p>Здесь сходятся две подпрограммы. «Профилактика, диагностика, лечение» говорит, какой должна быть помощь: одинаково качественной и в Минске, и в райцентре. «Цифровизация и высокотехнологичная медицина» даёт для этого инструменты. Наша разработка – как раз попытка связать одно с другим на практике.</p>
+  </div>
+  <p><strong>О качестве можно будет говорить цифрами, а не впечатлениями.</strong> Сейчас на совещании звучит «в поликлинике есть проблемы с качеством», и каждый понимает это по-своему. Вместо этого будет: «в терапии обязательное обследование не назначается в трети случаев, чаще всего в двух районах, причина – такая-то».</p>
+  <p><strong>Протоколы получат обратную связь.</strong> Сегодня клинический протокол выходит – и дальше его судьба неизвестна: исполняют его или нет, проверяется от случая к случаю. Система покажет, какое требование не исполняется массово, и заставит задать правильный вопрос: врачи о нём не знают, в районе нет нужного оборудования или требование просто невыполнимо на практике? Для тех, кто пишет протоколы, это бесценно.</p>
+  <p><strong>Безопасность пациента станет измеримой.</strong> Сколько раз за месяц тревожный симптом остался без направления, сколько раз назначены несочетаемые препараты, сколько готовых анализов не повлияли на лечение. Это не лозунги, а числа, которые можно снижать и отчитываться о снижении.</p>
+  <p><strong>Разрыв между городом и районом станет виден.</strong> Сейчас все понимают, что он есть, но никто не может показать где именно. Когда его измеряют по одинаковым правилам, у него появляется адрес: этот район, эта специальность, это требование протокола. И тогда туда едет методист с конкретной программой, а не проверка с общими выводами.</p>
+  <p><strong>Врач будет учиться на своих случаях.</strong> Лучшее обучение – разбор собственной записи в тот же день, с цитатой и пунктом протокола. Это работает лучше, чем лекция раз в пять лет, и не требует отрыва от работы.</p>
+  <p><strong>В республиканской системе будут осмысленные данные.</strong> Не миллионы формально безупречных документов, а заключения, проверенные до подписи. На таких данных можно строить статистику и планировать.</p>
+  <p><strong>У страны появится собственная модель, обученная на белорусской медицине.</strong> Не купленный за рубежом алгоритм, а инструмент, знающий наши протоколы, наш медицинский язык и нашу практику. Такое не покупается, это выращивается годами на проверенных врачами случаях. В «Кравире» основа уже есть.</p>
+  <p>Всё началось с одной клиники и одного неприятного вопроса: достаточно ли просто отправить документ, если мы не уверены в качестве самой помощи? Ответ на него привёл нас к системе, которая связывает кабинет врача, клинику и государство. Мы признательны Министерству здравоохранения и лично Елене Леонидовне Богдан за то, что в нашей работе увидели не разработку отдельного медицинского центра, а возможный инструмент для всей отрасли.</p>
+
+  <h2>13. Чего система делать не будет</h2>
+  <p>Чтобы не создавать завышенных ожиданий, скажу и об обратном. Система не ставит диагноз и не подписывает документы за врача – решение всегда за человеком. Она не заменяет ни экспертизу качества медицинской помощи, ни ведомственный контроль. Она не составляет публичных рейтингов врачей и не может быть причиной отказа в оплате помощи. И работа на уровне области и республики – это пока цель, а не действующая система: подойдёт ли она отрасли, покажет апробация.</p>
+
+  <h2>Главное в пяти пунктах</h2>
+  <ol class="theses">
+    <li>Ошибку в заключении дешевле и полезнее исправить за две минуты до подписи, чем разбирать через месяц по жалобе пациента.</li>
+    <li>Оценку выставляет не «мнение компьютера», а сверка с протоколами Минздрава, МКБ-10 и лекарственными справочниками. Искусственный интеллект нужен только для того, чтобы понять написанное врачом; учат его живые врачи-эксперты.</li>
+    <li>Правила одинаковы на всех уровнях. От общей цифры по клинике до конкретной записи – четыре нажатия, от показателя по стране до врача, которому нужна помощь, – пять. Новых отчётов при этом никто не заполняет.</li>
+    <li>Пока не доказано, что оценки системы совпадают с мнением врача-эксперта, они остаются подсказкой и материалом для обучения. Ни зарплаты, ни аттестации это касаться не должно.</li>
+    <li>Разработка «Кравиры», поддержанная Е. Л. Богдан и письмом Минздрава, может стать практическим звеном между двумя подпрограммами «Здоровья нации»: качеством помощи и цифровым развитием отрасли.</li>
+  </ol>
+
+  <p class="foot">
+    Диаграммы и процентные примеры условны; показатели пилота обезличены. Источники: Закон Республики Беларусь «О здравоохранении»; Государственная программа «Здоровье нации» на 2026–2030 годы (постановление Совета Министров от 30.12.2025 № 798); клинические протоколы Минздрава; МКБ-10; Государственный реестр лекарственных средств; руководство fhir.by и протокол взаимодействия МИС с ЦИСЗ версии 1.4; письмо Минздрава от 15.07.2026 № 12-2-7/К-6127.
+  </p>
+
+</article>
+</body>
+</html>
