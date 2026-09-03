@@ -5,7 +5,7 @@
 - Worktree: `/private/tmp/protocol-task-rz-quality-article-layout-pc1`
 - Base: `53d61e51` (`origin/main`)
 - Feature commit: `c9abd1e4`
-- PR: будет указан после публикации ветки
+- PR: `https://github.com/akuazuk/protocol/pull/186`
 - BUILD_VERSION: `2026-09-03-182534Z-rz-quality-article`
 
 ## Сделано
@@ -30,13 +30,12 @@
 
 ## Не сделано
 
-- PR ещё не создан на момент feature commit.
 - Merge и production deploy не выполнялись и для редакционного PDF не требуются.
 
 ## Безопасная следующая команда
 
 ```bash
-git push -u origin cursor/rz-quality-article-layout-agent1-pc1
+gh pr view 186 --repo akuazuk/protocol --web
 ```
 
 ## Не трогать параллельно
