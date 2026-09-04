@@ -4380,6 +4380,108 @@ def build_mo_health() -> dict[str, Any]:
     }
 
 
+def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
+    """KPI волны 1-4: unused lab + drug-safety columns (shadow-aware)."""
+    from .mo_anomaly_kpis import kpi_from_finding_rows, load_anomaly_catalog
+    from .mo_dual_score import form_content_matrix
+    from .mo_risk_adjust import risk_adjust_doctor_rows
+
+    if not _warehouse_available():
+        return {
+            "ok": False,
+            "error": "warehouse_unavailable",
+            "unused_lab_pct": None,
+            "drug_safety_pct": None,
+        }
+    date_from = str(params.get("date_from") or "")[:10]
+    date_to = str(params.get("date_to") or "")[:10]
+    where = ["c.document_kind IN ('clinical_visit', 'consultation')"]
+    args: list[Any] = []
+    if date_from:
+        where.append("c.visit_date >= ?")
+        args.append(date_from)
+    if date_to:
+        where.append("c.visit_date <= ?")
+        args.append(date_to)
+    clause = " AND ".join(where)
+    with _connect() as conn:
+        total = int(
+            conn.execute(
+                f"SELECT COUNT(*) FROM fact_mo_case c WHERE {clause}",
+                args,
+            ).fetchone()[0]
+            or 0
+        )
+        rows = conn.execute(
+            f"""
+            SELECT f.mis_id, f.finding_code
+            FROM fact_mo_finding f
+            JOIN fact_mo_case c ON c.mis_id = f.mis_id
+            WHERE {clause}
+            """,
+            args,
+        ).fetchall()
+        doctor_rows = conn.execute(
+            f"""
+            SELECT c.doctor_name AS doctor, c.specialty AS specialty,
+                   COUNT(*) AS cases,
+                   AVG(c.overall_pct) AS avg_score
+            FROM fact_mo_case c
+            WHERE {clause}
+              AND c.doctor_name IS NOT NULL
+              AND TRIM(c.doctor_name) != ''
+            GROUP BY c.doctor_name, c.specialty
+            """,
+            args,
+        ).fetchall()
+    finding_maps = [
+        {"mis_id": r[0], "finding_code": r[1]}
+        for r in rows
+    ]
+    kpi = kpi_from_finding_rows(finding_maps, total_cases=total)
+    doctors = risk_adjust_doctor_rows(
+        [
+            {
+                "doctor": r[0],
+                "specialty": r[1],
+                "cases": r[2],
+                "avg_score": r[3],
+            }
+            for r in doctor_rows
+        ]
+    )
+    return {
+        "ok": True,
+        "date_from": date_from or None,
+        "date_to": date_to or None,
+        "kpis": kpi,
+        "anomaly_catalog": load_anomaly_catalog(),
+        "risk_adjusted_doctors": doctors[:50],
+        "matrix_example": form_content_matrix(
+            clinical_pct=72,
+            document_ready_pct=88,
+        ),
+        "flags": {
+            "lab_unused_primary": (
+                (os.environ.get("MO_LAB_UNUSED_PRIMARY") or "0").strip().lower()
+                in {"1", "true", "yes", "on"}
+            ),
+            "class_dup_primary": (
+                (os.environ.get("MO_CLASS_DUP_PRIMARY") or "0").strip().lower()
+                in {"1", "true", "yes", "on"}
+            ),
+            "rceth_primary": (
+                (os.environ.get("MO_RCETH_LABEL_PRIMARY") or "0").strip().lower()
+                in {"1", "true", "yes", "on"}
+            ),
+            "lab_abnormal_primary": (
+                (os.environ.get("MO_LAB_ABNORMAL_PRIMARY") or "0").strip().lower()
+                in {"1", "true", "yes", "on"}
+            ),
+        },
+    }
+
+
 def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
     """Явный контракт возможностей, чтобы UI не угадывал доступность функций."""
     normalized_role = (
@@ -4393,7 +4495,7 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
     from .mo_expert_auth import reports_min_date
 
     expert_min = reports_min_date() if is_expert else None
-    return {
+    caps = {
         "ok": True,
         "schema_version": SCHEMA_VERSION,
         "role": normalized_role,
@@ -4427,10 +4529,18 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
             "manage_scoring_config": normalized_role in {"methodist", "lead", "admin"},
             "recompute_scores": normalized_role in {"lead", "admin", "methodist"},
             "review_pack": can_work_cases,
+            "drugs_labs_kpis": can_view_population and not is_expert,
         },
         "metric_states": ["available", "missing", "not_applicable", "scoring_error", "suppressed"],
         "checked_at": _utc(),
+        "drugs_labs_plan": {
+            "version": "2026-09-04-v1",
+            "unused_lab_shadow": True,
+            "class_dup_shadow": True,
+            "primary_default_off": True,
+        },
     }
+    return caps
 
 
 def build_entity(kind: str, entity_id: str, params: dict[str, Any]) -> dict[str, Any]:

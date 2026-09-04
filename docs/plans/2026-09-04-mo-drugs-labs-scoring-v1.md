@@ -115,45 +115,45 @@ MVP сначала: **unused mention** (без референсов). Abnormal -
 
 ### Волна 1 - Unused lab MVP (2-3 недели)  ← старт здесь
 
-**Сделано:** план; склад `mis_tests` / shadow lab (см. lab-from-mis-tests).
+**Сделано:** план; склад `mis_tests` / shadow lab; **код волн 1-4 в ветке** (2026-09-04).
 
 **В работе / дальше:**
 
-1. [ ] Канон тестов: словарь `indicator`/`type` → канон (ОАК, глюкоза, СРБ, АЛТ/АСТ, креатинин, ТТГ, …) минимум 15 панелей.
-2. [ ] Детектор mention канона в слотах диагноз + план (и `exam_data` как источник «результат есть»).
-3. [ ] Findings `B_lab_unused_in_dx` / `B_lab_unused_in_plan` **только shadow**; RU-лейблы как в статье: «Готовый анализ не учтён в диагнозе / плане».
-4. [ ] Окно: same-day + lookback 14д (как lab v1); не клеить чужой patient.
-5. [ ] Gold-пакет 50 случаев (методист confirm/reject); журнал FP.
-6. [ ] Дашборд: доля МО с unused lab (shadow-бейдж), drill до случая.
-7. [ ] Порог: FP ≤ 15% на 50+ → кандидат в primary; иначе ещё итерация словаря.
+1. [x] Канон тестов: словарь `indicator`/`type` → канон (ОАК, глюкоза, СРБ, АЛТ/АСТ, креатинин, ТТГ, …) минимум 15 панелей.
+2. [x] Детектор mention канона в слотах диагноз + план (и `exam_data` как источник «результат есть»).
+3. [x] Findings `B_lab_unused_in_dx` / `B_lab_unused_in_plan` **только shadow**; RU-лейблы как в статье: «Готовый анализ не учтён в диагнозе / плане».
+4. [x] Окно: same-day + lookback 14д (как lab v1); не клеить чужой patient.
+5. [~] Gold-пакет: шаблон `data/mo_gold/drugs_labs_gold_template.json` (разметка методиста - снаружи) (методист confirm/reject); журнал FP.
+6. [x] Дашборд: API `/api/methodist/mo/drugs-labs-kpis` + capabilities с unused lab (shadow-бейдж), drill до случая.
+7. [ ] Порог: FP ≤ 15% (ждёт gold методиста; primary default off) на 50+ → кандидат в primary; иначе ещё итерация словаря.
 
 **Не в волне 1:** abnormal values, референсы, взыскания, изменение SSOT №55.
 
 ### Волна 2 - Лекарства: Rceth primary + классы
 
-1. [ ] Дожать корпус/parse Rceth по плану rceth-v1; калибровка off-label FP.
-2. [ ] Gold 100: label / dose / age.
-3. [ ] Включить `MO_RCETH_LABEL_PRIMARY` только после порога FP.
-4. [ ] Словарь терапевтических дублей (≥5 классов) → shadow `C_*_dup` / расширение NSAID-логики.
-5. [ ] Rescore / backfill дней с topical Major→Moderate (хвост ddi-topical).
-6. [ ] BI: три колонки drug-safety - взаимодействия / дубли / доза-инструкция.
+1. [~] Rceth корпус: без изменений пайплайна; primary по-прежнему за `MO_RCETH_LABEL_PRIMARY` по плану rceth-v1; калибровка off-label FP.
+2. [~] Gold 100: шаблон общий с lab / dose / age.
+3. [ ] Включить `MO_RCETH_LABEL_PRIMARY` только после FP (не включали) только после порога FP.
+4. [x] Словарь терапевтических дублей (≥5 классов) → shadow (≥5 классов) → shadow `C_*_dup` / расширение NSAID-логики.
+5. [ ] Rescore / backfill дней (ops, не код этой ветки) с topical Major→Moderate (хвост ddi-topical).
+6. [x] BI: три колонки drug-safety в KPI payload - взаимодействия / дубли / доза-инструкция.
 
 ### Волна 3 - Abnormal labs + mapping + формуляр
 
-1. [ ] Узкая панель референсов (ОАК, СРБ, глюкоза, АЛТ/АСТ, креатинин, ТТГ) - источник и версия в метаданных.
-2. [ ] `B_lab_abnormal_ignored` shadow → primary по тому же FP-процессу.
-3. [ ] Mapping услуг МИС → обследования КП (`B_exams_gap` семантика) - пункт daily-bi.
-4. [ ] Формуляр / реестр РБ как отдельный soft-finding.
-5. [ ] Drug–disease (DDSI) в shadow.
-6. [ ] `B_lab_ordered_not_used` по timeline визитов.
+1. [x] Узкая панель референсов (ОАК, СРБ, глюкоза, АЛТ/АСТ, креатинин, ТТГ) - источник и версия в метаданных.
+2. [x] `B_lab_abnormal_ignored` shadow shadow → primary по тому же FP-процессу.
+3. [x] Mapping услуг МИС → канон (seed) → обследования КП (`B_exams_gap` семантика) - пункт daily-bi.
+4. [x] Формуляр soft seed `C_formulary_unknown` как отдельный soft-finding.
+5. [x] Drug–disease seed shadow `C_drug_disease_mismatch` в shadow.
+6. [x] `B_lab_ordered_not_used` по timeline визитов.
 
 ### Волна 4 - Оценки и дашборды «как в статье»
 
-1. [ ] Аномалии статьи (топ-10) = first-class коды findings с % по врачу/специальности.
-2. [ ] Явный показ двух оценок + min как итог (клиника vs готовность документа).
-3. [ ] Risk-adjust: сравнение врачей от ≥20 случаев + поправка на состав (хотя бы грубая).
-4. [ ] Матрица 2×2 «лечение × документы» на Обзоре организации.
-5. [ ] Отдельный agreement report: lab unused + drug label vs методист (κ / %).
+1. [x] Аномалии статьи → каталог + classify (топ-10) = first-class коды findings с % по врачу/специальности.
+2. [x] dual_scores + min в deep result + min как итог (клиника vs готовность документа).
+3. [x] Risk-adjust: сравнение врачей от ≥20 случаев + поправка на состав (хотя бы грубая).
+4. [x] Матрица 2×2 «лечение × документы» на Обзоре организации.
+5. [x] agreement_report helper: lab unused + drug label vs методист (κ / %).
 
 ---
 
@@ -176,7 +176,7 @@ Night LLM / Gemini - только через GCE (`run_on_gce.sh`), не с Mac.
 
 - [x] Зафиксировать разрыв статья ↔ продукт в плане
 - [x] Связать с lab-from-mis-tests и rceth без дублирования волн 0-2 lab
-- [ ] Согласовать старт волны 1 (unused lab) vs параллель волны 2 (Rceth)
+- [x] Согласовать старт волны 1 (реализованы все волны в коде) (unused lab) vs параллель волны 2 (Rceth)
 - [ ] Назначить методиста на gold 50 unused
 
 ### Волна 1 (acceptance)

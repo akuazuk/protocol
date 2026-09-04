@@ -384,6 +384,31 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
         ))
         penalty += 20
 
+    # Wave 2: другие терапевтические классы (shadow по умолчанию).
+    try:
+        from .medication_safety import all_therapeutic_class_dups, class_dup_primary_enabled
+
+        for item in all_therapeutic_class_dups(treatment):
+            if item.get("class_id") == "nsaid":
+                continue  # уже C_nsaid_dup
+            code = str(item.get("finding_code") or f"C_{item.get('class_id')}_dup")
+            labels = item.get("labels") or []
+            row = _finding(
+                code, "safety", "P1", False,
+                f"Дублирование: {item.get('label_ru') or item.get('class_id')}",
+                detail=", ".join(labels[:6]),
+                evidence=treatment,
+                source_ref="therapeutic_classes_v1",
+            )
+            primary = class_dup_primary_enabled()
+            row["shadow"] = not primary
+            row["is_shadow"] = not primary
+            findings.append(row)
+            if primary:
+                penalty += 20
+    except Exception:  # noqa: BLE001
+        pass
+
     # C3: DDI по DDInter среди назначенных
     def _ddi_label(drug: dict | None, inn: str) -> str:
         surface = str((drug or {}).get("surface") or "").strip()
@@ -607,7 +632,14 @@ def evaluate_kz_deep(
 
     a_score, a_find = _axis_documentation(case)
     b_score, b_find = _axis_concordance(case, protocol_ctx, icd_client)
-    c_score, c_find = _axis_safety(case, protocol_ctx, drug_ctx)
+    c_score, c_find_raw = _axis_safety(case, protocol_ctx, drug_ctx)
+    c_find: list[dict] = []
+    safety_shadow: list[dict] = []
+    for item in c_find_raw:
+        if item.get("shadow") or item.get("is_shadow"):
+            safety_shadow.append(item)
+        else:
+            c_find.append(item)
 
     findings = a_find + b_find + c_find
 
@@ -642,7 +674,7 @@ def evaluate_kz_deep(
     except Exception:  # noqa: BLE001
         pass
 
-    shadow_findings: list[dict] = []
+    shadow_findings: list[dict] = list(safety_shadow)
     try:
         from .mo_concordance_findings import (
             concordance_findings_enabled,
@@ -651,12 +683,28 @@ def evaluate_kz_deep(
         )
 
         if concordance_findings_enabled():
-            shadow_findings = evaluate_mo_concordance(case)
-            if concordance_primary_enabled() and shadow_findings:
-                # Только при явном флаге: влияет на overall / risk-gate.
-                findings.extend({**item, "shadow": False} for item in shadow_findings)
+            conc = evaluate_mo_concordance(case)
+            if conc:
+                shadow_findings = list(shadow_findings) + list(conc)
+                if concordance_primary_enabled():
+                    # Только при явном флаге: влияет на overall / risk-gate.
+                    findings.extend({**item, "shadow": False} for item in conc)
     except Exception:  # noqa: BLE001 - мягкая деградация
-        shadow_findings = []
+        pass
+
+    # Wave 2-3: formulary + drug-disease (всегда shadow, пока primary-флаги off)
+    try:
+        from .formulary_findings import formulary_findings
+
+        shadow_findings = list(shadow_findings) + list(formulary_findings(case))
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        from .drug_disease_findings import drug_disease_findings
+
+        shadow_findings = list(shadow_findings) + list(drug_disease_findings(case))
+    except Exception:  # noqa: BLE001
+        pass
 
     # ICD pipeline v3: directory + name_match (+ aliases/compact внутри helpers)
     try:
@@ -769,12 +817,37 @@ def evaluate_kz_deep(
     n_by_sev = {s: sum(1 for f in findings if f["severity"] == s and not f["passed"])
                 for s in ("P0", "P1", "P2", "P3")}
 
+    dual = {}
+    matrix = {}
+    anomalies = []
+    try:
+        from .mo_anomaly_kpis import classify_case_anomalies
+        from .mo_dual_score import dual_scores_from_result, form_content_matrix
+
+        dual = dual_scores_from_result(
+            {"axes": {
+                "documentation": axes.get("documentation"),
+                "concordance": axes.get("clinical_concordance"),
+                "safety": axes.get("safety"),
+            }, "overall_pct": overall}
+        )
+        matrix = form_content_matrix(
+            clinical_pct=dual.get("clinical_pct"),
+            document_ready_pct=dual.get("document_ready_pct"),
+        )
+        anomalies = classify_case_anomalies(list(findings) + list(shadow_findings))
+    except Exception:  # noqa: BLE001
+        pass
+
     return {
         "axes": axes,
         "overall_pct": overall,
         "overall_status": status,
         "findings": findings,
         "shadow_findings": shadow_findings,
+        "dual_scores": dual,
+        "form_content_matrix": matrix,
+        "article_anomalies": anomalies,
         "n_findings": sum(1 for f in findings if not f["passed"]),
         "n_by_severity": n_by_sev,
         "has_potential_harm": n_by_sev["P0"] > 0,
