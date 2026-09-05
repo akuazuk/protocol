@@ -60,9 +60,9 @@ def verify_gemini_key() -> tuple[bool, str]:
     except ImportError:
         return (
             False,
-            "Не установлены зависимости сервера для обработки текста. "
+            ("Не установлены зависимости сервера для обработки текста. "
             "Выполните: pip install -r requirements-rag.txt "
-            "(тот же интерпретатор Python, что запускает uvicorn).",
+            "(тот же интерпретатор Python, что запускает uvicorn)."),
         )
 
     try:

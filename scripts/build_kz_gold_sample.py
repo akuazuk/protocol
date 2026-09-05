@@ -206,8 +206,8 @@ def main() -> int:
     lines = [
         "# Gold-выборка МО из БД - страты",
         "",
-        f"Источник: {args.cases.name}  |  всего клинич. кейсов: {total}  |  "
-        f"отобрано: **{len(picked)}** (seed={args.seed})",
+        (f"Источник: {args.cases.name}  |  всего клинич. кейсов: {total}  |  "
+        f"отобрано: **{len(picked)}** (seed={args.seed})"),
         f"Справок (pay_type=12): {n_spravki}  |  red-flag: {n_red}",
         "",
         "## По специальностям",
