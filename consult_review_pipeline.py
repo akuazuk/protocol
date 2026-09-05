@@ -583,6 +583,7 @@ def iter_consult_review_pipeline(
     )
     from clinical_knowledge.consult_retrieval import (
         consult_target_protocol_paths,
+        filter_paths_present_in_chunk_store,
         filter_retrieval_by_category_slugs,
         filter_retrieval_rows_by_paths,
     )
@@ -633,7 +634,12 @@ def iter_consult_review_pipeline(
     max_chunks_r = rs._consult_env_int("CONSULT_REVIEW_MAX_CHUNKS", 12, default_fast=8)
     max_per_path_r = rs._consult_env_int("CONSULT_REVIEW_MAX_PER_PATH", 3, default_fast=2)
     embed_rerank = rs._consult_retrieve_embed_rerank()
-    path_allow = matched_path_boost if strict_proto and matched_path_boost else None
+    matched_with_chunks = filter_paths_present_in_chunk_store(matched_path_boost)
+    path_allow = (
+        matched_with_chunks
+        if strict_proto and matched_with_chunks
+        else None
+    )
     icd_for_retrieval = list(diag_codes_list or merged_icd or [])
 
     yield emit(
@@ -688,8 +694,14 @@ def iter_consult_review_pipeline(
         raise HTTPException(
             status_code=400,
             detail=(
-                "Не удалось подобрать фрагменты протоколов по МКБ и диагнозу из КЗ. "
-                "Укажите коды МКБ-10 в документе или выберите рубрику протокола."
+                "Не удалось подобрать текстовые фрагменты выбранных протоколов. "
+                "Если коды МКБ уже есть в КЗ, проверьте корпус RAG на сервере "
+                "(manifest_paths и corpus_chunks_parts) или выберите рубрику протокола."
+                if (merged_icd or diag_codes_list)
+                else (
+                    "Не удалось подобрать фрагменты протоколов по МКБ и диагнозу из КЗ. "
+                    "Укажите коды МКБ-10 в документе или выберите рубрику протокола."
+                )
             ),
         )
 

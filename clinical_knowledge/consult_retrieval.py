@@ -21,6 +21,40 @@ def _path_norm(sp: str) -> str:
     return (sp or "").replace("\\", "/").strip()
 
 
+def filter_paths_present_in_chunk_store(paths: list[str] | None) -> list[str]:
+    """Оставить только PDF, для которых на диске есть RAG-чанки.
+
+    Карточки КП шире extract: без этого L2 падает с ложной ошибкой про МКБ.
+    """
+    if not paths:
+        return []
+    try:
+        from clinical_knowledge.corpus_path_manifest import CorpusPathManifest
+        from clinical_knowledge.lazy_rag_config import manifest_path
+    except Exception:
+        return list(paths)
+    mp = manifest_path()
+    if not mp.is_file():
+        return list(paths)
+    try:
+        manifest = CorpusPathManifest.load(mp)
+    except Exception:
+        return list(paths)
+    if not getattr(manifest, "entries", None):
+        return list(paths)
+    keep: list[str] = []
+    seen: set[str] = set()
+    for raw in paths:
+        norm = _path_norm(raw)
+        if not norm or norm in seen:
+            continue
+        if manifest.get(norm) is None:
+            continue
+        seen.add(norm)
+        keep.append(norm)
+    return keep
+
+
 def _card_icd_roots(card: dict[str, Any]) -> set[str]:
     icd = list(card.get("icd10_all") or card.get("icd10_primary") or [])
     return {_icd_root(str(x)) for x in icd if x}
