@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import io
 import json
 import logging
@@ -157,11 +158,20 @@ def text_hash(text: str) -> str:
 
 
 def verify_methodist_token(token: str | None) -> bool:
+    """Сверка токена методиста за постоянное время.
+
+    Обычное `==` для строк выходит на первом несовпавшем символе, поэтому время
+    ответа зависит от длины совпавшего префикса. Для общего токена, который
+    открывает доступ к клиническим данным, это позволяет подбирать его по
+    символам. `hmac.compare_digest` сравнивает без ранних выходов.
+    """
     expected = methodist_token_expected()
     if not expected:
         return False
     got = (token or "").strip()
-    return bool(got) and got == expected
+    if not got:
+        return False
+    return hmac.compare_digest(got.encode("utf-8"), expected.encode("utf-8"))
 
 
 def token_from_request_headers(headers: Mapping[str, str]) -> str:

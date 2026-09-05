@@ -103,6 +103,9 @@ sm_map = {
     "RENDER_API_KEY": "render-api-key",
 }
 want = secret_keys | {
+    "ALLOWED_ORIGINS",
+    "ENABLE_DEFAULT_CSP",
+    "CONTENT_SECURITY_POLICY",
     "GIT_COMMIT_SHA",
     "GEMINI_MODEL",
     "GEMINI_METHODIST_MODEL",
@@ -174,7 +177,11 @@ vals.setdefault(
 vals.setdefault("RAG_CHUNKS_DIR", "/var/data/protocol_corpus/corpus_chunks_parts")
 vals.setdefault("RAG_LAZY_RETRIEVE", "1")
 vals.setdefault("RAG_FORBID_FULL_CORPUS_RETRIEVE", "1")
-vals.setdefault("ALLOWED_ORIGINS", "*")
+# CORS: только собственный домен. "*" разворачивается в rag_server.py в
+# allow_origins=["*"] и открывает API любому сайту в браузере пользователя.
+vals.setdefault("ALLOWED_ORIGINS", "https://protocol.kravira.by")
+# CSP: в rag_server.py дефолтная политика выключена, пока флаг не выставлен.
+vals.setdefault("ENABLE_DEFAULT_CSP", "1")
 vals.setdefault("PYTHONUNBUFFERED", "1")
 vals.setdefault("MO_ICD_NAME_IN_PRIMARY", "1")
 vals.setdefault("MO_ICD_DIR_IN_PRIMARY", "0")
@@ -345,7 +352,7 @@ DRUG_SAFETY_MOUNT="-v /var/data/drug_safety:/app/data/drug_safety:ro"
 
 ssh_cmd "sudo docker rm -f '$CONTAINER' >/dev/null 2>&1 || true
 sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
-  -p 8000:8000 \
+  -p 127.0.0.1:8000:8000 \
   --env-file '$ENV_REMOTE' \
   -v /var/data:/var/data \
   $CORPUS_MOUNTS \
@@ -362,14 +369,24 @@ sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
 sleep 3
 sudo docker ps --filter name='$CONTAINER' --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
 
-IP="$(gcloud compute addresses describe protocol-app-ip --region=europe-central2 --format='get(address)')"
-echo "Waiting for /health/live on ${IP}:8000 ..."
+# Контейнер слушает только 127.0.0.1:8000, наружу его отдаёт Caddy по HTTPS.
+# Поэтому liveness проверяем внутри VM, а публичную доступность - через домен.
+PUBLIC_URL="${PROTOCOL_PUBLIC_URL:-https://protocol.kravira.by}"
+echo "Waiting for /health/live on 127.0.0.1:8000 inside the VM ..."
 for i in $(seq 1 36); do
-  if curl -fsS --max-time 5 "http://${IP}:8000/health/live" >/dev/null 2>&1; then
-    echo "HEALTH_OK"
-    curl -fsS "http://${IP}:8000/api/version"
+  if ssh_cmd "curl -fsS --max-time 5 http://127.0.0.1:8000/health/live >/dev/null" 2>/dev/null; then
+    echo "HEALTH_OK (in-VM)"
+    ssh_cmd "curl -fsS http://127.0.0.1:8000/api/version" || true
     echo
-    exit 0
+    echo "Checking public endpoint ${PUBLIC_URL} ..."
+    if curl -fsS --max-time 10 "${PUBLIC_URL}/health/live" >/dev/null 2>&1; then
+      echo "PUBLIC_OK"
+      curl -fsS "${PUBLIC_URL}/api/version" || true
+      echo
+      exit 0
+    fi
+    echo "WARNING: контейнер жив, но ${PUBLIC_URL} не отвечает - проверь Caddy" >&2
+    exit 1
   fi
   sleep 5
 done

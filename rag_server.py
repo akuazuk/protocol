@@ -7731,6 +7731,14 @@ def _parse_cors_origins() -> list[str]:
 
 _CORS_ORIGINS = _parse_cors_origins()
 if _CORS_ORIGINS:
+    if _CORS_ORIGINS == ["*"]:
+        # Молчаливый ALLOWED_ORIGINS="*" уже стоял на проде и открывал API
+        # любому сайту. Для локальной разработки это допустимо, но в логе
+        # прода такая строка должна быть заметна сразу.
+        logging.getLogger("protocol.rag").warning(
+            "ALLOWED_ORIGINS='*': CORS открыт для любого домена. "
+            "Для прода укажите конкретный origin (например https://protocol.kravira.by)."
+        )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=_CORS_ORIGINS,
@@ -7805,15 +7813,33 @@ _SECURITY_HEADERS = {
 }
 _CSP_VALUE = (os.environ.get("CONTENT_SECURITY_POLICY") or "").strip()
 if not _CSP_VALUE and env_bool("ENABLE_DEFAULT_CSP", False):
+    # Внешние источники интерфейса врача ровно три: cdn.jsdelivr.net (Chart.js),
+    # fonts.googleapis.com (CSS шрифтов) и fonts.gstatic.com (сами шрифты).
+    # blob: нужен для превью загруженных файлов и выгрузок (URL.createObjectURL),
+    # frame-src 'self' - для встроенного onco-risk.html.
+    # 'unsafe-inline'/'unsafe-eval' пока обязательны: в index.html ~20k строк
+    # инлайнового JS; снять их можно только после выноса скриптов (Фаза 7).
     _CSP_VALUE = (
         "default-src 'self'; "
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com data:; "
-        "img-src 'self' data: https:; "
+        "img-src 'self' data: blob: https:; "
         "connect-src 'self' https:; "
+        "frame-src 'self' blob:; "
+        "worker-src 'self' blob:; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'; "
         "frame-ancestors 'self'"
     )
+
+# Первый прод-раскат CSP безопаснее делать в режиме отчёта: браузер присылает
+# нарушения, но ничего не блокирует. Снимать флаг после проверки логов.
+_CSP_REPORT_ONLY = env_bool("CSP_REPORT_ONLY", False)
+_CSP_HEADER_NAME = (
+    "Content-Security-Policy-Report-Only" if _CSP_REPORT_ONLY else "Content-Security-Policy"
+)
 
 
 _logger = logging.getLogger("protocol.rag")
@@ -7869,7 +7895,7 @@ async def _security_and_rate_limit(request: "Request", call_next):
     for hk, hv in _SECURITY_HEADERS.items():
         response.headers.setdefault(hk, hv)
     if _CSP_VALUE:
-        response.headers.setdefault("Content-Security-Policy", _CSP_VALUE)
+        response.headers.setdefault(_CSP_HEADER_NAME, _CSP_VALUE)
     response.headers.setdefault("X-Process-Time-Ms", str(int(dur_ms)))
     if _REQUEST_LOG and (request.url.path.startswith("/api/") or response.status_code >= 400):
         level = logging.WARNING if (response.status_code >= 400 or dur_ms >= _SLOW_REQUEST_MS) else logging.INFO
@@ -8485,7 +8511,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-05-092717Z-vector-sidecar-fix"
+BUILD_VERSION = "2026-09-05-095001Z-prod-security"
 
 
 def _app_version() -> str:
@@ -8719,11 +8745,36 @@ def _require_methodist_auth(request: "Request") -> None:
 
     if not methodist_auth_enabled():
         raise HTTPException(status_code=503, detail="METHODIST_TOKEN не настроен на сервере.")
+
+    # Общий METHODIST_TOKEN - legacy-путь: он даёт полный доступ, а роль ниже
+    # объявляет сам клиент заголовком. Пока личные учётки не выданы всем
+    # методистам, путь нужен, поэтому его хотя бы прикрываем от подбора.
+    # Миграция: docs/plans/2026-08-09-auth-accounts-unify-v1.md.
+    from clinical_knowledge.auth_throttle import client_key, token_throttle
+
+    throttle_key = client_key(
+        request.headers, fallback=(request.client.host if request.client else "unknown")
+    )
+    retry_after = token_throttle.retry_after(throttle_key)
+    if retry_after:
+        raise HTTPException(
+            status_code=429,
+            detail="Слишком много неудачных попыток. Повторите позже.",
+            headers={"Retry-After": str(retry_after)},
+        )
     if not is_methodist_authenticated(request.headers):
+        locked = token_throttle.register_failure(throttle_key)
+        _logger.warning(
+            "methodist token rejected for %s (failures=%s%s)",
+            throttle_key,
+            token_throttle.failure_count(throttle_key),
+            f", locked {locked}s" if locked else "",
+        )
         raise HTTPException(
             status_code=403,
             detail="Требуется корректный X-Methodist-Token или сессия эксперта.",
         )
+    token_throttle.register_success(throttle_key)
     if (request.headers.get("x-methodist-role") or "").strip().lower() == "doctor":
         path = request.url.path
         allowed = path.startswith("/api/methodist/mo/doctor-cabinet") or (
@@ -10771,18 +10822,37 @@ def api_methodist_accounts_patch(
 
 
 @app.post("/api/methodist/account/login")
-def api_methodist_account_login(body: dict[str, Any]) -> dict:
+def api_methodist_account_login(body: dict[str, Any], request: "Request") -> dict:
+    from clinical_knowledge.auth_throttle import client_key, login_throttle
     from clinical_knowledge.mo_app_accounts import login_user
 
+    key = client_key(request.headers, fallback=(request.client.host if request.client else "unknown"))
+    retry_after = login_throttle.retry_after(key)
+    if retry_after:
+        _logger.warning("methodist login locked out for %s (%ss left)", key, retry_after)
+        raise HTTPException(
+            status_code=429,
+            detail="Слишком много неудачных попыток входа. Повторите позже.",
+            headers={"Retry-After": str(retry_after)},
+        )
     try:
-        return login_user(
+        result = login_user(
             login=str(body.get("login") or ""),
             password=str(body.get("password") or ""),
         )
     except PermissionError as exc:
+        locked = login_throttle.register_failure(key)
+        _logger.warning(
+            "methodist login failed for %s (failures=%s%s)",
+            key,
+            login_throttle.failure_count(key),
+            f", locked {locked}s" if locked else "",
+        )
         raise HTTPException(status_code=401, detail="Неверный логин или пароль.") from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    login_throttle.register_success(key)
+    return result
 
 
 @app.post("/api/methodist/account/logout")
