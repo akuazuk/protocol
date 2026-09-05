@@ -4,7 +4,8 @@
 прочитать целиком до изменения файлов, запуска Git-команд с записью или обращения к
 production. Cursor дополнительно загружает `.cursor/rules/repository-coordination.mdc`.
 
-Подробный workflow: `docs/deploy/multi-agent-single-repo-render-runbook-v2.md`.
+Подробный workflow: `docs/deploy/multi-agent-workflow-v3.md` (канон параллельной
+работы). Runbook v2 под Render - superseded, его разделы про деплой не выполнять.
 
 ## 1. Источники истины
 

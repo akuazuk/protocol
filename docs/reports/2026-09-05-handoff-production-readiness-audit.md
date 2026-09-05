@@ -107,11 +107,35 @@ PR: не открыт (ветка запушена)
 
 `/health/live` - 200, uptime зелёный из 4 регионов.
 
+## Канон параллельной работы (добавлено после аудита)
+
+PR #192 открыт и снят с draft. Вместе с аудитом в него вошёл канон
+координации, потому что аудит вскрыл его отсутствие: 10 открытых PR, из них
+7 зависших, `docs/plans/README.md` держат четыре PR, а `AGENTS.md` вёл за
+подробным workflow в runbook под Render - в приостановленный контур.
+
+| Что | Где |
+|---|---|
+| Канон workflow | `docs/deploy/multi-agent-workflow-v3.md` |
+| Карта владения и уровни риска | `.github/CODEOWNERS` |
+| Поля координации в PR | `.github/pull_request_template.md` |
+| Блокирующая проверка | `scripts/ops/check_pr_hygiene.py`, workflow `pr-hygiene` |
+| Кто какие файлы держит | `scripts/ops/pr_dashboard.py` |
+| План волны 2 | `docs/plans/2026-09-05-parallel-agent-isolation-v2.md` |
+
+Runbook v2 помечен superseded: его разделы 7 и 10 выполнять нельзя.
+
 ## Одна безопасная следующая команда
 
+Разобрать зависшие PR: их семь, и до этого они выглядят владельцами файлов,
+из-за чего соседние задачи ждут впустую.
+
 ```bash
-gh pr create --repo akuazuk/protocol --fill --draft
+python3 scripts/ops/pr_dashboard.py
 ```
+
+По каждому зависшему - одно из трёх: домержить, переоткрыть от свежего `main`
+или закрыть с причиной.
 
 ## Незакрытое, по убыванию важности
 

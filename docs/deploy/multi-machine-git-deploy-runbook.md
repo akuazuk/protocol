@@ -5,7 +5,7 @@
 
 > Этот документ сохранён как история. Для текущей работы обязательны
 > корневой `AGENTS.md` и
-> `docs/deploy/multi-agent-single-repo-render-runbook-v2.md`. Общая
+> `docs/deploy/multi-agent-workflow-v3.md`. Общая
 > `codex/main-sync` и прямой promote task-HEAD в `main` больше не являются
 > штатным workflow.
 

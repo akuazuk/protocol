@@ -1,0 +1,33 @@
+name: PR hygiene
+
+# Блокирующая проверка координации: имя ветки называет задачу и компьютер,
+# описание объявляет владельца и зону изменений. Без этого соседняя вкладка не
+# может решить, ждать ей merge или можно править те же файлы.
+#
+# Канон: docs/deploy/multi-agent-workflow-v3.md
+# Обход: метка `hygiene-ack` на PR (остаётся в истории PR).
+
+on:
+  pull_request:
+    # `edited` и `labeled` обязательны: без них исправленное описание или
+    # поставленная метка не перезапустят проверку, и PR останется красным.
+    types: [opened, synchronize, reopened, edited, labeled, unlabeled, ready_for_review]
+
+permissions:
+  contents: read
+
+# Своя группа на каждый PR и без отмены: прогон соседней вкладки не гасим.
+concurrency:
+  group: pr-hygiene-${{ github.event.pull_request.number }}
+  cancel-in-progress: false
+
+jobs:
+  hygiene:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Check branch name, description and diff size
+        run: python3 scripts/ops/check_pr_hygiene.py github-event
