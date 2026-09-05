@@ -1,9 +1,28 @@
 #!/usr/bin/env bash
-# Deploy exactly the current origin/main commit to Protocol production.
+# LEGACY. Render больше не прод: сервис protocol приостановлен (503).
+# Прод - GCE, https://protocol.kravira.by. См. docs/deploy/gce-production-runbook.md
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
+
+if [[ "${ALLOW_LEGACY_RENDER_RELEASE:-0}" != "1" ]]; then
+  cat >&2 <<'EOF'
+ОТКАЗ: Render не является продом Protocol.
+
+Сервис protocol на Render приостановлен и отдаёт 503. Прод развёрнут на GCE:
+  домен  https://protocol.kravira.by
+  VM     protocol-app, зона europe-central2-a
+
+Релиз выполняется так:
+  bash deploy/gcp-app/deploy_to_gce.sh          # с HEAD ровно на origin/main
+  либо GitHub Action "Production GCE release"
+
+Если восстанавливаете именно старый Render-контур осознанно:
+  ALLOW_LEGACY_RENDER_RELEASE=1 scripts/ops/render_release_main.sh ...
+EOF
+  exit 2
+fi
 
 REMOTE_NAME="${REMOTE_NAME:-origin}"
 TARGET_BRANCH="${TARGET_BRANCH:-main}"

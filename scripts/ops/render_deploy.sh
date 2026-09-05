@@ -1,9 +1,22 @@
 #!/usr/bin/env bash
-# Manage the Render service via the public API (deploy, restart, status, logs).
+# LEGACY. Управление Render-сервисом. Render больше не прод: сервис
+# приостановлен (503), прод - GCE (https://protocol.kravira.by).
+# См. docs/deploy/gce-production-runbook.md
 set -euo pipefail
 
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
+
+case "${1:-}" in
+  deploy|restart|suspend|resume)
+    if [[ "${ALLOW_LEGACY_RENDER:-0}" != "1" ]]; then
+      echo "ОТКАЗ: '$1' в Render запрещён - прод на GCE." >&2
+      echo "Релиз: bash deploy/gcp-app/deploy_to_gce.sh" >&2
+      echo "Осознанное восстановление Render: ALLOW_LEGACY_RENDER=1 $0 $1" >&2
+      exit 2
+    fi
+    ;;
+esac
 
 SERVICE_ID="${RENDER_SERVICE_ID:-srv-d78he6h5pdvs73b1kufg}"
 PROD_URL="${PROTOCOL_PROD_URL:-https://protocol-bimy.onrender.com}"

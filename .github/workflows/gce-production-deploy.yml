@@ -1,0 +1,101 @@
+name: Production GCE release
+
+# Единственный прод - GCE (protocol.kravira.by). Render приостановлен.
+#
+# Запуск вручную: релиз-координатор указывает точный SHA из origin/main.
+# Автозапуск по push в main намеренно не включён: развёртывание в живую
+# клиническую систему должно оставаться осознанным действием с наблюдателем.
+#
+# ТРЕБУЕТ НАСТРОЙКИ (иначе job упадёт на шаге auth):
+#   vars.GCP_WIF_PROVIDER  - projects/<num>/locations/global/workloadIdentityPools/<pool>/providers/<provider>
+#   vars.GCP_DEPLOY_SA     - deploy-сервисный аккаунт (roles/compute.osAdminLogin, iap.tunnelResourceAccessor)
+#   vars.GCP_PROJECT       - protocol-home-e1
+# Пока переменные не заданы, канонический путь релиза - запуск
+# deploy/gcp-app/deploy_to_gce.sh релиз-координатором с авторизованной машины.
+# Подробнее: docs/deploy/gce-production-runbook.md
+
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: "Точный SHA из origin/main для развёртывания"
+        required: true
+        type: string
+
+permissions:
+  contents: read
+  id-token: write
+
+concurrency:
+  # Одна группа на прод: два развёртывания одновременно недопустимы.
+  group: production-gce
+  cancel-in-progress: false
+
+jobs:
+  release:
+    name: production-release
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - name: Checkout requested commit
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ inputs.commit }}
+          fetch-depth: 0
+
+      - name: Проверить, что SHA - текущий HEAD origin/main
+        run: |
+          set -euo pipefail
+          git fetch origin main --quiet
+          requested="$(git rev-parse HEAD)"
+          main_sha="$(git rev-parse origin/main)"
+          echo "requested=$requested"
+          echo "origin/main=$main_sha"
+          if [[ "$requested" != "$main_sha" ]]; then
+            echo "ОТКАЗ: разворачивать можно только текущий HEAD origin/main." >&2
+            exit 2
+          fi
+
+      - name: Показать ожидаемую версию сборки
+        run: |
+          set -euo pipefail
+          version="$(sed -n 's/^BUILD_VERSION = "\(.*\)"$/\1/p' rag_server.py | head -1)"
+          if [[ -z "$version" ]]; then
+            echo "ОТКАЗ: BUILD_VERSION не найден в rag_server.py." >&2
+            exit 2
+          fi
+          echo "expected BUILD_VERSION=$version"
+          echo "EXPECTED_VERSION=$version" >> "$GITHUB_ENV"
+
+      - name: Персональные данные не попадают в релиз
+        run: python3 scripts/ops/check_no_phi_staged.py --all
+
+      - name: Authenticate to Google Cloud
+        uses: google-github-actions/auth@v2
+        with:
+          workload_identity_provider: ${{ vars.GCP_WIF_PROVIDER }}
+          service_account: ${{ vars.GCP_DEPLOY_SA }}
+
+      - name: Set up gcloud
+        uses: google-github-actions/setup-gcloud@v2
+        with:
+          project_id: ${{ vars.GCP_PROJECT }}
+
+      - name: Deploy exact commit to GCE
+        env:
+          GIT_COMMIT_SHA: ${{ inputs.commit }}
+          GCP_PROJECT: ${{ vars.GCP_PROJECT }}
+          SYNC_PROTOCOL_CORPUS: "0"
+        run: bash deploy/gcp-app/deploy_to_gce.sh
+
+      - name: Проверить прод после развёртывания
+        run: |
+          set -euo pipefail
+          url="https://protocol.kravira.by"
+          curl -fsS --max-time 20 "$url/health/live" >/dev/null
+          actual_version="$(curl -fsS --max-time 20 "$url/api/version" | python3 -c 'import json,sys; print(json.load(sys.stdin)["version"])')"
+          actual_sha="$(curl -fsS --max-time 20 "$url/api/version" | python3 -c 'import json,sys; print(json.load(sys.stdin)["git_commit"])')"
+          echo "actual version=$actual_version sha=$actual_sha"
+          test "$actual_version" = "$EXPECTED_VERSION"
+          test "$actual_sha" = "${{ inputs.commit }}"
+          echo "PROD OK"
