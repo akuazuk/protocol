@@ -1,11 +1,18 @@
 """Проверки лекарственной безопасности (взаимодействия, дубли групп)."""
 from __future__ import annotations
 
+import json
+import os
 import re
+from functools import lru_cache
+from pathlib import Path
 from typing import Any, Mapping
 
 from .consult_schema import ConsultationDocument, SafetyAssessment
 from .medication_parser import looks_like_medication_item
+
+_ROOT = Path(__file__).resolve().parents[1]
+_CLASS_PATH = _ROOT / "data" / "drug_safety" / "therapeutic_classes.json"
 
 _NSAID_PATTERN = re.compile(
     r"(?:"
@@ -173,6 +180,86 @@ def finding_suggests_topical_ddi(row: Mapping[str, Any] | None) -> bool:
             if drug_mention_is_topical(blob, part.strip()):
                 return True
     return False
+
+
+def class_dup_primary_enabled() -> bool:
+    raw = (os.environ.get("MO_CLASS_DUP_PRIMARY") or "0").strip().lower()
+    return raw in {"1", "true", "yes", "on"}
+
+
+def class_dup_shadow_only() -> bool:
+    """Wave 2 default: class dups (кроме уже primary NSAID) остаются shadow."""
+    return not class_dup_primary_enabled()
+
+
+@lru_cache(maxsize=1)
+def load_therapeutic_classes() -> list[dict[str, Any]]:
+    if not _CLASS_PATH.is_file():
+        return []
+    data = json.loads(_CLASS_PATH.read_text(encoding="utf-8"))
+    return list(data.get("classes") or [])
+
+
+def _strip_class_alternatives(text: str) -> str:
+    cleaned = _ALT_PAREN.sub(" ", text or "")
+    return cleaned
+
+
+def concurrent_systemic_class(
+    text: str,
+    class_id: str,
+) -> list[str]:
+    """≥2 разных системных препарата одного терапевтического класса."""
+    classes = {c.get("id"): c for c in load_therapeutic_classes() if c.get("id")}
+    spec = classes.get(class_id)
+    if not spec:
+        return []
+    aliases = [str(a).lower() for a in (spec.get("aliases") or []) if a]
+    if not aliases:
+        return []
+    # longest first to prefer full names
+    aliases_sorted = sorted(aliases, key=len, reverse=True)
+    pattern = re.compile(
+        r"(?:" + "|".join(re.escape(a) for a in aliases_sorted) + r")",
+        re.I,
+    )
+    canon_map = {
+        str(k).lower(): str(v).lower()
+        for k, v in (spec.get("canonical") or {}).items()
+    }
+    cleaned = _strip_class_alternatives(text or "")
+    found: set[str] = set()
+    for match in pattern.finditer(cleaned):
+        raw = match.group(0).lower().replace("ё", "е")
+        label = canon_map.get(raw, raw)
+        start = max(0, match.start() - 28)
+        end = min(len(cleaned), match.end() + 28)
+        if _TOPICAL_NEAR.search(cleaned[start:end]):
+            continue
+        found.add(label)
+    labels = sorted(found)
+    return labels if len(labels) >= 2 else []
+
+
+def all_therapeutic_class_dups(text: str) -> list[dict[str, Any]]:
+    """Список дублей по всем классам словаря (включая nsaid для единообразия)."""
+    out: list[dict[str, Any]] = []
+    for spec in load_therapeutic_classes():
+        cid = str(spec.get("id") or "")
+        if not cid:
+            continue
+        labels = concurrent_systemic_class(text, cid)
+        if len(labels) < 2:
+            continue
+        out.append(
+            {
+                "class_id": cid,
+                "label_ru": spec.get("label_ru") or cid,
+                "finding_code": spec.get("finding_code") or f"C_{cid}_dup",
+                "labels": labels,
+            }
+        )
+    return out
 
 
 def detect_concurrent_nsaids(doc: ConsultationDocument) -> SafetyAssessment | None:

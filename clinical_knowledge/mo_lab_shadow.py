@@ -21,7 +21,15 @@ ENGINE = "mo_lab_shadow_v1"
 _SOURCE = "mo_lab_shadow_v1"
 CODE_ORDERED_DONE = "B_lab_ordered_already_done"
 CODE_PRESENT_GAP = "B_lab_present_not_in_mo"
-LAB_SHADOW_CODES = {CODE_ORDERED_DONE, CODE_PRESENT_GAP, CODE_DX_LAB_CONTEXT}
+LAB_SHADOW_CODES = {
+    CODE_ORDERED_DONE,
+    CODE_PRESENT_GAP,
+    CODE_DX_LAB_CONTEXT,
+    "B_lab_unused_in_dx",
+    "B_lab_unused_in_plan",
+    "B_lab_ordered_not_used",
+    "B_lab_abnormal_ignored",
+}
 
 _WS = re.compile(r"\s+")
 _TOKEN = re.compile(r"[a-zа-я0-9]+", re.I)
@@ -116,6 +124,31 @@ PANELS: tuple[_Panel, ...] = (
         r"\bпса\b|простатспециф",
     ),
 )
+
+# Волна 1: дополнить PANELS из JSON-канонов (≥15), не ломая legacy ids.
+def _extend_panels_from_canons(base: tuple[_Panel, ...]) -> tuple[_Panel, ...]:
+    try:
+        from clinical_knowledge.lab_canons import lab_panels as _load_canon_panels
+    except Exception:  # noqa: BLE001
+        return base
+    known = {p.pid for p in base}
+    extra: list[_Panel] = []
+    for row in _load_canon_panels():
+        pid = str(row.get("id") or "")
+        if not pid or pid in known:
+            continue
+        needles = tuple(row.get("type_needles") or ())
+        patterns = row.get("text_patterns") or ()
+        parts = [p.pattern for p in patterns if getattr(p, "pattern", None)]
+        text_re = "|".join(parts) if parts else r"a^"
+        extra.append(
+            _Panel(pid, str(row.get("label") or pid), needles, text_re)
+        )
+        known.add(pid)
+    return base + tuple(extra) if extra else base
+
+
+PANELS = _extend_panels_from_canons(PANELS)
 
 
 def _type_hits(type_name: str, panel: _Panel) -> bool:
@@ -442,7 +475,26 @@ def evaluate_lab_for_case(
         "post_visit_present": list(recon.get("post_visit_present") or []),
         "note_ru": recon.get("note_ru") or "",
     }
-    return payload, lab_shadow_findings(recon) + lab_dx_shadow_findings(dx_evidence, case)
+    findings = lab_shadow_findings(recon) + lab_dx_shadow_findings(dx_evidence, case)
+    try:
+        from clinical_knowledge.lab_unused_findings import (
+            merge_unused_into_findings,
+            unused_lab_findings,
+        )
+
+        unused = unused_lab_findings(case, recon)
+        findings = merge_unused_into_findings(findings, unused)
+    except Exception:  # noqa: BLE001
+        pass
+    try:
+        from clinical_knowledge.lab_abnormal_findings import abnormal_lab_findings
+
+        findings = list(findings) + list(
+            abnormal_lab_findings(case, reconcile_source)
+        )
+    except Exception:  # noqa: BLE001
+        pass
+    return payload, findings
 
 
 def apply_lab_to_result(
