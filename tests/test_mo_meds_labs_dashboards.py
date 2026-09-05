@@ -111,3 +111,19 @@ def test_dockerfile_ships_finding_families() -> None:
     text = (ROOT / "deploy/gcp-app/Dockerfile").read_text(encoding="utf-8")
     assert "data/mo_finding_families/" in text
     assert (ROOT / "data/mo_finding_families/families_v1.json").is_file()
+
+
+def test_gce_sync_includes_dockerfile_data_copies() -> None:
+    """GCE tar must include every data path the image COPY expects."""
+    docker = (ROOT / "deploy/gcp-app/Dockerfile").read_text(encoding="utf-8")
+    deploy = (ROOT / "deploy/gcp-app/deploy_to_gce.sh").read_text(encoding="utf-8")
+    missing: list[str] = []
+    for line in docker.splitlines():
+        s = line.strip()
+        if not s.startswith("COPY data/"):
+            continue
+        src = s.split()[1].rstrip("/")
+        if src not in deploy:
+            missing.append(src)
+    assert missing == []
+    assert (ROOT / "data/mo_anomalies/article_anomaly_codes.json").is_file()
