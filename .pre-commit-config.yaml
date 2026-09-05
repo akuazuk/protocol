@@ -16,3 +16,12 @@ repos:
       - id: check-added-large-files
         args: [--maxkb=2048]
       - id: check-merge-conflict
+
+  - repo: local
+    hooks:
+      - id: no-phi-staged
+        name: Персональные данные пациентов не попадают в git
+        entry: python3 scripts/ops/check_no_phi_staged.py
+        language: system
+        pass_filenames: true
+        require_serial: true

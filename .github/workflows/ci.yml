@@ -31,6 +31,12 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-rag.txt -r requirements-dev.txt
 
+      # Серверный барьер против ПДн: локальный pre-commit устанавливается
+      # вручную и на машинах агентов обычно отсутствует, поэтому запрет
+      # должен работать и в CI. См. docs/reports/2026-09-05-prod-state-snapshot.md.
+      - name: Персональные данные не попадают в репозиторий
+        run: python3 scripts/ops/check_no_phi_staged.py --all
+
       - name: Ruff (lint)
         run: ruff check .
 

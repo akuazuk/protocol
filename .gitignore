@@ -28,6 +28,39 @@ clients_consult/*
 !clients_consult/README.md
 data/KZ/
 
+# ПДн и непродуктовые материалы, которым не место в репозитории.
+# Каноничное хранилище таких файлов — вне репо (например ~/Protocol_Private, chmod 700).
+# Историю см. docs/reports/2026-09-05-prod-state-snapshot.md.
+docs/Patient_D/
+docs/patient_*/
+docs/public_realition/
+docs/public_relations/
+myositis_*.csv
+docs/mis-kz-export-spec.pdf
+
+# Юридические ответы/претензии по конкретным пациентам в любом месте дерева
+**/Ответ на претензию*
+**/ответ_на_претензию*
+
+# Медиа: клинические фото/видео пациентов не коммитим никогда
+*.MP4
+*.mp4
+*.mov
+*.MOV
+
+# Офисные документы по умолчанию не коммитим (часто содержат ПДн).
+# Нужный документ добавляй точечным исключением ниже.
+*.docx
+*.doc
+*.xlsx
+*.xls
+!epam/scheme_mis_protocols.docx
+!archive/docs/konkurs/**/*.docx
+!data/icd_reference/*.xlsx
+
+# Артефакты неудачного `pip install '<pkg>=0.15.0'` и подобные
+=*
+
 # Выгрузка mis_protocol (ПДн пациентов) — только локально
 data/mis_protocol/*.parquet
 data/mis_protocol/*.csv
