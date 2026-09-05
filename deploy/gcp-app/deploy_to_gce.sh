@@ -6,6 +6,32 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
+usage() {
+  cat <<'EOF'
+Usage: deploy/gcp-app/deploy_to_gce.sh [--dry-run]
+
+Syncs allowlisted sources to GCE, builds Docker image on the VM, runs container
+on :8000 with /var/data mounted. Requires local HEAD exactly at origin/main.
+EOF
+}
+
+# Аргументы разбираем до fetch и до проверки SHA: справка не должна требовать
+# сети и чистого checkout, иначе её нельзя прочитать там, где она нужнее всего.
+DRY=0
+for arg in "$@"; do
+  case "$arg" in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --dry-run) DRY=1 ;;
+    *)
+      echo "Unknown arg: $arg" >&2
+      exit 2
+      ;;
+  esac
+done
+
 git fetch origin main --quiet
 RELEASE_SHA="${GIT_COMMIT_SHA:-$(git rev-parse HEAD)}"
 MAIN_SHA="$(git rev-parse origin/main)"
@@ -28,24 +54,6 @@ ENV_MIS_REMOTE="${ENV_MIS_REMOTE:-/opt/protocol/.env.mis}"
 MIS_SM_SECRET="${MIS_SM_SECRET:-kravira-db-password}"
 # Cron owner on protocol-app; deploy SSH login may differ (pavel vs pavelkuzauka).
 GCE_OPS_USER="${GCE_OPS_USER:-pavel}"
-
-usage() {
-  cat <<'EOF'
-Usage: deploy/gcp-app/deploy_to_gce.sh [--dry-run]
-
-Syncs allowlisted sources to GCE, builds Docker image on the VM, runs container
-on :8000 with /var/data mounted. Does not touch Render DNS.
-EOF
-}
-
-DRY=0
-for arg in "$@"; do
-  case "$arg" in
-    -h|--help) usage; exit 0 ;;
-    --dry-run) DRY=1 ;;
-    *) echo "Unknown arg: $arg" >&2; exit 2 ;;
-  esac
-done
 
 gcloud config set project "$PROJECT" --quiet >/dev/null
 STATUS="$(gcloud compute instances describe "$VM" --zone="$ZONE" --format='get(status)')"

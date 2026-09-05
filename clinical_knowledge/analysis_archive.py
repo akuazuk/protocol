@@ -12,6 +12,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .jsonl_io import append_line
 from .privacy import name_to_initials
 
 _DEFAULT_DIR = Path(__file__).resolve().parent.parent / "output" / "consult_archive"
@@ -91,12 +92,8 @@ def save_snapshot(snapshot: dict[str, Any]) -> Path | None:
     if not archive_enabled():
         return None
     try:
-        d = archive_dir()
-        d.mkdir(parents=True, exist_ok=True)
-        path = d / _MANIFEST
-        line = json.dumps(snapshot, ensure_ascii=False, separators=(",", ":"))
-        with path.open("a", encoding="utf-8") as f:
-            f.write(line + "\n")
+        path = archive_dir() / _MANIFEST
+        append_line(path, snapshot, compact=True)
         return path
     except OSError:
         return None

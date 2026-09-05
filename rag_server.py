@@ -8528,7 +8528,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-05-124233Z-mo-backend-visibility"
+BUILD_VERSION = "2026-09-05-125609Z-jsonl-io-single-write"
 
 
 def _app_version() -> str:
@@ -13513,7 +13513,6 @@ def api_protocol_brief_bundle(
 @app.post("/api/brief-feedback")
 def api_brief_feedback(body: dict) -> dict:
     """Телеметрия полезности сводки (без авторизации методиста)."""
-    import json
     from datetime import datetime, timezone
 
     if not isinstance(body, dict):
@@ -13530,11 +13529,13 @@ def api_brief_feedback(body: dict) -> dict:
         "block_id": str(body.get("block_id") or "")[:64],
         "build_version": BUILD_VERSION,
     }
-    log_dir = ROOT / "data" / "ml" / "feedback"
-    log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / "brief_feedback.jsonl"
-    with log_path.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(event, ensure_ascii=False) + "\n")
+    # Каталог берём из feedback_dir(): жёсткий ROOT/data/ml/feedback игнорировал
+    # ML_FEEDBACK_DIR, поэтому в проде события ложились внутрь контейнера и
+    # исчезали при каждом деплое, минуя выгрузку обучающих данных.
+    from clinical_knowledge.feedback_store import feedback_dir
+    from clinical_knowledge.jsonl_io import append_line
+
+    append_line(feedback_dir() / "brief_feedback.jsonl", event)
     return {"ok": True}
 
 
