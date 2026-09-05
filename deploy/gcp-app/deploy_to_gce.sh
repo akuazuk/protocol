@@ -293,6 +293,7 @@ tar czf - \
   download_minzdrav_protocols.py \
   requirements.txt requirements-rag.txt \
   backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog \
+  data/mo_finding_families data/mo_anomalies \
   data/drug_safety/high_alert.json data/drug_safety/stopp_start_beers.json \
   data/icd_reference/icd10_ru_mkb10su.json \
   data/icd_reference/icd10_ru_mkb10su.meta.json \

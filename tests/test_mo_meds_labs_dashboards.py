@@ -111,3 +111,6 @@ def test_dockerfile_ships_finding_families() -> None:
     text = (ROOT / "deploy/gcp-app/Dockerfile").read_text(encoding="utf-8")
     assert "data/mo_finding_families/" in text
     assert (ROOT / "data/mo_finding_families/families_v1.json").is_file()
+    deploy = (ROOT / "deploy/gcp-app/deploy_to_gce.sh").read_text(encoding="utf-8")
+    assert "data/mo_finding_families" in deploy
+    assert "data/mo_anomalies" in deploy
