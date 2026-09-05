@@ -4,6 +4,7 @@ from __future__ import annotations
 from clinical_knowledge.consult_retrieval import (
     consult_target_protocol_paths,
     filter_consult_protocol_matches,
+    filter_paths_present_in_chunk_store,
     filter_retrieval_by_category_slugs,
     filter_retrieval_rows_by_paths,
 )
@@ -177,3 +178,19 @@ def test_adult_inferred_from_age_years_rejects_pediatric_protocol():
     )
     assert ped_path not in paths
     assert adult_path in paths
+
+
+def test_filter_paths_keeps_only_manifest_entries(tmp_path, monkeypatch) -> None:
+    man = tmp_path / "corpus_path_manifest.jsonl"
+    man.write_text(
+        '{"path":"minzdrav_protocols/gastroenterologiya/present.pdf","rubric":"gastroenterologiya","chunk_count":2}\n',
+        encoding="utf-8",
+    )
+    monkeypatch.setenv("RAG_MANIFEST_PATH", str(man))
+    kept = filter_paths_present_in_chunk_store(
+        [
+            "minzdrav_protocols/gastroenterologiya/present.pdf",
+            "minzdrav_protocols/gastroenterologiya/missing_2025.pdf",
+        ]
+    )
+    assert kept == ["minzdrav_protocols/gastroenterologiya/present.pdf"]

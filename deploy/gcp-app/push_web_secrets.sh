@@ -53,6 +53,8 @@ public_allow = {
     "RAG_LAZY_CHUNK_STORE",
     "RAG_GEMINI_EMBED_RERANK",
     "RAG_MANIFEST_PATH",
+    "RAG_CHUNKS_DIR",
+    "RAG_LAZY_RETRIEVE",
     "RAG_FORBID_FULL_CORPUS_RETRIEVE",
     "RAG_CHUNKS_JSONL",
     "ALLOWED_ORIGINS",
@@ -123,7 +125,12 @@ public.setdefault("MO_DATA_ROOT", "/var/data/medical_exams")
 public.setdefault("RAG_STARTUP_MODE", "manifest")
 public.setdefault("RAG_LAZY_CHUNK_STORE", "1")
 public.setdefault("RAG_GEMINI_EMBED_RERANK", "0")
-public.setdefault("RAG_MANIFEST_PATH", "data/catalog/corpus_path_manifest.jsonl")
+public.setdefault(
+    "RAG_MANIFEST_PATH",
+    "/var/data/protocol_corpus/corpus_chunks_parts/corpus_path_manifest.jsonl",
+)
+public.setdefault("RAG_CHUNKS_DIR", "/var/data/protocol_corpus/corpus_chunks_parts")
+public.setdefault("RAG_LAZY_RETRIEVE", "1")
 public.setdefault("RAG_FORBID_FULL_CORPUS_RETRIEVE", "1")
 public.setdefault("ALLOWED_ORIGINS", "*")
 public.setdefault("PYTHONUNBUFFERED", "1")
@@ -227,6 +234,9 @@ sudo docker run -d --name protocol-web --restart unless-stopped \
   -e PROTOCOL_CORPUS_ROOT=/var/data/protocol_corpus \
   -e PROTOCOL_ICD_PROFILE_INDEX=/app/data/catalog/protocol_icd_profiles.jsonl \
   -e PROTOCOL_CARDS_PATH=/app/output/registry/protocol_cards.jsonl \
+  -e RAG_MANIFEST_PATH=/var/data/protocol_corpus/corpus_chunks_parts/corpus_path_manifest.jsonl \
+  -e RAG_CHUNKS_DIR=/var/data/protocol_corpus/corpus_chunks_parts \
+  -e RAG_LAZY_RETRIEVE=1 \
   -e PORT=8000 \
   \"\$IMG\"
 sleep 3
