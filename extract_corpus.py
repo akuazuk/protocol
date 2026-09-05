@@ -25,7 +25,7 @@ def extract_text(pdf_path: Path) -> str:
         import fitz  # PyMuPDF
     except ImportError:
         print("Установите: pip install pymupdf", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from None
 
     doc = fitz.open(pdf_path)
     parts: list[str] = []

@@ -625,7 +625,11 @@ def _constraint_search(
             requirement = rng.choice(rarest)
             options = eligible_by_req[requirement]
 
-            def overlap(item: dict[str, Any]) -> float:
+            def overlap(
+                item: dict[str, Any],
+                unmet: list[str] = unmet,
+                selected: list[dict[str, Any]] = selected,
+            ) -> float:
                 return sum(
                     int(_satisfies_requirement(item, name, selected))
                     for name in unmet
@@ -712,7 +716,9 @@ def select_sample(
         if not any(deficits.values()):
             break
 
-        def gain(item: dict[str, Any]) -> tuple[float, float]:
+        def gain(
+            item: dict[str, Any], deficits: dict[str, int] = deficits
+        ) -> tuple[float, float]:
             value = 0.0
             if deficits.get(f"band:{item['band']}", 0):
                 value += 20

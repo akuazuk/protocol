@@ -4,6 +4,8 @@ from __future__ import annotations
 import json
 from pathlib import Path
 
+import pytest
+
 from clinical_knowledge.rceth_sync.parse import (
     merge_manifest_rows,
     parse_detail_card,
@@ -191,11 +193,8 @@ def test_page_pairs_requires_query_string_and_postback():
     assert as_dict["IsPostBack"] == "true"
     assert as_dict["PropSubmit"] == "FOpt_PageN"
     assert as_dict["ValueSubmit"] == "2"
-    try:
+    with pytest.raises(ValueError):
         page_pairs_from_html("<html></html>", 2)
-        assert False, "expected ValueError"
-    except ValueError:
-        pass
 
 
 def test_refbank_client_retries_timeout(monkeypatch):
@@ -210,9 +209,6 @@ def test_refbank_client_retries_timeout(monkeypatch):
 
     client = hc.RefbankClient(throttle_sec=0, timeout=5, retries=3, insecure_ssl=True)
     client._opener = Boom()  # type: ignore[assignment]
-    try:
+    with pytest.raises(TimeoutError):
         client.request("https://www.rceth.by/Refbank/")
-        assert False, "expected TimeoutError"
-    except TimeoutError:
-        pass
     assert calls["n"] == 3

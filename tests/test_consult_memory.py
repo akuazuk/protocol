@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import pytest
+from fastapi import HTTPException
 
 
 def test_consult_forbid_full_corpus_on_render(monkeypatch):
@@ -70,7 +71,10 @@ def test_consult_pipeline_skips_full_corpus_fallback(monkeypatch):
 
     from consult_review_pipeline import iter_consult_review_pipeline
 
-    with pytest.raises(Exception):
+    # Именно HTTPException: pytest.raises(Exception) прошёл бы и на случайной
+    # AttributeError из-за неудачного monkeypatch, то есть тест бы «зеленел»
+    # не проверив strict-режим.
+    with pytest.raises(HTTPException):
         for kind, payload in iter_consult_review_pipeline(
             full_text="Диагноз: J06.9 ОРВИ. Жалобы: кашель.",
             n_files=1,

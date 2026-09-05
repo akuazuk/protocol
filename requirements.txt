@@ -1,2 +1,4 @@
-# Render и прочие хостинги по умолчанию ищут requirements.txt
+# Точка входа по умолчанию для инструментов, которые ищут requirements.txt.
+# Прод (deploy/gcp-app/Dockerfile) ставит не отсюда, а из requirements-rag.lock -
+# с закреплёнными версиями и проверкой хешей.
 -r requirements-rag.txt

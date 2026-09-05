@@ -1,0 +1,92 @@
+# Автообновление зависимостей.
+#
+# В репозитории 9 файлов requirements*.txt в корне; Dependabot берёт их все из
+# одной записи с directory: "/". Без группировки это давало бы десятки PR в
+# неделю, поэтому обновления собраны в группы, а лимит открытых PR ограничен.
+#
+# Security-обновления Dependabot открывает отдельно и вне лимита групп - это
+# намеренно: уязвимость не должна ждать своей очереди в общей пачке.
+version: 2
+
+updates:
+  - package-ecosystem: pip
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Minsk
+    open-pull-requests-limit: 5
+    labels:
+      - dependencies
+    commit-message:
+      # Без AI/vendor-приписок, см. .cursor/rules/no-ai-vendor-attribution.mdc.
+      prefix: "deps"
+    groups:
+      # Ядро прода: FastAPI/uvicorn/pydantic ломаются заметно, нужен свой PR.
+      web-runtime:
+        patterns:
+          - fastapi
+          - uvicorn*
+          - starlette
+          - pydantic*
+          - httpx
+      # Клиент Gemini: смена версии влияет на клинические ответы.
+      google-ai:
+        patterns:
+          - google-generativeai
+          - google-api-*
+          - google-auth*
+      # Числовой/ML-стек: тяжёлые бинарные колёса, обновлять пачкой.
+      data-stack:
+        patterns:
+          - numpy
+          - pandas
+          - pyarrow
+          - scikit-learn
+          - scipy
+          - sentence-transformers
+          - torch*
+      dev-tools:
+        patterns:
+          - pytest*
+          - ruff
+          - pre-commit
+          - mypy
+
+  - package-ecosystem: github-actions
+    directory: "/"
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Minsk
+    open-pull-requests-limit: 3
+    labels:
+      - dependencies
+      - ci
+    commit-message:
+      prefix: "ci"
+    groups:
+      actions:
+        patterns:
+          - "*"
+
+  # Базовые образы четырёх контуров: gcp-app (прод), gcp-llm, mis-bridge, by-home.
+  - package-ecosystem: docker
+    directories:
+      - /deploy/gcp-app
+      - /deploy/gcp-llm
+      - /deploy/mac-bridge
+      - /deploy/by-home
+    schedule:
+      interval: weekly
+      day: monday
+      time: "06:00"
+      timezone: Europe/Minsk
+    open-pull-requests-limit: 4
+    labels:
+      - dependencies
+      - docker
+    commit-message:
+      prefix: "docker"

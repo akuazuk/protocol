@@ -5,6 +5,8 @@ import csv
 import sqlite3
 from pathlib import Path
 
+import pytest
+
 from clinical_knowledge import mo_backend, mo_review_pack
 from clinical_knowledge.mo_daily import CRM_TABLES, initialize_warehouse
 
@@ -198,13 +200,10 @@ def test_save_review_pack_requires_methodist_role(monkeypatch, tmp_path: Path) -
     db = tmp_path / "mo.sqlite"
     monkeypatch.setenv("MO_ANALYTICS_DB", str(db))
     _seed_case(db)
-    try:
+    with pytest.raises(PermissionError, match="methodist"):
         mo_review_pack.save_review_pack(
             case_id="3646270",
             actor="viewer",
             role="viewer",
             decision={"status": "in_review"},
         )
-        assert False, "expected PermissionError"
-    except PermissionError as exc:
-        assert "methodist" in str(exc)

@@ -118,7 +118,7 @@ def _is_midsentence_fragment(sentence: str) -> bool:
         return False
     if not (first.islower() and ("а" <= first.lower() <= "я" or first.lower() == "ё")):
         return False
-    token = re.split(r"[\s,]+", s, 1)[0].strip(".,;:()«»-").lower()
+    token = re.split(r"[\s,]+", s, maxsplit=1)[0].strip(".,;:()«»-").lower()
     return token in _FUNC_WORDS
 
 

@@ -4742,7 +4742,10 @@ def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
                     z2a = int(row["zone2a_bad"] or 0)
                     z2b = int(row["zone2b_bad"] or 0)
 
-                    def _bad_pct(bad: int) -> float | None:
+                    # n_scored связывается через default: замыкание по переменной
+                    # цикла посчитало бы долю от знаменателя другого врача, если
+                    # вызов когда-нибудь уедет за пределы итерации.
+                    def _bad_pct(bad: int, n_scored: int = n_scored) -> float | None:
                         if n_scored <= 0:
                             return None
                         return round(100.0 * bad / n_scored, 1)

@@ -6,5 +6,9 @@ pandas
 pyarrow
 # Линтер (используется в CI: .github/workflows/ci.yml)
 ruff>=0.15.0
+# Покрытие: в CI стоит гейт --cov-fail-under (см. ci.yml, job lint-and-test)
+pytest-cov>=5.0.0
+# Типы: проверяется список модулей из pyproject.toml [tool.mypy]
+mypy>=1.11.0
 # Git-хуки (опционально): pre-commit install
 pre-commit>=3.7.0

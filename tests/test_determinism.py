@@ -14,9 +14,9 @@ def test_generation_config_is_deterministic() -> None:
 
     genai = pytest.importorskip("google.generativeai")
     cfg = rs._make_generation_config(genai, max_output_tokens=1024, json_mode=True)
-    assert float(getattr(cfg, "temperature")) == 0.0
-    assert int(getattr(cfg, "candidate_count")) == 1
-    assert getattr(cfg, "response_mime_type") == "application/json"
+    assert float(cfg.temperature) == 0.0
+    assert int(cfg.candidate_count) == 1
+    assert cfg.response_mime_type == "application/json"
 
 
 def test_generation_temperature_override(monkeypatch) -> None:
@@ -25,7 +25,7 @@ def test_generation_temperature_override(monkeypatch) -> None:
     genai = pytest.importorskip("google.generativeai")
     monkeypatch.setenv("GEMINI_TEMPERATURE", "0.7")
     cfg = rs._make_generation_config(genai, max_output_tokens=64, json_mode=False)
-    assert abs(float(getattr(cfg, "temperature")) - 0.7) < 1e-9
+    assert abs(float(cfg.temperature) - 0.7) < 1e-9
 
 
 def test_retrieve_order_is_stable() -> None:

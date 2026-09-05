@@ -165,3 +165,21 @@ data/catalog/corpus_path_manifest.jsonl
 # Исходные PDF нормативных актов: держим локально, в репозиторий идут только
 # извлечённые JSON в data/regulations/.
 data/regulations/source/
+
+# E2E (Playwright): package.json и playwright.config.ts в репозитории,
+# зависимости и артефакты прогонов - нет. Трассы и скриншоты падений могут
+# содержать клинический текст со страницы, поэтому в git им нельзя.
+# package-lock.json намеренно НЕ игнорируется: та же причина, по которой
+# зависимости Python закреплены в requirements-rag.lock - прогон должен быть
+# воспроизводимым.
+node_modules/
+test-results/
+playwright-report/
+blob-report/
+.playwright/
+
+# Артефакты замера покрытия (порог проверяется в CI, файлы не хранятся).
+.coverage
+.coverage.*
+coverage.json
+htmlcov/

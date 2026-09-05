@@ -10,3 +10,28 @@ testpaths = ["tests"]
 addopts = "-q"
 
 # Ruff: основная конфигурация в ruff.toml (исторически отдельный файл для CI).
+
+# Mypy включён не на весь репозиторий, а на явный список модулей.
+#
+# Причина: сплошной прогон по clinical_knowledge даёт сотни ошибок вида
+# «Item "None" of "Any | dict | None" has no attribute "get"» - следствие того,
+# что модули передают друг другу нетипизированные dict из JSONL. Это отдельная
+# задача (pydantic на границах, фаза 6.2 плана), а не то, что чинится флагом.
+#
+# Поэтому список ниже - «зона типизации», которая расширяется вместе с
+# рефакторингом. Модуль добавляется в files только когда он проходит проверку;
+# убирать модуль из списка, чтобы CI позеленел, нельзя.
+[tool.mypy]
+python_version = "3.11"
+files = [
+    "clinical_knowledge/gemini_client.py",
+    "clinical_knowledge/auth_throttle.py",
+    "scripts/ops/check_no_phi_staged.py",
+]
+# Импорты проверяемых модулей типизируются молча: цель - качество самих
+# модулей из files, а не всего графа зависимостей.
+follow_imports = "silent"
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_redundant_casts = true
+no_implicit_optional = true

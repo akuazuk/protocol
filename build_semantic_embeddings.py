@@ -74,7 +74,7 @@ def main() -> None:
         import numpy as np
     except ImportError:
         print("Установите: pip install sentence-transformers torch", file=sys.stderr)
-        raise SystemExit(1)
+        raise SystemExit(1) from None
 
     rows = json.loads(STRUCTURED.read_text(encoding="utf-8"))
 

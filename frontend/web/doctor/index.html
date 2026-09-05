@@ -14571,7 +14571,17 @@
     </div>
   </div>
 
-  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js" crossorigin="anonymous"></script>
+  <!-- chart.js с проверкой целостности (SRI): без integrity скомпрометированный
+       CDN мог бы подставить любой скрипт в клинический интерфейс.
+       Файл chart.umd.js, а не chart.umd.min.js, намеренно: .min.js собирает сам
+       jsdelivr, и его байты не сверить с первоисточником, а chart.umd.js идёт
+       в пакете npm и уже минифицирован (205 125 байт против 205 399 у .min.js,
+       то есть размер не проигрывает). Хеш сверен с registry.npmjs.org
+       (chart.js-4.4.1.tgz, dist/chart.umd.js) - байты совпадают.
+       При смене версии пересчитать: openssl dgst -sha384 -binary FILE | openssl base64 -A -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.js"
+          integrity="sha384-dug+JxfBvklEQdJ4AYuBBAIScUz0bVN73xpy273gcAwHjb3qI0fXmuYNaNfdyYJG"
+          crossorigin="anonymous"></script>
   <script src="/search-flow.js"></script>
   <script>
 (function () {
@@ -22422,7 +22432,20 @@
   }
 
   function defaultRagBase() {
-    return isLocalHostPage() ? "http://127.0.0.1:8787" : window.location.origin;
+    // Всегда origin страницы: интерфейс и API отдаёт один и тот же сервер
+    // (rag_server.py монтирует статику сам), поэтому запрос всегда
+    // same-origin.
+    //
+    // Раньше для localhost возвращался жёстко "http://127.0.0.1:8787". Это
+    // работало только при запуске ровно на 8787 (порт из README), а на любом
+    // другом порту страница начинала стучаться на 8787 - то есть на чужой
+    // origin. С включённой CSP (connect-src 'self') такой запрос
+    // блокируется браузером, и интерфейс молча остаётся без данных:
+    // сервер отвечает 200, в логах чисто. Поймано E2E-прогоном на порту 8099.
+    //
+    // Раздельная схема (UI и API на разных origin) по-прежнему возможна -
+    // через поле rag-base, которое сохраняется в localStorage ниже.
+    return window.location.origin;
   }
 
   function initRagBaseInput() {
