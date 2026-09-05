@@ -4052,25 +4052,18 @@ def get_gemini():
             detail="На сервере не настроен ключ API для обработки текста.",
         )
     try:
-        genai = _legacy_genai_module()
-        HarmBlockThreshold, HarmCategory = _legacy_genai_types()
+        from clinical_knowledge.gemini_client import build_model
     except ImportError as e:
         raise HTTPException(
             status_code=503,
             detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
         ) from e
-    genai.configure(api_key=key)
     from clinical_knowledge.gemini_model_config import main_gemini_model_name
 
     name, _warn = main_gemini_model_name()
-    # Единые safety-настройки (как в gemini_verify) - иначе медицинский текст чаще даёт пустой ответ.
-    safety = [
-        {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-    ]
-    _model = genai.GenerativeModel(name, safety_settings=safety)
+    # safety_settings задаёт общий клиент: пороги для клинического текста
+    # должны быть одинаковыми на всех путях (clinical_knowledge/gemini_client.py).
+    _model = build_model(name, api_key_override=key)
     return _model
 
 
@@ -4089,14 +4082,12 @@ def get_methodist_gemini():
         _gemini_key_idx = 0
     key = keys[_gemini_key_idx]
     try:
-        genai = _legacy_genai_module()
-        HarmBlockThreshold, HarmCategory = _legacy_genai_types()
+        from clinical_knowledge.gemini_client import build_model
     except ImportError as e:
         raise HTTPException(
             status_code=503,
             detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
         ) from e
-    genai.configure(api_key=key)
     from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
 
     name, warn = methodist_gemini_model_name()
@@ -4105,13 +4096,8 @@ def get_methodist_gemini():
         warn = None
     _methodist_model_name = name
     _methodist_model_warn = warn
-    safety = [
-        {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-    ]
-    _methodist_model = genai.GenerativeModel(name, safety_settings=safety)
+    # Ключ передаётся явно: здесь он выбирается из списка с ротацией по квоте.
+    _methodist_model = build_model(name, api_key_override=key)
     return _methodist_model
 
 
@@ -8542,7 +8528,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-05-104656Z-static-allowlist"
+BUILD_VERSION = "2026-09-05-105750Z-gemini-safety"
 
 
 def _app_version() -> str:

@@ -235,14 +235,18 @@ def gemini_advice_for_case(
     key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
     if not key:
         return None, []
+    # Через общий клиент: пороги безопасности для клинического текста должны
+    # совпадать с продовыми, иначе оценка качества мерит не то, что прод.
     try:
-        import google.generativeai as genai
+        from clinical_knowledge.gemini_client import build_model
     except ImportError:
         return None, ["Установите зависимости из requirements-rag.txt для --gemini-advice"]
 
-    genai.configure(api_key=key)
     name = (model_name or os.environ.get("GEMINI_MODEL") or "gemini-2.5-flash").strip()
-    model = genai.GenerativeModel(name)
+    try:
+        model = build_model(name, api_key_override=key)
+    except ImportError:
+        return None, ["Установите зависимости из requirements-rag.txt для --gemini-advice"]
 
     blocks: list[str] = []
     for i, r in enumerate(retrieved[:6], 1):

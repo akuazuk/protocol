@@ -26,29 +26,17 @@ def _extract_text(resp: Any) -> str:
 
 
 def gemini_available() -> bool:
-    return bool(os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY"))
+    from clinical_knowledge.gemini_client import available
+
+    return available()
 
 
 def get_lite_gemini_model():
-    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not key:
-        raise RuntimeError("GOOGLE_API_KEY not set")
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", FutureWarning)
-        import google.generativeai as genai
-        from google.generativeai.types import HarmBlockThreshold, HarmCategory
-
-    genai.configure(api_key=key)
+    from clinical_knowledge.gemini_client import build_model
     from clinical_knowledge.gemini_model_config import main_gemini_model_name
 
     name, _warn = main_gemini_model_name()
-    safety = [
-        {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-    ]
-    return genai.GenerativeModel(name, safety_settings=safety)
+    return build_model(name)
 
 
 def generate_lite_json_response(model, full_prompt: str, *, timeout: float | None = None):
