@@ -15,4 +15,5 @@
 
 - JOIN `dim_doctor`, чтение только `mode=ro`.
 - COPY реестра семейств и аномалий в `deploy/gcp-app/Dockerfile`.
+- Те же каталоги в allowlist `deploy_to_gce.sh` (иначе Docker build на VM не видит COPY).
 - Тест на каноническую схему склада без `doctor_name`.
