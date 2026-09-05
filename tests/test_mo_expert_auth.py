@@ -92,6 +92,8 @@ def test_expert_capabilities_and_reports_min_date(monkeypatch, tmp_path: Path) -
     assert caps["pages"]["queue"] is False
     assert caps["pages"]["kp_sync"] is False
     assert caps["pages"]["rceth_sync"] is False
+    assert caps["pages"]["medications"] is False
+    assert caps["pages"]["labs"] is False
     assert caps["actions"]["review_pack"] is True
     assert caps["actions"]["bulk_action"] is False
 

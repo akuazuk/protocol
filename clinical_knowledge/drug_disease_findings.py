@@ -2,7 +2,6 @@
 from __future__ import annotations
 
 import os
-import re
 from typing import Any, Mapping
 
 from clinical_knowledge.drug_normalizer import extract_drugs

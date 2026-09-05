@@ -838,6 +838,17 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
     }
     selected = {field: set(_values(params.get(key))) for key, field in _MULTI_FILTERS.items()}
     finding_codes = set(_values(params.get("finding_codes")))
+    finding_family = str(params.get("finding_family") or "").strip().lower()
+    family_forced_empty = False
+    if finding_family in {"drug", "lab"}:
+        from .mo_finding_families import codes_for_family
+
+        family_codes = codes_for_family(finding_family)
+        if finding_codes:
+            finding_codes = finding_codes & family_codes
+            family_forced_empty = not finding_codes
+        else:
+            finding_codes = set(family_codes)
     reg55_points = set(_values(params.get("reg55_point")))
     reg55_bands = {v.lower() for v in _values(params.get("reg55_band"))}
     reg55_packs = set(_values(params.get("reg55_pack")))
@@ -863,6 +874,8 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
                 for item in (rec.get("_findings") or [])
                 if isinstance(item, dict)
             }
+        if family_forced_empty:
+            continue
         if finding_codes and not (finding_codes & record_findings):
             continue
         if str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}:
@@ -3983,6 +3996,12 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
         )
     except Exception:  # noqa: BLE001
         pass
+    try:
+        from .mo_finding_families import family_scores_from_findings
+
+        detail["family_scores"] = family_scores_from_findings(detail.get("findings") or [])
+    except Exception:  # noqa: BLE001
+        pass
     return detail
 
 
@@ -4380,30 +4399,113 @@ def build_mo_health() -> dict[str, Any]:
     }
 
 
-def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
-    """KPI волны 1-4: unused lab + drug-safety columns (shadow-aware)."""
-    from .mo_anomaly_kpis import kpi_from_finding_rows, load_anomaly_catalog
-    from .mo_dual_score import form_content_matrix
-    from .mo_risk_adjust import risk_adjust_doctor_rows
-
-    if not _warehouse_available():
-        return {
-            "ok": False,
-            "error": "warehouse_unavailable",
-            "unused_lab_pct": None,
-            "drug_safety_pct": None,
-        }
-    date_from = str(params.get("date_from") or "")[:10]
-    date_to = str(params.get("date_to") or "")[:10]
+def _mo_drugs_labs_where(params: dict[str, Any]) -> tuple[str, list[Any]]:
     where = ["c.document_kind IN ('clinical_visit', 'consultation')"]
     args: list[Any] = []
+    date_from = str(params.get("date_from") or "")[:10]
+    date_to = str(params.get("date_to") or "")[:10]
     if date_from:
         where.append("c.visit_date >= ?")
         args.append(date_from)
     if date_to:
         where.append("c.visit_date <= ?")
         args.append(date_to)
-    clause = " AND ".join(where)
+    specs = _values(params.get("specializations"))
+    if specs:
+        where.append(f"c.specialty IN ({','.join('?' * len(specs))})")
+        args.extend(specs)
+    filials = _values(params.get("filials"))
+    if filials:
+        where.append(f"c.filial IN ({','.join('?' * len(filials))})")
+        args.extend(filials)
+    doctors = _values(params.get("doctors"))
+    if doctors:
+        where.append(f"c.doctor_name IN ({','.join('?' * len(doctors))})")
+        args.extend(doctors)
+    return " AND ".join(where), args
+
+
+def _count_cases_with_lab(conn: sqlite3.Connection, clause: str, args: list[Any]) -> tuple[int | None, bool]:
+    try:
+        from .mo_lab_bundle import default_lab_path, lookahead_days, lookback_days
+    except Exception:  # noqa: BLE001
+        return None, False
+    lab_path = default_lab_path()
+    if not lab_path:
+        return None, False
+    attached = False
+    try:
+        conn.execute("ATTACH DATABASE ? AS labdb", (f"file:{lab_path}?mode=ro",))
+        attached = True
+        lookback = int(lookback_days())
+        lookahead = int(lookahead_days())
+        n = conn.execute(
+            f"""
+            SELECT COUNT(DISTINCT c.mis_id)
+            FROM fact_mo_case c
+            WHERE {clause}
+              AND c.patient_key IS NOT NULL
+              AND TRIM(c.patient_key) != ''
+              AND EXISTS (
+                SELECT 1 FROM labdb.fact_mo_lab l
+                WHERE l.patient_key = c.patient_key
+                  AND l.test_date BETWEEN date(c.visit_date, ?) AND date(c.visit_date, ?)
+              )
+            """,
+            [*args, f"-{lookback} days", f"+{lookahead} day"],
+        ).fetchone()[0]
+        return int(n or 0), True
+    except sqlite3.Error:
+        return None, False
+    finally:
+        if attached:
+            try:
+                conn.execute("DETACH DATABASE labdb")
+            except sqlite3.Error:
+                pass
+
+
+def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
+    """KPI волны 1-4 + семейства Лекарства/Анализы (D0)."""
+    from .mo_anomaly_kpis import kpi_from_finding_rows, load_anomaly_catalog
+    from .mo_dual_score import form_content_matrix
+    from .mo_finding_families import family_dashboard_from_rows, family_scores_in_overall_enabled
+    from .mo_risk_adjust import risk_adjust_doctor_rows
+
+    empty_flags = {
+        "lab_unused_primary": (
+            (os.environ.get("MO_LAB_UNUSED_PRIMARY") or "0").strip().lower()
+            in {"1", "true", "yes", "on"}
+        ),
+        "class_dup_primary": (
+            (os.environ.get("MO_CLASS_DUP_PRIMARY") or "0").strip().lower()
+            in {"1", "true", "yes", "on"}
+        ),
+        "rceth_primary": (
+            (os.environ.get("MO_RCETH_LABEL_PRIMARY") or "0").strip().lower()
+            in {"1", "true", "yes", "on"}
+        ),
+        "lab_abnormal_primary": (
+            (os.environ.get("MO_LAB_ABNORMAL_PRIMARY") or "0").strip().lower()
+            in {"1", "true", "yes", "on"}
+        ),
+        "family_scores_in_overall": family_scores_in_overall_enabled(),
+    }
+    if not _warehouse_available():
+        dash = family_dashboard_from_rows([], total_cases=0)
+        return {
+            "ok": False,
+            "error": "warehouse_unavailable",
+            "unused_lab_pct": None,
+            "drug_safety_pct": None,
+            "families": dash["families"],
+            "denominators": dash["denominators"],
+            "strips": dash["strips"],
+            "flags": empty_flags,
+        }
+    date_from = str(params.get("date_from") or "")[:10]
+    date_to = str(params.get("date_to") or "")[:10]
+    clause, args = _mo_drugs_labs_where(params)
     with _connect() as conn:
         total = int(
             conn.execute(
@@ -4414,7 +4516,7 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
         )
         rows = conn.execute(
             f"""
-            SELECT f.mis_id, f.finding_code
+            SELECT f.mis_id, f.finding_code, c.specialty, c.doctor_name, c.visit_date
             FROM fact_mo_finding f
             JOIN fact_mo_case c ON c.mis_id = f.mis_id
             WHERE {clause}
@@ -4434,11 +4536,24 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             """,
             args,
         ).fetchall()
+        cases_with_lab, lab_cov = _count_cases_with_lab(conn, clause, args)
     finding_maps = [
-        {"mis_id": r[0], "finding_code": r[1]}
+        {
+            "mis_id": r[0],
+            "finding_code": r[1],
+            "specialty": r[2] if len(r) > 2 else "",
+            "doctor": r[3] if len(r) > 3 else "",
+            "visit_date": r[4] if len(r) > 4 else "",
+        }
         for r in rows
     ]
     kpi = kpi_from_finding_rows(finding_maps, total_cases=total)
+    dash = family_dashboard_from_rows(
+        finding_maps,
+        total_cases=total,
+        cases_with_lab=cases_with_lab,
+        lab_coverage_available=lab_cov,
+    )
     doctors = risk_adjust_doctor_rows(
         [
             {
@@ -4450,36 +4565,27 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             for r in doctor_rows
         ]
     )
-    return {
+    want = str(params.get("family") or "all").strip().lower()
+    payload = {
         "ok": True,
         "date_from": date_from or None,
         "date_to": date_to or None,
         "kpis": kpi,
+        "families": dash["families"],
+        "denominators": dash["denominators"],
+        "strips": dash["strips"],
         "anomaly_catalog": load_anomaly_catalog(),
         "risk_adjusted_doctors": doctors[:50],
         "matrix_example": form_content_matrix(
             clinical_pct=72,
             document_ready_pct=88,
         ),
-        "flags": {
-            "lab_unused_primary": (
-                (os.environ.get("MO_LAB_UNUSED_PRIMARY") or "0").strip().lower()
-                in {"1", "true", "yes", "on"}
-            ),
-            "class_dup_primary": (
-                (os.environ.get("MO_CLASS_DUP_PRIMARY") or "0").strip().lower()
-                in {"1", "true", "yes", "on"}
-            ),
-            "rceth_primary": (
-                (os.environ.get("MO_RCETH_LABEL_PRIMARY") or "0").strip().lower()
-                in {"1", "true", "yes", "on"}
-            ),
-            "lab_abnormal_primary": (
-                (os.environ.get("MO_LAB_ABNORMAL_PRIMARY") or "0").strip().lower()
-                in {"1", "true", "yes", "on"}
-            ),
-        },
+        "flags": empty_flags,
+        "shadow_note_ru": dash.get("shadow_note_ru"),
     }
+    if want in dash["families"]:
+        payload["family"] = dash["families"][want]
+    return payload
 
 
 def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
@@ -4506,6 +4612,8 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
             "queue": can_work_cases and not is_expert,
             "documents": can_view_population and not is_expert,
             "doctors": can_view_population and not is_expert,
+            "medications": can_view_population and not is_expert,
+            "labs": can_view_population and not is_expert,
             "specialties": can_view_population and not is_expert,
             "diagnoses": can_view_population and not is_expert,
             "safety": can_view_population and not is_expert,
@@ -4534,10 +4642,12 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
         "metric_states": ["available", "missing", "not_applicable", "scoring_error", "suppressed"],
         "checked_at": _utc(),
         "drugs_labs_plan": {
-            "version": "2026-09-04-v1",
+            "version": "2026-09-05-v1",
             "unused_lab_shadow": True,
             "class_dup_shadow": True,
             "primary_default_off": True,
+            "family_dashboards": True,
+            "family_scores_in_overall": False,
         },
     }
     return caps

@@ -1,0 +1,101 @@
+{
+  "version": "2026-09-05-v1",
+  "note_ru": "Каждый код принадлежит ровно одному семейству. Дашборды и подоси читают этот реестр.",
+  "overall_blend": {
+    "flag": "MO_FAMILY_SCORES_IN_OVERALL",
+    "default": "0",
+    "rule_ru": "По умолчанию подоси не входят в overall. Если флаг=1: lab_score сужает clinical_concordance (min), drug_score сужает safety (min). Только при соответствующих MO_*_PRIMARY. №55 не трогаем.",
+    "lab_to_axis": "clinical_concordance",
+    "drug_to_axis": "safety",
+    "lab_primary_flags": ["MO_LAB_UNUSED_PRIMARY", "MO_LAB_ABNORMAL_PRIMARY"],
+    "drug_primary_flags": ["MO_CLASS_DUP_PRIMARY", "MO_RCETH_LABEL_PRIMARY"]
+  },
+  "penalties": {"P0": 40, "P1": 20, "P2": 10, "P3": 5},
+  "caps": {"P0": 40, "P1": 60},
+  "families": [
+    {
+      "id": "drug",
+      "title_ru": "Лекарства",
+      "feeds_overall_axis": "safety",
+      "score_key": "drug_score",
+      "codes": [
+        "C_ddi",
+        "C_nsaid_dup",
+        "C_ppi_dup",
+        "C_antihistamine_dup",
+        "C_anticoag_dup",
+        "C_statin_dup",
+        "C_ace_arb_dup",
+        "C_high_alert_no_dose",
+        "C_drug_unresolved",
+        "C_formulary_unknown",
+        "C_drug_disease_mismatch",
+        "C_rceth_off_label",
+        "C_rceth_contraindication",
+        "C_rceth_age_outside_label",
+        "B_tx_offprotocol"
+      ],
+      "tiles": [
+        {"id": "any", "title_ru": "С замечанием по ЛС", "codes": []},
+        {"id": "interactions", "title_ru": "Взаимодействия", "codes": ["C_ddi"]},
+        {
+          "id": "duplicates",
+          "title_ru": "Дубли групп",
+          "codes": [
+            "C_nsaid_dup",
+            "C_ppi_dup",
+            "C_antihistamine_dup",
+            "C_anticoag_dup",
+            "C_statin_dup",
+            "C_ace_arb_dup"
+          ]
+        },
+        {
+          "id": "dose_label",
+          "title_ru": "Доза / инструкция",
+          "codes": [
+            "C_high_alert_no_dose",
+            "C_rceth_off_label",
+            "C_rceth_contraindication",
+            "C_rceth_age_outside_label",
+            "C_formulary_unknown",
+            "C_drug_unresolved",
+            "C_drug_disease_mismatch"
+          ]
+        },
+        {"id": "offprotocol", "title_ru": "Не по протоколу", "codes": ["B_tx_offprotocol"]}
+      ]
+    },
+    {
+      "id": "lab",
+      "title_ru": "Анализы",
+      "feeds_overall_axis": "clinical_concordance",
+      "score_key": "lab_score",
+      "codes": [
+        "B_lab_unused_in_dx",
+        "B_lab_unused_in_plan",
+        "B_lab_present_not_in_mo",
+        "B_lab_abnormal_ignored",
+        "B_lab_ordered_not_used",
+        "B_lab_ordered_already_done",
+        "B_exams_gap"
+      ],
+      "tiles": [
+        {
+          "id": "unused",
+          "title_ru": "Анализы не учтены",
+          "codes": ["B_lab_unused_in_dx", "B_lab_unused_in_plan"],
+          "denominator": "cases_with_lab"
+        },
+        {"id": "present_not_in_mo", "title_ru": "Есть на складе, нет в МО", "codes": ["B_lab_present_not_in_mo"]},
+        {"id": "abnormal", "title_ru": "Отклонение не отражено", "codes": ["B_lab_abnormal_ignored"]},
+        {"id": "exams_gap", "title_ru": "Пропуск по КП", "codes": ["B_exams_gap"]},
+        {
+          "id": "ordered",
+          "title_ru": "Повтор / не разобран",
+          "codes": ["B_lab_ordered_already_done", "B_lab_ordered_not_used"]
+        }
+      ]
+    }
+  ]
+}

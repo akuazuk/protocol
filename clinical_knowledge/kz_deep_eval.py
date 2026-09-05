@@ -809,6 +809,22 @@ def evaluate_kz_deep(
     except Exception:  # noqa: BLE001
         pass
 
+    family_scores: dict[str, Any] = {}
+    try:
+        from .mo_finding_families import (
+            family_scores_from_findings,
+            maybe_blend_family_into_axes,
+        )
+
+        family_scores = family_scores_from_findings(
+            findings,
+            shadow_findings=shadow_findings,
+        )
+        axes, blend_meta = maybe_blend_family_into_axes(axes, family_scores)
+        family_scores["overall_blend"] = blend_meta
+    except Exception:  # noqa: BLE001
+        family_scores = {}
+
     # overall: среднее доступных осей (объективность - без штрафа за отсутствие протокола)
     present_axes = [v for k, v in axes.items() if v is not None]
     overall = round(sum(present_axes) / len(present_axes), 1) if present_axes else None
@@ -846,6 +862,7 @@ def evaluate_kz_deep(
         "findings": findings,
         "shadow_findings": shadow_findings,
         "dual_scores": dual,
+        "family_scores": family_scores,
         "form_content_matrix": matrix,
         "article_anomalies": anomalies,
         "n_findings": sum(1 for f in findings if not f["passed"]),

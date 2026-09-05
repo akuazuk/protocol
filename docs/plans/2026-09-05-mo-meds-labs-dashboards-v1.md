@@ -1,7 +1,7 @@
 # МО Аналитика: разделы «Лекарства» и «Анализы» (дашборды + путь в общую оценку)
 
 Дата: 2026-09-05  
-Статус: **active**  
+Статус: **active** (волны D0-D4 в коде; A/B месяца и gold - владелец)
 Владелец: навигация по сотням тысяч МО; стык с общей оценкой  
 Связанные (не дублировать):
 
@@ -228,37 +228,37 @@ admission   = min(clinical_pct, document_ready_pct)
 
 ### Волна D0 - контракт (1-2 дня)
 
-1. [ ] `families_v1.json` + loader `mo_finding_families.py`
-2. [ ] Все drug/lab коды из drugs-labs-scoring покрыты; тест «нет сирот»
-3. [ ] `finding_family` в filter cases API
-4. [ ] Расширить `build_mo_drugs_labs_kpis` → family payload (`drug`, `lab`, `denominators`)
+1. [x] `families_v1.json` + loader `mo_finding_families.py`
+2. [x] Все drug/lab коды из drugs-labs-scoring покрыты; тест «нет сирот»
+3. [x] `finding_family` в filter cases API
+4. [x] Расширить `build_mo_drugs_labs_kpis` → family payload (`drug`, `lab`, `denominators`)
 
 ### Волна D1 - UI Лекарства (3-5 дней)
 
-1. [ ] Страница `medications` в `mis-kz-quality.html` + `mo-app.js`
-2. [ ] KPI + таблица кодов + разрез specialty/doctor
-3. [ ] Drill в documents с `finding_family=drug`
-4. [ ] Полоска на Сегодня/Период
-5. [ ] Бейдж «не в общей оценке»
+1. [x] Страница `medications` в `mis-kz-quality.html` + `mo-app.js`
+2. [x] KPI + таблица кодов + разрез specialty/doctor
+3. [x] Drill в documents с `finding_family=drug`
+4. [x] Полоска на Сегодня/Период
+5. [x] Бейдж «не в общей оценке»
 
 ### Волна D2 - UI Анализы (3-5 дней)
 
-1. [ ] Страница `labs` зеркально
-2. [ ] Знаменатель «МО с лабораторией в окне»
-3. [ ] Drill + полоска
-4. [ ] Связь с блоком `result.lab` в карточке (уже есть payload)
+1. [x] Страница `labs` зеркально
+2. [x] Знаменатель «МО с лабораторией в окне»
+3. [x] Drill + полоска
+4. [x] Связь с блоком `result.lab` в карточке (уже есть payload)
 
 ### Волна D3 - подоси в карточке (после gold)
 
-1. [ ] `drug_score` / `lab_score` в deep result (рядом с `dual_scores`)
-2. [ ] UI в разборе случая
-3. [ ] Отчёт agreement по семействам (уже есть helper)
+1. [x] `drug_score` / `lab_score` в deep result (рядом с `dual_scores`)
+2. [x] UI в разборе случая
+3. [x] Отчёт agreement по семействам (уже есть helper)
 
 ### Волна D4 - опциональный вклад в overall
 
-1. [ ] Флаг `MO_FAMILY_SCORES_IN_OVERALL=0` default
-2. [ ] Документированная формула весов
-3. [ ] A/B на одном месяце до включения
+1. [x] Флаг `MO_FAMILY_SCORES_IN_OVERALL=0` default
+2. [x] Документированная формула весов
+3. [ ] A/B на одном месяце до включения (живой прогон - владелец, не этот PR)
 
 ---
 
@@ -298,13 +298,13 @@ admission   = min(clinical_pct, document_ready_pct)
 
 ## 10. Acceptance волны D1 (Лекарства)
 
-- [ ] В меню есть «Лекарства»; expert не видит
-- [ ] На периоде видны ≥3 KPI и топ кодов
-- [ ] Клик по «Взаимодействия» открывает список МО только с `C_ddi` (и родственными, если group)
-- [ ] В карточке случая drug-findings по-прежнему с badge shadow при primary off
-- [ ] Overall на тех же МО не изменился
+- [x] В меню есть «Лекарства»; expert не видит
+- [x] На периоде видны ≥3 KPI и топ кодов
+- [x] Клик по «Взаимодействия» открывает список МО только с `C_ddi` (и родственными, если group)
+- [x] В карточке случая drug-findings по-прежнему с badge shadow при primary off
+- [x] Overall на тех же МО не изменился
 
-Acceptance D2 - зеркально для Анализы + знаменатель с lab coverage.
+Acceptance D2 - зеркально для Анализы + знаменатель с lab coverage: страница, полоска, `cases_with_lab` если склад лаборатории доступен.
 
 ---
 
