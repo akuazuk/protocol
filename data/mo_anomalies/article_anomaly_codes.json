@@ -1,0 +1,17 @@
+{
+  "version": "2026-09-04-v1",
+  "source": "docs/plans/2026-09-04-mo-drugs-labs-scoring-v1.md wave 4",
+  "note_ru": "Топ-10 аномалий статьи РЗ → коды findings МО. shadow/primary зависит от кода.",
+  "anomalies": [
+    {"n": 1, "title_ru": "Пациент в опасности", "codes": ["C_red_flag_unrouted", "C_ddi", "C_uncertainty_unrouted"]},
+    {"n": 2, "title_ru": "Анализ сделан, но не учтён", "codes": ["B_lab_unused_in_dx", "B_lab_unused_in_plan", "B_lab_present_not_in_mo", "B_lab_abnormal_ignored"]},
+    {"n": 3, "title_ru": "Пропущено обязательное обследование", "codes": ["B_exams_gap"]},
+    {"n": 4, "title_ru": "Диагноз ничем не подтверждён", "codes": ["B_dx_no_support"]},
+    {"n": 5, "title_ru": "Одна и та же ошибка у врача", "codes": ["_aggregate_repeat_doctor"]},
+    {"n": 6, "title_ru": "Записи под копирку", "codes": ["E_template_copy"]},
+    {"n": 7, "title_ru": "Целая специальность отстаёт", "codes": ["_aggregate_specialty"]},
+    {"n": 8, "title_ru": "Врач работает хуже ожидаемого потока", "codes": ["_aggregate_risk_adjust"]},
+    {"n": 9, "title_ru": "Резкое ухудшение за неделю", "codes": ["_aggregate_week_spike"]},
+    {"n": 10, "title_ru": "Документы лучше, чем лечение", "codes": ["_aggregate_form_over_content"]}
+  ]
+}

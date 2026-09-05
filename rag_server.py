@@ -8485,7 +8485,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-08-26-122955Z-mo-lab-report-owner"
+BUILD_VERSION = "2026-09-05-041017Z-mo-meds-labs-dash"
 
 
 def _app_version() -> str:
@@ -11738,6 +11738,7 @@ def api_methodist_mo_cases(
     kz_kinds: str = Query("", max_length=500),
     statuses: str = Query("", max_length=500),
     finding_codes: str = Query("", max_length=2000),
+    finding_family: str = Query("", max_length=16),
     mkb_chapters: str = Query("", max_length=1000),
     crm_statuses: str = Query("", max_length=500),
     assignees: str = Query("", max_length=2000),
@@ -12798,6 +12799,32 @@ def api_methodist_mo_capabilities(request: "Request") -> dict:
     if app_user:
         return capabilities_for_user(app_user)
     return build_mo_capabilities(_mo_role(request))
+
+
+@app.get("/api/methodist/mo/drugs-labs-kpis")
+def api_methodist_mo_drugs_labs_kpis(
+    request: "Request",
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    family: str = Query("", max_length=16),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+) -> dict:
+    """KPI unused lab + drug-safety + семейства Лекарства/Анализы."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_mo_drugs_labs_kpis
+
+    return build_mo_drugs_labs_kpis(
+        _mo_params(
+            date_from=date_from,
+            date_to=date_to,
+            family=family,
+            specializations=specializations,
+            filials=filials,
+            doctors=doctors,
+        )
+    )
 
 
 @app.get("/api/methodist/mo/briefing")

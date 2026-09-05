@@ -7,6 +7,7 @@ import sys
 from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 
+from clinical_knowledge import mo_lab_rollout
 from clinical_knowledge.mo_lab_bundle import lab_primary_enabled
 from clinical_knowledge.mo_lab_rollout import (
     build_rollout_report,
@@ -159,6 +160,13 @@ def test_report_is_aggregate_only_and_unlocks_guard(
     guard = lab_primary_guard(data_root=tmp_path, today=date(2026, 8, 26))
     assert guard["allowed"] is True
     assert guard["effective"] is True
+
+    class _FrozenDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime(2026, 8, 26, 12, 0, tzinfo=tz or timezone.utc)
+
+    monkeypatch.setattr(mo_lab_rollout, "datetime", _FrozenDateTime)
     assert lab_primary_enabled() is True
     report["review_pack"]["finding_decisions"] = {
         "confirmed": 3,

@@ -19,8 +19,8 @@ def test_left_menu_has_exactly_seven_visible_pages() -> None:
         if 'class="nav-button" data-page=' in line and "<li hidden>" not in line
     ]
     # settings stays hidden for accounts admin (#89); + Инструкции ЛС (rceth)
-    assert len(visible) == 8
-    for page in ("yesterday", "overview", "queue", "documents", "doctors", "reports", "kp-sync", "rceth-sync"):
+    assert len(visible) == 10
+    for page in ("yesterday", "overview", "queue", "documents", "doctors", "medications", "labs", "reports", "kp-sync", "rceth-sync"):
         assert f'data-page="{page}"' in nav
     assert 'data-page="settings"' in nav
     assert "<li hidden>" in nav

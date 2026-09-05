@@ -43,13 +43,15 @@ def _visible_text(html: str) -> str:
 
 
 def test_mo_dashboard_has_complete_crm_navigation() -> None:
-    # Канон меню: 8 видимых (включая Протоколы МЗ и Инструкции ЛС) + hidden settings.
+    # Канон меню: 10 видимых (Лекарства/Анализы + КП + Инструкции ЛС) + hidden settings.
     for page in (
         "overview",
         "yesterday",
         "queue",
         "documents",
         "doctors",
+        "medications",
+        "labs",
         "reports",
         "kp-sync",
         "rceth-sync",
@@ -64,6 +66,8 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "Очередь",
         "Все случаи",
         "Врачи",
+        "Лекарства",
+        "Анализы",
         "Отчёты",
         "Протоколы МЗ",
         "Инструкции ЛС",
