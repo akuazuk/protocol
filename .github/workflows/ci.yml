@@ -15,7 +15,12 @@ concurrency:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Прогон с инструментацией покрытия занимает ~9 минут (замерено 2026-09-05:
+    # 9.6 мин на runner, 8m55s локально). При лимите 15 минут запас съедался
+    # разбросом скорости runner, и джоба падала как `cancelled` - это выглядит
+    # как отмена соседней вкладкой, хотя `cancel-in-progress: false`. Порог не
+    # про длительность теста, а про запас: понижать вместе с ростом набора.
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
