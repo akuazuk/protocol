@@ -18,7 +18,7 @@
     };
     var EXPERT_PAGES = { yesterday: true, reports: true };
     var state = {
-      page: "yesterday", period: "yesterday", compare: "previous", methodology: "v4", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", rubricCriterion: "",
+      page: "yesterday", period: "yesterday", compare: "previous", methodology: "v4", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", findingFamily: "", rubricCriterion: "",
       reg55Band: "", reg55Pack: "", icdVisitStatus: "",
       sortBy: "date", sortDir: "desc",
       zoneFilter: "", zoneBandFilter: "", overallGrade: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
@@ -43,7 +43,7 @@
     };
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Сегодня", queue: "Очередь",
-      documents: "Все случаи", doctors: "Врачи",
+      documents: "Все случаи", doctors: "Врачи", medications: "Лекарства", labs: "Анализы",
       reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции ЛС", settings: "Справка"
     };
     var REMOVED_PAGES = {
@@ -450,6 +450,7 @@
       else if (visitMatch) q.set("visit_id", visitMatch[1]);
       else if (searchRaw) q.set("q", searchRaw);
       if (state.findingCode) q.set("finding_codes", state.findingCode);
+      if (state.findingFamily) q.set("finding_family", state.findingFamily);
       if (state.rubricCriterion) q.set("reg55_point", state.rubricCriterion);
       if (state.reg55Band) q.set("reg55_band", state.reg55Band);
       if (state.reg55Pack) q.set("reg55_pack", state.reg55Pack);
@@ -791,6 +792,7 @@
         dateTo: state.dateTo,
         search: state.search,
         findingCode: state.findingCode,
+        findingFamily: state.findingFamily,
         selected: JSON.parse(JSON.stringify(state.selected || {}))
       };
     }
@@ -802,6 +804,7 @@
       state.dateTo = snapshot.dateTo || "";
       state.search = snapshot.search || "";
       state.findingCode = snapshot.findingCode || "";
+      state.findingFamily = snapshot.findingFamily || "";
       state.selected = JSON.parse(JSON.stringify(snapshot.selected || state.selected));
       $("period").value = state.period;
       $("compare").value = state.compare;
@@ -862,6 +865,7 @@
       options = options || {};
       var action = function () {
         if (options.findingCode !== undefined) state.findingCode = options.findingCode;
+        if (options.findingFamily !== undefined) state.findingFamily = options.findingFamily;
         if (options.search !== undefined) state.search = options.search;
         if (options.caseSearchValue !== undefined) $("case-search").value = options.caseSearchValue;
         if (options.selected) {
@@ -905,6 +909,10 @@
       if (state.findingCode) {
         html.push('<span class="chip">Замечание: ' + esc(state.findingCode) +
           '<button type="button" data-clear-finding aria-label="Удалить фильтр замечания">×</button></span>');
+      }
+      if (state.findingFamily) {
+        html.push('<span class="chip">Раздел: ' + esc(state.findingFamily === "lab" ? "Анализы" : "Лекарства") +
+          '<button type="button" data-clear-family aria-label="Удалить фильтр раздела">×</button></span>');
       }
       if (state.rubricCriterion) {
         html.push('<span class="chip">№55 пункт: ' + esc(state.rubricCriterion) +
@@ -966,6 +974,11 @@
       var clearFinding = $("filter-chips").querySelector("[data-clear-finding]");
       if (clearFinding) clearFinding.addEventListener("click", function () {
         state.findingCode = "";
+        filtersChanged();
+      });
+      var clearFamily = $("filter-chips").querySelector("[data-clear-family]");
+      if (clearFamily) clearFamily.addEventListener("click", function () {
+        state.findingFamily = "";
         filtersChanged();
       });
       var clearRubric = $("filter-chips").querySelector("[data-clear-rubric]");
@@ -1051,6 +1064,7 @@
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
       state.search = q.get("q") || "";
       state.findingCode = q.get("finding_codes") || "";
+      state.findingFamily = q.get("finding_family") || "";
       state.rubricCriterion = q.get("reg55_point") || "";
       state.reg55Band = q.get("reg55_band") || "";
       state.reg55Pack = q.get("reg55_pack") || "";
@@ -1616,6 +1630,7 @@
       var attention = data.attention || (data.overview && data.overview.attention) || null;
       if (!attention && state.data.overviewAttention) attention = state.data.overviewAttention;
       renderAttentionStrip("month-attention", attention);
+      loadFamilyStrips("month-family-strip");
       renderSeverityPriorityRing(data.worst_severity_cases || {});
       renderZoneTrendHost("month-zone-trend", (attention && attention.zone_trends) || data.zone_trends || []);
       var look = $("month-look-where");
@@ -3029,6 +3044,7 @@
           '<div class="case-workspace-decision">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
+          renderFamilyScores(data) +
           renderShadowDxPlan(shadowDxPlan) +
           renderReviewBrief(data.review_brief, data.case_narrative) +
           renderFindingsCompact(findings, crm, llmJudge) +
@@ -3052,6 +3068,7 @@
           '</div><div class="case-workspace-decision">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderPatientHistory(data.patient_history) +
+          renderFamilyScores(data) +
           renderLabBundle(data.lab) +
           renderShadowDxPlan(shadowDxPlan) +
           renderLlmActionJudge(llmJudge, sourceDocument, item) +
@@ -3480,6 +3497,179 @@
         page: "documents"
       });
     }
+    function navigateFamily(family, sourceLabel) {
+      applyDrill({
+        label: sourceLabel || (family === "lab" ? "Анализы" : "Лекарства"),
+        findingFamily: family || "",
+        findingCode: "",
+        search: "",
+        caseSearchValue: "",
+        page: "documents"
+      });
+    }
+    function navigateFamilyCode(family, codes, sourceLabel) {
+      applyDrill({
+        label: sourceLabel || (codes || ""),
+        findingFamily: family || "",
+        findingCode: codes || "",
+        search: "",
+        caseSearchValue: "",
+        page: "documents"
+      });
+    }
+    function familyPct(value) {
+      return value == null ? "-" : String(value).replace(".", ",") + "%";
+    }
+    function renderFamilyStrip(hostId, payload) {
+      var host = $(hostId);
+      if (!host) return;
+      var strips = (payload && payload.strips) || {};
+      var drug = strips.drug || {};
+      var lab = strips.lab || {};
+      function tile(family, title, row) {
+        return '<button type="button" class="family-strip-tile" data-family-go="' + esc(family) + '">' +
+          '<div class="kpi-label">' + esc(title) + ' · черновик</div>' +
+          '<div class="kpi-value">' + esc(familyPct(row.pct)) + '</div>' +
+          '<div class="kpi-meta">' + esc(row.top_title_ru || row.top_code || "нет замечаний") + "</div></button>";
+      }
+      host.innerHTML = tile("drug", "Лекарства", drug) + tile("lab", "Анализы", lab);
+      host.querySelectorAll("[data-family-go]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var fam = btn.getAttribute("data-family-go") || "drug";
+          switchPage(fam === "lab" ? "labs" : "medications");
+        });
+      });
+    }
+    async function loadFamilyStrips(hostId) {
+      var host = $(hostId);
+      if (!host) return;
+      try {
+        var response = await request("/drugs-labs-kpis?" + query().toString());
+        if (!response.ok) {
+          host.innerHTML = '<p class="card-sub">Сводка по лекарствам и анализам недоступна.</p>';
+          return;
+        }
+        renderFamilyStrip(hostId, await response.json());
+      } catch (error) {
+        host.innerHTML = '<p class="card-sub">Сводка по лекарствам и анализам недоступна.</p>';
+      }
+    }
+    function renderFamilyTable(host, rows, family, emptyText) {
+      if (!host) return;
+      if (!rows || !rows.length) {
+        host.innerHTML = '<p class="empty">' + esc(emptyText || "Нет данных за период.") + "</p>";
+        return;
+      }
+      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Код</th><th>Замечание</th><th>МО</th><th>%</th></tr></thead><tbody>' +
+        rows.map(function (row) {
+          return '<tr><td>' + esc(row.code || "") + "</td><td>" + esc(row.title_ru || row.code || "") +
+            "</td><td>" + esc(row.cases) + "</td><td>" + esc(familyPct(row.pct)) +
+            '</td></tr>';
+        }).join("") + "</tbody></table></div>";
+      host.querySelectorAll("tbody tr").forEach(function (tr, idx) {
+        tr.style.cursor = "pointer";
+        tr.addEventListener("click", function () {
+          var row = rows[idx] || {};
+          navigateFamilyCode(family, row.code || "", row.title_ru || row.code);
+        });
+      });
+    }
+    function renderFamilySlice(host, rows, key, family) {
+      if (!host) return;
+      if (!rows || !rows.length) {
+        host.innerHTML = '<p class="empty">Недостаточно данных.</p>';
+        return;
+      }
+      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>' +
+        (key === "doctor" ? "Врач" : "Специальность") +
+        "</th><th>МО</th><th>%</th></tr></thead><tbody>" +
+        rows.map(function (row) {
+          var label = row[key] || row.specialty || "";
+          return "<tr><td>" + esc(label) + "</td><td>" + esc(row.cases) +
+            "</td><td>" + esc(familyPct(row.pct)) + "</td></tr>";
+        }).join("") + "</tbody></table></div>";
+    }
+    function renderFamilyKpis(host, family, data) {
+      if (!host) return;
+      var fam = ((data.families || {})[family]) || data.family || {};
+      var tiles = fam.tiles || [];
+      if (!tiles.length) {
+        host.innerHTML = '<p class="empty">Нет KPI за период. Нужен склад findings.</p>';
+        return;
+      }
+      host.innerHTML = tiles.map(function (tile) {
+        var meta = tile.denominator === "cases_with_lab"
+          ? "среди МО с лабораторией"
+          : "доля МО периода";
+        return '<button type="button" class="kpi kpi--clickable" data-family-tile="' + esc(tile.id || "") + '">' +
+          '<div class="kpi-label">' + esc(tile.title_ru || tile.id) + "</div>" +
+          '<div class="kpi-value">' + esc(familyPct(tile.pct)) + "</div>" +
+          '<div class="kpi-meta">' + esc(String(tile.cases || 0) + " · " + meta) + "</div></button>";
+      }).join("");
+      host.querySelectorAll("[data-family-tile]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          var id = btn.getAttribute("data-family-tile") || "";
+          var tile = tiles.filter(function (t) { return t.id === id; })[0];
+          if (!tile) return;
+          if (!tile.codes || !tile.codes.length || id === "any") navigateFamily(family, tile.title_ru);
+          else navigateFamilyCode(family, tile.codes.join(","), tile.title_ru);
+        });
+      });
+    }
+    async function loadFamilyDashboard(family) {
+      var prefix = family === "lab" ? "labs" : "medications";
+      var response = await request("/drugs-labs-kpis?" + query().toString());
+      if (!response.ok) throw new Error("Не удалось загрузить сводку " + (family === "lab" ? "анализов" : "лекарств") + ".");
+      var data = await response.json();
+      renderFamilyKpis($(prefix + "-kpis"), family, data);
+      renderFamilyTable($(prefix + "-codes"), ((data.families || {})[family] || {}).by_code || [], family);
+      renderFamilySlice($(prefix + "-specialty"), ((data.families || {})[family] || {}).by_specialty || [], "specialty", family);
+      renderFamilySlice($(prefix + "-doctors"), ((data.families || {})[family] || {}).by_doctor || [], "doctor", family);
+      if (family === "lab") {
+        var den = data.denominators || {};
+        var cov = $("labs-coverage");
+        if (cov) {
+          cov.textContent = den.lab_coverage_available
+            ? ("Знаменатель: " + (den.cases_with_lab || 0) + " МО с лабораторией в окне из " + (den.total_cases || 0) + ".")
+            : ("Знаменатель лаборатории недоступен. Доли считаются от всех " + (den.total_cases || 0) + " МО периода.");
+        }
+      }
+      try {
+        var q = query();
+        q.set("finding_family", family);
+        q.set("page_size", "8");
+        var casesResp = await request("/cases?" + q.toString());
+        var preview = $(prefix + "-preview");
+        if (preview && casesResp.ok) {
+          var cases = await casesResp.json();
+          var items = cases.items || cases.rows || [];
+          if (!items.length) preview.innerHTML = '<p class="empty">Нет случаев с замечаниями этого раздела.</p>';
+          else {
+            preview.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Визит</th><th>Дата</th><th>Врач</th><th></th></tr></thead><tbody>' +
+              items.slice(0, 8).map(function (row) {
+                var id = row.case_id || row.visit_id || "";
+                return "<tr><td>" + esc(id) + "</td><td>" + esc(row.date || row.visit_date || "") +
+                  "</td><td>" + esc(row.doctor_fio || row.doctor || "") +
+                  '</td><td><button type="button" class="button secondary compact" data-open-family-list>Все</button></td></tr>';
+              }).join("") + "</tbody></table></div>";
+            preview.querySelectorAll("[data-open-family-list]").forEach(function (btn) {
+              btn.addEventListener("click", function () { navigateFamily(family); });
+            });
+          }
+        }
+      } catch (error) {}
+    }
+    function renderFamilyScores(data) {
+      var scores = data.family_scores || (data.dual_scores && data.dual_scores.family_scores) || {};
+      if (!scores || (scores.drug_score == null && scores.lab_score == null)) return "";
+      var note = scores.note_ru || "черновик, не в общей оценке";
+      function chip(label, value) {
+        return '<div class="family-score-chip"><div class="kpi-label">' + esc(label) +
+          '</div><div class="kpi-value">' + esc(value == null ? "-" : Math.round(Number(value))) +
+          '</div><div class="kpi-meta">' + esc(note) + "</div></div>";
+      }
+      return '<div class="family-score-row">' + chip("Лекарства", scores.drug_score) + chip("Анализы", scores.lab_score) + "</div>";
+    }
     function navigateYesterdayFinding(code, label, day) {
       applyDrill({
         label: label || ("Замечание " + (code || "")),
@@ -3683,6 +3873,7 @@
     function renderYesterday(data, dash, workingDay) {
       renderYesterdayScoreKpis(data, dash || null);
       renderAttentionStrip("yesterday-attention", data.attention || null);
+      loadFamilyStrips("yesterday-family-strip");
       renderYesterdayScoreDashboard(dash || state.data.scoreDashboard || null, workingDay || data.date || "");
       renderYesterdayActions(data);
       renderYesterdayCompleteness(data);
@@ -4813,6 +5004,8 @@
         else if (page === "queue") await loadCases(true);
         else if (page === "documents") await loadCases(false);
         else if (page === "doctors") await loadDoctorsDimension();
+        else if (page === "medications") await loadFamilyDashboard("drug");
+        else if (page === "labs") await loadFamilyDashboard("lab");
         else if (page === "reports") {
           await loadReports();
           try { await loadAccessLog(); } catch (e) {}

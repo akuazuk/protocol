@@ -26,6 +26,8 @@
           <li><button class="nav-button" data-page="queue"><span class="nav-icon">!</span><span class="nav-text">Очередь</span></button></li>
           <li><button class="nav-button" data-page="documents"><span class="nav-icon">≡</span><span class="nav-text">Все случаи</span></button></li>
           <li><button class="nav-button" data-page="doctors"><span class="nav-icon">Вр</span><span class="nav-text">Врачи</span></button></li>
+          <li><button class="nav-button" data-page="medications"><span class="nav-icon">Лк</span><span class="nav-text">Лекарства</span></button></li>
+          <li><button class="nav-button" data-page="labs"><span class="nav-icon">Ан</span><span class="nav-text">Анализы</span></button></li>
           <li><button class="nav-button" data-page="reports"><span class="nav-icon">⇩</span><span class="nav-text">Отчёты</span></button></li>
           <li><button class="nav-button" data-page="kp-sync"><span class="nav-icon">КП</span><span class="nav-text">Протоколы МЗ</span></button></li>
           <li><button class="nav-button" data-page="rceth-sync"><span class="nav-icon">ЛС</span><span class="nav-text">Инструкции ЛС</span></button></li>
@@ -143,6 +145,7 @@
           <div id="month-reconciliation" class="banner" hidden></div>
           <div class="kpis kpis--ops" id="month-kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
           <div class="attention-strip" id="month-attention"><div class="skeleton"></div></div>
+          <div class="family-strip" id="month-family-strip"></div>
           <div class="grid">
             <article class="card span-12"><h2>Приоритет замечаний</h2><p class="card-sub">Худший уровень замечания за период. Клик открывает случаи с этим фильтром</p><div id="month-severity-ring" class="score-ring score-ring--wide"></div></article>
             <article class="card span-12"><h2>Тренд трёх оценок</h2><p class="card-sub">Оформление · Диагноз · План по протоколу</p><div id="month-zone-trend"></div></article>
@@ -164,6 +167,7 @@
           <div class="page-head"><div><h1 id="title-yesterday">Сегодня</h1><p id="yesterday-date">Рабочий экран за вчера: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
           <div class="kpis score-kpi-strip" id="yesterday-score-kpis"><div class="skeleton"></div></div>
           <div class="attention-strip" id="yesterday-attention"><div class="skeleton"></div></div>
+          <div class="family-strip" id="yesterday-family-strip"></div>
           <div id="partial-banner" class="banner" hidden>Данные неполные. Публикация итогового отчёта заблокирована до завершения проверки.</div>
           <div class="section-actions"><button class="button" data-action="download">Скачать отчёт</button><button class="button secondary" data-go="queue">Открыть очередь</button><button class="button secondary" id="share-yesterday">Поделиться ссылкой на срез</button></div>
           <div class="grid">
@@ -252,7 +256,23 @@
               <article class="card span-3"><h2>Выбранные врачи</h2><div id="doctor-selection-flow" class="empty">Выделите точки рамкой.</div></article>
             </div>
           </details>
-        </section>        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports">
+        </section>
+        <section class="page" id="page-medications" data-page="medications" hidden aria-labelledby="title-medications">
+          <div class="page-head"><div><h1 id="title-medications">Лекарства</h1><p>Назначения в МО: взаимодействия, дубли групп, доза и инструкция. Не путать с вкладкой «Инструкции ЛС».</p></div><span class="draft-badge">черновик, не в общей оценке</span></div>
+          <div class="kpis" id="medications-kpis"><div class="skeleton"></div></div>
+          <div class="card"><h2>Что чаще всего</h2><p class="card-sub">Клик открывает список МО с этим замечанием</p><div id="medications-codes"></div></div>
+          <div class="grid"><article class="card span-6"><h2>По специальности</h2><div id="medications-specialty"></div></article><article class="card span-6"><h2>По врачам</h2><p class="card-sub">Сравнение с ≥20 случаев</p><div id="medications-doctors"></div></article></div>
+          <div class="card"><h2>Случаи</h2><p class="card-sub">Превью с фильтром семейства. Клик по строке открывает полный список</p><div id="medications-preview"></div></div>
+        </section>
+        <section class="page" id="page-labs" data-page="labs" hidden aria-labelledby="title-labs">
+          <div class="page-head"><div><h1 id="title-labs">Анализы</h1><p>Результаты лаборатории в окне визита: не учтены в диагнозе или плане, отклонение, пропуск по КП.</p></div><span class="draft-badge">черновик, не в общей оценке</span></div>
+          <p class="card-sub" id="labs-coverage"></p>
+          <div class="kpis" id="labs-kpis"><div class="skeleton"></div></div>
+          <div class="card"><h2>Что чаще всего</h2><p class="card-sub">Клик открывает список МО с этим замечанием</p><div id="labs-codes"></div></div>
+          <div class="grid"><article class="card span-6"><h2>По специальности</h2><div id="labs-specialty"></div></article><article class="card span-6"><h2>По врачам</h2><p class="card-sub">Сравнение с ≥20 случаев</p><div id="labs-doctors"></div></article></div>
+          <div class="card"><h2>Случаи</h2><p class="card-sub">Превью с фильтром семейства. Клик по строке открывает полный список</p><div id="labs-preview"></div></div>
+        </section>
+        <section class="page" id="page-reports" data-page="reports" hidden aria-labelledby="title-reports">
           <div class="page-head"><div><h1 id="title-reports">Отчёты</h1><p>Ежедневные отчёты, свежесть данных и быстрый переход к разбору.</p></div></div>
           <div class="section-actions">
             <button class="button" data-action="export-aggregates">Создать сводку</button>
