@@ -71,6 +71,15 @@ def test_dx_missing_diagnosis_is_na_and_missing_evidence_is_blocked() -> None:
     assert blocked is not None
     assert blocked["verdict"] == "blocked"
     assert blocked["dx_evidence_pct"] is None
+    lab_only = nonsemantic_dx_result(
+        {
+            "slots": {
+                "clinical_diagnosis": "Диагноз",
+                "lab": "ОАК (2026-08-20, день визита)",
+            }
+        }
+    )
+    assert lab_only is None
 
 
 def test_grounded_plan_contract_keeps_three_blocks_and_sources() -> None:

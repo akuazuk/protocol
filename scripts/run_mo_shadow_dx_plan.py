@@ -220,9 +220,13 @@ def judge_one(
         ) | {"visit_id": case_id, "mis_id": mis_id, "dry_run": True}
 
     assert_gce_live_contour()
+    from clinical_knowledge.mo_lab_dx_evidence import attach_lab_evidence_to_row
     from scripts.run_mo_calibration_blind_judge import blind_case_pack
 
-    pack = blind_case_pack(row, sample_id=case_id or mis_id or "case")
+    pack = blind_case_pack(
+        attach_lab_evidence_to_row(row),
+        sample_id=case_id or mis_id or "case",
+    )
     route, protocol_context = protocol_context_for_case(row, pack)
     dx_prompt, _ = build_dx_prompt(pack)
     plan_prompt, _ = build_plan_prompt(

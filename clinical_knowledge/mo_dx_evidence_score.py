@@ -18,6 +18,7 @@ EVIDENCE_SLOTS = frozenset(
         "anamnesis",
         "objective_status",
         "exam_data",
+        "lab",
         "diagnosis",
         "icd",
         "meta",
@@ -106,16 +107,39 @@ def validate_dx_evidence_result(
     }
 
 
+def _as_map(value: Any) -> Mapping[str, Any]:
+    return value if isinstance(value, Mapping) else {}
+
+
+def _first_text(*values: Any) -> str:
+    for value in values:
+        if isinstance(value, Mapping):
+            continue
+        text = str(value or "").strip()
+        if text:
+            return text
+    return ""
+
+
 def dx_evidence_eligibility(case_pack: Mapping[str, Any]) -> dict[str, Any]:
     """Determine only whether semantic grading is possible, without grading it."""
-    slots = case_pack.get("slots") if isinstance(case_pack.get("slots"), Mapping) else case_pack
-    diagnosis = str(
-        slots.get("clinical_diagnosis")
-        or slots.get("diagnosis")
-        or slots.get("diagnosis_text")
-        or ""
-    ).strip()
-    icd = str(slots.get("mkb_code_main") or slots.get("diagnosis_code") or slots.get("icd") or "").strip()
+    slots = _as_map(case_pack.get("slots")) or case_pack
+    evidence = _as_map(case_pack.get("evidence"))
+    diagnosis_obj = case_pack.get("diagnosis")
+    diagnosis_obj = diagnosis_obj if isinstance(diagnosis_obj, Mapping) else {}
+    lab_ev = _as_map(case_pack.get("lab_evidence"))
+    diagnosis = _first_text(
+        slots.get("clinical_diagnosis"),
+        slots.get("diagnosis"),
+        slots.get("diagnosis_text"),
+        diagnosis_obj.get("text"),
+    )
+    icd = _first_text(
+        slots.get("mkb_code_main"),
+        slots.get("diagnosis_code"),
+        slots.get("icd"),
+        diagnosis_obj.get("icd"),
+    )
     evidence_present = [
         name
         for name, aliases in {
@@ -124,8 +148,19 @@ def dx_evidence_eligibility(case_pack: Mapping[str, Any]) -> dict[str, Any]:
             "objective_status": ("objective_status", "objective", "status_localis"),
             "exam_data": ("exam_data", "exam_results", "investigations"),
         }.items()
-        if any(str(slots.get(alias) or "").strip() for alias in aliases)
+        if any(
+            str(container.get(alias) or "").strip()
+            for container in (slots, evidence)
+            for alias in aliases
+        )
     ]
+    lab_text = _first_text(
+        evidence.get("lab"),
+        slots.get("lab"),
+        lab_ev.get("text"),
+    )
+    if lab_text or lab_ev.get("present") or int(lab_ev.get("n_panels") or 0) > 0:
+        evidence_present.append("lab")
     if not diagnosis and not icd:
         status = "na"
         reason = "missing_diagnosis_and_icd"

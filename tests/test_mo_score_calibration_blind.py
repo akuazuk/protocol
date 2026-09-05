@@ -60,6 +60,21 @@ def test_blind_pack_is_allowlist_and_drops_engine_outputs() -> None:
     assert not any(key in serialized for key in FORBIDDEN_PROMPT_KEYS)
 
 
+def test_dx_prompt_includes_lab_slot_without_values() -> None:
+    row = _source_row()
+    row["lab_evidence"] = {
+        "present": True,
+        "text": "ОАК (2026-08-20, день визита)",
+        "panels": [{"label": "ОАК", "test_date": "2026-08-20", "same_day": True}],
+    }
+    pack = blind_case_pack(row, sample_id="S001")
+    prompt, prompt_input = build_dx_prompt(pack)
+    assert pack["evidence"]["lab"] == "ОАК (2026-08-20, день визита)"
+    assert "ОАК (2026-08-20, день визита)" in prompt
+    assert "не ставь poor" in prompt.lower()
+    assert audit_prompt_input(prompt_input, source_row=row)["passed"] is True
+
+
 def test_dx_prompt_cannot_see_plan_or_engine_canaries() -> None:
     row = _source_row()
     pack = blind_case_pack(row, sample_id="S001")

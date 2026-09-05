@@ -15,6 +15,7 @@ from clinical_knowledge.mo_lab_bundle import (
     lab_primary_enabled,
     lab_reconcile_payload_for_case,
 )
+from clinical_knowledge.mo_lab_dx_evidence import CODE_DX_LAB_CONTEXT
 
 ENGINE = "mo_lab_shadow_v1"
 _SOURCE = "mo_lab_shadow_v1"
@@ -23,6 +24,7 @@ CODE_PRESENT_GAP = "B_lab_present_not_in_mo"
 LAB_SHADOW_CODES = {
     CODE_ORDERED_DONE,
     CODE_PRESENT_GAP,
+    CODE_DX_LAB_CONTEXT,
     "B_lab_unused_in_dx",
     "B_lab_unused_in_plan",
     "B_lab_ordered_not_used",
@@ -453,6 +455,13 @@ def evaluate_lab_for_case(
     payload = lab_payload_for_case(case, lab_db=lab_db)
     reconcile_source = lab_reconcile_payload_for_case(case, lab_db=lab_db)
     recon = build_lab_reconcile(reconcile_source, case)
+    from clinical_knowledge.mo_lab_dx_evidence import (
+        lab_dx_shadow_findings,
+        lab_evidence_for_dx,
+    )
+
+    dx_evidence = lab_evidence_for_dx(case, bundle=reconcile_source)
+    payload["dx_evidence"] = dx_evidence
     payload["reconcile"] = {
         "engine": ENGINE,
         "ordered": list(recon.get("ordered") or []),
@@ -466,7 +475,7 @@ def evaluate_lab_for_case(
         "post_visit_present": list(recon.get("post_visit_present") or []),
         "note_ru": recon.get("note_ru") or "",
     }
-    findings = lab_shadow_findings(recon)
+    findings = lab_shadow_findings(recon) + lab_dx_shadow_findings(dx_evidence, case)
     try:
         from clinical_knowledge.lab_unused_findings import (
             merge_unused_into_findings,
