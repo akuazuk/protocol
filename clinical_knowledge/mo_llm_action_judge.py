@@ -10,6 +10,8 @@ import re
 from pathlib import Path
 from typing import Any
 
+from .phi_for_llm import pseudonym, redact_mapping_for_llm
+
 ENGINE = "mo_llm_action_judge_v1"
 SCHEMA_VERSION = 1
 
@@ -188,14 +190,17 @@ def validate_stage_a(raw: dict[str, Any], *, case_id: str | None = None) -> dict
     ]
     blocks = completeness["blocks"]
     inputs_src = raw.get("inputs_used") if isinstance(raw.get("inputs_used"), dict) else {}
-    cid = str(raw.get("case_id") or case_id or "").strip()
+    # Идентификатор случая берём у вызывающей стороны, а не из ответа модели:
+    # промпт теперь содержит псевдоним, а ошибка модели в эхо-поле подшила бы
+    # клиническое суждение к чужому случаю.
+    cid = str(case_id or raw.get("case_id") or "").strip()
     return {
         "schema_version": SCHEMA_VERSION,
         "stage": "A",
         "engine": ENGINE,
         "case_id": cid,
-        "visit_id": str(raw.get("visit_id") or cid).strip(),
-        "mis_id": str(raw.get("mis_id") or "").strip(),
+        "visit_id": cid,
+        "mis_id": "",
         "patient": {
             "age_years": age_i,
             "audience": audience,
@@ -278,14 +283,15 @@ def validate_stage_b(raw: dict[str, Any], *, case_id: str | None = None) -> dict
         _validate_finding(f, idx=i) for i, f in enumerate(raw.get("findings") or []) if isinstance(f, dict)
     ]
     ref = raw.get("stage_a_ref") if isinstance(raw.get("stage_a_ref"), dict) else {}
-    cid = str(raw.get("case_id") or case_id or "").strip()
+    # См. validate_stage_a: идентификатор - от вызывающей стороны, не из ответа.
+    cid = str(case_id or raw.get("case_id") or "").strip()
     return {
         "schema_version": SCHEMA_VERSION,
         "stage": "B",
         "engine": ENGINE,
         "case_id": cid,
-        "visit_id": str(raw.get("visit_id") or cid).strip(),
-        "mis_id": str(raw.get("mis_id") or "").strip(),
+        "visit_id": cid,
+        "mis_id": "",
         "stage_a_ref": {
             "diagnosis_score_pct": _as_pct(ref.get("diagnosis_score_pct")),
             "diagnosis_verdict": str(ref.get("diagnosis_verdict") or "")[:20],
@@ -336,9 +342,7 @@ def build_prompt_a(case_pack: dict[str, Any]) -> str:
         "schema_version": SCHEMA_VERSION,
         "stage": "A",
         "engine": ENGINE,
-        "case_id": meta.get("case_id"),
-        "visit_id": meta.get("visit_id"),
-        "mis_id": meta.get("mis_id"),
+        "case_id": pseudonym(meta.get("case_id"), prefix="case"),
         "patient": {
             "age_years": None,
             "audience": "pediatric|adult|unknown",
@@ -393,7 +397,7 @@ def build_prompt_a(case_pack: dict[str, Any]) -> str:
             json.dumps(schema_hint, ensure_ascii=False),
             "",
             "Мета:",
-            json.dumps(meta, ensure_ascii=False),
+            json.dumps(redact_mapping_for_llm(meta), ensure_ascii=False),
             "",
             "Слоты КЗ:",
             json.dumps(slots, ensure_ascii=False),
@@ -416,7 +420,7 @@ def build_prompt_b(case_pack: dict[str, Any], digest_a: dict[str, Any]) -> str:
         "schema_version": SCHEMA_VERSION,
         "stage": "B",
         "engine": ENGINE,
-        "case_id": meta.get("case_id"),
+        "case_id": pseudonym(meta.get("case_id"), prefix="case"),
         "stage_a_ref": digest_a,
         "plan_assessment": {
             "exam_recommendations": {
@@ -460,7 +464,7 @@ def build_prompt_b(case_pack: dict[str, Any], digest_a: dict[str, Any]) -> str:
             json.dumps(digest_a, ensure_ascii=False),
             "",
             "Мета:",
-            json.dumps(meta, ensure_ascii=False),
+            json.dumps(redact_mapping_for_llm(meta), ensure_ascii=False),
             "",
             "Слоты плана/клиники:",
             json.dumps(plan_slots, ensure_ascii=False),

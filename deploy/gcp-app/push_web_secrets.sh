@@ -78,6 +78,8 @@ public_allow = {
     "METHODIST_REVIEWER",
     "METHODIST_UI_AUTO_LOGIN",
     "ML_FEEDBACK_DIR",
+    # Ключ псевдонимизации перед Gemini (см. clinical_knowledge/phi_for_llm).
+    "PHI_PSEUDONYM_KEY",
     "RENDER_URL",
     "TELEGRAM_NOTIFY_ENABLED",
     "TELEGRAM_NOTIFY_GIT",

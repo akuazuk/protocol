@@ -10,6 +10,8 @@ import os
 import re
 from typing import Any
 
+from .phi_for_llm import redact_mapping_for_llm
+
 ENGINE = "mo_case_narrative_v1"
 
 
@@ -43,7 +45,9 @@ def build_narrative_prompt(brief: dict[str, Any], clinical: dict[str, Any]) -> s
         '{"summary_ru":"1-2 предложения","clinical_gaps_ru":["..."],'
         '"doctor_feedback_ru":["..."],"confidence":0.0}\n'
         "Не меняй и не выдумывай баллы зон. Только клиника и формулировки врачу.\n"
-        f"BRIEF:\n{json.dumps(brief, ensure_ascii=False)[:4000]}\n"
+        # brief несёт visit_id, patient_id и ФИО врача; модели для формулировок
+        # врачу они не нужны, поэтому уходят псевдонимами и инициалами.
+        f"BRIEF:\n{json.dumps(redact_mapping_for_llm(brief), ensure_ascii=False)[:4000]}\n"
         f"CLINICAL:\n{json.dumps(clinical, ensure_ascii=False)[:3000]}\n"
     )
 

@@ -30,6 +30,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from clinical_knowledge.phi_for_llm import redact_text_for_llm  # noqa: E402
+
 # Атомарная рубрика (§3.5) - fallback, если у протокола нет kz_checklist.
 _RUBRIC_ITEMS = [
     ("A_complaints", "Жалобы задокументированы конкретно (не «жалоб нет» при наличии повода)"),
@@ -104,7 +106,9 @@ def _checklist_from_protocol(protocol_ctx: Any) -> list[tuple[str, str]]:
 def build_grader_prompt(case: dict, checklist: list[tuple[str, str]], *, protocol_name: str = "") -> str:
     kz_lines = []
     for label, keys in _KZ_FIELDS:
-        val = _txt(case, keys)
+        # Поля МИС несут шапку КЗ: ФИО, ИНП, телефон, дату рождения. Для оценки
+        # по чек-листу они не нужны, а уезжают за пределы страны вместе с текстом.
+        val = redact_text_for_llm(_txt(case, keys))
         kz_lines.append(f"{label}: {val or ' - '}")
     checklist_lines = "\n".join(f"- [{cid}] {txt}" for cid, txt in checklist)
     proto = f"Протокол МЗ РБ: {protocol_name}\n" if protocol_name else ""

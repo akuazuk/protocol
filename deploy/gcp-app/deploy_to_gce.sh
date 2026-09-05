@@ -121,6 +121,8 @@ want = secret_keys | {
     "METHODIST_REVIEWER",
     "METHODIST_UI_AUTO_LOGIN",
     "ML_FEEDBACK_DIR",
+    # Ключ псевдонимизации перед Gemini (см. clinical_knowledge/phi_for_llm).
+    "PHI_PSEUDONYM_KEY",
     "RAG_CHUNKS_JSONL",
     "RAG_CHUNKS_DIR",
     "RAG_MANIFEST_PATH",

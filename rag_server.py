@@ -2344,17 +2344,20 @@ def consult_demographics_banner_from_kz(full_text_raw: str) -> tuple[str, dict]:
     yrs = _age_full_years(dob, ref)
     meta["date_of_birth"] = dob.isoformat()
     meta["age_years"] = yrs
+    # Баннер уходит в промпт Gemini, поэтому в нём возраст, а не дата рождения:
+    # для выбора протокола и оценки нужен возраст, дата - лишний идентификатор.
+    # Точное значение остаётся в meta (только локально, для audience-гейтов).
     if yrs >= 18:
         meta["audience"] = "adult"
         band = (
-            f"Из текста документа (авто): дата рождения пациента {dob.strftime('%d.%m.%Y')}; "
-            f"на дату обработки {ref.strftime('%d.%m.%Y')} - {yrs} полных лет; пациент взрослый (≥18 лет)."
+            f"Из текста документа (авто): возраст пациента {yrs} полных лет "
+            f"на дату обработки {ref.strftime('%d.%m.%Y')}; пациент взрослый (≥18 лет)."
         )
     elif yrs >= 0:
         meta["audience"] = "child"
         band = (
-            f"Из текста документа (авто): дата рождения пациента {dob.strftime('%d.%m.%Y')}; "
-            f"на дату обработки {ref.strftime('%d.%m.%Y')} - {yrs} полных лет; пациент ребёнок (<18 лет)."
+            f"Из текста документа (авто): возраст пациента {yrs} полных лет "
+            f"на дату обработки {ref.strftime('%d.%m.%Y')}; пациент ребёнок (<18 лет)."
         )
     else:
         return "", meta
@@ -8528,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-05-130247Z-ui-escaping-a11y-guard"
+BUILD_VERSION = "2026-09-05-131314Z-phi-pseudonymize-llm"
 
 
 def _app_version() -> str:

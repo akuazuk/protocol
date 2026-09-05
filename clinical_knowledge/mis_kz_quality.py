@@ -8,6 +8,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from .phi_for_llm import pseudonym, redact_text_for_llm
+from .privacy import name_to_initials
+
 ROOT = Path(__file__).resolve().parent.parent
 
 
@@ -1423,12 +1426,14 @@ def _build_full_llm_prompt(*, row: dict, visit_id: str, text: str, l2_ctx: dict)
         '  "recommendations_ru": ["конкретное действие врачу/методисту"],\n'
         '  "mz_notes_ru": "кратко про соответствие требованиям оформления и протоколам МЗ"\n'
         "}\n\n"
-        f"Врач: {(row.get('doctor_fio') or '').strip()}\n"
+        # Модель оценивает качество оформления, а не личности: ФИО врача идёт
+        # инициалами, идентификаторы - псевдонимами (см. phi_for_llm).
+        f"Врач: {name_to_initials(row.get('doctor_fio'))}\n"
         f"Специальность: {(row.get('doctor_specialization') or '').strip()}\n"
         f"Филиал: {(row.get('filial') or '').strip()}\n"
         f"Дата: {(row.get('date') or '')[:19]}\n"
-        f"Visit ID: {visit_id}\n"
-        f"Patient ID: {str(row.get('patient_id') or '').strip()}\n"
+        f"Случай: {pseudonym(visit_id, prefix='visit')}\n"
+        f"Пациент: {pseudonym(row.get('patient_id'), prefix='patient')}\n"
         f"L2 overall: {l2_ctx.get('l2_overall_pct')} / {l2_ctx.get('l2_status')}\n"
         f"L2 summary: {l2_ctx.get('l2_summary') or ' - '}\n"
         f"Баллы блоков L2: {block_line or ' - '}\n"
@@ -1438,7 +1443,7 @@ def _build_full_llm_prompt(*, row: dict, visit_id: str, text: str, l2_ctx: dict)
         + ("\n".join(gap_lines) if gap_lines else "- (нет)")
         + "\nВыдержки из протоколов:\n"
         + ("\n".join(ev_lines) if ev_lines else "- (нет)")
-        + f"\n\nТекст КЗ:\n{text[:11000]}"
+        + f"\n\nТекст КЗ:\n{redact_text_for_llm(text)[:11000]}"
     )
 
 
