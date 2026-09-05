@@ -4,12 +4,15 @@ from __future__ import annotations
 import builtins
 import json
 import sqlite3
+from datetime import datetime
 from pathlib import Path
+from zoneinfo import ZoneInfo
 
 from fastapi.testclient import TestClient
 
 import rag_server
 from clinical_knowledge.mo_daily import doctor_key_for, initialize_warehouse
+import clinical_knowledge.mo_backend as mo_backend
 import clinical_knowledge.mo_case_document as mo_case_document
 from clinical_knowledge.mo_case_document import build_case_document_payload, render_case_document_html, score_reason
 from clinical_knowledge.mo_report_engine import build_telegram_briefing
@@ -133,6 +136,12 @@ def test_case_source_falls_back_to_secure_daily_csv(monkeypatch, tmp_path: Path)
 
 
 def test_health_reports_document_and_cabinet(monkeypatch, tmp_path: Path) -> None:
+    class _FrozenDateTime(datetime):
+        @classmethod
+        def now(cls, tz=None):
+            return datetime(2026, 8, 26, 12, 0, tzinfo=tz or ZoneInfo("Europe/Minsk"))
+
+    monkeypatch.setattr(mo_backend, "datetime", _FrozenDateTime)
     db = tmp_path / "mo.sqlite"
     doctor = _seed(db)
     pd = __import__("pandas")
