@@ -19,6 +19,8 @@ _index_backend: str = ""
 _chunk_id_to_global: dict[str, int] | None = None
 _global_to_local: dict[int, int] | None = None
 _sidecar_mtime: float = 0.0
+# Каталог, из которого загружена карта chunk_id -> global_index.
+_sidecar_dir: Path | None = None
 
 
 def vector_index_enabled() -> bool:
@@ -142,8 +144,12 @@ def _write_chunk_id_sidecar(index_dir: Path, chunks: list[dict]) -> int:
 
 
 def _load_chunk_id_sidecar(index_dir: Path) -> int:
-    global _chunk_id_to_global, _sidecar_mtime
+    global _chunk_id_to_global, _sidecar_mtime, _sidecar_dir
     p = index_dir / "chunk_id_global.json"
+    # Запоминаем каталог, из которого реально загружали карту chunk_id -> global.
+    # Без этого горячая перезагрузка ниже подменяла карту на файл из
+    # default_index_path(), даже если индекс грузили из другого каталога.
+    _sidecar_dir = index_dir
     if not p.is_file():
         _chunk_id_to_global = {}
         _sidecar_mtime = 0.0
@@ -162,7 +168,14 @@ def _load_chunk_id_sidecar(index_dir: Path) -> int:
 
 
 def _maybe_reload_chunk_id_sidecar() -> None:
-    index_dir = default_index_path()
+    """Подхватывает обновлённый sidecar, но только из того же каталога.
+
+    Карта chunk_id -> global_index привязана к конкретному индексу: строка
+    vectors.npy имеет смысл лишь вместе со своим chunk_id_global.json. Если
+    перечитать sidecar из другого каталога, косинусы начнут считаться по чужим
+    строкам матрицы, и поиск молча деградирует без единой ошибки в логах.
+    """
+    index_dir = _sidecar_dir if _sidecar_dir is not None else default_index_path()
     p = index_dir / "chunk_id_global.json"
     if not p.is_file():
         return
