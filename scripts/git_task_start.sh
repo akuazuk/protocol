@@ -77,6 +77,8 @@ echo
 echo "Next commands:"
 echo "  cd \"$WORKTREE_PATH\""
 echo "  scripts/git_safe_pull.sh"
+echo "  scripts/ops/check_pr_file_overlap.sh"
 echo "  # work -> tests -> commit -> push"
 echo "  git push -u origin \"$BRANCH_NAME\""
+echo "  # after another tab merges: scripts/ops/rebase_task_onto_main.sh"
 echo "  scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com"

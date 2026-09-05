@@ -20,6 +20,10 @@ alwaysApply: true
    `origin/main`, через `deploy_to_gce.sh`, с `/api/version` на `protocol.kravira.by`,
    health и feature smoke. Render Action - backup, не отмена GCP primary.
 8. В конце оставь handoff по шаблону из `AGENTS.md`.
+9. Перед правкой и после чужого merge: `scripts/ops/check_pr_file_overlap.sh` и
+   `scripts/ops/rebase_task_onto_main.sh`. Не смотреть старый CI run после нового push.
+10. Не ждать, что чужой merge «сам разрулится», кроме авто-resolve одной строки
+    `BUILD_VERSION`. Другое пересечение файлов - стоп.
 
 Если локальное Cursor-правило конфликтует с `AGENTS.md`, применяется более безопасное
 правило из `AGENTS.md`.

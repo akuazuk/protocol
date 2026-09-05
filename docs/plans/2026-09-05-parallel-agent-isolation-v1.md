@@ -1,0 +1,56 @@
+# Параллельные агенты и вкладки: прогоны не перебивают друг друга
+
+Дата: 2026-09-05
+Статус: **active** (волна 1 в коде)
+Владелец: несколько Cursor-вкладок / агентов на одном `akuazuk/protocol`
+Связанные: [AGENTS.md](../../AGENTS.md), [runbook v2](../deploy/multi-agent-single-repo-render-runbook-v2.md),
+[CI concurrency v3](2026-08-03-ci-release-concurrency-v3.md) (completed, не дублировать)
+
+## 1. Контекст
+
+Один репозиторий, несколько вкладок. Типичный сбой 2026-09-05: #187 и #188
+шли параллельно; после merge #187 второй PR стал `CONFLICTING` из-за одной строки
+`BUILD_VERSION`. Отдельный `gh run watch` смотрел **старый** CI, который уже
+отменила новая пуш той же ветки (`cancel-in-progress: true`).
+
+Нужно, чтобы:
+
+- CI вкладки A не убивал CI вкладки B и не отменял ещё идущий прогон той же PR;
+- merge A не ломал B, если пересечение только `BUILD_VERSION`;
+- пересечение **настоящих** файлов было видно до правки и после чужого merge.
+
+Production deploy по-прежнему один: `concurrency: production-render`,
+`cancel-in-progress: false`. Это не меняем.
+
+## 2. Что меняется
+
+| Место | Было | Стало |
+|--|--|--|
+| CI `concurrency` | `ci-${{ github.ref }}` + cancel | группа на workflow + PR/ref, **без** отмены |
+| `BUILD_VERSION` после чужого merge | ручной rebase, часто грязный конфликт | `rebase_task_onto_main.sh` сам ставит новый stamp |
+| Пересечение файлов | устно / `gh pr view` | скрипт + комментарий на PR (не валит required CI) |
+
+Общая оценка МО / флаги `*_PRIMARY` не затрагиваются.
+
+## 3. Метрики
+
+- Отмена чужого/предыдущего CI на одной PR: было да, стало нет, цель нет.
+- Авто-rebase при конфликте только `BUILD_VERSION`: было 0, стало 1 команда, цель 1.
+- Комментарий пересечения после merge: было вручную, стало workflow, цель всегда.
+- Required CI из-за overlap-комментария: было бы риск, стало не required, цель 0 ложных fail.
+
+## 4. Шаги
+
+- [x] CI: не cancel-in-progress; группа изолирована по номеру PR.
+- [x] `scripts/ops/pr_isolation.py` + rebase/overlap wrappers.
+- [x] Workflow комментария пересечений (не required).
+- [x] AGENTS.md, runbook, cursor-правило, тесты.
+- [ ] Merge этого PR; параллельные вкладки один раз прогоняют `rebase_task_onto_main.sh`.
+
+## 5. Риски
+
+- Очередь CI на **одной** ветке станет длиннее (новый push ждёт старый прогон).
+  Это плата за то, что `gh run watch` не падает из-за отмены.
+- Авто-resolve **не** трогает rag_server.py, если кроме версии есть другой конфликт -
+  тогда rebase abort и явный список файлов.
+- Комментарий overlap зависит от GitHub API; при сбое workflow не должен краснеть.

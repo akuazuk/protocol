@@ -57,8 +57,17 @@ git merge-base --is-ancestor origin/main HEAD
 
 ## 4. Владение файлами и конфликтами
 
-Перед правкой посмотреть открытые PR и их changed files. Если другой PR меняет тот же
-backend/UI файл, выбрать одно:
+Перед правкой и после чужого merge:
+
+```bash
+scripts/ops/check_pr_file_overlap.sh
+scripts/ops/rebase_task_onto_main.sh
+```
+
+CI: группа на номер PR, `cancel-in-progress: false` - прогон соседней вкладки не
+отменяется. Workflow `PR overlap notify` пишет комментарий, required checks не краснеют.
+
+Если другой PR меняет тот же backend/UI файл, выбрать одно:
 
 1. разделить задачу по непересекающимся файлам;
 2. дождаться первого merge и создать ветку заново от обновлённого `origin/main`;

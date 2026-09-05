@@ -7,8 +7,10 @@ on:
     branches: [main]
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: true
+  # Одна группа на PR или на ref main. Другие вкладки не делят группу
+  # и не отменяют этот прогон: новый push встаёт в очередь, а не убивает watch.
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: false
 
 jobs:
   lint-and-test:

@@ -43,6 +43,9 @@ scripts/ops/render_apply_deploy.sh --help >/dev/null
 scripts/ops/render_release_main.sh --help >/dev/null
 scripts/ops/render_env.sh --help >/dev/null
 scripts/ops/bump_build_version.sh --help >/dev/null
+scripts/ops/rebase_task_onto_main.sh --help >/dev/null
+scripts/ops/check_pr_file_overlap.sh --help >/dev/null
+python3 scripts/ops/pr_isolation.py --help >/dev/null
 echo "OK: ops help"
 
 echo "[4/7] deploy/data/dev wrappers forward safely"

@@ -93,3 +93,9 @@ def test_production_workflow_serializes_exact_main_sha() -> None:
     assert 'test "$(git rev-parse origin/main)" = "$GITHUB_SHA"' in workflow
     assert '--commit="$GITHUB_SHA"' in workflow
     assert "scripts/ops/render_release_main.sh" in workflow
+
+
+def test_ci_workflow_does_not_cancel_parallel_or_previous_runs() -> None:
+    workflow = (ROOT / ".github" / "workflows" / "ci.yml").read_text(encoding="utf-8")
+    assert "cancel-in-progress: false" in workflow
+    assert "github.event.pull_request.number || github.ref" in workflow
