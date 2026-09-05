@@ -25,6 +25,8 @@ COPY services/api/ services/api/
 COPY services/mo_pipeline/ services/mo_pipeline/
 COPY scripts/ scripts/
 COPY data/catalog/ data/catalog/
+COPY data/mo_finding_families/ data/mo_finding_families/
+COPY data/mo_anomalies/ data/mo_anomalies/
 # Drug safety seeds (DDInter pairs gitignored - mount /var/data/drug_safety at runtime)
 COPY data/drug_safety/high_alert.json data/drug_safety/high_alert.json
 COPY data/drug_safety/stopp_start_beers.json data/drug_safety/stopp_start_beers.json

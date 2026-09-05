@@ -4399,6 +4399,9 @@ def build_mo_health() -> dict[str, Any]:
     }
 
 
+_MO_CASE_FROM = "fact_mo_case c LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key"
+
+
 def _mo_drugs_labs_where(params: dict[str, Any]) -> tuple[str, list[Any]]:
     where = ["c.document_kind IN ('clinical_visit', 'consultation')"]
     args: list[Any] = []
@@ -4420,7 +4423,7 @@ def _mo_drugs_labs_where(params: dict[str, Any]) -> tuple[str, list[Any]]:
         args.extend(filials)
     doctors = _values(params.get("doctors"))
     if doctors:
-        where.append(f"c.doctor_name IN ({','.join('?' * len(doctors))})")
+        where.append(f"COALESCE(d.doctor_fio, '') IN ({','.join('?' * len(doctors))})")
         args.extend(doctors)
     return " AND ".join(where), args
 
@@ -4442,7 +4445,7 @@ def _count_cases_with_lab(conn: sqlite3.Connection, clause: str, args: list[Any]
         n = conn.execute(
             f"""
             SELECT COUNT(DISTINCT c.mis_id)
-            FROM fact_mo_case c
+            FROM {_MO_CASE_FROM}
             WHERE {clause}
               AND c.patient_key IS NOT NULL
               AND TRIM(c.patient_key) != ''
@@ -4506,37 +4509,52 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
     date_from = str(params.get("date_from") or "")[:10]
     date_to = str(params.get("date_to") or "")[:10]
     clause, args = _mo_drugs_labs_where(params)
-    with _connect() as conn:
-        total = int(
-            conn.execute(
-                f"SELECT COUNT(*) FROM fact_mo_case c WHERE {clause}",
+    try:
+        with closing(_read_connection()) as conn:
+            total = int(
+                conn.execute(
+                    f"SELECT COUNT(*) FROM {_MO_CASE_FROM} WHERE {clause}",
+                    args,
+                ).fetchone()[0]
+                or 0
+            )
+            rows = conn.execute(
+                f"""
+                SELECT f.mis_id, f.finding_code, c.specialty, d.doctor_fio, c.visit_date
+                FROM fact_mo_finding f
+                JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+                WHERE {clause}
+                """,
                 args,
-            ).fetchone()[0]
-            or 0
-        )
-        rows = conn.execute(
-            f"""
-            SELECT f.mis_id, f.finding_code, c.specialty, c.doctor_name, c.visit_date
-            FROM fact_mo_finding f
-            JOIN fact_mo_case c ON c.mis_id = f.mis_id
-            WHERE {clause}
-            """,
-            args,
-        ).fetchall()
-        doctor_rows = conn.execute(
-            f"""
-            SELECT c.doctor_name AS doctor, c.specialty AS specialty,
-                   COUNT(*) AS cases,
-                   AVG(c.overall_pct) AS avg_score
-            FROM fact_mo_case c
-            WHERE {clause}
-              AND c.doctor_name IS NOT NULL
-              AND TRIM(c.doctor_name) != ''
-            GROUP BY c.doctor_name, c.specialty
-            """,
-            args,
-        ).fetchall()
-        cases_with_lab, lab_cov = _count_cases_with_lab(conn, clause, args)
+            ).fetchall()
+            doctor_rows = conn.execute(
+                f"""
+                SELECT d.doctor_fio AS doctor,
+                       COALESCE(d.specialty, c.specialty) AS specialty,
+                       COUNT(*) AS cases,
+                       AVG(c.overall_pct) AS avg_score
+                FROM {_MO_CASE_FROM}
+                WHERE {clause}
+                  AND d.doctor_fio IS NOT NULL
+                  AND TRIM(d.doctor_fio) != ''
+                GROUP BY d.doctor_fio, COALESCE(d.specialty, c.specialty)
+                """,
+                args,
+            ).fetchall()
+            cases_with_lab, lab_cov = _count_cases_with_lab(conn, clause, args)
+    except (sqlite3.Error, RuntimeError):
+        dash = family_dashboard_from_rows([], total_cases=0)
+        return {
+            "ok": False,
+            "error": "warehouse_query_failed",
+            "unused_lab_pct": None,
+            "drug_safety_pct": None,
+            "families": dash["families"],
+            "denominators": dash["denominators"],
+            "strips": dash["strips"],
+            "flags": empty_flags,
+        }
     finding_maps = [
         {
             "mis_id": r[0],
