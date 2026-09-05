@@ -23,6 +23,10 @@ if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
 from clinical_knowledge.mo_dx_evidence_score import validate_dx_evidence_result  # noqa: E402
+from clinical_knowledge.mo_lab_dx_evidence import (  # noqa: E402
+    attach_lab_evidence_to_row,
+    lab_evidence_text_from_source,
+)
 from clinical_knowledge.mo_plan_protocol_score import (  # noqa: E402
     resolve_plan_route,
     validate_plan_concordance_result,
@@ -126,6 +130,7 @@ def blind_case_pack(row: Mapping[str, Any], *, sample_id: str) -> dict[str, Any]
             "anamnesis": _value(source, "anamnesis", "anamnesis_doctor", "anamnesis_auto", "history"),
             "objective_status": _value(source, "objective_status", "objective", "status_localis"),
             "exam_data": _value(source, "exam_data", "exam_results", "investigations"),
+            "lab": lab_evidence_text_from_source(source),
         },
         "diagnosis": {
             "text": _value(source, "clinical_diagnosis", "diagnosis", "diagnosis_main_text"),
@@ -188,7 +193,7 @@ def build_dx_prompt(case_pack: Mapping[str, Any]) -> tuple[str, dict[str, Any]]:
     schema = {
         "dx_evidence_pct": 0,
         "verdict": "good|partial|poor|critical|blocked|na",
-        "supported_by": [{"slot": "complaints|anamnesis|objective_status|exam_data|diagnosis|icd|meta", "evidence": ""}],
+        "supported_by": [{"slot": "complaints|anamnesis|objective_status|exam_data|lab|diagnosis|icd|meta", "evidence": ""}],
         "not_supported_by": [],
         "contradictions": [],
         "icd_fit": "fit|partial|mismatch|unknown|na",
@@ -201,6 +206,8 @@ def build_dx_prompt(case_pack: Mapping[str, Any]) -> tuple[str, dict[str, Any]]:
             "Оцени только Endpoint C: следует ли поставленный диагноз из представленных клинических данных.",
             "Не оценивай назначения, лечение, полноту плана или соответствие протоколу.",
             "Валидный код МКБ сам по себе не доказывает диагноз. Отсутствие МКБ при текстовом диагнозе не штрафуй.",
+            "Слот lab - лаборатория склада: только названия панелей и даты. Значений и референса нет.",
+            "Не ставь poor или critical из-за отклонения показателя. Наличие панели не доказывает диагноз само по себе.",
             "Если клинических данных недостаточно, verdict=blocked и dx_evidence_pct=null.",
             "Если нет ни диагноза, ни МКБ, verdict=na и dx_evidence_pct=null.",
             "Каждый вывод привяжи к дословному evidence и его slot. Не додумывай отсутствующие факты.",
@@ -484,6 +491,7 @@ def judge_case(
     model: str,
     dry_run: bool,
 ) -> dict[str, Any]:
+    row = attach_lab_evidence_to_row(dict(row))
     pack = blind_case_pack(row, sample_id=sample_id)
     route, protocol_context = protocol_context_for_case(row, pack)
     dx_prompt, dx_input = build_dx_prompt(pack)
@@ -714,6 +722,7 @@ def adjudicate_case(
     model: str,
     dry_run: bool,
 ) -> dict[str, Any]:
+    row = attach_lab_evidence_to_row(dict(row))
     pack = blind_case_pack(row, sample_id=sample_id)
     route, protocol_context = protocol_context_for_case(row, pack)
     first_result = first["dx_evidence"] if endpoint == "dx" else first["plan_concordance"]
