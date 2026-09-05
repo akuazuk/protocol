@@ -6,6 +6,7 @@ SSOT на диске данных: ``/var/data/medical_exams/config/mo_scoring_p
 from __future__ import annotations
 
 import json
+import logging
 import os
 import threading
 import uuid
@@ -15,6 +16,8 @@ from pathlib import Path
 from typing import Any, Mapping
 
 ROOT = Path(__file__).resolve().parent.parent
+
+_LOG = logging.getLogger("protocol.mo.scoring_profile")
 
 PRESETS: dict[str, dict[str, Any]] = {
     "soft": {
@@ -193,25 +196,28 @@ def load_scoring_profile(*, root: Path | None = None) -> dict[str, Any]:
 
 
 def _invalidate_caches() -> None:
-    """Сброс YAML-кешей (профиль читается каждый раз поверх них)."""
-    try:
-        from clinical_knowledge.mo_zone_scores import _load_zone_bands_yaml
+    """Сброс YAML-кешей (профиль читается каждый раз поверх них).
 
-        _load_zone_bands_yaml.cache_clear()
-    except Exception:  # noqa: BLE001
-        pass
-    try:
-        from clinical_knowledge.kz_evaluation_v4 import _load_v4_config_yaml
-
-        _load_v4_config_yaml.cache_clear()
-    except Exception:  # noqa: BLE001
-        pass
-    try:
-        from clinical_knowledge.kz_deep_eval import _load_deep_config_yaml
-
-        _load_deep_config_yaml.cache_clear()
-    except Exception:  # noqa: BLE001
-        pass
+    Ошибка сброса не прерывает сохранение профиля, но и молчать о ней нельзя:
+    неочищенный кеш означает, что методист поменял пороги жёсткости, ответ
+    «сохранено» получил, а оценки продолжают считаться по старым значениям.
+    Снаружи это выглядит как «настройка не работает» без следов в логах.
+    """
+    for module_name, cache_attr in (
+        ("clinical_knowledge.mo_zone_scores", "_load_zone_bands_yaml"),
+        ("clinical_knowledge.kz_evaluation_v4", "_load_v4_config_yaml"),
+        ("clinical_knowledge.kz_deep_eval", "_load_deep_config_yaml"),
+    ):
+        try:
+            module = __import__(module_name, fromlist=[cache_attr])
+            getattr(module, cache_attr).cache_clear()
+        except Exception:  # noqa: BLE001
+            _LOG.warning(
+                "не удалось сбросить кеш %s.%s: новые пороги могут не примениться",
+                module_name,
+                cache_attr,
+                exc_info=True,
+            )
 
 
 def save_scoring_profile(
@@ -435,7 +441,10 @@ def _run_recompute_job(job: dict[str, Any], *, root: Path) -> None:
 
         initialize_warehouse(warehouse)
     except Exception:  # noqa: BLE001
-        pass
+        # Пересчёт продолжается: витрина может быть уже создана. Но если она
+        # действительно не готова, все дни ниже упадут по одной причине, и без
+        # этой записи в логе останутся только их частные ошибки.
+        _LOG.warning("initialize_warehouse(%s) не выполнен", warehouse, exc_info=True)
 
     first = date.fromisoformat(str(job["date_from"])[:10])
     last = date.fromisoformat(str(job["date_to"])[:10])
