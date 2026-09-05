@@ -41,7 +41,6 @@ CANONICAL_ASSET_MAP: dict[str, str] = {
     "protocol-logo-mini.svg": "shared/protocol-logo-mini.svg",
     "protocol-logo-wordmark.svg": "shared/protocol-logo-wordmark.svg",
     "protocol-logo-wordmark-text.svg": "shared/protocol-logo-wordmark-text.svg",
-    "protocol_logo_curves_transparent.svg": "shared/protocol_logo_curves_transparent.svg",
     "logo_mini.png": "shared/logo_mini.png",
     "mo-tokens.css": "shared/mo-tokens.css",
     "methodist-cabinet.css": "shared/methodist-cabinet.css",

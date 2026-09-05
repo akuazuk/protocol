@@ -7674,47 +7674,78 @@ async def _app_lifespan(_application: FastAPI):
 app = FastAPI(title="Protocol RAG", version="1", lifespan=_app_lifespan)
 
 
-# --- Безопасность: раздача статики только безопасных файлов ---
-# Фронтенду нужны: index.html, consult_review.html (явные маршруты), docs/*.html, protocols.json,
-# css/js/шрифты/картинки. Всё остальное (код, конфиги, ПДн-PDF, данные) не должно отдаваться по '/'.
-_STATIC_BLOCKED_DIRS = {
-    "data", "clients_consult", "tests", "eval", "scripts", "corpus_pipeline",
-    "output", "corpus_chunks_parts", "minzdrav_protocols", "e2e", "__pycache__",
-    "terminals", "node_modules",
-}
-_STATIC_BLOCKED_EXTS = {
-    ".py", ".pyc", ".pyo", ".env", ".sh", ".toml", ".ini", ".cfg", ".lock",
-    ".csv", ".jsonl", ".txt", ".md", ".mdc", ".yaml", ".yml", ".log",
-}
-_STATIC_BLOCKED_FILES = {
-    "protocol_meta.json", "symptom_routing.json", "structured_index.json",
-    "chunks.json", "corpus.json", "semantic_embeddings.json",
-}
+# --- Безопасность: раздача статики по списку разрешённого ---
+# Монтируется корень репозитория, поэтому список запрещённого здесь работать не
+# может: любой новый файл оказывается публичным по умолчанию, и именно так и
+# вышло. Прежний фильтр перечислял запрещённые каталоги и расширения, а .pdf,
+# .docx и каталоги archive/, frontend/, deploy/, epam/ в перечислении
+# отсутствовали. Проверка на живом сервере (2026-09-05) отдавала 200 на:
+#
+#   archive/docs/konkurs/06_ROI_Kravira.pdf   226 КБ  финансовая модель
+#   archive/docs/konkurs/03_Biznes_plan_*.pdf         бизнес-план
+#   deploy/gcp-app/Caddyfile, */Dockerfile            устройство инфраструктуры
+#   epam/scheme_mis_protocols.docx                    схема интеграции с МИС
+#   embeddings.json                           3.7 МБ  данные (в списке значился
+#                                                     только semantic_embeddings.json)
+#
+# Поэтому логика обратная: отдаётся ровно то, что перечислено, всё остальное -
+# 404. Новый файл в репозитории теперь по умолчанию закрыт.
+#
+# Что нужно фронтенду из корневого mount:
+#   protocols.json                     - каталог протоколов;
+#   docs/<файл> глубины 1              - презентация, architecture-*, brief,
+#                                        pre-sign-checklist, presentation-stats.json
+#                                        (mvp-presentation.html читает его
+#                                        относительной ссылкой);
+#   frontend/web/shared/*.svg|png      - логотипы в print-HTML.
+#
+# Подкаталоги docs/ (plans, reports, konkurs, deploy, handoff, methodist,
+# product, schemas) наружу не идут: это внутренняя документация.
+#
+# Остальные CSS/JS/SVG интерфейса раздаются отдельным списком
+# _SHARED_STATIC_ASSETS ниже, здесь они не нужны.
+_STATIC_ALLOWED_ROOT_FILES = {"protocols.json"}
+_STATIC_ALLOWED_DOCS_EXTS = {".html", ".pdf", ".png", ".svg", ".json"}
+# Логотипы: print-HTML ссылается на них относительным путём
+# (../frontend/web/shared/...), потому что scripts/build_architecture_pdf.py
+# рендерит те же файлы Chrome через file:// - абсолютный путь там не разрешится.
+_STATIC_ALLOWED_LOGO_PREFIX = "frontend/web/shared/"
+_STATIC_ALLOWED_LOGO_EXTS = {".svg", ".png"}
 
 
-def _is_blocked_static_path(path: str) -> bool:
+def _is_allowed_static_path(path: str) -> bool:
+    """Разрешён ли путь к раздаче по '/'. Всё неперечисленное - нет."""
     norm = (path or "").replace("\\", "/").strip("/")
     if not norm:
-        return False
+        # Пустой путь - это '/', его обслуживает html=True (index.html).
+        return True
     segments = [s for s in norm.split("/") if s]
-    for seg in segments:
-        low = seg.lower()
-        if low in _STATIC_BLOCKED_DIRS or low.startswith("."):
-            return True
+    # Обход каталогов и скрытые файлы (.env, .git) - сразу нет.
+    if any(seg.startswith(".") or seg == ".." for seg in segments):
+        return False
+
     base = segments[-1].lower()
-    if base in _STATIC_BLOCKED_FILES:
-        return True
     ext = ("." + base.rsplit(".", 1)[1]) if "." in base else ""
-    if ext in _STATIC_BLOCKED_EXTS:
-        return True
+
+    if len(segments) == 1:
+        return base in _STATIC_ALLOWED_ROOT_FILES
+
+    # docs/<файл> - только верхний уровень, без подкаталогов.
+    if segments[0].lower() == "docs":
+        return len(segments) == 2 and ext in _STATIC_ALLOWED_DOCS_EXTS
+
+    if norm.lower().startswith(_STATIC_ALLOWED_LOGO_PREFIX):
+        # Только сами изображения и только в этом каталоге, без вложенных.
+        return len(segments) == 4 and ext in _STATIC_ALLOWED_LOGO_EXTS
+
     return False
 
 
 class SafeStaticFiles(StaticFiles):
-    """StaticFiles, не отдающий исходники, конфиги, данные и ПДн-PDF из корня репозитория."""
+    """StaticFiles, отдающий только явно разрешённые пути (см. _is_allowed_static_path)."""
 
     async def get_response(self, path, scope):  # type: ignore[override]
-        if _is_blocked_static_path(path):
+        if not _is_allowed_static_path(path):
             return PlainTextResponse("Not found", status_code=404)
         return await super().get_response(path, scope)
 
@@ -8511,7 +8542,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-05-101019Z-git-hygiene"
+BUILD_VERSION = "2026-09-05-104656Z-static-allowlist"
 
 
 def _app_version() -> str:
@@ -14803,7 +14834,6 @@ if has_frontend_file("index.html"):
         "protocol-logo-mini.svg": "image/svg+xml",
         "protocol-logo-wordmark.svg": "image/svg+xml",
         "protocol-logo-wordmark-text.svg": "image/svg+xml",
-        "protocol_logo_curves_transparent.svg": "image/svg+xml",
         "logo_mini.png": "image/png",
     }
 
@@ -14826,7 +14856,6 @@ if has_frontend_file("index.html"):
     @app.get("/protocol-logo-mini.svg", include_in_schema=False)
     @app.get("/protocol-logo-wordmark.svg", include_in_schema=False)
     @app.get("/protocol-logo-wordmark-text.svg", include_in_schema=False)
-    @app.get("/protocol_logo_curves_transparent.svg", include_in_schema=False)
     @app.get("/logo_mini.png", include_in_schema=False)
     def _serve_shared_static_asset(request: Request) -> FileResponse:
         """Стабильные shared-ресурсы (МО + doctor chrome + brand) без устаревшего кэша."""

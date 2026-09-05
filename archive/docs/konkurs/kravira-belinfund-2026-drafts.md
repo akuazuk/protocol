@@ -5,7 +5,7 @@
 **Проект:** Protocol - модуль предимпортной клинико-методической и технической экспертизы консультативных заключений (КЗ)  
 **Срок подачи:** до 01.08.2026 · [konkurs.belinfund.by](https://konkurs.belinfund.by/participants)
 
-**Готовые .docx:** см. [README.md](README.md) - `01_Zayavka_…` … `04_Strategiya_…`. Пересборка: `python3 scripts/fill_konkurs_docx.py`.
+**Готовые .docx:** см. [README.md](README.md) - `01_Zayavka_…` … `04_Strategiya_…`. Пересборка: `python3 archive/scripts/konkurs/fill_konkurs_docx.py`.
 
 **Участник:** ОДО «Медицинский центр «Кравира»», г. Минск, пр. Победителей, 45, пом. 25, УНП 101477932. Директор - Касацкая Мария Геннадьевна. Ответственный по проекту - Кузавка Павел Леонидович (зам. директора по цифровой трансформации и ИТ). Сайт: kravira.by · akuazuk@gmail.com · +375 29 608-75-95.
 
@@ -412,4 +412,4 @@ B2B: частные ОЗ, сети, МИС (Айболит), методслуж�
 
 ---
 
-*Черновик Protocol · МЦ «Кравира» · июнь 2026. Расчёты: 25 000 КЗ/мес = 1% рынка платных КЗ частных ОЗ РБ → 2,5 млн КЗ/мес. Синхронизация: `scripts/konkurs_finance.py`, `financial_assumptions.md`.*
+*Черновик Protocol · МЦ «Кравира» · июнь 2026. Расчёты: 25 000 КЗ/мес = 1% рынка платных КЗ частных ОЗ РБ → 2,5 млн КЗ/мес. Синхронизация: `archive/scripts/konkurs/konkurs_finance.py`, `financial_assumptions.md`.*

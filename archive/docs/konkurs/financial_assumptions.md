@@ -1,6 +1,6 @@
 # Финансовые допущения конкурса Белинфонд 2026
 
-Единый источник цифр для БП, приложений и `.docx`. Код: `scripts/konkurs_finance.py`, `scripts/konkurs_scenarios.py`, `scripts/konkurs_expansion.py`, `scripts/konkurs_expansion_intl.py`.
+Единый источник цифр для БП, приложений и `.docx`. Код: `archive/scripts/konkurs/konkurs_finance.py`, `archive/scripts/konkurs/konkurs_scenarios.py`, `archive/scripts/konkurs/konkurs_expansion.py`, `archive/scripts/konkurs/konkurs_expansion_intl.py`.
 
 ## Якорь рынка B2B
 
@@ -72,7 +72,7 @@
 
 ## Международная экспансия (§6.3, не в EBITDA 2029)
 
-Источник: `scripts/konkurs_expansion_intl.py`.
+Источник: `archive/scripts/konkurs/konkurs_expansion_intl.py`.
 
 | Показатель | Значение |
 |------------|----------|

@@ -39,7 +39,7 @@
 | Протокол | `patient_protocol_crosscheck.py` | Показывается только при gap; нет «что протокол рекомендует в целом» |
 | Удержание | localStorage: история (5), чек-лист | Нет восстановления полного отчёта после закрытия вкладки |
 | Дистрибуция | PWA + SW + manifest | Нет push, нет «Добавить на экран» onboarding на iOS |
-| Монетизация | Тарифы в `scripts/konkurs_b2c_ux.py` | Оплата, tier, white-label clinic - не в коде |
+| Монетизация | Тарифы в `archive/scripts/konkurs/konkurs_b2c_ux.py` | Оплата, tier, white-label clinic - не в коде |
 
 ---
 
@@ -189,7 +189,7 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 ### Волна D - «Масштаб B2B2C» (ongoing)
 
 - [x] Партнёрские клиники: white-label config (`patient_clinic_config.py`)
-- [ ] SMS/email deep link + rev-share 30/70 (см. `scripts/konkurs_b2c_ux.py`)
+- [ ] SMS/email deep link + rev-share 30/70 (см. `archive/scripts/konkurs/konkurs_b2c_ux.py`)
 - [x] SEO landing `/check` → `patient-check.html`
 - [ ] Обезличенная аналитика для Минздрава (агрегаты по gap-темам, без ПДн)
 - [x] Tier P2: rule-based narrative (`patient_p2_enrich.py`, tier `detailed`/`onco`)
@@ -225,7 +225,7 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 | PWA | `patient.html`, `patient-manifest.webmanifest`, `patient-sw.js` |
 | B2B вход | `index.html` → «Проверь своё заключение» |
 | Тесты | `tests/test_patient_report.py`, `test_lab_result_parser.py`, `test_patient_exams_enrich.py`, `test_patient_protocol_crosscheck.py` |
-| Экономика B2C | `scripts/konkurs_b2c_ux.py` |
+| Экономика B2C | `archive/scripts/konkurs/konkurs_b2c_ux.py` |
 
 ### Tier P1 - pipeline
 
@@ -255,7 +255,7 @@ clinical_knowledge/patient_review.py  (orchestrator P1)
 | L2 подробная | 9,99 BYN | P2 narrative + evidence |
 | Онко / pre-op | 12,99-14,99 BYN | Приоритет treatment/safety блоков |
 
-Каналы: QR после визита · SMS rev-share · SEO national (`scripts/konkurs_b2c_ux.py`).
+Каналы: QR после визита · SMS rev-share · SEO national (`archive/scripts/konkurs/konkurs_b2c_ux.py`).
 
 ---
 
@@ -313,7 +313,7 @@ pytest tests/test_patient*.py tests/test_lab_result_parser.py -q
 ## Связанные документы
 
 - **Архитектура B2C (для LLM и разработки):** [`docs/architecture-b2c-patient.md`](architecture-b2c-patient.md)
-- B2C UX и экономика: `scripts/konkurs_b2c_ux.py`
+- B2C UX и экономика: `archive/scripts/konkurs/konkurs_b2c_ux.py`
 - Презентация MVP: `docs/mvp-presentation.html#patient-b2c`
 - Архитектура L0/L1/L2: `docs/architecture-stages-print.html`
 - B2B МИС: `docs/roadmap-mis.md`

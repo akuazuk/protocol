@@ -15,7 +15,7 @@
 **Пересборка PDF (рекомендуется):**
 
 ```bash
-python3 scripts/build_konkurs_pdf.py
+python3 archive/scripts/konkurs/build_konkurs_pdf.py
 ```
 
 Требуется Google Chrome (headless). Исходники: `*-print.html` в этой же папке.
