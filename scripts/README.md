@@ -5,7 +5,7 @@ compatible during migration.
 
 | Domain | Path | Meaning |
 |--------|------|---------|
-| Ops / git / Render | `scripts/ops/` | safe-start, deploy guards, hygiene |
+| Ops / git / Render | `scripts/ops/` | safe-start, deploy guards, hygiene, PR overlap / BUILD_VERSION rebase |
 | Deploy data | `scripts/deploy/` | Render disk / mis_protocol upload helpers |
 | Data / QA waves | `scripts/data/` | corpus QA batch shells + legacy root `*.py` wrappers |
 | Dev helpers | `scripts/dev/` | launchd / telegram / diagnostics |
