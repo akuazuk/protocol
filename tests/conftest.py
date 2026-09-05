@@ -20,6 +20,17 @@ os.environ.setdefault("RAG_GEMINI_EMBED_RERANK", "0")
 os.environ.setdefault("PROTOCOL_SUMMARY_RAG_MERGE", "0")
 os.environ.setdefault("RATE_LIMIT_ENABLED", "0")
 
+# Прогрев кешей - продовая оптимизация задержки первого запроса, а не поведение.
+# В фоновой загрузке он занимает ~28 с, под coverage ~90 с и упирается в таймаут
+# сессии. Тесты, которым нужен прогрев, вызывают prewarm_* напрямую.
+for _prewarm_flag in (
+    "CONSULT_PREWARM_SUMMARY_ICD_INDEX",
+    "CONSULT_PREWARM_PROTOCOL_SUMMARIES",
+    "CONSULT_PREWARM_PROTOCOL_ICD_INDEX",
+    "MO_PREWARM_PROTOCOL_SUGGEST",
+):
+    os.environ.setdefault(_prewarm_flag, "0")
+
 import pytest
 
 
