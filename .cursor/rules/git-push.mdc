@@ -11,7 +11,7 @@ alwaysApply: true
 - Никогда не push напрямую в `main` из агентской сессии. Обычный путь: task-ветка -> PR -> merge.
 - Не переиспользуй общую `codex/main-sync` для новых задач.
 - Перед push осмысленных изменений **всегда** поднимай `BUILD_VERSION` в `rag_server.py` (формат `YYYY-MM-DD-HHMMSSZ` или `…Z-slug`, UTC; см. `build-version.mdc` / `scripts/ops/bump_build_version.sh`), чтобы в футере и `/api/version` была новая версия после деплоя.
-- Primary deploy = GCP (`deploy_to_gce.sh` → `https://protocol.kravira.by`). Render Action -
-  backup. Прямой promote task-HEAD в `main` запрещён.
-- Не считать primary deploy завершённым, пока `/api/version` на `protocol.kravira.by`
+- Единственный прод - GCE (`deploy_to_gce.sh` → `https://protocol.kravira.by`).
+  Render продом и откатом не является. Прямой promote task-HEAD в `main` запрещён.
+- Не считать deploy завершённым, пока `/api/version` на `protocol.kravira.by`
   не совпал с локальным `BUILD_VERSION`.

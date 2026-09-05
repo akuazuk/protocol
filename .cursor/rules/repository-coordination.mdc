@@ -1,12 +1,12 @@
 ---
-description: Координация агентов в Protocol repo; primary deploy = GCP, Render backup.
+description: Координация агентов в Protocol repo; единственный прод - GCE (protocol.kravira.by).
 alwaysApply: true
 ---
 
 # Общие правила репозитория и deploy
 
 До любой осмысленной работы полностью прочитай корневой `AGENTS.md` и следуй ему как
-каноническому источнику Git/PR/deploy workflow (primary GCP, Render backup).
+каноническому источнику Git/PR/deploy workflow (единственный прод - GCE).
 
 Обязательно:
 
@@ -16,9 +16,10 @@ alwaysApply: true
 4. Не используй общую `codex/main-sync` для разработки и не push в `main` напрямую.
 5. Публикуй изменения task-веткой и PR; после merge ветку не переиспользуй.
 6. Перед release-значимым commit подними `BUILD_VERSION`.
-7. Deploy primary (GCP) разрешён только одному release-координатору, для merge SHA из
+7. Deploy разрешён только одному release-координатору, для merge SHA из
    `origin/main`, через `deploy_to_gce.sh`, с `/api/version` на `protocol.kravira.by`,
-   health и feature smoke. Render Action - backup, не отмена GCP primary.
+   health и feature smoke. Render продом и откатом не является: сервис приостановлен,
+   Action `Production Render release` удалён. Откат - предыдущий образ по SHA на GCE.
 8. В конце оставь handoff по шаблону из `AGENTS.md`.
 9. Перед правкой и после чужого merge: `scripts/ops/check_pr_file_overlap.sh` и
    `scripts/ops/rebase_task_onto_main.sh`. Не смотреть старый CI run после нового push.
