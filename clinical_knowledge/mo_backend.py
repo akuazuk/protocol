@@ -4487,6 +4487,55 @@ def _count_cases_with_lab(conn: sqlite3.Connection, clause: str, args: list[Any]
                 pass
 
 
+FAMILY_GROUP_COMPARISON_MIN_N = 20
+
+
+def _attach_family_group_denominators(
+    families: dict[str, Any],
+    *,
+    doctor_totals: Mapping[str, int],
+    specialty_totals: Mapping[str, int],
+) -> None:
+    """Expose group rates separately from contribution to all period cases."""
+
+    for family in families.values():
+        if not isinstance(family, dict):
+            continue
+        for rows_key, label_key, totals in (
+            ("by_doctor", "doctor", doctor_totals),
+            ("by_specialty", "specialty", specialty_totals),
+        ):
+            for row in family.get(rows_key) or []:
+                if not isinstance(row, dict):
+                    continue
+                label = str(row.get(label_key) or "").strip()
+                group_cases = max(0, int(totals.get(label, 0) or 0))
+                problem_cases = max(0, int(row.get("cases") or 0))
+                small_n = group_cases < FAMILY_GROUP_COMPARISON_MIN_N
+                row.update(
+                    {
+                        "problem_cases": problem_cases,
+                        "group_cases": group_cases,
+                        "evaluated_cases": None,
+                        "problem_pct_of_group": (
+                            round(100.0 * problem_cases / group_cases, 2)
+                            if group_cases
+                            else None
+                        ),
+                        "problem_pct_of_evaluated": None,
+                        "period_contribution_pct": row.get("pct"),
+                        "denominator_kind": "group_total_cases",
+                        "denominator_n": group_cases,
+                        "comparison_min_n": FAMILY_GROUP_COMPARISON_MIN_N,
+                        "small_n": small_n,
+                        "ranking_eligible": False,
+                        "comparison_status": (
+                            "small_n" if small_n else "evaluated_denominator_unavailable"
+                        ),
+                    }
+                )
+
+
 def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
     """KPI волны 1-4 + семейства Лекарства/Анализы (D0)."""
     from .mo_anomaly_kpis import kpi_from_finding_rows, load_anomaly_catalog
@@ -4562,6 +4611,17 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
                 """,
                 args,
             ).fetchall()
+            specialty_rows = conn.execute(
+                f"""
+                SELECT c.specialty AS specialty, COUNT(*) AS cases
+                FROM {_MO_CASE_FROM}
+                WHERE {clause}
+                  AND c.specialty IS NOT NULL
+                  AND TRIM(c.specialty) != ''
+                GROUP BY c.specialty
+                """,
+                args,
+            ).fetchall()
             cases_with_lab, lab_cov = _count_cases_with_lab(conn, clause, args)
     except (sqlite3.Error, RuntimeError):
         dash = family_dashboard_from_rows([], total_cases=0)
@@ -4592,6 +4652,14 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
         cases_with_lab=cases_with_lab,
         lab_coverage_available=lab_cov,
     )
+    doctor_total_counts: Counter[str] = Counter()
+    for row in doctor_rows:
+        doctor_total_counts[str(row[0])] += int(row[2] or 0)
+    _attach_family_group_denominators(
+        dash["families"],
+        doctor_totals=doctor_total_counts,
+        specialty_totals={str(r[0]): int(r[1] or 0) for r in specialty_rows},
+    )
     doctors = risk_adjust_doctor_rows(
         [
             {
@@ -4620,6 +4688,7 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
         ),
         "flags": empty_flags,
         "shadow_note_ru": dash.get("shadow_note_ru"),
+        "group_comparison_min_n": FAMILY_GROUP_COMPARISON_MIN_N,
     }
     if want in dash["families"]:
         payload["family"] = dash["families"][want]
