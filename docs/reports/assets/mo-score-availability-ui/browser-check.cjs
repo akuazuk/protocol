@@ -1,7 +1,8 @@
 const {chromium}=require('playwright');
 const fs=require('fs'),path=require('path'),assert=require('assert/strict');
+let browser;
 (async()=>{
- const root=process.cwd(), browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
+ const root=process.cwd(); browser=await chromium.launch({headless:true,executablePath:'/Applications/Google Chrome.app/Contents/MacOS/Google Chrome'});
  const page=await browser.newPage({viewport:{width:1440,height:1000}}),errors=[];
  page.on('pageerror',e=>errors.push(e.message));
  await page.addInitScript(()=>localStorage.setItem('protocol_methodist_token','synthetic-local-only'));
@@ -12,7 +13,7 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
   if(u.pathname.startsWith('/api/')){
    let data={ok:true,items:[],rows:[],facets:{}};
    if(u.pathname.endsWith('/capabilities'))data={ok:true,pages:{documents:true},actions:{}};
-   if(u.pathname.endsWith('/cases/synthetic'))data={record:{case_id:'synthetic'},family_scores:scores};
+   if(u.pathname.endsWith('/cases/synthetic'))data={record:{case_id:'synthetic',parse_ok:1},family_scores:scores};
    return route.fulfill({contentType:'application/json',body:JSON.stringify(data)});
   }
   const f=u.pathname==='/methodist/mo'?path.join(root,'frontend/web/methodist/mis-kz-quality.html'):path.join(root,'frontend/web/shared',u.pathname);
@@ -30,6 +31,9 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
   scores=fixture;await page.locator('#synthetic-open').evaluate(el=>el.click());
   await page.locator('.family-score-chip').first().waitFor();
   assert.deepEqual(await page.locator('.family-score-chip .kpi-value').allTextContents(),values);
+  const confidence=page.locator('.drawer-grid .kpi').filter({hasText:'Уверенность расчёта'});
+  assert((await confidence.textContent()).includes('Не предоставлена'));
+  assert(!(await confidence.textContent()).includes('90'));
   assert((await page.locator('.family-score-row').innerText()).includes(note));
   await page.locator('#drawer-close').click();
  }
@@ -40,4 +44,4 @@ const fs=require('fs'),path=require('path'),assert=require('assert/strict');
  const sizes=await page.locator('.family-score-row').evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}));
  assert(sizes.scroll<=sizes.width,'family row overflow');assert.deepEqual(errors,[]);
  console.log(JSON.stringify({fixtures:fixtures.length,errors,mobile:sizes}));await browser.close();
-})().catch(e=>{console.error(e);process.exitCode=1});
+})().catch(async e=>{console.error(e);if(browser)await browser.close();process.exitCode=1});

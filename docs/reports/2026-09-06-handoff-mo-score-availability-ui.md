@@ -36,3 +36,12 @@ fe0734a8, но не deployed нами. Данные и primary flags не мен
 ```bash
 gh pr list --repo akuazuk/protocol --state open
 ```
+
+## Дополнение: происхождение уверенности
+
+Убраны выдуманные 90/75/55 процентов уверенности по parse_ok/date_mismatch/осям.
+Убраны 100% полноты только по parse_ok. Fallback наличия осей подписан
+«Заполненность осей», не полнота клинической проверки. Уверенность API сохранена
+с пояснением, что она не подтверждает точность медицинского вывода.
+Повторно 35 passed и 4 browser payload (в том числе parse_ok=1 без confidence);
+BUILD_VERSION 2026-09-06-091452Z-mo-score-availability-ui. Merge/deploy ещё нет.

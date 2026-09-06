@@ -563,20 +563,11 @@
         if (axes[key] != null || record["axis_" + key] != null) present += 1;
       });
       if (present > 0) return { value: Math.round((100 * present / axisKeys.length) * 10) / 10, estimated: true };
-      if (String(record.parse_ok || "") === "1") return { value: 100, estimated: true };
       return { value: null, estimated: false };
     }
     function deriveConfidence(detail, record, axes) {
       var value = firstNumeric([detail.confidence_pct, record.confidence_pct, record.confidence, record.deep_confidence_pct]);
       if (value != null) return { value: value, estimated: false };
-      var hasAxes = ["documentation", "clinical_concordance", "safety", "regulatory"].some(function (key) {
-        return axes[key] != null || record["axis_" + key] != null;
-      });
-      var parseOk = String(record.parse_ok || "") === "1";
-      var mismatch = String(record.date_mismatch || "0") === "1";
-      if (parseOk && mismatch) return { value: 75, estimated: true };
-      if (parseOk) return { value: 90, estimated: true };
-      if (hasAxes) return { value: 55, estimated: true };
       return { value: null, estimated: false };
     }
     function bar(name, value, suffix) {
@@ -3029,8 +3020,10 @@
         '<details class="detail-block mo-secondary-details"><summary>Служебное: deep, покрытие, CRM</summary>' +
         '<div class="drawer-grid">' + kpi("Сводный индекс", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "deep") +
         kpi("Балл №55", score(reg55Pct), reg55BandLabel || "разд. V · 0/0.5/1") +
-        kpi("Полнота проверки", score(coverageInfo.value), "модель") +
-        kpi("Надёжность", score(confidenceInfo.value), "модель") + '</div>' +
+        kpi(coverageInfo.estimated ? "Заполненность осей" : "Полнота проверки", score(coverageInfo.value),
+          coverageInfo.estimated ? "Наличие оценок, не полнота клинической проверки" : "По данным расчёта") +
+        kpi("Уверенность расчёта", score(confidenceInfo.value),
+          confidenceInfo.value == null ? "Не предоставлена" : "Не подтверждает точность медицинского вывода") + '</div>' +
         renderReviewPackHistory(packs) +
         '<div class="detail-block"><h3>История CRM</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
