@@ -68,11 +68,17 @@
 - [x] `docs/deploy/multi-agent-workflow-v3.md`; v2 помечен superseded.
 - [x] Ссылки в `AGENTS.md`, `two-computers-daily-checklist.md`,
       `multi-machine-git-deploy-runbook.md`, cursor-правилах переведены на v3.
+- [x] Обязательные проверки на `main` расширены до трёх существующих:
+      `lint-and-test`, `docker-images`, `manifest-mode` (было две).
 - [ ] Разобрать 7 зависших PR: домержить, переоткрыть от свежего `main` или
       закрыть с причиной.
-- [ ] Включить `pr-hygiene` в required checks ветки `main` (решение владельца:
-      после первого прогона на живом PR).
-- [ ] Включить «Require review from Code Owners» в branch protection.
+- [ ] **Сразу после merge этого PR** добавить в required: `hygiene`,
+      `security-scan`, `e2e`. Раньше нельзя: на `main` этих джоб нет, и все
+      открытые PR заблокировались бы (проверено 2026-09-05 на #193).
+- [ ] «Require review from Code Owners» - **не включать** пока владелец один.
+      При `enforce_admins: true`, единственном коллабораторе и запрете
+      самоодобрения требование неисполнимо: смержить нельзя будет ничего.
+      Включать вместе с появлением второго ревьюера.
 
 ## 5. Риски
 
