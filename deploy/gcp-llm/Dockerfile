@@ -1,5 +1,5 @@
 # protocol-gcp-llm: Gemini grade/judge jobs only (epochs E1-E3).
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
