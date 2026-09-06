@@ -323,7 +323,7 @@ git archive --format=tar "$RELEASE_SHA" -- \
   data/regulations \
   output/registry/protocol_cards.jsonl \
   services \
-  deploy/gcp-app/Dockerfile .dockerignore \
+  deploy/gcp-app/Dockerfile deploy/gcp-app/verify_lab_assets.py .dockerignore \
   | gzip -c \
   | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR' && find '$REMOTE_DIR' -name '._*' -delete 2>/dev/null; true"
 
