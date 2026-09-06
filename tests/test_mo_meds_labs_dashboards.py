@@ -1,4 +1,5 @@
 """D1-D2: страницы Лекарства/Анализы и полоски на Сегодня/Период."""
+
 from __future__ import annotations
 
 import sqlite3
@@ -104,7 +105,72 @@ def test_drugs_labs_kpis_uses_doctor_fio_not_doctor_name(monkeypatch, tmp_path: 
     assert payload["ok"] is True
     drug = payload["families"]["drug"]
     assert drug["tiles"]
-    assert any(tile.get("id") == "interactions" and tile.get("cases") == 1 for tile in drug["tiles"])
+    assert any(
+        tile.get("id") == "interactions" and tile.get("cases") == 1 for tile in drug["tiles"]
+    )
+
+
+def test_family_groups_separate_group_rate_from_period_contribution(
+    monkeypatch, tmp_path: Path
+) -> None:
+    db = tmp_path / "mo.sqlite"
+    initialize_warehouse(db)
+    doctor = doctor_key_for("Тестовый Врач")
+    with sqlite3.connect(db) as conn:
+        conn.execute(
+            "INSERT INTO dim_doctor(doctor_key,doctor_fio,specialty,filial) VALUES(?,?,?,?)",
+            (doctor, "Тестовый Врач", "Терапия", "Центр"),
+        )
+        for index in (1, 2):
+            conn.execute(
+                """INSERT INTO fact_mo_case
+                   (mis_id,visit_id,visit_date,document_kind,overall_pct,status,
+                    doctor_key,specialty,filial,diagnosis_code,icd_chapter,content_hash,updated_at)
+                   VALUES(?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    f"91{index}",
+                    f"92{index}",
+                    "2026-09-01",
+                    "clinical_visit",
+                    61.0,
+                    "review",
+                    doctor,
+                    "Терапия",
+                    "Центр",
+                    "J06.9",
+                    "Болезни органов дыхания",
+                    f"hash-group-{index}",
+                    "2026-09-01T00:00:00Z",
+                ),
+            )
+        conn.execute(
+            """INSERT INTO fact_mo_finding
+               (mis_id,finding_code,severity,passed,evidence,source_ref)
+               VALUES(?,?,?,?,?,?)""",
+            ("911", "C_ddi", "P1", 0, "синтетика", "тест"),
+        )
+        conn.commit()
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(db))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+
+    payload = build_mo_drugs_labs_kpis({"date_from": "2026-09-01", "date_to": "2026-09-01"})
+
+    assert payload["group_comparison_min_n"] == 20
+    for row in (
+        payload["families"]["drug"]["by_doctor"][0],
+        payload["families"]["drug"]["by_specialty"][0],
+    ):
+        assert row["problem_cases"] == 1
+        assert row["group_cases"] == 2
+        assert row["problem_pct_of_group"] == 50.0
+        assert row["period_contribution_pct"] == 50.0
+        assert row["evaluated_cases"] is None
+        assert row["problem_pct_of_evaluated"] is None
+        assert row["denominator_kind"] == "group_total_cases"
+        assert row["denominator_n"] == 2
+        assert row["small_n"] is True
+        assert row["ranking_eligible"] is False
+        assert row["comparison_status"] == "small_n"
 
 
 def test_dockerfile_ships_finding_families() -> None:
