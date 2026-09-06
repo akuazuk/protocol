@@ -4,6 +4,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from datetime import date
 from functools import lru_cache
 from pathlib import Path
 from typing import Any, Mapping
@@ -38,14 +39,15 @@ def load_reference_ranges() -> list[dict[str, Any]]:
     if not _RANGE_PATH.is_file():
         return []
     data = json.loads(_RANGE_PATH.read_text(encoding="utf-8"))
-    return list(data.get("ranges") or [])
+    population = (data.get("meta") or {}).get("population")
+    return [{"population": population, **row} for row in data.get("ranges") or []]
 
 
 def _parse_number(value: Any) -> float | None:
-    raw = str(value or "").strip().replace(",", ".")
+    raw = str(value if value is not None else "").strip().replace(",", ".")
     if not raw:
         return None
-    match = _NUM.search(raw)
+    match = _NUM.fullmatch(raw)
     if not match:
         return None
     try:
@@ -57,13 +59,11 @@ def _parse_number(value: Any) -> float | None:
 def _unit_ok(actual: str, expected: str) -> bool:
     a = _norm(actual).replace(" ", "")
     e = _norm(expected).replace(" ", "")
-    if not e:
-        return True
-    if not a:
-        return True  # soft: missing unit still compared
+    if not e or not a:
+        return False
     aliases = {
         "ед/л": {"е/л", "u/l", "ед/л"},
-        "ме/л": {"ме/л", "мме/л", "iu/l"},
+        "ме/л": {"ме/л", "iu/l"},
         "мг/л": {"мг/л", "mg/l"},
         "ммоль/л": {"ммоль/л", "mmol/l"},
         "мкмоль/л": {"мкмоль/л", "umol/l", "µмоль/л"},
@@ -72,8 +72,8 @@ def _unit_ok(actual: str, expected: str) -> bool:
     }
     for key, group in aliases.items():
         if e in group or e == key:
-            return a in group or a == key or e in a or a in e
-    return a == e or e in a or a in e
+            return a in group or a == key
+    return a == e
 
 
 def _match_range(indicator_name: str, unit: str) -> dict[str, Any] | None:
@@ -88,7 +88,12 @@ def _match_range(indicator_name: str, unit: str) -> dict[str, Any] | None:
     return None
 
 
-def abnormal_from_bundle(bundle: Mapping[str, Any] | None) -> list[dict[str, Any]]:
+def abnormal_from_bundle(
+    bundle: Mapping[str, Any] | None,
+    *,
+    age_years: int | None = None,
+    max_date: str | None = None,
+) -> list[dict[str, Any]]:
     out: list[dict[str, Any]] = []
     if not isinstance(bundle, Mapping):
         return out
@@ -96,6 +101,8 @@ def abnormal_from_bundle(bundle: Mapping[str, Any] | None) -> list[dict[str, Any
         if not isinstance(day, Mapping):
             continue
         test_date = str(day.get("test_date") or "")[:10]
+        if max_date and (not test_date or test_date > max_date):
+            continue
         for item in day.get("types") or []:
             if not isinstance(item, Mapping):
                 continue
@@ -109,6 +116,8 @@ def abnormal_from_bundle(bundle: Mapping[str, Any] | None) -> list[dict[str, Any
                     continue
                 ref = _match_range(name, unit)
                 if not ref:
+                    continue
+                if ref.get("population") == "adult" and (age_years is None or age_years < 18):
                     continue
                 low = float(ref["low"])
                 high = float(ref["high"])
@@ -175,7 +184,15 @@ def abnormal_lab_findings(
 ) -> list[dict[str, Any]]:
     if not lab_abnormal_enabled() or not isinstance(case, Mapping):
         return []
-    items = abnormal_from_bundle(bundle)
+    from clinical_knowledge.patient_age import resolve_patient_age
+
+    visit = str(case.get("visit_date") or case.get("date") or "")[:10]
+    try:
+        date.fromisoformat(visit)
+    except ValueError:
+        return []
+    age = resolve_patient_age(dict(case)).get("age_years")
+    items = abnormal_from_bundle(bundle, age_years=age, max_date=visit)
     ignored = [item for item in items if not _mo_acknowledges_abnormal(case, item)]
     if not ignored:
         return []

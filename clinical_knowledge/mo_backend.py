@@ -1068,6 +1068,7 @@ def is_case_score_eligible(
 
 
 def build_cases(params: dict[str, Any]) -> dict[str, Any]:
+    params = _apply_request_period(params)
     params = _apply_score_eligible_default(params)
     all_records = _records(params)
     filtered = _filter_records(all_records, params)
@@ -1224,6 +1225,7 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
 
 
 def build_facets(params: dict[str, Any]) -> dict[str, Any]:
+    params = _apply_request_period(params)
     all_records = _records(params)
     filtered = _filter_records(all_records, params)
     facets = _facets(filtered)
@@ -1749,6 +1751,7 @@ def _secondary_icd_and_gaps(filtered: list[dict[str, Any]], *, small_slice: bool
 
 
 def build_overview(params: dict[str, Any]) -> dict[str, Any]:
+    params = _apply_request_period(params)
     all_records = _records(params)
     filtered = _filter_records(all_records, params)
     states = _crm_states([r["case_id"] for r in filtered])
@@ -2679,6 +2682,14 @@ def build_trends(params: dict[str, Any]) -> dict[str, Any]:
         "daily": daily,
         "monthly": legacy.get("series") or [],
     }
+
+
+def _apply_request_period(params: dict[str, Any]) -> dict[str, Any]:
+    """Resolve modern UI controls before legacy record loading/filtering."""
+    if not params.get("period") and not params.get("month"):
+        return params
+    period = _resolve_request_period(params).current
+    return {**params, "date_from": period.date_from.isoformat(), "date_to": period.date_to.isoformat()}
 
 
 def _resolve_request_period(params: dict[str, Any]):
@@ -4429,29 +4440,11 @@ _MO_CASE_FROM = "fact_mo_case c LEFT JOIN dim_doctor d ON d.doctor_key = c.docto
 
 
 def _mo_drugs_labs_where(params: dict[str, Any]) -> tuple[str, list[Any]]:
-    where = ["c.document_kind IN ('clinical_visit', 'consultation')"]
-    args: list[Any] = []
-    date_from = str(params.get("date_from") or "")[:10]
-    date_to = str(params.get("date_to") or "")[:10]
-    if date_from:
-        where.append("c.visit_date >= ?")
-        args.append(date_from)
-    if date_to:
-        where.append("c.visit_date <= ?")
-        args.append(date_to)
-    specs = _values(params.get("specializations"))
-    if specs:
-        where.append(f"c.specialty IN ({','.join('?' * len(specs))})")
-        args.extend(specs)
-    filials = _values(params.get("filials"))
-    if filials:
-        where.append(f"c.filial IN ({','.join('?' * len(filials))})")
-        args.extend(filials)
-    doctors = _values(params.get("doctors"))
-    if doctors:
-        where.append(f"COALESCE(d.doctor_fio, '') IN ({','.join('?' * len(doctors))})")
-        args.extend(doctors)
-    return " AND ".join(where), args
+    """Use the same calendar and population predicates as period summaries."""
+    period = _resolve_request_period(params).current
+    clause, args = _sql_case_filter(period, params)
+    # An explicit type selection intersects eligibility; it must not broaden it.
+    return clause + " AND c.document_kind IN ('clinical_visit', 'consultation')", args
 
 
 def _count_cases_with_lab(conn: sqlite3.Connection, clause: str, args: list[Any]) -> tuple[int | None, bool]:
@@ -4532,8 +4525,9 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             "strips": dash["strips"],
             "flags": empty_flags,
         }
-    date_from = str(params.get("date_from") or "")[:10]
-    date_to = str(params.get("date_to") or "")[:10]
+    period = _resolve_request_period(params).current
+    date_from = period.date_from.isoformat()
+    date_to = period.date_to.isoformat()
     clause, args = _mo_drugs_labs_where(params)
     try:
         with closing(_read_connection()) as conn:
