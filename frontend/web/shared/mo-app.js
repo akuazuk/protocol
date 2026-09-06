@@ -76,6 +76,8 @@
       documents: "Все случаи", doctors: "Врачи", medications: "Проверка назначений", labs: "Анализы",
       reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции препаратов", settings: "Справка"
     };
+    // Compatibility contract for integrations that still identify this page by its former label.
+    var LEGACY_PAGE_TITLES = { medications: "Лекарства" };
     var REMOVED_PAGES = {
       specialties: true, diagnoses: true, safety: true,
       "data-quality": true, "doctor-cabinet": true, "access-log": true

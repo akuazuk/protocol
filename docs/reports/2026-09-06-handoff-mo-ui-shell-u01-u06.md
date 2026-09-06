@@ -9,7 +9,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-ui-shell-pc1`
 - Base: `81d3bf2b8e5d7e66863d34ef5575b6a2b7272140`
 - PR: #231
-- BUILD_VERSION: `2026-09-06-182038Z-mo-ui-shell`
+- BUILD_VERSION: `2026-09-06-184846Z-mo-ui-shell`
 
 ## Реализовано
 
