@@ -21,16 +21,16 @@
       </a>
       <nav>
         <ul class="nav-list" id="app-nav">
-          <li><button class="nav-button" data-page="yesterday" aria-current="page"><span class="nav-icon">С</span><span class="nav-text">Сегодня</span></button></li>
-          <li><button class="nav-button" data-page="overview"><span class="nav-icon">П</span><span class="nav-text">Период</span></button></li>
-          <li><button class="nav-button" data-page="queue"><span class="nav-icon">!</span><span class="nav-text">Очередь</span></button></li>
-          <li><button class="nav-button" data-page="documents"><span class="nav-icon">≡</span><span class="nav-text">Все случаи</span></button></li>
-          <li><button class="nav-button" data-page="doctors"><span class="nav-icon">Вр</span><span class="nav-text">Врачи</span></button></li>
-          <li><button class="nav-button" data-page="medications"><span class="nav-icon">Лк</span><span class="nav-text">Лекарства</span></button></li>
-          <li><button class="nav-button" data-page="labs"><span class="nav-icon">Ан</span><span class="nav-text">Анализы</span></button></li>
-          <li><button class="nav-button" data-page="reports"><span class="nav-icon">⇩</span><span class="nav-text">Отчёты</span></button></li>
-          <li><button class="nav-button" data-page="kp-sync"><span class="nav-icon">КП</span><span class="nav-text">Протоколы МЗ</span></button></li>
-          <li><button class="nav-button" data-page="rceth-sync"><span class="nav-icon">ЛС</span><span class="nav-text">Инструкции ЛС</span></button></li>
+          <li><button class="nav-button" data-page="yesterday" aria-current="page" aria-label="Сегодня"><span class="nav-icon" aria-hidden="true">С</span><span class="nav-text">Сегодня</span></button></li>
+          <li><button class="nav-button" data-page="overview" aria-label="Период"><span class="nav-icon" aria-hidden="true">П</span><span class="nav-text">Период</span></button></li>
+          <li><button class="nav-button" data-page="queue" aria-label="Очередь разбора"><span class="nav-icon" aria-hidden="true">!</span><span class="nav-text">Очередь</span></button></li>
+          <li><button class="nav-button" data-page="documents" aria-label="Все случаи"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-text">Все случаи</span></button></li>
+          <li><button class="nav-button" data-page="doctors" aria-label="Врачи"><span class="nav-icon" aria-hidden="true">Вр</span><span class="nav-text">Врачи</span></button></li>
+          <li><button class="nav-button" data-page="medications" data-legacy-label="Лекарства" aria-label="Проверка назначений"><span class="nav-icon" aria-hidden="true">Лк</span><span class="nav-text">Проверка назначений</span></button></li>
+          <li><button class="nav-button" data-page="labs" aria-label="Анализы"><span class="nav-icon" aria-hidden="true">Ан</span><span class="nav-text">Анализы</span></button></li>
+          <li><button class="nav-button" data-page="reports" aria-label="Отчёты"><span class="nav-icon" aria-hidden="true">⇩</span><span class="nav-text">Отчёты</span></button></li>
+          <li><button class="nav-button" data-page="kp-sync" aria-label="Протоколы МЗ"><span class="nav-icon" aria-hidden="true">КП</span><span class="nav-text">Протоколы МЗ</span></button></li>
+          <li><button class="nav-button" data-page="rceth-sync" data-legacy-label="Инструкции ЛС" aria-label="Инструкции препаратов"><span class="nav-icon" aria-hidden="true">ЛС</span><span class="nav-text">Инструкции препаратов</span></button></li>
           <li hidden><button class="nav-button" data-page="settings" id="nav-settings" aria-hidden="true"><span class="nav-text">Справка</span></button></li>
         </ul>
       </nav>
@@ -100,6 +100,8 @@
                 <div class="toolbar-panel-actions">
                   <span class="panel-help">В таблице только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология не показываются и не оцениваются.</span>
                   <button class="button secondary" id="reset-filters" type="button">Сбросить фильтры</button>
+                  <button class="button secondary" id="filters-cancel" type="button">Отмена</button>
+                  <button class="button" id="filters-apply" type="button">Применить</button>
                 </div>
               </div>
             </details>
@@ -123,8 +125,8 @@
             <button class="button secondary icon" id="theme-toggle" type="button" aria-pressed="false" aria-label="Включить тёмную тему">◐</button>
           </div>
         </div>
-        <div class="chips" id="filter-chips" aria-live="polite"></div>
-        <div class="analysis-rail" id="analysis-rail" aria-live="polite">
+        <div class="chips chips--cohort" id="filter-chips" aria-live="polite"></div>
+        <div class="analysis-rail" id="analysis-rail" aria-live="polite" hidden>
           <div class="analysis-head">
             <strong>Маршрут анализа</strong>
             <div class="row-actions">
@@ -137,6 +139,7 @@
         </div>
       </header>
 
+      <div class="card columns-manager" id="columns-manager" hidden><h2>Видимость колонок</h2><p class="card-sub">Настройка для экранов «Все случаи» и «Очередь разбора».</p><div class="grid"><article class="span-6" id="columns-manager-doc"></article><article class="span-6" id="columns-manager-queue"></article></div></div>
       <main id="main" class="content" tabindex="-1">
         <nav class="breadcrumbs" id="breadcrumbs" aria-label="Путь по разделу"><ol><li>МО Аналитика</li><li aria-current="page">Сегодня</li></ol></nav>
         <div id="global-error" class="banner" role="alert" hidden></div>
@@ -202,13 +205,13 @@
 
         <section class="page" id="page-queue" data-page="queue" hidden aria-labelledby="title-queue">
           <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Назначение ответственных, контроль срока и фиксация решения по каждому случаю.</p></div></div>
-          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button><button class="button secondary" id="queue-critical-only" type="button">Только критические</button><button class="button secondary" id="queue-shadow-attention-only" type="button" title="Не официальная оценка">Shadow: плохо/критично</button><button class="button secondary" id="queue-open-pdf-selected" type="button">PDF выбранных</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
+          <div class="section-actions"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button><button class="button secondary" id="queue-critical-only" type="button">Только критические</button><button class="button secondary" id="queue-shadow-attention-only" type="button" title="Не официальная оценка">Shadow: плохо/критично</button><button class="button secondary" id="queue-columns-button" type="button" aria-pressed="false">Колонки</button><button class="button secondary" id="queue-open-pdf-selected" type="button">PDF выбранных</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
           <div class="card"><div class="table-wrap sticky-first"><table><caption class="sr-only">Очередь случаев для разбора методистом</caption><thead><tr><th scope="col"><span class="sr-only">Выбрать</span></th><th scope="col" class="sortable-th" data-sort-key="priority">Приоритет</th><th scope="col">Раздел</th><th scope="col" class="sortable-th" data-sort-key="visit_id">Визит</th><th scope="col" class="sortable-th" data-sort-key="patient_id">Пациент</th><th scope="col" class="sortable-th" data-sort-key="date">Дата</th><th scope="col" class="sortable-th" data-sort-key="filial">Филиал</th><th scope="col" class="sortable-th" data-sort-key="doctor">Врач / специальность</th><th scope="col">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="overall_grade">Оценка</th><th scope="col" class="sortable-th" data-sort-key="zone1">Оформление</th><th scope="col" class="sortable-th" data-sort-key="zone2a">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="zone2b">План</th><th scope="col" class="sortable-th" data-sort-key="reg55">№55 / градация</th><th scope="col">Причина</th><th scope="col">Ответственный</th><th scope="col">Срок</th><th scope="col" class="sortable-th" data-sort-key="status">Статус</th><th scope="col">МО</th></tr></thead><tbody id="queue-rows"></tbody></table></div></div>
         </section>
 
         <section class="page" id="page-documents" data-page="documents" hidden aria-labelledby="title-documents">
           <div class="page-head"><div><h1 id="title-documents">Все случаи</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
-          <div class="section-actions"><button class="button secondary" id="columns-button" aria-pressed="false">Колонки таблиц</button><label class="filter"><span>Сортировка</span><select class="control" id="sort-by"><option value="date">По дате</option><option value="overall">По баллу</option><option value="reg55">По баллу №55</option><option value="priority">По приоритету</option></select></label><label class="filter"><span>Порядок</span><select class="control" id="sort-dir"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select></label><button class="button secondary" data-action="export">Экспорт всей выборки</button></div><div class="card" id="columns-manager" hidden><h2>Видимость колонок</h2><p class="card-sub">Настройка для экранов «Все случаи» и «Очередь разбора».</p><div class="grid"><article class="span-6" id="columns-manager-doc"></article><article class="span-6" id="columns-manager-queue"></article></div></div>
+          <div class="section-actions"><button class="button secondary" id="columns-button" aria-pressed="false">Колонки таблиц</button><label class="filter"><span>Сортировка</span><select class="control" id="sort-by"><option value="date">По дате</option><option value="overall">По баллу</option><option value="reg55">По баллу №55</option><option value="priority">По приоритету</option></select></label><label class="filter"><span>Порядок</span><select class="control" id="sort-dir"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select></label><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
           <div class="card"><div class="table-wrap sticky-first"><table><caption class="sr-only">Все медицинские документы выбранного среза</caption><thead><tr><th scope="col" class="sortable-th" data-sort-key="visit_id">Визит</th><th scope="col" class="sortable-th" data-sort-key="patient_id">Пациент</th><th scope="col" class="sortable-th" data-sort-key="date">Дата</th><th scope="col" class="sortable-th" data-sort-key="doctor">Врач / специальность</th><th scope="col" class="sortable-th" data-sort-key="filial">Филиал</th><th scope="col">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="overall_grade">Оценка</th><th scope="col" class="sortable-th" data-sort-key="zone1">Оформление</th><th scope="col" class="sortable-th" data-sort-key="zone2a">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="zone2b">План</th><th scope="col">Причина</th><th scope="col" class="sortable-th" data-sort-key="status">Статус</th><th scope="col" class="sortable-th" data-sort-key="overall">Итог</th><th scope="col" class="sortable-th" data-sort-key="reg55">№55 / градация</th><th scope="col">Полнота проверки</th><th scope="col">Надёжность</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
         </section>
 
@@ -258,7 +261,7 @@
           </details>
         </section>
         <section class="page" id="page-medications" data-page="medications" hidden aria-labelledby="title-medications">
-          <div class="page-head"><div><h1 id="title-medications">Лекарства</h1><p>Назначения в МО: взаимодействия, дубли групп, доза и инструкция. Не путать с вкладкой «Инструкции ЛС».</p></div><span class="draft-badge">черновик, не в общей оценке</span></div>
+          <div class="page-head"><div><h1 id="title-medications">Проверка назначений</h1><p>Назначения в МО: взаимодействия, дубли групп, доза и инструкция. Не путать с вкладкой «Инструкции препаратов».</p></div><span class="draft-badge">черновик, не в общей оценке</span></div>
           <div class="kpis" id="medications-kpis"><div class="skeleton"></div></div>
           <div class="card"><h2>Что чаще всего</h2><p class="card-sub">Клик открывает список МО с этим замечанием</p><div id="medications-codes"></div></div>
           <div class="grid"><article class="card span-6"><h2>По специальности</h2><div id="medications-specialty"></div></article><article class="card span-6"><h2>По врачам</h2><p class="card-sub">Распределение замечаний по врачам. Процент от всех МО периода; не рейтинг качества.</p><div id="medications-doctors"></div></article></div>
@@ -306,7 +309,7 @@
           <div class="card"><h2>Заменены на сайте</h2><p class="card-sub">Файл остаётся в корпусе, в подборе не основной</p><div id="kp-sync-superseded"></div></div>
         </section>
         <section class="page" id="page-rceth-sync" data-page="rceth-sync" hidden aria-labelledby="title-rceth-sync">
-          <div class="page-head"><div><h1 id="title-rceth-sync">Инструкции ЛС</h1><p>Корпус инструкций специалиста с Refbank (rceth): манифест действующих ЛС и скачивание PDF на GCE.</p></div><span class="freshness" id="rceth-sync-freshness">Сверка</span></div>
+          <div class="page-head"><div><h1 id="title-rceth-sync">Инструкции препаратов</h1><p>Корпус инструкций специалиста с Refbank: манифест действующих препаратов и скачивание PDF на GCE.</p></div><span class="freshness" id="rceth-sync-freshness">Сверка</span></div>
           <div class="card" id="rceth-sync-live">
             <h2 id="rceth-sync-live-title">Статус синхронизации</h2>
             <p class="card-sub" id="rceth-sync-live-text">Загрузка статуса с GCE...</p>
