@@ -46,3 +46,11 @@ BUILD_VERSION 2026-09-06-085436Z-mo-family-score-integrity.
 ```bash
 gh pr list --repo akuazuk/protocol --state open
 ```
+
+## Синхронизация после #206
+
+Main e15ac9cf включён merge-коммитом без force-push. API #205 и lab #206
+сохранены; единственный конфликт версии разрешён штатным helper.
+BUILD_VERSION 2026-09-06-092138Z-mo-family-score-integrity.
+Повторная проверка включает family, API cohort и clinical lab bundle;
+общий CI должен пройти на новом HEAD. Production ещё не менялся нами.
