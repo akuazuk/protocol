@@ -22,12 +22,15 @@ Finding shape:
 from __future__ import annotations
 
 import json
+import logging
 import re
 from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
 from .drug_normalizer import extract_drugs
+
+_LOG = logging.getLogger("protocol.kz.deep_eval")
 
 _DRUG_SAFETY_DIR = Path(__file__).resolve().parent.parent / "data" / "drug_safety"
 _CONFIG_DIR = Path(__file__).resolve().parent.parent / "config"
@@ -185,7 +188,10 @@ def icd_validate(code: str, dx_text: str, icd_client=None) -> tuple[bool, str]:
             if not ok:
                 return False, f"код «{code}» не найден в справочнике МКБ"
         except Exception:  # noqa: BLE001
-            pass
+            # Мягкая деградация: оценка продолжается без этого блока.
+            # Молчать нельзя - пропавшие findings означают, что случай
+            # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+            _LOG.warning("kz_deep_eval: блок %s пропущен", "валидация кода МКБ по справочнику", exc_info=True)
     return True, ""
 
 
@@ -407,7 +413,10 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
             if primary:
                 penalty += 20
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "дубли классов препаратов", exc_info=True)
 
     # C3: DDI по DDInter среди назначенных
     def _ddi_label(drug: dict | None, inn: str) -> str:
@@ -628,7 +637,10 @@ def evaluate_kz_deep(
         if patient_history_enabled() and isinstance(case, dict):
             attach_bundle_to_case(case)
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "бандл истории пациента", exc_info=True)
 
     a_score, a_find = _axis_documentation(case)
     b_score, b_find = _axis_concordance(case, protocol_ctx, icd_client)
@@ -672,7 +684,10 @@ def evaluate_kz_deep(
                 source_ref="Пост. №55 · разд. V",
             ))
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "критерии пост. МЗ №55", exc_info=True)
 
     shadow_findings: list[dict] = list(safety_shadow)
     try:
@@ -690,7 +705,10 @@ def evaluate_kz_deep(
                     # Только при явном флаге: влияет на overall / risk-gate.
                     findings.extend({**item, "shadow": False} for item in conc)
     except Exception:  # noqa: BLE001 - мягкая деградация
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "concordance", exc_info=True)
 
     # Wave 2-3: formulary + drug-disease (всегда shadow, пока primary-флаги off)
     try:
@@ -698,13 +716,19 @@ def evaluate_kz_deep(
 
         shadow_findings = list(shadow_findings) + list(formulary_findings(case))
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "formulary", exc_info=True)
     try:
         from .drug_disease_findings import drug_disease_findings
 
         shadow_findings = list(shadow_findings) + list(drug_disease_findings(case))
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "drug_disease", exc_info=True)
 
     # ICD pipeline v3: directory + name_match (+ aliases/compact внутри helpers)
     try:
@@ -756,7 +780,10 @@ def evaluate_kz_deep(
                     if icd_name_match_primary_enabled():
                         findings.extend({**item, "shadow": False} for item in name_shadow)
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "icd_name_match", exc_info=True)
 
     # История пациента (бандл + одно shadow МО); patient_id наружу не отдаём
     try:
@@ -773,7 +800,10 @@ def evaluate_kz_deep(
                 if patient_history_primary_enabled():
                     findings.extend({**item, "shadow": False} for item in hist_shadow)
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "patient_history", exc_info=True)
 
     # Rceth label-check: только shadow, не в overall / risk-gate / очередь Критично
     try:
@@ -790,7 +820,10 @@ def evaluate_kz_deep(
                 if rceth_label_primary_enabled():
                     findings.extend({**item, "shadow": False} for item in rceth_shadow)
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "rceth_label", exc_info=True)
 
     try:
         from .mo_lab_bundle import lab_bundle_enabled
@@ -807,7 +840,10 @@ def evaluate_kz_deep(
                 else:
                     findings.append(item)
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "лабораторные показатели", exc_info=True)
 
     family_scores: dict[str, Any] = {}
     try:
@@ -853,7 +889,10 @@ def evaluate_kz_deep(
         )
         anomalies = classify_case_anomalies(list(findings) + list(shadow_findings))
     except Exception:  # noqa: BLE001
-        pass
+        # Мягкая деградация: оценка продолжается без этого блока.
+        # Молчать нельзя - пропавшие findings означают, что случай
+        # получил оценку ЛУЧШЕ заслуженной, и это никак не видно.
+        _LOG.warning("kz_deep_eval: блок %s пропущен", "dual/матрица/аномалии", exc_info=True)
 
     return {
         "axes": axes,

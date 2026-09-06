@@ -15,7 +15,12 @@ concurrency:
 jobs:
   lint-and-test:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    # Прогон с инструментацией покрытия занимает ~9 минут (замерено 2026-09-05:
+    # 9.6 мин на runner, 8m55s локально). При лимите 15 минут запас съедался
+    # разбросом скорости runner, и джоба падала как `cancelled` - это выглядит
+    # как отмена соседней вкладкой, хотя `cancel-in-progress: false`. Порог не
+    # про длительность теста, а про запас: понижать вместе с ростом набора.
+    timeout-minutes: 25
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -31,14 +36,40 @@ jobs:
           python -m pip install --upgrade pip
           pip install -r requirements-rag.txt -r requirements-dev.txt
 
+      # Серверный барьер против ПДн: локальный pre-commit устанавливается
+      # вручную и на машинах агентов обычно отсутствует, поэтому запрет
+      # должен работать и в CI. См. docs/reports/2026-09-05-prod-state-snapshot.md.
+      - name: Персональные данные не попадают в репозиторий
+        run: python3 scripts/ops/check_no_phi_staged.py --all
+
+      # Прод-образ ставит зависимости из requirements-rag.lock, поэтому lock не
+      # должен отставать от requirements-rag.txt. Проверяется согласованность,
+      # а не «свежесть»: обновления версий приносит Dependabot.
+      - name: Lock зависимостей согласован
+        run: python3 scripts/ops/check_requirements_lock.py
+
       - name: Ruff (lint)
         run: ruff check .
 
-      - name: Pytest
+      # Проверяется явный список модулей из pyproject.toml [tool.mypy], а не
+      # весь репозиторий: см. комментарий там же.
+      - name: Mypy (зона типизации)
+        run: mypy
+
+      # Порог покрытия - «трещотка», а не цель: 75.13% - фактический замер на
+      # 2026-09-05 (clinical_knowledge + backend). Гейт стоит на 70%, чтобы
+      # пропускать разницу окружений (часть тестов в CI скипается без MIS DSN),
+      # и поднимается по мере роста покрытия. Понижать порог, чтобы «прошло», -
+      # нельзя: смысл именно в том, что вниз он не двигается.
+      - name: Pytest (с порогом покрытия)
         env:
           # Без ключа API: тесты не должны ходить во внешнюю модель.
           RAG_GEMINI_EMBED_RERANK: "0"
-        run: pytest -q
+        run: |
+          pytest -q \
+            --cov=clinical_knowledge --cov=backend \
+            --cov-report=term-missing:skip-covered \
+            --cov-fail-under=70
 
       - name: Search golden (mini corpus)
         env:
@@ -48,6 +79,102 @@ jobs:
 
       - name: Repo layout smoke (scripts wrappers)
         run: bash scripts/ops/smoke_repo_layout.sh
+
+  # Уязвимости зависимостей и конфигураций. Разделение блокирующего и
+  # отчётного намеренное: pip-audit блокирует, потому что на 2026-09-05 все
+  # requirements*.txt чисты (проверено локально) - значит любая находка это
+  # регресс, внесённый в PR. Trivy по Dockerfile пока только отчёт: образы
+  # запускаются от root, и переход на непривилегированного пользователя
+  # требует chown смонтированного /var/data (см. docs/deploy/gce-production-runbook.md),
+  # то есть отдельной согласованной задачи, а не флага в CI.
+  security-scan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Install pip-audit
+        run: python -m pip install --upgrade pip pip-audit
+
+      # Каждый файл отдельно: у контуров (rag/llm-worker/mis-bridge) разные
+      # наборы, и объединённый прогон скрыл бы, какой именно контур уязвим.
+      - name: pip-audit (зависимости прода и контуров)
+        run: |
+          status=0
+          for f in requirements.txt requirements-rag.txt requirements-dev.txt \
+                   requirements-llm-worker.txt requirements-mis-bridge.txt; do
+            echo "::group::pip-audit $f"
+            pip-audit -r "$f" --progress-spinner off || status=1
+            echo "::endgroup::"
+          done
+          exit $status
+
+      - name: Trivy (конфигурации Dockerfile, отчёт)
+        uses: aquasecurity/trivy-action@v0.36.0
+        continue-on-error: true
+        with:
+          scan-type: config
+          scan-ref: deploy
+          severity: CRITICAL,HIGH
+          exit-code: "0"
+
+  # E2E в браузере. Ловит то, что не видят серверные тесты: страница отдаётся
+  # с кодом 200, но CSP или проверка целостности (SRI) блокирует собственные
+  # скрипты - у врача не работает часть интерфейса, а в логах сервера чисто.
+  # Сервер поднимается с ENABLE_DEFAULT_CSP=1, как в проде (см. playwright.config.ts).
+  e2e:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+          cache: npm
+
+      - name: Install Python deps
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements-rag.txt
+
+      - name: Install Playwright
+        run: |
+          npm ci
+          npx playwright install --with-deps chromium
+
+      - name: E2E (Playwright)
+        env:
+          CI: "1"
+        run: npx playwright test
+
+      # Трассы и скриншоты падений могут содержать клинический текст со
+      # страницы, поэтому срок хранения короткий.
+      - name: Upload artefacts on failure
+        if: failure()
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-report-${{ github.run_id }}
+          path: |
+            playwright-report/
+            test-results/
+          retention-days: 5
+          if-no-files-found: ignore
 
   docker-images:
     runs-on: ubuntu-latest

@@ -147,3 +147,26 @@ def test_filter_records_reg55_point_and_band() -> None:
     assert [r["case_id"] for r in by_point] == ["a"]
     by_pack = _filter_records(rows, {"reg55_pack": "gp"})
     assert [r["case_id"] for r in by_pack] == ["b"]
+
+
+def test_weak_points_parsed_from_all_storage_shapes():
+    """Слабые места приходят из склада тремя видами: список, JSON-строка, строка с разделителями.
+
+    Разбор JSON намеренно ловит только JSONDecodeError: неразобранная строка -
+    это вторая штатная форма хранения, а не сбой. Любая другая ошибка здесь
+    означала бы порчу данных и должна всплывать, а не превращаться в пустой
+    список слабых мест - методист увидел бы «замечаний нет».
+    """
+    from clinical_knowledge.mo_backend import _parse_reg55_weak_points
+
+    assert _parse_reg55_weak_points(["42.3", " 43.6 "]) == ["42.3", "43.6"]
+    assert _parse_reg55_weak_points('["42.3", "43.6"]') == ["42.3", "43.6"]
+    assert _parse_reg55_weak_points("42.3|43.6") == ["42.3", "43.6"]
+    assert _parse_reg55_weak_points("42.3, 43.6") == ["42.3", " 43.6"]
+
+    assert _parse_reg55_weak_points(None) == []
+    assert _parse_reg55_weak_points("") == []
+    assert _parse_reg55_weak_points("   ") == []
+
+    # JSON-объект вместо списка: не список - значит падаем в разбор по разделителям.
+    assert _parse_reg55_weak_points('{"a": 1}') == ['{"a": 1}']

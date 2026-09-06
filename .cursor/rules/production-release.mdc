@@ -1,29 +1,34 @@
 ---
-description: Release-процесс Protocol: primary GCP, Render backup; код только через merged origin/main.
+description: Release-процесс Protocol: единственный прод - GCE; код только через merged origin/main.
 alwaysApply: true
 ---
 
-# Production release: GCP primary, Render backup
+# Production release: только GCE, только merged origin/main
 
 Эти правила обязательны для всех агентов, компьютеров и worktree.
 
 1. Task-агент делает только task-ветку -> commit -> push -> PR. Он не запускает deploy.
 2. `main` меняется только merge PR через GitHub. Прямой push и promote task HEAD запрещены.
-3. **Primary runtime** - GCP (`https://protocol.kravira.by`, project `protocol-home-e1`).
-   После merge, затрагивающего GCE app, координатор деплоит вручную:
-   `bash deploy/gcp-app/deploy_to_gce.sh`, затем `/api/version` + `/health/live` на
-   `protocol.kravira.by`.
-4. **Автодеплоя на GCE после merge пока нет.** Не добавлять GitHub Action на GCE без
-   явного решения владельца (нужны SA secrets + 2–3 стабильные ночи на GCP).
-5. **Render** (`https://protocol-bimy.onrender.com`) - backup/rollback. Action
-   `Production Render release` может обновлять Render после merge; это не делает Render
-   primary UI. Не удалять Render до B6 rollback + стабильных ночей на GCP.
-6. Action Render использует только `github.sha` = HEAD `origin/main`, concurrency
-   `production-render`. Локальный `render_release_main.sh` - только восстановление Action.
+3. **Прод один - GCE:** `https://protocol.kravira.by`, project `protocol-home-e1`,
+   VM `protocol-app` (`europe-central2-a`), контейнер `protocol-web` за Caddy.
+   Runbook: `docs/deploy/gce-production-runbook.md`.
+4. Релиз после merge выполняет один назначенный релиз-координатор:
+   `bash deploy/gcp-app/deploy_to_gce.sh`. Скрипт отказывает, если `HEAD != origin/main`;
+   на VM уезжает `git archive` релизного SHA, образ тегируется по SHA, при неудаче
+   health или несовпадении версии выполняется автоматический откат.
+5. **Render продом и откатом не является.** Сервис приостановлен и отдаёт `503`.
+   Action `Production Render release` удалён. Не предлагать «дождаться Render deploy»
+   и не считать Render UI источником истины. Откат - предыдущий образ по SHA на GCE
+   плюс снапшот диска `protocol-data`.
+6. Скрипты `scripts/ops/render_*` - legacy и блокируют деплой. Снимать блок
+   (`ALLOW_LEGACY_RENDER=1`) только при осознанном восстановлении старого контура.
 7. Не использовать `render_promote_main.sh`, `deploy_promote_main_after_push.sh`,
    `render_deploy.sh deploy` или произвольный `ensure-deploy`.
-8. Primary deploy завершён только когда на GCP `/api/version` показывает ожидаемые
-   `version` и `git_commit`, `/health/live` успешен и пройден feature smoke-test.
-9. Если merge SHA изменился до запуска deploy, остановиться и заново определить scope.
-10. Render env, GCE `/var/data` и manual restart во время release меняет только один
-    явно назначенный release-координатор.
+8. Автодеплоя из GitHub нет: `.github/workflows/gce-production-deploy.yml` подготовлен,
+   но требует Workload Identity Federation и deploy-SA. Включать - решением владельца.
+9. Deploy завершён только когда на `protocol.kravira.by` `/api/version` показывает
+   ожидаемые `version` и `git_commit`, `/health/live` успешен и пройден feature smoke.
+10. Если merge SHA изменился до запуска deploy, остановиться и заново определить scope.
+11. Firewall, GCE `/var/data`, env контейнера и manual restart во время release меняет
+    только назначенный релиз-координатор. Порт `8000` наружу не открывать: снаружи
+    разрешены только `80/443`, контейнер публикуется на `127.0.0.1:8000`.

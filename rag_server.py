@@ -2344,17 +2344,20 @@ def consult_demographics_banner_from_kz(full_text_raw: str) -> tuple[str, dict]:
     yrs = _age_full_years(dob, ref)
     meta["date_of_birth"] = dob.isoformat()
     meta["age_years"] = yrs
+    # Баннер уходит в промпт Gemini, поэтому в нём возраст, а не дата рождения:
+    # для выбора протокола и оценки нужен возраст, дата - лишний идентификатор.
+    # Точное значение остаётся в meta (только локально, для audience-гейтов).
     if yrs >= 18:
         meta["audience"] = "adult"
         band = (
-            f"Из текста документа (авто): дата рождения пациента {dob.strftime('%d.%m.%Y')}; "
-            f"на дату обработки {ref.strftime('%d.%m.%Y')} - {yrs} полных лет; пациент взрослый (≥18 лет)."
+            f"Из текста документа (авто): возраст пациента {yrs} полных лет "
+            f"на дату обработки {ref.strftime('%d.%m.%Y')}; пациент взрослый (≥18 лет)."
         )
     elif yrs >= 0:
         meta["audience"] = "child"
         band = (
-            f"Из текста документа (авто): дата рождения пациента {dob.strftime('%d.%m.%Y')}; "
-            f"на дату обработки {ref.strftime('%d.%m.%Y')} - {yrs} полных лет; пациент ребёнок (<18 лет)."
+            f"Из текста документа (авто): возраст пациента {yrs} полных лет "
+            f"на дату обработки {ref.strftime('%d.%m.%Y')}; пациент ребёнок (<18 лет)."
         )
     else:
         return "", meta
@@ -4052,25 +4055,18 @@ def get_gemini():
             detail="На сервере не настроен ключ API для обработки текста.",
         )
     try:
-        genai = _legacy_genai_module()
-        HarmBlockThreshold, HarmCategory = _legacy_genai_types()
+        from clinical_knowledge.gemini_client import build_model
     except ImportError as e:
         raise HTTPException(
             status_code=503,
             detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
         ) from e
-    genai.configure(api_key=key)
     from clinical_knowledge.gemini_model_config import main_gemini_model_name
 
     name, _warn = main_gemini_model_name()
-    # Единые safety-настройки (как в gemini_verify) - иначе медицинский текст чаще даёт пустой ответ.
-    safety = [
-        {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-    ]
-    _model = genai.GenerativeModel(name, safety_settings=safety)
+    # safety_settings задаёт общий клиент: пороги для клинического текста
+    # должны быть одинаковыми на всех путях (clinical_knowledge/gemini_client.py).
+    _model = build_model(name, api_key_override=key)
     return _model
 
 
@@ -4089,14 +4085,12 @@ def get_methodist_gemini():
         _gemini_key_idx = 0
     key = keys[_gemini_key_idx]
     try:
-        genai = _legacy_genai_module()
-        HarmBlockThreshold, HarmCategory = _legacy_genai_types()
+        from clinical_knowledge.gemini_client import build_model
     except ImportError as e:
         raise HTTPException(
             status_code=503,
             detail="На сервере не установлены зависимости для обработки текста (requirements-rag.txt).",
         ) from e
-    genai.configure(api_key=key)
     from clinical_knowledge.gemini_model_config import methodist_gemini_model_name
 
     name, warn = methodist_gemini_model_name()
@@ -4105,13 +4099,8 @@ def get_methodist_gemini():
         warn = None
     _methodist_model_name = name
     _methodist_model_warn = warn
-    safety = [
-        {"category": HarmCategory.HARM_CATEGORY_HARASSMENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_HATE_SPEECH, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-        {"category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT, "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH},
-    ]
-    _methodist_model = genai.GenerativeModel(name, safety_settings=safety)
+    # Ключ передаётся явно: здесь он выбирается из списка с ротацией по квоте.
+    _methodist_model = build_model(name, api_key_override=key)
     return _methodist_model
 
 
@@ -6080,7 +6069,7 @@ def _icd_block_for_prompt(icd_analysis: dict) -> str:
         return ""
     return (
         "=== Сопоставление МКБ-10 (автоматически, справочно) ===\n"
-        + "Не выдумывай коды вне этого списка. При кратком summary можно упомянуть релевантные коды из списка.\n"
+         "Не выдумывай коды вне этого списка. При кратком summary можно упомянуть релевантные коды из списка.\n"
         + "\n".join(lines)
     )
 
@@ -7674,47 +7663,78 @@ async def _app_lifespan(_application: FastAPI):
 app = FastAPI(title="Protocol RAG", version="1", lifespan=_app_lifespan)
 
 
-# --- Безопасность: раздача статики только безопасных файлов ---
-# Фронтенду нужны: index.html, consult_review.html (явные маршруты), docs/*.html, protocols.json,
-# css/js/шрифты/картинки. Всё остальное (код, конфиги, ПДн-PDF, данные) не должно отдаваться по '/'.
-_STATIC_BLOCKED_DIRS = {
-    "data", "clients_consult", "tests", "eval", "scripts", "corpus_pipeline",
-    "output", "corpus_chunks_parts", "minzdrav_protocols", "e2e", "__pycache__",
-    "terminals", "node_modules",
-}
-_STATIC_BLOCKED_EXTS = {
-    ".py", ".pyc", ".pyo", ".env", ".sh", ".toml", ".ini", ".cfg", ".lock",
-    ".csv", ".jsonl", ".txt", ".md", ".mdc", ".yaml", ".yml", ".log",
-}
-_STATIC_BLOCKED_FILES = {
-    "protocol_meta.json", "symptom_routing.json", "structured_index.json",
-    "chunks.json", "corpus.json", "semantic_embeddings.json",
-}
+# --- Безопасность: раздача статики по списку разрешённого ---
+# Монтируется корень репозитория, поэтому список запрещённого здесь работать не
+# может: любой новый файл оказывается публичным по умолчанию, и именно так и
+# вышло. Прежний фильтр перечислял запрещённые каталоги и расширения, а .pdf,
+# .docx и каталоги archive/, frontend/, deploy/, epam/ в перечислении
+# отсутствовали. Проверка на живом сервере (2026-09-05) отдавала 200 на:
+#
+#   archive/docs/konkurs/06_ROI_Kravira.pdf   226 КБ  финансовая модель
+#   archive/docs/konkurs/03_Biznes_plan_*.pdf         бизнес-план
+#   deploy/gcp-app/Caddyfile, */Dockerfile            устройство инфраструктуры
+#   epam/scheme_mis_protocols.docx                    схема интеграции с МИС
+#   embeddings.json                           3.7 МБ  данные (в списке значился
+#                                                     только semantic_embeddings.json)
+#
+# Поэтому логика обратная: отдаётся ровно то, что перечислено, всё остальное -
+# 404. Новый файл в репозитории теперь по умолчанию закрыт.
+#
+# Что нужно фронтенду из корневого mount:
+#   protocols.json                     - каталог протоколов;
+#   docs/<файл> глубины 1              - презентация, architecture-*, brief,
+#                                        pre-sign-checklist, presentation-stats.json
+#                                        (mvp-presentation.html читает его
+#                                        относительной ссылкой);
+#   frontend/web/shared/*.svg|png      - логотипы в print-HTML.
+#
+# Подкаталоги docs/ (plans, reports, konkurs, deploy, handoff, methodist,
+# product, schemas) наружу не идут: это внутренняя документация.
+#
+# Остальные CSS/JS/SVG интерфейса раздаются отдельным списком
+# _SHARED_STATIC_ASSETS ниже, здесь они не нужны.
+_STATIC_ALLOWED_ROOT_FILES = {"protocols.json"}
+_STATIC_ALLOWED_DOCS_EXTS = {".html", ".pdf", ".png", ".svg", ".json"}
+# Логотипы: print-HTML ссылается на них относительным путём
+# (../frontend/web/shared/...), потому что scripts/build_architecture_pdf.py
+# рендерит те же файлы Chrome через file:// - абсолютный путь там не разрешится.
+_STATIC_ALLOWED_LOGO_PREFIX = "frontend/web/shared/"
+_STATIC_ALLOWED_LOGO_EXTS = {".svg", ".png"}
 
 
-def _is_blocked_static_path(path: str) -> bool:
+def _is_allowed_static_path(path: str) -> bool:
+    """Разрешён ли путь к раздаче по '/'. Всё неперечисленное - нет."""
     norm = (path or "").replace("\\", "/").strip("/")
     if not norm:
-        return False
+        # Пустой путь - это '/', его обслуживает html=True (index.html).
+        return True
     segments = [s for s in norm.split("/") if s]
-    for seg in segments:
-        low = seg.lower()
-        if low in _STATIC_BLOCKED_DIRS or low.startswith("."):
-            return True
+    # Обход каталогов и скрытые файлы (.env, .git) - сразу нет.
+    if any(seg.startswith(".") or seg == ".." for seg in segments):
+        return False
+
     base = segments[-1].lower()
-    if base in _STATIC_BLOCKED_FILES:
-        return True
     ext = ("." + base.rsplit(".", 1)[1]) if "." in base else ""
-    if ext in _STATIC_BLOCKED_EXTS:
-        return True
+
+    if len(segments) == 1:
+        return base in _STATIC_ALLOWED_ROOT_FILES
+
+    # docs/<файл> - только верхний уровень, без подкаталогов.
+    if segments[0].lower() == "docs":
+        return len(segments) == 2 and ext in _STATIC_ALLOWED_DOCS_EXTS
+
+    if norm.lower().startswith(_STATIC_ALLOWED_LOGO_PREFIX):
+        # Только сами изображения и только в этом каталоге, без вложенных.
+        return len(segments) == 4 and ext in _STATIC_ALLOWED_LOGO_EXTS
+
     return False
 
 
 class SafeStaticFiles(StaticFiles):
-    """StaticFiles, не отдающий исходники, конфиги, данные и ПДн-PDF из корня репозитория."""
+    """StaticFiles, отдающий только явно разрешённые пути (см. _is_allowed_static_path)."""
 
     async def get_response(self, path, scope):  # type: ignore[override]
-        if _is_blocked_static_path(path):
+        if not _is_allowed_static_path(path):
             return PlainTextResponse("Not found", status_code=404)
         return await super().get_response(path, scope)
 
@@ -7731,6 +7751,14 @@ def _parse_cors_origins() -> list[str]:
 
 _CORS_ORIGINS = _parse_cors_origins()
 if _CORS_ORIGINS:
+    if _CORS_ORIGINS == ["*"]:
+        # Молчаливый ALLOWED_ORIGINS="*" уже стоял на проде и открывал API
+        # любому сайту. Для локальной разработки это допустимо, но в логе
+        # прода такая строка должна быть заметна сразу.
+        logging.getLogger("protocol.rag").warning(
+            "ALLOWED_ORIGINS='*': CORS открыт для любого домена. "
+            "Для прода укажите конкретный origin (например https://protocol.kravira.by)."
+        )
     app.add_middleware(
         CORSMiddleware,
         allow_origins=_CORS_ORIGINS,
@@ -7805,15 +7833,33 @@ _SECURITY_HEADERS = {
 }
 _CSP_VALUE = (os.environ.get("CONTENT_SECURITY_POLICY") or "").strip()
 if not _CSP_VALUE and env_bool("ENABLE_DEFAULT_CSP", False):
+    # Внешние источники интерфейса врача ровно три: cdn.jsdelivr.net (Chart.js),
+    # fonts.googleapis.com (CSS шрифтов) и fonts.gstatic.com (сами шрифты).
+    # blob: нужен для превью загруженных файлов и выгрузок (URL.createObjectURL),
+    # frame-src 'self' - для встроенного onco-risk.html.
+    # 'unsafe-inline'/'unsafe-eval' пока обязательны: в index.html ~20k строк
+    # инлайнового JS; снять их можно только после выноса скриптов (Фаза 7).
     _CSP_VALUE = (
         "default-src 'self'; "
         "script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net; "
         "style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; "
         "font-src 'self' https://fonts.gstatic.com data:; "
-        "img-src 'self' data: https:; "
+        "img-src 'self' data: blob: https:; "
         "connect-src 'self' https:; "
+        "frame-src 'self' blob:; "
+        "worker-src 'self' blob:; "
+        "object-src 'none'; "
+        "base-uri 'self'; "
+        "form-action 'self'; "
         "frame-ancestors 'self'"
     )
+
+# Первый прод-раскат CSP безопаснее делать в режиме отчёта: браузер присылает
+# нарушения, но ничего не блокирует. Снимать флаг после проверки логов.
+_CSP_REPORT_ONLY = env_bool("CSP_REPORT_ONLY", False)
+_CSP_HEADER_NAME = (
+    "Content-Security-Policy-Report-Only" if _CSP_REPORT_ONLY else "Content-Security-Policy"
+)
 
 
 _logger = logging.getLogger("protocol.rag")
@@ -7869,7 +7915,7 @@ async def _security_and_rate_limit(request: "Request", call_next):
     for hk, hv in _SECURITY_HEADERS.items():
         response.headers.setdefault(hk, hv)
     if _CSP_VALUE:
-        response.headers.setdefault("Content-Security-Policy", _CSP_VALUE)
+        response.headers.setdefault(_CSP_HEADER_NAME, _CSP_VALUE)
     response.headers.setdefault("X-Process-Time-Ms", str(int(dur_ms)))
     if _REQUEST_LOG and (request.url.path.startswith("/api/") or response.status_code >= 400):
         level = logging.WARNING if (response.status_code >= 400 or dur_ms >= _SLOW_REQUEST_MS) else logging.INFO
@@ -8485,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-05-054540Z-mo-families-gce-sync"
+BUILD_VERSION = "2026-09-06-054253Z-handoff-rule-current"
 
 
 def _app_version() -> str:
@@ -8719,11 +8765,36 @@ def _require_methodist_auth(request: "Request") -> None:
 
     if not methodist_auth_enabled():
         raise HTTPException(status_code=503, detail="METHODIST_TOKEN не настроен на сервере.")
+
+    # Общий METHODIST_TOKEN - legacy-путь: он даёт полный доступ, а роль ниже
+    # объявляет сам клиент заголовком. Пока личные учётки не выданы всем
+    # методистам, путь нужен, поэтому его хотя бы прикрываем от подбора.
+    # Миграция: docs/plans/2026-08-09-auth-accounts-unify-v1.md.
+    from clinical_knowledge.auth_throttle import client_key, token_throttle
+
+    throttle_key = client_key(
+        request.headers, fallback=(request.client.host if request.client else "unknown")
+    )
+    retry_after = token_throttle.retry_after(throttle_key)
+    if retry_after:
+        raise HTTPException(
+            status_code=429,
+            detail="Слишком много неудачных попыток. Повторите позже.",
+            headers={"Retry-After": str(retry_after)},
+        )
     if not is_methodist_authenticated(request.headers):
+        locked = token_throttle.register_failure(throttle_key)
+        _logger.warning(
+            "methodist token rejected for %s (failures=%s%s)",
+            throttle_key,
+            token_throttle.failure_count(throttle_key),
+            f", locked {locked}s" if locked else "",
+        )
         raise HTTPException(
             status_code=403,
             detail="Требуется корректный X-Methodist-Token или сессия эксперта.",
         )
+    token_throttle.register_success(throttle_key)
     if (request.headers.get("x-methodist-role") or "").strip().lower() == "doctor":
         path = request.url.path
         allowed = path.startswith("/api/methodist/mo/doctor-cabinet") or (
@@ -10771,18 +10842,37 @@ def api_methodist_accounts_patch(
 
 
 @app.post("/api/methodist/account/login")
-def api_methodist_account_login(body: dict[str, Any]) -> dict:
+def api_methodist_account_login(body: dict[str, Any], request: "Request") -> dict:
+    from clinical_knowledge.auth_throttle import client_key, login_throttle
     from clinical_knowledge.mo_app_accounts import login_user
 
+    key = client_key(request.headers, fallback=(request.client.host if request.client else "unknown"))
+    retry_after = login_throttle.retry_after(key)
+    if retry_after:
+        _logger.warning("methodist login locked out for %s (%ss left)", key, retry_after)
+        raise HTTPException(
+            status_code=429,
+            detail="Слишком много неудачных попыток входа. Повторите позже.",
+            headers={"Retry-After": str(retry_after)},
+        )
     try:
-        return login_user(
+        result = login_user(
             login=str(body.get("login") or ""),
             password=str(body.get("password") or ""),
         )
     except PermissionError as exc:
+        locked = login_throttle.register_failure(key)
+        _logger.warning(
+            "methodist login failed for %s (failures=%s%s)",
+            key,
+            login_throttle.failure_count(key),
+            f", locked {locked}s" if locked else "",
+        )
         raise HTTPException(status_code=401, detail="Неверный логин или пароль.") from exc
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+    login_throttle.register_success(key)
+    return result
 
 
 @app.post("/api/methodist/account/logout")
@@ -13426,7 +13516,6 @@ def api_protocol_brief_bundle(
 @app.post("/api/brief-feedback")
 def api_brief_feedback(body: dict) -> dict:
     """Телеметрия полезности сводки (без авторизации методиста)."""
-    import json
     from datetime import datetime, timezone
 
     if not isinstance(body, dict):
@@ -13443,11 +13532,13 @@ def api_brief_feedback(body: dict) -> dict:
         "block_id": str(body.get("block_id") or "")[:64],
         "build_version": BUILD_VERSION,
     }
-    log_dir = ROOT / "data" / "ml" / "feedback"
-    log_dir.mkdir(parents=True, exist_ok=True)
-    log_path = log_dir / "brief_feedback.jsonl"
-    with log_path.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(event, ensure_ascii=False) + "\n")
+    # Каталог берём из feedback_dir(): жёсткий ROOT/data/ml/feedback игнорировал
+    # ML_FEEDBACK_DIR, поэтому в проде события ложились внутрь контейнера и
+    # исчезали при каждом деплое, минуя выгрузку обучающих данных.
+    from clinical_knowledge.feedback_store import feedback_dir
+    from clinical_knowledge.jsonl_io import append_line
+
+    append_line(feedback_dir() / "brief_feedback.jsonl", event)
     return {"ok": True}
 
 
@@ -14733,7 +14824,6 @@ if has_frontend_file("index.html"):
         "protocol-logo-mini.svg": "image/svg+xml",
         "protocol-logo-wordmark.svg": "image/svg+xml",
         "protocol-logo-wordmark-text.svg": "image/svg+xml",
-        "protocol_logo_curves_transparent.svg": "image/svg+xml",
         "logo_mini.png": "image/png",
     }
 
@@ -14756,7 +14846,6 @@ if has_frontend_file("index.html"):
     @app.get("/protocol-logo-mini.svg", include_in_schema=False)
     @app.get("/protocol-logo-wordmark.svg", include_in_schema=False)
     @app.get("/protocol-logo-wordmark-text.svg", include_in_schema=False)
-    @app.get("/protocol_logo_curves_transparent.svg", include_in_schema=False)
     @app.get("/logo_mini.png", include_in_schema=False)
     def _serve_shared_static_asset(request: Request) -> FileResponse:
         """Стабильные shared-ресурсы (МО + doctor chrome + brand) без устаревшего кэша."""

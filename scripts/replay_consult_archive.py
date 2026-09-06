@@ -36,7 +36,7 @@ def _bootstrap_venv() -> None:
             f"Затем: {venv_py} scripts/replay_consult_archive.py",
             file=sys.stderr,
         )
-        raise SystemExit(1)
+        raise SystemExit(1) from None
 
 
 _bootstrap_venv()

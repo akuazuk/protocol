@@ -8,8 +8,14 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
       tesseract-ocr tesseract-ocr-rus tesseract-ocr-eng \
     && rm -rf /var/lib/apt/lists/*
 
-COPY requirements.txt requirements-rag.txt ./
-RUN pip install --no-cache-dir -r requirements.txt
+# Установка строго из lock: версии закреплены и проверяются по хешам.
+# Без этого один и тот же коммит собирался бы с разными версиями зависимостей
+# в разные дни (в requirements-rag.txt стоят границы >=), то есть образ был бы
+# невоспроизводим - для клинической системы это недопустимо.
+# Пересборка lock: scripts/ops/check_requirements_lock.py подскажет команду.
+# Важно: lock собирается под python 3.11 - ту же версию, что в FROM выше.
+COPY requirements.txt requirements-rag.txt requirements-rag.lock ./
+RUN pip install --no-cache-dir --require-hashes -r requirements-rag.lock
 
 COPY rag_server.py ./
 COPY env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py ./

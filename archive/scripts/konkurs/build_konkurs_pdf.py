@@ -18,6 +18,13 @@ _SCRIPTS = Path(__file__).resolve().parent
 if str(_SCRIPTS) not in sys.path:
     sys.path.insert(0, str(_SCRIPTS))
 
+# Пакет конкурса переехал в archive/scripts/konkurs/ (конкурс завершён, к
+# медицинскому продукту эти скрипты не относятся). Модули пакета лежат рядом,
+# а html_to_pdf остался в рабочем scripts/ - он нужен и архитектурным PDF.
+_LIVE_SCRIPTS = Path(__file__).resolve().parents[3] / "scripts"
+if str(_LIVE_SCRIPTS) not in sys.path:
+    sys.path.insert(0, str(_LIVE_SCRIPTS))
+
 from build_architecture_pdf import html_to_pdf, pdf_path_for_html  # noqa: E402
 from konkurs_docx_helpers import generate_charts  # noqa: E402
 from konkurs_html import KONKURS_DIR, write_all_html  # noqa: E402

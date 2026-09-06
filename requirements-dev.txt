@@ -4,7 +4,17 @@ httpx>=0.27.0
 # MO pipeline tests import pandas and write Parquet fixtures.
 pandas
 pyarrow
-# Линтер (используется в CI: .github/workflows/ci.yml)
-ruff>=0.15.0
+# Линтер (используется в CI: .github/workflows/ci.yml).
+#
+# Версия закреплена точно, а не через >=. Причина конкретная: с `ruff>=0.15.0`
+# локально стоял 0.15.15, а CI ставил 0.16.6, где появилось правило ISC004 -
+# и `ruff check .` проходил на машине, но валил CI на семи файлах, которых
+# никто не менял. Гейт, который меняется сам по себе, перестаёт быть гейтом.
+# Обновление версии - отдельный PR от Dependabot (группа dev-tools).
+ruff==0.16.6
+# Покрытие: в CI стоит гейт --cov-fail-under (см. ci.yml, job lint-and-test)
+pytest-cov==7.1.0
+# Типы: проверяется список модулей из pyproject.toml [tool.mypy]
+mypy==2.3.1
 # Git-хуки (опционально): pre-commit install
 pre-commit>=3.7.0

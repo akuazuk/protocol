@@ -58,6 +58,8 @@ public_allow = {
     "RAG_FORBID_FULL_CORPUS_RETRIEVE",
     "RAG_CHUNKS_JSONL",
     "ALLOWED_ORIGINS",
+    "ENABLE_DEFAULT_CSP",
+    "CONTENT_SECURITY_POLICY",
     "PYTHONUNBUFFERED",
     "MO_ICD_NAME_IN_PRIMARY",
     "MO_ICD_DIR_IN_PRIMARY",
@@ -76,6 +78,8 @@ public_allow = {
     "METHODIST_REVIEWER",
     "METHODIST_UI_AUTO_LOGIN",
     "ML_FEEDBACK_DIR",
+    # Ключ псевдонимизации перед Gemini (см. clinical_knowledge/phi_for_llm).
+    "PHI_PSEUDONYM_KEY",
     "RENDER_URL",
     "TELEGRAM_NOTIFY_ENABLED",
     "TELEGRAM_NOTIFY_GIT",
@@ -132,7 +136,9 @@ public.setdefault(
 public.setdefault("RAG_CHUNKS_DIR", "/var/data/protocol_corpus/corpus_chunks_parts")
 public.setdefault("RAG_LAZY_RETRIEVE", "1")
 public.setdefault("RAG_FORBID_FULL_CORPUS_RETRIEVE", "1")
-public.setdefault("ALLOWED_ORIGINS", "*")
+# CORS: только собственный домен, не "*" (см. deploy_to_gce.sh).
+public.setdefault("ALLOWED_ORIGINS", "https://protocol.kravira.by")
+public.setdefault("ENABLE_DEFAULT_CSP", "1")
 public.setdefault("PYTHONUNBUFFERED", "1")
 public.setdefault("MO_ICD_NAME_IN_PRIMARY", "1")
 public.setdefault("MO_ICD_DIR_IN_PRIMARY", "0")
@@ -225,7 +231,7 @@ if [[ -d /var/data/protocol_corpus/minzdrav_protocols && -d /var/data/protocol_c
 fi
 # shellcheck disable=SC2086
 sudo docker run -d --name protocol-web --restart unless-stopped \
-  -p 8000:8000 \
+  -p 127.0.0.1:8000:8000 \
   --env-file /opt/protocol/.env.gcp-staging \
   -v /var/data:/var/data \
   -v /var/data/drug_safety:/app/data/drug_safety:ro \

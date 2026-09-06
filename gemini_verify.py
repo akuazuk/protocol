@@ -5,7 +5,6 @@
 from __future__ import annotations
 
 import os
-import warnings
 
 
 def _extract_text(resp) -> str:
@@ -57,41 +56,19 @@ def verify_gemini_key() -> tuple[bool, str]:
         return False, "Не задан ключ API на сервере (см. .env.example)."
 
     try:
-        with warnings.catch_warnings():
-            warnings.simplefilter("ignore", FutureWarning)
-            import google.generativeai as genai
-            from google.generativeai.types import HarmBlockThreshold, HarmCategory
+        from clinical_knowledge.gemini_client import build_model
     except ImportError:
         return (
             False,
-            "Не установлены зависимости сервера для обработки текста. "
+            ("Не установлены зависимости сервера для обработки текста. "
             "Выполните: pip install -r requirements-rag.txt "
-            "(тот же интерпретатор Python, что запускает uvicorn).",
+            "(тот же интерпретатор Python, что запускает uvicorn)."),
         )
 
     try:
-        genai.configure(api_key=key)
         name = os.environ.get("GEMINI_MODEL", "gemini-2.5-flash")
         # Нейтральный промпт - фразы про «медицину» иногда дают пустой ответ из‑за фильтров
-        safety = [
-            {
-                "category": HarmCategory.HARM_CATEGORY_HARASSMENT,
-                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
-            },
-            {
-                "category": HarmCategory.HARM_CATEGORY_HATE_SPEECH,
-                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
-            },
-            {
-                "category": HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT,
-                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
-            },
-            {
-                "category": HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT,
-                "threshold": HarmBlockThreshold.BLOCK_ONLY_HIGH,
-            },
-        ]
-        model = genai.GenerativeModel(name, safety_settings=safety)
+        model = build_model(name)
         r = model.generate_content(
             "Ответь одним словом: да.",
             generation_config={"max_output_tokens": 32, "temperature": 0},

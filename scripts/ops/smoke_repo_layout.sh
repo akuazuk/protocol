@@ -57,7 +57,16 @@ if scripts/ops/deploy_promote_main_after_push.sh >/dev/null 2>&1; then
   echo "ERROR: deprecated deploy_promote_main_after_push.sh must fail closed" >&2
   exit 1
 fi
-scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)" --dry-run >/dev/null
+# Render больше не прод, поэтому его релиз обязан падать закрыто, как и
+# остальные отключённые команды. Проверяем и это, и что справка ещё доступна:
+# по ней видно, чем команда заменена.
+if scripts/ops/render_release_main.sh --commit="$(git rev-parse origin/main)" --dry-run >/dev/null 2>&1; then
+  echo "ERROR: deprecated render_release_main.sh must fail closed" >&2
+  exit 1
+fi
+scripts/ops/render_release_main.sh --help >/dev/null
+# Канонический путь релиза - GCE.
+deploy/gcp-app/deploy_to_gce.sh --help >/dev/null
 scripts/deploy/render_mis_protocol_data.sh >/dev/null 2>&1 || true
 scripts/data/pull_methodist_feedback.sh >/dev/null 2>&1 || true
 scripts/dev/run_mo_daily_launchd.sh unknown >/dev/null 2>&1 || true

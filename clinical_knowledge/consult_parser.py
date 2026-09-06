@@ -49,9 +49,9 @@ _SECTION_HEADERS: list[tuple[str, str]] = [
     (r"объективн\w*\s+статус|объективно|status\s+praesens", "objective_status"),
     (r"локальн\w*\s+статус|locus\s+morbi|st\.?\s*localis", "local_status"),
     (
-        r"данн\w*\s+результат\w*\s+медицинск\w*\s+осмотр\w*"
+        (r"данн\w*\s+результат\w*\s+медицинск\w*\s+осмотр\w*"
         r"|результат\w*\s+медицинск\w*\s+осмотр\w*"
-        r"|данн\w*\s+медицинск\w*\s+осмотр\w*",
+        r"|данн\w*\s+медицинск\w*\s+осмотр\w*"),
         "objective_status",
     ),
     (r"данн\w*\s+обследован\w*|результат\w*\s+обследован\w*|данн\w*\s+лаборатор\w*", "exam_results"),

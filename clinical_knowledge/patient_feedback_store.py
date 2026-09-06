@@ -9,6 +9,7 @@ from datetime import datetime, timezone
 from typing import Any
 
 from .feedback_store import feedback_dir
+from .jsonl_io import append_line
 
 _log = logging.getLogger(__name__)
 
@@ -29,11 +30,7 @@ def text_hash(text: str) -> str:
 def _append_jsonl(filename: str, row: dict[str, Any]) -> None:
     if os.environ.get("PATIENT_TELEMETRY", "1").strip().lower() in ("0", "false", "no", "off"):
         return
-    root = feedback_dir()
-    root.mkdir(parents=True, exist_ok=True)
-    path = root / filename
-    with path.open("a", encoding="utf-8") as fh:
-        fh.write(json.dumps(row, ensure_ascii=False) + "\n")
+    append_line(feedback_dir() / filename, row)
 
 
 def compute_quality_flags(

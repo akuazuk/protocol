@@ -111,8 +111,8 @@ def main() -> int:
         "",
         f"Дата: {now}  |  режим: {'DRY-RUN' if args.dry_run else 'APPLY'}",
         "",
-        f"- Протоколов в охвате: **{stats['protocols_in_scope']}** "
-        f"(исключено стоматологии: {stats['excluded_protocols']})",
+        (f"- Протоколов в охвате: **{stats['protocols_in_scope']}** "
+        f"(исключено стоматологии: {stats['excluded_protocols']})"),
         f"- Файлов изменено: **{changed_files}**",
         f"- Conditions в охвате: **{cond_scope}**",
         f"- Заполнено сейчас: **{cond_filled_now}**",

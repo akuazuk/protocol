@@ -5,10 +5,10 @@
 **Основной формат - PDF:**
 
 ```bash
-python3 scripts/build_konkurs_pdf.py
+python3 archive/scripts/konkurs/build_konkurs_pdf.py
 ```
 
-Опционально docx: `python3 scripts/build_konkurs_pdf.py --with-docx`
+Опционально docx: `python3 archive/scripts/konkurs/build_konkurs_pdf.py --with-docx`
 
 Печать: **4 комплекта PDF** + ROI PDF + architecture-kravira-fhir-mis.pdf.
 
@@ -103,7 +103,7 @@ python3 scripts/build_konkurs_pdf.py
 ## 6. Графики в `_assets/` (перегенерация)
 
 ```bash
-python3 scripts/fill_konkurs_docx.py
+python3 archive/scripts/konkurs/fill_konkurs_docx.py
 ```
 
 Убедиться, что в **03_Biznes_plan** встроены актуальные:
@@ -126,4 +126,4 @@ python3 scripts/fill_konkurs_docx.py
 
 ## 8. Контроль «один источник правды»
 
-Все расчёты синхронизированы с `scripts/konkurs_finance.py` и `docs/konkurs/financial_assumptions.md`. После изменения тарифов или допущений - править эти файлы и перезапускать `fill_konkurs_docx.py`.
+Все расчёты синхронизированы с `archive/scripts/konkurs/konkurs_finance.py` и `docs/konkurs/financial_assumptions.md`. После изменения тарифов или допущений - править эти файлы и перезапускать `fill_konkurs_docx.py`.

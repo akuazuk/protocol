@@ -1,7 +1,7 @@
 # Ежедневный чеклист: несколько агентов и компьютеров
 
 Канонические правила: `AGENTS.md` и
-`docs/deploy/multi-agent-single-repo-render-runbook-v2.md`.
+`docs/deploy/multi-agent-workflow-v3.md`.
 
 ## 1. Preflight - до любой правки
 
@@ -9,7 +9,15 @@
 git status --short --branch
 git fetch --prune origin
 git rev-list --left-right --count origin/main...HEAD
-gh pr list --repo akuazuk/protocol --state open
+python3 scripts/ops/pr_dashboard.py
+```
+
+Последняя команда заменяет ручной `gh pr list`: она показывает не только список
+PR, но и кто какие файлы держит, что с чем жёстко пересекается и какие PR
+зависли. Перед правкой конкретного файла:
+
+```bash
+python3 scripts/ops/pr_dashboard.py --files <path>
 ```
 
 Если checkout грязный, behind или diverged - не выполнять pull/reset/clean. Создать clean

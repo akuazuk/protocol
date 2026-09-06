@@ -234,11 +234,11 @@ def _write_markdown(audit: dict[str, Any], path: Path) -> None:
         "",
         f"- Протоколов: **{a['protocols_total']}**",
         f"- Требований (атомарных): **{a['requirements_total']}**",
-        f"- Penalty-eligible правил: **{a['penalty_eligible_rules']}** "
-        f"({m['penalty_eligible_coverage_pct']}%)",
+        (f"- Penalty-eligible правил: **{a['penalty_eligible_rules']}** "
+        f"({m['penalty_eligible_coverage_pct']}%)"),
         f"- Advisory правил: **{a['advisory_rules']}**",
-        f"- С подтверждённой цитатой: **{a['verified_quote_rules']}** "
-        f"({m['source_verified_coverage_pct']}%)",
+        (f"- С подтверждённой цитатой: **{a['verified_quote_rules']}** "
+        f"({m['source_verified_coverage_pct']}%)"),
         "",
         "## Ключевые метрики покрытия (§10.2)",
         "",

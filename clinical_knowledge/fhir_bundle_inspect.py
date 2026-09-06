@@ -13,7 +13,6 @@ VITAL_CODES = frozenset({
     "body-temperature",
     "respiratory-rate",
     "oxygen-saturation",
-    "body-temperature",
     "pulse-rate",
 })
 ANTHRO_CODES = frozenset({"body-height", "body-weight", "body-mass-index"})

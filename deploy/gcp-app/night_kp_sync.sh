@@ -123,5 +123,88 @@ publish_index "${CORPUS}/protocol_catalog.jsonl" "${ROOT}/data/protocol_catalog.
 publish_index "${CORPUS}/protocol_icd_profiles.jsonl" "${ROOT}/data/catalog/protocol_icd_profiles.jsonl"
 publish_index "${CORPUS}/output/registry/protocol_cards.jsonl" "${ROOT}/output/registry/protocol_cards.jsonl"
 
+# --- публикация текста протоколов в корпус, который читает RAG ----------------
+# Без этого шага цепочка обрывалась: новый протокол скачивался, нарезался и
+# попадал в каталог, поэтому находился поиском, но текста в corpus_chunks_parts
+# не было - врачу цитировалась прошлая редакция. Так накопилось 84 пути,
+# включая КП по артериальной гипертензии, ОКС, ТЭЛА, стабильной стенокардии,
+# раку лёгкого и неонатологии 2026 года.
+#
+# --add-missing только дописывает новые пути отдельными частями и не трогает
+# работающие. Переиздание существующих путей осознанно не делается здесь:
+# оно потребовало бы перезаписи частей со 100k+ чанков.
+PARTS_DIR="${CORPUS}/corpus_chunks_parts"
+if [[ -f "$CHUNKS" && -d "$PARTS_DIR" ]]; then
+  echo "--- publish_corpus_chunks ---"
+  if run_py "${APP_ROOT}/scripts/publish_corpus_chunks.py" \
+      --corpus "$PARTS_DIR" \
+      --source "$CHUNKS" \
+      --add-missing \
+      --manifest-script "${APP_ROOT}/scripts/build_corpus_path_manifest.py"; then
+    # Манифест читается один раз при старте, перезагрузки на ходу нет.
+    # Без перезапуска опубликованный текст не увидят до следующего деплоя.
+    if docker inspect --format '{{.State.Running}}' "$CONTAINER" 2>/dev/null | grep -qx true; then
+      echo "перезапускаю ${CONTAINER}, чтобы перечитать манифест"
+      docker restart "$CONTAINER" >/dev/null || echo "WARN: не удалось перезапустить ${CONTAINER}"
+      for _ in $(seq 1 30); do
+        if curl -fsS -o /dev/null http://127.0.0.1:8000/health/live 2>/dev/null; then
+          echo "приложение поднялось"
+          break
+        fi
+        sleep 5
+      done
+    fi
+  else
+    echo "WARN: publish_corpus_chunks failed"
+  fi
+else
+  echo "WARN: нет ${CHUNKS} или ${PARTS_DIR} - публикация пропущена"
+fi
+
+# --- контроль покрытия --------------------------------------------------------
+# Страховка от повторения тихого расхождения: сверяем PDF на диске с тем, что
+# реально лежит в манифесте. На эту запись настроен алерт, поэтому разрыв
+# больше не сможет накапливаться месяцами незаметно.
+COVERAGE="$("$HOST_PY" - <<PYCHECK
+import json
+from pathlib import Path
+
+corpus = Path("${CORPUS}")
+manifest = corpus / "corpus_chunks_parts" / "corpus_path_manifest.jsonl"
+indexed = set()
+if manifest.is_file():
+    with manifest.open(encoding="utf-8", errors="replace") as fh:
+        for line in fh:
+            line = line.strip()
+            if not line:
+                continue
+            try:
+                row = json.loads(line)
+            except json.JSONDecodeError:
+                continue
+            if row.get("_header"):
+                continue
+            p = row.get("path") or ""
+            if p:
+                indexed.add(Path(p).name)
+
+disk = {p.name for p in (corpus / "minzdrav_protocols").rglob("*.pdf")}
+missing = sorted(disk - indexed)
+print(json.dumps({"disk": len(disk), "indexed": len(disk & indexed), "missing": len(missing),
+                  "examples": [m[:70] for m in missing[:3]]}, ensure_ascii=False))
+PYCHECK
+)"
+echo "coverage=${COVERAGE}"
+MISSING_COUNT="$("$HOST_PY" -c "import json,sys; print(json.loads(sys.argv[1])['missing'])" "$COVERAGE")"
+if [[ "${MISSING_COUNT}" != "0" ]]; then
+  gcloud logging write protocol-corpus-health \
+    "{\"event\":\"corpus_coverage_gap\",\"status\":\"failed\",\"detail\":\"протоколов без текста в индексе: ${MISSING_COUNT}\",\"coverage\":${COVERAGE}}" \
+    --payload-type=json --severity=ERROR >/dev/null 2>&1 || true
+else
+  gcloud logging write protocol-corpus-health \
+    "{\"event\":\"corpus_coverage_ok\",\"status\":\"ok\",\"coverage\":${COVERAGE}}" \
+    --payload-type=json --severity=INFO >/dev/null 2>&1 || true
+fi
+
 date -u +%Y-%m-%dT%H:%M:%SZ >"$STAMP"
 echo "KP_SYNC_OK changed=${CHANGED}"

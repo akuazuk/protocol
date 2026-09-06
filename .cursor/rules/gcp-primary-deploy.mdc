@@ -17,20 +17,24 @@ alwaysApply: true
 | Данные МО | `/var/data/medical_exams` на GCE PD |
 | LLM/night | `deploy/gcp-llm/run_on_gce.sh` |
 
-Render (`protocol-bimy.onrender.com`, Action `Production Render release`) - **только backup/rollback**.
+Render (`protocol-bimy.onrender.com`) **приостановлен и отдаёт 503** (проверено
+2026-09-05). Он не прод и не откат. Action `Production Render release` удалён.
+Откат - предыдущий образ по SHA на GCE плюс снапшот диска `protocol-data`.
+Runbook: `docs/deploy/gce-production-runbook.md`.
 
 ## Запрещено агентам в ответах и handoff
 
-- Писать «следующий шаг = дождаться Render deploy / Production Render release» как primary path.
+- Писать «следующий шаг = дождаться Render deploy / Production Render release».
 - Считать деплой завершённым по Render `/api/version`.
-- Путать legacy Gemini-via-Render с primary runtime (см. `gemini-via-render.mdc`: GCE предпочтителен).
+- Называть Render backup-контуром или предлагать откат на него.
+- Открывать порт `8000` наружу: снаружи только `80/443`, контейнер на `127.0.0.1:8000`.
 
 ## После merge feature-PR (обычный next step)
 
 1. Merge PR в `origin/main`.
-2. Координатор: `bash deploy/gcp-app/deploy_to_gce.sh`.
-3. Smoke на `https://protocol.kravira.by` (version = `BUILD_VERSION`, feature check).
-4. Render Action можно игнорировать для primary, пока не просят синхронизировать backup.
+2. Координатор: `bash deploy/gcp-app/deploy_to_gce.sh` (скрипт откажет, если
+   `HEAD != origin/main`, и сам откатится при неудачном health).
+3. Smoke на `https://protocol.kravira.by`: `version` = `BUILD_VERSION` релизного
+   коммита, `git_commit` = релизный SHA, плюс проверка самой фичи.
 
-Подробности: `AGENTS.md` §1 и §6, `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`,
-`docs/reports/2026-08-08-handoff-gcp-primary.md`.
+Подробности: `docs/deploy/gce-production-runbook.md`, `AGENTS.md` §1 и §6.

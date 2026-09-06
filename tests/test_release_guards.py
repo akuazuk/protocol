@@ -85,14 +85,78 @@ def test_version_endpoint_exposes_render_git_commit() -> None:
 
 
 def test_production_workflow_serializes_exact_main_sha() -> None:
-    workflow = (
-        ROOT / ".github" / "workflows" / "render-production-deploy.yml"
-    ).read_text(encoding="utf-8")
-    assert "group: production-render" in workflow
+    """Прод-workflow целится в GCE и только в текущий HEAD origin/main.
+
+    Render-workflow удалён: сервис приостановлен и отдаёт 503,
+    см. docs/deploy/gce-production-runbook.md.
+    """
+    workflows = ROOT / ".github" / "workflows"
+    assert not (workflows / "render-production-deploy.yml").exists(), (
+        "Render больше не прод - workflow не должен возвращаться"
+    )
+
+    workflow = (workflows / "gce-production-deploy.yml").read_text(encoding="utf-8")
+    assert "group: production-gce" in workflow
     assert "cancel-in-progress: false" in workflow
-    assert 'test "$(git rev-parse origin/main)" = "$GITHUB_SHA"' in workflow
-    assert '--commit="$GITHUB_SHA"' in workflow
-    assert "scripts/ops/render_release_main.sh" in workflow
+    # Разворачивать можно только текущий HEAD origin/main.
+    assert 'requested" != "$main_sha' in workflow
+    assert "deploy/gcp-app/deploy_to_gce.sh" in workflow
+    # После деплоя обязательна сверка версии и SHA на живом домене.
+    assert "protocol.kravira.by" in workflow
+    assert "EXPECTED_VERSION" in workflow
+
+
+def test_gce_deploy_is_reproducible_and_can_roll_back() -> None:
+    """Деплой берёт коммит, версионирует образ и умеет откатываться.
+
+    Регресс (2026-09-05): раньше на прод уезжал `tar` рабочего дерева, образ
+    всегда имел один тег `:staging`, а откатываться было не на что.
+    """
+    deploy = (ROOT / "deploy" / "gcp-app" / "deploy_to_gce.sh").read_text(
+        encoding="utf-8"
+    )
+
+    # Источник - коммит, а не рабочее дерево.
+    assert 'git archive --format=tar "$RELEASE_SHA"' in deploy
+    assert "tar czf -" not in deploy, "рабочее дерево больше не источник деплоя"
+
+    # Образ версионируется по SHA - это материал для откатa.
+    assert 'IMAGE_SHA_TAG="${IMAGE_REPO}:${RELEASE_SHA:0:12}"' in deploy
+    assert "'$IMAGE_SHA_TAG'" in deploy
+
+    # Откат существует и вызывается при неудаче.
+    assert "rollback()" in deploy
+    assert deploy.count("rollback || true") >= 3
+
+    # Сверка версии берётся из релизного коммита, а не из рабочего дерева.
+    assert 'git show "$RELEASE_SHA:rag_server.py"' in deploy
+    assert "ACTUAL_SHA" in deploy
+
+    # Контейнер не публикуется наружу.
+    assert "-p 127.0.0.1:8000:8000" in deploy
+    assert "-p 8000:8000 \\" not in deploy
+
+
+def test_legacy_render_release_is_blocked_by_default() -> None:
+    result = subprocess.run(
+        ["bash", str(OPS / "render_release_main.sh"), "--commit=deadbeef"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert result.returncode != 0
+    assert "Render не является продом" in result.stderr
+
+    deploy_result = subprocess.run(
+        ["bash", str(OPS / "render_deploy.sh"), "deploy"],
+        cwd=ROOT,
+        text=True,
+        capture_output=True,
+        check=False,
+    )
+    assert deploy_result.returncode != 0
+    assert "прод на GCE" in deploy_result.stderr
 
 
 def test_ci_workflow_does_not_cancel_parallel_or_previous_runs() -> None:

@@ -59,3 +59,47 @@ def test_attach_global_indices_and_vector_hits(tmp_path):
     )
     assert hits.get(0, 0) > 0.9
     assert hits.get(1, 0) < 0.5
+
+
+def test_sidecar_not_clobbered_by_default_index_dir(tmp_path, monkeypatch):
+    """Карта chunk_id -> global не должна подменяться sidecar'ом чужого каталога.
+
+    Регресс: `_maybe_reload_chunk_id_sidecar` всегда читал
+    `default_index_path()/chunk_id_global.json`. Если индекс загрузили из другого
+    каталога, а по умолчанию на диске лежал другой sidecar (на машине разработчика
+    это реальный `corpus_vector_index/`), карта молча заменялась на чужую:
+    `global_index_for_chunk_id` возвращал None или, хуже, индекс чужой строки
+    vectors.npy. В CI баг не проявлялся, потому что каталога по умолчанию нет.
+    """
+    from clinical_knowledge import vector_index as vi
+
+    # Каталог "по умолчанию" с посторонней картой.
+    default_dir = tmp_path / "default_index"
+    default_dir.mkdir()
+    (default_dir / "chunk_id_global.json").write_text(
+        '{"somebody-elses-chunk": 999}', encoding="utf-8"
+    )
+    monkeypatch.setenv("RAG_VECTOR_INDEX_PATH", str(default_dir))
+
+    # Настоящий индекс лежит в отдельном каталоге.
+    real_dir = tmp_path / "real_index"
+    chunks = [
+        {
+            "path": "minzdrav_protocols/test.pdf",
+            "chunk_id": "c1",
+            "chunk_type": "treatment",
+            "text": "Назначить диосмин при варикозе.",
+            "embedding": [1.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0],
+        },
+    ]
+    for attr in ("_index_vectors", "_index_chunk_indices", "_chunk_id_to_global"):
+        monkeypatch.setattr(vi, attr, None, raising=False)
+    monkeypatch.setattr(vi, "_sidecar_dir", None, raising=False)
+    monkeypatch.setattr(vi, "_sidecar_mtime", 0.0, raising=False)
+
+    assert save_index(real_dir, chunks)["ok"]
+    assert load_index(real_dir).get("chunk_id_map") == 1
+
+    # Именно здесь раньше происходила подмена карты.
+    assert vi.global_index_for_chunk_id("c1") == 0
+    assert vi.global_index_for_chunk_id("somebody-elses-chunk") is None

@@ -1,0 +1,35 @@
+---
+description: Gemini / LLM для МО только через Google GCE (не Mac).
+alwaysApply: true
+---
+
+# Gemini / LLM для МО - только Google GCE
+
+**Всегда** гонять night LLM, action-judge, ICD LLM review, `grade_kz_llm`,
+backfill и любые живые вызовы Gemini по МО/КЗ **через Google Cloud VM**
+(`protocol-app`, зона `europe-central2`), не с Mac и не «просто python локально».
+
+## Как запускать
+
+1. **Канон:** `bash deploy/gcp-llm/run_on_gce.sh YYYY-MM-DD [YYYY-MM-DD]`
+   (smoke: `--smoke`; ICD: `MO_ICD_LLM_REVIEW=1`).
+2. Логи: GCE `/var/data/medical_exams/logs/`.
+3. **Не запускать** `grade_kz_llm.py` / judge / ICD review с Mac, даже «на минуту».
+4. После grades `recompute_mo_days` уже внутри range-runner.
+
+## Почему
+
+Gemini API режет по **IP клиента** (`User location is not supported`). Mac
+(Беларусь / домашний VPN) даёт geo 400 и записывает в `*_llm_grades.jsonl`
+строки `{visit_id, _error}` - файл выглядит «полный», но оценки битые.
+GCE в `europe-central2` geo проходит.
+
+Если в grades сплошные geo-ошибки - это **не** «сервер в Европе сломался», а
+обычно следы локального/чужого прогона. Лечится `run_on_gce.sh` с
+`--resume --retry-errors` (уже в `mo_llm_range_runner.sh`).
+
+## Про Render
+
+Render-контур (`scripts/run_mo_render_llm_backfill.sh`) больше не используется:
+сервис приостановлен и отдаёт `503`. Ссылки на него в старых планах и handoff
+читать как исторические.

@@ -30,6 +30,8 @@ from typing import Any
 ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT))
 
+from clinical_knowledge.phi_for_llm import redact_text_for_llm  # noqa: E402
+
 # Атомарная рубрика (§3.5) - fallback, если у протокола нет kz_checklist.
 _RUBRIC_ITEMS = [
     ("A_complaints", "Жалобы задокументированы конкретно (не «жалоб нет» при наличии повода)"),
@@ -104,7 +106,9 @@ def _checklist_from_protocol(protocol_ctx: Any) -> list[tuple[str, str]]:
 def build_grader_prompt(case: dict, checklist: list[tuple[str, str]], *, protocol_name: str = "") -> str:
     kz_lines = []
     for label, keys in _KZ_FIELDS:
-        val = _txt(case, keys)
+        # Поля МИС несут шапку КЗ: ФИО, ИНП, телефон, дату рождения. Для оценки
+        # по чек-листу они не нужны, а уезжают за пределы страны вместе с текстом.
+        val = redact_text_for_llm(_txt(case, keys))
         kz_lines.append(f"{label}: {val or ' - '}")
     checklist_lines = "\n".join(f"- [{cid}] {txt}" for cid, txt in checklist)
     proto = f"Протокол МЗ РБ: {protocol_name}\n" if protocol_name else ""
@@ -157,21 +161,16 @@ def _should_escalate(parsed: dict, deterministic: dict | None) -> tuple[bool, st
 
 
 def _build_model(model_name: str):
-    import os
-    import warnings
-
-    key = os.environ.get("GOOGLE_API_KEY") or os.environ.get("GEMINI_API_KEY")
-    if not key:
-        raise RuntimeError("GOOGLE_API_KEY/GEMINI_API_KEY not set")
-    with warnings.catch_warnings():
-        warnings.simplefilter("ignore", FutureWarning)
-        import google.generativeai as genai
-
+    # Через общий клиент: раньше модель создавалась здесь напрямую и без
+    # safety_settings, то есть оценка КЗ шла с дефолтным порогом
+    # BLOCK_MEDIUM_AND_ABOVE. На клиническом тексте (травмы, самоповреждения,
+    # репродуктивное здоровье) такой порог блокирует ответ, и оценка
+    # записывалась пустой без ошибки в логе.
+    from clinical_knowledge.gemini_client import build_model
     from clinical_knowledge.gemini_model_config import resolve_gemini_model
 
-    genai.configure(api_key=key)
     name, _warn = resolve_gemini_model(model_name)
-    return genai.GenerativeModel(name), name
+    return build_model(name), name
 
 
 def _generate_with_fallback(model_name: str, prompt: str):

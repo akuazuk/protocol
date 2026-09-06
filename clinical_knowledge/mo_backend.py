@@ -4,13 +4,14 @@ from __future__ import annotations
 import csv
 import calendar
 import json
+import logging
 import os
 import re
 import sqlite3
 import statistics
 import uuid
 from collections import Counter
-from contextlib import closing
+from contextlib import closing, suppress
 from datetime import date, datetime, timedelta, timezone
 from functools import lru_cache
 from pathlib import Path
@@ -38,6 +39,8 @@ from .mis_kz_quality import (
     build_kz_dynamics,
     load_kz_cases,
 )
+
+_LOG = logging.getLogger(__name__)
 
 ROOT = Path(__file__).resolve().parent.parent
 SUPPRESSION_N = max(2, int(os.environ.get("MO_SUPPRESSION_N", "5")))
@@ -800,12 +803,12 @@ def _parse_reg55_weak_points(raw: Any) -> list[str]:
     text = str(raw or "").strip()
     if not text:
         return []
-    try:
+    # Значение приходит либо JSON-списком, либо строкой через | или запятую.
+    # Незаполненный JSON - ожидаемая ветка, а не сбой: логировать нечего.
+    with suppress(json.JSONDecodeError):
         data = json.loads(text)
         if isinstance(data, list):
             return [str(x).strip() for x in data if str(x).strip()]
-    except Exception:  # noqa: BLE001
-        pass
     return [part for part in re.split(r"[|,]", text) if part.strip()]
 
 
@@ -1167,7 +1170,10 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
             public["icd_visit_status_label_ru"] = chip_label_ru(icd_status)
             public["icd_visit_status_title_ru"] = chip_title_ru(icd_status)
         except Exception:  # noqa: BLE001
-            pass
+            _LOG.warning(
+                "Статус МКБ по визиту не рассчитан, чип в списке случаев не будет показан",
+                exc_info=True,
+            )
         shadow = (
             shadow_index.get(str(rec.get("case_id") or ""))
             or shadow_index.get(str(rec.get("visit_id") or ""))
@@ -1186,7 +1192,11 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
 
             enrich_rows_with_patient_id(rows)
         except Exception:  # noqa: BLE001
-            pass
+            _LOG.warning(
+                "patient_id не подставлен в %d строк review-pack, хотя его запросили",
+                len(rows),
+                exc_info=True,
+            )
     agg = _filtered_agg(filtered)
     agg["by_specialty"] = [_suppressed_group(r) for r in agg.get("by_specialty") or []]
     agg["by_chapter"] = [_suppressed_group(r) for r in agg.get("by_chapter") or []]
@@ -3903,7 +3913,11 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
 
             ensure_review_pack_schema(conn)
         except Exception:  # noqa: BLE001
-            pass
+            _LOG.warning(
+                "Схема review-pack не применена для случая %s: запросы ниже могут упасть",
+                case_id,
+                exc_info=True,
+            )
         state = conn.execute("SELECT * FROM crm_case_state WHERE case_id=?", (case_id,)).fetchone()
         events = conn.execute(
             "SELECT event_id,event_type,actor,payload_json,created_at FROM crm_case_event "
@@ -3983,7 +3997,11 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
         }
         detail["patient_history"] = public_bundle_for_ui(attach_bundle_to_case(hist_case))
     except Exception:  # noqa: BLE001
-        pass
+        _LOG.warning(
+            "История пациента не собрана для случая %s: панель истории будет пустой",
+            case_id,
+            exc_info=True,
+        )
     try:
         from clinical_knowledge.mo_lab_bundle import lab_payload_for_case
 
@@ -3995,13 +4013,21 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
             }
         )
     except Exception:  # noqa: BLE001
-        pass
+        _LOG.warning(
+            "Лабораторные данные не собраны для случая %s: панель лаборатории будет пустой",
+            case_id,
+            exc_info=True,
+        )
     try:
         from .mo_finding_families import family_scores_from_findings
 
         detail["family_scores"] = family_scores_from_findings(detail.get("findings") or [])
     except Exception:  # noqa: BLE001
-        pass
+        _LOG.warning(
+            "Оценки по семьям замечаний не рассчитаны для случая %s",
+            case_id,
+            exc_info=True,
+        )
     return detail
 
 
@@ -4742,7 +4768,10 @@ def build_dimension(dimension: str, params: dict[str, Any]) -> dict[str, Any]:
                     z2a = int(row["zone2a_bad"] or 0)
                     z2b = int(row["zone2b_bad"] or 0)
 
-                    def _bad_pct(bad: int) -> float | None:
+                    # n_scored связывается через default: замыкание по переменной
+                    # цикла посчитало бы долю от знаменателя другого врача, если
+                    # вызов когда-нибудь уедет за пределы итерации.
+                    def _bad_pct(bad: int, n_scored: int = n_scored) -> float | None:
                         if n_scored <= 0:
                             return None
                         return round(100.0 * bad / n_scored, 1)

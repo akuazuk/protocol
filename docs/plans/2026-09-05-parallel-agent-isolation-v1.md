@@ -1,10 +1,15 @@
 # Параллельные агенты и вкладки: прогоны не перебивают друг друга
 
 Дата: 2026-09-05
-Статус: **active** (волна 1 в коде)
+Статус: **archived**, преемник - [v2](2026-09-05-parallel-agent-isolation-v2.md)
 Владелец: несколько Cursor-вкладок / агентов на одном `akuazuk/protocol`
-Связанные: [AGENTS.md](../../AGENTS.md), [runbook v2](../deploy/multi-agent-single-repo-render-runbook-v2.md),
+Связанные: [AGENTS.md](../../AGENTS.md), [канон v3](../deploy/multi-agent-workflow-v3.md),
 [CI concurrency v3](2026-08-03-ci-release-concurrency-v3.md) (completed, не дублировать)
+
+> Волна 1 закрыла механику (CI не гасит соседа, авто-resolve `BUILD_VERSION`,
+> скрипт пересечений). Волна 2 закрывает причину пересечений - необъявленное
+> владение файлами: `CODEOWNERS`, шаблон PR, блокирующая гигиена, дашборд.
+> Незакрытый шаг 5 перенесён в v2.
 
 ## 1. Контекст
 

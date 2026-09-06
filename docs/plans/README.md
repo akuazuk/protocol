@@ -1,7 +1,13 @@
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-09-05-parallel-agent-isolation-v1.md](2026-09-05-parallel-agent-isolation-v1.md) | Параллельные агенты/вкладки: CI не отменяет чужой прогон, BUILD_VERSION rebase | active |
+| [2026-09-05-corpus-integrity-v1.md](2026-09-05-corpus-integrity-v1.md) | Целостность корпуса: 62 протокола 2026 года не доходили до врачей (закрыто), решения по дублям, векторному индексу и манифесту происхождения | active |
+| [2026-09-05-mo-warehouse-storage-v1.md](2026-09-05-mo-warehouse-storage-v1.md) | Хранение склада МО: единый `jsonl_io`, гонка аппендов проверена и не подтверждена, триггеры перехода на PostgreSQL | active |
+| [2026-09-05-monolith-decomposition-v1.md](2026-09-05-monolith-decomposition-v1.md) | Разбор монолита: маршруты `rag_server.py` в роутеры, настройки не на импорте, скоринг к одной рубрике, вынос inline JS перед снятием `unsafe-inline` | active |
+| [2026-09-05-parallel-agent-isolation-v2.md](2026-09-05-parallel-agent-isolation-v2.md) | Параллельные агенты, волна 2: CODEOWNERS, шаблон PR, блокирующая гигиена ветки/описания, дашборд владения файлами, канон v3 под GCE | active |
+| [2026-09-05-parallel-agent-isolation-v1.md](2026-09-05-parallel-agent-isolation-v1.md) | Параллельные агенты/вкладки: CI не отменяет чужой прогон, BUILD_VERSION rebase (преемник - v2) | archived |
 | [2026-09-05-mo-meds-labs-dashboards-v1.md](2026-09-05-mo-meds-labs-dashboards-v1.md) | МО: разделы «Лекарства» и «Анализы» - навигация по findings → путь в overall | active |
+| [2026-09-03-mo-wrong-working-dx-v1.md](2026-09-03-mo-wrong-working-dx-v1.md) | МО: внутренне согласованный ложный рабочий диагноз (эталон - визит с миозитом вместо Пертеса) | active |
+| [2026-09-03-rz-quality-article-layout-v1.md](2026-09-03-rz-quality-article-layout-v1.md) | Статья РЗ об оценке качества МО: редактура и печатная вёрстка | active |
 | [2026-09-04-mo-drugs-labs-scoring-v1.md](2026-09-04-mo-drugs-labs-scoring-v1.md) | МО: unused lab + усиление лекарств (Rceth/классы/формуляр) vs обещания статьи РЗ | active |
 | [2026-08-26-mo-lab-from-mis-tests-v1.md](2026-08-26-mo-lab-from-mis-tests-v1.md) | Лаборатория из `mis_tests` в МО: patient_id + окно дат, склад, shadow-сверка | active |
 | [2026-08-21-mo-kp-diagnosis-only-v1.md](2026-08-21-mo-kp-diagnosis-only-v1.md) | КП только от диагноза/МКБ; пусто лучше чужого протокола | active |
@@ -33,6 +39,7 @@
 | [2026-08-09-mo-analytics-visual-refresh-v1.md](2026-08-09-mo-analytics-visual-refresh-v1.md) | МО Аналитика: цвет умеренно+, Avenir-шкала, sort/filter/chips/col-dropdown на таблицах | active |
 | [2026-08-09-mo-protocol-nav-viewer-v1.md](2026-08-09-mo-protocol-nav-viewer-v1.md) | Навигация по КП: never-empty / CSS / corpus (технический фикс) | archived (преемник: mo-protocol-nav-reader-v2) |
 | [2026-08-09-mo-settings-refresh-v1.md](2026-08-09-mo-settings-refresh-v1.md) | МО Аналитика: Справка вместо Настроек; зоны; без v3/v4 и AI-расходов | active |
+| [2026-08-09-mo-reg55-section-pack-v1.md](2026-08-09-mo-reg55-section-pack-v1.md) | МО Аналитика: один полный контур №55 (section pack) вместо двух старых | active |
 | [2026-08-09-mo-dashboards-zones-first-v2.md](2026-08-09-mo-dashboards-zones-first-v2.md) | МО Аналитика: меню и дашборды простыми словами (зоны primary; №55 в «Подробнее») | active |
 | [2026-08-09-mo-dashboards-zones-first-v1.md](2026-08-09-mo-dashboards-zones-first-v1.md) | Дашборды зоны-first (техническая версия) | archived (преемник: mo-dashboards-zones-first-v2) |
 | [2026-08-09-auth-accounts-unify-v1.md](2026-08-09-auth-accounts-unify-v1.md) | Единый вход методиста + МО Аналитика; P0 SSO/403; далее login/password и admin учёток | active |
@@ -76,6 +83,7 @@
 | [2026-08-04-mo-runtime-stabilization-v1.md](2026-08-04-mo-runtime-stabilization-v1.md) | Стабилизация runtime МО: Docker, вынос пайплайна с Mac; фаза C GCP → [by-home-gcp-llm-split-v1](2026-08-07-by-home-gcp-llm-split-v1.md) | active (C уточнён преемником) |
 | [2026-08-04-repo-sections-archive-v2.md](2026-08-04-repo-sections-archive-v2.md) | Карта разделов продукта и безопасная архивация (konkurs, ML dumps, hygiene) | active |
 | [2026-08-03-ci-release-concurrency-v3.md](2026-08-03-ci-release-concurrency-v3.md) | CI baseline 0, обязательный lint и GitHub Actions concurrency для production release | completed |
+| [2026-08-03-mo-analytics-cursor-improvement-plan-v2.md](2026-08-03-mo-analytics-cursor-improvement-plan-v2.md) | МО Аналитика: план улучшений (`/methodist/mo`, дневной склад) | active |
 | [2026-08-03-mo-filter-actions-ui-v1.md](2026-08-03-mo-filter-actions-ui-v1.md) | МО Аналитика: явный запуск поиска, подтверждение мультифильтров и раскрываемые панели | active |
 | [2026-08-03-multi-agent-release-guard-v2.md](2026-08-03-multi-agent-release-guard-v2.md) | Multi-agent release guard: только merged `origin/main` в Render, hard guards и branch protection | archived (преемник: ci-release-concurrency-v3) |
 | [2026-08-03-mo-rubric-mz-scoring-viz-v1.md](2026-08-03-mo-rubric-mz-scoring-viz-v1.md) | МО: рубрика МЗ «Как оценивать» (0/0.5/1), shadow scorer и визуализация в case detail | active |
@@ -90,7 +98,7 @@
 | [2026-07-22-kz-data-separation-viz-v1.md](2026-07-22-kz-data-separation-viz-v1.md) | Разделение клинических и не-клинических записей | archived (преемник: mo-daily-bi-platform-v1) |
 | [2026-07-22-kz-scoring-methodology-v1.md](2026-07-22-kz-scoring-methodology-v1.md) | Методология оценки и обогащение протоколов | archived (преемник: scorer v3 в mo-daily-bi-platform-v1) |
 | [2026-07-22-mis-kz-pay-services-l1-v1.md](2026-07-22-mis-kz-pay-services-l1-v1.md) | Данные МИС, оплата, услуги и L1 | archived (преемник: mo-daily-bi-platform-v1) |
-| [2026-07-22-mis-kz-quality-analysis.md](2026-07-22-mis-kz-quality-analysis.md) | Исторический анализ качества L1 после догрузки | archived (исторический отчёт; преемник: mo-daily-bi-platform-v1) |
+| [2026-07-22-mis-kz-quality-analysis-v1.md](2026-07-22-mis-kz-quality-analysis-v1.md) | Исторический анализ качества L1 после догрузки | archived (исторический отчёт; преемник: mo-daily-bi-platform-v1) |
 | [2026-07-21-mis-kz-llm-progress-full-report-v1.md](2026-07-21-mis-kz-llm-progress-full-report-v1.md) | Прогресс LLM-прогона + полный разбор по протоколам МЗ | archived (преемник: mis-kz-pay-services-l1-v1) |
 | [2026-07-21-mis-kz-worst50-l2-gemini-v1.md](2026-07-21-mis-kz-worst50-l2-gemini-v1.md) | Топ-50 худших КЗ + L2 + выборочный Gemini | archived (преемник: llm-progress-full-report-v1) |
 | [2026-07-21-mis-kz-l1-batch-v1.md](2026-07-21-mis-kz-l1-batch-v1.md) | Массовый L1 mis_protocol (июль: 7648 визитов) + дашборд методиста | archived (преемник: worst50-l2-gemini-v1) |

@@ -6,6 +6,32 @@ set -euo pipefail
 ROOT="$(cd "$(dirname "$0")/../.." && pwd)"
 cd "$ROOT"
 
+usage() {
+  cat <<'EOF'
+Usage: deploy/gcp-app/deploy_to_gce.sh [--dry-run]
+
+Syncs allowlisted sources to GCE, builds Docker image on the VM, runs container
+on :8000 with /var/data mounted. Requires local HEAD exactly at origin/main.
+EOF
+}
+
+# Аргументы разбираем до fetch и до проверки SHA: справка не должна требовать
+# сети и чистого checkout, иначе её нельзя прочитать там, где она нужнее всего.
+DRY=0
+for arg in "$@"; do
+  case "$arg" in
+    -h | --help)
+      usage
+      exit 0
+      ;;
+    --dry-run) DRY=1 ;;
+    *)
+      echo "Unknown arg: $arg" >&2
+      exit 2
+      ;;
+  esac
+done
+
 git fetch origin main --quiet
 RELEASE_SHA="${GIT_COMMIT_SHA:-$(git rev-parse HEAD)}"
 MAIN_SHA="$(git rev-parse origin/main)"
@@ -28,24 +54,6 @@ ENV_MIS_REMOTE="${ENV_MIS_REMOTE:-/opt/protocol/.env.mis}"
 MIS_SM_SECRET="${MIS_SM_SECRET:-kravira-db-password}"
 # Cron owner on protocol-app; deploy SSH login may differ (pavel vs pavelkuzauka).
 GCE_OPS_USER="${GCE_OPS_USER:-pavel}"
-
-usage() {
-  cat <<'EOF'
-Usage: deploy/gcp-app/deploy_to_gce.sh [--dry-run]
-
-Syncs allowlisted sources to GCE, builds Docker image on the VM, runs container
-on :8000 with /var/data mounted. Does not touch Render DNS.
-EOF
-}
-
-DRY=0
-for arg in "$@"; do
-  case "$arg" in
-    -h|--help) usage; exit 0 ;;
-    --dry-run) DRY=1 ;;
-    *) echo "Unknown arg: $arg" >&2; exit 2 ;;
-  esac
-done
 
 gcloud config set project "$PROJECT" --quiet >/dev/null
 STATUS="$(gcloud compute instances describe "$VM" --zone="$ZONE" --format='get(status)')"
@@ -103,6 +111,9 @@ sm_map = {
     "RENDER_API_KEY": "render-api-key",
 }
 want = secret_keys | {
+    "ALLOWED_ORIGINS",
+    "ENABLE_DEFAULT_CSP",
+    "CONTENT_SECURITY_POLICY",
     "GIT_COMMIT_SHA",
     "GEMINI_MODEL",
     "GEMINI_METHODIST_MODEL",
@@ -110,6 +121,8 @@ want = secret_keys | {
     "METHODIST_REVIEWER",
     "METHODIST_UI_AUTO_LOGIN",
     "ML_FEEDBACK_DIR",
+    # Ключ псевдонимизации перед Gemini (см. clinical_knowledge/phi_for_llm).
+    "PHI_PSEUDONYM_KEY",
     "RAG_CHUNKS_JSONL",
     "RAG_CHUNKS_DIR",
     "RAG_MANIFEST_PATH",
@@ -174,7 +187,11 @@ vals.setdefault(
 vals.setdefault("RAG_CHUNKS_DIR", "/var/data/protocol_corpus/corpus_chunks_parts")
 vals.setdefault("RAG_LAZY_RETRIEVE", "1")
 vals.setdefault("RAG_FORBID_FULL_CORPUS_RETRIEVE", "1")
-vals.setdefault("ALLOWED_ORIGINS", "*")
+# CORS: только собственный домен. "*" разворачивается в rag_server.py в
+# allow_origins=["*"] и открывает API любому сайту в браузере пользователя.
+vals.setdefault("ALLOWED_ORIGINS", "https://protocol.kravira.by")
+# CSP: в rag_server.py дефолтная политика выключена, пока флаг не выставлен.
+vals.setdefault("ENABLE_DEFAULT_CSP", "1")
 vals.setdefault("PYTHONUNBUFFERED", "1")
 vals.setdefault("MO_ICD_NAME_IN_PRIMARY", "1")
 vals.setdefault("MO_ICD_DIR_IN_PRIMARY", "0")
@@ -286,9 +303,12 @@ if [[ "$DRY" == "1" ]]; then
   exit 0
 fi
 
-echo "[3/5] sync sources to VM"
+echo "[3/5] sync sources to VM (git archive of ${RELEASE_SHA:0:12}, not the working tree)"
+# Раньше здесь был `tar` рабочего дерева: на прод уезжали любые локальные
+# правки и мусор macOS (`._*` AppleDouble лежали в /opt/protocol). Теперь
+# берём ровно то, что закоммичено в RELEASE_SHA, - деплой воспроизводим.
 # shellcheck disable=SC2086
-tar czf - \
+git archive --format=tar "$RELEASE_SHA" -- \
   rag_server.py env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py \
   download_minzdrav_protocols.py \
   requirements.txt requirements-rag.txt \
@@ -302,8 +322,15 @@ tar czf - \
   data/regulations \
   output/registry/protocol_cards.jsonl \
   services \
-  deploy/gcp-app/*.sh deploy/gcp-app/Dockerfile .dockerignore \
-  | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR'"
+  deploy/gcp-app/Dockerfile .dockerignore \
+  | gzip -c \
+  | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="mkdir -p '$REMOTE_DIR' && tar xzf - -C '$REMOTE_DIR' && find '$REMOTE_DIR' -name '._*' -delete 2>/dev/null; true"
+
+# deploy/gcp-app/*.sh отдельно: git archive не раскрывает glob, а список
+# скриптов на VM должен соответствовать коммиту.
+git archive --format=tar "$RELEASE_SHA" -- deploy/gcp-app \
+  | gzip -c \
+  | gcloud compute ssh "$VM" --zone="$ZONE" --quiet --command="tar xzf - -C '$REMOTE_DIR'"
 
 gcloud compute scp /tmp/protocol-gcp-public.env "${VM}:~/protocol-gcp-public.env" --zone="$ZONE" --quiet
 if [[ -s /tmp/protocol-gcp-mis.env ]]; then
@@ -325,7 +352,14 @@ else
 fi
 
 echo "[4/5] docker build on VM (may take several minutes)"
-ssh_cmd "cd '$REMOTE_DIR' && sudo docker build -f deploy/gcp-app/Dockerfile -t '$IMAGE_TAG' ."
+# Образ версионируется по SHA, а не пересобирается поверх одного тега:
+# без этого откатиться на предыдущую сборку было невозможно.
+IMAGE_REPO="${IMAGE_REPO:-protocol-gcp-app}"
+IMAGE_SHA_TAG="${IMAGE_REPO}:${RELEASE_SHA:0:12}"
+ssh_cmd "cd '$REMOTE_DIR' && sudo docker build -f deploy/gcp-app/Dockerfile -t '$IMAGE_SHA_TAG' -t '$IMAGE_TAG' ."
+echo "[4b/5] built $IMAGE_SHA_TAG (also tagged $IMAGE_TAG)"
+# Держим последние 5 версий, остальные чистим, чтобы boot-диск не заполнился.
+ssh_cmd "sudo docker images '$IMAGE_REPO' --format '{{.Tag}}\t{{.CreatedAt}}' | grep -vE '^(staging|latest)\b' | sort -k2 -r | tail -n +6 | cut -f1 | while read -r t; do [ -n \"\$t\" ] && sudo docker rmi '$IMAGE_REPO':\"\$t\" >/dev/null 2>&1 || true; done; sudo docker images '$IMAGE_REPO' --format '  {{.Repository}}:{{.Tag}} {{.Size}}'"
 
 HAS_CORPUS="$(ssh_cmd "if [[ -d '$CORPUS_REMOTE/minzdrav_protocols' && -d '$CORPUS_REMOTE/protocol_summaries/json' && -f '$CORPUS_REMOTE/protocol_catalog.jsonl' ]]; then echo yes; else echo no; fi")"
 CORPUS_MOUNTS=""
@@ -343,9 +377,14 @@ fi
 ssh_cmd "sudo mkdir -p /var/data/drug_safety && sudo cp -n '$REMOTE_DIR'/data/drug_safety/high_alert.json /var/data/drug_safety/ 2>/dev/null || true; sudo cp -n '$REMOTE_DIR'/data/drug_safety/stopp_start_beers.json /var/data/drug_safety/ 2>/dev/null || true; if [[ -f '$REMOTE_DIR'/data/drug_safety/ddinter_pairs.json ]]; then sudo cp '$REMOTE_DIR'/data/drug_safety/ddinter_pairs.json /var/data/drug_safety/; fi; ls -la /var/data/drug_safety || true"
 DRUG_SAFETY_MOUNT="-v /var/data/drug_safety:/app/data/drug_safety:ro"
 
+# Запоминаем образ работающего контейнера - на него откатываемся, если новый
+# не поднялся. Раньше откатываться было не на что: тег всегда был один.
+PREV_IMAGE="$(ssh_cmd "sudo docker inspect '$CONTAINER' --format '{{.Config.Image}}' 2>/dev/null || true" | tr -d '\r\n' || true)"
+echo "[5/5] previous image: ${PREV_IMAGE:-<none>}"
+
 ssh_cmd "sudo docker rm -f '$CONTAINER' >/dev/null 2>&1 || true
 sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
-  -p 8000:8000 \
+  -p 127.0.0.1:8000:8000 \
   --env-file '$ENV_REMOTE' \
   -v /var/data:/var/data \
   $CORPUS_MOUNTS \
@@ -358,21 +397,93 @@ sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
   -e RAG_CHUNKS_DIR=/var/data/protocol_corpus/corpus_chunks_parts \
   -e RAG_LAZY_RETRIEVE=1 \
   -e PORT=8000 \
-  '$IMAGE_TAG'
+  '$IMAGE_SHA_TAG'
 sleep 3
 sudo docker ps --filter name='$CONTAINER' --format 'table {{.Names}}\t{{.Status}}\t{{.Ports}}'"
 
-IP="$(gcloud compute addresses describe protocol-app-ip --region=europe-central2 --format='get(address)')"
-echo "Waiting for /health/live on ${IP}:8000 ..."
+rollback() {
+  if [[ -z "$PREV_IMAGE" ]]; then
+    echo "ROLLBACK невозможен: предыдущий образ неизвестен." >&2
+    return 1
+  fi
+  echo "ROLLBACK -> $PREV_IMAGE" >&2
+  ssh_cmd "sudo docker rm -f '$CONTAINER' >/dev/null 2>&1 || true
+sudo docker run -d --name '$CONTAINER' --restart unless-stopped \
+  -p 127.0.0.1:8000:8000 \
+  --env-file '$ENV_REMOTE' \
+  -v /var/data:/var/data \
+  $CORPUS_MOUNTS \
+  $DRUG_SAFETY_MOUNT \
+  -e MO_DATA_ROOT=/var/data/medical_exams \
+  -e PROTOCOL_CORPUS_ROOT=/var/data/protocol_corpus \
+  -e PROTOCOL_ICD_PROFILE_INDEX=/app/data/catalog/protocol_icd_profiles.jsonl \
+  -e PROTOCOL_CARDS_PATH=/app/output/registry/protocol_cards.jsonl \
+  -e RAG_MANIFEST_PATH=/var/data/protocol_corpus/corpus_chunks_parts/corpus_path_manifest.jsonl \
+  -e RAG_CHUNKS_DIR=/var/data/protocol_corpus/corpus_chunks_parts \
+  -e RAG_LAZY_RETRIEVE=1 \
+  -e PORT=8000 \
+  '$PREV_IMAGE'" >&2
+  for _ in $(seq 1 24); do
+    if ssh_cmd "curl -fsS --max-time 5 http://127.0.0.1:8000/health/live >/dev/null" 2>/dev/null; then
+      echo "ROLLBACK ok: прод вернулся на $PREV_IMAGE" >&2
+      return 0
+    fi
+    sleep 5
+  done
+  echo "ROLLBACK не поднялся - нужно вмешательство вручную." >&2
+  return 1
+}
+
+# Контейнер слушает только 127.0.0.1:8000, наружу его отдаёт Caddy по HTTPS.
+# Поэтому liveness проверяем внутри VM, а публичную доступность - через домен.
+PUBLIC_URL="${PROTOCOL_PUBLIC_URL:-https://protocol.kravira.by}"
+# Ожидаемая версия берётся из самого коммита, а не из рабочего дерева.
+EXPECTED_VERSION="$(git show "$RELEASE_SHA:rag_server.py" | sed -n 's/^BUILD_VERSION = "\(.*\)"$/\1/p' | head -1)"
+echo "Waiting for /health/live on 127.0.0.1:8000 inside the VM ..."
+HEALTHY=0
 for i in $(seq 1 36); do
-  if curl -fsS --max-time 5 "http://${IP}:8000/health/live" >/dev/null 2>&1; then
-    echo "HEALTH_OK"
-    curl -fsS "http://${IP}:8000/api/version"
-    echo
-    exit 0
+  if ssh_cmd "curl -fsS --max-time 5 http://127.0.0.1:8000/health/live >/dev/null" 2>/dev/null; then
+    HEALTHY=1
+    break
   fi
   sleep 5
 done
-echo "HEALTH timeout; recent logs:" >&2
-ssh_cmd "sudo docker logs --tail 80 '$CONTAINER'" || true
-exit 1
+
+if [[ "$HEALTHY" != "1" ]]; then
+  echo "HEALTH timeout; recent logs:" >&2
+  ssh_cmd "sudo docker logs --tail 80 '$CONTAINER'" || true
+  rollback || true
+  exit 1
+fi
+
+echo "HEALTH_OK (in-VM)"
+echo "Checking public endpoint ${PUBLIC_URL} ..."
+if ! curl -fsS --max-time 15 "${PUBLIC_URL}/health/live" >/dev/null 2>&1; then
+  echo "ERROR: контейнер жив, но ${PUBLIC_URL} не отвечает - проверь Caddy" >&2
+  rollback || true
+  exit 1
+fi
+
+ACTUAL_VERSION="$(curl -fsS --max-time 15 "${PUBLIC_URL}/api/version" \
+  | python3 -c 'import json,sys; print(json.load(sys.stdin).get("version",""))' 2>/dev/null || true)"
+ACTUAL_SHA="$(curl -fsS --max-time 15 "${PUBLIC_URL}/api/version" \
+  | python3 -c 'import json,sys; print(json.load(sys.stdin).get("git_commit",""))' 2>/dev/null || true)"
+
+echo "  expected version: ${EXPECTED_VERSION:-<unknown>}"
+echo "  actual   version: ${ACTUAL_VERSION:-<none>}"
+echo "  actual   git_commit: ${ACTUAL_SHA:-<none>}"
+
+if [[ -n "$EXPECTED_VERSION" && "$ACTUAL_VERSION" != "$EXPECTED_VERSION" ]]; then
+  echo "ERROR: прод отдаёт версию, отличную от коммита ${RELEASE_SHA:0:12}." >&2
+  echo "Скорее всего BUILD_VERSION не поднят или собрался не тот образ." >&2
+  rollback || true
+  exit 1
+fi
+if [[ -n "$ACTUAL_SHA" && "$ACTUAL_SHA" != "$RELEASE_SHA" ]]; then
+  echo "ERROR: git_commit на проде (${ACTUAL_SHA:0:12}) не равен релизному ${RELEASE_SHA:0:12}." >&2
+  rollback || true
+  exit 1
+fi
+
+echo "PUBLIC_OK  image=${IMAGE_SHA_TAG}"
+exit 0

@@ -2,6 +2,7 @@
 from __future__ import annotations
 
 import hashlib
+import hmac
 import io
 import json
 import logging
@@ -12,6 +13,8 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
+
+from .jsonl_io import append_line, is_valid_jsonl_line
 
 ROOT = Path(__file__).resolve().parent.parent
 _DEFAULT_FEEDBACK_DIR = ROOT / "data" / "ml" / "feedback"
@@ -157,11 +160,20 @@ def text_hash(text: str) -> str:
 
 
 def verify_methodist_token(token: str | None) -> bool:
+    """Сверка токена методиста за постоянное время.
+
+    Обычное `==` для строк выходит на первом несовпавшем символе, поэтому время
+    ответа зависит от длины совпавшего префикса. Для общего токена, который
+    открывает доступ к клиническим данным, это позволяет подбирать его по
+    символам. `hmac.compare_digest` сравнивает без ранних выходов.
+    """
     expected = methodist_token_expected()
     if not expected:
         return False
     got = (token or "").strip()
-    return bool(got) and got == expected
+    if not got:
+        return False
+    return hmac.compare_digest(got.encode("utf-8"), expected.encode("utf-8"))
 
 
 def token_from_request_headers(headers: Mapping[str, str]) -> str:
@@ -240,11 +252,8 @@ def append_feedback_event(event: dict[str, Any]) -> str:
     d = feedback_dir()
     d.mkdir(parents=True, exist_ok=True)
     et = normalized["event_type"]
-    line = json.dumps(normalized, ensure_ascii=False, separators=(",", ":"))
-    with _event_path(et).open("a", encoding="utf-8") as f:
-        f.write(line + "\n")
-    with (d / "events.jsonl").open("a", encoding="utf-8") as f:
-        f.write(line + "\n")
+    append_line(_event_path(et), normalized, compact=True)
+    append_line(d / "events.jsonl", normalized, compact=True)
     return event_id
 
 
@@ -572,15 +581,15 @@ def collect_feedback_export_lines(*, since: str | None = None) -> dict[str, list
     out: dict[str, list[str]] = {}
     for path in list_feedback_jsonl_files():
         lines_out: list[str] = []
-        for line in path.read_text(encoding="utf-8").splitlines():
+        for line in path.read_text(encoding="utf-8", errors="replace").splitlines():
             line = line.strip()
-            if not line or line.startswith("#"):
+            # Битую строку отбрасываем всегда. Раньше это делалось только при
+            # заданном since, и выгрузка без since уносила обрывки записей
+            # дальше по конвейеру.
+            if not is_valid_jsonl_line(line):
                 continue
             if since_norm:
-                try:
-                    row = json.loads(line)
-                except json.JSONDecodeError:
-                    continue
+                row = json.loads(line)
                 ts = (row.get("ts") or "").strip()
                 if ts and ts < since_norm:
                     continue

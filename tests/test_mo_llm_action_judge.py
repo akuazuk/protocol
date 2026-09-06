@@ -65,7 +65,15 @@ def test_stage_a_digest_includes_completeness() -> None:
     assert "missing:exam_data" in digest["key_gaps"] or "exam_data" in digest["missing_blocks"]
 
 
-def test_prompts_contain_case_id() -> None:
+def test_prompts_identify_case_by_pseudonym_not_raw_id() -> None:
+    """Случай в промпте узнаваем, но номер визита за границу не уезжает.
+
+    Раньше тест требовал сам номер в промпте. Промпт уходит в Gemini, поэтому
+    идентификатор заменён устойчивым псевдонимом: корреляция сохраняется,
+    персональные данные - нет. См. clinical_knowledge/phi_for_llm.
+    """
+    from clinical_knowledge.phi_for_llm import pseudonym
+
     pack = {
         "meta": {"case_id": "3646270", "visit_id": "3646270", "mis_id": "1"},
         "slots": {"complaints": "хромота", "clinical_diagnosis": "M60"},
@@ -73,7 +81,8 @@ def test_prompts_contain_case_id() -> None:
     a = validate_stage_a(EXAMPLE_STAGE_A)
     pa = build_prompt_a(pack)
     pb = build_prompt_b(pack, stage_a_digest(a))
-    assert "3646270" in pa
+    assert "3646270" not in pa
+    assert pseudonym("3646270", prefix="case") in pa
     assert "completeness" in pa
     assert "полнота" in pa.lower() or "Полнота" in pa
     assert "stage_a_ref" in pb or "Итог этапа A" in pb
