@@ -84,3 +84,48 @@ Merge/deploy при первой записи нет. Проверены лок�
 ```bash
 gh pr checks 205 --repo akuazuk/protocol
 ```
+
+## Checkpoint реализации: 2026-09-06, после совместной проверки
+
+#205 merged: fe0734a8a5956d1e7a8d494da895319411968d01. Все required PR checks
+успешны. Main CI на момент checkpoint ещё выполняется. Production нами не менялся.
+#206 обновлён merge main без force-push: 82ff5df4; 49 локальных тестов вместе
+с календарным API passed; новый CI ожидается, auto-merge включён после gates.
+
+Дополнительные опубликованные работы:
+
+| PR | HEAD при checkpoint | Изменение | Проверка |
+|---|---|---|---|
+| #211 | 2758c0cd | Unknown admission/matrix и сохранение readiness=0 | 23 passed |
+| #212 | 07d35754 | Видимые unknown/partial, отказ от выдуманной уверенности, честная подпись процентов семейств, keyboard drill | 41 passed; 4 browser payload, Enter, mobile |
+| #213 | d59d87f5 | Guard отрицаний/семейных фраз, возраст детского подраздела, текстовый finding как candidate | 28 passed |
+| #214 | f05b2e3a | Единые GCE/merge/worktree инструкции | docs links/bash syntax/diff |
+
+#207/#208/#211–214 пока draft, не merged и не deployed. Точные актуальные SHA
+проверять в GitHub: checkpoint не заменяет текущее состояние. Primary flags
+и persisted оценки не изменялись. #212 исправляет подпись фактического общего
+знаменателя, но не добавляет group-specific rate. #213 — ограниченный guard,
+не полный assertion/subject/temporality parser; clinical review остаётся.
+
+Совместная проверка #205–208/#211–213: 174 passed (19 тематических файлов),
+browser 4 payload, zero/unknown, parse_ok без ложных 90%, mobile 318/318,
+keyboard Enter → documents + нужный finding_codes. Интеграционная ветка
+codex/mo-integration-verification-agent1-pc1, HEAD e69d16f419768b9c2995745571a58c19f8ccb41d,
+worktree /Users/pavelkuzauka/Cursor_Folders/Protocol-worktrees/mo-integration-verification.
+Это локальная диагностическая сборка, НЕ release и НЕ интеграционный PR для merge.
+Код доставляется отдельными PR; не деплоить эту ветку.
+
+### Сохранность и Cursor
+
+В ходе работы исчез временный worktree dual-score; причина не установлена.
+Незакоммиченный небольшой diff восстановлен, повторно 23 passed, опубликован #211.
+Новые worktree созданы в постоянном Protocol-worktrees, все активные защищены lock.
+Не удалять, не unlock и не prune чужую текущую работу при cleanup.
+Инструкция размещена в комментарии к #210:
+https://github.com/akuazuk/protocol/pull/210#issuecomment-5558200178
+
+Следующий release-координатор должен проверить текущий auto-merge #206 и
+завершение CI. До собственного окна GCE исключить параллельные auto-merges
+runtime PR. Последовательно обновлять дальнейшие ветки от merged main,
+разрешая только BUILD_VERSION штатным helper; проверять актуальный HEAD CI.
+Актуальный GCE runbook и daily checklist согласованы в #214, пока не merged.
