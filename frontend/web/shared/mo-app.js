@@ -5,6 +5,7 @@
     var VIEWS_KEY = "protocol_mo_saved_views";
     var THEME_KEY = "protocol_mo_theme";
     var DENSITY_KEY = "protocol_mo_density";
+    var COLUMNS_KEY = "protocol_mo_columns_v2";
     var API_ROOT = MO.api.API_ROOT;
     var LEGACY_ROOT = MO.api.LEGACY_ROOT;
     var rawRequest = MO.api.request;
@@ -60,6 +61,7 @@
       caseDetail: null, supersedesPackId: "",
       drillTrail: [], drillSnapshot: null,
       columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false,
+      filterDraft: null, filterPanelApplying: false,
       expertDisplayName: ""
     };
     var ZONE_LABELS = { zone1: "Оформление", zone2a: "Диагноз", zone2b: "План по протоколу" };
@@ -71,9 +73,11 @@
     };
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Сегодня", queue: "Очередь",
-      documents: "Все случаи", doctors: "Врачи", medications: "Лекарства", labs: "Анализы",
-      reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции ЛС", settings: "Справка"
+      documents: "Все случаи", doctors: "Врачи", medications: "Проверка назначений", labs: "Анализы",
+      reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции препаратов", settings: "Справка"
     };
+    // Compatibility contract for integrations that still identify this page by its former label.
+    var LEGACY_PAGE_TITLES = { medications: "Лекарства" };
     var REMOVED_PAGES = {
       specialties: true, diagnoses: true, safety: true,
       "data-quality": true, "doctor-cabinet": true, "access-log": true
@@ -702,10 +706,14 @@
         return total + (state.selected[key] || []).length;
       }, 0);
     }
-    function updateFilterSummary() {
+    function updateFilterSummary(hasDraft) {
       var count = appliedFilterCount();
       var total = $("filter-total");
-      if (total) total.textContent = count ? "Выбрано: " + count : "Без дополнительных фильтров";
+      if (total) {
+        total.textContent = hasDraft
+          ? "Есть неприменённые изменения"
+          : (count ? "Выбрано: " + count : "Без дополнительных фильтров");
+      }
       var clearSearch = $("case-search-clear");
       if (clearSearch) clearSearch.hidden = !String(state.search || $("case-search").value || "").trim();
     }
@@ -725,7 +733,10 @@
     function renderFilter(details) {
       var key = details.getAttribute("data-filter");
       var list = state.facets[key] || [];
-      var selected = (state.selected[key] || []).slice();
+      var selectedSource = state.filterDraft
+        ? state.filterDraft.selected
+        : state.selected;
+      var selected = (selectedSource[key] || []).slice();
       var draft = selected.slice();
       details.classList.toggle("has-applied", selected.length > 0);
       details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
@@ -769,7 +780,8 @@
         renderDraftState();
       });
       apply.addEventListener("click", function () {
-        state.selected[key] = draft.slice();
+        if (state.filterDraft) state.filterDraft.selected[key] = draft.slice();
+        else state.selected[key] = draft.slice();
         selected = draft.slice();
         details.querySelector("summary b").textContent = draft.length || "Все";
         details.classList.remove("has-pending");
@@ -777,7 +789,8 @@
         if (key === "document_types") {
           // Не даём выбрать процедуры/профосмотры в таблице случаев.
           draft = ["clinical_visit"];
-          state.selected.document_types = ["clinical_visit"];
+          if (state.filterDraft) state.filterDraft.selected.document_types = ["clinical_visit"];
+          else state.selected.document_types = ["clinical_visit"];
           selected = ["clinical_visit"];
           state.scoreEligibleOnly = true;
           details.querySelector("summary b").textContent = "Клинический приём";
@@ -787,7 +800,8 @@
           }
         }
         showToast(draft.length ? "Фильтр применён: " + FILTER_LABELS[key] : "Фильтр очищен: " + FILTER_LABELS[key]);
-        filtersChanged();
+        if (state.filterDraft) updateFilterSummary(true);
+        else filtersChanged();
       });
       details.ontoggle = function () {
         if (details.open) {
@@ -812,6 +826,7 @@
         search: state.search,
         findingCode: state.findingCode,
         findingFamily: state.findingFamily,
+        overallGrade: state.overallGrade,
         selected: JSON.parse(JSON.stringify(state.selected || {}))
       };
     }
@@ -824,25 +839,27 @@
       state.search = snapshot.search || "";
       state.findingCode = snapshot.findingCode || "";
       state.findingFamily = snapshot.findingFamily || "";
+      state.overallGrade = snapshot.overallGrade || "";
       state.selected = JSON.parse(JSON.stringify(snapshot.selected || state.selected));
       $("period").value = state.period;
       $("compare").value = state.compare;
       $("date-from").value = state.dateFrom;
       $("date-to").value = state.dateTo;
       $("case-search").value = state.search;
+      if ($("overall-grade-filter")) $("overall-grade-filter").value = state.overallGrade;
       $("date-from-wrap").hidden = state.period !== "custom";
       $("date-to-wrap").hidden = state.period !== "custom";
       document.querySelectorAll(".filter-pop").forEach(renderFilter);
     }
     function renderAnalysisRail() {
       renderBreadcrumbs();
-      var path = $("analysis-path"), note = $("analysis-note");
-      if (!path || !note) return;
+      var rail = $("analysis-rail"), path = $("analysis-path"), note = $("analysis-note");
+      if (!rail || !path || !note) return;
       if (!state.drillTrail.length) {
-        path.innerHTML = "Переходите в графики и нажимайте на точки для drill-down.";
-        note.textContent = "Текущие фильтры применяются ко всем экранам и таблицам.";
+        rail.hidden = true;
         return;
       }
+      rail.hidden = false;
       path.innerHTML = state.drillTrail.map(function (entry, index) {
         return '<span class="analysis-step">' + esc(entry.label || ("Шаг " + (index + 1))) +
           ' <button type="button" data-drill-index="' + index + '" aria-label="Открыть шаг">↗</button></span>';
@@ -913,15 +930,36 @@
       pushDrill(options.label || "drill-down", action);
       action();
     }
+    function facetLabel(key, value) {
+      var match = (state.facets[key] || []).find(function (item) {
+        return String(item.value) === String(value);
+      });
+      return match ? match.label : value;
+    }
+    function periodLabel() {
+      if (state.selected.months.length) return "Месяц: " + facetLabel("months", state.selected.months[0]);
+      if (state.period === "yesterday") return "Период: вчера";
+      if (state.period === "7d") return "Период: последние 7 дней";
+      if (state.period === "custom") return "Период: " + (state.dateFrom || "?") + " - " + (state.dateTo || "?");
+      return "Период: текущий месяц";
+    }
     function renderChips() {
-      var html = [];
+      var html = ['<span class="chip chip-period">' + esc(periodLabel()) + '</span>'];
+      if (state.compare !== "none") {
+        html.push('<span class="chip chip-meta">Сравнение: ' +
+          esc(state.compare === "weekday" ? "тот же день недели" : "предыдущий период") +
+          '</span>');
+      }
+      html.push('<span class="chip chip-locked" title="В таблице не показываются процедуры, диагностика и профосмотры">Только клинические приёмы</span>');
       if (state.search) {
         html.push('<span class="chip chip-search">Поиск: ' + esc(state.search) +
           '<button type="button" data-clear-search aria-label="Очистить поиск">×</button></span>');
       }
       Object.keys(state.selected).forEach(function (key) {
+        if (key === "document_types" && state.selected[key].length === 1 &&
+            state.selected[key][0] === "clinical_visit") return;
         state.selected[key].forEach(function (value) {
-          html.push('<span class="chip">' + esc(FILTER_LABELS[key] + ": " + value) +
+          html.push('<span class="chip">' + esc(FILTER_LABELS[key] + ": " + facetLabel(key, value)) +
             '<button type="button" data-remove="' + esc(key) + '" data-value="' + esc(value) + '" aria-label="Удалить фильтр">×</button></span>');
         });
       });
@@ -946,24 +984,38 @@
           '<button type="button" data-clear-reg55-pack aria-label="Удалить фильтр pack №55">×</button></span>');
       }
       if (state.zoneFilter || state.zoneBandFilter) {
+        var bandLabel = ({ bad: "плохо", weak: "слабо", ok: "в норме", na: "не оценено" })[
+          state.zoneBandFilter
+        ] || state.zoneBandFilter;
         html.push('<span class="chip">Раздел: ' +
           esc((ZONE_LABELS[state.zoneFilter] || state.zoneFilter || "любой") +
-            (state.zoneBandFilter ? " · " + state.zoneBandFilter : "")) +
+            (state.zoneBandFilter ? " · " + bandLabel : "")) +
           '<button type="button" data-clear-zone aria-label="Удалить фильтр раздела">×</button></span>');
       }
       if (state.overallGrade) {
-        html.push('<span class="chip">Оценка: ' + esc(state.overallGrade) +
+        var gradeLabel = ({
+          critical: "критично", important: "важно", poor: "слабо",
+          fair: "с замечанием", good: "хорошо"
+        })[state.overallGrade] || state.overallGrade;
+        html.push('<span class="chip">Оценка: ' + esc(gradeLabel) +
           '<button type="button" data-clear-overall-grade aria-label="Удалить фильтр оценки">×</button></span>');
       }
       if (state.attentionOnly) {
         html.push('<span class="chip">Только внимание<button type="button" data-clear-attention aria-label="Снять фильтр внимания">×</button></span>');
       }
+      if (state.shadowAttentionOnly) {
+        html.push('<span class="chip">Только shadow-сигналы внимания</span>');
+      }
       if (state.kpStatus) {
-        html.push('<span class="chip">КП: ' + esc(state.kpStatus) +
+        html.push('<span class="chip">КП: ' + esc(state.kpStatus === "matched" ? "подобран" : "не подобран") +
           '<button type="button" data-clear-kp aria-label="Удалить фильтр КП">×</button></span>');
       }
       if (state.historyTier) {
-        html.push('<span class="chip">История: ' + esc(state.historyTier) +
+        var historyLabel = ({
+          first_contact: "первый контакт", new_for_profile: "новое для профиля",
+          continuity: "продолжение наблюдения"
+        })[state.historyTier] || state.historyTier;
+        html.push('<span class="chip">История: ' + esc(historyLabel) +
           '<button type="button" data-clear-history-tier aria-label="Удалить фильтр истории">×</button></span>');
       }
       if (state.icdVisitStatus) {
@@ -1129,6 +1181,13 @@
       if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
       if (page !== "rceth-sync" && typeof stopRcethSyncPoll === "function") stopRcethSyncPoll();
       state.page = page;
+      if (page !== "queue" && page !== "documents" && state.columnsPanelOpen) {
+        state.columnsPanelOpen = false;
+        $("columns-manager").hidden = true;
+        document.querySelectorAll("#columns-button, #queue-columns-button").forEach(function (item) {
+          item.setAttribute("aria-pressed", "false");
+        });
+      }
       document.querySelectorAll(".page").forEach(function (section) { section.hidden = section.getAttribute("data-page") !== page; });
       document.querySelectorAll(".nav-button").forEach(function (button) {
         if (button.getAttribute("data-page") === page) button.setAttribute("aria-current", "page");
@@ -5249,16 +5308,29 @@
       ]
     };
     var COLUMN_DEFAULTS = {
-      documents: [true, true, true, true, true, true, true, true, true, true, true, true, false, true, false, false],
-      queue: [true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true, true]
+      documents: [true, true, true, true, false, true, true, false, false, false, true, true, false, false, false, false],
+      queue: [true, true, false, true, false, true, false, true, true, false, false, false, false, false, true, false, false, true, false]
     };
     function ensureColumnState() {
+      if (!state.columnsLoaded) {
+        state.columnsLoaded = true;
+        try {
+          var stored = JSON.parse(localStorage.getItem(COLUMNS_KEY) || "{}");
+          if (Array.isArray(stored.documents)) state.columnVisible.documents = stored.documents;
+          if (Array.isArray(stored.queue)) state.columnVisible.queue = stored.queue;
+        } catch (error) {}
+      }
       if (!state.columnVisible.documents.length || state.columnVisible.documents.length !== COLUMN_MAP.documents.length) {
         state.columnVisible.documents = COLUMN_DEFAULTS.documents.slice();
       }
       if (!state.columnVisible.queue.length || state.columnVisible.queue.length !== COLUMN_MAP.queue.length) {
         state.columnVisible.queue = COLUMN_DEFAULTS.queue.slice();
       }
+    }
+    function saveColumnState() {
+      try {
+        localStorage.setItem(COLUMNS_KEY, JSON.stringify(state.columnVisible));
+      } catch (error) {}
     }
     function applyColumnVisibility(key) {
       ensureColumnState();
@@ -5288,6 +5360,7 @@
           var key = input.getAttribute("data-col-key");
           var idx = Number(input.getAttribute("data-col-index"));
           state.columnVisible[key][idx] = !!input.checked;
+          saveColumnState();
           applyColumnVisibility(key);
         });
       });
@@ -5334,6 +5407,72 @@
         });
       });
     }
+    function setFilterDraftValue(key, value) {
+      if (!state.filterDraft) {
+        state[key] = value;
+        filtersChanged();
+        return;
+      }
+      state.filterDraft[key] = value;
+      updateFilterSummary(true);
+    }
+    function syncFilterDraftControls() {
+      var source = state.filterDraft || selectionSnapshot();
+      $("period").value = source.period;
+      $("compare").value = source.compare;
+      $("date-from").value = source.dateFrom || "";
+      $("date-to").value = source.dateTo || "";
+      $("date-from-wrap").hidden = source.period !== "custom";
+      $("date-to-wrap").hidden = source.period !== "custom";
+      if ($("overall-grade-filter")) {
+        $("overall-grade-filter").value = source.overallGrade || "";
+      }
+      document.querySelectorAll(".filter-pop").forEach(renderFilter);
+    }
+    function beginFilterDraft() {
+      state.filterDraft = selectionSnapshot();
+      syncFilterDraftControls();
+      updateFilterSummary(false);
+    }
+    function commitFilterDraft() {
+      if (!state.filterDraft) return;
+      var draft = state.filterDraft;
+      state.filterDraft = null;
+      restoreSelection(draft);
+      state.filterPanelApplying = true;
+      $("filters-panel").open = false;
+      state.filterPanelApplying = false;
+      filtersChanged();
+    }
+    function cancelFilterDraft() {
+      state.filterDraft = null;
+      syncFilterDraftControls();
+      state.filterPanelApplying = true;
+      $("filters-panel").open = false;
+      state.filterPanelApplying = false;
+      updateFilterSummary(false);
+    }
+    function clampToolbarPanel(details) {
+      if (!details || !details.open) return;
+      var panel = details.querySelector(".toolbar-panel");
+      var summary = details.querySelector(":scope > summary");
+      if (!panel || !summary) return;
+      var rect = summary.getBoundingClientRect();
+      panel.style.setProperty("--filter-anchor-top", Math.max(0, rect.bottom) + "px");
+      details.classList.toggle(
+        "is-flipped",
+        window.innerWidth > 720 && rect.bottom + Math.min(panel.scrollHeight, window.innerHeight * 0.72) > window.innerHeight
+      );
+    }
+    function toggleColumnsPanel(button) {
+      state.columnsPanelOpen = !state.columnsPanelOpen;
+      $("columns-manager").hidden = !state.columnsPanelOpen;
+      document.querySelectorAll("#columns-button, #queue-columns-button").forEach(function (item) {
+        item.setAttribute("aria-pressed", state.columnsPanelOpen ? "true" : "false");
+      });
+      button.textContent = state.columnsPanelOpen ? "Скрыть колонки" : "Колонки";
+      if (state.columnsPanelOpen) renderColumnsManager();
+    }
     function bind() {
       document.querySelectorAll(".nav-button").forEach(function (button) {
         button.addEventListener("click", function () { switchPage(button.getAttribute("data-page")); });
@@ -5356,28 +5495,21 @@
           if (state.data.daily) downloadJson(state.data.daily, "mo-daily-" + (state.data.daily.date || "latest") + ".json");
         });
       });
-      $("columns-button").addEventListener("click", function () {
-        state.columnsPanelOpen = !state.columnsPanelOpen;
-        $("columns-manager").hidden = !state.columnsPanelOpen;
-        this.setAttribute("aria-pressed", state.columnsPanelOpen ? "true" : "false");
-        this.textContent = state.columnsPanelOpen ? "Скрыть настройку колонок" : "Колонки таблиц";
-        if (state.columnsPanelOpen) renderColumnsManager();
-      });
+      $("columns-button").addEventListener("click", function () { toggleColumnsPanel(this); });
+      $("queue-columns-button").addEventListener("click", function () { toggleColumnsPanel(this); });
       $("period").addEventListener("change", function () {
-        state.period = this.value;
-        $("date-from-wrap").hidden = state.period !== "custom";
-        $("date-to-wrap").hidden = state.period !== "custom";
-        filtersChanged();
+        setFilterDraftValue("period", this.value);
+        $("date-from-wrap").hidden = this.value !== "custom";
+        $("date-to-wrap").hidden = this.value !== "custom";
       });
-      $("date-from").addEventListener("change", function () { state.dateFrom = this.value; filtersChanged(); });
-      $("date-to").addEventListener("change", function () { state.dateTo = this.value; filtersChanged(); });
-      $("compare").addEventListener("change", function () { state.compare = this.value; filtersChanged(); });
+      $("date-from").addEventListener("change", function () { setFilterDraftValue("dateFrom", this.value); });
+      $("date-to").addEventListener("change", function () { setFilterDraftValue("dateTo", this.value); });
+      $("compare").addEventListener("change", function () { setFilterDraftValue("compare", this.value); });
       var gradeFilter = $("overall-grade-filter");
       if (gradeFilter) {
         gradeFilter.value = state.overallGrade || "";
         gradeFilter.addEventListener("change", function () {
-          state.overallGrade = this.value || "";
-          filtersChanged();
+          setFilterDraftValue("overallGrade", this.value || "");
         });
       }
       $("case-search-form").addEventListener("submit", function (event) {
@@ -5393,21 +5525,34 @@
       $("sort-dir").addEventListener("change", function () { state.sortDir = this.value; filtersChanged(); });
       document.querySelectorAll("[data-quick-period]").forEach(function (button) {
         button.addEventListener("click", function () {
-          state.period = button.getAttribute("data-quick-period") || "month";
-          $("period").value = state.period;
-          $("date-from-wrap").hidden = state.period !== "custom";
-          $("date-to-wrap").hidden = state.period !== "custom";
-          filtersChanged();
+          var period = button.getAttribute("data-quick-period") || "month";
+          setFilterDraftValue("period", period);
+          $("period").value = period;
+          $("date-from-wrap").hidden = period !== "custom";
+          $("date-to-wrap").hidden = period !== "custom";
         });
       });
       document.querySelectorAll(".toolbar-section").forEach(function (details) {
         details.addEventListener("toggle", function () {
-          if (!details.open) return;
+          if (!details.open) {
+            details.classList.remove("is-flipped");
+            if (details.id === "filters-panel" && state.filterDraft && !state.filterPanelApplying) {
+              cancelFilterDraft();
+            }
+            return;
+          }
           document.querySelectorAll(".toolbar-section[open]").forEach(function (other) {
             if (other !== details) other.open = false;
           });
+          if (details.id === "filters-panel") beginFilterDraft();
+          window.setTimeout(function () { clampToolbarPanel(details); }, 0);
         });
       });
+      window.addEventListener("resize", function () {
+        document.querySelectorAll(".toolbar-section[open]").forEach(clampToolbarPanel);
+      });
+      $("filters-apply").addEventListener("click", commitFilterDraft);
+      $("filters-cancel").addEventListener("click", cancelFilterDraft);
       $("reset-filters").addEventListener("click", function () {
         Object.keys(state.selected).forEach(function (key) { state.selected[key] = []; });
         state.period = "month"; state.compare = "previous"; state.dateFrom = ""; state.dateTo = "";
