@@ -5408,6 +5408,10 @@
       });
     }
     function setFilterDraftValue(key, value) {
+      var filterPanel = $("filters-panel");
+      if (filterPanel && filterPanel.open && !state.filterDraft) {
+        state.filterDraft = selectionSnapshot();
+      }
       if (!state.filterDraft) {
         state[key] = value;
         filtersChanged();
