@@ -55,3 +55,10 @@ tests/test_lab_abnormal_and_formulary.py. Эти файлы свободны п�
 ```bash
 gh pr list --repo akuazuk/protocol --state open
 ```
+
+## Синхронизация после #205
+
+Main fe0734a8 (calendar API) включён merge-коммитом без переписывания опубликованной
+истории. Единственный конфликт BUILD_VERSION разрешён штатным pr_isolation helper;
+API маршруты #205 сохранены. Новая версия 2026-09-06-090744Z-mo-lab-clinical-context.
+Повторные локальные проверки и CI выполняются на обновлённом HEAD; deploy ещё нет.
