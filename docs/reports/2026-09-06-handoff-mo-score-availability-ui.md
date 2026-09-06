@@ -45,3 +45,14 @@ gh pr list --repo akuazuk/protocol --state open
 с пояснением, что она не подтверждает точность медицинского вывода.
 Повторно 35 passed и 4 browser payload (в том числе parse_ok=1 без confidence);
 BUILD_VERSION 2026-09-06-091452Z-mo-score-availability-ui. Merge/deploy ещё нет.
+
+## Дополнение: таблицы семейств
+
+Проценты таблиц подписаны как доля всех МО периода. Убрано неподтверждённое
+обещание ≥20; распределение замечаний не представлено рейтингом врачей.
+В таблице кодов native button даёт keyboard drill через существующий handler.
+41 passed с добавлением test_mo_meds_labs_dashboards; browser Enter открывает
+page=documents с finding_codes=B_lab_unused_in_dx. Group-specific denominator,
+малые выборки и сравнение качества ещё требуют backend контракта; здесь
+исправлена подпись текущего фактического расчёта. Добавлен файл под владение:
+frontend/web/methodist/mis-kz-quality.html (проверен свободным до изменения).

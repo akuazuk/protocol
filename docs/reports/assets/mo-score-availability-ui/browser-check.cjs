@@ -12,7 +12,8 @@ let browser;
   if(u.hostname!=='mo-ui.local')return route.abort();
   if(u.pathname.startsWith('/api/')){
    let data={ok:true,items:[],rows:[],facets:{}};
-   if(u.pathname.endsWith('/capabilities'))data={ok:true,pages:{documents:true},actions:{}};
+   if(u.pathname.endsWith('/capabilities'))data={ok:true,pages:{documents:true,labs:true},actions:{}};
+   if(u.pathname.endsWith('/drugs-labs-kpis'))data={families:{lab:{by_code:[{code:'B_lab_unused_in_dx',title_ru:'Тестовое замечание',cases:1,pct:1}],by_doctor:[{doctor:'Тестовый врач',cases:1,pct:1}]}},denominators:{total_cases:100}};
    if(u.pathname.endsWith('/cases/synthetic'))data={record:{case_id:'synthetic',parse_ok:1},family_scores:scores};
    return route.fulfill({contentType:'application/json',body:JSON.stringify(data)});
   }
@@ -43,5 +44,11 @@ let browser;
  await page.locator('.family-score-row').screenshot({path:'/private/tmp/mo-family-ui-mobile.png'});
  const sizes=await page.locator('.family-score-row').evaluate(el=>({width:el.clientWidth,scroll:el.scrollWidth}));
  assert(sizes.scroll<=sizes.width,'family row overflow');assert.deepEqual(errors,[]);
- console.log(JSON.stringify({fixtures:fixtures.length,errors,mobile:sizes}));await browser.close();
+ await page.locator('#drawer-close').click();
+ await page.goto('http://mo-ui.local/methodist/mo?page=labs');
+ const drill=page.locator('#labs-codes button');await drill.waitFor();
+ assert((await page.locator('#labs-doctors').textContent()).includes('Доля всех МО периода'));
+ await drill.focus();await page.keyboard.press('Enter');
+ await page.waitForURL(u=>u.searchParams.get('page')==='documents' && u.searchParams.get('finding_codes')==='B_lab_unused_in_dx');
+ console.log(JSON.stringify({fixtures:fixtures.length,errors,mobile:sizes,keyboardDrill:true}));await browser.close();
 })().catch(async e=>{console.error(e);if(browser)await browser.close();process.exitCode=1});

@@ -3553,9 +3553,11 @@
         host.innerHTML = '<p class="empty">' + esc(emptyText || "Нет данных за период.") + "</p>";
         return;
       }
-      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Код</th><th>Замечание</th><th>МО</th><th>%</th></tr></thead><tbody>' +
+      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Код</th><th>Замечание</th><th>МО с замечанием</th><th>Доля всех МО периода</th></tr></thead><tbody>' +
         rows.map(function (row) {
-          return '<tr><td>' + esc(row.code || "") + "</td><td>" + esc(row.title_ru || row.code || "") +
+          return '<tr><td><button type="button" class="finding-link" aria-label="' +
+            esc("Открыть МО: " + (row.title_ru || row.code || "замечание")) + '">' +
+            esc(row.code || "Открыть") + "</button></td><td>" + esc(row.title_ru || row.code || "") +
             "</td><td>" + esc(row.cases) + "</td><td>" + esc(familyPct(row.pct)) +
             '</td></tr>';
         }).join("") + "</tbody></table></div>";
@@ -3575,7 +3577,7 @@
       }
       host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>' +
         (key === "doctor" ? "Врач" : "Специальность") +
-        "</th><th>МО</th><th>%</th></tr></thead><tbody>" +
+        "</th><th>МО с замечаниями</th><th>Доля всех МО периода</th></tr></thead><tbody>" +
         rows.map(function (row) {
           var label = row[key] || row.specialty || "";
           return "<tr><td>" + esc(label) + "</td><td>" + esc(row.cases) +
