@@ -1,6 +1,6 @@
 # protocol-by-home (E3 stub): same app surface as gcp-app for now.
 # Cutover will add mis_bridge on BY and drop warehouse leader from GCP.
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
