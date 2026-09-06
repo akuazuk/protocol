@@ -1,0 +1,27 @@
+#!/usr/bin/env bash
+# Не даёт закоммитить в мёртвую или общую ветку.
+#
+# Мёртвая - уже смерженная (в том числе squash, когда remote-ветку удалили)
+# или закрытая вместе с PR. Коммит туда физически не теряется, но в релиз не
+# едет, а новый PR от такой ветки покажет в diff чужую уже смерженную работу.
+#
+# Проверка офлайн: только локальные ref'ы, без обращения к GitHub. Во время
+# rebase, merge и cherry-pick молчит - иначе не довести до конца собственный
+# rebase.
+#
+# Обход, если точно знаешь, что делаешь:
+#   ALLOW_DEAD_BRANCH=1 git commit ...
+#   git commit --no-verify ...
+set -euo pipefail
+
+ROOT="$(git rev-parse --show-toplevel)"
+GUARD="$ROOT/scripts/ops/check_branch_alive.py"
+
+[[ -x "$GUARD" || -f "$GUARD" ]] || exit 0
+
+if ! python3 "$GUARD" --quiet-ok; then
+  echo >&2
+  echo "Коммит остановлен: ветка не годится для работы." >&2
+  echo "Обход: ALLOW_DEAD_BRANCH=1 git commit ...  (останется в истории оболочки)" >&2
+  exit 1
+fi

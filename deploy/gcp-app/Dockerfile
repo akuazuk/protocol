@@ -31,6 +31,7 @@ COPY services/api/ services/api/
 COPY services/mo_pipeline/ services/mo_pipeline/
 COPY scripts/ scripts/
 COPY data/catalog/ data/catalog/
+COPY data/lab_canons/ data/lab_canons/
 COPY data/mo_finding_families/ data/mo_finding_families/
 COPY data/mo_anomalies/ data/mo_anomalies/
 # Drug safety seeds (DDInter pairs gitignored - mount /var/data/drug_safety at runtime)
@@ -45,6 +46,9 @@ COPY data/icd_reference/icd10_who_2016_terminal_codes.json data/icd_reference/ic
 COPY data/regulations/ data/regulations/
 # Карточки КП для case_protocol_suggest / protocol_match (без PDF)
 COPY output/registry/protocol_cards.jsonl output/registry/protocol_cards.jsonl
+# Release-artifact smoke: both JSON files must load and drive the numerical evaluator.
+COPY deploy/gcp-app/verify_lab_assets.py deploy/gcp-app/verify_lab_assets.py
+RUN PYTHONPATH=/app python deploy/gcp-app/verify_lab_assets.py
 
 ENV PYTHONUNBUFFERED=1 \
     PYTHONPATH=/app \
