@@ -1,6 +1,6 @@
 # protocol-mis-bridge: MariaDB extract (Mac E1 / GCP E2 / BY E3).
 # Image name historically under mac-bridge; same binary on all hosts.
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
