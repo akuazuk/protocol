@@ -3102,20 +3102,32 @@
       if (useZonesUi) prefillDecisionFromBrief(data.review_brief || {});
       loadProtocolSuggestIntoCase(item.id);
     }
+    function bindReviewBriefPrefill() {
+      var prefillBtn = $("review-brief-prefill");
+      if (!prefillBtn) return;
+      prefillBtn.addEventListener("click", function () {
+        var brief = (state.caseDetail && state.caseDetail.review_brief) || {};
+        var area = $("drawer-summary");
+        if (!area) return;
+        var text = brief.decision_summary_ru ||
+          ((brief.doctor_feedback || []).map(function (line) { return "• " + line; }).join("\n"));
+        if (text) area.value = text;
+      });
+    }
+    function bindZoneCardInteractions(body) {
+      if (!body) return;
+      body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
+        card.addEventListener("click", function () {
+          var zone = card.getAttribute("data-zone-filter");
+          var btn = body.querySelector('[data-finding-zone="' + zone + '"]');
+          if (btn) btn.click();
+        });
+      });
+    }
     function bindCaseWorkspaceInteractions() {
       var saveBtn = $("drawer-save");
       if (saveBtn) saveBtn.addEventListener("click", saveCaseDecision);
-      var prefillBtn = $("review-brief-prefill");
-      if (prefillBtn) {
-        prefillBtn.addEventListener("click", function () {
-          var brief = (state.caseDetail && state.caseDetail.review_brief) || {};
-          var area = $("drawer-summary");
-          if (!area) return;
-          var text = brief.decision_summary_ru ||
-            ((brief.doctor_feedback || []).map(function (line) { return "• " + line; }).join("\n"));
-          if (text) area.value = text;
-        });
-      }
+      bindReviewBriefPrefill();
       var body = $("drawer-body");
       if (!body) return;
       body.querySelectorAll("[data-finding-zone]").forEach(function (button) {
@@ -3134,13 +3146,7 @@
           if (findingsBlock) findingsBlock.scrollIntoView({ block: "nearest", behavior: "smooth" });
         });
       });
-      body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
-        card.addEventListener("click", function () {
-          var zone = card.getAttribute("data-zone-filter");
-          var btn = body.querySelector('[data-finding-zone="' + zone + '"]');
-          if (btn) btn.click();
-        });
-      });
+      bindZoneCardInteractions(body);
       body.querySelectorAll("[data-focus-clinical]").forEach(function (button) {
         button.addEventListener("click", function () {
           var field = button.getAttribute("data-focus-clinical");
@@ -3315,11 +3321,36 @@
         );
         if (!response.ok) throw new Error("suggest_failed");
         var suggest = await response.json();
+        if (state.openCaseId !== caseId) return;
         host.innerHTML = renderProtocolSuggest(suggest);
         bindProtocolSuggestHost(host);
         if (state.caseDetail) {
           state.caseDetail.protocol_suggest = suggest;
-          if (state.caseDetail.review_brief && suggest && suggest.available) {
+          if (suggest.zones && suggest.zones.ok) {
+            state.caseDetail.zones = suggest.zones;
+            var drawer = $("drawer-body");
+            var hero = drawer && drawer.querySelector(".zones-hero");
+            if (hero) hero.outerHTML = renderZonesHero(suggest.zones);
+            var criteria = drawer && drawer.querySelector(".zones-criteria-block");
+            if (criteria) {
+              var criteriaHtml = renderZonesCriteriaDetails(suggest.zones);
+              if (criteriaHtml) criteria.outerHTML = criteriaHtml;
+              else criteria.remove();
+            }
+            bindZoneCardInteractions(drawer);
+          }
+          if (suggest.review_brief) {
+            state.caseDetail.review_brief = suggest.review_brief;
+            var briefBlock = $("drawer-body") &&
+              $("drawer-body").querySelector(".review-brief-block");
+            if (briefBlock) {
+              briefBlock.outerHTML = renderReviewBrief(
+                suggest.review_brief,
+                state.caseDetail.case_narrative
+              );
+              bindReviewBriefPrefill();
+            }
+          } else if (state.caseDetail.review_brief && suggest && suggest.available) {
             var items = suggest.items || [];
             var top = items[0] || {};
             state.caseDetail.review_brief.protocol = {
