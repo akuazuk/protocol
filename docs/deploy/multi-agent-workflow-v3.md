@@ -88,11 +88,17 @@ cd /path/to/Protocol
 git status --short --branch
 git fetch --prune origin
 git rev-list --left-right --count origin/main...HEAD
+python3 scripts/ops/check_branch_alive.py --online
 python3 scripts/ops/pr_dashboard.py
 ```
 
-Последняя команда - главная. Она отвечает, кто какие файлы держит, что с чем
-конфликтует и какие PR зависли.
+Guard ветки останавливает работу в `main`, общих sync-ветках и опубликованной
+ветке, remote которой удалён после squash-merge. `pr_dashboard.py` отвечает,
+кто какие файлы держит, что с чем конфликтует и какие PR зависли.
+
+Guard также подключён в `.githooks/pre-commit` через `git_task_start.sh`.
+`ALLOW_DEAD_BRANCH=1` и `--no-verify` не являются штатным способом продолжить
+работу: при неожиданном отказе сначала установить причину и сохранить handoff.
 
 Перед правкой конкретного файла:
 

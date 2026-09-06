@@ -9,12 +9,15 @@
 git status --short --branch
 git fetch --prune origin
 git rev-list --left-right --count origin/main...HEAD
+python3 scripts/ops/check_branch_alive.py --online
 python3 scripts/ops/pr_dashboard.py
 ```
 
-Последняя команда заменяет ручной `gh pr list`: она показывает не только список
-PR, но и кто какие файлы держит, что с чем жёстко пересекается и какие PR
-зависли. Перед правкой конкретного файла:
+Guard должен подтвердить, что task-ветка жива и не была удалена после merge.
+Не обходить его через `ALLOW_DEAD_BRANCH=1` или `--no-verify` без
+диагностированной ошибки guard. Последняя команда заменяет ручной `gh pr list`:
+она показывает не только список PR, но и кто какие файлы держит, что с чем
+жёстко пересекается и какие PR зависли. Перед правкой конкретного файла:
 
 ```bash
 python3 scripts/ops/pr_dashboard.py --files <path>

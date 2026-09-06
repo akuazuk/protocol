@@ -40,6 +40,7 @@ production. Cursor дополнительно загружает `.cursor/rules/
 git status --short --branch
 git fetch --prune origin
 git rev-list --left-right --count origin/main...HEAD
+python3 scripts/ops/check_branch_alive.py --online
 gh pr list --repo akuazuk/protocol --state open
 ```
 
@@ -48,7 +49,7 @@ gh pr list --repo akuazuk/protocol --state open
 1. этот `AGENTS.md`;
 2. актуальный план из `docs/plans/README.md`;
 3. последний релевантный handoff из `docs/reports/`;
-4. `docs/deploy/two-computers-daily-checklist.md` перед Git/Render-операциями.
+4. `docs/deploy/two-computers-daily-checklist.md` перед Git/release-операциями.
 
 Если checkout грязный, отстаёт или расходится с `origin/main`, его не чинят pull/rebase/reset
 во время задачи. Создают новый clean worktree от `origin/main`.
@@ -75,6 +76,10 @@ scripts/ops/git_task_start.sh <task-slug> --pc=<pc-id> \
 
 - base только свежий `origin/main`;
 - не работать напрямую в `main` и не переиспользовать `codex/main-sync`;
+- до первого изменения проверить ветку через `check_branch_alive.py --online`;
+  после squash-merge удалённая remote-ветка считается мёртвой и не переиспользуется;
+- не обходить реальный запрет мёртвой ветки через `ALLOW_DEAD_BRANCH=1` или
+  `--no-verify`; исключение допустимо только для диагностированной ошибки guard;
 - не переключать ветку чужого worktree;
 - активные worktree хранить в постоянном каталоге и защищать `git worktree lock`;
   не удалять и не unlock чужие worktree при cleanup без согласования с владельцем;
