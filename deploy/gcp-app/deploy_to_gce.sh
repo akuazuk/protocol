@@ -311,7 +311,7 @@ echo "[3/5] sync sources to VM (git archive of ${RELEASE_SHA:0:12}, not the work
 git archive --format=tar "$RELEASE_SHA" -- \
   rag_server.py env_load.py icd_mkb.py retrieval_bm25.py gemini_verify.py consult_review_pipeline.py \
   download_minzdrav_protocols.py \
-  requirements.txt requirements-rag.txt \
+  requirements.txt requirements-rag.txt requirements-rag.lock \
   backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog \
   data/mo_finding_families data/mo_anomalies \
   data/drug_safety/high_alert.json data/drug_safety/stopp_start_beers.json \
