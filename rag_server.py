@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-06-173116Z-assessment-input"
+BUILD_VERSION = "2026-09-06-174928Z-protocol-zone-sync"
 
 
 def _app_version() -> str:
@@ -12636,7 +12636,7 @@ def api_methodist_mo_protocol_suggest(
             history_bundle = ph
     visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
     judge = load_llm_action_judge_for_case(case_id, visit_date=visit_date)
-    return suggest_protocols_for_mo_case(
+    suggest = suggest_protocols_for_mo_case(
         clinical=clinical,
         record=record,
         findings=detail.get("findings") or [],
@@ -12645,6 +12645,67 @@ def api_methodist_mo_protocol_suggest(
         limit=3,
         attach_history=attach_history,
     )
+    if not isinstance(suggest, dict):
+        return suggest
+    try:
+        from clinical_knowledge.mo_case_review_brief import build_case_review_brief
+        from clinical_knowledge.mo_zone_scores import (
+            compute_mo_zone_scores,
+            zones_api_payload,
+        )
+
+        zones = zones_api_payload(
+            compute_mo_zone_scores(
+                {
+                    "clinical": clinical,
+                    "meta": {
+                        "visit_date": visit_date,
+                        "visit_time": record.get("visit_time")
+                        or clinical.get("visit_time"),
+                        "diagnosis_code": record.get("diagnosis_code")
+                        or record.get("mkb_code_main"),
+                        "mkb_code_main": record.get("mkb_code_main")
+                        or record.get("diagnosis_code"),
+                        "diagnosis_short": record.get("diagnosis_short"),
+                    },
+                    "block_scores": (
+                        detail.get("block_scores")
+                        if isinstance(detail.get("block_scores"), dict)
+                        else {}
+                    ),
+                    "findings": (
+                        detail.get("findings")
+                        if isinstance(detail.get("findings"), list)
+                        else []
+                    ),
+                    "patient_history": (
+                        detail.get("patient_history")
+                        if isinstance(detail.get("patient_history"), dict)
+                        else None
+                    ),
+                    "protocol_suggest": suggest,
+                    "llm_action_judge": judge if isinstance(judge, dict) else {},
+                    "document_kind": record.get("document_kind"),
+                    "score_eligible": True,
+                }
+            )
+        )
+        suggest["zones"] = zones
+        suggest["review_brief"] = build_case_review_brief(
+            {
+                **detail,
+                "zones": zones,
+                "protocol_suggest": suggest,
+                "llm_action_judge": judge if isinstance(judge, dict) else {},
+            }
+        )
+    except Exception:  # noqa: BLE001
+        # Сам подбор остаётся доступным; пересчёт зон можно повторить следующим запросом.
+        suggest["zones_refresh"] = {
+            "ok": False,
+            "reason": "zones_refresh_unavailable",
+        }
+    return suggest
 
 
 @app.post("/api/methodist/mo/cases/{case_id}/review-pack")
