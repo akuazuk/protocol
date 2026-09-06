@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-09-06-mo-case-review-analytics-v1.md](2026-09-06-mo-case-review-analytics-v1.md) | MO: P0-противоречия R01-R14, reproducible assessment A-C, CASE Review D, synthetic E и UI U01-U14 | active |
 | [2026-09-05-corpus-integrity-v1.md](2026-09-05-corpus-integrity-v1.md) | Целостность корпуса: 62 протокола 2026 года не доходили до врачей (закрыто), решения по дублям, векторному индексу и манифесту происхождения | active |
 | [2026-09-05-mo-warehouse-storage-v1.md](2026-09-05-mo-warehouse-storage-v1.md) | Хранение склада МО: единый `jsonl_io`, гонка аппендов проверена и не подтверждена, триггеры перехода на PostgreSQL | active |
 | [2026-09-05-monolith-decomposition-v1.md](2026-09-05-monolith-decomposition-v1.md) | Разбор монолита: маршруты `rag_server.py` в роутеры, настройки не на импорте, скоринг к одной рубрике, вынос inline JS перед снятием `unsafe-inline` | active |
