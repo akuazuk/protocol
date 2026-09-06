@@ -7,9 +7,37 @@
     var DENSITY_KEY = "protocol_mo_density";
     var API_ROOT = MO.api.API_ROOT;
     var LEGACY_ROOT = MO.api.LEGACY_ROOT;
-    var request = MO.api.request;
+    var rawRequest = MO.api.request;
     var token = MO.api.token;
     var headers = MO.api.headers;
+    var pageRequestEpoch = 0;
+    var pageRequestController = null;
+    function beginPageRequestScope() {
+      pageRequestEpoch += 1;
+      if (pageRequestController) pageRequestController.abort();
+      pageRequestController = typeof AbortController === "function" ? new AbortController() : null;
+    }
+    function staleRequestError() {
+      if (typeof DOMException === "function") return new DOMException("Устаревший ответ среза", "AbortError");
+      var error = new Error("Устаревший ответ среза");
+      error.name = "AbortError";
+      return error;
+    }
+    function isAbortedRequest(error) {
+      return !!(error && error.name === "AbortError");
+    }
+    async function request(primary, legacy, options) {
+      var scopedOptions = Object.assign({}, options || {});
+      var method = String(scopedOptions.method || "GET").toUpperCase();
+      var cohortRead = method === "GET" || method === "HEAD";
+      var requestEpoch = pageRequestEpoch;
+      if (cohortRead && pageRequestController && !scopedOptions.signal) {
+        scopedOptions.signal = pageRequestController.signal;
+      }
+      var response = await rawRequest(primary, legacy, scopedOptions);
+      if (cohortRead && requestEpoch !== pageRequestEpoch) throw staleRequestError();
+      return response;
+    }
     var isExpertMode = function () { return !!(MO.api.isExpertAudience && MO.api.isExpertAudience()); };
     var hasSession = function () {
       if (isExpertMode()) return !!(MO.api.expertToken && MO.api.expertToken());
@@ -4998,6 +5026,7 @@
       }
     }
     async function loadPage(page) {
+      beginPageRequestScope();
       $("global-error").hidden = true;
       try {
         if (page === "overview") await loadOverview();
@@ -5016,7 +5045,9 @@
         else if (page === "rceth-sync") await loadRcethSync();
         else if (page === "settings") await loadSettingsPage();
         else await ensureSummary();
-      } catch (e) { showError(e.message || String(e)); }
+      } catch (e) {
+        if (!isAbortedRequest(e)) showError(e.message || String(e));
+      }
     }
     function savedViews() {
       if (state.data.views) return state.data.views;
