@@ -3603,13 +3603,35 @@
         host.innerHTML = '<p class="empty">Недостаточно данных.</p>';
         return;
       }
+      var ordered = rows.slice().sort(function (a, b) {
+        var aEligible = a.ranking_eligible === true ? 1 : 0;
+        var bEligible = b.ranking_eligible === true ? 1 : 0;
+        if (aEligible !== bEligible) return bEligible - aEligible;
+        if (aEligible) return (Number(b.problem_pct_of_group) || 0) - (Number(a.problem_pct_of_group) || 0);
+        return String(a[key] || a.specialty || "").localeCompare(String(b[key] || b.specialty || ""), "ru");
+      });
+      function comparisonText(row) {
+        if (row.comparison_status === "small_n") {
+          return "Малая группа: n < " + esc(row.comparison_min_n || 20) + ", без ранга";
+        }
+        if (row.comparison_status === "evaluated_denominator_unavailable") {
+          return "Оценимый знаменатель недоступен, без ранга";
+        }
+        return row.ranking_eligible === true ? "Допущено к сравнению" : "Без ранга";
+      }
       host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>' +
         (key === "doctor" ? "Врач" : "Специальность") +
-        "</th><th>МО с замечаниями</th><th>Доля всех МО периода</th></tr></thead><tbody>" +
-        rows.map(function (row) {
+        "</th><th>С замечаниями</th><th>Всего в группе</th><th>Оценимых</th>" +
+        "<th>Доля в группе</th><th>Вклад в МО периода</th><th>Сравнение</th></tr></thead><tbody>" +
+        ordered.map(function (row) {
           var label = row[key] || row.specialty || "";
-          return "<tr><td>" + esc(label) + "</td><td>" + esc(row.cases) +
-            "</td><td>" + esc(familyPct(row.pct)) + "</td></tr>";
+          var problemCases = row.problem_cases != null ? row.problem_cases : row.cases;
+          return "<tr><td>" + esc(label) + "</td><td>" + esc(problemCases) +
+            "</td><td>" + esc(row.group_cases == null ? "-" : row.group_cases) +
+            "</td><td>" + esc(row.evaluated_cases == null ? "-" : row.evaluated_cases) +
+            "</td><td>" + esc(familyPct(row.problem_pct_of_group)) +
+            "</td><td>" + esc(familyPct(row.period_contribution_pct)) +
+            "</td><td>" + comparisonText(row) + "</td></tr>";
         }).join("") + "</tbody></table></div>";
     }
     function renderFamilyKpis(host, family, data) {
