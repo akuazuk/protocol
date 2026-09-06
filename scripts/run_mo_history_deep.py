@@ -37,6 +37,15 @@ from clinical_knowledge.mo_patient_history_bundle import attach_bundle_to_case  
 
 MINSK = ZoneInfo("Europe/Minsk")
 DEFAULT_MODEL = os.environ.get("MO_HISTORY_DEEP_MODEL") or "gemini-3.6-flash"
+# AI Studio keys often hit monthly spend cap; billed Generative Language key is last-resort in UI
+# and first-choice here so слой C не падает сразу в ResourceExhausted.
+_GEMINI_KEY_ENVS = (
+    "GENERATIVE_LANGUAGE_API_KEY",
+    "GOOGLE_API_KEY_2",
+    "GEMINI_API_KEY_2",
+    "GOOGLE_API_KEY",
+    "GEMINI_API_KEY",
+)
 
 
 def _resolve_date(raw: str) -> str:
@@ -143,6 +152,29 @@ def _layer_b(row: dict[str, Any], db: sqlite3.Connection) -> dict[str, Any]:
     }
 
 
+def gemini_key_env_names() -> list[str]:
+    seen: set[str] = set()
+    names: list[str] = []
+    for name in _GEMINI_KEY_ENVS:
+        value = (os.environ.get(name) or "").strip()
+        if not value or value in seen:
+            continue
+        seen.add(value)
+        names.append(name)
+    return names
+
+
+def _sanitize_llm_error(exc: BaseException) -> str:
+    text = " ".join(str(exc).split())
+    for token in (
+        (os.environ.get(name) or "").strip()
+        for name in _GEMINI_KEY_ENVS
+    ):
+        if token:
+            text = text.replace(token, "[key]")
+    return text[:240]
+
+
 def _layer_c(payload: dict[str, Any], *, model: str) -> dict[str, Any]:
     from scripts.run_mo_action_queue_llm_judge import _generate_gemini
     from scripts.run_mo_calibration_blind_judge import assert_gce_live_contour
@@ -160,16 +192,42 @@ def _layer_c(payload: dict[str, Any], *, model: str) -> dict[str, Any]:
         f"Текущий: {_clip(json.dumps(current, ensure_ascii=False), 1800)}\n"
         f"Prior: {_clip(json.dumps(prior, ensure_ascii=False), 1800)}\n"
     )
-    raw, _ = _generate_gemini(prompt, model_name=model)
-    parsed = extract_json_object(raw)
-    return {
-        "model": model,
-        "verdict": str(parsed.get("verdict") or ""),
-        "history_explains_gap": bool(parsed.get("history_explains_gap")),
-        "need_today_exam": bool(parsed.get("need_today_exam", True)),
-        "need_today_plan": bool(parsed.get("need_today_plan", True)),
-        "summary_ru": str(parsed.get("summary_ru") or "")[:400],
-    }
+    last_error = "no_gemini_key"
+    prev_google = os.environ.get("GOOGLE_API_KEY")
+    prev_gemini = os.environ.get("GEMINI_API_KEY")
+    try:
+        for name in gemini_key_env_names():
+            key = (os.environ.get(name) or "").strip()
+            os.environ["GOOGLE_API_KEY"] = key
+            os.environ["GEMINI_API_KEY"] = key
+            try:
+                raw, _ = _generate_gemini(prompt, model_name=model)
+                parsed = extract_json_object(raw)
+                return {
+                    "model": model,
+                    "key_env": name,
+                    "verdict": str(parsed.get("verdict") or ""),
+                    "history_explains_gap": bool(parsed.get("history_explains_gap")),
+                    "need_today_exam": bool(parsed.get("need_today_exam", True)),
+                    "need_today_plan": bool(parsed.get("need_today_plan", True)),
+                    "summary_ru": str(parsed.get("summary_ru") or "")[:400],
+                }
+            except Exception as exc:  # noqa: BLE001
+                last_error = f"{type(exc).__name__}: {_sanitize_llm_error(exc)}"
+                low = last_error.lower()
+                if "spending cap" in low or "resourceexhausted" in low or "429" in low:
+                    continue
+                raise
+        raise RuntimeError(last_error)
+    finally:
+        if prev_google is None:
+            os.environ.pop("GOOGLE_API_KEY", None)
+        else:
+            os.environ["GOOGLE_API_KEY"] = prev_google
+        if prev_gemini is None:
+            os.environ.pop("GEMINI_API_KEY", None)
+        else:
+            os.environ["GEMINI_API_KEY"] = prev_gemini
 
 
 def main() -> int:
@@ -197,7 +255,10 @@ def main() -> int:
             try:
                 item["layer_c"] = _layer_c(item, model=args.model)
             except Exception as exc:  # noqa: BLE001
-                item["layer_c"] = {"error": type(exc).__name__}
+                item["layer_c"] = {
+                    "error": type(exc).__name__,
+                    "detail": _sanitize_llm_error(exc),
+                }
         item.pop("current_clinical", None)
         item.pop("prior_clinical", None)
         out_rows.append(item)
