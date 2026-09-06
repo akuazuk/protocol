@@ -145,6 +145,13 @@ _A_BLOCKS = [
     ("treatment", "рекомендации по лечению", "treatment_recommendations"),
     ("follow_up", "план наблюдения", "dispensary_info,return_date"),
 ]
+_DEEP_INPUT_FIELDS = tuple(
+    dict.fromkeys(
+        key
+        for _, _, names in _A_BLOCKS
+        for key in names.split(",")
+    )
+) + ("mkb_code_main", "mkb_codes", "diagnosis_code", "icd10", "exam_data")
 
 
 def _axis_documentation(case: dict) -> tuple[float, list[dict]]:
@@ -630,6 +637,18 @@ def evaluate_kz_deep(
     label_ctx: dict | None = None,
 ) -> dict:
     """Главная точка входа. См. модульную документацию."""
+    from .mo_zone_scores import clinical_slots_from_mapping
+
+    canonical_slots = clinical_slots_from_mapping(case)
+    recovered_fields: list[str] = []
+    for key, value in canonical_slots.items():
+        if case.get(key) in (None, "") and value not in (None, ""):
+            case[key] = value
+            recovered_fields.append(key)
+    input_presence = {
+        key: bool(str(case.get(key) or "").strip())
+        for key in _DEEP_INPUT_FIELDS
+    }
     # Бандл истории один раз на case - до concordance / name_only (читают summary)
     try:
         from .mo_patient_history_bundle import attach_bundle_to_case, patient_history_enabled
@@ -909,4 +928,6 @@ def evaluate_kz_deep(
         "has_potential_harm": n_by_sev["P0"] > 0,
         "reg55": reg55,
         "protocol_used": protocol_ctx is not None,
+        "input_presence": input_presence,
+        "input_recovered_fields": sorted(recovered_fields),
     }
