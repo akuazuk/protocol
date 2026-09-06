@@ -14,6 +14,12 @@ alwaysApply: true
 1. Выполни preflight из `AGENTS.md` и сравни HEAD с `origin/main`. Состояние
    чужих задач смотри в `python3 scripts/ops/pr_dashboard.py`.
 2. Не работай в грязном или отстающем checkout и не исправляй его destructive-командами.
+2a. **Перед каждой правкой проверь, что ветка живая:**
+ `python3 scripts/ops/check_branch_alive.py --online`. Выход 1 - ветка
+ смержена (в том числе squash), закрыта или общая: нужен новый worktree, а не
+ продолжение работы. Проверять каждый раз: чужой merge делает ветку мёртвой
+ в любой момент, и `merge-base --is-ancestor` этого не показывает.
+ Хуки: `scripts/ops/install_git_hooks.sh` (тот же запрет на `pre-commit`).
 3. Создай отдельные task-ветку и worktree от свежего `origin/main`.
 4. Не используй общую `codex/main-sync` для разработки и не push в `main` напрямую.
 5. Публикуй изменения task-веткой и PR; после merge ветку не переиспользуй.

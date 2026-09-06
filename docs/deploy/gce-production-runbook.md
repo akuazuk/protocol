@@ -52,9 +52,20 @@ Firewall (после 2026-09-05):
 
 ```bash
 git fetch origin main
-git checkout main && git reset --hard origin/main   # только в чистом чекауте
+# Новый одноразовый release worktree; чужие checkout не переключать.
+release_worktree="../Protocol-release-$(date -u +%Y%m%d-%H%M%S)"
+git worktree add --detach "$release_worktree" origin/main
+git worktree lock --reason 'Active GCE release; do not remove' "$release_worktree"
+cd "$release_worktree"
+test "$(git rev-parse HEAD)" = "$(git rev-parse origin/main)"
 bash deploy/gcp-app/deploy_to_gce.sh
 ```
+
+Перед запуском сверить актуальный handoff и отсутствие другого release:
+скрипт использует общий временный каталог на VM, поэтому параллельные запуски
+небезопасны. Подготовить локальные ignored настройки по инструкции deploy,
+не печатая секретов. В окне release не мержить другие runtime PR.
+Не включать новые scoring flags попутно с исправлением кода.
 
 Что делает скрипт:
 

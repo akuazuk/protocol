@@ -64,3 +64,53 @@ def test_sanitize_llm_error_strips_key(monkeypatch) -> None:
     text = _sanitize_llm_error(RuntimeError("429 cap AIza-secret-value"))
     assert "AIza-secret-value" not in text
     assert "[key]" in text
+
+
+def test_prior_selection_excludes_unrelated_rich_record(monkeypatch):
+    from clinical_knowledge import mo_history_deep as deep
+
+    bundle = {"same_doctor": [
+        {"visit_id": "synthetic-other", "visit_date": "2026-08-19", "diagnosis_code": "K29"},
+        {"visit_id": "synthetic-match", "visit_date": "2026-08-18", "diagnosis_code": "J06"},
+    ]}
+    loaded = []
+
+    def load(visits, *, limit):
+        loaded.extend(visits[:limit])
+        return [{"visit_date": v["visit_date"], "present_slots": ["clinical_diagnosis"], "clinical": {"marker": v["visit_id"]}} for v in visits[:limit]]
+
+    monkeypatch.setattr(deep, "load_prior_slots_for_visits", load)
+    result = deep.pick_episode_prior(history_bundle=bundle, current_code="J06.9", limit=1)
+    assert [v["visit_id"] for v in loaded] == ["synthetic-match"]
+    assert result["prior_clinical"]["marker"] == "synthetic-match"
+
+
+def test_prior_recency_precedes_completeness(monkeypatch):
+    from clinical_knowledge import mo_history_deep as deep
+
+    bundle = {"same_specialty": [
+        {"visit_id": "synthetic-old", "visit_date": "2026-08-01", "diagnosis_code": "J06"},
+        {"visit_id": "synthetic-new", "visit_date": "2026-08-18", "diagnosis_code": "J06"},
+    ]}
+
+    def load(visits, *, limit):
+        assert visits[0]["visit_id"] == "synthetic-new"
+        return [{"visit_date": v["visit_date"], "present_slots": ["clinical_diagnosis"] * (5 if v["visit_id"] == "synthetic-old" else 1), "clinical": {"marker": v["visit_id"]}} for v in visits[:limit]]
+
+    monkeypatch.setattr(deep, "load_prior_slots_for_visits", load)
+    result = deep.pick_episode_prior(history_bundle=bundle, current_code="J06.9")
+    assert result["prior_clinical"]["marker"] == "synthetic-new"
+    assert result["prior_n_loaded"] == 2
+
+
+def test_unmatched_episode_does_not_load_clinical_slots(monkeypatch):
+    from clinical_knowledge import mo_history_deep as deep
+
+    def load(visits, *, limit):
+        assert visits == []
+        return []
+
+    monkeypatch.setattr(deep, "load_prior_slots_for_visits", load)
+    result = deep.pick_episode_prior(history_bundle={"same_doctor": [{"visit_id": "synthetic-other", "diagnosis_code": "K29"}]}, current_code="J06.9")
+    assert result["prior_clinical"] is None
+    assert result["prior_n_loaded"] == 0

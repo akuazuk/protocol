@@ -170,26 +170,37 @@ def family_scores_from_findings(
     findings: Iterable[Mapping[str, Any]] | None,
     *,
     shadow_findings: Iterable[Mapping[str, Any]] | None = None,
+    completed_families: Iterable[str] = (),
 ) -> dict[str, Any]:
     """Подоси 0-100: 100 − штрафы; P0 ≤40, P1 ≤60 внутри семейства."""
     catalog = load_families_catalog()
     penalties = {str(k): int(v) for k, v in (catalog.get("penalties") or {}).items()}
     caps = {str(k): float(v) for k, v in (catalog.get("caps") or {}).items()}
+    completed = set(completed_families)
     items: list[Mapping[str, Any]] = []
-    for src in (findings, shadow_findings):
+    for is_shadow_source, src in ((False, findings), (True, shadow_findings)):
         for item in src or []:
             if isinstance(item, Mapping):
-                items.append(item)
+                items.append({**item, "shadow": True} if is_shadow_source else item)
 
     def _score(family_id: str, *, primary_only: bool) -> dict[str, Any]:
         codes = codes_for_family(family_id)
         used: list[Mapping[str, Any]] = []
+        seen: set[tuple[str, ...]] = set()
         for item in items:
             code = _finding_code(item)
             if code not in codes or _finding_passed(item):
                 continue
             if primary_only and _finding_shadow(item):
                 continue
+            fingerprint = str(item.get("fingerprint") or item.get("finding_id") or "")
+            identity = (code, fingerprint) if fingerprint else tuple(
+                str(item.get(key) or "")
+                for key in ("source_ref", "rule_id", "target_id", "evidence", "detail_ru")
+            ) + (code,)
+            if identity in seen:
+                continue
+            seen.add(identity)
             used.append(item)
         penalty = 0
         worst = ""
@@ -206,7 +217,8 @@ def family_scores_from_findings(
         elif worst == "P1":
             score = min(score, float(caps.get("P1", 60)))
         return {
-            "score": round(score, 1),
+            "score": round(score, 1) if used or family_id in completed else None,
+            "status": "completed" if family_id in completed else ("partial" if used else "not_evaluated"),
             "n_findings": len(used),
             "worst_severity": worst or None,
             "codes": sorted({_finding_code(x) for x in used}),
@@ -250,8 +262,6 @@ def maybe_blend_family_into_axes(
     scores = family_scores or {}
     if _lab_family_primary() and out.get("clinical_concordance") is not None:
         lab = scores.get("lab_score_primary")
-        if lab is None:
-            lab = scores.get("lab_score")
         if lab is not None:
             prev = float(out["clinical_concordance"])
             out["clinical_concordance"] = round(min(prev, float(lab)), 1)
@@ -259,8 +269,6 @@ def maybe_blend_family_into_axes(
             meta["applied"] = True
     if _drug_family_primary() and out.get("safety") is not None:
         drug = scores.get("drug_score_primary")
-        if drug is None:
-            drug = scores.get("drug_score")
         if drug is not None:
             prev = float(out["safety"])
             out["safety"] = round(min(prev, float(drug)), 1)
@@ -327,7 +335,9 @@ def family_dashboard_from_rows(
                 hits |= cases_by_code.get(code, set())
             cases_by_tile[f"{fid}:{tid}"] = hits
             den_key = str(tile.get("denominator") or "")
-            denom = cases_with_lab if den_key == "cases_with_lab" and lab_coverage_available else total_cases
+            uses_lab = den_key == "cases_with_lab" and lab_coverage_available and cases_with_lab is not None
+            denom = cases_with_lab if uses_lab else total_cases
+            actual_den_key = "cases_with_lab" if uses_lab else "total_cases"
             tiles.append(
                 {
                     "id": tid,
@@ -335,7 +345,7 @@ def family_dashboard_from_rows(
                     "codes": sorted(t_codes),
                     "cases": len(hits),
                     "pct": _pct(len(hits), denom),
-                    "denominator": den_key or "total_cases",
+                    "denominator": actual_den_key,
                     "denominator_n": denom,
                 }
             )

@@ -74,11 +74,28 @@ else
 fi
 
 echo
+# Хуки живут в отслеживаемом .githooks/, но core.hooksPath - настройка клона:
+# на новой машине её нет, и страж мёртвой ветки вместе с чисткой AI-приписок
+# просто не срабатывают. Подключаем молча, одной настройки хватает на все
+# worktree этого клона.
+if [[ -x "$ROOT/scripts/ops/install_git_hooks.sh" ]]; then
+  "$ROOT/scripts/ops/install_git_hooks.sh" >/dev/null 2>&1 || true
+fi
+
+# Сразу говорим, живая ли ветка: worktree создан от свежего origin/main, так
+# что здесь это всегда «да», но команда та же, которую агент обязан повторять
+# перед работой в уже существующем checkout.
+if [[ -f "$WORKTREE_PATH/scripts/ops/check_branch_alive.py" ]]; then
+  (cd "$WORKTREE_PATH" && python3 scripts/ops/check_branch_alive.py) || true
+fi
+
 echo "Next commands:"
 echo "  cd \"$WORKTREE_PATH\""
+echo "  scripts/ops/check_branch_alive.py --online   # ветка не мёртвая"
 echo "  scripts/git_safe_pull.sh"
 echo "  scripts/ops/check_pr_file_overlap.sh"
 echo "  # work -> tests -> commit -> push"
 echo "  git push -u origin \"$BRANCH_NAME\""
 echo "  # after another tab merges: scripts/ops/rebase_task_onto_main.sh"
-echo "  scripts/git_deploy_guard.sh --prod-url=https://protocol-bimy.onrender.com"
+echo "  # прод один - GCE; деплой запускает только релиз-координатор:"
+echo "  #   bash deploy/gcp-app/deploy_to_gce.sh   (smoke: https://protocol.kravira.by)"

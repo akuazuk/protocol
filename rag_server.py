@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-06-073651Z-deploy-lock-allowlist"
+BUILD_VERSION = "2026-09-06-130032Z-coordination-docs"
 
 
 def _app_version() -> str:
@@ -11725,6 +11725,8 @@ def api_methodist_mo_meta(request: "Request") -> dict:
 @app.get("/api/methodist/mo/overview")
 def api_methodist_mo_overview(
     request: "Request",
+    period: str = Query("", max_length=16),
+    month: str = Query("", max_length=7),
     date_from: str = Query(""),
     date_to: str = Query(""),
     periods: str = Query("", max_length=500),
@@ -11737,7 +11739,10 @@ def api_methodist_mo_overview(
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_overview
 
-    return build_overview(_mo_params(**locals()))
+    try:
+        return build_overview(_mo_params(**locals()))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/daily-report")
@@ -11799,6 +11804,8 @@ def api_methodist_mo_trends(
 @app.get("/api/methodist/mo/facets")
 def api_methodist_mo_facets(
     request: "Request",
+    period: str = Query("", max_length=16),
+    month: str = Query("", max_length=7),
     date_from: str = Query(""),
     date_to: str = Query(""),
     periods: str = Query("", max_length=500),
@@ -11812,12 +11819,17 @@ def api_methodist_mo_facets(
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_facets
 
-    return build_facets(_mo_params(**locals()))
+    try:
+        return build_facets(_mo_params(**locals()))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/cases")
 def api_methodist_mo_cases(
     request: "Request",
+    period: str = Query("", max_length=16),
+    month: str = Query("", max_length=7),
     date_from: str = Query(""),
     date_to: str = Query(""),
     periods: str = Query("", max_length=500),
@@ -11862,7 +11874,10 @@ def api_methodist_mo_cases(
     params = _mo_params(**locals())
     if _mo_role(request) in {"methodist", "lead", "admin", "expert"}:
         params["include_patient_id"] = True
-    return build_cases(params)
+    try:
+        return build_cases(params)
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.post("/api/methodist/mo/cases/bulk-action")
@@ -12894,9 +12909,13 @@ def api_methodist_mo_capabilities(request: "Request") -> dict:
 @app.get("/api/methodist/mo/drugs-labs-kpis")
 def api_methodist_mo_drugs_labs_kpis(
     request: "Request",
+    period: str = Query("", max_length=16),
+    month: str = Query("", max_length=7),
     date_from: str = Query("", max_length=10),
     date_to: str = Query("", max_length=10),
     family: str = Query("", max_length=16),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
     specializations: str = Query("", max_length=2000),
     filials: str = Query("", max_length=2000),
     doctors: str = Query("", max_length=5000),
@@ -12905,16 +12924,10 @@ def api_methodist_mo_drugs_labs_kpis(
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_mo_drugs_labs_kpis
 
-    return build_mo_drugs_labs_kpis(
-        _mo_params(
-            date_from=date_from,
-            date_to=date_to,
-            family=family,
-            specializations=specializations,
-            filials=filials,
-            doctors=doctors,
-        )
-    )
+    try:
+        return build_mo_drugs_labs_kpis(_mo_params(**locals()))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/briefing")
