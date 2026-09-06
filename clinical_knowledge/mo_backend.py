@@ -561,6 +561,177 @@ def _identity_lookup(params: Mapping[str, Any]) -> dict[str, str]:
     return out
 
 
+def _json_mapping(raw: Any) -> dict[str, Any]:
+    if isinstance(raw, Mapping):
+        return dict(raw)
+    text = str(raw or "").strip()
+    if not text:
+        return {}
+    with suppress(json.JSONDecodeError, TypeError):
+        value = json.loads(text)
+        if isinstance(value, Mapping):
+            return dict(value)
+    return {}
+
+
+def _json_strings(raw: Any) -> list[str]:
+    if isinstance(raw, list):
+        return [str(item) for item in raw if str(item).strip()]
+    text = str(raw or "").strip()
+    if not text:
+        return []
+    with suppress(json.JSONDecodeError, TypeError):
+        value = json.loads(text)
+        if isinstance(value, list):
+            return [str(item) for item in value if str(item).strip()]
+    return []
+
+
+def _same_number(left: Any, right: Any) -> bool:
+    if left is None and right is None:
+        return True
+    if not isinstance(left, (int, float)) or not isinstance(right, (int, float)):
+        return False
+    return abs(float(left) - float(right)) <= 1e-9
+
+
+def _assessment_contract_from_row(item: Mapping[str, Any]) -> dict[str, Any]:
+    """Return one public assessment contract for list, detail and export."""
+
+    snapshot = _json_mapping(item.get("evaluation_snapshot_json"))
+    run_id = str(item.get("evaluation_run_id") or snapshot.get("evaluation_run_id") or "")
+    observed_value = item.get("overall_pct")
+    if not run_id or not snapshot:
+        return {
+            "contract_version": 1,
+            "evaluation_run_id": None,
+            "document_revision": None,
+            "source_hash": None,
+            "evaluated_at": None,
+            "snapshot_at": None,
+            "cutoff_at": None,
+            "methodology_version": str(item.get("score_schema_version") or "") or None,
+            "evaluator_version": str(item.get("scorer_version") or "") or None,
+            "assessment_mode": "automated",
+            "primary": True,
+            "shadow": False,
+            "status": "stale",
+            "value": observed_value,
+            "confirmed_value": None,
+            "reason_codes": ["legacy_projection_without_assessment_run"],
+            "evidence_refs": [],
+            "coverage": {},
+            "protocol": {
+                "id": None,
+                "version": None,
+                "applicability_status": "not_evaluated",
+            },
+            "scores": {"overall_pct": observed_value},
+            "usable_as_confirmed": False,
+            "legacy_projection": True,
+        }
+
+    reason_codes = _json_strings(item.get("assessment_reason_codes_json"))
+    if not reason_codes:
+        reason_codes = [
+            str(value)
+            for value in snapshot.get("reason_codes") or []
+            if str(value).strip()
+        ]
+    status = str(item.get("assessment_status") or snapshot.get("status") or "error")
+    source_hash = str(item.get("source_hash") or snapshot.get("source_hash") or "")
+    content_hash = str(item.get("content_hash") or "")
+    if source_hash and content_hash and source_hash != content_hash:
+        status = "stale"
+        reason_codes.append("source_revision_mismatch")
+
+    scores = _json_mapping(snapshot.get("scores"))
+    projection_pairs = (
+        ("overall_pct", observed_value),
+        ("zone1_pct", item.get("zone1_pct")),
+        ("zone2a_pct", item.get("zone2a_pct")),
+        ("zone2b_pct", item.get("zone2b_pct")),
+        ("reg55_section_pct", item.get("reg55_section_pct")),
+    )
+    mismatched = [
+        key
+        for key, projected in projection_pairs
+        if key in scores and not _same_number(scores.get(key), projected)
+    ]
+    if mismatched and status not in {"stale", "error"}:
+        status = "conflict"
+        reason_codes.append("snapshot_projection_mismatch")
+
+    value = snapshot.get("value")
+    protocol = _json_mapping(snapshot.get("protocol"))
+    if not protocol:
+        protocol = {
+            "id": str(item.get("protocol_id") or "") or None,
+            "version": str(item.get("protocol_version") or "") or None,
+            "applicability_status": (
+                str(item.get("protocol_applicability_status") or "")
+                or "not_evaluated"
+            ),
+        }
+    coverage = _json_mapping(item.get("assessment_coverage_json")) or _json_mapping(
+        snapshot.get("coverage")
+    )
+    usable = status in {"completed", "partial"}
+    return {
+        "contract_version": int(snapshot.get("contract_version") or 1),
+        "evaluation_run_id": run_id,
+        "document_revision": item.get("document_revision")
+        if item.get("document_revision") is not None
+        else snapshot.get("document_revision"),
+        "source_hash": source_hash or None,
+        "evaluated_at": str(item.get("evaluated_at") or snapshot.get("evaluated_at") or "")
+        or None,
+        "snapshot_at": str(item.get("snapshot_at") or snapshot.get("snapshot_at") or "")
+        or None,
+        "cutoff_at": str(item.get("cutoff_at") or snapshot.get("cutoff_at") or "")
+        or None,
+        "methodology_version": str(
+            item.get("methodology_version")
+            or snapshot.get("methodology_version")
+            or ""
+        )
+        or None,
+        "evaluator_version": str(
+            item.get("evaluator_version") or snapshot.get("evaluator_version") or ""
+        )
+        or None,
+        "assessment_mode": str(
+            item.get("assessment_mode") or snapshot.get("assessment_mode") or "automated"
+        ),
+        "primary": bool(
+            item.get("assessment_primary")
+            if item.get("assessment_primary") is not None
+            else snapshot.get("primary", True)
+        ),
+        "shadow": bool(
+            item.get("assessment_shadow")
+            if item.get("assessment_shadow") is not None
+            else snapshot.get("shadow", False)
+        ),
+        "status": status,
+        "value": value,
+        "confirmed_value": value if usable else None,
+        "reason_codes": sorted(set(reason_codes)),
+        "evidence_refs": _json_strings(item.get("assessment_evidence_refs_json"))
+        or [
+            str(value)
+            for value in snapshot.get("evidence_refs") or []
+            if str(value).strip()
+        ],
+        "coverage": coverage,
+        "protocol": protocol,
+        "scores": scores,
+        "projection_mismatches": mismatched,
+        "usable_as_confirmed": usable,
+        "legacy_projection": False,
+    }
+
+
 def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
     where: list[str] = []
     values: list[Any] = []
@@ -658,6 +829,7 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
             scorer_version=scorer_version,
             schema_version=schema_version,
         )
+        assessment = _assessment_contract_from_row(item)
         output.append(
             {
                 "case_id": str(item.get("visit_id") or item["mis_id"]),
@@ -703,6 +875,9 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                 "attention_primary": str(item.get("attention_primary") or "") or None,
                 "attention_reason_ru": str(item.get("attention_reason_ru") or "") or None,
                 "overall_pct": score,
+                "evaluation_run_id": assessment["evaluation_run_id"],
+                "document_revision": assessment["document_revision"],
+                "assessment": assessment,
                 "reg55_pct": (
                     float(item["reg55_pct"])
                     if isinstance(item.get("reg55_pct"), (int, float))
@@ -763,7 +938,17 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
 
 
 def _records(params: dict[str, Any]) -> list[dict[str, Any]]:
-    return _warehouse_records(params) if _backend_source() == "warehouse" else _jsonl_records(params)
+    records = (
+        _warehouse_records(params)
+        if _backend_source() == "warehouse"
+        else _jsonl_records(params)
+    )
+    for record in records:
+        if not isinstance(record.get("assessment"), Mapping):
+            record["assessment"] = _assessment_contract_from_row(record)
+        record["evaluation_run_id"] = record["assessment"].get("evaluation_run_id")
+        record["document_revision"] = record["assessment"].get("document_revision")
+    return records
 
 
 _MULTI_FILTERS = {
@@ -3694,6 +3879,7 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     scorer_version=scorer_version,
                     schema_version=schema_version,
                 )
+                assessment = _assessment_contract_from_row(item)
                 record = {
                     "case_id": str(item.get("visit_id") or mis_id),
                     "mis_id": mis_id,
@@ -3709,6 +3895,9 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     "mkb_code_main": item.get("diagnosis_code") or "",
                     "icd_chapter": item.get("icd_chapter") or "",
                     "overall_pct": score,
+                    "evaluation_run_id": assessment["evaluation_run_id"],
+                    "document_revision": assessment["document_revision"],
+                    "assessment": assessment,
                     "score_reason": (
                         None
                         if isinstance(score, (int, float))
@@ -3729,6 +3918,7 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     "deep_status": item.get("status") or "",
                     "axes": axes,
                     "findings": findings,
+                    "assessment": assessment,
                     "source": "warehouse",
                 }
     if not detail.get("ok"):
@@ -3820,6 +4010,7 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                     scorer_version=scorer_version,
                     schema_version=schema_version,
                 )
+                assessment = _assessment_contract_from_row(item)
                 detail = {
                     "ok": True,
                     "record": {
@@ -3854,6 +4045,9 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         "history_prior_n": int(item.get("history_prior_n") or 0),
                         "history_tier": str(item.get("history_tier") or ""),
                         "overall_pct": score,
+                        "evaluation_run_id": assessment["evaluation_run_id"],
+                        "document_revision": assessment["document_revision"],
+                        "assessment": assessment,
                         "status": item.get("status") or "",
                         "score_reason": (
                             None
@@ -3875,11 +4069,25 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                         "regulatory": axes.get("regulatory"),
                     },
                     "findings": [dict(row) for row in findings],
+                    "assessment": assessment,
                     "source": "warehouse",
                 }
             else:
                 return detail
     record = dict(detail.get("record") or {})
+    assessment = (
+        dict(detail.get("assessment") or {})
+        if isinstance(detail.get("assessment"), Mapping)
+        else (
+            dict(record.get("assessment") or {})
+            if isinstance(record.get("assessment"), Mapping)
+            else _assessment_contract_from_row(record)
+        )
+    )
+    detail["assessment"] = assessment
+    record["assessment"] = assessment
+    record["evaluation_run_id"] = assessment.get("evaluation_run_id")
+    record["document_revision"] = assessment.get("document_revision")
     diagnosis_code = str(
         record.get("diagnosis_code")
         or record.get("mkb_code_main")
