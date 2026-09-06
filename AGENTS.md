@@ -40,6 +40,7 @@ production. Cursor дополнительно загружает `.cursor/rules/
 git status --short --branch
 git fetch --prune origin
 git rev-list --left-right --count origin/main...HEAD
+python3 scripts/ops/check_branch_alive.py --online
 gh pr list --repo akuazuk/protocol --state open
 ```
 
@@ -48,7 +49,7 @@ gh pr list --repo akuazuk/protocol --state open
 1. этот `AGENTS.md`;
 2. актуальный план из `docs/plans/README.md`;
 3. последний релевантный handoff из `docs/reports/`;
-4. `docs/deploy/two-computers-daily-checklist.md` перед Git/Render-операциями.
+4. `docs/deploy/two-computers-daily-checklist.md` перед Git/release-операциями.
 
 Если checkout грязный, отстаёт или расходится с `origin/main`, его не чинят pull/rebase/reset
 во время задачи. Создают новый clean worktree от `origin/main`.
@@ -75,7 +76,13 @@ scripts/ops/git_task_start.sh <task-slug> --pc=<pc-id> \
 
 - base только свежий `origin/main`;
 - не работать напрямую в `main` и не переиспользовать `codex/main-sync`;
+- до первого изменения проверить ветку через `check_branch_alive.py --online`;
+  после squash-merge удалённая remote-ветка считается мёртвой и не переиспользуется;
+- не обходить реальный запрет мёртвой ветки через `ALLOW_DEAD_BRANCH=1` или
+  `--no-verify`; исключение допустимо только для диагностированной ошибки guard;
 - не переключать ветку чужого worktree;
+- активные worktree хранить в постоянном каталоге и защищать `git worktree lock`;
+  не удалять и не unlock чужие worktree при cleanup без согласования с владельцем;
 - перед правкой проверить, нет ли открытого PR по тем же файлам;
 - коммиты небольшие и тематические; push - только текущей task-ветки;
 - после push открыть PR; `main` меняется только merge через GitHub.
@@ -92,7 +99,9 @@ GitHub - единственный общий координационный сл
 - запрет merge до снятия draft.
 
 Перед merge снова выполнить `git fetch origin` и синхронизировать task-ветку с текущей
-`origin/main`. Force-push, `reset --hard`, `clean -fd` и постоянный обмен через stash
+`origin/main`. Rebase допустим для неопубликованных коммитов. Для опубликованной
+ветки использовать merge актуального main без переписывания истории либо новую
+ветку/PR от main; подробности в workflow v3, раздел 6. Force-push, `reset --hard`, `clean -fd` и постоянный обмен через stash
 запрещены. Если два PR меняют один файл, второй владелец ждёт merge первого и переносит
 свои изменения на новый `origin/main`.
 
@@ -177,7 +186,5 @@ Deploy считается завершённым, когда на `https://proto
 Не писать «готово», если commit существует только локально, PR не merged или primary GCP
 не проверен (`protocol.kravira.by`). Эти состояния отмечаются отдельно.
 
-**Сейчас (2026-08-08):** primary UI/данные - GCP `https://protocol.kravira.by`; Render -
-backup. План: `docs/plans/2026-08-07-by-home-gcp-llm-split-v1.md`. Перед ночным cutover
-Mac launchd → extract fallback-only; MIS + score/LLM на GCE.
-
+**Актуально на 2026-09-06:** production и данные — GCE; Render приостановлен
+и не используется для отката. Исторические планы не переопределяют этот preflight.
