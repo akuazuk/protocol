@@ -489,11 +489,29 @@ def evaluate_lab_for_case(
     try:
         from clinical_knowledge.lab_abnormal_findings import abnormal_lab_findings
 
-        findings = list(findings) + list(
-            abnormal_lab_findings(case, reconcile_source)
-        )
+        clinical_source = lab_reconcile_payload_for_case(case, lab_db=lab_db, include_values=True)
+        findings = list(findings) + list(abnormal_lab_findings(case, clinical_source))
+        from clinical_knowledge.patient_age import resolve_patient_age
+
+        age = resolve_patient_age(case).get("age_years")
+        reason = clinical_source.get("reason") or ""
+        if reason not in {"", "empty"}:
+            status = "unavailable"
+        elif age is None:
+            status, reason = "not_evaluated", "age_unknown"
+        elif age < 18:
+            status, reason = "not_applicable", "adult_reference_only"
+        else:
+            status = "completed_limited"
+        payload["abnormal_check"] = {
+            "status": status,
+            "reason": reason,
+            "reference_scope": "adult_seed_unvalidated",
+            "date_precision": "day",
+            "note_ru": "Время доступности результата внутри дня не установлено; вывод требует проверки.",
+        }
     except Exception:  # noqa: BLE001
-        pass
+        payload["abnormal_check"] = {"status": "failed", "reason": "evaluation_failed"}
     return payload, findings
 
 

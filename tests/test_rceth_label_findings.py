@@ -58,9 +58,9 @@ def test_age_below_contra_minimum():
     assert all(f.get("severity") == "P2" for f in findings)
 
 
-def test_adult_outside_pediatric_posology():
+def test_pediatric_posology_does_not_prove_adult_contraindication():
     findings = evaluate_rceth_label_findings(_case(patient_age_years=41), _ctx())
-    assert any(f["code"] == "C_rceth_age_outside_label" for f in findings)
+    assert not any(f["code"] == "C_rceth_age_outside_label" for f in findings)
 
 
 def test_matching_indication_no_off_label():
@@ -142,3 +142,33 @@ def test_evaluate_kz_deep_keeps_primary_score(monkeypatch):
     assert not any(c.startswith("C_rceth_") for c in primary_codes)
     shadow_codes = {f["code"] for f in filled["shadow_findings"]}
     assert any(c.startswith("C_rceth_") for c in shadow_codes)
+
+
+def test_text_matches_remain_review_candidates():
+    findings = evaluate_rceth_label_findings(_case(patient_age_years=0), _ctx())
+    assert findings
+    assert all(f["needs_human"] and f["assessment_status"] == "candidate" for f in findings)
+
+
+def test_contra_guard_withholds_negative_uncertain_and_family_mentions():
+    from clinical_knowledge.rceth_label_findings import _contra_hit
+    contra = "Беременность; язвенная болезнь; сердечная недостаточность; почечная недостаточность; гиперчувствительность"
+    for clinical in [
+        "Беременность отрицает", "Не беременна", "Беременность не подтверждена",
+        "Аллергии нет", "Без признаков сердечной недостаточности",
+        "Семейный анамнез: язвенная болезнь", "У матери язвенная болезнь",
+        "Подозрение на беременность", "Беременность?", "Риск почечной недостаточности",
+        "Сердечный ритм правильный", "Киста почечной паренхимы",
+    ]:
+        assert _contra_hit(clinical, contra) is None, clinical
+    assert _contra_hit("Беременность отрицает. Язвенная болезнь желудка", contra) == "язв"
+    assert _contra_hit("Сердечная недостаточность", contra) == "сердечн"
+    assert _contra_hit("Почечная недостаточность", contra) == "почечн"
+    assert _contra_hit("Аллергия на препарат", contra) == "гиперчувствительн"
+
+
+def test_contra_guard_is_applied_through_evaluator():
+    findings = evaluate_rceth_label_findings(
+        _case(clinical_diagnosis="Язвенную болезнь отрицает", mkb_code_main=""), _ctx()
+    )
+    assert not any(f["code"] == "C_rceth_contraindication" for f in findings)

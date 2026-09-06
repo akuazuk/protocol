@@ -563,20 +563,11 @@
         if (axes[key] != null || record["axis_" + key] != null) present += 1;
       });
       if (present > 0) return { value: Math.round((100 * present / axisKeys.length) * 10) / 10, estimated: true };
-      if (String(record.parse_ok || "") === "1") return { value: 100, estimated: true };
       return { value: null, estimated: false };
     }
     function deriveConfidence(detail, record, axes) {
       var value = firstNumeric([detail.confidence_pct, record.confidence_pct, record.confidence, record.deep_confidence_pct]);
       if (value != null) return { value: value, estimated: false };
-      var hasAxes = ["documentation", "clinical_concordance", "safety", "regulatory"].some(function (key) {
-        return axes[key] != null || record["axis_" + key] != null;
-      });
-      var parseOk = String(record.parse_ok || "") === "1";
-      var mismatch = String(record.date_mismatch || "0") === "1";
-      if (parseOk && mismatch) return { value: 75, estimated: true };
-      if (parseOk) return { value: 90, estimated: true };
-      if (hasAxes) return { value: 55, estimated: true };
       return { value: null, estimated: false };
     }
     function bar(name, value, suffix) {
@@ -3029,8 +3020,10 @@
         '<details class="detail-block mo-secondary-details"><summary>Служебное: deep, покрытие, CRM</summary>' +
         '<div class="drawer-grid">' + kpi("Сводный индекс", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "deep") +
         kpi("Балл №55", score(reg55Pct), reg55BandLabel || "разд. V · 0/0.5/1") +
-        kpi("Полнота проверки", score(coverageInfo.value), "модель") +
-        kpi("Надёжность", score(confidenceInfo.value), "модель") + '</div>' +
+        kpi(coverageInfo.estimated ? "Заполненность осей" : "Полнота проверки", score(coverageInfo.value),
+          coverageInfo.estimated ? "Наличие оценок, не полнота клинической проверки" : "По данным расчёта") +
+        kpi("Уверенность расчёта", score(confidenceInfo.value),
+          confidenceInfo.value == null ? "Не предоставлена" : "Не подтверждает точность медицинского вывода") + '</div>' +
         renderReviewPackHistory(packs) +
         '<div class="detail-block"><h3>История CRM</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
@@ -3560,9 +3553,11 @@
         host.innerHTML = '<p class="empty">' + esc(emptyText || "Нет данных за период.") + "</p>";
         return;
       }
-      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Код</th><th>Замечание</th><th>МО</th><th>%</th></tr></thead><tbody>' +
+      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Код</th><th>Замечание</th><th>МО с замечанием</th><th>Доля всех МО периода</th></tr></thead><tbody>' +
         rows.map(function (row) {
-          return '<tr><td>' + esc(row.code || "") + "</td><td>" + esc(row.title_ru || row.code || "") +
+          return '<tr><td><button type="button" class="finding-link" aria-label="' +
+            esc("Открыть МО: " + (row.title_ru || row.code || "замечание")) + '">' +
+            esc(row.code || "Открыть") + "</button></td><td>" + esc(row.title_ru || row.code || "") +
             "</td><td>" + esc(row.cases) + "</td><td>" + esc(familyPct(row.pct)) +
             '</td></tr>';
         }).join("") + "</tbody></table></div>";
@@ -3582,7 +3577,7 @@
       }
       host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>' +
         (key === "doctor" ? "Врач" : "Специальность") +
-        "</th><th>МО</th><th>%</th></tr></thead><tbody>" +
+        "</th><th>МО с замечаниями</th><th>Доля всех МО периода</th></tr></thead><tbody>" +
         rows.map(function (row) {
           var label = row[key] || row.specialty || "";
           return "<tr><td>" + esc(label) + "</td><td>" + esc(row.cases) +
@@ -3661,14 +3656,20 @@
     }
     function renderFamilyScores(data) {
       var scores = data.family_scores || (data.dual_scores && data.dual_scores.family_scores) || {};
-      if (!scores || (scores.drug_score == null && scores.lab_score == null)) return "";
       var note = scores.note_ru || "черновик, не в общей оценке";
-      function chip(label, value) {
+      function chip(label, value, detail) {
+        var known = value != null && Number.isFinite(Number(value));
+        var status = (detail || {}).status;
+        var completeness = !known ? "Недостаточно данных для оценки" :
+          status === "completed" ? "Проверка завершена" :
+          status === "partial" ? "Частичная проверка" : "Полнота проверки не подтверждена";
         return '<div class="family-score-chip"><div class="kpi-label">' + esc(label) +
-          '</div><div class="kpi-value">' + esc(value == null ? "-" : Math.round(Number(value))) +
+          '</div><div class="kpi-value">' + esc(known ? Math.round(Number(value)) + " / 100" : "Не оценено") +
+          '</div><div class="kpi-meta">' + esc(completeness) +
           '</div><div class="kpi-meta">' + esc(note) + "</div></div>";
       }
-      return '<div class="family-score-row">' + chip("Лекарства", scores.drug_score) + chip("Анализы", scores.lab_score) + "</div>";
+      return '<div class="family-score-row">' + chip("Лекарства", scores.drug_score, scores.drug) +
+        chip("Анализы", scores.lab_score, scores.lab) + "</div>";
     }
     function navigateYesterdayFinding(code, label, day) {
       applyDrill({

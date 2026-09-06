@@ -15,18 +15,15 @@ def dual_admission_scores(
     """
     clinical = None if clinical_pct is None else round(float(clinical_pct), 1)
     ready = None if document_ready_pct is None else round(float(document_ready_pct), 1)
-    if clinical is None and ready is None:
+    if clinical is None or ready is None:
         admission = None
-    elif clinical is None:
-        admission = ready
-    elif ready is None:
-        admission = clinical
     else:
         admission = round(min(clinical, ready), 1)
     return {
         "clinical_pct": clinical,
         "document_ready_pct": ready,
         "admission_pct": admission,
+        "status": "incomplete" if admission is None else "complete",
         "rule": "min(clinical, document_ready)",
         "note_ru": (
             "Итог допуска - худшая из двух оценок, а не среднее. "
@@ -59,7 +56,9 @@ def dual_scores_from_result(result: Mapping[str, Any] | None) -> dict[str, Any]:
             ready = result.get(key)
             break
     if ready is None and isinstance(result.get("readiness"), Mapping):
-        ready = result["readiness"].get("pct") or result["readiness"].get("score")
+        ready = result["readiness"].get("pct")
+        if ready is None:
+            ready = result["readiness"].get("score")
     return dual_admission_scores(clinical_pct=clinical, document_ready_pct=ready)
 
 
@@ -71,6 +70,16 @@ def form_content_matrix(
     ready_threshold: float = 70.0,
 ) -> dict[str, Any]:
     """Матрица 2×2 «лечение × документы» из статьи РЗ."""
+    if clinical_pct is None or document_ready_pct is None:
+        return {
+            "cell": "unknown",
+            "title_ru": "Недостаточно данных для сравнения",
+            "action_ru": "Проверьте наличие обеих оценок и полноту расчёта.",
+            "clinical_high": None if clinical_pct is None else float(clinical_pct) >= clinical_threshold,
+            "document_high": None if document_ready_pct is None else float(document_ready_pct) >= ready_threshold,
+            "clinical_pct": clinical_pct,
+            "document_ready_pct": document_ready_pct,
+        }
     c_ok = clinical_pct is not None and float(clinical_pct) >= clinical_threshold
     d_ok = document_ready_pct is not None and float(document_ready_pct) >= ready_threshold
     if c_ok and d_ok:

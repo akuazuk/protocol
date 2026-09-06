@@ -9,7 +9,7 @@ from clinical_knowledge.drug_normalizer import extract_drugs
 from clinical_knowledge.rceth_sync.identity import canon_inn
 from clinical_knowledge.rceth_sync.label_ctx import load_rceth_label_ctx, lookup_label
 
-ENGINE = "mo_rceth_label_v1"
+ENGINE = "mo_rceth_label_v2"
 _SOURCE = "rceth_label_v1"
 _CONF_MIN = 0.86
 
@@ -25,8 +25,8 @@ _CONTRA_PAIRS = (
     (("язв",), ("язв", "язвенн")),
     (("беремен",), ("беремен",)),
     (("сердечн", "недостаточ"), ("сердечн", "недостаточ")),
-    (("почечн", "недостаточ"), ("почечн",)),
-    (("печеночн", "недостаточ"), ("печеночн", "печен")),
+    (("почечн", "недостаточ"), ("почечн", "недостаточ")),
+    (("печеночн", "недостаточ"), ("печеночн", "недостаточ")),
     (("гиперчувствительн",), ("аллерг", "гиперчувствительн")),
 )
 
@@ -105,17 +105,6 @@ def _min_age_from_contra(text: str) -> float | None:
     return _unit_years(int(m.group(1)), m.group(2))
 
 
-def _posology_max_age(text: str) -> float | None:
-    m = re.search(
-        r"дет(?:ям|и|ский)[^\n.]{0,40}до\s+(\d+)\s*(лет|года|год)",
-        text or "",
-        re.I,
-    )
-    if not m:
-        return None
-    return float(m.group(1))
-
-
 def _patient_age(case: dict[str, Any]) -> float | None:
     raw = case.get("patient_age_years")
     if raw is None:
@@ -152,7 +141,8 @@ def _finding(
         "detail_ru": detail,
         "evidence": (evidence or "")[:400],
         "source_ref": _SOURCE,
-        "needs_human": False,
+        "needs_human": True,
+        "assessment_status": "candidate",
         "shadow": True,
         "engine": ENGINE,
         "linked_fields": [
@@ -172,12 +162,29 @@ def _off_label(dx_text: str, indications: str) -> bool:
     return not _overlap(dx_toks, ind_toks)
 
 
+# Conservative sentence guard, not a clinical assertion extractor. Ambiguous
+# clauses are withheld; retained matches still require human review.
+_UNASSERTED = re.compile(
+    r"\b(?:нет|без|отриц\w*|не\s+(?:выяв\w*|отмеч\w*|подтверж\w*|страда\w*|беремен\w*)|"
+    r"исключ\w*|подозрен\w*|возможн\w*|риск\w*|вероятн\w*|отсутств\w*|"
+    r"семейн\w*|наследствен\w*|у\s+(?:матери|отца|мамы|папы|сестры|брата|бабушки|дедушки))\b|\?"
+)
+
+
 def _contra_hit(clinical: str, contra: str) -> str | None:
     blob_c = (clinical or "").lower().replace("ё", "е")
     blob_l = (contra or "").lower().replace("ё", "е")
+    clauses = [part for part in re.split(r"[.!;\n]+", blob_c) if not _UNASSERTED.search(part)]
     for needles_l, needles_c in _CONTRA_PAIRS:
-        if all(n in blob_l for n in needles_l) and any(n in blob_c for n in needles_c):
-            return needles_l[0]
+        if not all(n in blob_l for n in needles_l):
+            continue
+        for clause in clauses:
+            # Hypersensitivity/allergy are synonyms; organ failure requires both
+            # organ and failure in the same asserted clause, never an isolated word.
+            matched = (any(n in clause for n in needles_c) if needles_l == ("гиперчувствительн",)
+                       else all(n in clause for n in needles_c))
+            if matched:
+                return needles_l[0]
     return None
 
 
@@ -202,7 +209,9 @@ def evaluate_rceth_label_findings(
     icd = str(case.get("mkb_code_main") or case.get("diagnosis_code") or "").strip()
     if icd:
         dx = f"{dx} {icd}".strip()
-    clinical = _txt(case, "clinical_diagnosis", "diagnosis_main_text", "complaints", "anamnesis_doctor")
+    clinical = "\n".join(_txt(case, key) for key in (
+        "clinical_diagnosis", "diagnosis_main_text", "complaints", "anamnesis_doctor"
+    ))
     age = _patient_age(case)
 
     out: list[dict[str, Any]] = []
@@ -226,7 +235,6 @@ def evaluate_rceth_label_findings(
         cite = _citation(surface, inn, label)
         indications = _section_text(label, "indications_4_1")
         contra = _section_text(label, "contraindications_4_3")
-        posology = _section_text(label, "posology_4_2")
 
         if age is not None:
             min_contra = _min_age_from_contra(contra)
@@ -240,23 +248,11 @@ def evaluate_rceth_label_findings(
                             code,
                             title="Возраст вне инструкции ЛС",
                             detail=cite,
-                            evidence=posology or contra,
+                            evidence=contra,
                         )
                     )
-            max_pos = _posology_max_age(posology)
-            if max_pos is not None and age > max_pos + 0.5:
-                code = "C_rceth_age_outside_label"
-                key = f"{code}:{inn}"
-                if key not in seen:
-                    seen.add(key)
-                    out.append(
-                        _finding(
-                            code,
-                            title="Возраст вне инструкции ЛС",
-                            detail=cite,
-                            evidence=posology,
-                        )
-                    )
+            # A pediatric dosing subsection does not establish a global maximum
+            # age. Only explicit contraindication age text is checked above.
 
         hit = _contra_hit(clinical, contra) if contra else None
         if hit:
@@ -267,7 +263,7 @@ def evaluate_rceth_label_findings(
                 out.append(
                     _finding(
                         code,
-                        title="Противопоказание по инструкции ЛС",
+                        title="Возможное противопоказание: нужна сверка",
                         detail=cite,
                         evidence=contra,
                     )
@@ -281,7 +277,7 @@ def evaluate_rceth_label_findings(
                 out.append(
                     _finding(
                         code,
-                        title="Назначение вне показаний инструкции",
+                        title="Показание к назначению требует сверки",
                         detail=cite,
                         evidence=indications,
                     )

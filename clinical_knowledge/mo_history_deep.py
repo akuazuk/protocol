@@ -16,6 +16,8 @@ from clinical_knowledge.mo_history_continuity import (
     MODE_KNOWN_DOCTOR,
     MODE_KNOWN_SPECIALTY,
     evaluate_history_continuity,
+    _same_episode,
+    _stem,
 )
 
 ENGINE = "mo_history_deep_v1"
@@ -93,8 +95,22 @@ def pick_episode_prior(
         visits = [row for row in visits if row.get("_shelf") == "same_doctor"]
     elif continuity.get("mode") == MODE_KNOWN_SPECIALTY:
         visits = [row for row in visits if row.get("_shelf") == "same_specialty"]
+    else:
+        # An unrelated earlier encounter cannot supply credit for this episode.
+        visits = []
+    summary = (history_bundle or {}).get("summary") or {}
+    stem = _stem(current_code or str(summary.get("current_code") or ""))
+    visits = [
+        row for row in visits
+        if _same_episode(current_stem=stem, current_text=current_text, visit=row)
+    ]
+    visits.sort(key=lambda row: str(row.get("visit_date") or ""), reverse=True)
     slots = load_prior_slots_for_visits(visits, limit=limit)
-    richest = max(slots, key=lambda item: len(item.get("present_slots") or []), default=None)
+    richest = max(
+        slots,
+        key=lambda item: (str(item.get("visit_date") or ""), len(item.get("present_slots") or [])),
+        default=None,
+    )
     public_slots = [
         {
             "visit_date": item.get("visit_date"),
@@ -108,6 +124,7 @@ def pick_episode_prior(
     return {
         "engine": ENGINE,
         "continuity": continuity,
+        "prior_selection": "matched_episode_then_recent_then_complete",
         "prior_n_loaded": len(slots),
         "prior_slots": public_slots,
         "prior_clinical": prior_clinical,
