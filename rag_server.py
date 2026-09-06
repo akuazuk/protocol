@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-06-091126Z-mo-label-assertion-guards"
+BUILD_VERSION = "2026-09-06-113530Z-mo-label-assertion-guards"
 
 
 def _app_version() -> str:
