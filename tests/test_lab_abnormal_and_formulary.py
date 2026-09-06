@@ -35,9 +35,11 @@ def test_abnormal_glucose_ignored() -> None:
             }
         ]
     }
-    items = abnormal_from_bundle(bundle)
+    items = abnormal_from_bundle(bundle, age_years=40)
     assert items
     case = {
+        "age_years": 40,
+        "visit_date": "2026-08-20",
         "clinical_diagnosis": "ОРВИ",
         "treatment_recommendations": "симптоматически",
         "exam_data": "",
@@ -65,6 +67,8 @@ def test_abnormal_acknowledged_no_finding() -> None:
         ]
     }
     case = {
+        "age_years": 40,
+        "visit_date": "2026-08-20",
         "clinical_diagnosis": "Сахарный диабет, глюкоза повышена",
         "treatment_recommendations": "метформин",
         "exam_data": "глюкоза 12.5",
@@ -85,6 +89,8 @@ def test_formulary_unknown_shadow() -> None:
 
 def test_drug_disease_metformin_without_diabetes() -> None:
     case = {
+        "age_years": 40,
+        "visit_date": "2026-08-20",
         "clinical_diagnosis": "Остеохондроз",
         "treatment_recommendations": "Метформин 1000 мг вечером",
     }
