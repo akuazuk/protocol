@@ -129,3 +129,20 @@ https://github.com/akuazuk/protocol/pull/210#issuecomment-5558200178
 runtime PR. Последовательно обновлять дальнейшие ветки от merged main,
 разрешая только BUILD_VERSION штатным helper; проверять актуальный HEAD CI.
 Актуальный GCE runbook и daily checklist согласованы в #214, пока не merged.
+
+## Финальная передача Cursor по просьбе пользователя
+
+Этот checkpoint заменяет оперативные статусы предыдущего checkpoint выше.
+[Начать здесь: подробный handoff](2026-09-06-handoff-cursor-mo-continuation.md).
+[Клинические решения и критерии допуска](2026-09-06-mo-clinical-review-gates.md).
+
+Реализация остановлена для передачи: #205/#206 merged, main e15ac9cf с успешным CI.
+Production остаётся a592d588; наших deploy не было. Обнаружен блокер упаковки:
+в работающем image отсутствует lab_reference_ranges.json, каталог lab_canons
+не включён в archive/COPY. Исправление ещё не написано; выполнить первым.
+#207 возвращён в draft, все наши открытые runtime PR без auto-merge.
+У #212 на последнее чтение нет CI текущего HEAD: не считать его green.
+#215 содержит 14 успешных локальных browser checks и успешный CI.
+Cursor ведёт #216 (dead-branch guard); сохранить его и согласовать #214.
+Полные SHA, PR, worktree, ограничения и последовательность — в handoff выше.
+Не запускать новые изменения или релиз из этой документационной задачи.
