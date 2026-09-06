@@ -4536,11 +4536,95 @@ def _attach_family_group_denominators(
                 )
 
 
+def _attach_family_finding_provenance(
+    families: dict[str, Any],
+    finding_rows: Iterable[Mapping[str, Any]],
+    *,
+    family_for_code: Any,
+    shadow_available: bool,
+    status: str | None = None,
+) -> None:
+    """Expose stored finding origin without inventing human review outcomes."""
+
+    buckets: dict[str, dict[str, Any]] = {}
+    for row in finding_rows:
+        family_id = str(family_for_code(str(row.get("finding_code") or "")) or "")
+        if family_id not in families:
+            continue
+        bucket = buckets.setdefault(
+            family_id,
+            {
+                "active_cases": set(),
+                "non_shadow_cases": set(),
+                "shadow_cases": set(),
+                "penalty_applied_cases": set(),
+                "needs_human_cases": set(),
+                "source_refs": set(),
+                "trust_levels": set(),
+            },
+        )
+        case_id = str(row.get("mis_id") or "").strip()
+        if not case_id:
+            continue
+        bucket["active_cases"].add(case_id)
+        if shadow_available:
+            target = "shadow_cases" if bool(row.get("is_shadow")) else "non_shadow_cases"
+            bucket[target].add(case_id)
+        if bool(row.get("penalty_applied")):
+            bucket["penalty_applied_cases"].add(case_id)
+        if bool(row.get("needs_human")):
+            bucket["needs_human_cases"].add(case_id)
+        source_ref = str(row.get("source_ref") or "").strip()
+        if source_ref:
+            bucket["source_refs"].add(source_ref)
+        trust_level = str(row.get("trust_level") or "").strip()
+        if trust_level:
+            bucket["trust_levels"].add(trust_level)
+
+    for family_id, family in families.items():
+        if not isinstance(family, dict):
+            continue
+        bucket = buckets.get(family_id) or {}
+        source_refs = sorted(bucket.get("source_refs") or ())
+        family["finding_provenance"] = {
+            "status": status
+            or ("available" if shadow_available else "partial_legacy_schema"),
+            "active_cases": len(bucket.get("active_cases") or ()),
+            "non_shadow_cases": (
+                len(bucket.get("non_shadow_cases") or ()) if shadow_available else None
+            ),
+            "shadow_cases": (
+                len(bucket.get("shadow_cases") or ()) if shadow_available else None
+            ),
+            "penalty_applied_cases": len(bucket.get("penalty_applied_cases") or ()),
+            "needs_human_cases": len(bucket.get("needs_human_cases") or ()),
+            "source_refs": source_refs[:50],
+            "source_ref_count": len(source_refs),
+            "source_refs_truncated": len(source_refs) > 50,
+            "trust_levels": sorted(bucket.get("trust_levels") or ()),
+            "review": {
+                "status": "not_projected",
+                "confirmed_cases": None,
+                "rejected_cases": None,
+                "needs_more_data_cases": None,
+                "unreviewed_cases": None,
+            },
+            "limitations": [
+                "non_shadow_is_not_human_confirmation",
+                "evaluator_completion_status_not_projected",
+            ],
+        }
+
+
 def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
     """KPI волны 1-4 + семейства Лекарства/Анализы (D0)."""
     from .mo_anomaly_kpis import kpi_from_finding_rows, load_anomaly_catalog
     from .mo_dual_score import form_content_matrix
-    from .mo_finding_families import family_dashboard_from_rows, family_scores_in_overall_enabled
+    from .mo_finding_families import (
+        family_dashboard_from_rows,
+        family_for_code,
+        family_scores_in_overall_enabled,
+    )
     from .mo_risk_adjust import risk_adjust_doctor_rows
 
     empty_flags = {
@@ -4564,6 +4648,13 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
     }
     if not _warehouse_available():
         dash = family_dashboard_from_rows([], total_cases=0)
+        _attach_family_finding_provenance(
+            dash["families"],
+            [],
+            family_for_code=family_for_code,
+            shadow_available=False,
+            status="warehouse_unavailable",
+        )
         return {
             "ok": False,
             "error": "warehouse_unavailable",
@@ -4573,6 +4664,7 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             "denominators": dash["denominators"],
             "strips": dash["strips"],
             "flags": empty_flags,
+            "finding_provenance_contract_version": 1,
         }
     period = _resolve_request_period(params).current
     date_from = period.date_from.isoformat()
@@ -4580,6 +4672,14 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
     clause, args = _mo_drugs_labs_where(params)
     try:
         with closing(_read_connection()) as conn:
+            shadow_available = _warehouse_has_column(
+                str(_db_path()), "fact_mo_finding", "is_shadow"
+            )
+            shadow_select = (
+                "COALESCE(f.is_shadow, 0) AS is_shadow"
+                if shadow_available
+                else "NULL AS is_shadow"
+            )
             total = int(
                 conn.execute(
                     f"SELECT COUNT(*) FROM {_MO_CASE_FROM} WHERE {clause}",
@@ -4589,11 +4689,16 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             )
             rows = conn.execute(
                 f"""
-                SELECT f.mis_id, f.finding_code, c.specialty, d.doctor_fio, c.visit_date
+                SELECT f.mis_id, f.finding_code, c.specialty, d.doctor_fio, c.visit_date,
+                       {shadow_select}, COALESCE(f.penalty_applied, 0) AS penalty_applied,
+                       COALESCE(f.needs_human, 0) AS needs_human,
+                       COALESCE(f.source_ref, '') AS source_ref,
+                       COALESCE(f.trust_level, '') AS trust_level
                 FROM fact_mo_finding f
                 JOIN fact_mo_case c ON c.mis_id = f.mis_id
                 LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
                 WHERE {clause}
+                  AND COALESCE(f.passed, 0) = 0
                 """,
                 args,
             ).fetchall()
@@ -4625,6 +4730,13 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             cases_with_lab, lab_cov = _count_cases_with_lab(conn, clause, args)
     except (sqlite3.Error, RuntimeError):
         dash = family_dashboard_from_rows([], total_cases=0)
+        _attach_family_finding_provenance(
+            dash["families"],
+            [],
+            family_for_code=family_for_code,
+            shadow_available=False,
+            status="warehouse_query_failed",
+        )
         return {
             "ok": False,
             "error": "warehouse_query_failed",
@@ -4634,6 +4746,7 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             "denominators": dash["denominators"],
             "strips": dash["strips"],
             "flags": empty_flags,
+            "finding_provenance_contract_version": 1,
         }
     finding_maps = [
         {
@@ -4642,6 +4755,11 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
             "specialty": r[2] if len(r) > 2 else "",
             "doctor": r[3] if len(r) > 3 else "",
             "visit_date": r[4] if len(r) > 4 else "",
+            "is_shadow": bool(r[5]) if shadow_available and len(r) > 5 else None,
+            "penalty_applied": bool(r[6]) if len(r) > 6 else False,
+            "needs_human": bool(r[7]) if len(r) > 7 else False,
+            "source_ref": r[8] if len(r) > 8 else "",
+            "trust_level": r[9] if len(r) > 9 else "",
         }
         for r in rows
     ]
@@ -4659,6 +4777,12 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
         dash["families"],
         doctor_totals=doctor_total_counts,
         specialty_totals={str(r[0]): int(r[1] or 0) for r in specialty_rows},
+    )
+    _attach_family_finding_provenance(
+        dash["families"],
+        finding_maps,
+        family_for_code=family_for_code,
+        shadow_available=shadow_available,
     )
     doctors = risk_adjust_doctor_rows(
         [
@@ -4689,6 +4813,7 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
         "flags": empty_flags,
         "shadow_note_ru": dash.get("shadow_note_ru"),
         "group_comparison_min_n": FAMILY_GROUP_COMPARISON_MIN_N,
+        "finding_provenance_contract_version": 1,
     }
     if want in dash["families"]:
         payload["family"] = dash["families"][want]
