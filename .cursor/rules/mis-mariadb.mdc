@@ -1,28 +1,17 @@
 ---
-description: Подключение к MariaDB клиники (MIS) - mis_protocol и смежные таблицы
+description: Подключение к MariaDB клиники (MIS) - только с GCE
 alwaysApply: true
 ---
 
 # MariaDB MIS (Kravira)
 
-**Канон E2 (с 2026-08-10):** ночной extract только с **GCE**
-(`protocol-app` cron **02:00 UTC**, retry **03:00 UTC**). Пароль MIS - в
-**Secret Manager** `kravira-db-password`; non-secret DSN - `/opt/protocol/.env.mis`
-(owner `pavel`). Mac launchd SQL **выключен**.
+**Канон для агентов (с 2026-08-17): любой ad-hoc SQL и extract - только с GCE**
+(`protocol-app`, зона `europe-central2-a`). С Mac к MIS **не подключаться**
+(ни через `sql_epam`, ни с VanyaVPN).
 
-Ad-hoc SQL с Mac: `~/CURSOR/sql_epam/.env` + VanyaVPN off - только вручную.
-
-## VPN «Дядя Ваня» (только Mac → SQL)
-
-С Mac БД стабильна **при выключенном** VanyaVPN. С GCE VPN не нужен.
-Имя профиля меняется вместе со страной; helper определяет его по
-`com.vanyavpn.macos.client`. Перед SQL **с Mac**:
-
-```bash
-~/CURSOR/bin/vanya_vpn.sh ensure-off
-```
-
-Статус: `~/CURSOR/bin/vanya_vpn.sh status`. После SQL, если нужна сильная модель (Opus и т.п.) или Gemini - `ensure-on`. Подробнее: user-правило `vanya-vpn.mdc`.
+Ночной extract: cron **02:00 UTC** (+ retry **03:00 UTC**). Пароль - Secret Manager
+`kravira-db-password`; non-secret DSN - `/opt/protocol/.env.mis` (owner cron `pavel`).
+VPN на GCE не нужен.
 
 ## Параметры (без пароля)
 
@@ -32,7 +21,7 @@ Ad-hoc SQL с Mac: `~/CURSOR/sql_epam/.env` + VanyaVPN off - только вру
 | Port | `6330` |
 | Database | `kravira_mc` |
 | User | `kravira_mc_user` |
-| Пароль | GCE: Secret Manager `kravira-db-password` (через `load_mis_env.sh`); Mac fallback: `~/CURSOR/sql_epam/.env` (не коммитить, не печатать) |
+| Пароль | только Secret Manager через `deploy/gcp-app/load_mis_env.sh` |
 | Опц. env | `KRAVIRA_DB_HOST` / `PORT` / `USER` / `NAME`, `MIS_DB_*_TIMEOUT` |
 
 URL (SQLAlchemy + PyMySQL):
@@ -55,6 +44,9 @@ mysql+pymysql://kravira_mc_user:<PASSWORD>@178.163.240.131:6330/kravira_mc?chars
 | `result` | text | поля КЗ через `::` (см. ниже) |
 
 ~634k строк. Смежные: `mis_data`.
+
+Склад МО на GCE (витрина, не источник диагноза):  
+`/var/data/medical_exams/warehouse/mo_analytics.sqlite` → `fact_mo_case`.
 
 ## Как читать `result` для анализа как КЗ
 
@@ -85,29 +77,48 @@ mysql+pymysql://kravira_mc_user:<PASSWORD>@178.163.240.131:6330/kravira_mc?chars
 `doctor_specialization`, `specialist_id_from_visit` (~99% покрытие за июль 2026).
 
 Не тащить в LLM-промпт сырой `result` целиком - только выбранные слоты + очистка пробелов/переносов.
+Не печатать PHI (ФИО, ДР, полные тексты) в git / PR / chat без нужды - для списков достаточно `visit_id` + дата + короткий фрагмент Dx.
 
-## Как подключаться из агента
+## Как подключаться из агента (только GCE)
 
-**Preferred (E2):** с GCE, без печати пароля:
+Smoke:
 
 ```bash
 bash deploy/gcp-app/mis_sql_smoke_on_gce.sh
 ```
 
-**Mac fallback** (VanyaVPN off):
+Ad-hoc запрос:
 
 ```bash
-~/CURSOR/bin/vanya_vpn.sh ensure-off
-cd ~/CURSOR/sql_epam && python3 -c "
-from pathlib import Path
+gcloud compute ssh protocol-app --zone=europe-central2-a --command='
+sudo -u pavel bash -lc "
+set -a
+source /opt/protocol/deploy/gcp-app/load_mis_env.sh
+set +a
+/opt/protocol/venv-mis/bin/python - <<\"PY\"
 import os
-from dotenv import load_dotenv
 from sqlalchemy import create_engine, text
-load_dotenv(Path('.env'))
-pw = os.environ['KRAVIRA_DB_PASSWORD'].strip()
-e = create_engine(f'mysql+pymysql://kravira_mc_user:{pw}@178.163.240.131:6330/kravira_mc?charset=utf8mb4',
-                  pool_pre_ping=True, connect_args={'connect_timeout': 30})
-"
+host = os.environ.get(\"KRAVIRA_DB_HOST\", \"178.163.240.131\")
+port = os.environ.get(\"KRAVIRA_DB_PORT\", \"6330\")
+user = os.environ.get(\"KRAVIRA_DB_USER\", \"kravira_mc_user\")
+name = os.environ.get(\"KRAVIRA_DB_NAME\", \"kravira_mc\")
+pw = (os.environ.get(\"KRAVIRA_DB_PASSWORD\") or \"\").strip()
+e = create_engine(
+    f\"mysql+pymysql://{user}:{pw}@{host}:{port}/{name}?charset=utf8mb4\",
+    pool_pre_ping=True,
+    connect_args={\"connect_timeout\": 30},
+)
+# ... query ...
+PY
+"'
 ```
 
-Retries при утреннем «Too many connections»: `MIS_DB_RETRIES`, `MIS_DB_RETRY_DELAY_SEC` (см. sql_epam).
+Warehouse МО (без MIS):
+
+```bash
+gcloud compute ssh protocol-app --zone=europe-central2-a --command='
+sudo python3 -c "import sqlite3; ..."
+'  # DB: /var/data/medical_exams/warehouse/mo_analytics.sqlite
+```
+
+Retries при «Too many connections»: `MIS_DB_RETRIES`, `MIS_DB_RETRY_DELAY_SEC`.
