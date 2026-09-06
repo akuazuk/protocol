@@ -313,6 +313,7 @@ git archive --format=tar "$RELEASE_SHA" -- \
   download_minzdrav_protocols.py \
   requirements.txt requirements-rag.txt requirements-rag.lock \
   backend frontend clinical_knowledge corpus_pipeline config scripts data/catalog \
+  data/lab_canons \
   data/mo_finding_families data/mo_anomalies \
   data/drug_safety/high_alert.json data/drug_safety/stopp_start_beers.json \
   data/icd_reference/icd10_ru_mkb10su.json \
@@ -358,6 +359,8 @@ IMAGE_REPO="${IMAGE_REPO:-protocol-gcp-app}"
 IMAGE_SHA_TAG="${IMAGE_REPO}:${RELEASE_SHA:0:12}"
 ssh_cmd "cd '$REMOTE_DIR' && sudo docker build -f deploy/gcp-app/Dockerfile -t '$IMAGE_SHA_TAG' -t '$IMAGE_TAG' ."
 echo "[4b/5] built $IMAGE_SHA_TAG (also tagged $IMAGE_TAG)"
+echo "[4c/5] verify packaged lab assets and synthetic evaluation"
+ssh_cmd "sudo docker run --rm --entrypoint python '$IMAGE_SHA_TAG' /app/deploy/gcp-app/verify_lab_assets.py"
 # Держим последние 5 версий, остальные чистим, чтобы boot-диск не заполнился.
 ssh_cmd "sudo docker images '$IMAGE_REPO' --format '{{.Tag}}\t{{.CreatedAt}}' | grep -vE '^(staging|latest)\b' | sort -k2 -r | tail -n +6 | cut -f1 | while read -r t; do [ -n \"\$t\" ] && sudo docker rmi '$IMAGE_REPO':\"\$t\" >/dev/null 2>&1 || true; done; sudo docker images '$IMAGE_REPO' --format '  {{.Repository}}:{{.Tag}} {{.Size}}'"
 
