@@ -243,6 +243,17 @@ def build_lab_reconcile_bundle(
     visit_date: str = "",
     lab_db: Path | str | sqlite3.Connection | None = None,
 ) -> dict[str, Any]:
+    """Uncapped panel index; values and result identities are intentionally omitted."""
+    return _build_full_lab_bundle(patient_key=patient_key, visit_date=visit_date, lab_db=lab_db)
+
+
+def _build_full_lab_bundle(
+    *,
+    include_values: bool = False,
+    patient_key: str = "",
+    visit_date: str = "",
+    lab_db: Path | str | sqlite3.Connection | None = None,
+) -> dict[str, Any]:
     """Полный panel/indicator index окна без values и UI ROW_CAP.
 
     Reconcile нельзя считать по обрезанному display payload: у пациентов с
@@ -257,6 +268,8 @@ def build_lab_reconcile_bundle(
     if window is None:
         return empty_bundle(reason="missing_date")
     start, end, window_meta = window
+    if include_values:
+        end = min(end, window_meta["visit_date"])
     own_conn = False
     conn: sqlite3.Connection | None = None
     path: Path | None = None
@@ -274,11 +287,12 @@ def build_lab_reconcile_bundle(
             own_conn = True
         except sqlite3.Error:
             return empty_bundle(reason="db_missing")
+    # Projection is a trusted constant, never request text. Reconcile stays value-free.
+    projection = "test_id, type_id, type_name, indicator_id, indicator_name, value, unit" if include_values else "0, type_id, type_name, indicator_id, indicator_name, '', ''"
     try:
         rows = conn.execute(
-            """
-            SELECT DISTINCT test_date, 0, type_id, type_name,
-                            indicator_id, indicator_name, '', ''
+            f"""
+            SELECT DISTINCT test_date, {projection}
             FROM fact_mo_lab
             WHERE patient_key = ?
               AND test_date >= ?
@@ -419,9 +433,10 @@ def lab_payload_for_case(
 def lab_reconcile_payload_for_case(
     case: Mapping[str, Any],
     *,
+    include_values: bool = False,
     lab_db: Path | str | sqlite3.Connection | None = None,
 ) -> dict[str, Any]:
-    """Полный безопасный payload для reconcile, без identity и values."""
+    """Internal full context; numerical values are opt-in for local evaluation only."""
     from clinical_knowledge.mo_daily import patient_key_for
 
     patient_id = str(
@@ -432,7 +447,8 @@ def lab_reconcile_payload_for_case(
     ).strip()
     patient_key = str(case.get("patient_key") or "").strip() or patient_key_for(patient_id)
     visit = str(case.get("visit_date") or case.get("date") or "")[:10]
-    return build_lab_reconcile_bundle(
+    return _build_full_lab_bundle(
+        include_values=include_values,
         patient_key=patient_key,
         visit_date=visit,
         lab_db=lab_db,
