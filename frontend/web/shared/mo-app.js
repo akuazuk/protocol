@@ -3661,14 +3661,20 @@
     }
     function renderFamilyScores(data) {
       var scores = data.family_scores || (data.dual_scores && data.dual_scores.family_scores) || {};
-      if (!scores || (scores.drug_score == null && scores.lab_score == null)) return "";
       var note = scores.note_ru || "черновик, не в общей оценке";
-      function chip(label, value) {
+      function chip(label, value, detail) {
+        var known = value != null && Number.isFinite(Number(value));
+        var status = (detail || {}).status;
+        var completeness = !known ? "Недостаточно данных для оценки" :
+          status === "completed" ? "Проверка завершена" :
+          status === "partial" ? "Частичная проверка" : "Полнота проверки не подтверждена";
         return '<div class="family-score-chip"><div class="kpi-label">' + esc(label) +
-          '</div><div class="kpi-value">' + esc(value == null ? "-" : Math.round(Number(value))) +
+          '</div><div class="kpi-value">' + esc(known ? Math.round(Number(value)) + " / 100" : "Не оценено") +
+          '</div><div class="kpi-meta">' + esc(completeness) +
           '</div><div class="kpi-meta">' + esc(note) + "</div></div>";
       }
-      return '<div class="family-score-row">' + chip("Лекарства", scores.drug_score) + chip("Анализы", scores.lab_score) + "</div>";
+      return '<div class="family-score-row">' + chip("Лекарства", scores.drug_score, scores.drug) +
+        chip("Анализы", scores.lab_score, scores.lab) + "</div>";
     }
     function navigateYesterdayFinding(code, label, day) {
       applyDrill({

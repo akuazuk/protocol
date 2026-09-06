@@ -1,0 +1,38 @@
+# Handoff: МО — видимость неполных оценок
+
+2026-09-06; akuazuk/protocol; agent1 / pc1.
+Branch codex/mo-score-availability-ui-agent1-pc1.
+Worktree /Users/pavelkuzauka/Cursor_Folders/Protocol-worktrees/mo-score-availability-ui (locked).
+Base a592d588fdd7eb428161024ad13e4e3948bb3754; HEAD — commit с этим handoff, SHA в PR.
+
+## Изменение
+
+Карточки лекарств/анализов сохраняются при пустом payload или двух null.
+Вместо исчезновения — «Не оценено», «Недостаточно данных для оценки».
+Реальный ноль отображается как 0 / 100. Статус partial/completed отличим от
+старого payload, где полнота проверки не подтверждена. Note режима сохранён.
+
+## Проверки и ограничения
+
+35 passed: test_mo_frontend_structure, test_mo_ui_phase2, test_frontend_escaping_guard.
+Node syntax и git diff --check пройдены. Synthetic browser проверил 4 состояния
+через настоящий обработчик открытия карточки и API fixture; page errors=[];
+mobile row clientWidth=scrollWidth=318 при viewport 390. Снимок просмотрен.
+Harness и изображение в assets/mo-score-availability-ui/. Это не production smoke.
+Полный UI/UX roadmap не закрыт этим изменением; status полноты зависит от #207.
+
+## Координация
+
+BUILD_VERSION 2026-09-06-090856Z-mo-score-availability-ui.
+Merge/deploy нет. Последний проверенный production a592d588; #205 уже merged
+fe0734a8, но не deployed нами. Данные и primary flags не менялись.
+Зона владения frontend/web/shared/mo-app.js, этот handoff и assets.
+В rag_server.py только BUILD_VERSION. После #207 синхронизировать с main,
+сохранив API #205 и прочие изменения. До снятия draft не merge.
+Не удалять активный locked worktree. Полный аудит/tracker в #209.
+
+Следующая безопасная команда:
+
+```bash
+gh pr list --repo akuazuk/protocol --state open
+```
