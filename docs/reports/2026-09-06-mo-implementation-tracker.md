@@ -146,3 +146,43 @@ Production остаётся a592d588; наших deploy не было. Обна�
 Cursor ведёт #216 (dead-branch guard); сохранить его и согласовать #214.
 Полные SHA, PR, worktree, ограничения и последовательность — в handoff выше.
 Не запускать новые изменения или релиз из этой документационной задачи.
+
+## Checkpoint продолжения: 2026-09-06, runtime batch выпущен
+
+Исторические статусы выше сохранены как журнал. Актуальное состояние:
+
+| Требование / этап | Реализация | Проверка | Merge SHA | Production |
+|---|---|---|---|---|
+| A01, единый календарный срез | #205 | 53 focused; required CI и main CI | `fe0734a8` | `246e3533` |
+| A02/A04, числовой lab context | #206 + packaging #217 | 49 focused; image build; running-image synthetic evaluation: ranges=8, panels=17, shadow=1 | `e15ac9c`, `ce124215` | `246e3533` |
+| A05/A06/A09, family uncertainty/dedupe | #207 | 58 focused после sync; required CI | `b1b4416b` | `246e3533` |
+| A21, релевантный prior | #208 | 23 focused; required CI | `361dc4b2` | `246e3533` |
+| A13/A23, unknown dual scores | #211 | 23 focused; required CI | `0552fc35` | `246e3533` |
+| A03/A18/A19, Rceth assertion guards | #213 | 28 focused; required CI | `7fee1f7b` | `246e3533` |
+| A24/A25/A27, видимые unknown и keyboard drill | #212 | 41 focused + browser; required CI | `13110077` | `246e3533` |
+| A29, постоянный MO browser acceptance | #215 | 20 E2E на финальном main; required CI | `246e3533` | `246e3533` |
+| A31, единый GCE/worktree канон + guard #216 | #214 + #216 | 23 docs/guard tests; bash syntax; required CI | `e7121a69`, `8270b874` | docs merge `e7121a69` ещё не deployed |
+
+Точный production:
+
+- `git_commit=246e35336f8b73b3f66e31c38b0d58506c1ce099`;
+- `version=2026-09-06-115045Z-mo-score-availability-ui`;
+- `/health/live`, MO health/capabilities, search, CSP/HSTS и CORS smoke успешны;
+- image `protocol-gcp-app:246e35336f8b`, bind `127.0.0.1:8000`;
+- оба `data/lab_canons/*.json` присутствуют в работающем контейнере.
+
+Первый corpus-sync оборвался по SSH после очистки удалённого summary-каталога.
+До продолжения deploy корпус восстановлен каноническим sync: 478 PDF и 467
+summary. Затем release завершён с `SYNC_PROTOCOL_CORPUS=0`; production corpus
+и `rag_ready=true` повторно проверены.
+
+Это не закрывает весь A01-A32. Остаются, в частности: полный CohortSpec/hash и
+parity всех endpoint/export (A01/A12/A28), lifecycle/available_at и статусы
+lab checks (A16/A22), provenance и групповые знаменатели (A10/A11/A23),
+утверждённый №55 mapping (A07/A08/A15), полная longitudinal medication timeline
+(A14/A17/A20/A21), case-mix (A26), training eligibility (A30) и scope услуг
+(A32). Новые clinical weights и primary flags не включены; клинический gate
+не пройден.
+
+Следующий независимый инженерный этап без изменения клинической методики:
+A28 - отмена старых запросов и защита UI от перерисовки устаревшим cohort.
