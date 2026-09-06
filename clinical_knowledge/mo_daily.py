@@ -1859,12 +1859,115 @@ def _finding_is_severe_attention(finding: Mapping[str, Any]) -> bool:
     return (not finding.get("passed")) and str(finding.get("severity") or "") in {"P0", "P1"}
 
 
+_ASSESSMENT_INPUT_FIELDS = {
+    "anamnesis": ("anamnesis_doctor", "anamnesis_auto"),
+    "diagnosis": (
+        "clinical_diagnosis",
+        "diagnosis_main_text",
+        "diagnosis_text",
+        "mis_diagnos",
+    ),
+    "icd": ("mkb_code_main", "mkb_codes", "diagnosis_code", "icd10"),
+    "exam_recommendations": ("exam_recommendations",),
+    "treatment_recommendations": ("treatment_recommendations",),
+    "follow_up": ("dispensary_info", "return_date"),
+    "objective_status": ("objective_status",),
+    "complaints": ("complaints",),
+}
+_ABSENCE_FINDING_DOMAINS = {
+    "A_missing_anamnesis": ("anamnesis",),
+    "A_missing_diagnosis": ("diagnosis",),
+    "B_dx_absent": ("diagnosis", "icd"),
+    "A_missing_recommendations": (
+        "exam_recommendations",
+        "treatment_recommendations",
+    ),
+    "A_missing_exams": ("exam_recommendations",),
+    "A_missing_treatment": ("treatment_recommendations",),
+    "A_missing_follow_up": ("follow_up",),
+    "A_missing_objective_status": ("objective_status",),
+    "A_missing_complaints": ("complaints",),
+}
+
+
+def _assessment_input_integrity(
+    *,
+    raw: Mapping[str, Any],
+    case: Mapping[str, Any],
+    evaluation: Mapping[str, Any],
+    findings: Sequence[Mapping[str, Any]],
+) -> dict[str, Any]:
+    """Detect transport loss and absence findings contradicted by this revision."""
+
+    canonical_present = {
+        domain: any(str(raw.get(field) or "").strip() for field in fields)
+        for domain, fields in _ASSESSMENT_INPUT_FIELDS.items()
+    }
+    declared_input: Mapping[str, Any] | None = None
+    presence_only = False
+    for container in (evaluation, case):
+        for key in (
+            "input_presence",
+            "evaluation_input",
+            "input_slots",
+            "_evaluation_input",
+        ):
+            if key not in container:
+                continue
+            candidate = container.get(key)
+            declared_input = candidate if isinstance(candidate, Mapping) else {}
+            presence_only = key == "input_presence"
+            slots = declared_input.get("slots") if isinstance(declared_input, Mapping) else None
+            if isinstance(slots, Mapping):
+                declared_input = slots
+            break
+        if declared_input is not None:
+            break
+
+    dropped_domains: list[str] = []
+    if declared_input is not None:
+        for domain, fields in _ASSESSMENT_INPUT_FIELDS.items():
+            if not canonical_present[domain]:
+                continue
+            evaluator_has_value = (
+                any(bool(declared_input.get(field)) for field in fields)
+                if presence_only
+                else any(str(declared_input.get(field) or "").strip() for field in fields)
+            )
+            if not evaluator_has_value:
+                dropped_domains.append(domain)
+
+    conflicting_codes: list[str] = []
+    for finding in findings:
+        code = str(finding.get("code") or "").strip()
+        domains = _ABSENCE_FINDING_DOMAINS.get(code)
+        if domains and any(canonical_present.get(domain) for domain in domains):
+            conflicting_codes.append(code)
+
+    return {
+        "declared_input": declared_input is not None,
+        "canonical_domains_present": sorted(
+            domain for domain, present in canonical_present.items() if present
+        ),
+        "dropped_domains": sorted(set(dropped_domains)),
+        "conflicting_finding_codes": sorted(set(conflicting_codes)),
+        "status": (
+            "error"
+            if dropped_domains
+            else "conflict"
+            if conflicting_codes
+            else "ok"
+        ),
+    }
+
+
 def _assessment_metadata(
     *,
     mis_id: str,
     visit_date: str,
     eligible_document: bool,
     score: float | None,
+    raw: Mapping[str, Any],
     case: Mapping[str, Any],
     evaluation: Mapping[str, Any],
     report: Mapping[str, Any],
@@ -1877,6 +1980,12 @@ def _assessment_metadata(
 ) -> dict[str, Any]:
     """Build immutable, text-free lineage for one persisted assessment snapshot."""
 
+    input_integrity = _assessment_input_integrity(
+        raw=raw,
+        case=case,
+        evaluation=evaluation,
+        findings=primary_findings,
+    )
     run_seed = "|".join(
         (
             str(report.get("run_id") or ""),
@@ -1903,6 +2012,12 @@ def _assessment_metadata(
     elif evaluation_status in {"error", "failed", "failure"} or evaluation.get("_error"):
         assessment_status = "error"
         reason_codes.append("evaluator_error")
+    elif input_integrity["status"] == "error":
+        assessment_status = "error"
+        reason_codes.append("evaluator_input_transport_loss")
+    elif input_integrity["status"] == "conflict":
+        assessment_status = "conflict"
+        reason_codes.append("finding_conflicts_with_source_revision")
     elif score is None:
         assessment_status = "insufficient_data"
         reason_codes.append("score_unavailable")
@@ -1946,6 +2061,8 @@ def _assessment_metadata(
         {
             str(item.get("source_ref") or "").strip()
             for item in primary_findings
+            if str(item.get("code") or "").strip()
+            not in input_integrity["conflicting_finding_codes"]
             if str(item.get("source_ref") or "").strip()
         }
     )
@@ -2004,6 +2121,7 @@ def _assessment_metadata(
         "reason_codes": sorted(set(reason_codes)),
         "evidence_refs": evidence_refs[:50],
         "coverage": coverage,
+        "input_integrity": input_integrity,
         "protocol": {
             "id": protocol_id or None,
             "version": protocol_version or None,
@@ -2076,6 +2194,7 @@ def upsert_warehouse(
     eligible_case_ids: set[str] = set()
     eligible_critical_ids: set[str] = set()
     eligible_attention_ids: set[str] = set()
+    assessment_conflicts_by_mis: dict[str, set[str]] = {}
     eligible_axis_scores: dict[str, list[float]] = defaultdict(list)
     eligible_reg55_pcts: list[float] = []
     reg55_band_day = {
@@ -2325,6 +2444,7 @@ def upsert_warehouse(
                 visit_date=visit_date,
                 eligible_document=eligible_document,
                 score=score,
+                raw=raw,
                 case=case,
                 evaluation=evaluation_v4 or deep_case,
                 report=report,
@@ -2334,6 +2454,13 @@ def upsert_warehouse(
                 zone_cols=zone_cols,
                 primary_findings=primary_findings,
                 now=now,
+            )
+            assessment_snapshot = json.loads(assessment["evaluation_snapshot_json"])
+            assessment_conflicts_by_mis[mis_id] = set(
+                (assessment_snapshot.get("input_integrity") or {}).get(
+                    "conflicting_finding_codes"
+                )
+                or []
             )
             db.execute(
                 """INSERT INTO fact_mo_case
@@ -2577,6 +2704,7 @@ def upsert_warehouse(
                 code = str(finding.get("code") or "").strip()
                 if not code:
                     continue
+                evidence_conflict = code in assessment_conflicts_by_mis.get(mis_id, set())
                 db.execute(
                     """INSERT OR REPLACE INTO fact_mo_finding
                        (mis_id, finding_code, severity, passed, evidence, source_ref,
@@ -2594,8 +2722,8 @@ def upsert_warehouse(
                         str(finding.get("title_ru") or code),
                         str(finding.get("detail_ru") or ""),
                         str(finding.get("trust_level") or "D"),
-                        1 if finding.get("penalty_applied") else 0,
-                        1 if finding.get("needs_human") else 0,
+                        0 if evidence_conflict else (1 if finding.get("penalty_applied") else 0),
+                        1 if evidence_conflict or finding.get("needs_human") else 0,
                         1 if finding.get("shadow") or finding.get("is_shadow") else 0,
                         json.dumps(finding.get("linked_fields") or [], ensure_ascii=False),
                         str(finding.get("link_hint_ru") or ""),

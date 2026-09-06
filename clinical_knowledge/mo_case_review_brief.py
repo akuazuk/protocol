@@ -252,6 +252,31 @@ def synthesize_doctor_feedback(
 def build_case_review_brief(case_detail: dict[str, Any] | None) -> dict[str, Any]:
     """Собрать review_brief из payload case detail."""
     data = case_detail if isinstance(case_detail, dict) else {}
+    assessment = (
+        data.get("assessment")
+        if isinstance(data.get("assessment"), dict)
+        else {}
+    )
+    assessment_status = str(assessment.get("status") or "")
+    if assessment_status in {
+        "error",
+        "stale",
+        "conflict",
+        "insufficient_data",
+        "not_applicable",
+    }:
+        return {
+            "ok": False,
+            "engine": ENGINE,
+            "available": False,
+            "reason": (
+                "Результат не подтверждён для текущей ревизии документа"
+                if assessment_status in {"stale", "conflict"}
+                else "Недостаточно данных для подтверждённого итога"
+            ),
+            "assessment_status": assessment_status,
+            "reason_codes": list(assessment.get("reason_codes") or []),
+        }
     zones = data.get("zones") if isinstance(data.get("zones"), dict) else {}
     findings = [f for f in (data.get("findings") or []) if isinstance(f, dict)]
     icd_status = data.get("icd_visit_status") if isinstance(data.get("icd_visit_status"), dict) else None
