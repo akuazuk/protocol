@@ -1448,6 +1448,15 @@ def initialize_warehouse(path: Path) -> None:
               mis_id TEXT PRIMARY KEY, visit_id TEXT, visit_date TEXT NOT NULL,
               document_kind TEXT NOT NULL, overall_pct REAL, overall_pct_v3 REAL,
               status TEXT, scorer_version TEXT, score_schema_version TEXT,
+              evaluation_run_id TEXT, document_revision INTEGER, source_hash TEXT,
+              evaluated_at TEXT, snapshot_at TEXT, cutoff_at TEXT,
+              methodology_version TEXT, evaluator_version TEXT,
+              assessment_mode TEXT, assessment_primary INTEGER DEFAULT 1,
+              assessment_shadow INTEGER DEFAULT 0, assessment_status TEXT,
+              assessment_reason_codes_json TEXT, assessment_evidence_refs_json TEXT,
+              assessment_coverage_json TEXT, evaluation_snapshot_json TEXT,
+              protocol_id TEXT, protocol_version TEXT,
+              protocol_applicability_status TEXT,
               llm_cost_usd REAL DEFAULT 0,
               doctor_key TEXT, doctor_id TEXT, specialty TEXT, filial TEXT,
               patient_key TEXT,
@@ -1568,6 +1577,25 @@ def initialize_warehouse(path: Path) -> None:
                 "overall_pct_v3": "REAL",
                 "scorer_version": "TEXT",
                 "score_schema_version": "TEXT",
+                "evaluation_run_id": "TEXT",
+                "document_revision": "INTEGER",
+                "source_hash": "TEXT",
+                "evaluated_at": "TEXT",
+                "snapshot_at": "TEXT",
+                "cutoff_at": "TEXT",
+                "methodology_version": "TEXT",
+                "evaluator_version": "TEXT",
+                "assessment_mode": "TEXT",
+                "assessment_primary": "INTEGER DEFAULT 1",
+                "assessment_shadow": "INTEGER DEFAULT 0",
+                "assessment_status": "TEXT",
+                "assessment_reason_codes_json": "TEXT",
+                "assessment_evidence_refs_json": "TEXT",
+                "assessment_coverage_json": "TEXT",
+                "evaluation_snapshot_json": "TEXT",
+                "protocol_id": "TEXT",
+                "protocol_version": "TEXT",
+                "protocol_applicability_status": "TEXT",
                 "llm_cost_usd": "REAL DEFAULT 0",
                 "mkb_code_main_source": "TEXT",
                 "mkb_code_main_slot": "TEXT",
@@ -1613,6 +1641,14 @@ def initialize_warehouse(path: Path) -> None:
         db.execute(
             "CREATE INDEX IF NOT EXISTS idx_case_reg55_pack "
             "ON fact_mo_case(reg55_pack, visit_date)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_evaluation_run "
+            "ON fact_mo_case(evaluation_run_id)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_assessment_status "
+            "ON fact_mo_case(assessment_status, visit_date)"
         )
         db.execute(
             """CREATE TABLE IF NOT EXISTS fact_mo_patient_history_cache (
@@ -1823,6 +1859,193 @@ def _finding_is_severe_attention(finding: Mapping[str, Any]) -> bool:
     return (not finding.get("passed")) and str(finding.get("severity") or "") in {"P0", "P1"}
 
 
+def _assessment_metadata(
+    *,
+    mis_id: str,
+    visit_date: str,
+    eligible_document: bool,
+    score: float | None,
+    case: Mapping[str, Any],
+    evaluation: Mapping[str, Any],
+    report: Mapping[str, Any],
+    scorer_version: str,
+    score_schema_version: str,
+    source_hash: str,
+    zone_cols: Mapping[str, Any],
+    primary_findings: Sequence[Mapping[str, Any]],
+    now: str,
+) -> dict[str, Any]:
+    """Build immutable, text-free lineage for one persisted assessment snapshot."""
+
+    run_seed = "|".join(
+        (
+            str(report.get("run_id") or ""),
+            mis_id,
+            source_hash,
+            scorer_version,
+            score_schema_version,
+        )
+    )
+    evaluation_run_id = str(case.get("evaluation_run_id") or "").strip()
+    if not evaluation_run_id:
+        evaluation_run_id = "mo-" + hashlib.sha256(run_seed.encode("utf-8")).hexdigest()[:32]
+
+    evaluation_status = str(
+        evaluation.get("execution_status")
+        or evaluation.get("status")
+        or case.get("execution_status")
+        or ""
+    ).strip().lower()
+    reason_codes: list[str] = []
+    if not eligible_document:
+        assessment_status = "not_applicable"
+        reason_codes.append("document_kind_not_scored")
+    elif evaluation_status in {"error", "failed", "failure"} or evaluation.get("_error"):
+        assessment_status = "error"
+        reason_codes.append("evaluator_error")
+    elif score is None:
+        assessment_status = "insufficient_data"
+        reason_codes.append("score_unavailable")
+    elif bool(report.get("partial")) or evaluation_status in {"partial", "incomplete"}:
+        assessment_status = "partial"
+        reason_codes.append("partial_evaluation")
+    else:
+        assessment_status = "completed"
+
+    protocol = case.get("protocol_suggest")
+    protocol = protocol if isinstance(protocol, Mapping) else {}
+    protocol_id = str(
+        protocol.get("protocol_id")
+        or protocol.get("id")
+        or protocol.get("slug")
+        or ""
+    ).strip()
+    protocol_version = str(
+        protocol.get("protocol_version")
+        or protocol.get("version")
+        or protocol.get("document_date")
+        or ""
+    ).strip()
+    protocol_status = str(
+        protocol.get("applicability_status")
+        or protocol.get("applicability")
+        or ""
+    ).strip()
+    kp_status = str(zone_cols.get("zone2b_kp_status") or "").strip()
+    if not protocol_status:
+        if kp_status == "matched":
+            protocol_status = "unknown"
+        elif kp_status == "unmatched" or not protocol_id:
+            protocol_status = "not_evaluated"
+        else:
+            protocol_status = "unknown"
+    if protocol_status == "not_evaluated":
+        reason_codes.append("protocol_not_evaluated")
+
+    evidence_refs = sorted(
+        {
+            str(item.get("source_ref") or "").strip()
+            for item in primary_findings
+            if str(item.get("source_ref") or "").strip()
+        }
+    )
+    coverage = {
+        "score": "completed" if score is not None else assessment_status,
+        "zones": (
+            "completed"
+            if any(
+                zone_cols.get(key) is not None
+                for key in ("zone1_pct", "zone2a_pct", "zone2b_pct")
+            )
+            else "not_evaluated"
+        ),
+        "reg55": (
+            "completed"
+            if str(zone_cols.get("reg55_band") or "") not in {"", "unscored"}
+            else "not_evaluated"
+        ),
+        "protocol": protocol_status,
+        "history": "projected" if eligible_document else "not_applicable",
+        "lab": "not_projected",
+        "human_review": "not_projected",
+    }
+    evaluated_at = str(
+        evaluation.get("evaluated_at")
+        or case.get("evaluated_at")
+        or report.get("generated_at")
+        or now
+    )
+    cutoff_at = str(
+        case.get("cutoff_at")
+        or evaluation.get("cutoff_at")
+        or visit_date
+    )
+    methodology_version = str(
+        evaluation.get("methodology_version")
+        or case.get("methodology_version")
+        or score_schema_version
+        or scorer_version
+    )
+    snapshot = {
+        "contract_version": 1,
+        "evaluation_run_id": evaluation_run_id,
+        "document_revision": int(report.get("revision") or 0),
+        "source_hash": source_hash,
+        "evaluated_at": evaluated_at,
+        "snapshot_at": now,
+        "cutoff_at": cutoff_at,
+        "methodology_version": methodology_version,
+        "evaluator_version": scorer_version,
+        "assessment_mode": "automated",
+        "primary": True,
+        "shadow": False,
+        "status": assessment_status,
+        "value": score,
+        "reason_codes": sorted(set(reason_codes)),
+        "evidence_refs": evidence_refs[:50],
+        "coverage": coverage,
+        "protocol": {
+            "id": protocol_id or None,
+            "version": protocol_version or None,
+            "applicability_status": protocol_status,
+        },
+        "scores": {
+            "overall_pct": score,
+            "zone1_pct": zone_cols.get("zone1_pct"),
+            "zone2a_pct": zone_cols.get("zone2a_pct"),
+            "zone2b_pct": zone_cols.get("zone2b_pct"),
+            "reg55_section_pct": zone_cols.get("reg55_section_pct"),
+        },
+    }
+    return {
+        "evaluation_run_id": evaluation_run_id,
+        "document_revision": snapshot["document_revision"],
+        "source_hash": source_hash,
+        "evaluated_at": evaluated_at,
+        "snapshot_at": now,
+        "cutoff_at": cutoff_at,
+        "methodology_version": methodology_version,
+        "evaluator_version": scorer_version,
+        "assessment_mode": "automated",
+        "assessment_primary": 1,
+        "assessment_shadow": 0,
+        "assessment_status": assessment_status,
+        "assessment_reason_codes_json": json.dumps(
+            snapshot["reason_codes"], ensure_ascii=False
+        ),
+        "assessment_evidence_refs_json": json.dumps(
+            snapshot["evidence_refs"], ensure_ascii=False
+        ),
+        "assessment_coverage_json": json.dumps(coverage, ensure_ascii=False),
+        "evaluation_snapshot_json": json.dumps(
+            snapshot, ensure_ascii=False, sort_keys=True, default=_json_default
+        ),
+        "protocol_id": protocol_id,
+        "protocol_version": protocol_version,
+        "protocol_applicability_status": protocol_status,
+    }
+
+
 def upsert_warehouse(
     path: Path,
     raw_rows: Sequence[Mapping[str, Any]],
@@ -1919,6 +2142,7 @@ def upsert_warehouse(
             diagnosis_text = ""
             history_prior_n = 0
             history_tier = ""
+            primary_findings: list[Mapping[str, Any]] = []
             zone_cols: dict[str, Any] = {
                 "zone1_pct": None,
                 "zone2a_pct": None,
@@ -2095,6 +2319,22 @@ def upsert_warehouse(
                 except Exception:  # noqa: BLE001
                     reg55_band_day["unscored"] += 1
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
+            source_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
+            assessment = _assessment_metadata(
+                mis_id=mis_id,
+                visit_date=visit_date,
+                eligible_document=eligible_document,
+                score=score,
+                case=case,
+                evaluation=evaluation_v4 or deep_case,
+                report=report,
+                scorer_version=scorer_version,
+                score_schema_version=score_schema_version,
+                source_hash=source_hash,
+                zone_cols=zone_cols,
+                primary_findings=primary_findings,
+                now=now,
+            )
             db.execute(
                 """INSERT INTO fact_mo_case
                    (mis_id, visit_id, visit_date, document_kind, overall_pct,
@@ -2187,8 +2427,42 @@ def upsert_warehouse(
                     zone_cols.get("reg55_pack"),
                     zone_cols.get("reg55_applicable_n"),
                     zone_cols.get("reg55_weak_points_json") or "[]",
-                    hashlib.sha256(payload.encode("utf-8")).hexdigest(),
+                    source_hash,
                     now,
+                ),
+            )
+            db.execute(
+                """UPDATE fact_mo_case SET
+                   evaluation_run_id=?, document_revision=?, source_hash=?,
+                   evaluated_at=?, snapshot_at=?, cutoff_at=?,
+                   methodology_version=?, evaluator_version=?,
+                   assessment_mode=?, assessment_primary=?, assessment_shadow=?,
+                   assessment_status=?, assessment_reason_codes_json=?,
+                   assessment_evidence_refs_json=?, assessment_coverage_json=?,
+                   evaluation_snapshot_json=?, protocol_id=?, protocol_version=?,
+                   protocol_applicability_status=?
+                   WHERE mis_id=?""",
+                (
+                    assessment["evaluation_run_id"],
+                    assessment["document_revision"],
+                    assessment["source_hash"],
+                    assessment["evaluated_at"],
+                    assessment["snapshot_at"],
+                    assessment["cutoff_at"],
+                    assessment["methodology_version"],
+                    assessment["evaluator_version"],
+                    assessment["assessment_mode"],
+                    assessment["assessment_primary"],
+                    assessment["assessment_shadow"],
+                    assessment["assessment_status"],
+                    assessment["assessment_reason_codes_json"],
+                    assessment["assessment_evidence_refs_json"],
+                    assessment["assessment_coverage_json"],
+                    assessment["evaluation_snapshot_json"],
+                    assessment["protocol_id"],
+                    assessment["protocol_version"],
+                    assessment["protocol_applicability_status"],
+                    mis_id,
                 ),
             )
             written["fact_mo_case"] += 1
