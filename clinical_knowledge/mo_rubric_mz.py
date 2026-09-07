@@ -290,7 +290,19 @@ def _score_dynamics(
     crit: Mapping[str, Any],
     clinical: Mapping[str, Any],
     prior: Mapping[str, Any] | None,
+    history_assessment: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
+    if isinstance(history_assessment, Mapping) and not history_assessment.get(
+        "correction_assessable"
+    ):
+        reasons = list(history_assessment.get("exclusion_reason_codes") or [])
+        reason = {
+            "history_unavailable": "История недоступна - коррекция по динамике не оценивается",
+            "no_prior_visit": "Нет предыдущего визита - коррекция по динамике не оценивается",
+            "prior_not_same_episode": "Предыдущий визит относится к другому эпизоду",
+            "prior_has_no_comparable_plan": "В релевантном prior нет плана для сравнения",
+        }.get(str(reasons[-1] if reasons else ""), "Коррекция по динамике не применима")
+        return _item(crit, score=None, reason=reason)
     if not prior:
         return _item(crit, score=None, reason="Нет предыдущего визита - коррекция по динамике не оценивается")
     current = _first_text(clinical, list(crit.get("fields") or []))
@@ -335,6 +347,7 @@ def evaluate_mo_rubric_mz(
     block_scores: Mapping[str, Any] | None = None,
     prior_clinical: Mapping[str, Any] | None = None,
     protocol_suggest: Mapping[str, Any] | None = None,
+    history_assessment: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Оценить один случай по рубрике МЗ.
 
@@ -346,6 +359,11 @@ def evaluate_mo_rubric_mz(
     meta = dict(meta or {})
     block_scores = dict(block_scores or {})
     prior = dict(prior_clinical) if prior_clinical else None
+    history_context = (
+        dict(history_assessment) if isinstance(history_assessment, Mapping) else None
+    )
+    if history_context is not None and not history_context.get("correction_assessable"):
+        prior = None
     suggest = dict(protocol_suggest) if isinstance(protocol_suggest, Mapping) else None
 
     items: list[dict[str, Any]] = []
@@ -370,7 +388,7 @@ def evaluate_mo_rubric_mz(
         elif rule == "plan_present_or_aligned":
             items.append(_score_plan(crit, clinical, block_scores, suggest))
         elif rule == "dynamics_correction":
-            items.append(_score_dynamics(crit, clinical, prior))
+            items.append(_score_dynamics(crit, clinical, prior, history_context))
         elif rule == "follow_up_present":
             items.append(_score_follow_up(crit, clinical))
         else:
@@ -415,6 +433,7 @@ def evaluate_mo_rubric_mz(
         "source": "config/mo_rubric_mz.yaml",
         "kp_suggest_clinical": bool(kp_hit),
         "kp_suggest_title": str((kp_hit or {}).get("title") or "")[:120] or None,
+        "history_assessment": history_context,
     }
 
 

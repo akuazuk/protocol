@@ -79,6 +79,9 @@ def _flag(case: Mapping[str, Any], name: str) -> bool:
 
 
 def _has_prior(case: Mapping[str, Any]) -> bool:
+    assessment = case.get("history_assessment")
+    if isinstance(assessment, Mapping):
+        return assessment.get("correction_assessable") is True
     if _flag(case, "has_prior_visit"):
         return True
     prior = case.get("prior_clinical") or case.get("prior_visit")
@@ -613,6 +616,8 @@ def attach_reg55_section_to_detail(
     if isinstance(live_case, dict):
         case.update(live_case)
     case.update(record)
+    if isinstance(out.get("history_assessment"), Mapping):
+        case["history_assessment"] = dict(out["history_assessment"])
     if isinstance(clinical, dict):
         case["clinical"] = clinical
         for key, val in clinical.items():

@@ -2958,7 +2958,8 @@
         "</span></p>" +
         (cont.usage_ru ? '<p class="card-sub">' + esc(cont.usage_ru) + "</p>" : "");
     }
-    function renderHistoryCompact(bundle) {
+    function renderHistoryCompact(bundle, assessment) {
+      assessment = assessment || {};
       if (!bundle || !bundle.summary) {
         return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
           '<p class="empty">Нет prior - коррекции плана не оцениваются.</p></div>';
@@ -2967,7 +2968,26 @@
       var n = Number(summary.n_visits || 0);
       var sameDoc = (bundle.same_doctor || []).length;
       var sameSpec = (bundle.same_specialty || []).length;
-      var prior = n > 0 ? "есть prior" : "нет prior";
+      var hasAssessment = assessment.contract_version != null;
+      var anyPrior = hasAssessment ? assessment.any_prior_exists === true : n > 0;
+      var relevantPrior = hasAssessment
+        ? assessment.relevant_episode_prior_exists === true
+        : n > 0;
+      var correctionAssessable = hasAssessment
+        ? assessment.correction_assessable === true
+        : n > 0;
+      var prior = correctionAssessable ? "коррекция оценивается" :
+        (relevantPrior ? "релевантный prior без сравнимого плана" :
+          (anyPrior ? "prior другого эпизода" : "нет prior"));
+      var reasonLabels = {
+        history_unavailable: "история недоступна",
+        no_prior_visit: "нет предыдущего визита",
+        prior_not_same_episode: "предыдущий визит относится к другому эпизоду",
+        prior_has_no_comparable_plan: "нет сравнимого плана прошлого визита"
+      };
+      var exclusions = (assessment.exclusion_reason_codes || []).map(function (code) {
+        return reasonLabels[code] || code;
+      }).join("; ");
       var deep = bundle.deep || {};
       var deepSlots = (deep.already_slots || []).join(", ");
       var deepLine = deep.prior_visit_date
@@ -2979,7 +2999,7 @@
         deepLine +
         '<p>К этому врачу: ' + sameDoc + ' · К специальности: ' + sameSpec +
         ' · Всего: ' + n + ' · Для коррекций плана: ' + prior + '</p>' +
-        (n === 0 ? '<p class="card-sub">Коррекции плана не оцениваются, если на складе нет более ранних визитов с ключом пациента.</p>' : "") +
+        (exclusions ? '<p class="card-sub">Почему не оценивается: ' + esc(exclusions) + ".</p>" : "") +
         '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
     }
     function renderLabReconcile(recon) {
@@ -3190,9 +3210,9 @@
         '<button class="button secondary compact" id="case-tab-review" type="button" role="tab" ' +
         'aria-selected="false" aria-controls="case-review-column" data-case-tab="review">Проверка</button></div>';
     }
-    function renderHistoryAndLabs(history, lab) {
+    function renderHistoryAndLabs(history, lab, historyAssessment) {
       return '<section class="detail-block history-labs-section"><h3>История и анализы</h3>' +
-        '<div class="history-labs-grid">' + renderHistoryCompact(history) + renderLabBundle(lab) +
+        '<div class="history-labs-grid">' + renderHistoryCompact(history, historyAssessment) + renderLabBundle(lab) +
         "</div></section>";
     }
     function renderCase(data, scope) {
@@ -3293,7 +3313,7 @@
           renderAssessmentStatusStrip(assessment) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
-          renderHistoryAndLabs(history, data.lab) +
+          renderHistoryAndLabs(history, data.lab, data.history_assessment) +
           renderZonesCriteriaDetails(zones) +
           '<details class="detail-block mo-secondary-details"><summary>Дополнительные автоматические оценки</summary>' +
           renderFamilyScores(data) +
