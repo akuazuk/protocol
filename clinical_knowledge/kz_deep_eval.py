@@ -349,7 +349,6 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
 
     complaints = _txt(case, "complaints")
     objective = _txt(case, "objective_status")
-    treatment = _txt(case, "treatment_recommendations")
     routing = _txt(case, "dispensary_info", "return_date", "treatment_recommendations")
     age = case.get("patient_age_years")
     try:

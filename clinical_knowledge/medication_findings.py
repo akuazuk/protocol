@@ -13,8 +13,6 @@ confidence ниже порога.
 """
 from __future__ import annotations
 
-from typing import Any
-
 from .kz_evaluation_schema import EvaluationFinding
 from .rule_trust import TRUST_B, TRUST_C
 
