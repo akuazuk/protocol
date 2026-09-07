@@ -290,6 +290,12 @@ def _score_consent(crit: Mapping[str, Any], blob: Mapping[str, Any]) -> dict[str
     text = _first_text(blob, list(crit.get("fields") or []) or ["raw_text", "result", "consent_text"]).lower()
     if any(m in text for m in _CONSENT_MARKERS):
         return _item(crit, score=1.0, reason="Согласие/отказ отражены в документе", evidence=text[:120])
+    if blob.get("consent_source_available") is not True:
+        return _item(
+            crit,
+            score=None,
+            reason="Источник согласия недоступен - критерий не оценивается",
+        )
     return _item(crit, score=0.0, reason="Согласие на вмешательства не найдено")
 
 

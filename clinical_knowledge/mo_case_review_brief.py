@@ -191,14 +191,27 @@ def synthesize_doctor_feedback(
         seen.add(key)
         scored.append((priority, t))
 
+    def confirmed_for_feedback(finding: dict[str, Any]) -> bool:
+        code = str(finding.get("code") or "").lower()
+        return not (
+            str(finding.get("assessment_status") or "")
+            in {"candidate", "hypothesis", "suspicion", "unknown"}
+            or "suspicion" in code
+            or "hypothesis" in code
+        )
+
     for f in findings:
         if not isinstance(f, dict):
+            continue
+        if not confirmed_for_feedback(f):
             continue
         if str(f.get("severity") or "") == "P0" or str(f.get("axis") or "") == "safety":
             add(f.get("title_ru") or f.get("detail_ru") or f.get("code"), priority=0)
 
     for f in findings:
         if not isinstance(f, dict):
+            continue
+        if not confirmed_for_feedback(f):
             continue
         code = str(f.get("code") or "")
         sev = str(f.get("severity") or "")
@@ -345,11 +358,8 @@ def build_case_review_brief(case_detail: dict[str, Any] | None) -> dict[str, Any
         icd_status=icd_status,
         history_line=history_line,
     )
-    # LLM narrative может дополнить feedback, не заменяя machine
-    if narrative and narrative.get("available") and isinstance(narrative.get("doctor_feedback_ru"), list):
-        for line in narrative["doctor_feedback_ru"][:3]:
-            if line and str(line) not in doctor_feedback and len(doctor_feedback) < _MAX_FEEDBACK:
-                doctor_feedback.append(f"[ИИ] {line}")
+    # LLM narrative остаётся отдельным черновиком и не попадает в готовое
+    # сообщение врачу без решения методиста.
 
     zones_summary = {
         "documentation": {
