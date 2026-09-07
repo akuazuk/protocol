@@ -3225,6 +3225,59 @@
         '<div class="history-labs-grid">' + renderHistoryCompact(history, historyAssessment) + renderLabBundle(lab) +
         "</div></section>";
     }
+    function renderMedicationNormativeCards(payload) {
+      payload = payload || {};
+      var cards = payload.cards || [];
+      if (!cards.length) {
+        return '<section class="detail-block medication-normative-cards" id="medication-normative-cards-host">' +
+          '<h3>Назначения и источники</h3><p class="empty">Структурированные назначения не распознаны.</p></section>';
+      }
+      var sourceLabels = {
+        rceth_label: "Инструкция препарата",
+        national_protocol: "Клинический протокол",
+        local_reg55_pack: "Локальная методика"
+      };
+      var rows = cards.slice(0, 20).map(function (card) {
+        var assignment = card.assignment || {};
+        var fact = card.patient_fact || {};
+        var title = assignment.drug_name || assignment.inn || "Препарат";
+        var dose = [assignment.dose_value, assignment.dose_unit].filter(function (value) {
+          return value != null && value !== "";
+        }).join(" ");
+        var regimen = [dose, assignment.frequency, assignment.duration, assignment.route]
+          .filter(Boolean).join(" · ");
+        var sources = (card.instructions || []).map(function (source) {
+          var label = sourceLabels[source.source] || source.source || "Источник";
+          var revision = source.revision ? (" · ред. " + source.revision) : "";
+          var local = source.normative === false ? " · не норматив" : "";
+          return "<li>" + esc(label) + esc(revision) + esc(local) + "</li>";
+        }).join("");
+        var protocol = card.protocol_check === "evaluated"
+          ? "Проверка по протоколу выполнена"
+          : "Проверка по протоколу не выполнена";
+        return '<article class="evidence-card medication-normative-card">' +
+          '<div class="evidence-card__span"><strong>' + esc(title) + '</strong>' +
+          '<span class="badge badge--shadow">черновик</span></div>' +
+          '<p>' + esc(regimen || "Доза и режим не распознаны") + '</p>' +
+          '<p class="card-sub">Статус: ' + esc(assignment.activity_status || "unknown") +
+          ' · факт: ' + esc(fact.assertion || "unknown") +
+          ' · субъект: ' + esc(fact.subject || "unknown") + '</p>' +
+          '<p class="card-sub">' + esc(protocol) + '</p>' +
+          (sources ? '<ul class="evidence-card__meta">' + sources + "</ul>" : "") +
+          ((card.uncertainty_reason_codes || []).length
+            ? '<details><summary>Ограничения проверки</summary><p class="card-sub">' +
+              esc(card.uncertainty_reason_codes.join(", ")) + '</p></details>'
+            : "") + "</article>";
+      }).join("");
+      var methodology = payload.methodology || {};
+      return '<section class="detail-block medication-normative-cards" id="medication-normative-cards-host">' +
+        '<h3>Назначения и источники</h3>' +
+        '<p class="card-sub">№55, раздел V - нормативная рамка. №127 - вспомогательный источник. ' +
+        'Профильный pack - локальная адаптация, не отдельный норматив.</p>' +
+        (methodology.local_pack_label
+          ? '<p class="card-sub">Локальный pack: ' + esc(methodology.local_pack_label) + ".</p>"
+          : "") + '<div class="medication-normative-list">' + rows + "</div></section>";
+    }
     function renderCase(data, scope) {
       if (scope && isStaleCaseScope(scope)) return;
       var record = data.record || data.case || data;
@@ -3322,6 +3375,7 @@
           renderZonesHero(zones) +
           renderAssessmentStatusStrip(assessment) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
+          renderMedicationNormativeCards(data.medication_normative_cards) +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
           renderHistoryAndLabs(history, data.lab, data.history_assessment) +
           renderZonesCriteriaDetails(zones) +
@@ -3346,6 +3400,7 @@
           renderShadowDxPlan(shadowDxPlan) +
           renderLlmActionJudge(llmJudge, sourceDocument, item) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
+          renderMedicationNormativeCards(data.medication_normative_cards) +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
           '</div>' + decisionHtml + '</div></div>';
       }
@@ -3698,6 +3753,15 @@
               else criteria.remove();
             }
             bindZoneCardInteractions(drawer);
+          }
+          if (suggest.medication_normative_cards) {
+            state.caseDetail.medication_normative_cards = suggest.medication_normative_cards;
+            var medicationCards = $("medication-normative-cards-host");
+            if (medicationCards) {
+              medicationCards.outerHTML = renderMedicationNormativeCards(
+                suggest.medication_normative_cards
+              );
+            }
           }
           if (suggest.review_brief) {
             state.caseDetail.review_brief = suggest.review_brief;

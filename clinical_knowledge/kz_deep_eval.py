@@ -620,12 +620,15 @@ def resolve_protocol_ctx(case: dict) -> dict | None:
         return None
 
     conds = []
+    match_basis = ""
     from .mo_icd_resolve import resolve_icd_codes_from_mo
 
     code = str(resolve_icd_codes_from_mo(case).get("main") or "").strip()
     if code:
         try:
             conds = find_conditions_by_icd(code) or []
+            if conds:
+                match_basis = "icd"
         except Exception:  # noqa: BLE001
             conds = []
     if not conds:
@@ -633,6 +636,8 @@ def resolve_protocol_ctx(case: dict) -> dict | None:
         if dx:
             try:
                 conds = find_conditions_by_text(dx, limit=3) or []
+                if conds:
+                    match_basis = "text_candidate"
             except Exception:  # noqa: BLE001
                 conds = []
     if not conds:
@@ -647,6 +652,8 @@ def resolve_protocol_ctx(case: dict) -> dict | None:
         "diagnostic_criteria": _get(c, "diagnostic_criteria") or [],
         "treatment": _get(c, "treatment") or [],
         "kz_checklist": _get(c, "kz_checklist") or [],
+        "match_basis": match_basis,
+        "protocol_check": "evaluated" if match_basis == "icd" else "not_evaluated",
     }
 
 
@@ -666,6 +673,23 @@ def evaluate_kz_deep(
         if case.get(key) in (None, "") and value not in (None, ""):
             case[key] = value
             recovered_fields.append(key)
+    assessment = case.get("assessment") if isinstance(case.get("assessment"), dict) else {}
+    protocol_meta = (
+        assessment.get("protocol")
+        if isinstance(assessment.get("protocol"), dict)
+        else {}
+    )
+    requested_protocol_check = str(
+        case.get("protocol_check")
+        or protocol_meta.get("applicability_status")
+        or ""
+    )
+    resolved_protocol_check = str(_get(protocol_ctx, "protocol_check") or "")
+    if (
+        requested_protocol_check == "not_evaluated"
+        or resolved_protocol_check == "not_evaluated"
+    ):
+        protocol_ctx = None
     input_presence = {
         key: bool(str(case.get(key) or "").strip())
         for key in _DEEP_INPUT_FIELDS

@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-07-062331Z-medication-guards"
+BUILD_VERSION = "2026-09-07-065417Z-medication-cards"
 
 
 def _app_version() -> str:
@@ -12580,6 +12580,35 @@ def api_methodist_mo_case_detail(
                 pass
         except Exception:  # noqa: BLE001
             pass
+    if score_eligible and isinstance(result, dict):
+        try:
+            from clinical_knowledge.medication_normative_cards import (
+                build_medication_normative_cards,
+            )
+
+            result["medication_normative_cards"] = build_medication_normative_cards(
+                clinical if isinstance(clinical, dict) else {},
+                assessment=result.get("assessment")
+                if isinstance(result.get("assessment"), dict)
+                else None,
+                zones=result.get("zones")
+                if isinstance(result.get("zones"), dict)
+                else None,
+                protocol_suggest=result.get("protocol_suggest")
+                if isinstance(result.get("protocol_suggest"), dict)
+                else None,
+                reg55=result.get("reg55")
+                if isinstance(result.get("reg55"), dict)
+                else None,
+            )
+        except Exception:  # noqa: BLE001
+            result["medication_normative_cards"] = {
+                "engine": "mo_medication_normative_cards_v1",
+                "status": "unavailable",
+                "cards": [],
+                "primary": False,
+                "shadow": True,
+            }
     # Итог разбора (machine brief) - после зон / findings / МКБ / suggest.
     if score_eligible and isinstance(result, dict):
         try:
@@ -12772,6 +12801,21 @@ def api_methodist_mo_protocol_suggest(
             )
         )
         suggest["zones"] = zones
+        from clinical_knowledge.medication_normative_cards import (
+            build_medication_normative_cards,
+        )
+
+        suggest["medication_normative_cards"] = build_medication_normative_cards(
+            clinical,
+            assessment=detail.get("assessment")
+            if isinstance(detail.get("assessment"), dict)
+            else None,
+            zones=zones,
+            protocol_suggest=suggest,
+            reg55=detail.get("reg55")
+            if isinstance(detail.get("reg55"), dict)
+            else None,
+        )
         suggest["review_brief"] = build_case_review_brief(
             {
                 **detail,

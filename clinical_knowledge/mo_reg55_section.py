@@ -599,6 +599,17 @@ def to_reg55_detail_payload(section: Mapping[str, Any]) -> dict[str, Any]:
         ).strip(),
         "scorer_version": section.get("scorer_version"),
         "source": section.get("source"),
+        "methodology_scope": {
+            "national_norm": "Постановление №55, раздел V",
+            "n127_role": "evidence_helper",
+            "local_pack_id": section.get("pack_id"),
+            "local_pack_is_normative": False,
+        },
+        "methodology_scope_ru": (
+            "Постановление №55, раздел V. №127 используется только как "
+            "вспомогательный источник подтверждения. Профильный pack - локальная адаптация методики, "
+            "не отдельный национальный норматив."
+        ),
     }
 
 
