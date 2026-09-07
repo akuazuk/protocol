@@ -8,7 +8,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-medication-cards-pc1`
 - Base: `8c6742032a65b651add1d8a2fe42da3fe26fb7d1`
 - BUILD_VERSION: `2026-09-07-065417Z-medication-cards`
-- PR: будет указан после публикации
+- PR: [#239](https://github.com/akuazuk/protocol/pull/239)
 
 ## Реализация
 
