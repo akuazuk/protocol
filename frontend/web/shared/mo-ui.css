@@ -854,6 +854,7 @@ tbody tr.table-row-hidden { display: none; }
 }
 .protocol-suggest-rates label { display: inline-flex; gap: 4px; align-items: center; cursor: pointer; }
 .drawer-nav-row { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 6px; }
+.drawer-nav-position { min-width: 76px; color: var(--muted); font-size: 12px; font-weight: 650; }
 .sortable-th { cursor: pointer; user-select: none; white-space: nowrap; }
 .sortable-th:hover { color: var(--accent-dark); }
 .sortable-th[aria-sort="ascending"]::after { content: " ↑"; color: var(--accent); }
@@ -1166,6 +1167,50 @@ kbd {
 .case-workspace-grid--zones {
   grid-template-columns: minmax(360px, 1.2fr) minmax(400px, 1fr);
 }
+.case-workspace-tabs {
+  display: none;
+  flex: 0 0 auto;
+  gap: 8px;
+  padding: 8px 16px;
+  border-bottom: 1px solid var(--line);
+  background: var(--surface-solid);
+}
+.case-workspace-tabs .is-active {
+  border-color: var(--accent);
+  color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--surface-solid));
+}
+.assessment-status-strip {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin: 0 0 12px;
+  padding: 10px 12px;
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-2);
+  color: var(--muted);
+  font-size: 12px;
+}
+.evidence-card {
+  display: grid;
+  gap: 8px;
+  padding: 12px;
+  border: 1px solid var(--line);
+  border-radius: 12px;
+  background: var(--surface-solid);
+}
+.evidence-card__span {
+  margin: 0;
+  padding: 9px 11px;
+  border-left: 3px solid var(--accent);
+  background: var(--surface-2);
+  color: var(--text);
+}
+.evidence-card__requirement { margin: 0; }
+.evidence-card__meta { display: flex; flex-wrap: wrap; gap: 8px 12px; color: var(--muted); font-size: 12px; }
+.history-labs-grid { display: grid; gap: 10px; }
 .case-workspace-grid--zones .case-workspace-clinical {
   background: #fbfcfd;
 }
@@ -1297,7 +1342,16 @@ kbd {
   .review-brief-zones { grid-template-columns: 1fr; }
   .zones-hero-grid { grid-template-columns: 1fr; }
   .case-workspace-grid--zones { grid-template-columns: 1fr; height: auto; }
-  .drawer.case-workspace .drawer-body { overflow: auto; }
+  .drawer.case-workspace .drawer-body { overflow: hidden; }
+  .case-workspace-tabs { display: flex; }
+  .case-workspace-grid,
+  .case-workspace-grid--zones { min-width: 0; overflow: auto; }
+  .case-workspace-grid .case-workspace-pane,
+  .case-workspace-grid--zones .case-workspace-pane { display: none; }
+  .case-workspace-grid .case-workspace-pane.is-active-pane,
+  .case-workspace-grid--zones .case-workspace-pane.is-active-pane { display: block; }
+  .case-workspace-clinical,
+  .case-workspace-decision { min-width: 0; width: 100%; box-sizing: border-box; }
   .case-workspace-grid--zones .case-workspace-decision {
     overflow: visible;
     border-top: 1px solid var(--line);
