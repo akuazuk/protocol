@@ -8,7 +8,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-history-context-pc1`
 - Base: `57c0b1b28cb338767af7ec1f3b33813e1d3435ad`
 - BUILD_VERSION: `2026-09-07-051321Z-history-assessment`
-- PR: будет указан после публикации
+- PR: [#236](https://github.com/akuazuk/protocol/pull/236)
 
 ## Реализация
 
