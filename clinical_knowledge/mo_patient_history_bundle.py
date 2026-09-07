@@ -10,6 +10,7 @@ import json
 import os
 import sqlite3
 from collections import Counter
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Mapping
 
@@ -30,6 +31,32 @@ TIER_LABELS_RU = {
     TIER_FIRST_CONTACT: "первый контакт с этим врачом",
     TIER_INSUFFICIENT: "истории недостаточно",
 }
+
+QUERY_ERROR_REASONS = frozenset({"query_failed", "bad_db", "bad_case"})
+UNAVAILABLE_BUNDLE_REASONS = frozenset(
+    {
+        "missing_patient_or_date",
+        "no_warehouse",
+        "schema_no_patient_key",
+        "bad_case",
+        "bad_db",
+        "empty",
+    }
+)
+
+
+def _parse_visit_datetime(value: Any) -> datetime | None:
+    raw = str(value or "").strip()
+    if not raw:
+        return None
+    try:
+        parsed = datetime.fromisoformat(raw.replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if parsed.tzinfo is None:
+        parsed = parsed.replace(tzinfo=timezone.utc)
+    return parsed.astimezone(timezone.utc)
+
 
 USAGE_FOR_SCORES_RU = (
     "История пациента - контекст до текущего визита (склад МО). "
@@ -96,6 +123,9 @@ def _visit_row_public(row: Mapping[str, Any]) -> dict[str, Any]:
         "mis_id": str(row.get("mis_id") or ""),
         "visit_id": str(row.get("visit_id") or ""),
         "visit_date": str(row.get("visit_date") or "")[:10],
+        "visit_at": str(row.get("visit_at") or "") or None,
+        "available_at": str(row.get("available_at") or "") or None,
+        "time_status": str(row.get("time_status") or ""),
         "doctor_key": str(row.get("doctor_key") or ""),
         "doctor_id": str(row.get("doctor_id") or ""),
         "specialty": str(row.get("specialty") or ""),
@@ -181,16 +211,50 @@ def empty_bundle(*, reason: str = "insufficient") -> dict[str, Any]:
         "current_code_seen_by_doctor": False,
         "current_code_seen_in_specialty": False,
     }
+    ok = reason not in QUERY_ERROR_REASONS and reason not in UNAVAILABLE_BUNDLE_REASONS
+    if reason in QUERY_ERROR_REASONS:
+        status = "error"
+        ok = False
+    elif reason in UNAVAILABLE_BUNDLE_REASONS:
+        status = "unavailable" if reason != "empty" else "empty"
+        ok = False if reason != "empty" else True
+    else:
+        status = "empty"
+        ok = True
     return {
         "engine": ENGINE,
+        "ok": ok,
+        "status": status,
         "same_doctor": [],
         "same_specialty": [],
         "other": [],
+        "excluded_visits": [],
         "summary": summary,
         "coverage": {"first_date": "", "last_date": "", "n_visits": 0},
         "tier": TIER_INSUFFICIENT,
         "reason": reason,
+        "cutoff_at": None,
     }
+
+
+def _classify_history_visit(
+    row: Mapping[str, Any],
+    *,
+    day: str,
+    cutoff_at: str,
+) -> tuple[bool, str]:
+    visit_day = str(row.get("visit_date") or "")[:10]
+    if visit_day and visit_day < day:
+        return True, "prior_day"
+    if visit_day and visit_day > day:
+        return False, "after_cutoff_day"
+    prior_at = _parse_visit_datetime(row.get("visit_at") or row.get("available_at"))
+    cutoff = _parse_visit_datetime(cutoff_at)
+    if prior_at is None or cutoff is None:
+        return False, "unknown_time"
+    if prior_at < cutoff:
+        return True, "same_day_before_cutoff"
+    return False, "same_day_after_cutoff"
 
 
 def build_patient_history_bundle(
@@ -198,6 +262,7 @@ def build_patient_history_bundle(
     patient_id: str = "",
     patient_key: str = "",
     as_of_date: str,
+    cutoff_at: str = "",
     doctor_id: str = "",
     doctor_key: str = "",
     specialty: str = "",
@@ -209,6 +274,7 @@ def build_patient_history_bundle(
     """Собрать бандл истории as-of даты случая. Без patient_id в результате."""
     key = (patient_key or "").strip() or patient_key_for(patient_id)
     day = (as_of_date or "")[:10]
+    cutoff = str(cutoff_at or as_of_date or "").strip()
     if not key or len(day) < 10:
         return empty_bundle(reason="missing_patient_or_date")
 
@@ -240,29 +306,31 @@ def build_patient_history_bundle(
             "overall_pct",
             "document_kind",
         ]
-        for optional in ("doctor_id", "diagnosis_text"):
+        for optional in ("doctor_id", "diagnosis_text", "visit_at", "available_at"):
             if optional in cols:
                 select_cols.append(optional)
         sql = (
             f'SELECT {", ".join(select_cols)} FROM fact_mo_case '
-            "WHERE patient_key = ? AND visit_date < ?"
+            "WHERE patient_key = ? AND visit_date <= ?"
         )
         params: list[Any] = [key, day]
         if lookback is not None:
-            # опциональный потолок: visit_date >= as_of - lookback
             sql += " AND visit_date >= date(?, ?)"
             params.extend([day, f"-{int(lookback)} days"])
         sql += " ORDER BY visit_date ASC, mis_id ASC"
-        cursor = db.execute(sql, params)
-        col_names = [d[0] for d in cursor.description]
-        rows = []
-        for raw_row in cursor.fetchall():
-            if isinstance(raw_row, sqlite3.Row):
-                rows.append(dict(raw_row))
-            elif isinstance(raw_row, Mapping):
-                rows.append(dict(raw_row))
-            else:
-                rows.append({col_names[i]: raw_row[i] for i in range(len(col_names))})
+        try:
+            cursor = db.execute(sql, params)
+            col_names = [d[0] for d in cursor.description]
+            rows = []
+            for raw_row in cursor.fetchall():
+                if isinstance(raw_row, sqlite3.Row):
+                    rows.append(dict(raw_row))
+                elif isinstance(raw_row, Mapping):
+                    rows.append(dict(raw_row))
+                else:
+                    rows.append({col_names[i]: raw_row[i] for i in range(len(col_names))})
+        except sqlite3.Error:
+            return empty_bundle(reason="query_failed")
     finally:
         if own_conn and db is not None:
             db.close()
@@ -270,11 +338,18 @@ def build_patient_history_bundle(
     same_doctor: list[dict[str, Any]] = []
     same_specialty: list[dict[str, Any]] = []
     other: list[dict[str, Any]] = []
+    excluded_visits: list[dict[str, Any]] = []
     spec_norm = _norm_specialty(specialty)
     for raw in rows:
         public = _visit_row_public(raw)
         ids = {public["mis_id"], public["visit_id"]} - {""}
         if ids & excluded:
+            excluded_visits.append({**public, "exclusion_reason": "current_visit"})
+            continue
+        include, time_status = _classify_history_visit(public, day=day, cutoff_at=cutoff)
+        public["time_status"] = time_status
+        if not include:
+            excluded_visits.append({**public, "exclusion_reason": time_status})
             continue
         if _same_doctor(public, doctor_id=str(doctor_id or "").strip(), doctor_key=str(doctor_key or "").strip()):
             same_doctor.append(public)
@@ -294,11 +369,15 @@ def build_patient_history_bundle(
     tier = _tier_from_summary(summary)
     if summary["n_visits"] == 0 and not key:
         tier = TIER_INSUFFICIENT
+    status = "has_priors" if summary["n_visits"] else "empty"
     return {
         "engine": ENGINE,
+        "ok": True,
+        "status": status,
         "same_doctor": same_doctor,
         "same_specialty": same_specialty,
         "other": other,
+        "excluded_visits": excluded_visits,
         "summary": summary,
         "coverage": {
             "first_date": min(all_dates) if all_dates else "",
@@ -306,6 +385,7 @@ def build_patient_history_bundle(
             "n_visits": summary["n_visits"],
             "lookback_days": lookback,
         },
+        "cutoff_at": cutoff or None,
         "tier": tier,
         "reason": "",
     }
@@ -335,6 +415,8 @@ def public_bundle_for_ui(bundle: Mapping[str, Any] | None) -> dict[str, Any]:
     tier = str(bundle.get("tier") or TIER_INSUFFICIENT)
     return {
         "engine": ENGINE,
+        "ok": bundle.get("ok", True),
+        "status": str(bundle.get("status") or ("has_priors" if (bundle.get("summary") or {}).get("n_visits") else "empty")),
         "tier": tier,
         "tier_label_ru": tier_label_ru(tier),
         "summary": dict(bundle.get("summary") or {}),
@@ -342,6 +424,8 @@ def public_bundle_for_ui(bundle: Mapping[str, Any] | None) -> dict[str, Any]:
         "same_doctor": list(bundle.get("same_doctor") or [])[:40],
         "same_specialty": list(bundle.get("same_specialty") or [])[:40],
         "other": list(bundle.get("other") or [])[:20],
+        "excluded_visits": list(bundle.get("excluded_visits") or [])[:40],
+        "cutoff_at": bundle.get("cutoff_at"),
         "reason": str(bundle.get("reason") or ""),
         "usage_for_scores_ru": USAGE_FOR_SCORES_RU,
     }
@@ -485,6 +569,13 @@ def attach_bundle_to_case(
     ).strip()
     patient_key = str(case.get("patient_key") or "").strip() or patient_key_for(patient_id)
     as_of = str(case.get("visit_date") or case.get("date") or "")[:10]
+    cutoff_at = str(
+        case.get("cutoff_at")
+        or case.get("visit_at")
+        or (case.get("raw") or {}).get("visit_at")
+        or (case.get("raw") or {}).get("visit_time")
+        or as_of
+    ).strip()
     doctor_id = str(
         case.get("doctor_id")
         or case.get("specialist_id_from_visit")
@@ -517,6 +608,7 @@ def attach_bundle_to_case(
         patient_id=patient_id,
         patient_key=patient_key,
         as_of_date=as_of,
+        cutoff_at=cutoff_at,
         doctor_id=doctor_id,
         doctor_key=doctor_key,
         specialty=specialty,

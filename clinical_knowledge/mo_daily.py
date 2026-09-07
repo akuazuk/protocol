@@ -2322,6 +2322,8 @@ def upsert_warehouse(
                         "patient_key": patient_key,
                         "patient_id": raw.get("patient_id") or "",
                         "visit_date": visit_date,
+                        "visit_at": raw.get("visit_at") or raw.get("visit_time") or "",
+                        "cutoff_at": raw.get("cutoff_at") or raw.get("visit_at") or raw.get("visit_time") or visit_date,
                         "doctor_id": doctor_id,
                         "doctor_key": doctor_key,
                         "doctor_fio": doctor_fio,
