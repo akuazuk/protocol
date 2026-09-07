@@ -312,7 +312,8 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
     """Посчитать зоны для одного случая.
 
     case_ctx keys: clinical, meta, block_scores, findings, patient_history,
-    protocol_suggest, llm_action_judge, prior_clinical, document_kind, score_eligible.
+    history_assessment, protocol_suggest, llm_action_judge, prior_clinical,
+    document_kind, score_eligible.
     """
     ctx = dict(case_ctx or {})
     bands_cfg = load_zone_bands()
@@ -354,6 +355,11 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
     prior = ctx.get("prior_clinical") if isinstance(ctx.get("prior_clinical"), Mapping) else None
     suggest = ctx.get("protocol_suggest") if isinstance(ctx.get("protocol_suggest"), Mapping) else None
     findings = ctx.get("findings") if isinstance(ctx.get("findings"), list) else []
+    history_assessment = (
+        ctx.get("history_assessment")
+        if isinstance(ctx.get("history_assessment"), Mapping)
+        else None
+    )
 
     # История: prior может прийти из patient_history.summary
     if prior is None:
@@ -371,6 +377,7 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
         block_scores=block_scores,
         prior_clinical=prior,
         protocol_suggest=suggest,
+        history_assessment=history_assessment,
     )
     kp_ok, kp_title = _kp_matched(suggest)
     kp_status = "matched" if kp_ok else "unmatched"
@@ -505,6 +512,7 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
         "layer_engine": ENGINE,
         "layer_updated_at": now,
         "scorer_version": rubric.get("scorer_version"),
+        "history_assessment": history_assessment,
     }
     payload["overall_grade"] = compute_mo_overall_grade(payload)
     return payload
@@ -527,6 +535,7 @@ def zones_api_payload(zones: Mapping[str, Any]) -> dict[str, Any]:
         "criteria": zones.get("criteria") or [],
         "rubric_pct": zones.get("rubric_pct"),
         "llm_overlay": zones.get("llm_overlay"),
+        "history_assessment": zones.get("history_assessment"),
         "layer_engine": zones.get("layer_engine") or ENGINE,
         "layer_updated_at": zones.get("layer_updated_at"),
     }

@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-07-043518Z-drawer-save-safety"
+BUILD_VERSION = "2026-09-07-051321Z-history-assessment"
 
 
 def _app_version() -> str:
@@ -12161,6 +12161,29 @@ def api_methodist_mo_case_detail(
                 except Exception:
                     prior = None
             prior_clinical = (prior or {}).get("clinical") if isinstance(prior, dict) else None
+            from clinical_knowledge.mo_history_assessment import (
+                build_history_assessment_context,
+            )
+
+            assessment = (
+                result.get("assessment")
+                if isinstance(result.get("assessment"), dict)
+                else {}
+            )
+            history_assessment = build_history_assessment_context(
+                history_bundle=result.get("patient_history")
+                if isinstance(result.get("patient_history"), dict)
+                else None,
+                current_code=str(
+                    record.get("diagnosis_code") or record.get("mkb_code_main") or ""
+                ),
+                current_text=str(
+                    record.get("diagnosis_short") or record.get("diagnosis_text") or ""
+                ),
+                cutoff_at=str(assessment.get("cutoff_at") or visit_date),
+                document_prior=prior if isinstance(prior, dict) else None,
+            )
+            result["history_assessment"] = history_assessment
             rubric = evaluate_mo_rubric_mz(
                 clinical=clinical,
                 meta={
@@ -12172,6 +12195,7 @@ def api_methodist_mo_case_detail(
                 },
                 block_scores=result.get("block_scores") if isinstance(result.get("block_scores"), dict) else {},
                 prior_clinical=prior_clinical if isinstance(prior_clinical, dict) else None,
+                history_assessment=history_assessment,
             )
             if prior and prior.get("visit_date"):
                 rubric["prior_visit_date"] = prior.get("visit_date")
@@ -12367,6 +12391,8 @@ def api_methodist_mo_case_detail(
             if zones_scores_enabled():
                 record_z = result.get("record") if isinstance(result.get("record"), dict) else {}
                 prior_clinical = None
+                deep: dict[str, Any] = {}
+                prior_pack: dict[str, Any] | None = None
                 hist_z = result.get("patient_history") if isinstance(result.get("patient_history"), dict) else {}
                 if int(((hist_z.get("summary") or {}) if isinstance(hist_z.get("summary"), dict) else {}).get("n_visits") or 0) > 0:
                     try:
@@ -12400,6 +12426,52 @@ def api_methodist_mo_case_detail(
                             prior_clinical = prior_pack.get("clinical")
                     except Exception:  # noqa: BLE001
                         prior_clinical = None
+                from clinical_knowledge.mo_history_assessment import (
+                    build_history_assessment_context,
+                )
+
+                assessment_z = (
+                    result.get("assessment")
+                    if isinstance(result.get("assessment"), dict)
+                    else {}
+                )
+                history_assessment = build_history_assessment_context(
+                    history_bundle=hist_z,
+                    current_code=str(
+                        record_z.get("diagnosis_code") or record_z.get("mkb_code_main") or ""
+                    ),
+                    current_text=str(
+                        record_z.get("diagnosis_short")
+                        or record_z.get("diagnosis_text")
+                        or ""
+                    ),
+                    cutoff_at=str(
+                        assessment_z.get("cutoff_at")
+                        or record_z.get("date")
+                        or record_z.get("visit_date")
+                        or ""
+                    ),
+                    document_prior=prior_pack,
+                    episode_deep=deep,
+                )
+                result["history_assessment"] = history_assessment
+                if not history_assessment.get("correction_assessable"):
+                    prior_clinical = None
+                try:
+                    from clinical_knowledge.mo_reg55_section import (
+                        attach_reg55_section_to_detail,
+                    )
+
+                    result = attach_reg55_section_to_detail(
+                        result,
+                        clinical=clinical if isinstance(clinical, dict) else {},
+                        block_scores=result.get("block_scores")
+                        if isinstance(result.get("block_scores"), dict)
+                        else {},
+                        live_case={"history_assessment": history_assessment},
+                    )
+                except Exception:  # noqa: BLE001
+                    pass
                 zones = compute_mo_zone_scores(
                     {
                         "clinical": clinical if isinstance(clinical, dict) else {},
@@ -12423,6 +12495,7 @@ def api_methodist_mo_case_detail(
                         "patient_history": result.get("patient_history")
                         if isinstance(result.get("patient_history"), dict)
                         else None,
+                        "history_assessment": history_assessment,
                         "prior_clinical": prior_clinical
                         if isinstance(prior_clinical, dict)
                         else None,
