@@ -5,7 +5,7 @@
 - Branch: `cursor/mo-wave-e-acceptance-agent1-pc1`
 - Original base: `acc0d2cc9727f0e857cb880af4526d8a49eff3d8`
 - Required base before publication: `41568ce7a89365ed8ee27671d6fbe7c9504374a3`
-- BUILD_VERSION: `2026-09-07-085830Z-wave-e-acceptance`
+- BUILD_VERSION: `2026-09-07-085857Z-wave-e-acceptance`
 - PR: будет указан после публикации
 
 ## Реализация
