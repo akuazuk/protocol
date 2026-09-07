@@ -28,6 +28,8 @@ UNAVAILABLE_REASONS = frozenset(
         "schema_no_patient_key",
         "bad_case",
         "bad_db",
+        "query_failed",
+        "error",
     }
 )
 
@@ -57,7 +59,11 @@ def build_history_assessment_context(
     bundle = _mapping(history_bundle)
     summary = _mapping(bundle.get("summary"))
     reason = str(bundle.get("reason") or "")
-    history_available = bool(bundle) and reason not in UNAVAILABLE_REASONS
+    status = str(bundle.get("status") or "")
+    query_ok = bundle.get("ok")
+    history_available = bool(bundle) and query_ok is not False and reason not in UNAVAILABLE_REASONS
+    if status in {"error", "unavailable"}:
+        history_available = False
     any_prior_exists = int(summary.get("n_visits") or 0) > 0 or bool(document_prior)
 
     deep = _mapping(episode_deep)
@@ -101,10 +107,19 @@ def build_history_assessment_context(
     elif not comparable_prior:
         exclusions.append("prior_has_no_comparable_plan")
 
+    if not status:
+        if not history_available:
+            status = "unavailable" if reason in UNAVAILABLE_REASONS else "empty"
+        elif any_prior_exists:
+            status = "has_priors"
+        else:
+            status = "empty"
     return {
         "contract_version": 1,
         "engine": ENGINE,
-        "cutoff_at": str(cutoff_at or "") or None,
+        "ok": history_available,
+        "status": status,
+        "cutoff_at": str(cutoff_at or bundle.get("cutoff_at") or "") or None,
         "history_available": history_available,
         "any_prior_exists": any_prior_exists,
         "relevant_episode_prior_exists": relevant_episode_prior_exists,
