@@ -13,6 +13,8 @@
     var headers = MO.api.headers;
     var pageRequestEpoch = 0;
     var pageRequestController = null;
+    var caseDetailEpoch = 0;
+    var caseDetailController = null;
     function beginPageRequestScope() {
       pageRequestEpoch += 1;
       if (pageRequestController) pageRequestController.abort();
@@ -26,6 +28,22 @@
     }
     function isAbortedRequest(error) {
       return !!(error && error.name === "AbortError");
+    }
+    function beginCaseDetailScope(caseId) {
+      caseDetailEpoch += 1;
+      if (caseDetailController) caseDetailController.abort();
+      caseDetailController = typeof AbortController === "function" ? new AbortController() : null;
+      return {
+        caseId: String(caseId || ""),
+        epoch: caseDetailEpoch,
+        signal: caseDetailController ? caseDetailController.signal : null
+      };
+    }
+    function isStaleCaseScope(scope) {
+      return !scope || scope.epoch !== caseDetailEpoch || state.openCaseId !== scope.caseId;
+    }
+    async function caseRequest(primary, legacy, options) {
+      return rawRequest(primary, legacy, options || {});
     }
     async function request(primary, legacy, options) {
       var scopedOptions = Object.assign({}, options || {});
@@ -53,7 +71,7 @@
       zoneFilter: "", zoneBandFilter: "", overallGrade: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
       worstSeverity: "",
       doctorZoneMetric: "zone1",
-      caseNavIds: [],
+      caseNavIds: [], caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
       protocolSuggest: null,
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [] },
       scoreEligibleOnly: true,
@@ -2383,6 +2401,9 @@
       var data = await response.json();
       var rows = (data.rows || data.cases || data.items || data.worst_visits || []).map(rowRecord);
       state.caseNavIds = rows.map(function (item) { return item.id; }).filter(Boolean);
+      state.caseNavTotal = Number(data.total || rows.length);
+      state.caseNavPage = state.pageNo;
+      state.caseNavPageSize = Number(data.page_size || rows.length || 50);
       var body = queue ? $("queue-rows") : $("document-rows");
       clearWidgetError((queue ? $("page-queue") : $("page-documents")).querySelector(".card"), queue ? "queue-cases" : "document-cases");
       var emptyState = data.empty_state || {};
@@ -2443,18 +2464,30 @@
     }
     async function openCase(id, trigger) {
       if (!id) return;
-      state.openCaseId = id;
-      state.trigger = trigger;
+      state.openCaseId = String(id);
+      if (trigger) state.trigger = trigger;
+      var scope = beginCaseDetailScope(id);
       $("case-drawer").hidden = false; $("drawer-backdrop").hidden = false;
       document.body.style.overflow = "hidden";
       $("drawer-body").innerHTML = '<div class="skeleton"></div>';
+      updateDrawerNav();
       $("drawer-close").focus();
       var q = query(); q.set("month", q.get("month") || minskDateKey(0).slice(0,7)); q.set("visit_id", id);
       try {
-        var response = await request("/cases/" + encodeURIComponent(id), "/case-detail?" + q.toString());
+        var response = await caseRequest(
+          "/cases/" + encodeURIComponent(id),
+          "/case-detail?" + q.toString(),
+          scope.signal ? { signal: scope.signal } : {}
+        );
+        if (isStaleCaseScope(scope)) return;
         if (!response.ok) throw new Error("Случай не найден.");
-        renderCase(await response.json());
-      } catch (e) { $("drawer-body").innerHTML = '<div class="banner">' + esc(e.message) + "</div>"; }
+        var payload = await response.json();
+        if (isStaleCaseScope(scope)) return;
+        renderCase(payload, scope);
+      } catch (e) {
+        if (isAbortedRequest(e) || isStaleCaseScope(scope)) return;
+        $("drawer-body").innerHTML = '<div class="banner">' + esc(e.message) + "</div>";
+      }
     }
     function verdictTone(verdict) {
       var value = String(verdict || "").toLowerCase();
@@ -2802,7 +2835,51 @@
       return '<div class="zones-hero"><div class="zones-hero-head"><h3>Оценка случая</h3>' + risk +
         '</div>' + gradeLine + '<div class="zones-hero-grid">' + cards + '</div></div>';
     }
-    function renderFindingsCompact(findings, crm, llmJudge) {
+    function assessmentStatusLabel(value) {
+      return ({
+        completed: "Проверка завершена",
+        partial: "Проверено частично",
+        stale: "Оценка устарела",
+        conflict: "Есть конфликт данных",
+        error: "Ошибка оценки",
+        insufficient_data: "Недостаточно данных",
+        not_applicable: "Не применяется",
+        not_evaluated: "Не оценено"
+      })[value] || "Статус оценки не указан";
+    }
+    function renderAssessmentStatusStrip(assessment) {
+      assessment = assessment || {};
+      var status = assessment.status || "not_evaluated";
+      var coverage = assessment.coverage || {};
+      var evaluatedN = coverage.evaluated_n != null ? coverage.evaluated_n : coverage.assessed_n;
+      var totalN = coverage.total_n != null ? coverage.total_n : coverage.eligible_n;
+      var coverageLine = evaluatedN != null && totalN != null
+        ? ("Покрытие: n=" + evaluatedN + "/" + totalN)
+        : "Покрытие не опубликовано";
+      var protocol = assessment.protocol || {};
+      var applicability = protocol.applicability_status || "not_evaluated";
+      var protocolLine = applicability === "applicable" || applicability === "matched"
+        ? ("Протокол применим" + (protocol.version ? " · версия " + protocol.version : ""))
+        : applicability === "not_applicable"
+          ? "Протокол не применяется к этому случаю"
+          : "Протокол не подобран - критерий плана не штрафуем за несоответствие протоколу";
+      var tone = status === "completed" ? "good" :
+        (/error|conflict|stale/.test(status) ? "critical" : "review");
+      return '<div class="assessment-status-strip" role="status">' +
+        '<span class="status ' + tone + '">' + esc(assessmentStatusLabel(status)) + "</span>" +
+        '<span>' + esc(coverageLine) + "</span><span>" + esc(protocolLine) + "</span></div>";
+    }
+    function evidenceCardModels(findings) {
+      var seen = {};
+      return (findings || []).filter(function (finding, index) {
+        var id = String(finding.question_id || finding.code || ("finding-" + index));
+        if (seen[id]) return false;
+        seen[id] = true;
+        finding._questionId = id;
+        return true;
+      });
+    }
+    function renderFindingsCompact(findings, crm, llmJudge, assessment) {
       var filters = [
         ["all", "Все"], ["zone1", "Оформление"], ["zone2a", "Диагноз"],
         ["zone2b", "План"], ["safety", "Риск"]
@@ -2811,28 +2888,44 @@
         return '<button type="button" class="button secondary compact' + (idx === 0 ? " is-active" : "") +
           '" data-finding-zone="' + pair[0] + '">' + esc(pair[1]) + '</button>';
       }).join("") + '</div>';
-      var list = findings.length ? findings.map(function (finding) {
+      var cards = evidenceCardModels(findings);
+      var list = cards.length ? cards.map(function (finding) {
         var zkey = findingZoneKey(finding);
         var title = finding.title_ru || finding.title || finding.code || "Замечание";
         var decision = (crm.finding_decisions || {})[finding.code] || "unreviewed";
         var linked = finding.linked_fields || [];
-        return '<article class="finding-card finding-card--compact" data-finding-zone-item="' + zkey + '">' +
+        var shadow = !!(finding.shadow || finding.is_shadow);
+        var quote = finding.span_ru || finding.evidence_span || finding.evidence || "";
+        var requirement = finding.requirement_ru || finding.source_requirement || "";
+        var refs = finding.evidence_refs || (finding.source_ref ? [finding.source_ref] : []);
+        if (!Array.isArray(refs)) refs = [refs];
+        return '<article class="finding-card finding-card--compact evidence-card" data-question-id="' +
+          esc(finding._questionId) + '" data-finding-zone-item="' + zkey + '">' +
           '<div class="finding-card-head"><span class="status muted">' + esc(layerLabelRu(zkey) || "Прочее") +
           '</span>' +
-          ((finding.shadow || finding.is_shadow)
+          (shadow
             ? '<span class="status muted">не в оценке</span>' : "") +
           '<span class="status ' + esc(finding.severity_tone || severityTone(finding)) + '">' +
           esc(finding.severity_label_ru || severityLabel(finding) || "Проверить") + '</span></div>' +
           '<div class="finding-card-title">' + esc(title) + '</div>' +
           (finding.detail_ru || finding.detail ? '<p class="finding-detail">' +
             esc(String(finding.detail_ru || finding.detail).slice(0, 220)) + '</p>' : "") +
+          (quote ? '<blockquote class="evidence-card__span">' + esc(String(quote).slice(0, 500)) + "</blockquote>" : "") +
+          (requirement ? '<p class="evidence-card__requirement"><b>Требование:</b> ' +
+            esc(String(requirement).slice(0, 500)) + "</p>" : "") +
+          '<div class="evidence-card__meta"><span>' +
+          esc(assessmentStatusLabel((assessment || {}).status || "not_evaluated")) + "</span>" +
+          '<span>' + esc(shadow ? "Нужна проверка методиста" : "В основной оценке") + "</span></div>" +
           (linked[0] ? '<button type="button" class="linkish" data-focus-clinical="' + esc(linked[0]) +
             '">показать в тексте МО</button>' : "") +
-          (finding.code ? '<label class="filter finding-decision"><span>Решение</span><select class="control" data-finding-code="' +
+          (finding.code && !shadow ? '<label class="filter finding-decision"><span>Решение</span><select class="control" data-finding-code="' +
             esc(finding.code) + '"><option value="unreviewed"' + (decision === "unreviewed" ? " selected" : "") +
             '>Не проверено</option><option value="confirmed"' + (decision === "confirmed" ? " selected" : "") +
             '>Подтверждено</option><option value="false_positive"' + (decision === "false_positive" ? " selected" : "") +
             '>Отклонено</option></select></label>' : "") +
+          '<details class="technical-details"><summary>Технические данные</summary><code>' +
+          esc(finding.code || finding._questionId) + "</code>" +
+          (refs.length ? '<p>Источники: ' + esc(refs.join(", ")) + "</p>" : "") + "</details>" +
           '</article>';
       }).join("") : '<p class="empty">Замечаний нет.</p>';
       var llmLine = "";
@@ -2843,7 +2936,7 @@
           '; диагноз - ' + esc(statusLabel((k.diagnosis || {}).verdict) || "нет") +
           '; план - ' + esc(statusLabel((k.recommendations || {}).verdict) || "нет") + '</p>';
       }
-      return '<div class="detail-block"><h3>Что не так</h3>' + chips + llmLine +
+      return '<div class="detail-block"><h3>Замечания для проверки</h3>' + chips + llmLine +
         '<div class="findings-compact-list">' + list + '</div></div>';
     }
     function renderHistoryContinuity(cont) {
@@ -3085,7 +3178,20 @@
         '<details open class="zones-criteria-details"><summary>Полная таблица критериев</summary>' +
         sections + '</details></div>';
     }
-    function renderCase(data) {
+    function renderCaseWorkspaceTabs() {
+      return '<div class="case-workspace-tabs" role="tablist" aria-label="Раздел случая">' +
+        '<button class="button secondary compact is-active" id="case-tab-document" type="button" role="tab" ' +
+        'aria-selected="true" aria-controls="case-clinical-pane" data-case-tab="document">Документ</button>' +
+        '<button class="button secondary compact" id="case-tab-review" type="button" role="tab" ' +
+        'aria-selected="false" aria-controls="case-review-column" data-case-tab="review">Проверка</button></div>';
+    }
+    function renderHistoryAndLabs(history, lab) {
+      return '<section class="detail-block history-labs-section"><h3>История и анализы</h3>' +
+        '<div class="history-labs-grid">' + renderHistoryCompact(history) + renderLabBundle(lab) +
+        "</div></section>";
+    }
+    function renderCase(data, scope) {
+      if (scope && isStaleCaseScope(scope)) return;
       var record = data.record || data.case || data;
       var item = rowRecord(record);
       var axes = data.axes || {};
@@ -3099,7 +3205,11 @@
       var llmJudge = data.llm_action_judge || {};
       var shadowDxPlan = data.shadow_dx_plan || {};
       var zones = data.zones || {};
+      var assessment = data.assessment || record.assessment || {};
       var useZonesUi = !!(zones && zones.ok && !zones.skipped);
+      var history = data.patient_history || {};
+      if (!history.continuity && data.history_continuity) history.continuity = data.history_continuity;
+      if (!history.deep && data.history_deep) history.deep = data.history_deep;
       var crmStatus = crm.status || "new";
       state.caseDetail = data;
       state.supersedesPackId = "";
@@ -3167,35 +3277,33 @@
         }).join("") : '<p class="empty">Событий пока нет.</p>') + '</div></details>';
       if (useZonesUi) {
         $("drawer-body").innerHTML =
+          renderCaseWorkspaceTabs() +
           '<div class="case-workspace-grid case-workspace-grid--zones">' +
-          '<div class="case-workspace-clinical" id="case-clinical-pane">' +
+          '<div class="case-workspace-clinical case-workspace-pane is-active-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
           renderClinicalDocument(sourceDocument, findings) +
           '</div>' +
-          '<div class="case-workspace-decision">' +
+          '<div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
+          renderAssessmentStatusStrip(assessment) +
+          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
+          renderFindingsCompact(findings, crm, llmJudge, assessment) +
+          renderHistoryAndLabs(history, data.lab) +
+          renderZonesCriteriaDetails(zones) +
+          '<details class="detail-block mo-secondary-details"><summary>Дополнительные автоматические оценки</summary>' +
           renderFamilyScores(data) +
           renderShadowDxPlan(shadowDxPlan) +
           renderReviewBrief(data.review_brief, data.case_narrative) +
-          renderFindingsCompact(findings, crm, llmJudge) +
-          renderZonesCriteriaDetails(zones) +
-          renderHistoryCompact((function () {
-            var hist = data.patient_history || {};
-            if (!hist.continuity && data.history_continuity) hist.continuity = data.history_continuity;
-            if (!hist.deep && data.history_deep) hist.deep = data.history_deep;
-            return hist;
-          })()) +
-          renderLabBundle(data.lab) +
-          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
-          serviceHtml +
+          serviceHtml + "</details>" +
           '</div>' +
           decisionHtml +
           '</div></div>';
       } else {
         $("drawer-body").innerHTML =
-          '<div class="case-workspace-grid"><div class="case-workspace-clinical" id="case-clinical-pane">' +
+          renderCaseWorkspaceTabs() +
+          '<div class="case-workspace-grid"><div class="case-workspace-clinical case-workspace-pane is-active-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
           renderClinicalDocument(sourceDocument, findings) + serviceHtml +
-          '</div><div class="case-workspace-decision">' +
+          '</div><div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderPatientHistory(data.patient_history) +
           renderFamilyScores(data) +
@@ -3203,13 +3311,13 @@
           renderShadowDxPlan(shadowDxPlan) +
           renderLlmActionJudge(llmJudge, sourceDocument, item) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
-          renderFindingsCompact(findings, crm, llmJudge) +
+          renderFindingsCompact(findings, crm, llmJudge, assessment) +
           '</div>' + decisionHtml + '</div></div>';
       }
       bindCaseWorkspaceInteractions();
       updateDrawerNav();
       if (useZonesUi) prefillDecisionFromBrief(data.review_brief || {});
-      loadProtocolSuggestIntoCase(item.id);
+      loadProtocolSuggestIntoCase(item.id, scope);
     }
     function bindReviewBriefPrefill() {
       var prefillBtn = $("review-brief-prefill");
@@ -3221,6 +3329,26 @@
         var text = brief.decision_summary_ru ||
           ((brief.doctor_feedback || []).map(function (line) { return "• " + line; }).join("\n"));
         if (text) area.value = text;
+      });
+    }
+    function activateCaseWorkspaceTab(name) {
+      var body = $("drawer-body");
+      if (!body) return;
+      body.querySelectorAll("[data-case-tab]").forEach(function (button) {
+        var active = button.getAttribute("data-case-tab") === name;
+        button.classList.toggle("is-active", active);
+        button.setAttribute("aria-selected", active ? "true" : "false");
+      });
+      body.querySelectorAll("[data-case-pane]").forEach(function (pane) {
+        pane.classList.toggle("is-active-pane", pane.getAttribute("data-case-pane") === name);
+      });
+    }
+    function bindCaseWorkspaceTabs(body) {
+      if (!body) return;
+      body.querySelectorAll("[data-case-tab]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          activateCaseWorkspaceTab(button.getAttribute("data-case-tab") || "document");
+        });
       });
     }
     function bindZoneCardInteractions(body) {
@@ -3239,6 +3367,7 @@
       bindReviewBriefPrefill();
       var body = $("drawer-body");
       if (!body) return;
+      bindCaseWorkspaceTabs(body);
       body.querySelectorAll("[data-finding-zone]").forEach(function (button) {
         button.addEventListener("click", function () {
           var zone = button.getAttribute("data-finding-zone") || "all";
@@ -3259,6 +3388,7 @@
       body.querySelectorAll("[data-focus-clinical]").forEach(function (button) {
         button.addEventListener("click", function () {
           var field = button.getAttribute("data-focus-clinical");
+          activateCaseWorkspaceTab("document");
           var target = body.querySelector('[data-clinical-field="' + field + '"]');
           if (!target) {
             showToast("Поле в тексте МО не найдено");
@@ -3418,23 +3548,43 @@
       });
       return ratings;
     }
-    async function loadProtocolSuggestIntoCase(caseId) {
+    function assessmentWithProtocolSuggest(assessment, suggest) {
+      var next = Object.assign({}, assessment || {});
+      next.protocol = Object.assign({}, next.protocol || {});
+      var kpStatus = (((suggest || {}).zones || {}).zone2b || {}).kp_status;
+      if (kpStatus === "matched" || (suggest || {}).matched === true ||
+          (suggest || {}).protocol_applicability_status === "applicable") {
+        next.protocol.applicability_status = "applicable";
+      }
+      return next;
+    }
+    async function loadProtocolSuggestIntoCase(caseId, scope) {
       var host = $("protocol-suggest-host");
       if (!host || !caseId) return;
       host.innerHTML = '<div class="detail-block"><p class="card-sub">Подбираем протоколы…</p></div>';
       try {
         var q = query();
         q.set("month", q.get("month") || minskDateKey(0).slice(0, 7));
-        var response = await request(
-          "/cases/" + encodeURIComponent(caseId) + "/protocol-suggest?" + q.toString()
+        var response = await caseRequest(
+          "/cases/" + encodeURIComponent(caseId) + "/protocol-suggest?" + q.toString(),
+          null,
+          scope && scope.signal ? { signal: scope.signal } : {}
         );
         if (!response.ok) throw new Error("suggest_failed");
         var suggest = await response.json();
-        if (state.openCaseId !== caseId) return;
+        if (state.openCaseId !== String(caseId) || (scope && isStaleCaseScope(scope))) return;
         host.innerHTML = renderProtocolSuggest(suggest);
         bindProtocolSuggestHost(host);
         if (state.caseDetail) {
           state.caseDetail.protocol_suggest = suggest;
+          var nextAssessment = assessmentWithProtocolSuggest(
+            state.caseDetail.assessment || ((state.caseDetail.record || {}).assessment),
+            suggest
+          );
+          state.caseDetail.assessment = nextAssessment;
+          var assessmentStrip = $("drawer-body") &&
+            $("drawer-body").querySelector(".assessment-status-strip");
+          if (assessmentStrip) assessmentStrip.outerHTML = renderAssessmentStatusStrip(nextAssessment);
           if (suggest.zones && suggest.zones.ok) {
             state.caseDetail.zones = suggest.zones;
             var drawer = $("drawer-body");
@@ -3475,6 +3625,7 @@
           }
         }
       } catch (e) {
+        if (isAbortedRequest(e) || (scope && isStaleCaseScope(scope))) return;
         host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
         bindProtocolSuggestHost(host);
       }
@@ -3484,7 +3635,15 @@
       var idx = ids.indexOf(state.openCaseId);
       var prev = $("drawer-prev");
       var next = $("drawer-next");
+      var position = $("drawer-nav-position");
       if (!prev || !next) return;
+      if (position) {
+        var absoluteIndex = idx < 0 ? 0 :
+          ((Math.max(1, Number(state.caseNavPage || 1)) - 1) * Number(state.caseNavPageSize || ids.length) + idx + 1);
+        position.textContent = idx < 0
+          ? "Случай вне текущей страницы"
+          : (absoluteIndex + " из " + Math.max(Number(state.caseNavTotal || 0), ids.length));
+      }
       if (idx < 0 || ids.length < 2) {
         prev.hidden = true; next.hidden = true; return;
       }
@@ -3556,9 +3715,13 @@
       } catch (e) { showError(e.message); }
     }
     function closeDrawer() {
+      caseDetailEpoch += 1;
+      if (caseDetailController) caseDetailController.abort();
+      caseDetailController = null;
       $("case-drawer").hidden = true; $("drawer-backdrop").hidden = true; document.body.style.overflow = "";
       if ($("drawer-pdf")) $("drawer-pdf").hidden = true;
       if (state.trigger) state.trigger.focus();
+      state.openCaseId = "";
     }
     function unavailableBlock(section, fallback) {
       return '<div class="empty"><b>Показатель недоступен</b><div>' +
