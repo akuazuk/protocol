@@ -8,7 +8,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-case-drawer-pc1`
 - Base: `b5433e538f9c5be65893bdd09e4589fa3fdef0fb`
 - BUILD_VERSION: `2026-09-07-041400Z-case-drawer-d1-d5`
-- PR: будет указан после публикации
+- PR: [#234](https://github.com/akuazuk/protocol/pull/234)
 
 ## Реализация
 
