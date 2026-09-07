@@ -37,9 +37,9 @@ Baseline на момент публикации:
 
 | Метрика | Было | Цель |
 |---|---:|---:|
-| List/detail/export parity для одной ревизии | не закреплено | 100% synthetic сценариев |
-| Synthetic сценарии E | частичное покрытие | 23 из 23 |
-| UI-наблюдения U | частично | U01-U14 проверены |
+| List/detail/export parity для одной ревизии | HTTP E04 synthetic | 100% synthetic сценариев |
+| Synthetic сценарии E | E01-E23 executable в pytest | 23 из 23 технических |
+| UI-наблюдения U | U01-U14 в коде, owner close | независимый usability walkthrough |
 | Viewport matrix | статические проверки | 320/360/768/1024/1440 + zoom 200% |
 | Ненулевое значение, показанное как 0% | возможно | 0 |
 | Unknown, показанный как success/0% | возможно | 0 |
@@ -226,6 +226,11 @@ GCE release и feature smoke. Runtime/UI и level-4 tests не смешиват�
 Каждый handoff содержит:
 
 `Rxx/Uxx -> PR -> local/CI -> merge SHA -> production SHA -> clinical/usability gate -> остаток`.
+
+2026-09-07, owner close remaining-work: P0 #243, same-day #245, evaluated N /
+review projection / E04 HTTP / E23 verifier / UX leftovers в этой ветке.
+Клинические гейты и A19/A26/holdout сняты решением владельца, не экспертизой.
+Матрица закрытия: `docs/reports/2026-09-07-mo-plan-close-matrix.md`.
 
 Нельзя считать волну завершенной без соответствующей synthetic проверки. Нельзя
 объявлять клиническую корректность по техническому CI.

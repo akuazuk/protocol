@@ -314,10 +314,15 @@ def test_e20_review_pack_save_contract_exposes_all_guards() -> None:
 
 
 def test_e23_lab_assets_and_image_verifier_contract() -> None:
+    import importlib.util
+
     root = Path(__file__).resolve().parents[1]
     assert (root / "data/lab_canons/lab_reference_ranges.json").is_file()
     assert (root / "data/lab_canons/lab_test_canons.json").is_file()
-    verifier = (root / "deploy/gcp-app/verify_lab_assets.py").read_text(encoding="utf-8")
-    assert "evaluate_lab_for_case" in verifier
-    assert "lab_reference_ranges.json" in verifier
+    path = root / "deploy/gcp-app/verify_lab_assets.py"
+    spec = importlib.util.spec_from_file_location("verify_lab_assets", path)
+    assert spec and spec.loader
+    module = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(module)
+    module.main()
 

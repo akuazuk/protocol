@@ -4714,9 +4714,15 @@ def _attach_family_group_denominators(
     *,
     doctor_totals: Mapping[str, int],
     specialty_totals: Mapping[str, int],
+    doctor_evaluated: Mapping[str, int] | None = None,
+    specialty_evaluated: Mapping[str, int] | None = None,
 ) -> None:
     """Expose group rates separately from contribution to all period cases."""
 
+    evaluated_maps = {
+        "doctor": doctor_evaluated or {},
+        "specialty": specialty_evaluated or {},
+    }
     for family in families.values():
         if not isinstance(family, dict):
             continue
@@ -4730,37 +4736,102 @@ def _attach_family_group_denominators(
                 label = str(row.get(label_key) or "").strip()
                 group_cases = max(0, int(totals.get(label, 0) or 0))
                 problem_cases = max(0, int(row.get("cases") or 0))
+                evaluated_cases = max(0, int((evaluated_maps[label_key] or {}).get(label, 0) or 0))
                 legacy_group_small_n = group_cases < FAMILY_GROUP_COMPARISON_MIN_N
+                evaluated_small_n = evaluated_cases < FAMILY_GROUP_COMPARISON_MIN_N
+                ranking_eligible = evaluated_cases >= FAMILY_GROUP_COMPARISON_MIN_N
+                if evaluated_cases == 0:
+                    comparison_status = "evaluated_n_zero"
+                elif evaluated_small_n:
+                    comparison_status = "small_n"
+                else:
+                    comparison_status = "ok"
                 row.update(
                     {
                         "problem_cases": problem_cases,
                         "group_cases": group_cases,
-                        "evaluated_cases": None,
+                        "evaluated_cases": evaluated_cases,
                         "problem_pct_of_group": (
                             round(100.0 * problem_cases / group_cases, 2)
                             if group_cases
                             else None
                         ),
-                        "problem_pct_of_evaluated": None,
-                        "period_contribution_pct": row.get("pct"),
-                        "denominator_kind": "group_total_cases",
-                        "denominator_n": group_cases,
-                        "comparison_min_n": FAMILY_GROUP_COMPARISON_MIN_N,
-                        "small_n": legacy_group_small_n,
-                        "ranking_eligible": False,
-                        "comparison_status": (
-                            "small_n"
-                            if legacy_group_small_n
-                            else "evaluated_denominator_unavailable"
+                        "problem_pct_of_evaluated": (
+                            round(100.0 * problem_cases / evaluated_cases, 2)
+                            if evaluated_cases
+                            else None
                         ),
-                        "evaluated_small_n": None,
-                        "evaluated_ranking_eligible": False,
-                        "evaluated_comparison_status": "evaluated_denominator_unavailable",
+                        "period_contribution_pct": row.get("pct"),
+                        "denominator_kind": "evaluated_cases",
+                        "denominator_n": evaluated_cases,
+                        "comparison_min_n": FAMILY_GROUP_COMPARISON_MIN_N,
+                        "small_n": evaluated_small_n if evaluated_cases else legacy_group_small_n,
+                        "ranking_eligible": ranking_eligible,
+                        "comparison_status": comparison_status,
+                        "evaluated_small_n": evaluated_small_n,
+                        "evaluated_ranking_eligible": ranking_eligible,
+                        "evaluated_comparison_status": comparison_status,
                         "comparison_reason": (
-                            "evaluated_n_required_for_small_n_guard"
+                            "evaluated_n_zero"
+                            if evaluated_cases == 0
+                            else (
+                                "evaluated_n_below_min"
+                                if evaluated_small_n
+                                else "evaluated_n_ok"
+                            )
                         ),
                     }
                 )
+
+
+def _review_projection_from_states(
+    finding_rows: Iterable[Mapping[str, Any]],
+    states: Mapping[str, Mapping[str, Any]],
+    *,
+    family_for_code: Any,
+) -> dict[str, dict[str, int | str]]:
+    """Project latest methodist finding decisions onto family case counts."""
+
+    buckets: dict[str, dict[str, set[str]]] = {}
+    for row in finding_rows:
+        family_id = str(family_for_code(str(row.get("finding_code") or "")) or "")
+        case_id = str(row.get("mis_id") or "").strip()
+        if not family_id or not case_id:
+            continue
+        bucket = buckets.setdefault(
+            family_id,
+            {
+                "confirmed": set(),
+                "rejected": set(),
+                "needs_more_data": set(),
+                "unreviewed": set(),
+            },
+        )
+        state = states.get(case_id) or {}
+        crm_status = str(state.get("status") or "new")
+        if crm_status in {"false_positive", "closed"}:
+            bucket["rejected"].add(case_id)
+            continue
+        decisions = state.get("finding_decisions") if isinstance(state.get("finding_decisions"), dict) else {}
+        decision = str(decisions.get(str(row.get("finding_code") or "")) or "unreviewed")
+        if decision == "confirmed":
+            bucket["confirmed"].add(case_id)
+        elif decision == "false_positive":
+            bucket["rejected"].add(case_id)
+        elif decision == "needs_more_data":
+            bucket["needs_more_data"].add(case_id)
+        else:
+            bucket["unreviewed"].add(case_id)
+    out: dict[str, dict[str, int | str]] = {}
+    for family_id, bucket in buckets.items():
+        out[family_id] = {
+            "status": "projected" if states else "no_reviews",
+            "confirmed_cases": len(bucket["confirmed"]),
+            "rejected_cases": len(bucket["rejected"]),
+            "needs_more_data_cases": len(bucket["needs_more_data"]),
+            "unreviewed_cases": len(bucket["unreviewed"]),
+        }
+    return out
 
 
 def _attach_family_finding_provenance(
@@ -4770,6 +4841,7 @@ def _attach_family_finding_provenance(
     family_for_code: Any,
     shadow_available: bool,
     status: str | None = None,
+    review_projection: Mapping[str, Mapping[str, Any]] | None = None,
 ) -> None:
     """Expose stored finding origin without inventing human review outcomes."""
 
@@ -4829,16 +4901,19 @@ def _attach_family_finding_provenance(
             "source_ref_count": len(source_refs),
             "source_refs_truncated": len(source_refs) > 50,
             "trust_levels": sorted(bucket.get("trust_levels") or ()),
-            "review": {
-                "status": "not_projected",
-                "confirmed_cases": None,
-                "rejected_cases": None,
-                "needs_more_data_cases": None,
-                "unreviewed_cases": None,
-            },
+            "review": dict(
+                (review_projection or {}).get(family_id)
+                or {
+                    "status": "no_reviews",
+                    "confirmed_cases": 0,
+                    "rejected_cases": 0,
+                    "needs_more_data_cases": 0,
+                    "unreviewed_cases": len(bucket.get("active_cases") or ()),
+                }
+            ),
             "limitations": [
                 "non_shadow_is_not_human_confirmation",
-                "evaluator_completion_status_not_projected",
+                "latest_crm_state_only",
             ],
         }
 
@@ -4954,6 +5029,43 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
                 """,
                 args,
             ).fetchall()
+            evaluated_predicates = (
+                (
+                    f"{clause} AND (c.overall_pct IS NOT NULL "
+                    "OR COALESCE(c.assessment_status, '') IN ('completed','partial','review'))"
+                ),
+                f"{clause} AND c.overall_pct IS NOT NULL",
+            )
+            evaluated_doctor_rows = []
+            evaluated_specialty_rows = []
+            for evaluated_clause in evaluated_predicates:
+                try:
+                    evaluated_doctor_rows = conn.execute(
+                        f"""
+                        SELECT d.doctor_fio AS doctor, COUNT(*) AS cases
+                        FROM {_MO_CASE_FROM}
+                        WHERE {evaluated_clause}
+                          AND d.doctor_fio IS NOT NULL
+                          AND TRIM(d.doctor_fio) != ''
+                        GROUP BY d.doctor_fio
+                        """,
+                        args,
+                    ).fetchall()
+                    evaluated_specialty_rows = conn.execute(
+                        f"""
+                        SELECT c.specialty AS specialty, COUNT(*) AS cases
+                        FROM {_MO_CASE_FROM}
+                        WHERE {evaluated_clause}
+                          AND c.specialty IS NOT NULL
+                          AND TRIM(c.specialty) != ''
+                        GROUP BY c.specialty
+                        """,
+                        args,
+                    ).fetchall()
+                    break
+                except sqlite3.Error:
+                    evaluated_doctor_rows = []
+                    evaluated_specialty_rows = []
             cases_with_lab, lab_cov = _count_cases_with_lab(conn, clause, args)
     except (sqlite3.Error, RuntimeError):
         dash = family_dashboard_from_rows([], total_cases=0)
@@ -5004,12 +5116,24 @@ def build_mo_drugs_labs_kpis(params: dict[str, Any]) -> dict[str, Any]:
         dash["families"],
         doctor_totals=doctor_total_counts,
         specialty_totals={str(r[0]): int(r[1] or 0) for r in specialty_rows},
+        doctor_evaluated={str(r[0]): int(r[1] or 0) for r in evaluated_doctor_rows},
+        specialty_evaluated={str(r[0]): int(r[1] or 0) for r in evaluated_specialty_rows},
+    )
+    try:
+        review_states = _crm_states([str(item.get("mis_id") or "") for item in finding_maps])
+    except sqlite3.Error:
+        review_states = {}
+    review_projection = _review_projection_from_states(
+        finding_maps,
+        review_states,
+        family_for_code=family_for_code,
     )
     _attach_family_finding_provenance(
         dash["families"],
         finding_maps,
         family_for_code=family_for_code,
         shadow_available=shadow_available,
+        review_projection=review_projection,
     )
     doctors = risk_adjust_doctor_rows(
         [

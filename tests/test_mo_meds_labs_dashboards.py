@@ -164,9 +164,9 @@ def test_family_groups_separate_group_rate_from_period_contribution(
         assert row["group_cases"] == 2
         assert row["problem_pct_of_group"] == 50.0
         assert row["period_contribution_pct"] == 50.0
-        assert row["evaluated_cases"] is None
-        assert row["problem_pct_of_evaluated"] is None
-        assert row["denominator_kind"] == "group_total_cases"
+        assert row["evaluated_cases"] == 2
+        assert row["problem_pct_of_evaluated"] == 50.0
+        assert row["denominator_kind"] == "evaluated_cases"
         assert row["denominator_n"] == 2
         assert row["small_n"] is True
         assert row["ranking_eligible"] is False
