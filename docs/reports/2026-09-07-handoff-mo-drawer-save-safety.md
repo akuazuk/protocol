@@ -8,7 +8,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-drawer-safety-pc1`
 - Base: `6911db7cbc5af14b46f39312d95339258ce2763f`
 - BUILD_VERSION: `2026-09-07-043518Z-drawer-save-safety`
-- PR: будет указан после публикации
+- PR: [#235](https://github.com/akuazuk/protocol/pull/235)
 
 ## Реализация
 
