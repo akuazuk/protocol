@@ -77,6 +77,7 @@
       scoreEligibleOnly: true,
       data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
       caseDetail: null, supersedesPackId: "",
+      decisionBaseline: "", decisionDirty: false, decisionSaveToken: "",
       drillTrail: [], drillSnapshot: null,
       columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false,
       filterDraft: null, filterPanelApplying: false,
@@ -2464,6 +2465,10 @@
     }
     async function openCase(id, trigger) {
       if (!id) return;
+      if (state.openCaseId && String(id) !== state.openCaseId) {
+        if (!confirmDiscardDecision()) return;
+        state.decisionDirty = false;
+      }
       state.openCaseId = String(id);
       if (trigger) state.trigger = trigger;
       var scope = beginCaseDetailScope(id);
@@ -3231,7 +3236,7 @@
       var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
         '<details class="methodist-decision-panel methodist-decision-panel--dock">' +
-        '<summary class="decision-dock-summary">Решение методиста</summary>' +
+        '<summary class="decision-dock-summary">Решение методиста <span id="drawer-decision-status" class="status muted">Сохранено</span></summary>' +
         '<div class="decision-dock-body">' +
         '<div class="verdict-row">' +
         '<label class="filter"><span>Оформление</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
@@ -3317,6 +3322,7 @@
       bindCaseWorkspaceInteractions();
       updateDrawerNav();
       if (useZonesUi) prefillDecisionFromBrief(data.review_brief || {});
+      setDecisionBaseline();
       loadProtocolSuggestIntoCase(item.id, scope);
     }
     function bindReviewBriefPrefill() {
@@ -3328,7 +3334,10 @@
         if (!area) return;
         var text = brief.decision_summary_ru ||
           ((brief.doctor_feedback || []).map(function (line) { return "• " + line; }).join("\n"));
-        if (text) area.value = text;
+        if (text) {
+          area.value = text;
+          markDecisionDirty();
+        }
       });
     }
     function activateCaseWorkspaceTab(name) {
@@ -3351,6 +3360,66 @@
         });
       });
     }
+    function snapshotDecisionForm() {
+      var body = $("drawer-body");
+      if (!body) return "";
+      var values = {};
+      body.querySelectorAll(
+        "#drawer-status, #drawer-summary, #drawer-training-use, " +
+        "#drawer-verdict-c, #drawer-verdict-d, #drawer-verdict-r, " +
+        "[data-finding-code], .protocol-suggest-item input[type='radio']"
+      ).forEach(function (field, index) {
+        var key = field.id || field.getAttribute("data-finding-code") ||
+          field.name || ("field-" + index);
+        values[key] = field.type === "checkbox" || field.type === "radio"
+          ? !!field.checked
+          : field.value;
+      });
+      return JSON.stringify(values);
+    }
+    function newDecisionSaveToken() {
+      if (window.crypto && typeof window.crypto.randomUUID === "function") {
+        return window.crypto.randomUUID();
+      }
+      return "mo-" + Date.now() + "-" + Math.random().toString(16).slice(2);
+    }
+    function setDecisionBaseline() {
+      state.decisionBaseline = snapshotDecisionForm();
+      state.decisionDirty = false;
+      state.decisionSaveToken = "";
+      var panel = $("drawer-body") && $("drawer-body").querySelector(".methodist-decision-panel");
+      if (panel) panel.classList.remove("is-unsaved");
+      if ($("drawer-decision-status")) {
+        $("drawer-decision-status").textContent = "Сохранено";
+        $("drawer-decision-status").className = "status muted";
+      }
+    }
+    function markDecisionDirty() {
+      var dirty = snapshotDecisionForm() !== state.decisionBaseline;
+      state.decisionDirty = dirty;
+      if (dirty && !state.decisionSaveToken) state.decisionSaveToken = newDecisionSaveToken();
+      var panel = $("drawer-body") && $("drawer-body").querySelector(".methodist-decision-panel");
+      if (panel) panel.classList.toggle("is-unsaved", dirty);
+      if ($("drawer-decision-status")) {
+        $("drawer-decision-status").textContent = dirty ? "Черновик" : "Сохранено";
+        $("drawer-decision-status").className = "status " + (dirty ? "review" : "muted");
+      }
+    }
+    function confirmDiscardDecision() {
+      if (!state.decisionDirty) return true;
+      return window.confirm("Есть несохранённые изменения. Закрыть разбор без сохранения?");
+    }
+    function bindDecisionDirtyTracking(body) {
+      if (!body) return;
+      body.addEventListener("input", function (event) {
+        if (event.target.closest(".methodist-decision-panel")) markDecisionDirty();
+      });
+      body.addEventListener("change", function (event) {
+        if (event.target.closest(".methodist-decision-panel, .protocol-suggest-item, .evidence-card")) {
+          markDecisionDirty();
+        }
+      });
+    }
     function bindZoneCardInteractions(body) {
       if (!body) return;
       body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
@@ -3368,6 +3437,7 @@
       var body = $("drawer-body");
       if (!body) return;
       bindCaseWorkspaceTabs(body);
+      bindDecisionDirtyTracking(body);
       body.querySelectorAll("[data-finding-zone]").forEach(function (button) {
         button.addEventListener("click", function () {
           var zone = button.getAttribute("data-finding-zone") || "all";
@@ -3441,6 +3511,7 @@
           var select = $("drawer-body").querySelector('[data-finding-code="' + code + '"]');
           if (select) select.value = decision.finding_decisions[code];
         });
+        setDecisionBaseline();
         $("announcer").textContent = "Пакет загружен для правки - сохранение создаст новую версию";
         var panel = $("drawer-body").querySelector(".methodist-decision-panel");
         if (panel) panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
@@ -3624,6 +3695,7 @@
             };
           }
         }
+        if (!state.decisionDirty) setDecisionBaseline();
       } catch (e) {
         if (isAbortedRequest(e) || (scope && isStaleCaseScope(scope))) return;
         host.innerHTML = renderProtocolSuggest({ available: false, reason: "Не удалось подобрать протоколы МЗ." });
@@ -3687,17 +3759,36 @@
           protocol_suggest: state.protocolSuggest || null
         };
         var body = { decision: decision };
+        var detail = state.caseDetail || {};
+        var assessment = detail.assessment || ((detail.record || {}).assessment) || {};
+        var documentRevision = assessment.document_revision;
+        var evaluationRunId = assessment.evaluation_run_id ||
+          (detail.record || {}).evaluation_run_id;
+        if (documentRevision != null) body.expected_document_revision = documentRevision;
+        if (evaluationRunId) body.evaluation_run_id = evaluationRunId;
         if (state.supersedesPackId) body.supersedes_pack_id = state.supersedesPackId;
         var month = (query().get("month") || minskDateKey(0).slice(0, 7));
         if (month) body.month = month;
+        if (!state.decisionSaveToken) state.decisionSaveToken = newDecisionSaveToken();
         var response = await request(
           "/cases/" + encodeURIComponent(state.openCaseId) + "/review-pack",
           null,
-          { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) }
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+              "Idempotency-Key": state.decisionSaveToken
+            },
+            body: JSON.stringify(body)
+          }
         );
+        if (response.status === 409) {
+          throw new Error("Документ обновился после открытия. Обновите разбор и проверьте решение ещё раз.");
+        }
         if (!response.ok) throw new Error("Не удалось сохранить пакет разбора.");
         $("announcer").textContent = "Пакет разбора сохранён";
-        closeDrawer(); loadPage(state.page);
+        state.decisionDirty = false;
+        closeDrawer(true); loadPage(state.page);
       } catch (e) { showError(e.message); }
     }
     function selectedCaseIds() {
@@ -3714,7 +3805,8 @@
         loadCases(true);
       } catch (e) { showError(e.message); }
     }
-    function closeDrawer() {
+    function closeDrawer(force) {
+      if (force !== true && !confirmDiscardDecision()) return false;
       caseDetailEpoch += 1;
       if (caseDetailController) caseDetailController.abort();
       caseDetailController = null;
@@ -3722,6 +3814,10 @@
       if ($("drawer-pdf")) $("drawer-pdf").hidden = true;
       if (state.trigger) state.trigger.focus();
       state.openCaseId = "";
+      state.decisionDirty = false;
+      state.decisionBaseline = "";
+      state.decisionSaveToken = "";
+      return true;
     }
     function unavailableBlock(section, fallback) {
       return '<div class="empty"><b>Показатель недоступен</b><div>' +

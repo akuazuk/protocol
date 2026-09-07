@@ -41,7 +41,10 @@ CREATE TABLE IF NOT EXISTS crm_review_pack (
   training_use INTEGER NOT NULL DEFAULT 1,
   actor TEXT,
   created_at TEXT NOT NULL,
-  supersedes_pack_id TEXT
+  supersedes_pack_id TEXT,
+  document_revision TEXT,
+  evaluation_run_id TEXT,
+  idempotency_key TEXT
 );
 CREATE INDEX IF NOT EXISTS idx_crm_review_pack_case
   ON crm_review_pack(case_id, created_at DESC);
@@ -55,6 +58,17 @@ def ensure_review_pack_schema(conn: sqlite3.Connection | None = None) -> None:
     db = conn or _connect()
     try:
         db.executescript(REVIEW_PACK_SCHEMA_SQL)
+        columns = {
+            str(row[1]) for row in db.execute("PRAGMA table_info(crm_review_pack)").fetchall()
+        }
+        for name in ("document_revision", "evaluation_run_id", "idempotency_key"):
+            if name not in columns:
+                db.execute(f"ALTER TABLE crm_review_pack ADD COLUMN {name} TEXT")
+        db.execute(
+            """CREATE UNIQUE INDEX IF NOT EXISTS idx_crm_review_pack_idempotency
+               ON crm_review_pack(case_id, actor, idempotency_key)
+               WHERE idempotency_key IS NOT NULL AND idempotency_key != ''"""
+        )
         if own:
             db.commit()
     finally:
@@ -308,6 +322,8 @@ def _public_pack_row(row: sqlite3.Row | Mapping[str, Any], *, include_bodies: bo
         "actor": item.get("actor") or "",
         "created_at": item.get("created_at") or "",
         "supersedes_pack_id": item.get("supersedes_pack_id") or None,
+        "document_revision": item.get("document_revision"),
+        "evaluation_run_id": item.get("evaluation_run_id") or None,
     }
     if not include_bodies:
         decision: dict[str, Any] = {}
@@ -344,6 +360,9 @@ def save_review_pack(
     decision: dict[str, Any] | None,
     supersedes_pack_id: str | None = None,
     month: str | None = None,
+    expected_document_revision: str | int | None = None,
+    evaluation_run_id: str | None = None,
+    idempotency_key: str | None = None,
 ) -> dict[str, Any]:
     if role not in CRM_ROLES:
         raise PermissionError("mutation_requires_methodist_role")
@@ -358,10 +377,54 @@ def save_review_pack(
             actor = f"expert:{actor}"
     else:
         decision_norm.setdefault("source", "methodist")
+    idem = str(idempotency_key or "").strip()[:160]
+    if idem:
+        with closing(_connect()) as conn:
+            ensure_review_pack_schema(conn)
+            existing = conn.execute(
+                """SELECT pack_id, created_at, training_use, supersedes_pack_id
+                   FROM crm_review_pack
+                   WHERE case_id=? AND actor=? AND idempotency_key=?""",
+                (cid, actor, idem),
+            ).fetchone()
+        if existing:
+            return {
+                "ok": True,
+                "pack_id": str(existing["pack_id"]),
+                "case_id": cid,
+                "created_at": str(existing["created_at"]),
+                "training_use": bool(existing["training_use"]),
+                "supersedes_pack_id": existing["supersedes_pack_id"],
+                "idempotent_replay": True,
+            }
     detail = build_case_detail(cid, month=month)
     if not detail.get("ok"):
         raise ValueError("case_not_found")
     record = detail.get("record") if isinstance(detail.get("record"), dict) else {}
+    assessment = (
+        detail.get("assessment")
+        if isinstance(detail.get("assessment"), dict)
+        else (
+            record.get("assessment")
+            if isinstance(record.get("assessment"), dict)
+            else {}
+        )
+    )
+    current_revision = assessment.get("document_revision")
+    if current_revision is None:
+        current_revision = record.get("document_revision")
+    if (
+        expected_document_revision is not None
+        and current_revision is not None
+        and str(expected_document_revision) != str(current_revision)
+    ):
+        raise ValueError("document_revision_conflict")
+    current_run_id = str(
+        evaluation_run_id
+        or assessment.get("evaluation_run_id")
+        or record.get("evaluation_run_id")
+        or ""
+    ).strip()
     visit_date = str(record.get("date") or record.get("visit_date") or "")[:10]
     mis_id = str(record.get("mis_id") or "")
     patient_id = lookup_patient_id(cid, visit_date=visit_date or None, mis_id=mis_id or None)
@@ -401,6 +464,8 @@ def save_review_pack(
         "rubric_mz": detail.get("rubric_mz") or {},
         "llm_action_judge": judge,
         "protocol_suggest": protocol_suggest,
+        "document_revision": current_revision,
+        "evaluation_run_id": current_run_id or None,
         "captured_at": datetime.now(timezone.utc).isoformat(),
     }
     pack_id = str(uuid.uuid4())
@@ -414,12 +479,13 @@ def save_review_pack(
             ).fetchone()
             if not exists:
                 raise ValueError("supersedes_pack_not_found")
-        conn.execute(
-            """INSERT INTO crm_review_pack(
+        inserted = conn.execute(
+            """INSERT OR IGNORE INTO crm_review_pack(
                  pack_id, case_id, visit_id, mis_id, patient_id, visit_date,
                  doctor_fio, specialty, filial, clinical_json, system_json,
-                 decision_json, training_use, actor, created_at, supersedes_pack_id
-               ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                 decision_json, training_use, actor, created_at, supersedes_pack_id,
+                 document_revision, evaluation_run_id, idempotency_key
+               ) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)""",
             (
                 pack_id,
                 cid,
@@ -437,8 +503,29 @@ def save_review_pack(
                 actor,
                 now,
                 str(supersedes_pack_id) if supersedes_pack_id else None,
+                str(current_revision) if current_revision is not None else None,
+                current_run_id or None,
+                idem or None,
             ),
         )
+        if inserted.rowcount == 0:
+            existing = conn.execute(
+                """SELECT pack_id, created_at, training_use, supersedes_pack_id
+                   FROM crm_review_pack
+                   WHERE case_id=? AND actor=? AND idempotency_key=?""",
+                (cid, actor, idem),
+            ).fetchone()
+            if existing:
+                return {
+                    "ok": True,
+                    "pack_id": str(existing["pack_id"]),
+                    "case_id": cid,
+                    "created_at": str(existing["created_at"]),
+                    "training_use": bool(existing["training_use"]),
+                    "supersedes_pack_id": existing["supersedes_pack_id"],
+                    "idempotent_replay": True,
+                }
+            raise sqlite3.IntegrityError("review_pack_insert_failed")
         tags_json = json.dumps(decision_norm.get("tags") or [], ensure_ascii=False)
         findings_json = json.dumps(decision_norm.get("finding_decisions") or {}, ensure_ascii=False)
         conn.execute(
@@ -491,6 +578,9 @@ def save_review_pack(
         "patient_id": patient_id,
         "training_use": bool(decision_norm.get("training_use")),
         "supersedes_pack_id": str(supersedes_pack_id) if supersedes_pack_id else None,
+        "document_revision": current_revision,
+        "evaluation_run_id": current_run_id or None,
+        "idempotent_replay": False,
     }
 
 
@@ -503,7 +593,8 @@ def list_review_packs(case_id: str, *, limit: int = 50) -> dict[str, Any]:
         rows = conn.execute(
             """SELECT pack_id, case_id, visit_id, mis_id, patient_id, visit_date,
                       doctor_fio, specialty, filial, decision_json, training_use,
-                      actor, created_at, supersedes_pack_id
+                      actor, created_at, supersedes_pack_id,
+                      document_revision, evaluation_run_id
                FROM crm_review_pack
                WHERE case_id=?
                ORDER BY created_at DESC
