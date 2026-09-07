@@ -13,23 +13,10 @@ confidence ниже порога.
 """
 from __future__ import annotations
 
-import re
-from typing import Any
-
 from .kz_evaluation_schema import EvaluationFinding
 from .rule_trust import TRUST_B, TRUST_C
 
-_DOSE_RE = re.compile(r"\d+\s*(мг|mg|мкг|ме|ед|мл|г\b|таб|капс)", re.I)
 _CONF_THRESHOLD = 0.86
-
-
-def _drugs(text: str) -> list[dict[str, Any]]:
-    try:
-        from .drug_normalizer import extract_drugs
-
-        return extract_drugs(text) or []
-    except Exception:  # noqa: BLE001
-        return []
 
 
 def classify_medication_findings(
@@ -42,31 +29,52 @@ def classify_medication_findings(
         return findings
 
     drug_ctx = drug_ctx or {}
-    drugs = _drugs(treatment)
-    has_dose = bool(_DOSE_RE.search(treatment))
+    from .medication_parser import active_medication_assignments
+
+    assignments = active_medication_assignments(case)
+    active_treatment = "\n".join(
+        str(item.get("raw_text") or "") for item in assignments if item.get("raw_text")
+    )
+    drugs = [
+        {
+            "surface": item.get("surface") or item.get("drug_name"),
+            "inn": item.get("inn"),
+            "confidence": item.get("confidence") or 0.0,
+            "has_dose": bool(
+                item.get("dose_value") is not None
+                or item.get("frequency")
+                or item.get("schedule")
+            ),
+        }
+        for item in assignments
+        if item.get("inn")
+    ]
+    has_dose = any(bool(d.get("has_dose")) for d in drugs)
 
     # safety: дубль системных НПВП (не скобки-альтернативы, не гель+таблетка)
     try:
         from .medication_safety import concurrent_systemic_nsaids
 
-        nsaids = concurrent_systemic_nsaids(treatment)
+        nsaids = concurrent_systemic_nsaids(active_treatment)
     except Exception:  # noqa: BLE001
         nsaids = []
     if len(nsaids) >= 2:
         findings.append(EvaluationFinding(
             code="MED_nsaid_dup", axis="safety", severity="P1", kind="safety_warning",
             passed=False, title_ru="Одновременно ≥2 НПВП",
-            detail_ru=", ".join(nsaids[:6]), evidence=treatment,
+            detail_ru=", ".join(nsaids[:6]), evidence=active_treatment,
             source_ref="ISMP/клин.практика", trust_level=TRUST_B, penalty_applied=True,
         ))
 
     # documentation_gap: распознанное ЛС без дозы
-    if drugs and not has_dose:
+    missing_dose = [d for d in drugs if not d.get("has_dose")]
+    if missing_dose:
         findings.append(EvaluationFinding(
             code="MED_missing_dose", axis="documentation", severity="P2",
             kind="documentation_gap", passed=False,
             title_ru="Назначение без распознанной дозы/режима",
-            evidence=treatment, source_ref="Пост. №127 / СОП №2",
+            detail_ru=", ".join(str(d.get("inn") or "") for d in missing_dose[:6]),
+            evidence=active_treatment, source_ref="Пост. №127 / СОП №2",
             trust_level=TRUST_B, penalty_applied=True,
         ))
 
@@ -76,12 +84,12 @@ def classify_medication_findings(
         ha_by_inn = {(r.get("inn") or "").lower(): r for r in ha}
         for d in drugs:
             inn = (d.get("inn") or "").lower()
-            if inn and inn in ha_by_inn and not has_dose:
+            if inn and inn in ha_by_inn and not d.get("has_dose"):
                 findings.append(EvaluationFinding(
                     code="MED_high_alert_no_dose", axis="safety", severity="P1",
                     kind="safety_warning", passed=False,
                     title_ru=f"High-alert препарат без дозы/режима: {d.get('inn')}",
-                    evidence=treatment, source_ref="ISMP high-alert",
+                    evidence=active_treatment, source_ref="ISMP high-alert",
                     trust_level=TRUST_B, penalty_applied=True,
                 ))
 

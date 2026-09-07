@@ -28,7 +28,6 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any
 
-from .drug_normalizer import extract_drugs
 
 _LOG = logging.getLogger("protocol.kz.deep_eval")
 
@@ -350,7 +349,6 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
 
     complaints = _txt(case, "complaints")
     objective = _txt(case, "objective_status")
-    treatment = _txt(case, "treatment_recommendations")
     routing = _txt(case, "dispensary_info", "return_date", "treatment_recommendations")
     age = case.get("patient_age_years")
     try:
@@ -381,19 +379,33 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
         penalty += 20
 
     # --- разбор назначенных ЛС ---
-    drugs = extract_drugs(treatment) if treatment else []
+    from .medication_parser import active_medication_assignments
+
+    assignments = active_medication_assignments(case)
+    active_treatment = "\n".join(
+        str(item.get("raw_text") or "") for item in assignments if item.get("raw_text")
+    )
+    drugs = [
+        {
+            "surface": item.get("surface") or item.get("drug_name"),
+            "inn": item.get("inn"),
+            "confidence": item.get("confidence") or 0.0,
+        }
+        for item in assignments
+        if item.get("inn")
+    ]
     inns = [d["inn"] for d in drugs if d.get("inn")]
     low_conf = [d for d in drugs if 0 < d.get("confidence", 0) < 0.86]
 
     # C2: дублирование системных НПВП (не скобки-альтернативы, не гель+таблетка)
     from .medication_safety import concurrent_systemic_nsaids, ddi_pair_has_topical_partner
 
-    nsaids = concurrent_systemic_nsaids(treatment)
+    nsaids = concurrent_systemic_nsaids(active_treatment)
     if len(nsaids) >= 2:
         findings.append(_finding(
             "C_nsaid_dup", "safety", "P1", False,
             "Одновременно ≥2 НПВП", detail=", ".join(nsaids[:6]),
-            evidence=treatment, source_ref="ISMP/клин.практика",
+            evidence=active_treatment, source_ref="ISMP/клин.практика",
         ))
         penalty += 20
 
@@ -401,7 +413,7 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
     try:
         from .medication_safety import all_therapeutic_class_dups, class_dup_primary_enabled
 
-        for item in all_therapeutic_class_dups(treatment):
+        for item in all_therapeutic_class_dups(active_treatment):
             if item.get("class_id") == "nsaid":
                 continue  # уже C_nsaid_dup
             code = str(item.get("finding_code") or f"C_{item.get('class_id')}_dup")
@@ -410,7 +422,7 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
                 code, "safety", "P1", False,
                 f"Дублирование: {item.get('label_ru') or item.get('class_id')}",
                 detail=", ".join(labels[:6]),
-                evidence=treatment,
+                evidence=active_treatment,
                 source_ref="therapeutic_classes_v1",
             )
             primary = class_dup_primary_enabled()
@@ -454,7 +466,7 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
                     right = _ddi_label(drug_by_inn.get(inns[j].lower()), inns[j])
                     pair_label = f"{left} + {right}"
                     topical = ddi_pair_has_topical_partner(
-                        treatment,
+                        active_treatment,
                         surfaces=[
                             str((drug_by_inn.get(inns[i].lower()) or {}).get("surface") or ""),
                             str((drug_by_inn.get(inns[j].lower()) or {}).get("surface") or ""),
@@ -473,8 +485,8 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
                         sev = "P2"
                         title_lvl = "Major, топический путь - понижено"
                     evidence = pair_label
-                    if treatment:
-                        evidence = f"{evidence}. Фрагмент плана: {treatment[:280]}"
+                    if active_treatment:
+                        evidence = f"{evidence}. Фрагмент плана: {active_treatment[:280]}"
                     finding = _finding(
                         "C_ddi", "safety", sev, False,
                         f"Лекарственное взаимодействие ({title_lvl}): {pair_label}",
@@ -493,15 +505,24 @@ def _axis_safety(case: dict, protocol_ctx, drug_ctx: dict | None) -> tuple[float
     ha = (drug_ctx.get("high_alert") or {}).get("high_alert") if isinstance(drug_ctx.get("high_alert"), dict) else None
     if ha:
         ha_by_inn = {(_r.get("inn") or "").lower(): _r for _r in ha}
-        has_dose = bool(re.search(r"\d+\s*(мг|mg|мкг|ме|ед|мл|г\b)", treatment, re.I))
+        dosed_inns = {
+            str(item.get("inn") or "").lower()
+            for item in assignments
+            if item.get("inn")
+            and (
+                item.get("dose_value") is not None
+                or item.get("frequency")
+                or item.get("schedule")
+            )
+        }
         for inn in inns:
             r = ha_by_inn.get(inn.lower())
-            if r and not has_dose:
+            if r and inn.lower() not in dosed_inns:
                 findings.append(_finding(
                     "C_high_alert_no_dose", "safety", "P1", False,
                     f"High-alert препарат без дозы/режима: {inn}",
                     detail="требуется: " + ", ".join(r.get("requires") or []),
-                    evidence=treatment, source_ref="ISMP high-alert",
+                    evidence=active_treatment, source_ref="ISMP high-alert",
                 ))
                 penalty += 15
 

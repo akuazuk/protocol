@@ -160,6 +160,7 @@ class MedicationItem(_Base):
     active_substance: str | None = None
     dose_value: float | None = None
     dose_unit: str | None = None
+    form: str | None = None
     route: str | None = None
     frequency: str | None = None
     duration: str | None = None
@@ -168,6 +169,12 @@ class MedicationItem(_Base):
     schedule: list[MedicationScheduleStep] = Field(default_factory=list)
     indication_text: str | None = None
     source_section: str | None = None
+    activity_status: Literal["active", "past", "unknown"] = "unknown"
+    assertion: Literal[
+        "confirmed", "negated", "hypothesis", "family", "unknown"
+    ] = "unknown"
+    subject: Literal["patient", "family", "unknown"] = "unknown"
+    fact_time: Literal["current", "past", "future", "unknown"] = "unknown"
 
 
 class FollowUpItem(_Base):
