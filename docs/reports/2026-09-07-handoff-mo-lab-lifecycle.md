@@ -8,7 +8,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-lab-lifecycle-pc1`
 - Base: `dfc804692b29cbe61e01b331b5b8dc5ba209cf83`
 - BUILD_VERSION: `2026-09-07-053910Z-lab-lifecycle`
-- PR: будет указан после публикации
+- PR: [#237](https://github.com/akuazuk/protocol/pull/237)
 
 ## Реализация
 
