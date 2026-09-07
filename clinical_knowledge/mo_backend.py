@@ -4719,7 +4719,7 @@ def _attach_family_group_denominators(
                 label = str(row.get(label_key) or "").strip()
                 group_cases = max(0, int(totals.get(label, 0) or 0))
                 problem_cases = max(0, int(row.get("cases") or 0))
-                small_n = group_cases < FAMILY_GROUP_COMPARISON_MIN_N
+                legacy_group_small_n = group_cases < FAMILY_GROUP_COMPARISON_MIN_N
                 row.update(
                     {
                         "problem_cases": problem_cases,
@@ -4735,10 +4735,18 @@ def _attach_family_group_denominators(
                         "denominator_kind": "group_total_cases",
                         "denominator_n": group_cases,
                         "comparison_min_n": FAMILY_GROUP_COMPARISON_MIN_N,
-                        "small_n": small_n,
+                        "small_n": legacy_group_small_n,
                         "ranking_eligible": False,
                         "comparison_status": (
-                            "small_n" if small_n else "evaluated_denominator_unavailable"
+                            "small_n"
+                            if legacy_group_small_n
+                            else "evaluated_denominator_unavailable"
+                        ),
+                        "evaluated_small_n": None,
+                        "evaluated_ranking_eligible": False,
+                        "evaluated_comparison_status": "evaluated_denominator_unavailable",
+                        "comparison_reason": (
+                            "evaluated_n_required_for_small_n_guard"
                         ),
                     }
                 )
