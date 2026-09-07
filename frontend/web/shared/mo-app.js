@@ -3332,7 +3332,7 @@
         '<input type="hidden" id="drawer-due" value="' + esc(crm.due_date || "") + '">' +
         '<input type="hidden" id="drawer-tags" value="' + esc((crm.tags || []).join(", ")) + '">' +
         '<details class="mo-secondary-details decision-more"><summary>Дополнительно</summary>' +
-        '<label class="filter"><span><input type="checkbox" id="drawer-training-use" checked> Можно использовать для обучения</span></label>' +
+        '<label class="filter"><span><input type="checkbox" id="drawer-training-use"> Можно использовать для обучения</span></label>' +
         '</details>' +
         '<div class="decision-actions">' +
         '<button class="button" id="drawer-save" type="button">Сохранить</button>' +
@@ -3591,7 +3591,7 @@
         if ($("drawer-verdict-d")) $("drawer-verdict-d").value = decision.verdict_diagnosis || "unreviewed";
         if ($("drawer-verdict-r")) $("drawer-verdict-r").value = decision.verdict_recommendations || "unreviewed";
         if ($("drawer-summary")) $("drawer-summary").value = decision.summary_ru || "";
-        if ($("drawer-training-use")) $("drawer-training-use").checked = decision.training_use !== false;
+        if ($("drawer-training-use")) $("drawer-training-use").checked = decision.training_use === true;
         Object.keys(decision.finding_decisions || {}).forEach(function (code) {
           var select = $("drawer-body").querySelector('[data-finding-code="' + code + '"]');
           if (select) select.value = decision.finding_decisions[code];
@@ -3828,7 +3828,7 @@
         if (summaryText.trim().length && summaryText.trim().length < 80) {
           if (!window.confirm("Развёрнутый разбор короткий (меньше 80 символов). Сохранить всё равно?")) return;
         }
-        var trainingUse = !($("drawer-training-use") && !$("drawer-training-use").checked);
+        var trainingUse = Boolean($("drawer-training-use") && $("drawer-training-use").checked);
         var findingValues = Object.keys(findingDecisions).map(function (key) { return findingDecisions[key]; });
         var allFindingsUnreviewed = findingValues.length > 0 && findingValues.every(function (value) {
           return !value || value === "unreviewed";
@@ -3860,6 +3860,13 @@
           (detail.record || {}).evaluation_run_id;
         if (documentRevision != null) body.expected_document_revision = documentRevision;
         if (evaluationRunId) body.evaluation_run_id = evaluationRunId;
+        var latestPack = ((detail.review_packs || [])[0]) || {};
+        if (latestPack.pack_id) {
+          body.expected_pack_id = latestPack.pack_id;
+          if (latestPack.review_revision != null) body.expected_review_revision = latestPack.review_revision;
+        } else {
+          body.expected_review_revision = 0;
+        }
         if (state.supersedesPackId) body.supersedes_pack_id = state.supersedesPackId;
         var month = (query().get("month") || minskDateKey(0).slice(0, 7));
         if (month) body.month = month;
@@ -3877,7 +3884,9 @@
           }
         );
         if (response.status === 409) {
-          throw new Error("Документ обновился после открытия. Обновите разбор и проверьте решение ещё раз.");
+          state.decisionDirty = true;
+          state.decisionSaveToken = "";
+          throw new Error("Решение уже изменилось. Черновик остался в форме и не перезаписан. Откройте историю разборов, сравните чужое решение и сохраните заново после обновления случая.");
         }
         if (!response.ok) throw new Error("Не удалось сохранить пакет разбора.");
         $("announcer").textContent = "Пакет разбора сохранён";

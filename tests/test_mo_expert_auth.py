@@ -147,5 +147,5 @@ def test_expert_review_pack_forces_source(monkeypatch, tmp_path: Path) -> None:
     assert saved["ok"] is True
     pack = mo_review_pack.get_review_pack(saved["pack_id"])["pack"]
     assert pack["decision"]["source"] == "expert"
-    assert pack["decision"]["training_use"] is True
+    assert pack["decision"]["training_use"] is False
     assert pack["actor"].startswith("expert:")

@@ -4146,13 +4146,23 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
         review_packs = []
         try:
             review_packs = conn.execute(
-                """SELECT pack_id, created_at, actor, training_use, decision_json, supersedes_pack_id
+                """SELECT pack_id, created_at, actor, training_use, decision_json,
+                          supersedes_pack_id, review_revision
                    FROM crm_review_pack WHERE case_id=?
                    ORDER BY created_at DESC LIMIT 20""",
                 (case_id,),
             ).fetchall()
         except sqlite3.Error:
-            review_packs = []
+            try:
+                review_packs = conn.execute(
+                    """SELECT pack_id, created_at, actor, training_use, decision_json,
+                              supersedes_pack_id
+                       FROM crm_review_pack WHERE case_id=?
+                       ORDER BY created_at DESC LIMIT 20""",
+                    (case_id,),
+                ).fetchall()
+            except sqlite3.Error:
+                review_packs = []
     crm = dict(state) if state else {
         "case_id": case_id,
         "status": "new",
@@ -4182,6 +4192,7 @@ def build_case_detail(case_id: str, month: str | None = None) -> dict[str, Any]:
                 "actor": item.get("actor") or "",
                 "training_use": bool(int(item.get("training_use") or 0)),
                 "supersedes_pack_id": item.get("supersedes_pack_id"),
+                "review_revision": item.get("review_revision"),
                 "decision_summary": {
                     "status": decision.get("status"),
                     "verdict_completeness": decision.get("verdict_completeness"),

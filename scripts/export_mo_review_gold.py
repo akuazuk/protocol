@@ -34,6 +34,8 @@ def main() -> int:
     args.out.mkdir(parents=True, exist_ok=True)
     conn = sqlite3.connect(str(args.warehouse))
     conn.row_factory = sqlite3.Row
+    from clinical_knowledge.mo_review_pack import is_training_eligible
+
     rows = conn.execute(
         """SELECT pack_id, case_id, visit_id, mis_id, patient_id, visit_date,
                   doctor_fio, specialty, filial, clinical_json, system_json,
@@ -50,6 +52,10 @@ def main() -> int:
     ) as ratings_out:
         for row in rows:
             decision = json.loads(row["decision_json"] or "{}")
+            if not is_training_eligible(
+                {"training_use": row["training_use"], "decision": decision}
+            ):
+                continue
             system = json.loads(row["system_json"] or "{}")
             clinical = json.loads(row["clinical_json"] or "{}")
             patient = row["patient_id"] or ""
