@@ -34,6 +34,7 @@ _ALT_PAREN = re.compile(
     r"\([^)]{0,160}?(?:или|либо|и\s*т\.?\s*п\.?|и\s*др\.?|/)[^)]{0,160}?\)",
     re.I,
 )
+_ALT_TAIL = re.compile(r"\s+(?:или|либо)\s+[^;\n]+", re.I)
 # Скобки только со списком препаратов после основного назначения
 _PAREN_NSAID_LIST = re.compile(
     r"\((?:[^)]*?(?:" + _NSAID_PATTERN.pattern + r")[^)]*?,){1,}[^)]*?\)",
@@ -47,11 +48,17 @@ _TOPICAL_NEAR = re.compile(
 )
 
 
-def _strip_nsaid_alternatives(text: str) -> str:
-    """Убрать скобки с альтернативами НПВП, чтобы не считать их одновременным приёмом."""
+def strip_treatment_alternatives(text: str) -> str:
+    """Убрать скобочные OR-альтернативы до DDI/duplicate extraction."""
     cleaned = _ALT_PAREN.sub(" ", text or "")
     cleaned = _PAREN_NSAID_LIST.sub(" ", cleaned)
+    cleaned = _ALT_TAIL.sub(" ", cleaned)
     return cleaned
+
+
+def _strip_nsaid_alternatives(text: str) -> str:
+    """Backward-compatible wrapper for NSAID checks."""
+    return strip_treatment_alternatives(text)
 
 
 def _canonical_nsaid(label: str) -> str:
@@ -201,8 +208,7 @@ def load_therapeutic_classes() -> list[dict[str, Any]]:
 
 
 def _strip_class_alternatives(text: str) -> str:
-    cleaned = _ALT_PAREN.sub(" ", text or "")
-    return cleaned
+    return strip_treatment_alternatives(text)
 
 
 def concurrent_systemic_class(

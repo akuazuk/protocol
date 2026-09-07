@@ -7,6 +7,8 @@
 from __future__ import annotations
 
 import re
+from collections.abc import Mapping
+from typing import Any
 
 from .consult_schema import MedicationItem, MedicationScheduleStep
 from .date_parser import parse_date
@@ -32,6 +34,27 @@ RE_DURATION = re.compile(
 )
 RE_ROUTE = re.compile(
     r"\b(внутрь|перорально|в/в|в/м|п/к|внутривенно|внутримышечно|подкожно|местно|наружно|ингаляц\w*)\b",
+    re.I,
+)
+RE_FORM = re.compile(
+    r"\b(таб(?:л(?:етка|етки|еток)?)?|капс(?:ула|улы|ул)?|"
+    r"р-?р|раствор|гель|мазь|крем|спрей|суппозитор|свечи?|ампула|амп)\b",
+    re.I,
+)
+RE_PAST = re.compile(
+    r"\b(ранее|до обращения|в прошлом|принимал[аи]?|получал[аи]?|"
+    r"отмен[её]н|отменить|прекращ[её]н|заверш[её]н)\b",
+    re.I,
+)
+RE_NEGATED = re.compile(r"\b(не принимает|не получа(?:ет|л[аи]?)|без при[её]ма)\b", re.I)
+RE_HYPOTHESIS = re.compile(r"\b(возможно|предположительно|рассмотреть)\b", re.I)
+RE_FAMILY = re.compile(
+    r"\b(мать|отец|родственник|семейн(?:ый|ая|ом)|у родственник)\w*\b",
+    re.I,
+)
+RE_CONTEXT_PREFIX = re.compile(
+    r"^\s*(?:ранее|до обращения|в прошлом|принимал[аи]?|получал[аи]?|"
+    r"отмен[её]н|отменить|прекращ[её]н|заверш[её]н)\s*[:,-]?\s*",
     re.I,
 )
 RE_SCHEDULE_PREFIX = re.compile(
@@ -111,9 +134,22 @@ def looks_like_medication_item(item: MedicationItem) -> bool:
 def _extract_drug_name(raw: str) -> str | None:
     """Имя препарата = ведущие слова до первой дозы/числа."""
     s = raw.strip()
+    s = re.sub(
+        r"^\s*(?:местно|наружно|внутрь|перорально|в/в|в/м|п/к)\s*:\s*",
+        "",
+        s,
+        flags=re.I,
+    )
     m = RE_DOSE.search(s)
     head = s[: m.start()] if m else s
     head = re.split(r"\d", head)[0]
+    head = re.split(
+        r"\b(?:по схеме|по требованию|внутрь|перорально|местно|наружно|"
+        r"в/в|в/м|п/к|таб(?:л)?|капс(?:ул)?|гель|мазь|крем|спрей|раствор)\b",
+        head,
+        maxsplit=1,
+        flags=re.I,
+    )[0]
     head = head.strip(_STRIP_LEAD)
     return head or None
 
@@ -124,9 +160,26 @@ def _parse_one(raw: str, *, source_section: str | None = None) -> MedicationItem
         return None
     if is_non_drug_prescription_line(s):
         return None
+    family = bool(RE_FAMILY.search(s))
+    negated = bool(RE_NEGATED.search(s))
+    hypothesis = bool(RE_HYPOTHESIS.search(s))
+    past = source_section == "medication_history" or bool(RE_PAST.search(s))
+    assertion = (
+        "family"
+        if family
+        else "negated"
+        if negated
+        else "hypothesis"
+        if hypothesis
+        else "confirmed"
+    )
+    subject = "family" if family else "patient"
+    activity = "past" if past or negated else "active"
+    fact_time = "past" if past else "current"
+    parse_text = RE_CONTEXT_PREFIX.sub("", s)
     dose_value = None
     dose_unit = None
-    mdose = RE_DOSE.search(s)
+    mdose = RE_DOSE.search(parse_text)
     if mdose:
         try:
             dose_value = float(mdose.group(1).replace(",", "."))
@@ -134,27 +187,32 @@ def _parse_one(raw: str, *, source_section: str | None = None) -> MedicationItem
             dose_value = None
         dose_unit = mdose.group(2).lower()
     freq = None
-    mf = RE_FREQ.search(s)
+    mf = RE_FREQ.search(parse_text)
     if mf:
         freq = re.sub(r"\s+", " ", mf.group(1).strip())
     dur = None
-    md = RE_DURATION.search(s)
+    md = RE_DURATION.search(parse_text)
     if md:
         dur = re.sub(r"\s+", " ", md.group(1).strip())
     route = None
-    mr = RE_ROUTE.search(s)
+    mr = RE_ROUTE.search(parse_text)
     if mr:
         route = mr.group(1).lower()
     return MedicationItem(
         medication_id=_next_id(),
         raw_text=s,
-        drug_name=_extract_drug_name(s),
+        drug_name=_extract_drug_name(parse_text),
         dose_value=dose_value,
         dose_unit=dose_unit,
+        form=(RE_FORM.search(parse_text).group(1).lower() if RE_FORM.search(parse_text) else None),
         frequency=freq,
         duration=dur,
         route=route,
         source_section=source_section,
+        activity_status=activity,
+        assertion=assertion,
+        subject=subject,
+        fact_time=fact_time,
     )
 
 
@@ -214,7 +272,7 @@ def parse_medications(text: str, *, source_section: str | None = None) -> list[M
     schedule_acc: dict[str, MedicationItem] = {}
 
     for raw_line in re.split(r"[\n]+", text):
-        for segment in re.split(r"\s*;\s*", raw_line):
+        for segment in re.split(r"\s*;\s*|(?<=\.)\s+(?=[А-ЯA-Z])", raw_line):
             line = segment.strip(_STRIP_LEAD + "\t•")
             if len(line) < 3:
                 continue
@@ -246,3 +304,50 @@ def parse_medications(text: str, *, source_section: str | None = None) -> list[M
             if item.drug_name:
                 schedule_acc[item.drug_name.lower()] = item
     return items
+
+
+def medication_assignments_from_case(
+    case: Mapping[str, Any] | None,
+    *,
+    include_inactive: bool = True,
+) -> list[dict[str, Any]]:
+    """Build normalized, per-line assignments without dose bleed between drugs."""
+    if not isinstance(case, Mapping):
+        return []
+    from .drug_normalizer import normalize_drug
+    from .medication_safety import strip_treatment_alternatives
+
+    sources = (
+        ("treatment_recommendations", "treatment_recommendations"),
+        ("medication_history", "medication_history"),
+    )
+    out: list[dict[str, Any]] = []
+    for key, section in sources:
+        text = str(case.get(key) or "").strip()
+        if not text:
+            continue
+        if key == "treatment_recommendations":
+            text = strip_treatment_alternatives(text)
+        for item in parse_medications(text, source_section=section):
+            row = item.model_dump(mode="json")
+            normalized = normalize_drug(item.drug_name or item.raw_text)
+            if normalized:
+                row.update(
+                    {
+                        "surface": normalized.get("surface") or item.drug_name,
+                        "inn": normalized.get("inn"),
+                        "confidence": normalized.get("confidence"),
+                        "normalization_method": normalized.get("method"),
+                    }
+                )
+            if include_inactive or (
+                row["activity_status"] == "active"
+                and row["assertion"] == "confirmed"
+                and row["subject"] == "patient"
+            ):
+                out.append(row)
+    return out
+
+
+def active_medication_assignments(case: Mapping[str, Any] | None) -> list[dict[str, Any]]:
+    return medication_assignments_from_case(case, include_inactive=False)
