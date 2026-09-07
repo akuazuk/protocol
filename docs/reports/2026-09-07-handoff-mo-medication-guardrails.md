@@ -8,7 +8,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-medication-guards-pc1`
 - Base: `cc460421a8dc109f32f5c674467027357facd1ba`
 - BUILD_VERSION: `2026-09-07-062331Z-medication-guards`
-- PR: будет указан после публикации
+- PR: [#238](https://github.com/akuazuk/protocol/pull/238)
 
 ## Реализация
 
