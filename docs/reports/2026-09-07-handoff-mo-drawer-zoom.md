@@ -5,7 +5,7 @@
 - Branch: `cursor/mo-drawer-zoom-overflow-agent1-pc1`
 - Base: `acc0d2cc9727f0e857cb880af4526d8a49eff3d8`
 - BUILD_VERSION: `2026-09-07-081946Z-drawer-zoom`
-- PR: будет указан после публикации
+- PR: [#241](https://github.com/akuazuk/protocol/pull/241)
 
 ## Реализация
 
