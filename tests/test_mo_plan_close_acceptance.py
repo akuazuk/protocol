@@ -153,7 +153,9 @@ def test_ux_leftovers_are_named_by_task() -> None:
         assert 'id="queue-bulk-bar"' in html
         assert "Shadow: плохо" not in html
     nav = methodist.split('id="app-nav"')[1].split("</ul>")[0]
-    assert "Справка" not in nav
+    visible = [line for line in nav.splitlines() if "nav-button" in line and "<li hidden>" not in line]
+    assert all("Справка" not in line for line in visible)
+    assert 'id="nav-settings"' in nav
     assert "Фильтр строк этой таблицы" in app
     assert "periodAbsoluteRange" in app
     assert "период ещё не закончен" in app
