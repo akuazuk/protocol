@@ -1,7 +1,8 @@
 # Матрица приёмки A01-A32 / R01-R14 / U01-U14 / E01-E23
 
 Дата старта матрицы: 2026-09-07.
-База snapshot: `origin/main` = production `a6955ef2` (PR #242).
+База snapshot: `origin/main` = production `29b8a174` (PR #243 + #245).
+Предыдущий snapshot проверки: `a6955ef2` (PR #242).
 Этот файл обновляется после каждого этапа remaining-work.
 Статусы: `shipped` - в main/проде, но не обязательно клинически принято;
 `partial` - код есть, критерий приёмки не закрыт; `open` - подтверждённый остаток;
@@ -15,11 +16,10 @@
 
 | Поле | Значение |
 |---|---|
-| Этап | P0-1 concurrent save + P0-2 training eligibility |
-| Branch | `cursor/mo-review-save-lineage-agent1-pc1` |
-| Worktree | `/private/tmp/protocol-task-mo-review-save-lineage-pc1` |
-| Merge | нет |
-| Production | всё ещё `a6955ef2` / `2026-09-07-085857Z-wave-e-acceptance` |
+| Этап | P0-1/P0-2 + P1-1 merged и задеплоены |
+| Merge | #243 `46fd75c1`, #245 `29b8a174` (#244 закрыт после rebase) |
+| Production | `29b8a174` / `2026-09-07-104339Z-history-same-day` |
+| Health | `/health/live` ok; образ `protocol-gcp-app:29b8a1746184` |
 
 ## A01-A32
 
@@ -44,7 +44,7 @@
 | A17 | Rceth продукт/форма/дата | rceth path partial | label tests | partial | неоднозначность → unknown |
 | A18 | Детский подраздел ≠ запрет взрослым | posology partial | rceth tests | partial | разбор условий разделов |
 | A19 | Off-label ≠ автодефект | indication graph нет | - | open | indication graph |
-| A20 | Same-day history + episode graph | cutoff публикуется #236 | history tests | open | `visit_date < day` ещё режет same-day |
+| A20 | Same-day history + episode graph | #245 same-day по timestamp | `test_mo_history_same_day` | shipped `29b8a174` | episode graph, timezone канон склада, cutoff в case detail API |
 | A21 | Relevant prior, не richest | history deep #208/#236 | history deep | partial | unrelated-rich prior regression |
 | A22 | Сбой evaluator ≠ «без нарушений» | coverage/status partial | wave E E13 | partial | все модули |
 | A23 | Family KPI по provenance | #223/#225 | family tests | partial | confirmed/rejected projection |
@@ -54,7 +54,7 @@
 | A27 | Keyboard drill в таблицах | shell #231 | zoom/keyboard E22 | partial | doctor/specialty drill |
 | A28 | Abort устаревших ответов | #218/#219 | stale tests | shipped | гонка смены случая в drawer |
 | A29 | MO E2E pack | Wave E #242 | `test_mo_wave_e_acceptance` | partial | E04/E23 не поведенческие |
-| A30 | Eligibility отдельно от verdict | this PR: opt-in, revoke, export filter | `test_mo_review_pack_concurrency` | this_pr | holdout/split; HTTP revoke; юр. review |
+| A30 | Eligibility отдельно от verdict | #243 opt-in, revoke, export filter | `test_mo_review_pack_concurrency` | shipped `29b8a174` | holdout/split; HTTP revoke; юр. review |
 | A31 | Один канон GCE/docs | AGENTS + runbook | hygiene | partial | stale Render mentions в старых docs |
 | A32 | Матрица охвата услуг | UI scope partial | - | open | неclinical vs clinical явно |
 
@@ -109,7 +109,7 @@ UX-остаток P1-4 на prod кадре 2026-09-07: Shadow-подпись, �
 | E03 | next/previous race | wave E | unit | shipped | - |
 | E04 | list/detail/export parity | 3× `_assessment_contract_from_row` | нет HTTP | open | HTTP одной synthetic БД |
 | E05 | protocol not evaluated | wave E | unit | shipped | clinical gate |
-| E06 | history absent | wave E | unit | shipped | query_failed ≠ available |
+| E06 | history absent | wave E + #245 query_failed | unit | shipped `29b8a174` | - |
 | E07 | irrelevant prior | wave E | unit | shipped | same-day |
 | E08 | relevant prior evidence | wave E | unit | shipped | timestamps |
 | E09 | culture vs chemistry | wave E | unit | shipped | - |
@@ -123,10 +123,10 @@ UX-остаток P1-4 на prod кадре 2026-09-07: Shadow-подпись, �
 | E17 | consent/unavailable | wave E | unit | shipped | - |
 | E18 | local N55 | wave E | unit | shipped | - |
 | E19 | suspicion not to doctor | wave E | unit | shipped | - |
-| E20 | save / replay / RBAC | signature + this PR HTTP/SQLite | concurrent sessions, hash, 403/409 | this_pr | side-by-side compare UI |
+| E20 | save / replay / RBAC | #243 HTTP/SQLite concurrency | concurrent sessions, hash, 403/409 | shipped `29b8a174` | side-by-side compare UI |
 | E21 | isolated widget fail | wave E | unit | shipped | - |
 | E22 | keyboard / narrow / zoom | viewport reflow | Playwright partial | partial | настоящий browser zoom |
-| E23 | lab assets in image | files + source string | нет built image | open | `verify_lab_assets.py` в образе |
+| E23 | lab assets in image | GCE build 29b8a174 ran verifier | image step ok ranges=8 panels=17 | partial | постоянный CI job, не только deploy log |
 
 ## Критерии этого этапа
 
@@ -139,8 +139,7 @@ P0-2: явный false любой роли сохраняется; отсутс�
 
 ## Следующие этапы (новые worktree, не эта ветка)
 
-1. P1-1 history same-day (`mo_patient_history_bundle.py`).
-2. P1-2 evaluated denominators + methodist review projection (`mo_backend.py`).
-3. P1-3 E04 HTTP parity и E23 image verifier.
-4. P1-4 UX leftover.
-5. P1-5 clinical/normative gates - не код.
+1. P1-2 evaluated denominators + methodist review projection (`mo_backend.py`).
+2. P1-3 E04 HTTP list/detail/export parity; E23 как постоянный CI.
+3. P1-4 UX leftover (Shadow-подпись, два поиска, даты периода, bulk n=0, Справка).
+4. P1-5 clinical/normative gates - не код.
