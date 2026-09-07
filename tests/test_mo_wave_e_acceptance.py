@@ -299,7 +299,13 @@ def test_e19_candidate_suspicion_is_not_doctor_feedback() -> None:
 
 def test_e20_review_pack_save_contract_exposes_all_guards() -> None:
     params = inspect.signature(save_review_pack).parameters
-    assert {"role", "idempotency_key", "expected_document_revision"}.issubset(params)
+    assert {
+        "role",
+        "idempotency_key",
+        "expected_document_revision",
+        "expected_pack_id",
+        "expected_review_revision",
+    }.issubset(params)
 
 
 def test_e23_lab_assets_and_image_verifier_contract() -> None:
