@@ -280,6 +280,8 @@ def source_type_mentioned_in_mo(
 def build_lab_reconcile(
     bundle: Mapping[str, Any] | None,
     case: Mapping[str, Any] | None,
+    *,
+    lab_assessment: Mapping[str, Any] | None = None,
 ) -> dict[str, Any]:
     recs_raw = None if not isinstance(case, Mapping) else case.get("exam_recommendations")
     exam_raw = None if not isinstance(case, Mapping) else case.get("exam_data")
@@ -302,8 +304,15 @@ def build_lab_reconcile(
         if pid not in present
     ]
     present_not_in_mo: list[dict[str, Any]] = []
+    actionable_ids: set[str] | None = None
+    if isinstance(lab_assessment, Mapping) and lab_assessment.get("enforcement_enabled"):
+        from clinical_knowledge.mo_lab_result_assessment import actionable_panel_ids
+
+        actionable_ids = actionable_panel_ids(lab_assessment)
     if texts_loaded:
         for pid, row in present.items():
+            if actionable_ids is not None and pid not in actionable_ids:
+                continue
             panel = next((p for p in PANELS if p.pid == pid), None)
             if (
                 panel
@@ -454,7 +463,26 @@ def evaluate_lab_for_case(
     """Один путь для live и batch: display payload + полная reconcile-оценка."""
     payload = lab_payload_for_case(case, lab_db=lab_db)
     reconcile_source = lab_reconcile_payload_for_case(case, lab_db=lab_db)
-    recon = build_lab_reconcile(reconcile_source, case)
+    clinical_source = lab_reconcile_payload_for_case(
+        case,
+        lab_db=lab_db,
+        include_values=True,
+    )
+    from clinical_knowledge.mo_lab_result_assessment import (
+        build_lab_result_assessment,
+    )
+
+    lab_assessment = build_lab_result_assessment(
+        clinical_source,
+        case,
+        cutoff_at=str(case.get("cutoff_at") or ""),
+    )
+    payload["assessment"] = lab_assessment
+    recon = build_lab_reconcile(
+        reconcile_source,
+        case,
+        lab_assessment=lab_assessment,
+    )
     from clinical_knowledge.mo_lab_dx_evidence import (
         lab_dx_shadow_findings,
         lab_evidence_for_dx,
@@ -482,15 +510,24 @@ def evaluate_lab_for_case(
             unused_lab_findings,
         )
 
-        unused = unused_lab_findings(case, recon)
+        unused = unused_lab_findings(
+            case,
+            recon,
+            lab_assessment=lab_assessment,
+        )
         findings = merge_unused_into_findings(findings, unused)
     except Exception:  # noqa: BLE001
         pass
     try:
         from clinical_knowledge.lab_abnormal_findings import abnormal_lab_findings
 
-        clinical_source = lab_reconcile_payload_for_case(case, lab_db=lab_db, include_values=True)
-        findings = list(findings) + list(abnormal_lab_findings(case, clinical_source))
+        findings = list(findings) + list(
+            abnormal_lab_findings(
+                case,
+                clinical_source,
+                lab_assessment=lab_assessment,
+            )
+        )
         from clinical_knowledge.patient_age import resolve_patient_age
 
         age = resolve_patient_age(case).get("age_years")
@@ -508,7 +545,11 @@ def evaluate_lab_for_case(
             "reason": reason,
             "reference_scope": "adult_seed_unvalidated",
             "date_precision": "day",
-            "note_ru": "Время доступности результата внутри дня не установлено; вывод требует проверки.",
+            "availability_precision": "available_at_or_conservative_day",
+            "unknown_availability_n": (
+                lab_assessment.get("summary") or {}
+            ).get("unknown_availability_n"),
+            "note_ru": "Результат без времени доступности в день визита остаётся unknown.",
         }
     except Exception:  # noqa: BLE001
         payload["abnormal_check"] = {"status": "failed", "reason": "evaluation_failed"}

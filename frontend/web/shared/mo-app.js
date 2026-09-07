@@ -3044,10 +3044,20 @@
         : "Окно визит -14д ... +1д.";
       var usage = (bundle && bundle.usage_for_scores_ru) ||
         "Лаборатория - контекст для методиста. Не входит в итоговую оценку. Не подменяет графу «Данные обследований».";
+      var labAssessment = (bundle && bundle.assessment) || {};
+      var lifecycle = labAssessment.summary || {};
+      var lifecycleLine = labAssessment.contract_version
+        ? ('<p class="card-sub lab-lifecycle-summary">Доступно до cutoff: n=' +
+          Number(lifecycle.provably_available_n || 0) + ' · время неизвестно: n=' +
+          Number(lifecycle.unknown_availability_n || 0) + ' · после cutoff: n=' +
+          Number(lifecycle.post_cutoff_n || 0) + ' · требует проверки: n=' +
+          Number(lifecycle.actionable_n || 0) + "</p>")
+        : "";
       if (!nRows) {
         return '<div class="detail-block lab-block"><h3>Лаборатория</h3>' +
           '<p class="empty">За 14 дней до визита и день визита анализов на складе нет. Это нормально; не означает, что блок сломан.</p>' +
           '<p class="card-sub">' + esc(windowLine) + "</p>" +
+          lifecycleLine +
           renderLabReconcile(bundle.reconcile) +
           '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
           '<p class="card-sub">' + esc(usage) + "</p></details></div>";
@@ -3078,7 +3088,7 @@
         '<p>' + nRows + " показатель(ей) · " + Number(summary.n_types || 0) + " вид(ов) · " +
         Number(summary.n_dates || 0) + " дат(ы)</p>" +
         '<p class="card-sub">' + esc(windowLine) + " Не входит в оценку.</p>" +
-        truncated + renderLabReconcile(bundle.reconcile) + dayHtml +
+        lifecycleLine + truncated + renderLabReconcile(bundle.reconcile) + dayHtml +
         '<details class="mo-secondary-details"><summary>Как это влияет на оценки</summary>' +
         '<p class="card-sub">' + esc(usage) + "</p></details></div>";
     }

@@ -49,7 +49,12 @@ CREATE TEMP TABLE IF NOT EXISTS fact_mo_lab_stage (
   indicator_id INTEGER,
   indicator_name TEXT,
   value TEXT,
-  unit TEXT
+  unit TEXT,
+  order_ref TEXT,
+  specimen TEXT,
+  method TEXT,
+  result_status TEXT,
+  available_at TEXT
 );
 """
 
@@ -132,11 +137,22 @@ def _ensure_unique_rows(db: sqlite3.Connection) -> None:
     db.commit()
 
 
+def _ensure_lifecycle_columns(db: sqlite3.Connection) -> None:
+    columns = {
+        str(row[1]) for row in db.execute("PRAGMA table_info(fact_mo_lab)").fetchall()
+    }
+    for name in ("order_ref", "specimen", "method", "result_status", "available_at"):
+        if name not in columns:
+            db.execute(f"ALTER TABLE fact_mo_lab ADD COLUMN {name} TEXT")
+    db.commit()
+
+
 def ingest(out: Path, date_from: date, date_to_exclusive: date) -> dict[str, object]:
     out.parent.mkdir(parents=True, exist_ok=True)
     db = sqlite3.connect(str(out))
     db.execute("PRAGMA journal_mode=WAL")
     db.executescript(DDL)
+    _ensure_lifecycle_columns(db)
     _ensure_unique_rows(db)
     db.execute("DELETE FROM fact_mo_lab_stage")
     db.commit()
@@ -171,11 +187,16 @@ def ingest(out: Path, date_from: date, date_to_exclusive: date) -> dict[str, obj
                             str(row[6] or ""),
                             str(row[7] or ""),
                             str(row[8] or ""),
+                            None,
+                            None,
+                            None,
+                            "reported_legacy" if str(row[7] or "").strip() else "unknown",
+                            None,
                         )
                     )
                 if batch:
                     db.executemany(
-                        "INSERT INTO fact_mo_lab_stage VALUES (?,?,?,?,?,?,?,?,?)",
+                        "INSERT INTO fact_mo_lab_stage VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?)",
                         batch,
                     )
                     batch = []
@@ -197,7 +218,8 @@ def ingest(out: Path, date_from: date, date_to_exclusive: date) -> dict[str, obj
         """
         INSERT OR IGNORE INTO fact_mo_lab
         SELECT patient_key, test_date, test_id, type_id, type_name,
-               indicator_id, indicator_name, value, unit
+               indicator_id, indicator_name, value, unit,
+               order_ref, specimen, method, result_status, available_at
         FROM fact_mo_lab_stage
         """
     )

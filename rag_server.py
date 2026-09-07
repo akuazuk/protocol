@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-07-051321Z-history-assessment"
+BUILD_VERSION = "2026-09-07-053910Z-lab-lifecycle"
 
 
 def _app_version() -> str:
@@ -12342,6 +12342,14 @@ def api_methodist_mo_case_detail(
                 "patient_id": patient_id,
                 "patient_key": str(record.get("patient_key") or ""),
                 "visit_date": visit_date,
+                "cutoff_at": str(
+                    (
+                        result.get("assessment")
+                        if isinstance(result.get("assessment"), dict)
+                        else {}
+                    ).get("cutoff_at")
+                    or visit_date
+                ),
             }
             if document.get("ok") and isinstance(clinical, dict):
                 lab_case["exam_recommendations"] = clinical.get("exam_recommendations") or ""
