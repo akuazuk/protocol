@@ -1498,3 +1498,40 @@ tr.reg55-row--measures > td { background: rgba(194, 120, 3, 0.05); }
   background: var(--surface-2, #f3f6f5);
 }
 .family-score-chip .kpi-value { margin-top: 4px; font-size: 22px; }
+
+/* Effective 180-240 CSS px covers 320-480 px screens at 200% browser zoom. */
+@media (max-width: 240px) {
+  .drawer-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) 32px;
+    gap: 4px;
+    padding: 10px;
+  }
+  .drawer-head > div { min-width: 0; }
+  .drawer-head #drawer-close {
+    width: 32px;
+    min-width: 32px;
+    height: 32px;
+    padding: 0;
+  }
+  .drawer-nav-position {
+    width: 100%;
+    min-width: 0;
+  }
+  .drawer-nav-row .button {
+    width: 100%;
+    min-width: 0;
+    white-space: normal;
+  }
+  .drawer-body { padding: 8px; }
+  .case-workspace-tabs {
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+    gap: 4px;
+    padding: 8px;
+  }
+  .case-workspace-tabs .button {
+    min-width: 0;
+    padding-inline: 4px;
+    white-space: normal;
+  }
+}
