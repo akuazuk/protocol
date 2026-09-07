@@ -131,6 +131,11 @@ def test_e06_e07_e08_history_assessability_semantics() -> None:
     absent = build_history_assessment_context(history_bundle=None)
     assert absent["history_available"] is False
     assert absent["correction_assessable"] is False
+    failed = build_history_assessment_context(
+        history_bundle={"ok": False, "reason": "query_failed", "status": "error", "summary": {}}
+    )
+    assert failed["history_available"] is False
+    assert failed["status"] == "error"
     irrelevant = build_history_assessment_context(
         history_bundle={
             "ok": True,
