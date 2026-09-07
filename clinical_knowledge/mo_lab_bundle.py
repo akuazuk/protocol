@@ -18,6 +18,9 @@ ENGINE = "mo_lab_v1"
 DEFAULT_LOOKBACK_DAYS = 14
 DEFAULT_LOOKAHEAD_DAYS = 1
 ROW_CAP = 400
+LIFECYCLE_COLUMNS = frozenset(
+    {"order_ref", "specimen", "method", "result_status", "available_at"}
+)
 USAGE_FOR_SCORES_RU = (
     "Лаборатория - контекст для методиста из склада mis_tests. "
     "По умолчанию не меняет итоговую оценку (MO_LAB_IN_PRIMARY=0). "
@@ -127,8 +130,14 @@ def _group_rows(rows: list[tuple], *, visit_date: str) -> list[dict[str, Any]]:
         types = by_date[test_date]
         if type_key not in types:
             types[type_key] = {
+                "test_id": int(row[1] or 0),
                 "type_id": type_id,
                 "type_name": type_name,
+                "order_ref": _clip(row[8], 120),
+                "specimen": _clip(row[9], 80),
+                "method": _clip(row[10], 120),
+                "result_status": _clip(row[11], 40),
+                "available_at": _clip(row[12], 40),
                 "indicators": [],
             }
         types[type_key]["indicators"].append(
@@ -136,6 +145,8 @@ def _group_rows(rows: list[tuple], *, visit_date: str) -> list[dict[str, Any]]:
                 "name": _clip(row[5], 120) or "показатель",
                 "value": _clip(row[6], 80),
                 "unit": _clip(row[7], 24),
+                "result_status": _clip(row[11], 40),
+                "available_at": _clip(row[12], 40),
             }
         )
     days: list[dict[str, Any]] = []
@@ -148,6 +159,39 @@ def _group_rows(rows: list[tuple], *, visit_date: str) -> list[dict[str, Any]]:
             }
         )
     return days
+
+
+def _projection(conn: sqlite3.Connection, *, include_values: bool = True) -> str:
+    columns = {
+        str(row[1]) for row in conn.execute("PRAGMA table_info(fact_mo_lab)").fetchall()
+    }
+
+    def optional(name: str) -> str:
+        return name if name in columns else f"NULL AS {name}"
+
+    value_sql = "value, unit" if include_values else "'' AS value, '' AS unit"
+    return ", ".join(
+        [
+            "test_id" if include_values else "0 AS test_id",
+            "type_id",
+            "type_name",
+            "indicator_id",
+            "indicator_name",
+            value_sql,
+            optional("order_ref"),
+            optional("specimen"),
+            optional("method"),
+            optional("result_status"),
+            optional("available_at"),
+        ]
+    )
+
+
+def _lifecycle_schema_available(conn: sqlite3.Connection) -> bool:
+    columns = {
+        str(row[1]) for row in conn.execute("PRAGMA table_info(fact_mo_lab)").fetchall()
+    }
+    return LIFECYCLE_COLUMNS.issubset(columns)
 
 
 def build_lab_bundle(
@@ -183,10 +227,10 @@ def build_lab_bundle(
         except sqlite3.Error:
             return empty_bundle(reason="db_missing")
     try:
+        lifecycle_schema = _lifecycle_schema_available(conn)
         rows = conn.execute(
-            """
-            SELECT test_date, test_id, type_id, type_name,
-                   indicator_id, indicator_name, value, unit
+            f"""
+            SELECT test_date, {_projection(conn)}
             FROM fact_mo_lab
             WHERE patient_key = ?
               AND test_date >= ?
@@ -205,6 +249,7 @@ def build_lab_bundle(
     if not rows:
         out = empty_bundle(reason="empty")
         out["window"] = window_meta
+        out["lifecycle_schema_available"] = lifecycle_schema
         return out
     truncated = len(rows) > ROW_CAP
     rows = rows[:ROW_CAP]
@@ -233,6 +278,7 @@ def build_lab_bundle(
         },
         "days": days,
         "reason": "",
+        "lifecycle_schema_available": lifecycle_schema,
         "usage_for_scores_ru": USAGE_FOR_SCORES_RU,
     }
 
@@ -287,8 +333,9 @@ def _build_full_lab_bundle(
             own_conn = True
         except sqlite3.Error:
             return empty_bundle(reason="db_missing")
-    # Projection is a trusted constant, never request text. Reconcile stays value-free.
-    projection = "test_id, type_id, type_name, indicator_id, indicator_name, value, unit" if include_values else "0, type_id, type_name, indicator_id, indicator_name, '', ''"
+    # Projection is built only from trusted constants and detected schema columns.
+    lifecycle_schema = _lifecycle_schema_available(conn)
+    projection = _projection(conn, include_values=include_values)
     try:
         rows = conn.execute(
             f"""
@@ -310,6 +357,7 @@ def _build_full_lab_bundle(
     if not rows:
         out = empty_bundle(reason="empty")
         out["window"] = window_meta
+        out["lifecycle_schema_available"] = lifecycle_schema
         return out
     days = _group_rows(rows, visit_date=window_meta["visit_date"])
     return {
@@ -336,6 +384,7 @@ def _build_full_lab_bundle(
         },
         "days": days,
         "reason": "",
+        "lifecycle_schema_available": lifecycle_schema,
         "usage_for_scores_ru": USAGE_FOR_SCORES_RU,
     }
 

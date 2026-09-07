@@ -181,6 +181,8 @@ def _mo_acknowledges_abnormal(case: Mapping[str, Any], item: Mapping[str, Any]) 
 def abnormal_lab_findings(
     case: Mapping[str, Any] | None,
     bundle: Mapping[str, Any] | None = None,
+    *,
+    lab_assessment: Mapping[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     if not lab_abnormal_enabled() or not isinstance(case, Mapping):
         return []
@@ -193,12 +195,32 @@ def abnormal_lab_findings(
         return []
     age = resolve_patient_age(dict(case)).get("age_years")
     items = abnormal_from_bundle(bundle, age_years=age, max_date=visit)
+    if isinstance(lab_assessment, Mapping) and lab_assessment.get("enforcement_enabled"):
+        actionable = {
+            (
+                str((row.get("identity") or {}).get("panel_id") or ""),
+                str((row.get("identity") or {}).get("analyte") or "").lower(),
+                str(row.get("test_date") or ""),
+            )
+            for row in lab_assessment.get("results") or []
+            if isinstance(row, Mapping) and row.get("actionable_for_review")
+        }
+        items = [
+            item
+            for item in items
+            if (
+                str(item.get("panel_id") or ""),
+                str(item.get("indicator") or "").lower(),
+                str(item.get("test_date") or ""),
+            )
+            in actionable
+        ]
     ignored = [item for item in items if not _mo_acknowledges_abnormal(case, item)]
     if not ignored:
         return []
     bits = ", ".join(
         f"{item.get('indicator')}={item.get('value')} "
-        f"(норма {item.get('low')}–{item.get('high')})"
+        f"(норма {item.get('low')}-{item.get('high')})"
         for item in ignored[:5]
     )
     shadow = not lab_abnormal_primary_enabled()

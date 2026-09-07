@@ -118,10 +118,17 @@ def _finding(code: str, *, title: str, detail: str, severity: str = "P1") -> dic
 def unused_lab_findings(
     case: Mapping[str, Any] | None,
     reconcile: Mapping[str, Any] | None = None,
+    *,
+    lab_assessment: Mapping[str, Any] | None = None,
 ) -> list[dict[str, Any]]:
     if not lab_unused_enabled() or not isinstance(case, Mapping):
         return []
     present = collect_present_panels(case, reconcile)
+    if isinstance(lab_assessment, Mapping) and lab_assessment.get("enforcement_enabled"):
+        from clinical_knowledge.mo_lab_result_assessment import actionable_panel_ids
+
+        actionable = actionable_panel_ids(lab_assessment)
+        present = {pid: row for pid, row in present.items() if pid in actionable}
     if not present:
         return []
 
@@ -138,8 +145,7 @@ def unused_lab_findings(
         "dispensary_info",
         "return_date",
     )
-    # Норма: учёт в exam_data сам по себе не закрывает unused_in_dx —
-    # нужен диагноз/план. Но если панель только из warehouse и уже в exam_data,
+    # Норма: учёт в exam_data сам по себе не закрывает unused_in_dx -     # нужен диагноз/план. Но если панель только из warehouse и уже в exam_data,
     # для dx всё равно проверяем dx_text.
 
     unused_dx: list[str] = []
@@ -180,8 +186,7 @@ def unused_lab_findings(
             )
         )
 
-    # Волна 3: заказ ранее / результат есть / в текущем МО не разобран —
-    # приближение: present_not_in_mo из reconcile + нет в dx и plan.
+    # Волна 3: заказ ранее / результат есть / в текущем МО не разобран -     # приближение: present_not_in_mo из reconcile + нет в dx и plan.
     if isinstance(reconcile, Mapping):
         gap_labels = {
             str(item.get("label") or "")
