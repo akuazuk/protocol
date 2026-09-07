@@ -1,6 +1,6 @@
 # protocol-gcp-app: web API + mo_pipeline (epochs E1/E2).
 # No PHI COPY; runtime mounts $MO_DATA_ROOT.
-FROM python:3.11-slim
+FROM python:3.14-slim
 
 WORKDIR /app
 
