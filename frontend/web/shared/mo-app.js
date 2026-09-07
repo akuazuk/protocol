@@ -294,8 +294,8 @@
         host.insertBefore(toolbar, wrap);
       }
       toolbar.innerHTML =
-        '<label class="filter"><span>Поиск в таблице</span>' +
-        '<input class="control" type="search" data-table-search placeholder="Текст строки" autocomplete="off"></label>' +
+        '<label class="filter"><span>Фильтр строк этой таблицы</span>' +
+        '<input class="control" type="search" data-table-search placeholder="Только видимые строки таблицы" autocomplete="off"></label>' +
         '<div class="table-toolbar-chips" role="group" aria-label="Быстрый фильтр">' +
         '<button type="button" class="chip-btn" data-chip="all" aria-pressed="true">Все</button>' +
         '<button type="button" class="chip-btn" data-chip="bad" aria-pressed="false">Только плохо</button>' +
@@ -984,12 +984,29 @@
       });
       return match ? match.label : value;
     }
+    function periodAbsoluteRange() {
+      var q = query();
+      var from = q.get("date_from") || state.dateFrom || "";
+      var to = q.get("date_to") || state.dateTo || "";
+      var month = q.get("month") || "";
+      if (!from && month && month.length === 7) {
+        from = month + "-01";
+        var last = new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0);
+        to = month + "-" + String(last.getDate()).padStart(2, "0");
+      }
+      if (!from || !to) return "";
+      var today = minskDateKey(0);
+      var incomplete = today < to;
+      var span = from === to ? from : (from + " - " + to);
+      return incomplete ? span + " (период ещё не закончен)" : span;
+    }
     function periodLabel() {
-      if (state.selected.months.length) return "Месяц: " + facetLabel("months", state.selected.months[0]);
-      if (state.period === "yesterday") return "Период: вчера";
-      if (state.period === "7d") return "Период: последние 7 дней";
-      if (state.period === "custom") return "Период: " + (state.dateFrom || "?") + " - " + (state.dateTo || "?");
-      return "Период: текущий месяц";
+      var abs = periodAbsoluteRange();
+      if (state.selected.months.length) return "Месяц: " + (abs || facetLabel("months", state.selected.months[0]));
+      if (state.period === "yesterday") return "Период: вчера" + (abs ? " · " + abs : "");
+      if (state.period === "7d") return "Период: последние 7 дней" + (abs ? " · " + abs : "");
+      if (state.period === "custom") return "Период: " + (abs || ((state.dateFrom || "?") + " - " + (state.dateTo || "?")));
+      return "Период: текущий месяц" + (abs ? " · " + abs : "");
     }
     function renderChips() {
       var html = ['<span class="chip chip-period">' + esc(periodLabel()) + '</span>'];
@@ -2432,8 +2449,12 @@
         esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
         esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
       bindCaseRows(body);
-      applyColumnVisibility(queue ? "queue" : "documents");
       bindSortableHeaders(body.closest("table"));
+      applyColumnVisibility(queue ? "queue" : "documents");
+      syncBulkBar();
+      body.querySelectorAll("input[data-case-select]").forEach(function (input) {
+        input.addEventListener("change", syncBulkBar);
+      });
       if (!queue) {
         var pageSize = Number(data.page_size || (isSingleDayPeriod() ? 100 : 50));
         var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / pageSize));
@@ -3898,6 +3919,13 @@
       return Array.from(document.querySelectorAll('#queue-rows input[data-case-select]:checked')).map(function (input) {
         return input.getAttribute("data-case-select");
       });
+    }
+    function syncBulkBar() {
+      var bar = $("queue-bulk-bar");
+      if (!bar) return;
+      var n = selectedCaseIds().length;
+      bar.hidden = n === 0;
+      bar.setAttribute("data-selected-n", String(n));
     }
     async function bulkChange(changes) {
       var ids = selectedCaseIds();
