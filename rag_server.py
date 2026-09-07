@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-07-041400Z-case-drawer-d1-d5"
+BUILD_VERSION = "2026-09-07-043518Z-drawer-save-safety"
 
 
 def _app_version() -> str:
@@ -12725,10 +12725,15 @@ def api_methodist_mo_save_review_pack(
             decision=body.get("decision") if isinstance(body.get("decision"), dict) else body,
             supersedes_pack_id=body.get("supersedes_pack_id"),
             month=str(body.get("month") or "")[:7] or None,
+            expected_document_revision=body.get("expected_document_revision"),
+            evaluation_run_id=str(body.get("evaluation_run_id") or "") or None,
+            idempotency_key=(request.headers.get("Idempotency-Key") or "").strip() or None,
         )
     except PermissionError as exc:
         raise HTTPException(status_code=403, detail=str(exc)) from exc
     except ValueError as exc:
+        if str(exc) == "document_revision_conflict":
+            raise HTTPException(status_code=409, detail=str(exc)) from exc
         raise HTTPException(status_code=422, detail=str(exc)) from exc
     try:
         from clinical_knowledge.mo_backend import record_access
