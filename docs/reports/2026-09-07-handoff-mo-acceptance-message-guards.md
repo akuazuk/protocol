@@ -7,7 +7,7 @@
 - Branch: `cursor/mo-acceptance-message-guards-agent1-pc1`
 - Base: `1f5e2667e45a9f3b61d7f07e6b8e01e86ad0fef1`
 - BUILD_VERSION: `2026-09-07-073641Z-acceptance-guards`
-- PR: будет указан после публикации
+- PR: [#240](https://github.com/akuazuk/protocol/pull/240)
 
 ## Реализация
 
