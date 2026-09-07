@@ -62,6 +62,7 @@
       drillTrail: [], drillSnapshot: null,
       columnVisible: { documents: [], queue: [] }, columnsPanelOpen: false,
       filterDraft: null, filterPanelApplying: false,
+      widgetRetries: {},
       expertDisplayName: ""
     };
     var ZONE_LABELS = { zone1: "Оформление", zone2a: "Диагноз", zone2b: "План по протоколу" };
@@ -618,6 +619,34 @@
       $("global-error").textContent = message; $("global-error").hidden = false;
       showToast(message);
     }
+    function clearWidgetError(host, key) {
+      if (host) {
+        var error = host.querySelector('[data-widget-error="' + key + '"]');
+        if (error) error.remove();
+      }
+      state.widgetRetries[key] = 0;
+    }
+    function renderWidgetError(host, key, message, retry) {
+      if (!host) return;
+      var previous = host.querySelector('[data-widget-error="' + key + '"]');
+      if (previous) previous.remove();
+      var attempts = Number(state.widgetRetries[key] || 0);
+      var disabled = attempts >= 2;
+      host.insertAdjacentHTML("afterbegin",
+        '<div class="widget-state widget-state--error" data-widget-error="' + esc(key) + '" role="status">' +
+        '<b>' + esc(message) + '</b><span>Ранее загруженные данные сохранены.</span>' +
+        '<button class="button secondary compact" type="button" data-widget-retry' +
+        (disabled ? " disabled" : "") + ">" + (disabled ? "Повтор исчерпан" : "Повторить") +
+        "</button></div>");
+      var button = host.querySelector('[data-widget-error="' + key + '"] [data-widget-retry]');
+      if (button && !disabled) {
+        button.addEventListener("click", function () {
+          state.widgetRetries[key] = attempts + 1;
+          button.disabled = true;
+          Promise.resolve(retry()).catch(function () {});
+        });
+      }
+    }
     function setAuth(show, message) {
       $("auth").hidden = !show; $("dashboard").hidden = show;
       if (message) $("auth-error").textContent = message;
@@ -968,7 +997,7 @@
           '<button type="button" data-clear-finding aria-label="Удалить фильтр замечания">×</button></span>');
       }
       if (state.findingFamily) {
-        html.push('<span class="chip">Раздел: ' + esc(state.findingFamily === "lab" ? "Анализы" : "Лекарства") +
+        html.push('<span class="chip">Раздел: ' + esc(state.findingFamily === "lab" ? "Анализы" : "Проверка назначений") +
           '<button type="button" data-clear-family aria-label="Удалить фильтр раздела">×</button></span>');
       }
       if (state.rubricCriterion) {
@@ -1482,11 +1511,12 @@
           ? ("кольца: " + analyticsWindowLabel(win))
           : "склад");
     }
-    function renderScoreRing(card, title, centerText, segments, onSelect) {
+    function renderScoreRing(card, title, centerText, segments, onSelect, denominatorText) {
       card.innerHTML =
         '<p class="score-ring-title">' + esc(title) + "</p>" +
         '<div class="score-ring-chart"></div>' +
-        '<p class="score-ring-meta">' + esc(centerText || "") + "</p>";
+        '<p class="score-ring-meta">' + esc(centerText || "") + "</p>" +
+        (denominatorText ? '<p class="score-ring-denominator">' + esc(denominatorText) + "</p>" : "");
       var chartHost = card.querySelector(".score-ring-chart");
       if (!MO.moDonut) {
         chartHost.innerHTML = '<p class="empty">Нет диаграмм</p>';
@@ -1584,10 +1614,16 @@
             color: band === "ok" ? good : band === "weak" ? warn : band === "bad" ? bad : mute
           };
         });
-        var center = block.avg_pct == null ? "-" : (Math.round(Number(block.avg_pct)) + "%");
+        var assessedN = ["ok", "weak", "bad"].reduce(function (total, band) {
+          return total + Number((bands[band] || {}).n || 0);
+        }, 0);
+        var zoneN = assessedN + Number((bands.na || {}).n || 0);
+        var center = assessedN > 0 && block.avg_pct != null
+          ? (Math.round(Number(block.avg_pct)) + "%")
+          : "Не оценено";
         renderScoreRing(card, meta.title, center, segments, function (band) {
           openZoneBandCases(meta.key, band);
-        });
+        }, "Оценено: n=" + assessedN + "/" + zoneN);
       });
       var regCard = document.createElement("div");
       regCard.className = "score-ring";
@@ -2337,17 +2373,18 @@
         serverSort: true
       });
     }
-    async function loadCases(queue) {
+    async function loadCasesRequest(queue) {
       var q = query();
       q.set("page", state.pageNo);
       q.set("page_size", isSingleDayPeriod() ? "100" : "50");
       if (queue) q.set("queue_only", "1");
       var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
-      if (!response.ok) throw new Error("Не удалось загрузить случаи.");
+      if (!response.ok) throw new Error("Список случаев временно недоступен.");
       var data = await response.json();
       var rows = (data.rows || data.cases || data.items || data.worst_visits || []).map(rowRecord);
       state.caseNavIds = rows.map(function (item) { return item.id; }).filter(Boolean);
       var body = queue ? $("queue-rows") : $("document-rows");
+      clearWidgetError((queue ? $("page-queue") : $("page-documents")).querySelector(".card"), queue ? "queue-cases" : "document-cases");
       var emptyState = data.empty_state || {};
       var pageHost = queue ? $("page-queue") : $("page-documents");
       var banner = pageHost ? pageHost.querySelector(".day-table-banner") : null;
@@ -2390,6 +2427,19 @@
         });
       }
       if (data.facets) buildFacets(state.data.summary || normalizeSummary({}), data.facets);
+    }
+    async function loadCases(queue) {
+      var pageHost = queue ? $("page-queue") : $("page-documents");
+      var card = pageHost && pageHost.querySelector(".card");
+      var key = queue ? "queue-cases" : "document-cases";
+      try {
+        await loadCasesRequest(queue);
+      } catch (error) {
+        if (isAbortedRequest(error)) throw error;
+        renderWidgetError(card, key, error.message || "Список случаев временно недоступен.", function () {
+          return loadCases(queue);
+        });
+      }
     }
     async function openCase(id, trigger) {
       if (!id) return;
@@ -3610,7 +3660,7 @@
     }
     function navigateFamily(family, sourceLabel) {
       applyDrill({
-        label: sourceLabel || (family === "lab" ? "Анализы" : "Лекарства"),
+        label: sourceLabel || (family === "lab" ? "Анализы" : "Проверка назначений"),
         findingFamily: family || "",
         findingCode: "",
         search: "",
@@ -3629,7 +3679,18 @@
       });
     }
     function familyPct(value) {
-      return value == null ? "-" : String(value).replace(".", ",") + "%";
+      if (value == null || value === "") return "Не оценено";
+      var numeric = Number(value);
+      if (!Number.isFinite(numeric)) return "Не оценено";
+      if (numeric > 0 && numeric < 0.1) return "<0,1%";
+      return String(Math.round(numeric * 10) / 10).replace(".", ",") + "%";
+    }
+    function neutralSignalTitle(value) {
+      return String(value || "Сигнал алгоритма")
+        .replace(/замечаниями/gi, "сигналами")
+        .replace(/замечаний/gi, "сигналов")
+        .replace(/замечания/gi, "сигналы")
+        .replace(/замечание/gi, "сигнал");
     }
     function renderFamilyStrip(hostId, payload) {
       var host = $(hostId);
@@ -3641,9 +3702,10 @@
         return '<button type="button" class="family-strip-tile" data-family-go="' + esc(family) + '">' +
           '<div class="kpi-label">' + esc(title) + ' · черновик</div>' +
           '<div class="kpi-value">' + esc(familyPct(row.pct)) + '</div>' +
-          '<div class="kpi-meta">' + esc(row.top_title_ru || row.top_code || "нет замечаний") + "</div></button>";
+          '<div class="kpi-meta">' + esc(neutralSignalTitle(row.top_title_ru || (row.top_code ? "Есть технический сигнал" : "сигналов нет"))) +
+          (row.cases != null ? " · n=" + esc(row.cases) : "") + "</div></button>";
       }
-      host.innerHTML = tile("drug", "Лекарства", drug) + tile("lab", "Анализы", lab);
+      host.innerHTML = tile("drug", "Проверка назначений", drug) + tile("lab", "Анализы", lab);
       host.querySelectorAll("[data-family-go]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var fam = btn.getAttribute("data-family-go") || "drug";
@@ -3665,23 +3727,26 @@
         host.innerHTML = '<p class="card-sub">Сводка по лекарствам и анализам недоступна.</p>';
       }
     }
-    function renderFamilyTable(host, rows, family, emptyText) {
+    function renderFamilyTable(host, rows, family, emptyText, totalCases) {
       if (!host) return;
       if (!rows || !rows.length) {
         host.innerHTML = '<p class="empty">' + esc(emptyText || "Нет данных за период.") + "</p>";
         return;
       }
-      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Код</th><th>Замечание</th><th>МО с замечанием</th><th>Доля всех МО периода</th></tr></thead><tbody>' +
+      host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Сигнал алгоритма</th><th>МО с сигналом</th><th>Доля всех МО периода</th></tr></thead><tbody>' +
         rows.map(function (row) {
           return '<tr><td><button type="button" class="finding-link" aria-label="' +
-            esc("Открыть МО: " + (row.title_ru || row.code || "замечание")) + '">' +
-            esc(row.code || "Открыть") + "</button></td><td>" + esc(row.title_ru || row.code || "") +
-            "</td><td>" + esc(row.cases) + "</td><td>" + esc(familyPct(row.pct)) +
+            esc("Открыть МО: " + neutralSignalTitle(row.title_ru || row.code || "сигнал")) + '">' +
+            esc(neutralSignalTitle(row.title_ru || "Открыть случаи")) + "</button>" +
+            '<details class="technical-details"><summary>Технические данные</summary><code>' +
+            esc(row.code || "код не указан") + "</code></details></td><td>" + esc(row.cases) +
+            "</td><td>" + esc(familyPct(row.pct)) + " · n=" + esc(row.cases) + "/" + esc(totalCases || 0) +
             '</td></tr>';
         }).join("") + "</tbody></table></div>";
       host.querySelectorAll("tbody tr").forEach(function (tr, idx) {
         tr.style.cursor = "pointer";
-        tr.addEventListener("click", function () {
+        tr.addEventListener("click", function (event) {
+          if (event.target.closest("details")) return;
           var row = rows[idx] || {};
           navigateFamilyCode(family, row.code || "", row.title_ru || row.code);
         });
@@ -3701,25 +3766,30 @@
         return String(a[key] || a.specialty || "").localeCompare(String(b[key] || b.specialty || ""), "ru");
       });
       function comparisonText(row) {
-        if (row.comparison_status === "small_n") {
-          return "Малая группа: n < " + esc(row.comparison_min_n || 20) + ", без ранга";
+        var status = row.evaluated_comparison_status || row.comparison_status;
+        if (status === "small_n") {
+          return "Мало оценимых случаев: n=" + esc(row.evaluated_cases || 0) +
+            " < " + esc(row.comparison_min_n || 20) + ", сравнение скрыто";
         }
-        if (row.comparison_status === "evaluated_denominator_unavailable") {
+        if (status === "evaluated_denominator_unavailable") {
           return "Оценимый знаменатель недоступен, без ранга";
         }
         return row.ranking_eligible === true ? "Допущено к сравнению" : "Без ранга";
       }
       host.innerHTML = '<div class="table-wrap"><table><thead><tr><th>' +
         (key === "doctor" ? "Врач" : "Специальность") +
-        "</th><th>С замечаниями</th><th>Всего в группе</th><th>Оценимых</th>" +
+        "</th><th>С сигналами</th><th>Всего в группе</th><th>Оценимых</th>" +
         "<th>Доля в группе</th><th>Вклад в МО периода</th><th>Сравнение</th></tr></thead><tbody>" +
         ordered.map(function (row) {
           var label = row[key] || row.specialty || "";
           var problemCases = row.problem_cases != null ? row.problem_cases : row.cases;
+          var evaluatedCases = row.evaluated_cases;
+          var groupCases = row.group_cases;
           return "<tr><td>" + esc(label) + "</td><td>" + esc(problemCases) +
-            "</td><td>" + esc(row.group_cases == null ? "-" : row.group_cases) +
-            "</td><td>" + esc(row.evaluated_cases == null ? "-" : row.evaluated_cases) +
+            "</td><td>" + esc(groupCases == null ? "Недоступно" : groupCases) +
+            "</td><td>" + esc(evaluatedCases == null ? "Недоступно" : evaluatedCases) +
             "</td><td>" + esc(familyPct(row.problem_pct_of_group)) +
+            (groupCases == null ? "" : " · n=" + esc(problemCases) + "/" + esc(groupCases)) +
             "</td><td>" + esc(familyPct(row.period_contribution_pct)) +
             "</td><td>" + comparisonText(row) + "</td></tr>";
         }).join("") + "</tbody></table></div>";
@@ -3737,9 +3807,10 @@
           ? "среди МО с лабораторией"
           : "доля МО периода";
         return '<button type="button" class="kpi kpi--clickable" data-family-tile="' + esc(tile.id || "") + '">' +
-          '<div class="kpi-label">' + esc(tile.title_ru || tile.id) + "</div>" +
+          '<div class="kpi-label">' + esc(neutralSignalTitle(tile.title_ru || "Сигнал алгоритма")) + "</div>" +
           '<div class="kpi-value">' + esc(familyPct(tile.pct)) + "</div>" +
-          '<div class="kpi-meta">' + esc(String(tile.cases || 0) + " · " + meta) + "</div></button>";
+          '<div class="kpi-meta">n=' + esc(tile.cases || 0) + "/" + esc(tile.denominator_n || 0) +
+          " · " + esc(meta) + "</div></button>";
       }).join("");
       host.querySelectorAll("[data-family-tile]").forEach(function (btn) {
         btn.addEventListener("click", function () {
@@ -3751,13 +3822,16 @@
         });
       });
     }
-    async function loadFamilyDashboard(family) {
+    async function loadFamilyDashboardRequest(family) {
       var prefix = family === "lab" ? "labs" : "medications";
       var response = await request("/drugs-labs-kpis?" + query().toString());
       if (!response.ok) throw new Error("Не удалось загрузить сводку " + (family === "lab" ? "анализов" : "лекарств") + ".");
       var data = await response.json();
+      var totalCases = Number((data.denominators || {}).total_cases || 0);
+      clearWidgetError($(prefix + "-kpis"), prefix + "-dashboard");
+      $("global-error").hidden = true;
       renderFamilyKpis($(prefix + "-kpis"), family, data);
-      renderFamilyTable($(prefix + "-codes"), ((data.families || {})[family] || {}).by_code || [], family);
+      renderFamilyTable($(prefix + "-codes"), ((data.families || {})[family] || {}).by_code || [], family, "", totalCases);
       renderFamilySlice($(prefix + "-specialty"), ((data.families || {})[family] || {}).by_specialty || [], "specialty", family);
       renderFamilySlice($(prefix + "-doctors"), ((data.families || {})[family] || {}).by_doctor || [], "doctor", family);
       if (family === "lab") {
@@ -3778,7 +3852,7 @@
         if (preview && casesResp.ok) {
           var cases = await casesResp.json();
           var items = cases.items || cases.rows || [];
-          if (!items.length) preview.innerHTML = '<p class="empty">Нет случаев с замечаниями этого раздела.</p>';
+          if (!items.length) preview.innerHTML = '<p class="empty">Нет случаев с сигналами этого раздела.</p>';
           else {
             preview.innerHTML = '<div class="table-wrap"><table><thead><tr><th>Визит</th><th>Дата</th><th>Врач</th><th></th></tr></thead><tbody>' +
               items.slice(0, 8).map(function (row) {
@@ -3794,6 +3868,21 @@
         }
       } catch (error) {}
     }
+    async function loadFamilyDashboard(family) {
+      var prefix = family === "lab" ? "labs" : "medications";
+      try {
+        await loadFamilyDashboardRequest(family);
+      } catch (error) {
+        if (isAbortedRequest(error)) throw error;
+        showError("Не удалось загрузить сводку " + (family === "lab" ? "анализов" : "лекарств") + ".");
+        renderWidgetError(
+          $(prefix + "-kpis"),
+          prefix + "-dashboard",
+          "Сводка временно недоступна. Остальные разделы МО Аналитики продолжают работать.",
+          function () { return loadFamilyDashboard(family); }
+        );
+      }
+    }
     function renderFamilyScores(data) {
       var scores = data.family_scores || (data.dual_scores && data.dual_scores.family_scores) || {};
       var note = scores.note_ru || "черновик, не в общей оценке";
@@ -3808,7 +3897,7 @@
           '</div><div class="kpi-meta">' + esc(completeness) +
           '</div><div class="kpi-meta">' + esc(note) + "</div></div>";
       }
-      return '<div class="family-score-row">' + chip("Лекарства", scores.drug_score, scores.drug) +
+      return '<div class="family-score-row">' + chip("Проверка назначений", scores.drug_score, scores.drug) +
         chip("Анализы", scores.lab_score, scores.lab) + "</div>";
     }
     function navigateYesterdayFinding(code, label, day) {
@@ -4468,7 +4557,7 @@
         }
       } catch (error) {}
     }
-    async function loadReports() {
+    async function loadReportsRequest() {
       var jobs = [
         request("/reports", "/dynamics"),
         request("/freshness?" + query().toString(), "/dynamics")
@@ -4478,6 +4567,7 @@
       var response = responses[0], freshnessResponse = responses[1], monthResponse = responses[2];
       if (!response.ok) throw new Error("Не удалось загрузить список отчётов.");
       var data = await response.json(), items = data.items || [];
+      clearWidgetError($("report-list"), "reports-list");
       var freshness = freshnessResponse.ok ? await freshnessResponse.json() : (data.freshness || {});
       var month = monthResponse && monthResponse.ok ? await monthResponse.json() : {};
       var kpis = $("report-kpis");
@@ -4501,6 +4591,8 @@
         var tone = item.quality_status === "blocked" || item.quality_status === "failed" ? "critical" :
           (item.quality_status === "partial" || item.quality_status === "warehouse_only" ? "review" : "good");
         var meta = [];
+        meta.push("cohort: только клинические приёмы");
+        meta.push("методика " + state.methodology);
         if (item.source_rows != null) meta.push("записей " + item.source_rows);
         if (item.evaluated != null) meta.push("оценено " + item.evaluated);
         if (item.avg_score != null) meta.push("средняя " + Math.round(Number(item.avg_score)) + "%");
@@ -4523,6 +4615,19 @@
           applyDrill({ label: "Таблица за " + day, period: "custom", dateFrom: day, dateTo: day, page: "documents" });
         });
       });
+    }
+    async function loadReports() {
+      try {
+        await loadReportsRequest();
+      } catch (error) {
+        if (isAbortedRequest(error)) throw error;
+        renderWidgetError(
+          $("report-list"),
+          "reports-list",
+          "Список отчётов временно недоступен. Загруженные показатели не очищены.",
+          loadReports
+        );
+      }
     }
     function currentReportDay() {
       if (state.period === "custom" && state.dateFrom) return state.dateFrom;
