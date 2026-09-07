@@ -8,7 +8,7 @@
 - Worktree: `/private/tmp/protocol-task-mo-honest-analytics-pc1`
 - Base: `07dae5421f3401f5725c8781401f6c66e3da53f5`
 - BUILD_VERSION: `2026-09-07-030758Z-honest-analytics`
-- PR: будет указан после публикации
+- PR: [#233](https://github.com/akuazuk/protocol/pull/233)
 
 ## Реализация
 
