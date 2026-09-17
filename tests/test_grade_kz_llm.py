@@ -71,6 +71,15 @@ def test_escalate_harm_disagreement():
     assert do and reason == "harm_disagreement"
 
 
+def test_no_escalate_needs_human_high_conf():
+    do, reason = _should_escalate(
+        {"confidence": 0.9, "potential_harm": True, "needs_human": True},
+        {"has_potential_harm": True},
+    )
+    assert do is False
+    assert reason == ""
+
+
 def test_no_escalate_high_conf_agree():
     do, _ = _should_escalate(
         {"confidence": 0.9, "potential_harm": True, "needs_human": False},

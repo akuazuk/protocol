@@ -103,7 +103,18 @@ def _checklist_from_protocol(protocol_ctx: Any) -> list[tuple[str, str]]:
     return items + list(_RUBRIC_ITEMS) if items else list(_RUBRIC_ITEMS)
 
 
-def build_grader_prompt(case: dict, checklist: list[tuple[str, str]], *, protocol_name: str = "") -> str:
+GRADER_SYSTEM = (
+    "Ты - клинический методист-эксперт. Оцени консультативное заключение (КЗ) врача "
+    "строго по чек-листу и цепочке согласованности. Опирайся ТОЛЬКО на текст КЗ; "
+    "если данных нет - это gap. Для каждого пункта дай pass/fail + цитату-обоснование.\n\n"
+    f"{_CHAIN_INSTRUCTION}\n\n{_FEWSHOT}\n\n"
+    "Верни СТРОГО JSON по схеме (без markdown):\n" + _JSON_SCHEMA
+)
+
+
+def build_grader_user_prompt(
+    case: dict, checklist: list[tuple[str, str]], *, protocol_name: str = ""
+) -> str:
     kz_lines = []
     for label, keys in _KZ_FIELDS:
         # Поля МИС несут шапку КЗ: ФИО, ИНП, телефон, дату рождения. Для оценки
@@ -113,13 +124,16 @@ def build_grader_prompt(case: dict, checklist: list[tuple[str, str]], *, protoco
     checklist_lines = "\n".join(f"- [{cid}] {txt}" for cid, txt in checklist)
     proto = f"Протокол МЗ РБ: {protocol_name}\n" if protocol_name else ""
     return (
-        "Ты - клинический методист-эксперт. Оцени консультативное заключение (КЗ) врача "
-        "строго по чек-листу и цепочке согласованности. Опирайся ТОЛЬКО на текст КЗ; "
-        "если данных нет - это gap. Для каждого пункта дай pass/fail + цитату-обоснование.\n\n"
-        f"{_CHAIN_INSTRUCTION}\n\n{_FEWSHOT}\n\n"
-        f"{proto}=== ТЕКСТ КЗ ===\n" + "\n".join(kz_lines) + "\n\n"
-        "=== ЧЕК-ЛИСТ (атомарные бинарные пункты) ===\n" + checklist_lines + "\n\n"
-        "Верни СТРОГО JSON по схеме (без markdown):\n" + _JSON_SCHEMA
+        f"{proto}=== ТЕКСТ КЗ ===\n"
+        + "\n".join(kz_lines)
+        + "\n\n=== ЧЕК-ЛИСТ (атомарные бинарные пункты) ===\n"
+        + checklist_lines
+    )
+
+
+def build_grader_prompt(case: dict, checklist: list[tuple[str, str]], *, protocol_name: str = "") -> str:
+    return GRADER_SYSTEM + "\n\n" + build_grader_user_prompt(
+        case, checklist, protocol_name=protocol_name
     )
 
 
@@ -144,20 +158,29 @@ def parse_grader_response(text: str) -> dict:
 
 
 def _should_escalate(parsed: dict, deterministic: dict | None) -> tuple[bool, str]:
+    """Pro только на серую зону. needs_human с flash ставится почти всегда и Pro его не снимает."""
     if parsed.get("_parse_error"):
         return True, "parse_error"
     conf = parsed.get("confidence")
     if isinstance(conf, (int, float)) and conf < 0.6:
         return True, "low_confidence"
-    if parsed.get("needs_human"):
-        return True, "needs_human"
-    # расхождение с детерминированными детекторами по потенциальному вреду
     if deterministic is not None:
         det_harm = bool(deterministic.get("has_potential_harm"))
         llm_harm = bool(parsed.get("potential_harm"))
         if det_harm != llm_harm:
             return True, "harm_disagreement"
     return False, ""
+
+
+def is_retryable_grade_error(row: dict) -> bool:
+    err = str(row.get("_error") or row.get("error") or "")
+    if not err and str(row.get("status") or "") != "error":
+        return False
+    from clinical_knowledge.gemini_lite import is_terminal_billing_error
+
+    if is_terminal_billing_error(err):
+        return False
+    return True
 
 
 def _build_model(model_name: str):
@@ -167,10 +190,40 @@ def _build_model(model_name: str):
     # репродуктивное здоровье) такой порог блокирует ответ, и оценка
     # записывалась пустой без ошибки в логе.
     from clinical_knowledge.gemini_client import build_model
+    from clinical_knowledge.gemini_lite import _env_bool
     from clinical_knowledge.gemini_model_config import resolve_gemini_model
 
     name, _warn = resolve_gemini_model(model_name)
-    return build_model(name), name
+    if _env_bool("GEMINI_CONTEXT_CACHE", True):
+        try:
+            return _build_cached_grader_model(name), name
+        except Exception:  # noqa: BLE001
+            pass
+    return build_model(name, system_instruction=GRADER_SYSTEM), name
+
+
+def _build_cached_grader_model(model_name: str):
+    """Явный context cache на статическую рубрику - ~90% скидка на префикс. Иначе system_instruction."""
+    import datetime
+    import warnings
+
+    from clinical_knowledge.gemini_client import clinical_safety_settings, require_api_key
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", FutureWarning)
+        import google.generativeai as genai
+        from google.generativeai import caching
+
+    require_api_key()
+    cache_name = model_name if model_name.startswith("models/") else f"models/{model_name}"
+    cache = caching.CachedContent.create(
+        model=cache_name,
+        system_instruction=GRADER_SYSTEM,
+        ttl=datetime.timedelta(hours=2),
+    )
+    return genai.GenerativeModel.from_cached_content(
+        cache, safety_settings=clinical_safety_settings()
+    )
 
 
 def _generate_with_fallback(model_name: str, prompt: str):
@@ -181,7 +234,7 @@ def _generate_with_fallback(model_name: str, prompt: str):
     configured = [
         value.strip()
         for value in os.environ.get(
-            "MO_LLM_MODEL_FALLBACKS", "gemini-3.6-flash,gemini-2.5-flash"
+            "MO_LLM_MODEL_FALLBACKS", "gemini-3.6-flash,gemini-2.5-flash,gemini-2.0-flash-lite"
         ).split(",")
         if value.strip()
     ]
@@ -213,7 +266,7 @@ def grade_kz_llm(
     from clinical_knowledge.mo_llm_usage import response_usage
 
     checklist = _checklist_from_protocol(protocol_ctx)
-    prompt = build_grader_prompt(case, checklist, protocol_name=protocol_name)
+    prompt = build_grader_user_prompt(case, checklist, protocol_name=protocol_name)
 
     response, bulk_resolved, bulk_latency = _generate_with_fallback(bulk_model, prompt)
     raw = _extract_text(response)
@@ -260,6 +313,110 @@ def grade_kz_llm(
     return parsed
 
 
+def _batch_bulk_prefill(
+    cases: list[dict], bulk_model: str, *, enabled: bool
+) -> dict[str, dict] | None:
+    """Предзаполнить bulk-ответы Batch API. None = вызывающий идёт sequential."""
+    from clinical_knowledge.gemini_batch import try_batch_generate
+    from clinical_knowledge.gemini_client import api_key
+    from clinical_knowledge.gemini_model_config import resolve_gemini_model
+    from clinical_knowledge.kz_deep_eval import resolve_protocol_ctx
+
+    if not enabled or not cases or len(cases) < 4:
+        return None
+    key = api_key()
+    if not key:
+        return None
+    resolved, _warn = resolve_gemini_model(bulk_model)
+    prompts: list[str] = []
+    ids: list[str] = []
+    for case in cases:
+        vid = str(case.get("visit_id") or "")
+        if not vid:
+            continue
+        proto = resolve_protocol_ctx(case)
+        checklist = _checklist_from_protocol(proto)
+        prompts.append(
+            build_grader_user_prompt(
+                case, checklist, protocol_name=(proto or {}).get("name") or ""
+            )
+        )
+        ids.append(vid)
+    if len(prompts) < 4:
+        return None
+    rows = try_batch_generate(
+        resolved, prompts, api_key=key, display_name=f"mo-grade-{ids[0]}"
+    )
+    if not rows or len(rows) != len(ids):
+        return None
+    out: dict[str, dict] = {}
+    for vid, row in zip(ids, rows):
+        parsed = parse_grader_response(str(row.get("text") or ""))
+        out[vid] = {
+            "parsed": parsed,
+            "calls": [
+                {
+                    "tier": "bulk",
+                    "model": resolved,
+                    "prompt_tokens": int(row.get("prompt_tokens") or 0),
+                    "completion_tokens": int(row.get("completion_tokens") or 0),
+                    "latency_ms": 0,
+                    "status": "parse_error" if parsed.get("_parse_error") else "ok",
+                }
+            ],
+        }
+    return out
+
+
+def _finish_from_bulk(
+    case: dict,
+    bulk: dict,
+    *,
+    escalate: bool,
+    judge_model: str,
+    deterministic: dict | None,
+    protocol_ctx: Any = None,
+    protocol_name: str = "",
+) -> dict:
+    parsed = dict(bulk.get("parsed") or {})
+    calls = list(bulk.get("calls") or [])
+    tier = "bulk"
+    model_used = str((calls[0] or {}).get("model") or "") if calls else ""
+    esc_reason = ""
+    user_prompt = build_grader_user_prompt(
+        case, _checklist_from_protocol(protocol_ctx), protocol_name=protocol_name
+    )
+    if escalate:
+        do_esc, esc_reason = _should_escalate(parsed, deterministic)
+        if do_esc:
+            from clinical_knowledge.gemini_lite import _extract_text
+            from clinical_knowledge.mo_llm_usage import response_usage
+
+            judge_response, judge_resolved, judge_latency = _generate_with_fallback(
+                judge_model, user_prompt
+            )
+            raw_j = _extract_text(judge_response)
+            parsed_j = parse_grader_response(raw_j)
+            judge_prompt_tokens, judge_completion_tokens = response_usage(judge_response)
+            calls.append({
+                "tier": "judge",
+                "model": judge_resolved,
+                "prompt_tokens": judge_prompt_tokens,
+                "completion_tokens": judge_completion_tokens,
+                "latency_ms": judge_latency,
+                "status": "parse_error" if parsed_j.get("_parse_error") else "ok",
+            })
+            if not parsed_j.get("_parse_error"):
+                parsed = parsed_j
+                tier = "judge"
+                model_used = judge_resolved
+    parsed["_grader_tier"] = tier
+    parsed["_grader_model"] = model_used
+    parsed["_escalation_reason"] = esc_reason
+    parsed["_llm_calls"] = calls
+    return parsed
+
+
 def main() -> int:
     ap = argparse.ArgumentParser()
     ap.add_argument("--cases", type=Path, required=True, help="kz_l1_<month>_cases.jsonl")
@@ -273,7 +430,12 @@ def main() -> int:
     ap.add_argument(
         "--retry-errors",
         action="store_true",
-        help="при --resume не считать успешными строки с _error (перепрогон после geo-block)",
+        help="при --resume перепрогон geo/timeout; spend-cap не ретраить",
+    )
+    ap.add_argument(
+        "--batch",
+        action="store_true",
+        help="bulk через Gemini Batch API (50%% off); при ошибке sequential",
     )
     ap.add_argument("--queue", type=Path, help="JSON queue containing visit_ids")
     ap.add_argument("--warehouse", type=Path, help="MO warehouse for token and cost accounting")
@@ -298,7 +460,7 @@ def main() -> int:
             vid = str(row.get("visit_id") or "")
             if not vid:
                 continue
-            if args.retry_errors and (row.get("_error") or row.get("error") or row.get("status") == "error"):
+            if args.retry_errors and is_retryable_grade_error(row):
                 continue
             done.add(vid)
             kept_lines.append(line)
@@ -331,6 +493,18 @@ def main() -> int:
 
     _ = load_drug_ctx()
     args.out.parent.mkdir(parents=True, exist_ok=True)
+    from clinical_knowledge.gemini_batch import use_night_batch
+
+    pending = [
+        c
+        for c in cases
+        if str(c.get("visit_id") or "") and not (args.resume and str(c.get("visit_id") or "") in done)
+    ]
+    bulk_prefill = _batch_bulk_prefill(
+        pending, args.bulk_model, enabled=bool(args.batch or use_night_batch())
+    ) or {}
+    if bulk_prefill:
+        print(f"batch_bulk_prefill n={len(bulk_prefill)}", flush=True)
     ok = fail = 0
     with args.out.open("a", encoding="utf-8") as fout:
         for c in cases:
@@ -339,12 +513,23 @@ def main() -> int:
                 continue
             proto = resolve_protocol_ctx(c)
             try:
-                res = grade_kz_llm(
-                    c, protocol_ctx=proto, escalate=args.escalate,
-                    deterministic=c.get("deep"),
-                    bulk_model=args.bulk_model, judge_model=args.judge_model,
-                    protocol_name=(proto or {}).get("name") or "",
-                )
+                if vid in bulk_prefill:
+                    res = _finish_from_bulk(
+                        c,
+                        bulk_prefill[vid],
+                        escalate=args.escalate,
+                        judge_model=args.judge_model,
+                        deterministic=c.get("deep"),
+                        protocol_ctx=proto,
+                        protocol_name=(proto or {}).get("name") or "",
+                    )
+                else:
+                    res = grade_kz_llm(
+                        c, protocol_ctx=proto, escalate=args.escalate,
+                        deterministic=c.get("deep"),
+                        bulk_model=args.bulk_model, judge_model=args.judge_model,
+                        protocol_name=(proto or {}).get("name") or "",
+                    )
                 res["visit_id"] = vid
                 if args.warehouse:
                     from clinical_knowledge.mo_llm_usage import record_llm_usage

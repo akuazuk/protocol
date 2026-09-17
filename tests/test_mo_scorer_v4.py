@@ -7,7 +7,7 @@ import pytest
 from clinical_knowledge.kz_evaluation_v4 import evaluate_kz_v4, load_v4_config
 from clinical_knowledge.kz_evaluation_schema import EvaluationMode
 from clinical_knowledge.mo_daily import build_daily_report, initialize_warehouse, upsert_warehouse
-from clinical_knowledge.mo_llm_usage import calculate_cost_usd, record_llm_usage
+from clinical_knowledge.mo_llm_usage import calculate_cost_usd, load_pricing, record_llm_usage
 from clinical_knowledge.mo_validation import build_gold_queue, evaluate_gold
 
 
@@ -61,7 +61,8 @@ def test_untrusted_protocol_findings_are_advisory():
 
 
 def test_llm_pricing_and_usage_are_persisted(tmp_path):
-    assert calculate_cost_usd("gemini-3.6-flash", 1_000_000, 1_000_000) == 9.0
+    load_pricing.cache_clear()
+    assert calculate_cost_usd("gemini-3.6-flash", 1_000_000, 1_000_000) == 4.5
     warehouse = tmp_path / "mo.sqlite"
     initialize_warehouse(warehouse)
     usage = record_llm_usage(

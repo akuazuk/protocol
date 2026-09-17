@@ -415,7 +415,12 @@ if [[ "$WITH_LLM" == "1" ]]; then
       -e SRC_ROOT=/app -e DATA="$DATA" \
       -e PYTHON=python -e RUN_HOST=gcp -e RUN_ID_PREFIX=gcp-night \
       -e MO_LLM_EXECUTION_HOST=gce \
-      -e MO_ACTION_JUDGE_LIMIT="${MO_ACTION_JUDGE_LIMIT:-0}" \
+      -e MO_ACTION_JUDGE_LIMIT="${MO_ACTION_JUDGE_LIMIT:-20}" \
+      -e MO_SHADOW_DX_PLAN_LIMIT="${MO_SHADOW_DX_PLAN_LIMIT:-30}" \
+      -e GEMINI_THINKING_BUDGET="${GEMINI_THINKING_BUDGET:-0}" \
+      -e GEMINI_JSON_MAX_OUTPUT_TOKENS="${GEMINI_JSON_MAX_OUTPUT_TOKENS:-2048}" \
+      -e GEMINI_NIGHT_USE_BATCH="${GEMINI_NIGHT_USE_BATCH:-1}" \
+      -e GEMINI_CONTEXT_CACHE="${GEMINI_CONTEXT_CACHE:-1}" \
       protocol-web bash /app/scripts/mo_llm_range_runner.sh; then
       LLM_STARTED=1
       rm -f "${DATA}/secure_cases/${Y}/${M}/kz_l1_${DAY}_llm_skip.json" 2>/dev/null \

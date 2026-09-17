@@ -144,6 +144,68 @@ def load_action_items_local(day: str, *, medical_root: Path) -> list[dict[str, A
     ]
 
 
+def load_local_case_document(
+    item: dict[str, Any], *, day: str, medical_root: Path
+) -> dict[str, Any]:
+    """Слоты из ночного jsonl, без HTTP на Render (там 503, и Gemini зря не зовём)."""
+    case_id = str(item.get("case_id") or item.get("visit_id") or "").strip()
+    mis_id = str(item.get("mis_id") or "").strip()
+    y, m, _ = day.split("-")
+    path = medical_root / "secure_cases" / y / m / f"kz_l1_{day}_cases.jsonl"
+    if not path.is_file():
+        return {"_error": f"no_local_cases:{path.name}", "case_id": case_id}
+    match: dict[str, Any] | None = None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        if not line.strip():
+            continue
+        try:
+            row = json.loads(line)
+        except json.JSONDecodeError:
+            continue
+        if not isinstance(row, dict):
+            continue
+        vid = str(row.get("visit_id") or row.get("case_id") or "").strip()
+        mid = str(row.get("mis_id") or row.get("id") or "").strip()
+        if (case_id and vid == case_id) or (mis_id and mid == mis_id):
+            match = row
+            break
+    if match is None:
+        return {"_error": "local_case_not_found", "case_id": case_id}
+    clinical = {
+        "complaints": match.get("complaints"),
+        "anamnesis": match.get("anamnesis_doctor") or match.get("anamnesis"),
+        "anamnesis_doctor": match.get("anamnesis_doctor"),
+        "objective_status": match.get("objective_status"),
+        "exam_data": match.get("exam_data"),
+        "clinical_diagnosis": match.get("clinical_diagnosis") or match.get("diagnosis_main_text"),
+        "mkb_code_main": match.get("mkb_code_main"),
+        "exam_recommendations": match.get("exam_recommendations"),
+        "treatment_recommendations": match.get("treatment_recommendations"),
+        "follow_up": match.get("dispensary_info") or match.get("return_date"),
+        "age_years": match.get("age_years"),
+    }
+    return {
+        "ok": True,
+        "case_id": case_id,
+        "mis_id": match.get("mis_id") or mis_id,
+        "visit_id": match.get("visit_id") or case_id,
+        "clinical": clinical,
+        "document_kind": match.get("document_kind"),
+        "age_years": match.get("age_years"),
+    }
+
+
+def document_ready_for_llm(document: dict[str, Any], pack: dict[str, Any]) -> str:
+    """Пустая строка если можно звать Gemini, иначе причина skip."""
+    err = document.get("_error") or pack.get("document_error")
+    if err:
+        return str(err)
+    slots = pack.get("slots") if isinstance(pack.get("slots"), dict) else {}
+    if not any(str(value or "").strip() for value in slots.values()):
+        return "empty_clinical_slots"
+    return ""
+
+
 def fetch_case_document(case_id: str, *, base_url: str) -> dict[str, Any]:
     """Клинические слоты из JSON case-detail (HTML /document не подходит)."""
     token = _methodist_token()
@@ -222,42 +284,54 @@ def document_to_case_pack(item: dict[str, Any], document: dict[str, Any]) -> dic
     return {"meta": meta, "slots": slots, "document_error": document.get("_error")}
 
 
-def _generate_gemini(prompt: str, *, model_name: str) -> tuple[str, int]:
-    from clinical_knowledge.gemini_lite import get_lite_gemini_model
+def _generate_gemini(prompt: str, *, model_name: str) -> tuple[str, int, dict[str, Any]]:
+    from clinical_knowledge.gemini_client import build_model
+    from clinical_knowledge.gemini_lite import _extract_text, generate_lite_json_response
     from clinical_knowledge.gemini_model_config import resolve_gemini_model
+    from clinical_knowledge.mo_llm_usage import response_usage
 
     resolved, _warn = resolve_gemini_model(model_name)
-    # temporarily prefer requested model via env for lite helper
-    prev = os.environ.get("GEMINI_MODEL")
-    os.environ["GEMINI_MODEL"] = resolved
-    try:
-        model = get_lite_gemini_model()
-        if model is None:
-            raise RuntimeError("Gemini model unavailable (нет ключа?)")
-        t0 = time.perf_counter()
-        # gemini_lite generate path
-        from clinical_knowledge import gemini_lite
+    model = build_model(resolved)
+    t0 = time.perf_counter()
+    resp = generate_lite_json_response(model, prompt)
+    text = _extract_text(resp)
+    prompt_tokens, completion_tokens = response_usage(resp)
+    ms = int((time.perf_counter() - t0) * 1000)
+    return text, ms, {
+        "model": resolved,
+        "prompt_tokens": prompt_tokens,
+        "completion_tokens": completion_tokens,
+    }
 
-        if hasattr(gemini_lite, "generate_text"):
-            text = gemini_lite.generate_text(prompt, max_out=4096)
-        else:
-            resp = model.generate_content(prompt)
-            text = getattr(resp, "text", None) or ""
-            if not text:
-                parts = []
-                for c in getattr(resp, "candidates", None) or []:
-                    content = getattr(c, "content", None)
-                    for p in getattr(content, "parts", None) or []:
-                        if getattr(p, "text", None):
-                            parts.append(p.text)
-                text = "".join(parts)
-        ms = int((time.perf_counter() - t0) * 1000)
-        return text, ms
-    finally:
-        if prev is None:
-            os.environ.pop("GEMINI_MODEL", None)
-        else:
-            os.environ["GEMINI_MODEL"] = prev
+
+def _maybe_record_usage(
+    warehouse: Path | None,
+    item: dict[str, Any],
+    day: str,
+    tier: str,
+    usage: dict[str, Any],
+    latency_ms: int,
+) -> None:
+    if warehouse is None or not warehouse.is_file():
+        return
+    from clinical_knowledge.mo_llm_usage import record_llm_usage
+
+    case_id = str(item.get("case_id") or item.get("visit_id") or "").strip()
+    try:
+        record_llm_usage(
+            warehouse,
+            run_id=f"action-judge-{day}",
+            tier=tier,
+            model=str(usage.get("model") or ""),
+            case_id=case_id,
+            prompt_tokens=int(usage.get("prompt_tokens") or 0),
+            completion_tokens=int(usage.get("completion_tokens") or 0),
+            latency_ms=int(latency_ms),
+            status="ok",
+            usage_date=day or None,
+        )
+    except Exception:  # noqa: BLE001
+        return
 
 
 def judge_one(
@@ -267,6 +341,10 @@ def judge_one(
     model_name: str,
     base_url: str,
     dry_run: bool,
+    source: str = "render",
+    day: str = "",
+    medical_root: Path | None = None,
+    warehouse: Path | None = None,
 ) -> dict[str, Any]:
     case_id = str(item.get("case_id") or item.get("visit_id") or "").strip()
     row: dict[str, Any] = {
@@ -292,23 +370,31 @@ def judge_one(
         row["prompt_b_chars"] = len(build_prompt_b(pack, digest)) if "b" in stages else 0
         return row
 
-    document = fetch_case_document(case_id, base_url=base_url)
+    if source == "local":
+        document = load_local_case_document(
+            item, day=day, medical_root=medical_root or Path("/var/data/medical_exams")
+        )
+    else:
+        document = fetch_case_document(case_id, base_url=base_url)
     pack = document_to_case_pack(item, document)
-    if pack.get("document_error"):
-        row["error"] = f"document: {pack['document_error']}"
+    skip = document_ready_for_llm(document, pack)
+    if skip:
+        row["error"] = f"document: {skip}"
         return row
 
     stage_a_obj: dict[str, Any] | None = None
     try:
         if "a" in stages:
             prompt_a = build_prompt_a(pack)
-            text_a, ms_a = _generate_gemini(prompt_a, model_name=model_name)
+            text_a, ms_a, usage_a = _generate_gemini(prompt_a, model_name=model_name)
             row["latency_ms_a"] = ms_a
+            _maybe_record_usage(warehouse, item, day, "action_a", usage_a, ms_a)
             try:
                 stage_a_obj = validate_stage_a(extract_json_object(text_a), case_id=case_id)
             except (ValueError, json.JSONDecodeError):
-                text_a, ms_a2 = _generate_gemini(prompt_a, model_name=model_name)
+                text_a, ms_a2, usage_a2 = _generate_gemini(prompt_a, model_name=model_name)
                 row["latency_ms_a"] = int(ms_a) + int(ms_a2)
+                _maybe_record_usage(warehouse, item, day, "action_a_retry", usage_a2, ms_a2)
                 stage_a_obj = validate_stage_a(extract_json_object(text_a), case_id=case_id)
             row["stage_a"] = stage_a_obj
         if "b" in stages:
@@ -324,13 +410,15 @@ def judge_one(
             else:
                 digest = stage_a_digest(stage_a_obj)
             prompt_b = build_prompt_b(pack, digest)
-            text_b, ms_b = _generate_gemini(prompt_b, model_name=model_name)
+            text_b, ms_b, usage_b = _generate_gemini(prompt_b, model_name=model_name)
             row["latency_ms_b"] = ms_b
+            _maybe_record_usage(warehouse, item, day, "action_b", usage_b, ms_b)
             try:
                 row["stage_b"] = validate_stage_b(extract_json_object(text_b), case_id=case_id)
             except (ValueError, json.JSONDecodeError):
-                text_b, ms_b2 = _generate_gemini(prompt_b, model_name=model_name)
+                text_b, ms_b2, usage_b2 = _generate_gemini(prompt_b, model_name=model_name)
                 row["latency_ms_b"] = int(ms_b) + int(ms_b2)
+                _maybe_record_usage(warehouse, item, day, "action_b_retry", usage_b2, ms_b2)
                 row["stage_b"] = validate_stage_b(extract_json_object(text_b), case_id=case_id)
     except Exception as e:  # noqa: BLE001 - batch must continue
         row["error"] = str(e)[:400]
@@ -350,9 +438,10 @@ def main() -> int:
     ap.add_argument(
         "--limit",
         type=int,
-        default=0,
+        default=20,
         help="макс. число кейсов из action-очереди; 0 = все",
     )
+    ap.add_argument("--warehouse", type=Path, default=None)
     ap.add_argument("--dry-run", action="store_true")
     ap.add_argument("--self-check", action="store_true", help="validate example fixtures and exit")
     ap.add_argument("--out", type=Path, default=None)
@@ -387,6 +476,11 @@ def main() -> int:
             f"sev={it.get('severity')} reason={(it.get('reason') or it.get('finding_title') or '')[:80]}"
         )
 
+    warehouse = args.warehouse
+    if warehouse is None:
+        candidate = args.medical_exams_root / "warehouse" / "mo_analytics.sqlite"
+        warehouse = candidate if candidate.is_file() else None
+
     results: list[dict[str, Any]] = []
     conc = 1 if args.dry_run else max(1, min(args.concurrency, 6))
     with ThreadPoolExecutor(max_workers=conc) as pool:
@@ -398,6 +492,10 @@ def main() -> int:
                 model_name=args.model,
                 base_url=args.base_url,
                 dry_run=args.dry_run,
+                source=args.source,
+                day=day,
+                medical_root=args.medical_exams_root,
+                warehouse=warehouse,
             )
             for it in items
         ]

@@ -1,13 +1,33 @@
 currency: USD
-effective_from: "2026-07-21"
+effective_from: "2026-09-17"
 source: "https://ai.google.dev/gemini-api/docs/pricing"
+# Flash 3.6/3.7/3.8: intro paid tier through 2026-12-31, then 2x.
+# Thinking tokens are billed as output; night JSON sets thinking_budget=0.
 prices_per_million_tokens:
   gemini-3.6-flash:
-    input: 1.50
-    output: 7.50
+    input: 0.75
+    output: 3.75
+  gemini-3.7-flash:
+    input: 0.75
+    output: 3.75
+  gemini-3.8-flash:
+    input: 0.75
+    output: 3.75
   gemini-3.1-pro-preview:
     input: 2.00
     output: 12.00
     long_context_threshold: 200000
     long_context_input: 4.00
     long_context_output: 18.00
+  gemini-2.5-flash:
+    input: 0.30
+    output: 2.50
+  gemini-2.5-pro:
+    input: 1.25
+    output: 10.00
+  gemini-2.0-flash:
+    input: 0.10
+    output: 0.40
+  gemini-2.0-flash-lite:
+    input: 0.075
+    output: 0.30

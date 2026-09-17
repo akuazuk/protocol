@@ -7,6 +7,65 @@ from concurrent.futures import ThreadPoolExecutor, TimeoutError as FuturesTimeou
 from typing import Any
 
 
+def _env_int(name: str, default: int) -> int:
+    raw = (os.environ.get(name) or "").strip()
+    if not raw:
+        return default
+    return int(raw)
+
+
+def _env_bool(name: str, default: bool) -> bool:
+    raw = (os.environ.get(name) or "").strip().lower()
+    if not raw:
+        return default
+    return raw in {"1", "true", "yes", "on"}
+
+
+def thinking_budget() -> int:
+    """0 = без thinking-токенов (они биллятся как output у Gemini 3.x)."""
+    return _env_int("GEMINI_THINKING_BUDGET", 0)
+
+
+def json_max_output_tokens() -> int:
+    """Ночной JSON короче extract: runner задаёт GEMINI_JSON_MAX_OUTPUT_TOKENS=2048."""
+    if (os.environ.get("GEMINI_JSON_MAX_OUTPUT_TOKENS") or "").strip():
+        return _env_int("GEMINI_JSON_MAX_OUTPUT_TOKENS", 2048)
+    return _env_int("GEMINI_SUMMARY_EXTRACT_MAX_TOKENS", 8192)
+
+
+def is_terminal_billing_error(message: str) -> bool:
+    """Spend cap / monthly billing - не ретраить: после смены ключа это платный объём."""
+    low = (message or "").lower()
+    return (
+        "spending cap" in low
+        or "monthly spend" in low
+        or "exceeded its monthly" in low
+        or "exceeded your current quota" in low
+    )
+
+
+def json_generation_config_dict(
+    *,
+    max_output_tokens: int | None = None,
+    temperature: float = 0.0,
+) -> dict[str, Any]:
+    """Конфиг для ночного JSON: без thinking, короткий output.
+
+    Словарь, а не GenerationConfig: так thinking_config доезжает даже на SDK,
+    который ещё не знает поле, и Batch REST принимает тот же payload.
+    """
+    cfg: dict[str, Any] = {
+        "temperature": temperature,
+        "max_output_tokens": int(
+            max_output_tokens if max_output_tokens is not None else json_max_output_tokens()
+        ),
+        "candidate_count": 1,
+        "response_mime_type": "application/json",
+        "thinking_config": {"thinking_budget": thinking_budget()},
+    }
+    return cfg
+
+
 def _extract_text(resp: Any) -> str:
     try:
         t = resp.text
@@ -39,7 +98,24 @@ def get_lite_gemini_model():
     return build_model(name)
 
 
-def generate_lite_json_response(model, full_prompt: str, *, timeout: float | None = None):
+def _generation_config_obj(genai, cfg: dict[str, Any]):
+    try:
+        return genai.types.GenerationConfig(**cfg)
+    except TypeError:
+        stripped = {k: v for k, v in cfg.items() if k != "thinking_config"}
+        try:
+            return genai.types.GenerationConfig(**stripped)
+        except TypeError:
+            return cfg
+
+
+def generate_lite_json_response(
+    model,
+    full_prompt: str,
+    *,
+    timeout: float | None = None,
+    max_output_tokens: int | None = None,
+):
     """JSON-mode response with usage metadata and a hard timeout."""
     if timeout is None:
         timeout = float(os.environ.get("GEMINI_CALL_TIMEOUT", "240"))
@@ -47,16 +123,23 @@ def generate_lite_json_response(model, full_prompt: str, *, timeout: float | Non
         warnings.simplefilter("ignore", FutureWarning)
         import google.generativeai as genai
 
-    max_out = int(os.environ.get("GEMINI_SUMMARY_EXTRACT_MAX_TOKENS", "8192"))
+    cfg = json_generation_config_dict(max_output_tokens=max_output_tokens)
+    generation_config = _generation_config_obj(genai, cfg)
 
     def _run():
-        return model.generate_content(
-            full_prompt,
-            generation_config=genai.types.GenerationConfig(
-                max_output_tokens=max_out,
-                response_mime_type="application/json",
-            ),
-        )
+        try:
+            return model.generate_content(
+                full_prompt,
+                generation_config=generation_config,
+            )
+        except TypeError:
+            # SDK отклонил thinking_config в объекте - второй заход словарём без него.
+            return model.generate_content(
+                full_prompt,
+                generation_config=_generation_config_obj(
+                    genai, {k: v for k, v in cfg.items() if k != "thinking_config"}
+                ),
+            )
 
     with ThreadPoolExecutor(max_workers=1) as ex:
         fut = ex.submit(_run)

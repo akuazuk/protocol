@@ -87,10 +87,37 @@ def _sanitize_blocked(endpoint: str, payload: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def _generate(prompt: str, *, model: str) -> tuple[str, int]:
+def _generate(
+    prompt: str,
+    *,
+    model: str,
+    warehouse: Path | None = None,
+    case_id: str = "",
+    day: str = "",
+    tier: str = "shadow",
+) -> tuple[str, int]:
     from scripts.run_mo_action_queue_llm_judge import _generate_gemini
 
-    return _generate_gemini(prompt, model_name=model)
+    text, ms, usage = _generate_gemini(prompt, model_name=model)
+    if warehouse is not None and warehouse.is_file():
+        from clinical_knowledge.mo_llm_usage import record_llm_usage
+
+        try:
+            record_llm_usage(
+                warehouse,
+                run_id=f"shadow-{day}",
+                tier=tier,
+                model=str(usage.get("model") or model),
+                case_id=case_id,
+                prompt_tokens=int(usage.get("prompt_tokens") or 0),
+                completion_tokens=int(usage.get("completion_tokens") or 0),
+                latency_ms=ms,
+                status="ok",
+                usage_date=day or None,
+            )
+        except Exception:  # noqa: BLE001
+            pass
+    return text, ms
 
 
 def _cases_path(day: str, *, data_root: Path) -> Path:
@@ -240,7 +267,14 @@ def judge_one(
     try:
         for attempt in range(2):
             try:
-                raw, _ = _generate(dx_prompt, model=model)
+                raw, _ = _generate(
+                    dx_prompt,
+                    model=model,
+                    warehouse=warehouse,
+                    case_id=case_id,
+                    day=day,
+                    tier="shadow_dx",
+                )
                 dx_result = validate_dx_evidence_result(
                     _sanitize_blocked("dx", pin_dx_semantics(extract_json_object(raw))),
                     case_id=case_id,
@@ -252,7 +286,14 @@ def judge_one(
                 time.sleep(0.5)
         for attempt in range(2):
             try:
-                raw, _ = _generate(plan_prompt, model=model)
+                raw, _ = _generate(
+                    plan_prompt,
+                    model=model,
+                    warehouse=warehouse,
+                    case_id=case_id,
+                    day=day,
+                    tier="shadow_plan",
+                )
                 pinned = _sanitize_blocked(
                     "plan",
                     pin_plan_route(
@@ -312,7 +353,7 @@ def main() -> int:
     )
     parser.add_argument("--warehouse", type=Path, default=None)
     parser.add_argument("--model", default=os.environ.get("MO_SHADOW_DX_PLAN_MODEL") or DEFAULT_MODEL)
-    parser.add_argument("--limit", type=int, default=0)
+    parser.add_argument("--limit", type=int, default=30)
     parser.add_argument("--concurrency", type=int, default=2)
     parser.add_argument("--resume", action="store_true")
     parser.add_argument("--dry-run", action="store_true")
@@ -329,13 +370,16 @@ def main() -> int:
         cases = cases[: args.limit]
 
     existing = _load_existing(out) if args.resume else {}
+    from clinical_knowledge.gemini_lite import is_terminal_billing_error
+
     pending = []
     for row in cases:
         cid = _case_id(row)
         mid = _mis_id(row)
         if args.resume and (cid in existing or (mid and mid in existing)):
             prev = existing.get(cid) or existing.get(mid)
-            if prev and not prev.get("error"):
+            err = str((prev or {}).get("error") or (prev or {}).get("_error") or "")
+            if prev and (not err or is_terminal_billing_error(err)):
                 continue
         pending.append(row)
 
