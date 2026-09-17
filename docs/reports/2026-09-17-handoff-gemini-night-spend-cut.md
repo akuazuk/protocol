@@ -4,7 +4,8 @@
 Repo: `akuazuk/protocol`
 Branch: `cursor/gemini-night-spend-cut-agent1-pc1`
 Worktree: `/private/tmp/protocol-task-gemini-night-spend-cut-pc1`
-PR: открывается из этой сессии
+PR: https://github.com/akuazuk/protocol/pull/249
+HEAD: `6b1f730d`
 
 ## Сделано
 
