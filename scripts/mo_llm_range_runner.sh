@@ -38,28 +38,38 @@ while day <= last:
 PY
 )
 echo "SUPERVISOR $(date -u) HOST=${RUN_HOST:-unknown} SRC_ROOT=$SRC_ROOT FIRST=$FIRST LAST=$LAST" | tee -a "$LOG"
+export GEMINI_THINKING_BUDGET="${GEMINI_THINKING_BUDGET:-0}"
+export GEMINI_JSON_MAX_OUTPUT_TOKENS="${GEMINI_JSON_MAX_OUTPUT_TOKENS:-2048}"
+export GEMINI_NIGHT_USE_BATCH="${GEMINI_NIGHT_USE_BATCH:-1}"
+export GEMINI_CONTEXT_CACHE="${GEMINI_CONTEXT_CACHE:-1}"
+export MO_LLM_MODEL_FALLBACKS="${MO_LLM_MODEL_FALLBACKS:-gemini-3.6-flash,gemini-2.5-flash,gemini-2.0-flash-lite}"
+BATCH_ARGS=()
+if [[ "${GEMINI_NIGHT_USE_BATCH}" == "1" || "${GEMINI_NIGHT_USE_BATCH}" == "true" ]]; then
+  BATCH_ARGS+=(--batch)
+fi
 for d in "${days[@]}"; do
   y=${d:0:4}; m=${d:5:2}; day=${d:8:2}
-  echo "=== night grade $d $(date -u) ===" | tee -a "$LOG"
+  echo "=== night grade $d $(date -u) thinking_budget=${GEMINI_THINKING_BUDGET} json_max=${GEMINI_JSON_MAX_OUTPUT_TOKENS} batch=${GEMINI_NIGHT_USE_BATCH} ===" | tee -a "$LOG"
   "$PYTHON" scripts/grade_kz_llm.py \
     --cases "$DATA/secure_cases/$y/$m/kz_l1_${d}_cases.jsonl" \
     --queue "$DATA/secure_cases/$y/$m/kz_l1_${d}_llm_queue.json" \
     --out "$DATA/secure_cases/$y/$m/kz_l1_${d}_llm_grades.jsonl" \
     --warehouse "$DATA/warehouse/mo_analytics.sqlite" \
     --run-id "${RUN_ID_PREFIX:-gcp-llm}-$d" \
-    --escalate --resume --retry-errors >>"$LOG" 2>&1
+    --escalate --resume --retry-errors "${BATCH_ARGS[@]}" >>"$LOG" 2>&1
   echo "grade_exit_$d=$?" | tee -a "$LOG"
   mkdir -p "$DATA/llm_action_judge/$y/$m/$day"
-  JUDGE_LIMIT="${MO_ACTION_JUDGE_LIMIT:-0}"
+  JUDGE_LIMIT="${MO_ACTION_JUDGE_LIMIT:-20}"
   "$PYTHON" scripts/run_mo_action_queue_llm_judge.py \
     --date "$d" --source local --stages ab --concurrency 3 --limit "$JUDGE_LIMIT" \
     --medical-exams-root "$DATA" \
+    --warehouse "$DATA/warehouse/mo_analytics.sqlite" \
     --out "$DATA/llm_action_judge/$y/$m/$day/judges.jsonl" >>"$LOG" 2>&1
   echo "judge_exit_$d=$?" | tee -a "$LOG"
   # Shadow Dx/Plan (option B): conservative attention; does not touch SSOT
   if [[ "${MO_SHADOW_DX_PLAN:-1}" == "1" || "${MO_SHADOW_DX_PLAN:-1}" == "true" ]]; then
     mkdir -p "$DATA/llm_shadow_dx_plan/$y/$m/$day"
-    SHADOW_LIMIT="${MO_SHADOW_DX_PLAN_LIMIT:-0}"
+    SHADOW_LIMIT="${MO_SHADOW_DX_PLAN_LIMIT:-30}"
     echo "=== shadow dx/plan $d limit=$SHADOW_LIMIT $(date -u) ===" | tee -a "$LOG"
     "$PYTHON" scripts/run_mo_shadow_dx_plan.py \
       --date "$d" --medical-exams-root "$DATA" --resume --concurrency 2 \

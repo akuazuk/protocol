@@ -39,15 +39,20 @@ def calculate_cost_usd(model: str, prompt_tokens: int, completion_tokens: int) -
 
 
 def response_usage(response: Any) -> tuple[int, int]:
+    """prompt + billable output. Thinking-токены Gemini 3.x входят в output."""
     metadata = getattr(response, "usage_metadata", None)
     if metadata is None:
         return 0, 0
     prompt = getattr(metadata, "prompt_token_count", None)
     completion = getattr(metadata, "candidates_token_count", None)
+    thoughts = getattr(metadata, "thoughts_token_count", None)
     if isinstance(metadata, Mapping):
         prompt = metadata.get("prompt_token_count", prompt)
         completion = metadata.get("candidates_token_count", completion)
-    return int(prompt or 0), int(completion or 0)
+        thoughts = metadata.get("thoughts_token_count", thoughts)
+        if thoughts is None:
+            thoughts = metadata.get("thoughtsTokenCount")
+    return int(prompt or 0), int(completion or 0) + int(thoughts or 0)
 
 
 def record_llm_usage(
