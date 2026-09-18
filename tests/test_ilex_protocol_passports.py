@@ -69,6 +69,7 @@ def test_overlay_replaces_truncated_title_and_fills_icd(tmp_path, monkeypatch) -
                 "approval_number": "38",
                 "approval_year": "2026",
                 "icd10_primary": ["I10", "I11", "I12", "I13"],
+                "chapters": ["Глава 1. Общие положения", "Глава 2. Диагностика"],
             },
             ensure_ascii=False,
         )
@@ -92,6 +93,7 @@ def test_overlay_replaces_truncated_title_and_fills_icd(tmp_path, monkeypatch) -
     assert "гипертензией" in cards[0]["title"]
     assert cards[0]["icd10_primary"][:4] == ["I10", "I11", "I12", "I13"]
     assert cards[0]["ilex_title_overlay"] is True
+    assert cards[0]["ilex_chapters"][:1] == ["Глава 1. Общие положения"]
     short = {
         "title": "КЛИНИЧЕСКИЙ ПРОТОКОЛ",
         "source_path": "minzdrav_protocols/kardiologiya/пост_МЗ_2026_38_КП_АГ.pdf",

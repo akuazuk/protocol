@@ -12,7 +12,12 @@ def test_strip_icd_tokens_removes_codes() -> None:
     assert "вальгусная" in strip_icd_tokens("M21.0 Вальгусная деформация").lower()
 
 
-def test_expand_flatfoot_aliases() -> None:
+def test_expand_acs_and_hypertension_aliases() -> None:
+    acs = expand_diagnosis_query("Острый коронарный синдром").lower()
+    assert "ишемической болезни сердца" in acs
+    assert "окс" in acs
+    ht = expand_diagnosis_query("Гипертоническая болезнь").lower()
+    assert "кровяным давлением" in ht or "гипертенз" in ht
     q = expand_diagnosis_query("Плосковальгусная установка стоп")
     low = q.lower()
     assert "плоская стопа" in low or "pes planus" in low

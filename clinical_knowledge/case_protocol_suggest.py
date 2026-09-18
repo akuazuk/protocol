@@ -643,7 +643,7 @@ def _rank_rows(
     case_codes: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Предпочесть clinical; внутри - ICD fit, primary hit, score; штраф rehab."""
-    codes = [str(c).upper() for c in (case_codes or graph.get("icd10_in_directory") or []) if c]
+    codes = [str(c).upper() for c in (case_codes or []) if c]
     filtered = [row for row in matched if not _path_blocked_for_specialty(row, graph)]
     decorated: list[tuple[int, int, int, float, int, float, int, dict[str, Any]]] = []
     audience = str(graph.get("audience") or "unknown").lower()
@@ -984,6 +984,7 @@ def suggest_protocols_for_case(
                 "search_query": search_query,
                 "search_url": search_url,
                 "icd_fit": list(row.get("icd_fit") or [])[:6],
+                "ilex_chapters": list(row.get("ilex_chapters") or [])[:12],
             }
         )
     reason = None

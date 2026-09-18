@@ -576,6 +576,7 @@ def match_protocol_cards(
                 "matched_condition": card.get("condition_label") or card.get("title"),
                 "specialty_slug": card.get("specialty_slug"),
                 "sha256": card.get("sha256"),
+                "ilex_chapters": list(card.get("ilex_chapters") or [])[:12],
             }
         )
         if len(out) >= limit:

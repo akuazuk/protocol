@@ -427,7 +427,7 @@ def _title_tokens(text: str) -> set[str]:
             continue
         folded = _fold_token(word)
         found.add(folded)
-        if len(folded) >= 8:
+        if len(folded) >= 6:
             found.add(folded[:6])
     return found
 
@@ -513,6 +513,15 @@ def overlay_ilex_passports(cards: list[dict[str, Any]] | None) -> list[dict[str,
                 card["condition_label"] = joined
             elif joined.lower() not in existing.lower():
                 card["condition_label"] = f"{existing} | {joined}"
+        chapter_names: list[str] = []
+        for row in matched:
+            for ch in row.get("chapters") or []:
+                text = str(ch or "").strip()
+                if text:
+                    chapter_names.append(text)
+        chapter_names = _uniq(chapter_names)[:24]
+        if chapter_names:
+            card["ilex_chapters"] = chapter_names
         if len(titles) == 1 and title_looks_truncated(str(card.get("title") or "")):
             card["title"] = titles[0]
             card["ilex_title_overlay"] = True
