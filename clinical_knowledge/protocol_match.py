@@ -422,8 +422,9 @@ def compute_match_score(
         elif rel <= 0.05:
             raw *= 0.08
 
-    # Свежий пост МЗ при сопоставимом ICD не должен проигрывать КП 8-12 лет назад.
-    if icd_part >= 0.5:
+    # Свежий пост МЗ не должен проигрывать КП 8-12 лет назад при том же
+    # ICD-first сигнале или при сильном текстовом совпадении (путь МО).
+    if icd_part >= 0.5 or (not use_icd and diag_part >= 0.4):
         try:
             from clinical_knowledge.kp_sync.recency import recency_multiplier
 
@@ -461,6 +462,18 @@ def match_protocol_cards(
     visit_day = parse_iso_date(ctx.get("visit_date"))
     hints = set(cons.get("conditions_hint") or [])
     diag_text = str(cons.get("diagnosis_text") or "")
+    try:
+        from clinical_knowledge.ilex_protocol_passports import enrich_diagnosis_with_ilex
+
+        diag_text = enrich_diagnosis_with_ilex(
+            diag_text,
+            audience=str(audience or "") or None,
+            icd_codes=list(icd_list) or [
+                str(x).upper() for x in (cons.get("icd10") or []) if x
+            ],
+        )
+    except Exception:  # noqa: BLE001
+        pass
     complaints = list(cons.get("complaints") or [])
     performed = list(cons.get("performed_exams") or [])
     bridge_cands: list[dict[str, Any]] = []
@@ -563,6 +576,7 @@ def match_protocol_cards(
                 "matched_condition": card.get("condition_label") or card.get("title"),
                 "specialty_slug": card.get("specialty_slug"),
                 "sha256": card.get("sha256"),
+                "ilex_chapters": list(card.get("ilex_chapters") or [])[:12],
             }
         )
         if len(out) >= limit:

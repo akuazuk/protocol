@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-17-153053Z-gemini-spend-cut"
+BUILD_VERSION = "2026-09-18-190626Z-ilex-kp-2026-wave3"
 
 
 def _app_version() -> str:

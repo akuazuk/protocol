@@ -46,6 +46,14 @@ def load_protocol_cards_registry() -> list[dict[str, Any]]:
                 for row in rows:
                     attach_validity_fields(row)
                     attach_icd_from_content(row)
+                try:
+                    from clinical_knowledge.ilex_protocol_passports import overlay_ilex_passports
+
+                    overlay_ilex_passports(rows)
+                    for row in rows:
+                        attach_validity_fields(row)
+                except Exception:  # noqa: BLE001
+                    pass
             except Exception:  # noqa: BLE001
                 pass
             return rows

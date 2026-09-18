@@ -643,11 +643,15 @@ def _rank_rows(
     case_codes: list[str] | None = None,
 ) -> list[dict[str, Any]]:
     """Предпочесть clinical; внутри - ICD fit, primary hit, score; штраф rehab."""
-    codes = [str(c).upper() for c in (case_codes or graph.get("icd10_in_directory") or []) if c]
+    codes = [str(c).upper() for c in (case_codes or []) if c]
     filtered = [row for row in matched if not _path_blocked_for_specialty(row, graph)]
-    decorated: list[tuple[int, int, int, float, int, float, dict[str, Any]]] = []
+    decorated: list[tuple[int, int, int, float, int, float, int, dict[str, Any]]] = []
     audience = str(graph.get("audience") or "unknown").lower()
     unknown_aud = audience in {"", "unknown", "any"}
+    try:
+        from clinical_knowledge.kp_sync.recency import approval_year
+    except Exception:  # noqa: BLE001
+        approval_year = lambda _row: None  # noqa: E731
     for row in filtered:
         kind = _match_kind(row, graph)
         tier = {"clinical": 0, "ddx": 1, "specialty": 2}.get(kind, 3)
@@ -665,6 +669,7 @@ def _rank_rows(
             is_child_only_kp_name(blob) or str(row.get("population") or "") == "child"
         ):
             child_unknown = 1
+        year = approval_year(row) or 0
         decorated.append(
             (
                 tier,
@@ -673,10 +678,13 @@ def _rank_rows(
                 -_best_icd_fit_weight(row),
                 -_icd_primary_hits(row, codes),
                 -float(row.get("match_score") or 0),
+                -int(year),
                 row,
             )
         )
-    decorated.sort(key=lambda item: (item[0], item[1], item[2], item[3], item[4], item[5]))
+    decorated.sort(
+        key=lambda item: (item[0], item[1], item[2], item[3], item[4], item[5], item[6])
+    )
     strong = [row for tier, *_rest, row in decorated if tier == 0]
     if len(strong) >= limit:
         return strong[:limit]
@@ -976,6 +984,7 @@ def suggest_protocols_for_case(
                 "search_query": search_query,
                 "search_url": search_url,
                 "icd_fit": list(row.get("icd_fit") or [])[:6],
+                "ilex_chapters": list(row.get("ilex_chapters") or [])[:12],
             }
         )
     reason = None
