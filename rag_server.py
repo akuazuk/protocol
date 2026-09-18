@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-18-172109Z-ilex-kp-passports"
+BUILD_VERSION = "2026-09-18-181209Z-ilex-kp-2026-pdfs"
 
 
 def _app_version() -> str:

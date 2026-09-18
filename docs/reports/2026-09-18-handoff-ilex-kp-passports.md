@@ -1,4 +1,4 @@
-# Handoff: Ilex-паспорта КП (шаг 1)
+# Handoff: Ilex-паспорта КП (шаг 2)
 
 Дата: 2026-09-18
 
@@ -7,43 +7,47 @@
 - worktree: `/private/tmp/protocol-task-ilex-kp-passports-pc1`
 - branch: `cursor/ilex-kp-passports-agent1-pc1`
 - base: `origin/main` `39c34ed9`
+- PR: https://github.com/akuazuk/protocol/pull/250
+- `BUILD_VERSION`: `2026-09-18-181209Z-ilex-kp-2026-pdfs`
 
 ## Сделано
 
-- Парсер локальной выгрузки Ilex → `output/registry/ilex_protocol_passports.jsonl`
-  (415 строк, без HTML). МКБ режется по каждому внутреннему КП (ФП = I48, не коды соседей).
-- Overlay на `protocol_cards`: только год+номер **и** пересечение нозологии с путём/названием.
-  1273 карт получили нормальное имя вместо `КЛИНИЧЕСКИЙ ПРОТОКОЛ`.
-- Запрос suggest дополняется названием паспорта Ilex (`enrich_diagnosis_with_ilex`).
-- Алиас гипертон/гипертенз → в т.ч. «кровяным давлением» (корпус 2017).
-- Выключить: `ILEX_PASSPORTS=0`. HTML Ilex в git нет.
+- PDF с сайта МЗ (рубрика кровообращения): АГ 2026 N 38; N 34 как КП1-КП6
+  (ФП = КП4). Карты: 5121 → 5193. HTML Ilex в git нет.
+- Overlay: unique-PDF shortcut, если в имени файла есть год и номер
+  (иначе «АГ» не стыкуется с «гипертензией»).
+- Suggest: recency на текстовом пути МО; в запрос Ilex только top-1 паспорт;
+  при равном балле новее раньше. АГ 2026 и ФП 2026 стали top-1.
 
-## Проверка (было / стало)
+## Проверка (шаг 2)
 
-| | off | on |
+| | overlay off | overlay on |
 |--|--|--|
 | Golden 40 | 0 fail | 0 fail |
-| Нозологии АГ/бронхит/синусит/ФП в suggest | 3/4 | 3/4 |
-| Прямой паспорт Ilex | - | **4/4** |
+| Нозологии АГ/бронхит/синусит/ФП | 3/4 | **4/4** |
 | Чужие ГСК/ПЦД/экстренка на этих 4 | 0 | 0 |
 
-ФП 2026 (пост. N 34) и АГ 2026 (пост. N 38) есть в Ilex и нет как PDF в картах.
-Suggest поэтому остаётся на КП 2017.
+Без overlay АГ 2026 всё равно в топе, но имя файла «АГ» не проходит
+`expect_any` (гипертенз/гипертон/давлен) - паспорт нужен для названия.
 
 ## Не сделано
 
 - Merge / deploy / GCE.
 - Nightly sync Ilex.
+- Остальные PDF 2026.
 - Plan-score по главам.
+- Не коммитить усечённый `output/chunks/chunks.jsonl` (локальный
+  changed-only сбой, не полный корпус).
 
 ## Не трогать параллельно
 
-`clinical_knowledge/ilex_protocol_passports.py`, `loader.py`, `protocol_match.py`,
-`dx_query_expand.py`, `output/registry/ilex_protocol_passports.jsonl`.
+`clinical_knowledge/ilex_protocol_passports.py`, `loader.py`,
+`protocol_match.py`, `case_protocol_suggest.py`, `dx_query_expand.py`,
+`output/registry/protocol_cards.jsonl`,
+`output/registry/ilex_protocol_passports.jsonl`.
 `rag_server.py` - только `BUILD_VERSION` (файл занят #186/#113).
 
 ## Следующая команда
 
-Добор PDF 2026 N 34 и N 38 в корпус МЗ, затем повтор
-`PYTHONPATH=. python3 scripts/eval_ilex_kp_suggest.py`.
-Не деплоить с этой task-ветки.
+Review/merge PR #250. Деплой только координатором после merge:
+`bash deploy/gcp-app/deploy_to_gce.sh`.

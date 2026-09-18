@@ -422,8 +422,9 @@ def compute_match_score(
         elif rel <= 0.05:
             raw *= 0.08
 
-    # Свежий пост МЗ при сопоставимом ICD не должен проигрывать КП 8-12 лет назад.
-    if icd_part >= 0.5:
+    # Свежий пост МЗ не должен проигрывать КП 8-12 лет назад при том же
+    # ICD-first сигнале или при сильном текстовом совпадении (путь МО).
+    if icd_part >= 0.5 or (not use_icd and diag_part >= 0.4):
         try:
             from clinical_knowledge.kp_sync.recency import recency_multiplier
 

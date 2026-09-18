@@ -451,11 +451,19 @@ def overlay_ilex_passports(cards: list[dict[str, Any]] | None) -> list[dict[str,
     if not passports:
         return cards
     by_key: dict[tuple[str, str], list[dict[str, Any]]] = {}
+    pdfs_by_key: dict[tuple[str, str], set[str]] = {}
     for row in passports:
         key = _approval_key(row.get("approval_year"), row.get("approval_number"))
         if not key:
             continue
         by_key.setdefault(key, []).append(row)
+    for card in cards:
+        key = _card_approval_key(card)
+        if not key:
+            continue
+        fname = str(card.get("source_path") or "").replace("\\", "/").rsplit("/", 1)[-1]
+        if fname:
+            pdfs_by_key.setdefault(key, set()).add(fname)
     from clinical_knowledge.protocol_links import title_looks_truncated
 
     try:
@@ -472,6 +480,19 @@ def overlay_ilex_passports(cards: list[dict[str, Any]] | None) -> list[dict[str,
             continue
         card_tokens = _title_tokens(_card_search_text(card))
         matched = [row for row in candidates if _passport_fits_card(row, card_tokens)]
+        if not matched:
+            titles = _uniq([str(row.get("protocol_title") or "") for row in candidates])
+            ilex_ids = {str(row.get("ilex_id") or "") for row in candidates if row.get("ilex_id")}
+            # Один акт, один КП, один PDF: имя файла может быть «АГ», без нозологии.
+            if (
+                len(titles) == 1
+                and len(ilex_ids) <= 1
+                and len(pdfs_by_key.get(key) or ()) == 1
+            ):
+                fname = str(card.get("source_path") or "")
+                year, num = key
+                if year in fname and num in fname.replace("№", "").replace(" ", ""):
+                    matched = list(candidates)
         if not matched:
             continue
         titles = _uniq([str(row.get("protocol_title") or "") for row in matched])
@@ -591,7 +612,7 @@ def enrich_diagnosis_with_ilex(
             base,
             icd_codes=icd_codes,
             audience=audience,
-            limit=3,
+            limit=1,
         )
     except Exception:  # noqa: BLE001
         return base

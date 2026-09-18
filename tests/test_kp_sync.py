@@ -140,7 +140,7 @@ def test_recency_prefers_2026_over_2017_same_icd():
     assert recency_multiplier(new, today=today) > recency_multiplier(old, today=today)
 
     card_new = {
-        "title": "ОКС 2026",
+        "title": "Клинический протокол острого коронарного синдрома 2026",
         "source_path": "minzdrav_protocols/cardio/ocs2026.pdf",
         "icd10_all": ["I21.0", "I20"],
         "icd10_primary": ["I21.0"],
@@ -151,7 +151,7 @@ def test_recency_prefers_2026_over_2017_same_icd():
         "protocol_kind": "clinical",
     }
     card_old = {
-        "title": "Инфаркт 2017",
+        "title": "Клинический протокол острого коронарного синдрома 2017",
         "source_path": "minzdrav_protocols/cardio/mi2017.pdf",
         "icd10_all": ["I21.0", "I20"],
         "icd10_primary": ["I21.0"],
@@ -182,6 +182,30 @@ def test_recency_prefers_2026_over_2017_same_icd():
         performed_exams=[],
     )
     assert s_new > s_old
+
+    s_new_text = compute_match_score(
+        card_new,
+        icd_list=[],
+        audience="adult",
+        hints=set(),
+        specialty_slug=None,
+        diag_text="острый коронарный синдром",
+        complaints=[],
+        performed_exams=[],
+        use_icd=False,
+    )
+    s_old_text = compute_match_score(
+        card_old,
+        icd_list=[],
+        audience="adult",
+        hints=set(),
+        specialty_slug=None,
+        diag_text="острый коронарный синдром",
+        complaints=[],
+        performed_exams=[],
+        use_icd=False,
+    )
+    assert s_new_text > s_old_text
 
 
 def test_superseded_and_rehab_not_primary():

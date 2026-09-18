@@ -92,14 +92,31 @@ def test_overlay_replaces_truncated_title_and_fills_icd(tmp_path, monkeypatch) -
     assert "гипертензией" in cards[0]["title"]
     assert cards[0]["icd10_primary"][:4] == ["I10", "I11", "I12", "I13"]
     assert cards[0]["ilex_title_overlay"] is True
+    short = {
+        "title": "КЛИНИЧЕСКИЙ ПРОТОКОЛ",
+        "source_path": "minzdrav_protocols/kardiologiya/пост_МЗ_2026_38_КП_АГ.pdf",
+        "approval": {"date": "2026-04-25", "number": "38"},
+        "icd10_primary": [],
+        "status": "active",
+    }
+    overlay_ilex_passports([short])
+    assert "гипертензией" in short["title"]
+    assert short["icd10_primary"][:4] == ["I10", "I11", "I12", "I13"]
     other = {
         "title": "КЛИНИЧЕСКИЙ ПРОТОКОЛ",
-        "source_path": "minzdrav_protocols/akusherstvo/омнибус_2026_38.pdf",
+        "source_path": "minzdrav_protocols/akusherstvo/омнибус_гинекология.pdf",
         "approval": {"date": "2026-01-01", "number": "38"},
         "icd10_primary": [],
         "status": "active",
     }
-    overlay_ilex_passports([other])
+    sibling = {
+        "title": "КЛИНИЧЕСКИЙ ПРОТОКОЛ",
+        "source_path": "minzdrav_protocols/akusherstvo/другой_том.pdf",
+        "approval": {"date": "2026-01-01", "number": "38"},
+        "icd10_primary": [],
+        "status": "active",
+    }
+    overlay_ilex_passports([other, sibling])
     assert other["title"] == "КЛИНИЧЕСКИЙ ПРОТОКОЛ"
     assert not other.get("ilex_title_overlay")
     mod.clear_ilex_passport_cache()
