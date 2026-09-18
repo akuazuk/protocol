@@ -13,6 +13,7 @@
 | [2026-09-04-mo-drugs-labs-scoring-v1.md](2026-09-04-mo-drugs-labs-scoring-v1.md) | МО: unused lab + усиление лекарств (Rceth/классы/формуляр) vs обещания статьи РЗ | active |
 | [2026-08-26-mo-lab-from-mis-tests-v1.md](2026-08-26-mo-lab-from-mis-tests-v1.md) | Лаборатория из `mis_tests` в МО: patient_id + окно дат, склад, shadow-сверка | active |
 | [2026-08-21-mo-kp-diagnosis-only-v1.md](2026-08-21-mo-kp-diagnosis-only-v1.md) | КП только от диагноза/МКБ; пусто лучше чужого протокола | active |
+| [2026-09-18-ilex-kp-passports-v1.md](2026-09-18-ilex-kp-passports-v1.md) | Ilex-паспорта КП: точные названия и МКБ главы 1 для подбора в МО | active |
 | [2026-08-20-mo-grade-ladder-v1.md](2026-08-20-mo-grade-ladder-v1.md) | Итог МО: Критично / Важно / Слабо / С замечанием / Хорошо + роль Rceth | active |
 | [2026-08-14-mo-kp-suggest-accuracy-v2.md](2026-08-14-mo-kp-suggest-accuracy-v2.md) | Точность КП: возраст с ДР + не искать КП, отменённый до визита | active |
 | [2026-08-14-mo-kp-suggest-accuracy-v1.md](2026-08-14-mo-kp-suggest-accuracy-v1.md) | Точность подбора КП: прогон июля после #149 | archived (преемник: mo-kp-suggest-accuracy-v2) |

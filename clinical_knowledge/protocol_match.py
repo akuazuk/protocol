@@ -461,6 +461,18 @@ def match_protocol_cards(
     visit_day = parse_iso_date(ctx.get("visit_date"))
     hints = set(cons.get("conditions_hint") or [])
     diag_text = str(cons.get("diagnosis_text") or "")
+    try:
+        from clinical_knowledge.ilex_protocol_passports import enrich_diagnosis_with_ilex
+
+        diag_text = enrich_diagnosis_with_ilex(
+            diag_text,
+            audience=str(audience or "") or None,
+            icd_codes=list(icd_list) or [
+                str(x).upper() for x in (cons.get("icd10") or []) if x
+            ],
+        )
+    except Exception:  # noqa: BLE001
+        pass
     complaints = list(cons.get("complaints") or [])
     performed = list(cons.get("performed_exams") or [])
     bridge_cands: list[dict[str, Any]] = []
