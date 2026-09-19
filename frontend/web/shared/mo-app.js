@@ -72,6 +72,7 @@
       worstSeverity: "",
       doctorZoneMetric: "zone1",
       caseNavIds: [], caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
+      caseDetailLoading: false,
       protocolSuggest: null,
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [] },
       scoreEligibleOnly: true,
@@ -1827,7 +1828,10 @@
         }).join("")+"<p class=\"inline-note\">"+esc((forecast.assumptions || []).join(". "))+"</p>";
       }
       var reconciliation=data.reconciliation || {}, banner=$("month-reconciliation");
-      banner.hidden=reconciliation.status === "ok";
+      banner.hidden = reconciliation.status === "ok" || (
+        Number(reconciliation.source_delta || 0) === 0 &&
+        Number(reconciliation.evaluated_delta || 0) === 0
+      );
       banner.className="banner critical";
       banner.textContent="Расхождение дневных и MTD итогов: источник "+reconciliation.source_delta+
         ", оценено "+reconciliation.evaluated_delta+". Данные не замаскированы.";
@@ -2410,20 +2414,47 @@
         serverSort: true
       });
     }
+    function casesTableBody(queue) {
+      return queue ? $("queue-rows") : $("document-rows");
+    }
+    function setCasesLoading(queue, on) {
+      var body = casesTableBody(queue);
+      if (!body) return;
+      var wrap = body.closest(".table-wrap");
+      if (wrap) {
+        wrap.classList.toggle("is-loading", !!on);
+        if (on) wrap.setAttribute("aria-busy", "true");
+        else wrap.removeAttribute("aria-busy");
+      }
+      if (!on) return;
+      if (body.querySelector("tr[data-case]")) return;
+      var table = body.closest("table");
+      var cols = table ? table.querySelectorAll("thead tr:first-child th").length : (queue ? 14 : 12);
+      var html = "";
+      for (var i = 0; i < 8; i++) {
+        html += '<tr class="is-skeleton-row" aria-hidden="true"><td colspan="' + cols +
+          '"><div class="skeleton"></div></td></tr>';
+      }
+      body.innerHTML = html;
+    }
     async function loadCasesRequest(queue) {
+      var epoch = pageRequestEpoch;
       var q = query();
       q.set("page", state.pageNo);
       q.set("page_size", isSingleDayPeriod() ? "100" : "50");
       if (queue) q.set("queue_only", "1");
       var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
+      if (epoch !== pageRequestEpoch) throw staleRequestError();
       if (!response.ok) throw new Error("Список случаев временно недоступен.");
       var data = await response.json();
+      if (epoch !== pageRequestEpoch) throw staleRequestError();
       var rows = (data.rows || data.cases || data.items || data.worst_visits || []).map(rowRecord);
       state.caseNavIds = rows.map(function (item) { return item.id; }).filter(Boolean);
       state.caseNavTotal = Number(data.total || rows.length);
       state.caseNavPage = state.pageNo;
       state.caseNavPageSize = Number(data.page_size || rows.length || 50);
-      var body = queue ? $("queue-rows") : $("document-rows");
+      var body = casesTableBody(queue);
+      setCasesLoading(queue, false);
       clearWidgetError((queue ? $("page-queue") : $("page-documents")).querySelector(".card"), queue ? "queue-cases" : "document-cases");
       var emptyState = data.empty_state || {};
       var pageHost = queue ? $("page-queue") : $("page-documents");
@@ -2473,12 +2504,15 @@
       if (data.facets) buildFacets(state.data.summary || normalizeSummary({}), data.facets);
     }
     async function loadCases(queue) {
+      beginPageRequestScope();
       var pageHost = queue ? $("page-queue") : $("page-documents");
       var card = pageHost && pageHost.querySelector(".card");
       var key = queue ? "queue-cases" : "document-cases";
       try {
+        setCasesLoading(queue, true);
         await loadCasesRequest(queue);
       } catch (error) {
+        setCasesLoading(queue, false);
         if (isAbortedRequest(error)) throw error;
         renderWidgetError(card, key, error.message || "Список случаев временно недоступен.", function () {
           return loadCases(queue);
@@ -2492,11 +2526,17 @@
         state.decisionDirty = false;
       }
       state.openCaseId = String(id);
+      state.caseDetailLoading = true;
       if (trigger) state.trigger = trigger;
       var scope = beginCaseDetailScope(id);
       $("case-drawer").hidden = false; $("drawer-backdrop").hidden = false;
       document.body.style.overflow = "hidden";
-      $("drawer-body").innerHTML = '<div class="skeleton"></div>';
+      var drawerBody = $("drawer-body");
+      var keepBody = !!(drawerBody && drawerBody.querySelector(".case-workspace-grid, .case-workspace-tabs, .detail-block"));
+      if (keepBody) drawerBody.classList.add("is-loading");
+      else drawerBody.innerHTML = '<div class="skeleton"></div>';
+      var drawerPdf = $("drawer-pdf");
+      if (drawerPdf && drawerPdf.getAttribute("data-open-pdf")) drawerPdf.hidden = false;
       updateDrawerNav();
       $("drawer-close").focus();
       var q = query(); q.set("month", q.get("month") || minskDateKey(0).slice(0,7)); q.set("visit_id", id);
@@ -2510,9 +2550,15 @@
         if (!response.ok) throw new Error("Случай не найден.");
         var payload = await response.json();
         if (isStaleCaseScope(scope)) return;
+        if (drawerBody) drawerBody.classList.remove("is-loading");
+        state.caseDetailLoading = false;
         renderCase(payload, scope);
+        updateDrawerNav();
       } catch (e) {
         if (isAbortedRequest(e) || isStaleCaseScope(scope)) return;
+        if (drawerBody) drawerBody.classList.remove("is-loading");
+        state.caseDetailLoading = false;
+        updateDrawerNav();
         $("drawer-body").innerHTML = '<div class="banner">' + esc(e.message) + "</div>";
       }
     }
@@ -3837,8 +3883,8 @@
       }
       prev.hidden = idx <= 0;
       next.hidden = idx >= ids.length - 1;
-      prev.disabled = idx <= 0;
-      next.disabled = idx >= ids.length - 1;
+      prev.disabled = state.caseDetailLoading || idx <= 0;
+      next.disabled = state.caseDetailLoading || idx >= ids.length - 1;
     }
     async function saveCaseDecision() {
       try {
@@ -4539,6 +4585,9 @@
           " выгрузки ещё нет).";
       }
       $("yesterday-date").textContent = label;
+      if ($("title-yesterday")) {
+        $("title-yesterday").textContent = day === minskDateKey(0) ? "Сегодня" : "Рабочий день";
+      }
       var dashPromise = request("/score-dashboard?" + query().toString(), "/score-dashboard");
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (await handleHttpAuth(response)) return;
@@ -4681,7 +4730,22 @@
       }
     }
     async function loadDoctorsDimension() {
-      var data = await dimensionData("doctors"), items = data.items || [];
+      var body = $("doctor-rows");
+      var wrap = body && body.closest(".table-wrap");
+      if (wrap) {
+        wrap.classList.add("is-loading");
+        wrap.setAttribute("aria-busy", "true");
+      }
+      var data, items;
+      try {
+        data = await dimensionData("doctors");
+        items = data.items || [];
+      } finally {
+        if (wrap) {
+          wrap.classList.remove("is-loading");
+          wrap.removeAttribute("aria-busy");
+        }
+      }
       state.data.doctorItems = items;
       $("doctor-rows").innerHTML = items.length ? items.map(function (x) {
         return '<tr data-doctor-key="' + esc(x.key) + '">' +
@@ -5757,7 +5821,9 @@
         { label: "Период: последние 7 дней", action: function () { state.period = "7d"; $("period").value = state.period; filtersChanged(); } },
         { label: "Период: текущий месяц", action: function () { state.period = "month"; $("period").value = state.period; filtersChanged(); } },
         { label: "Показать критические случаи", action: function () {
-          state.selected.statuses = ["Критично"]; renderChips(); switchPage("queue");
+          state.overallGrade = "critical";
+          state.selected.statuses = [];
+          renderChips(); switchPage("queue");
         } }
       );
       savedViews().forEach(function (view, index) {

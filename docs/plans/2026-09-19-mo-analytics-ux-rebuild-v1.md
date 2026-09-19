@@ -24,7 +24,9 @@
 
 ## 2. Что изменено в проде на момент плана
 
-Ничего из этого плана ещё не в коде. Аудит 2026-09-19 на `protocol.kravira.by`.
+Аудит 2026-09-19 на `protocol.kravira.by`. W0 squash-merge `20a3f822` (PR #251), `BUILD_VERSION` `2026-09-19-144419Z-mo-filter-truth`. Деплой W0 с отдельного worktree без локального `.env` упал на шаге env; повтор из worktree с `.env`, `SYNC_PROTOCOL_CORPUS=0`.
+
+W1 (этот PR): список не затирается до ответа, drawer не пустеет при next, баннер «источник 0» скрыт при нулевых дельтах.
 
 Рабочее:
 
@@ -201,6 +203,8 @@ Expert-роль: только Обзор + Найти МО (как сейчас 
 
 ### Волна 0. Правда фильтров (блокер, ~1–2 дня кода)
 
+Статус: **merged** PR #251 → `20a3f822`. На проде после успешного GCE smoke.
+
 Цель: кнопки перестают врать, без нового визуала.
 
 #### W0.1 API принимает то, что шлёт UI
@@ -273,7 +277,7 @@ state.attentionOnly = false;
 
 ### Волна 1. Список не исчезает (0.5–1 день)
 
-Только `frontend/web`.
+Статус: **in PR**. Только `frontend/web`.
 
 #### W1.1 Stale-while-revalidate
 
@@ -444,11 +448,11 @@ HTML `mis-kz-quality.html` + CSS + `mo-app.js`. Не переносить мен
 
 ## 12. Одна следующая команда
 
-Начать W0.1–W0.3 в worktree от `origin/main`:
+После merge W1 и GCE smoke W0+W1:
 
 ```bash
-scripts/ops/git_task_start.sh mo-find-cases-w0 --pc=1 \
-  --branch=cursor/mo-find-cases-w0-pc1
+scripts/ops/git_task_start.sh mo-find-cases-w2 --pc=1 \
+  --branch=cursor/mo-find-cases-w2-pc1
 ```
 
-Сначала объявить `overall_grade` в FastAPI, починить кнопку очереди и мутацию `attach_overall_grade`, тесты контракта, затем PR. Деплой только после merge, координатором, `deploy_to_gce.sh`.
+W2: SQL `LIMIT` + индексы склада в `mo_backend.py`. Не начинать W3, пока W0 фильтры не подтверждены на `protocol.kravira.by`. Деплой: `SYNC_PROTOCOL_CORPUS=0 bash deploy/gcp-app/deploy_to_gce.sh` из worktree с `.env`.
