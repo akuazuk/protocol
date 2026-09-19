@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-19-161513Z-mo-find-bar"
+BUILD_VERSION = "2026-09-19-164045Z-mo-queue-band"
 
 
 def _app_version() -> str:
@@ -11851,6 +11851,7 @@ def api_methodist_mo_cases(
     visit_id: str = Query("", max_length=64),
     patient_id: str = Query("", max_length=64),
     queue_only: bool = Query(False),
+    queue_band: str = Query("", max_length=16),
     score_eligible_only: str = Query("1", max_length=16),
     zone: str = Query("", max_length=32),
     zone_band: str = Query("", max_length=16),

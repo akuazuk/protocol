@@ -318,7 +318,7 @@ state.attentionOnly = false;
 
 ### Волна 3. Полоса «Найти МО» (frontend, 2–3 дня)
 
-Статус: **in PR**. HTML `mis-kz-quality.html` + CSS + `mo-app.js`. Не переносить меню в этом PR, только шапку. Combobox врача/спец. остаются в панели фильтров (live-checkbox уже в W0); вынос в шапку - если не влезет по плотности, хвост W4.
+Статус: **merged** PR #254 → `9de0be1d`. На проде `2026-09-19-161513Z-mo-find-bar`. HTML `mis-kz-quality.html` + CSS + `mo-app.js`. Не переносить меню в этом PR, только шапку. Combobox врача/спец. остаются в панели фильтров (live-checkbox уже в W0); вынос в шапку - если не влезет по плотности, хвост W4.
 
 #### W3.1 Всегда видимые контроли
 
@@ -353,7 +353,7 @@ state.attentionOnly = false;
 
 ### Волна 0.7. Очередь «критично» = KPI 15 (склад + кнопка)
 
-Статус: **next after W3**. На проде `overall_grade=critical` = 0, KPI «Критично в очереди» = 15 (`_queue_band_counts` / whitelist). Кнопка W0.3 и плитка `queue:critical` сейчас ведут не туда.
+Статус: **in PR**. На проде `overall_grade=critical` = 0, KPI «Критично в очереди» = 15 (`_queue_band_counts` / whitelist). Кнопка W0.3 и плитка `queue:critical` сейчас ведут не туда.
 
 1. Query `queue_band=critical|important` в `/cases` и `_filter_records` по `pick_primary_queue_finding`.
 2. Кнопка «Только критические» и плитка обзора: `queue_only=1&queue_band=critical`, сброс `overall_grade`.
