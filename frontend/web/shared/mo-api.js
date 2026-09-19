@@ -108,12 +108,18 @@
     options = options || {};
     options.headers = Object.assign({}, headers(), options.headers || {});
     var response;
+    var networkError = null;
     try {
       response = await fetch(API_ROOT + primary, options);
     } catch (error) {
+      networkError = error;
       response = null;
     }
     if (!response || response.status === 404 || response.status === 405 || response.status === 501) {
+      if (legacy == null || legacy === "") {
+        if (response) return response;
+        throw networkError || new Error("Сеть недоступна");
+      }
       if (legacy === "__root__") {
         return fetch("/api/methodist/mis-kz-quality" +
           (primary.indexOf("?") >= 0 ? primary.slice(primary.indexOf("?")) : ""), options);

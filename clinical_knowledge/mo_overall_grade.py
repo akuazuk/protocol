@@ -98,11 +98,31 @@ def compute_mo_overall_grade(
     }
 
 
+def overall_grade_id(record: Mapping[str, Any] | None) -> str:
+    """Идентификатор итога: critical…good или na. Мутирует dict-запись."""
+    rec = attach_overall_grade(record)
+    payload = rec.get("overall_grade")
+    if isinstance(payload, Mapping):
+        grade = str(payload.get("grade") or "na").strip().lower() or "na"
+        return grade
+    text = str(payload or "").strip().lower()
+    return text if text in GRADE_LABEL_RU or text == "na" else "na"
+
+
 def attach_overall_grade(record: Mapping[str, Any] | None) -> dict[str, Any]:
-    """Добавить overall_grade к строке склада / списка. Не печатает клинику."""
-    rec = dict(record or {})
+    """Добавить overall_grade к строке склада / списка. Не печатает клинику.
+
+    Если `record` - dict, пишем поля в него же: иначе `_filter_records`
+    отбрасывает копию и фильтр оценки не срабатывает.
+    """
+    rec: dict[str, Any]
+    if isinstance(record, dict):
+        rec = record
+    else:
+        rec = dict(record or {})
     stored = rec.get("overall_grade")
-    if isinstance(stored, Mapping) and stored.get("grade") in GRADE_LABEL_RU:
+    known = set(GRADE_LABEL_RU) | {"na"}
+    if isinstance(stored, Mapping) and stored.get("grade") in known:
         return rec
     stored_id = str(stored or rec.get("overall_grade_id") or "").strip().lower()
     if stored_id in GRADE_LABEL_RU:
