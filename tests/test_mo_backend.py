@@ -278,6 +278,78 @@ def test_queue_only_keeps_risky_cases(monkeypatch, tmp_path) -> None:
     assert {row["case_id"] for row in result["rows"]} == {"2", "3"}
 
 
+def test_warehouse_cases_page_uses_sql_limit(monkeypatch, tmp_path: Path) -> None:
+    db = tmp_path / "mo.sqlite"
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(db))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    initialize_warehouse(db)
+    now = "2026-09-19T12:00:00Z"
+    with sqlite3.connect(db) as conn:
+        for index in range(80):
+            conn.execute(
+                """INSERT INTO fact_mo_case
+                   (mis_id,visit_id,visit_date,document_kind,overall_pct,status,
+                    doctor_key,specialty,filial,diagnosis_code,icd_chapter,content_hash,updated_at)
+                   VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?)""",
+                (
+                    f"mis-{index:03d}",
+                    f"visit-{index:03d}",
+                    "2026-09-10",
+                    "clinical_visit",
+                    80.0,
+                    "good",
+                    "doc-a",
+                    "Терапия",
+                    "Центр",
+                    "I10",
+                    "IX",
+                    f"hash-{index}",
+                    now,
+                ),
+            )
+            for code_n in range(12):
+                conn.execute(
+                    """INSERT INTO fact_mo_finding
+                       (mis_id,finding_code,severity,passed,evidence,source_ref,title_ru)
+                       VALUES (?,?,?,?,?,?,?)""",
+                    (
+                        f"mis-{index:03d}",
+                        f"F_{code_n}",
+                        "P3",
+                        0,
+                        "x",
+                        "test",
+                        "оформление",
+                    ),
+                )
+        conn.commit()
+    page1 = mo_backend.build_cases(
+        {
+            "date_from": "2026-09-01",
+            "date_to": "2026-09-30",
+            "page": 1,
+            "page_size": 10,
+            "sort_by": "date",
+        }
+    )
+    page2 = mo_backend.build_cases(
+        {
+            "date_from": "2026-09-01",
+            "date_to": "2026-09-30",
+            "page": 2,
+            "page_size": 10,
+            "sort_by": "date",
+        }
+    )
+    assert page1["total"] == 80
+    assert len(page1["rows"]) == 10
+    assert len(page2["rows"]) == 10
+    assert page1["rows"][0]["case_id"] != page2["rows"][0]["case_id"]
+    source = Path(mo_backend.__file__).read_text(encoding="utf-8")
+    assert "LIMIT ? OFFSET ?" in source
+    assert "SELECT mis_id FROM page" in source
+
+
 def test_export_job_is_private_and_downloadable(monkeypatch, tmp_path) -> None:
     monkeypatch.setenv("MO_ANALYTICS_DB", str(tmp_path / "mo.sqlite"))
     monkeypatch.setattr(mo_backend, "_records", lambda params: [_record("1")])

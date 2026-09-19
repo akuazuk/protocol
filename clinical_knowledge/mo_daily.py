@@ -1672,6 +1672,14 @@ def initialize_warehouse(path: Path) -> None:
             "CREATE INDEX IF NOT EXISTS idx_case_patient_specialty "
             "ON fact_mo_case(patient_key, specialty, visit_date)"
         )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_overall_grade "
+            "ON fact_mo_case(overall_grade, visit_date)"
+        )
+        db.execute(
+            "CREATE INDEX IF NOT EXISTS idx_case_diagnosis_date "
+            "ON fact_mo_case(diagnosis_code, visit_date)"
+        )
         _ensure_columns(
             db,
             "fact_mo_finding",

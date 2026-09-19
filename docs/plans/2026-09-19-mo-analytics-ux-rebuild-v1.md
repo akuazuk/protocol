@@ -24,9 +24,7 @@
 
 ## 2. Что изменено в проде на момент плана
 
-Аудит 2026-09-19 на `protocol.kravira.by`. W0 squash-merge `20a3f822` (PR #251), `BUILD_VERSION` `2026-09-19-144419Z-mo-filter-truth`. Деплой W0 с отдельного worktree без локального `.env` упал на шаге env; повтор из worktree с `.env`, `SYNC_PROTOCOL_CORPUS=0`.
-
-W1 (этот PR): список не затирается до ответа, drawer не пустеет при next, баннер «источник 0» скрыт при нулевых дельтах.
+Аудит 2026-09-19 на `protocol.kravira.by`. W0 squash-merge `20a3f822` (PR #251) в проде: `overall_grade=good` 319 / `poor` 1814 / `important` 113 при all=7809. `overall_grade=critical` честно 0: KPI «Критично в очереди» = 15 считается whitelist-находками `_queue_band_counts`, не этой шкалой. W1 squash-merge `582329f6` (PR #252).
 
 Рабочее:
 
@@ -277,7 +275,7 @@ state.attentionOnly = false;
 
 ### Волна 1. Список не исчезает (0.5–1 день)
 
-Статус: **in PR**. Только `frontend/web`.
+Статус: **merged** PR #252 → `582329f6`. На проде после GCE smoke этого SHA.
 
 #### W1.1 Stale-while-revalidate
 
@@ -301,7 +299,7 @@ state.attentionOnly = false;
 
 ### Волна 2. Скорость списка (склад, 1–2 дня)
 
-Файлы: `clinical_knowledge/mo_backend.py`, индексы склада, тесты warehouse.
+Статус: **in progress**. Файлы: `clinical_knowledge/mo_backend.py`, индексы склада, тесты warehouse.
 
 Сейчас каждый `/cases?page=2` читает **весь** месяц.
 
