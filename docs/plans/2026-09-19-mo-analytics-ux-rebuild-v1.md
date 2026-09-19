@@ -277,7 +277,7 @@ state.attentionOnly = false;
 
 ### Волна 1. Список не исчезает (0.5–1 день)
 
-Статус: **in PR**. Только `frontend/web`.
+Статус: **merged** PR #252 → `582329f6`. На проде после GCE smoke этого SHA.
 
 #### W1.1 Stale-while-revalidate
 
@@ -301,7 +301,7 @@ state.attentionOnly = false;
 
 ### Волна 2. Скорость списка (склад, 1–2 дня)
 
-Файлы: `clinical_knowledge/mo_backend.py`, индексы склада, тесты warehouse.
+Статус: **in progress**. Файлы: `clinical_knowledge/mo_backend.py`, индексы склада, тесты warehouse.
 
 Сейчас каждый `/cases?page=2` читает **весь** месяц.
 

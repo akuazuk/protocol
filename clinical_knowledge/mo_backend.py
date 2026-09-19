@@ -732,7 +732,20 @@ def _assessment_contract_from_row(item: Mapping[str, Any]) -> dict[str, Any]:
     }
 
 
-def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
+def _param_active(value: Any) -> bool:
+    if value in (None, "", [], {}, False):
+        return False
+    if isinstance(value, str) and value.strip().lower() in {"0", "false", "no", "off"}:
+        return False
+    return True
+
+
+def _in_clause(column: str, values: list[str]) -> tuple[str, list[str]]:
+    marks = ",".join("?" for _ in values)
+    return f"{column} IN ({marks})", list(values)
+
+
+def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
     where: list[str] = []
     values: list[Any] = []
     identity = _identity_lookup(params)
@@ -760,9 +773,118 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
             values.append(str(params["date_to"])[:10])
         months = _selected_months(params)
         if not params.get("date_from") and not params.get("date_to") and months:
-            marks = ",".join("?" for _ in months)
-            where.append(f"substr(c.visit_date, 1, 7) IN ({marks})")
-            values.extend(months)
+            clause, month_values = _in_clause("substr(c.visit_date, 1, 7)", months)
+            where.append(clause)
+            values.extend(month_values)
+    kinds = _values(params.get("document_kinds"))
+    if kinds:
+        clause, kind_values = _in_clause("c.document_kind", kinds)
+        where.append(clause)
+        values.extend(kind_values)
+    specs = _values(params.get("specializations"))
+    if specs:
+        clause, spec_values = _in_clause("COALESCE(d.specialty, c.specialty)", specs)
+        where.append(clause)
+        values.extend(spec_values)
+    filials = _values(params.get("filials"))
+    if filials:
+        clause, filial_values = _in_clause("COALESCE(d.filial, c.filial)", filials)
+        where.append(clause)
+        values.extend(filial_values)
+    doctors = _values(params.get("doctors"))
+    if doctors:
+        clause, doctor_values = _in_clause("d.doctor_fio", doctors)
+        where.append(clause)
+        values.extend(doctor_values)
+    zone = str(params.get("zone") or "").strip().lower()
+    zone_band = str(params.get("zone_band") or "").strip().lower()
+    zone_col = {
+        "zone1": "c.zone1_band",
+        "documentation": "c.zone1_band",
+        "zone2a": "c.zone2a_band",
+        "diagnosis": "c.zone2a_band",
+        "zone2b": "c.zone2b_band",
+        "plan": "c.zone2b_band",
+    }.get(zone)
+    if zone_col and zone_band:
+        where.append(f"lower(COALESCE({zone_col}, '')) = ?")
+        values.append(zone_band)
+    elif zone == "safety":
+        where.append("c.attention_primary = 'safety'")
+    elif zone_band:
+        where.append(
+            "(lower(COALESCE(c.zone1_band,'')) = ? OR lower(COALESCE(c.zone2a_band,'')) = ? "
+            "OR lower(COALESCE(c.zone2b_band,'')) = ?)"
+        )
+        values.extend([zone_band, zone_band, zone_band])
+    if str(params.get("attention_only") or "").lower() in {"1", "true", "yes"}:
+        where.append("COALESCE(NULLIF(c.attention_primary, ''), 'none') NOT IN ('none')")
+    want_icd = str(params.get("icd") or "").strip().upper().replace(".", "")
+    if want_icd:
+        where.append("replace(upper(COALESCE(c.diagnosis_code, '')), '.', '') LIKE ?")
+        values.append(want_icd + "%")
+    kp_status = str(params.get("kp_status") or "").strip().lower()
+    if kp_status:
+        where.append("lower(COALESCE(c.zone2b_kp_status, '')) = ?")
+        values.append(kp_status)
+    history_tier = str(params.get("history_tier") or "").strip()
+    if history_tier:
+        where.append("c.history_tier = ?")
+        values.append(history_tier)
+    return where, values
+
+
+def _cases_sql_pageable(params: dict[str, Any]) -> bool:
+    if _backend_source() != "warehouse":
+        return False
+    if _identity_lookup(params):
+        return False
+    sort_by = str(params.get("sort_by") or "date")
+    if sort_by not in {"", "date"}:
+        return False
+    for key in (
+        "q",
+        "finding_codes",
+        "finding_family",
+        "crm_statuses",
+        "assignees",
+        "icd_visit_status",
+        "min_severity",
+        "worst_severity",
+        "overall_grade",
+        "reg55_point",
+        "reg55_band",
+        "reg55_pack",
+    ):
+        if _param_active(params.get(key)):
+            return False
+    if str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}:
+        return False
+    if str(params.get("shadow_attention_only") or "").lower() in {"1", "true", "yes"}:
+        return False
+    return True
+
+
+def _warehouse_count(params: dict[str, Any]) -> int:
+    where, values = _warehouse_where(params)
+    sql = """
+        SELECT COUNT(*) FROM fact_mo_case c
+        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+    """
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    with closing(_read_connection()) as conn:
+        row = conn.execute(sql, values).fetchone()
+    return int(row[0] if row else 0)
+
+
+def _warehouse_records(
+    params: dict[str, Any],
+    *,
+    limit: int | None = None,
+    offset: int = 0,
+) -> list[dict[str, Any]]:
+    where, values = _warehouse_where(params)
     has_reg55 = _warehouse_has_column(str(_db_path()), "fact_mo_case", "reg55_section_pct")
     if has_reg55:
         reg55_select = """
@@ -780,7 +902,14 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
                NULL AS reg55_pack,
                NULL AS reg55_applicable_n,
                '[]' AS reg55_weak_points_json"""
-    sql = f"""
+    findings_sql = """
+          SELECT mis_id,
+                 SUM(severity='P0') p0, SUM(severity='P1') p1,
+                 SUM(severity='P2') p2, SUM(severity='P3') p3,
+                 GROUP_CONCAT(DISTINCT finding_code) finding_codes
+          FROM fact_mo_finding {findings_where} GROUP BY mis_id
+    """
+    select_sql = f"""
         SELECT c.*, d.doctor_fio,
                COALESCE(d.specialty, c.specialty) AS doctor_specialty,
                COALESCE(d.filial, c.filial) AS doctor_filial,
@@ -795,17 +924,35 @@ def _warehouse_records(params: dict[str, Any]) -> list[dict[str, Any]]:
         LEFT JOIN fact_mo_score_axis ax_reg
                ON ax_reg.mis_id = c.mis_id AND ax_reg.axis = 'regulatory'
         LEFT JOIN (
-          SELECT mis_id,
-                 SUM(severity='P0') p0, SUM(severity='P1') p1,
-                 SUM(severity='P2') p2, SUM(severity='P3') p3,
-                 GROUP_CONCAT(DISTINCT finding_code) finding_codes
-          FROM fact_mo_finding GROUP BY mis_id
+          {findings_sql}
         ) f ON f.mis_id = c.mis_id
     """
-    if where:
-        sql += " WHERE " + " AND ".join(where)
+    query_values: list[Any] = list(values)
+    if limit is not None:
+        where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+        sql = f"""
+            WITH page AS (
+              SELECT c.mis_id
+              FROM fact_mo_case c
+              LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+              {where_sql}
+              ORDER BY c.visit_date DESC, c.mis_id DESC
+              LIMIT ? OFFSET ?
+            )
+        """ + select_sql.replace(
+            "{findings_where}",
+            "WHERE mis_id IN (SELECT mis_id FROM page)",
+        ) + """
+            JOIN page ON page.mis_id = c.mis_id
+            ORDER BY c.visit_date DESC, c.mis_id DESC
+        """
+        query_values.extend([int(limit), int(offset or 0)])
+    else:
+        sql = select_sql.replace("{findings_where}", "")
+        if where:
+            sql += " WHERE " + " AND ".join(where)
     with closing(_read_connection()) as conn:
-        rows = conn.execute(sql, values).fetchall()
+        rows = conn.execute(sql, query_values).fetchall()
     output = []
     for row in rows:
         item = dict(row)
@@ -1269,7 +1416,19 @@ def is_case_score_eligible(
 def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     params = _apply_request_period(params)
     params = _apply_score_eligible_default(params)
-    all_records = _records(params)
+    page = max(1, int(params.get("page") or 1))
+    default_page = 100 if (
+        str(params.get("date_from") or "")
+        and str(params.get("date_from") or "") == str(params.get("date_to") or "")
+    ) else 50
+    page_size = max(1, min(500, int(params.get("page_size") or default_page)))
+    start = (page - 1) * page_size
+    pre_total: int | None = None
+    if _cases_sql_pageable(params):
+        pre_total = _warehouse_count(params)
+        all_records = _warehouse_records(params, limit=page_size, offset=start)
+    else:
+        all_records = _records(params)
     filtered = _filter_records(all_records, params)
     states = _crm_states([r["case_id"] for r in filtered])
     crm_statuses = set(_values(params.get("crm_statuses")))
@@ -1346,17 +1505,11 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     }
     sort_field = sort_map.get(str(params.get("sort_by") or ""), "date")
     reverse = str(params.get("sort_dir") or "desc").lower() == "desc"
-    filtered.sort(key=lambda r: (r.get(sort_field) is None, r.get(sort_field) or ""), reverse=reverse)
-    page = max(1, int(params.get("page") or 1))
-    # Дневной срез: по умолчанию больше строк, чтобы таблица дня была «полной».
-    default_page = 100 if (
-        str(params.get("date_from") or "")
-        and str(params.get("date_from") or "") == str(params.get("date_to") or "")
-    ) else 50
-    page_size = max(1, min(500, int(params.get("page_size") or default_page)))
-    start = (page - 1) * page_size
+    if pre_total is None:
+        filtered.sort(key=lambda r: (r.get(sort_field) is None, r.get(sort_field) or ""), reverse=reverse)
+    page_rows = filtered if pre_total is not None else filtered[start : start + page_size]
     rows = []
-    for rec in filtered[start : start + page_size]:
+    for rec in page_rows:
         crm = states.get(rec["case_id"]) or {"status": "new", "tags": [], "finding_decisions": {}}
         public = _public_row(rec)
         if include_patient_id:
@@ -1404,7 +1557,7 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         "ok": True,
         "namespace": "mo",
         "source": _backend_source(),
-        "total": len(filtered),
+        "total": pre_total if pre_total is not None else len(filtered),
         "page": page,
         "page_size": page_size,
         "rows": rows,
@@ -1416,8 +1569,8 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
             if k != "include_patient_id" and v not in (None, "", [], False)
         },
         "empty_state": _describe_empty_state(
-            total_records=len(all_records),
-            filtered_records=len(filtered),
+            total_records=pre_total if pre_total is not None else len(all_records),
+            filtered_records=pre_total if pre_total is not None else len(filtered),
             params=params,
         ),
     }
