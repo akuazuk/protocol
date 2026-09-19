@@ -852,6 +852,7 @@ def _cases_sql_pageable(params: dict[str, Any]) -> bool:
         "min_severity",
         "worst_severity",
         "overall_grade",
+        "queue_band",
         "reg55_point",
         "reg55_band",
         "reg55_pack",
@@ -1221,6 +1222,24 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
         if str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}:
             if not _needs_review(rec):
                 continue
+        want_queue_band = str(params.get("queue_band") or "").strip().lower()
+        visit_allow = params.get("_queue_band_visits")
+        if isinstance(visit_allow, (set, frozenset, list, tuple)):
+            vid = str(rec.get("visit_id") or rec.get("case_id") or "")
+            if vid not in set(visit_allow):
+                continue
+        elif want_queue_band in {"critical", "important"}:
+            from .mo_action_queue_select import pick_primary_queue_finding, signal_band_for_finding
+
+            finding_rows = [
+                item for item in (rec.get("_findings") or []) if isinstance(item, dict)
+            ]
+            if not finding_rows:
+                finding_rows = [{"finding_code": code} for code in record_findings]
+            primary = pick_primary_queue_finding(finding_rows)
+            band = signal_band_for_finding(primary) if primary else None
+            if band != want_queue_band:
+                continue
         zone = str(params.get("zone") or "").strip().lower()
         zone_band = str(params.get("zone_band") or "").strip().lower()
         if zone in {"zone1", "documentation"}:
@@ -1421,6 +1440,7 @@ def is_case_score_eligible(
 def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     params = _apply_request_period(params)
     params = _apply_score_eligible_default(params)
+    params = _attach_queue_band_visit_filter(params)
     page = max(1, int(params.get("page") or 1))
     default_page = 100 if (
         str(params.get("date_from") or "")
@@ -1578,7 +1598,9 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         "applied_filters": {
             k: v
             for k, v in params.items()
-            if k != "include_patient_id" and v not in (None, "", [], False)
+            if not str(k).startswith("_")
+            and k != "include_patient_id"
+            and v not in (None, "", [], False)
         },
         "empty_state": _describe_empty_state(
             total_records=pre_total if pre_total is not None else len(all_records),
@@ -1684,23 +1706,18 @@ def _band_share_payload(counts: Mapping[str, int], *, n: int) -> dict[str, Any]:
     return out
 
 
-def _queue_band_counts(
+def _queue_bands_by_visit(
     conn: sqlite3.Connection,
     *,
     date_from: str,
     date_to: str,
-) -> tuple[int, int]:
-    """Число уникальных визитов в очереди: критично / важно."""
-    from .mo_action_queue_select import (
-        BAND_CRITICAL,
-        BAND_IMPORTANT,
-        pick_primary_queue_finding,
-        sql_finding_code_in_clause,
-    )
+) -> dict[str, str]:
+    """visit_id → полоса очереди (тот же отбор, что KPI queue_critical)."""
+    from .mo_action_queue_select import pick_primary_queue_finding, signal_band_for_finding, sql_finding_code_in_clause
 
     finding_cols = {row[1] for row in conn.execute("PRAGMA table_info(fact_mo_finding)")}
     if "finding_code" not in finding_cols:
-        return 0, 0
+        return {}
     shadow_select = (
         "COALESCE(f.is_shadow, 0) AS is_shadow"
         if "is_shadow" in finding_cols
@@ -1733,7 +1750,7 @@ def _queue_band_counts(
             (date_from, date_to),
         ).fetchall()
     except Exception:  # noqa: BLE001
-        return 0, 0
+        return {}
     by_visit: dict[str, list[dict[str, Any]]] = {}
     for row in rows:
         visit_id = str(row["visit_id"] or "").strip()
@@ -1748,20 +1765,51 @@ def _queue_band_counts(
                 "is_shadow": bool(int(row["is_shadow"] or 0)),
             }
         )
-    critical = 0
-    important = 0
-    for findings in by_visit.values():
+    out: dict[str, str] = {}
+    for visit_id, findings in by_visit.items():
         primary = pick_primary_queue_finding(findings)
         if not primary:
             continue
-        from .mo_action_queue_select import signal_band_for_finding
-
         band = signal_band_for_finding(primary)
-        if band == BAND_CRITICAL:
-            critical += 1
-        elif band == BAND_IMPORTANT:
-            important += 1
+        if band:
+            out[visit_id] = band
+    return out
+
+
+def _queue_band_counts(
+    conn: sqlite3.Connection,
+    *,
+    date_from: str,
+    date_to: str,
+) -> tuple[int, int]:
+    """Число уникальных визитов в очереди: критично / важно."""
+    from .mo_action_queue_select import BAND_CRITICAL, BAND_IMPORTANT
+
+    bands = _queue_bands_by_visit(conn, date_from=date_from, date_to=date_to)
+    critical = sum(1 for band in bands.values() if band == BAND_CRITICAL)
+    important = sum(1 for band in bands.values() if band == BAND_IMPORTANT)
     return critical, important
+
+
+def _attach_queue_band_visit_filter(params: dict[str, Any]) -> dict[str, Any]:
+    """Подставить visit_id KPI-очереди, чтобы список совпал с queue_critical."""
+    want = str(params.get("queue_band") or "").strip().lower()
+    if want not in {"critical", "important"}:
+        return params
+    if _backend_source() != "warehouse":
+        return params
+    window = _resolve_attention_window(params)
+    if not window:
+        return params
+    date_from, date_to = window[0], window[1]
+    try:
+        with closing(_read_connection()) as conn:
+            bands = _queue_bands_by_visit(conn, date_from=date_from, date_to=date_to)
+    except Exception:  # noqa: BLE001
+        return params
+    out = dict(params)
+    out["_queue_band_visits"] = {vid for vid, band in bands.items() if band == want}
+    return out
 
 
 def _overview_attention_from_warehouse(params: dict[str, Any]) -> dict[str, Any] | None:

@@ -30,6 +30,7 @@ def test_cases_endpoint_declares_overall_grade_and_icd() -> None:
     assert "overall_grade" in names
     assert "icd_visit_status" in names
     assert "icd" in names
+    assert "queue_band" in names
     kpi_names = set(inspect.signature(api_methodist_mo_drugs_labs_kpis).parameters)
     assert "overall_grade" in kpi_names
     assert "finding_family" in kpi_names
@@ -56,3 +57,25 @@ def test_filter_records_icd_prefix() -> None:
     j06 = _row("b", diagnosis_code="J06.9", mkb_code_main="J06.9")
     assert [row["case_id"] for row in _filter_records([i10, j06], {"icd": "I10"})] == ["a"]
     assert [row["case_id"] for row in _filter_records([i10, j06], {"icd": "J06"})] == ["b"]
+
+
+def test_filter_records_queue_band_critical_not_overall_grade() -> None:
+    critical = _row(
+        "c",
+        finding_codes=["C_red_flag"],
+        _findings=[{"finding_code": "C_red_flag", "severity": "P0"}],
+    )
+    important = _row(
+        "i",
+        finding_codes=["B_dx_no_support"],
+        _findings=[{"finding_code": "B_dx_no_support", "severity": "P1"}],
+    )
+    kept = _filter_records([critical, important], {"queue_band": "critical"})
+    assert [row["case_id"] for row in kept] == ["c"]
+    kept_imp = _filter_records([critical, important], {"queue_band": "important"})
+    assert [row["case_id"] for row in kept_imp] == ["i"]
+    by_visits = _filter_records(
+        [critical, important],
+        {"queue_band": "critical", "_queue_band_visits": {"c"}},
+    )
+    assert [row["case_id"] for row in by_visits] == ["c"]

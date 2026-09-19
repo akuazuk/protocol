@@ -161,11 +161,12 @@ def test_mo_search_and_filters_have_explicit_apply_actions() -> None:
     assert "Pavel" not in SOURCE
 
 
-def test_queue_critical_uses_overall_grade_not_crm_status() -> None:
+def test_queue_critical_uses_queue_band_not_overall_grade() -> None:
     idx = JS.find('$("queue-critical-only").addEventListener')
     assert idx >= 0
-    chunk = JS[idx : idx + 900]
-    assert 'overallGrade = "critical"' in chunk
+    chunk = JS[idx : idx + 400]
+    assert 'applyQueueBand("critical")' in chunk
+    assert 'overallGrade = "critical"' not in chunk
     assert 'statuses = ["critical"]' not in chunk
 
 
@@ -187,7 +188,7 @@ def test_cases_table_keeps_rows_while_reloading() -> None:
     idx = JS.find("label: \"Показать критические случаи\"")
     assert idx >= 0
     chunk = JS[idx : idx + 280]
-    assert 'overallGrade = "critical"' in chunk
+    assert 'applyQueueBand("critical"' in chunk
     assert 'statuses = ["Критично"]' not in chunk
 
 
@@ -206,6 +207,8 @@ def test_find_bar_exposes_grade_strip_and_icd_query() -> None:
     assert "function setOverallGrade(grade, opts)" in JS
     assert "minmax(360px, 1fr)" in CSS
     assert "state.queueOnly" in JS
+    assert "function applyQueueBand(band, opts)" in JS
+    assert 'q.set("queue_band", state.queueBand)' in JS
 
 
 def test_mo_api_request_does_not_fetch_undefined_legacy() -> None:

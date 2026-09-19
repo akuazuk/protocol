@@ -71,6 +71,7 @@
       zoneFilter: "", zoneBandFilter: "", overallGrade: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
       worstSeverity: "",
       queueOnly: false,
+      queueBand: "",
       doctorZoneMetric: "zone1",
       caseNavIds: [], caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
       caseDetailLoading: false,
@@ -505,6 +506,7 @@
       else if (looksLikeIcd(searchRaw)) q.set("icd", searchRaw.toUpperCase());
       else if (searchRaw) q.set("q", searchRaw);
       if (state.queueOnly) q.set("queue_only", "1");
+      if (state.queueBand) q.set("queue_band", state.queueBand);
       if (state.findingCode) q.set("finding_codes", state.findingCode);
       if (state.findingFamily) q.set("finding_family", state.findingFamily);
       if (state.rubricCriterion) q.set("reg55_point", state.rubricCriterion);
@@ -801,6 +803,24 @@
       if (!btn) return;
       btn.setAttribute("aria-pressed", state.queueOnly ? "true" : "false");
       btn.classList.toggle("active", !!state.queueOnly);
+    }
+    function applyQueueBand(band, opts) {
+      opts = opts || {};
+      state.queueBand = String(band || "");
+      state.filterDraft = null;
+      state.selected.statuses = [];
+      state.overallGrade = "";
+      state.attentionOnly = false;
+      state.findingCode = "";
+      if (state.queueBand) state.queueOnly = true;
+      if ($("overall-grade-filter")) $("overall-grade-filter").value = "";
+      syncGradeStrip();
+      syncQueueOnlyButton();
+      if (opts.silent) return;
+      var labels = { critical: "Критично", important: "Важно" };
+      showToast(state.queueBand ? ("Очередь: " + (labels[state.queueBand] || state.queueBand)) : "Полоса очереди снята");
+      if (opts.page) switchPage(opts.page);
+      else filtersChanged();
     }
     function clearCaseSearch() {
       state.search = "";
@@ -1103,6 +1123,11 @@
         html.push('<span class="chip">Оценка: ' + esc(gradeLabel) +
           '<button type="button" data-clear-overall-grade aria-label="Удалить фильтр оценки">×</button></span>');
       }
+      if (state.queueBand) {
+        var queueBandLabel = ({ critical: "критично", important: "важно" })[state.queueBand] || state.queueBand;
+        html.push('<span class="chip">Очередь: ' + esc(queueBandLabel) +
+          '<button type="button" data-clear-queue-band aria-label="Снять полосу очереди">×</button></span>');
+      }
       if (state.attentionOnly) {
         html.push('<span class="chip">Только внимание<button type="button" data-clear-attention aria-label="Снять фильтр внимания">×</button></span>');
       }
@@ -1184,6 +1209,11 @@
         syncGradeStrip();
         filtersChanged();
       });
+      var clearQueueBand = $("filter-chips").querySelector("[data-clear-queue-band]");
+      if (clearQueueBand) clearQueueBand.addEventListener("click", function () {
+        state.queueBand = "";
+        filtersChanged();
+      });
       var clearAttention = $("filter-chips").querySelector("[data-clear-attention]");
       if (clearAttention) clearAttention.addEventListener("click", function () {
         state.attentionOnly = false;
@@ -1239,6 +1269,7 @@
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
       state.search = q.get("q") || q.get("icd") || "";
       state.queueOnly = q.get("queue_only") === "1" || q.get("queue_only") === "true";
+      state.queueBand = (q.get("queue_band") || "").trim().toLowerCase();
       state.findingCode = q.get("finding_codes") || "";
       state.findingFamily = q.get("finding_family") || "";
       state.rubricCriterion = q.get("reg55_point") || "";
@@ -1466,6 +1497,7 @@
         btn.addEventListener("click", function () {
           var go = btn.getAttribute("data-attention-go") || "";
           if (go.indexOf("queue:") === 0) {
+            applyQueueBand(go.split(":")[1] || "critical", { silent: true });
             switchPage("queue");
             return;
           }
@@ -4852,6 +4884,7 @@
       state.filterDraft = null;
       state.selected.statuses = [];
       state.overallGrade = "";
+      state.queueBand = "";
       state.findingCode = "";
       if ($("overall-grade-filter")) $("overall-grade-filter").value = "";
       syncGradeStrip();
@@ -5862,9 +5895,7 @@
         { label: "Период: последние 7 дней", action: function () { state.period = "7d"; $("period").value = state.period; filtersChanged(); } },
         { label: "Период: текущий месяц", action: function () { state.period = "month"; $("period").value = state.period; filtersChanged(); } },
         { label: "Показать критические случаи", action: function () {
-          state.overallGrade = "critical";
-          state.selected.statuses = [];
-          renderChips(); switchPage("queue");
+          applyQueueBand("critical", { page: "queue" });
         } }
       );
       savedViews().forEach(function (view, index) {
@@ -6201,6 +6232,7 @@
         state.zoneBandFilter = "";
         state.overallGrade = "";
         state.queueOnly = false;
+        state.queueBand = "";
         var gradeSel = $("overall-grade-filter");
         if (gradeSel) gradeSel.value = "";
         syncGradeStrip();
@@ -6266,17 +6298,7 @@
         openSelectedQueuePdfs().catch(function (error) { showError(error.message); });
       });
       $("queue-critical-only").addEventListener("click", function () {
-        state.filterDraft = null;
-        state.findingCode = "";
-        state.search = "";
-        state.selected.statuses = [];
-        state.overallGrade = "critical";
-        state.attentionOnly = false;
-        $("case-search").value = "";
-        if ($("overall-grade-filter")) $("overall-grade-filter").value = "critical";
-        syncGradeStrip();
-        showToast("Оценка: Критично");
-        filtersChanged();
+        applyQueueBand("critical");
       });
       var shadowOnlyBtn = $("queue-shadow-attention-only");
       if (shadowOnlyBtn) {
