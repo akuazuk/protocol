@@ -1,6 +1,6 @@
 # МО Аналитика: удобный поиск хороших и плохих МО (UX rebuild v1)
 
-Статус: **active**
+Статус: **active** (волны W0-W7 в проде; хвосты в §12)
 Дата: 2026-09-19
 Владелец: методист / руководитель качества
 Прод, с которого снята карта: `https://protocol.kravira.by/methodist/mo`, роль admin, срез сентябрь 2026 (7809 клинических МО)
@@ -24,7 +24,7 @@
 
 ## 2. Что изменено в проде на момент плана
 
-Аудит 2026-09-19 на `protocol.kravira.by`. W0 squash-merge `20a3f822` (PR #251) в проде: `overall_grade=good` 319 / `poor` 1814 / `important` 113 при all=7809. `overall_grade=critical` честно 0: KPI «Критично в очереди» = 15 считается whitelist-находками `_queue_band_counts`, не этой шкалой. W1 squash-merge `582329f6` (PR #252). W2 squash-merge `82b32af7` (PR #253), `BUILD_VERSION` `2026-09-19-154804Z-mo-sql-limit`: page=1 и page=20 оба ~8-10 с (не в 10 раз хуже), `icd=I10` 119 за ~4 с; `overall_grade` всё ещё Python-скан (~15 с). Цель < 1.5 с на GCE PD не закрыта - хвост отдельно, не блокер W3.
+Аудит 2026-09-19 на `protocol.kravira.by`. Волны W0-W7 в проде: SHA `58c956d4` (PR #259), `BUILD_VERSION` `2026-09-19-192135Z-mo-table-polish`, `/health/live` ok. Срез сентябрь: all=7809, `overall_grade=good` 319, `queue_band=critical` 13 (на аудите было 15). `overall_grade=critical` честно 0: очередь «критично» = whitelist `_queue_band_counts`, не эта шкала. W2 SQL LIMIT: page=1 ~3-8 с (кэш/диск), цель p95 < 1.5 с на GCE PD не закрыта. `overall_grade` всё ещё Python-скан (~4-15 с).
 
 Рабочее:
 
@@ -353,7 +353,7 @@ state.attentionOnly = false;
 
 ### Волна 0.7. Очередь «критично» = KPI 15 (склад + кнопка)
 
-Статус: **in PR**. На проде `overall_grade=critical` = 0, KPI «Критично в очереди» = 15 (`_queue_band_counts` / whitelist). Кнопка W0.3 и плитка `queue:critical` сейчас ведут не туда.
+Статус: **merged** PR #255 → `186719fa`. Кнопка и плитка бьют в `queue_only=1&queue_band=critical`. На проде после W7: месяц `total=13` (аудит 15, склад съехал).
 
 1. Query `queue_band=critical|important` в `/cases` и `_filter_records` по `pick_primary_queue_finding`.
 2. Кнопка «Только критические» и плитка обзора: `queue_only=1&queue_band=critical`, сброс `overall_grade`.
@@ -398,7 +398,7 @@ state.attentionOnly = false;
 
 ### Волна 6. Линзы Лекарства / Анализы и Врачи (1–2 дня)
 
-Статус: **merged** PR #258 → `8b4d0a82`. KPI семьи через `familyCohortQuery`. Врачи: Плохие/Хорошие/Все.
+Статус: **merged** PR #258 → `8b4d0a82`. На проде `2026-09-19-185950Z-mo-family-lenses`. KPI семьи через `familyCohortQuery`. Врачи: Плохие/Хорошие/Все.
 
 1. `loadFamilyDashboard` использует **тот же** period/doctor/specialty/grade, плюс `family=drug|lab`. Знаменатель = `total_cases` того же cohort contract (`tests/test_mo_cohort_contract.py`).
 2. Клик по коду → Найти МО с `finding_codes=` и сохранёнными чипами врача/спец.
@@ -411,7 +411,7 @@ state.attentionOnly = false;
 
 ### Волна 7. Полировка визуала и отчёты (1–2 дня)
 
-Статус: **в работе** (ветка `cursor/mo-find-cases-w7-pc1`). Zebra/hover/focus таблицы, пресеты колонок Работа/Проверка, пустые отчёты с переходом в Обзор, Escape сначала закрывает саджест поиска.
+Статус: **merged** PR #259 → `58c956d4`. На проде `2026-09-19-192135Z-mo-table-polish`. Smoke: «Найти МО» 50 строк, пресеты Работа/Проверка в «Колонки»; отчёты не пустые (120 дневных файлов), empty-state в коде на 0 файлов.
 
 1. Таблица: sticky оценка+дата, zebra умеренный, hover, фокус-кольцо. Сортировка заголовком = серверная (сейчас часть chrome клиентская и расходится со страницей 157).
 2. Колонки: пресет «Работа» (мало колонок) vs «Проверка» (№55). 35 чекбоксов спрятать за пресет.
@@ -420,6 +420,8 @@ state.attentionOnly = false;
 5. КП-синк: показать фактический corpus на диске (после деплоя 535), не 478. Это отдельный хвост корпуса, не блокер UX, но чип «сверка 26.08» подрывает доверие.
 6. `python3 scripts/normalize_ui_dashes.py` на HTML/JS подписях.
 7. a11y: фокус в поиске, Escape закрывает combobox не страницу, contrast чипов.
+
+Сделано в W7: пункты 1 (zebra/hover/focus/sticky), 2 (пресеты), 4 (empty reports), 7 (Escape саджеста). Не закрыто: п.3 легенда колец = шкала оценки; п.5 чип корпуса КП 478 vs диск; п.6 не гонять `normalize_ui_dashes.py` репозиторием (ломает чужие файлы).
 
 ---
 
@@ -466,11 +468,11 @@ state.attentionOnly = false;
 
 ## 12. Одна следующая команда
 
-После merge W2 и GCE smoke:
+Новую UX-волну не начинать, пока владелец не выберет хвост. Кандидат: SQL-индексы склада, чтобы p95 `/cases` page=1 < 1.5 с и `overall_grade` ушёл из полного Python-скана.
 
 ```bash
-scripts/ops/git_task_start.sh mo-find-cases-w3 --pc=1 \
-  --branch=cursor/mo-find-cases-w3-pc1
+scripts/ops/git_task_start.sh mo-cases-sql-indexes --pc=1 \
+  --branch=cursor/mo-cases-sql-indexes-pc1
 ```
 
-W3: полоса оценки + `icd=` + тумблер «Нужен разбор». Затем W0.7 `queue_band` (кнопка очереди = KPI 15), потом W4 меню. Деплой: `SYNC_PROTOCOL_CORPUS=0 bash deploy/gcp-app/deploy_to_gce.sh` из worktree с `.env`.
+Не трогать `SYNC_PROTOCOL_CORPUS`. Не чинить грязный Cursor `main`. Деплой только координатор: `SYNC_PROTOCOL_CORPUS=0 bash deploy/gcp-app/deploy_to_gce.sh` из worktree с `.env`, HEAD = `origin/main`.
