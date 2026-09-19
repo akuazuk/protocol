@@ -24,7 +24,7 @@
 
 ## 2. Что изменено в проде на момент плана
 
-Аудит 2026-09-19 на `protocol.kravira.by`. W0 squash-merge `20a3f822` (PR #251) в проде: `overall_grade=good` 319 / `poor` 1814 / `important` 113 при all=7809. `overall_grade=critical` честно 0: KPI «Критично в очереди» = 15 считается whitelist-находками `_queue_band_counts`, не этой шкалой. W1 squash-merge `582329f6` (PR #252).
+Аудит 2026-09-19 на `protocol.kravira.by`. W0 squash-merge `20a3f822` (PR #251) в проде: `overall_grade=good` 319 / `poor` 1814 / `important` 113 при all=7809. `overall_grade=critical` честно 0: KPI «Критично в очереди» = 15 считается whitelist-находками `_queue_band_counts`, не этой шкалой. W1 squash-merge `582329f6` (PR #252). W2 squash-merge `82b32af7` (PR #253), `BUILD_VERSION` `2026-09-19-154804Z-mo-sql-limit`: page=1 и page=20 оба ~8-10 с (не в 10 раз хуже), `icd=I10` 119 за ~4 с; `overall_grade` всё ещё Python-скан (~15 с). Цель < 1.5 с на GCE PD не закрыта - хвост отдельно, не блокер W3.
 
 Рабочее:
 
@@ -299,7 +299,7 @@ state.attentionOnly = false;
 
 ### Волна 2. Скорость списка (склад, 1–2 дня)
 
-Статус: **in progress**. Файлы: `clinical_knowledge/mo_backend.py`, индексы склада, тесты warehouse.
+Статус: **merged** PR #253 → `82b32af7`. На проде `2026-09-19-154804Z-mo-sql-limit`. SQL LIMIT работает; p95 < 1.5 с на живом диске ещё нет.
 
 Сейчас каждый `/cases?page=2` читает **весь** месяц.
 
@@ -318,7 +318,7 @@ state.attentionOnly = false;
 
 ### Волна 3. Полоса «Найти МО» (frontend, 2–3 дня)
 
-HTML `mis-kz-quality.html` + CSS + `mo-app.js`. Не переносить меню в этом PR, только шапку.
+Статус: **in PR**. HTML `mis-kz-quality.html` + CSS + `mo-app.js`. Не переносить меню в этом PR, только шапку. Combobox врача/спец. остаются в панели фильтров (live-checkbox уже в W0); вынос в шапку - если не влезет по плотности, хвост W4.
 
 #### W3.1 Всегда видимые контроли
 
@@ -351,12 +351,24 @@ HTML `mis-kz-quality.html` + CSS + `mo-app.js`. Не переносить мен
 
 ---
 
+### Волна 0.7. Очередь «критично» = KPI 15 (склад + кнопка)
+
+Статус: **next after W3**. На проде `overall_grade=critical` = 0, KPI «Критично в очереди» = 15 (`_queue_band_counts` / whitelist). Кнопка W0.3 и плитка `queue:critical` сейчас ведут не туда.
+
+1. Query `queue_band=critical|important` в `/cases` и `_filter_records` по `pick_primary_queue_finding`.
+2. Кнопка «Только критические» и плитка обзора: `queue_only=1&queue_band=critical`, сброс `overall_grade`.
+3. Не путать со шкалой Хорошо/Слабо на полосе W3.
+
+Приёмка: очередь / плитка дают `total` ≈ 15 за сентябрь 2026, не 0.
+
+---
+
 ### Волна 4. Склейка экранов (frontend, 2 дня)
 
 Осторожно: не удалять `data-page` сразу – алиасы.
 
 1. **Обзор** = `yesterday` + `overview`. Переключатель День/Неделя/Месяц меняет `period` и перерисовывает те же 5 плиток. Таблица дня остаётся на дне. Кольца периода – на месяце. URL: `/methodist/mo/overview?grain=day|month`.
-2. Плитка «Критично в очереди» → Найти МО с `overall_grade=critical&queue_only=1`, не отдельная логика statuses.
+2. Плитка «Критично в очереди» → Найти МО с `queue_band=critical&queue_only=1` (после W0.7), не `overall_grade=critical`.
 3. Меню: Обзор, Найти МО, Врачи, Лекарства, Анализы, Ещё (Отчёты, КП, ЛС, Справка).
 4. `queue` и `documents` – один шаблон таблицы, разные default chips.
 5. Expert: Обзор + Найти МО.
@@ -446,11 +458,11 @@ HTML `mis-kz-quality.html` + CSS + `mo-app.js`. Не переносить мен
 
 ## 12. Одна следующая команда
 
-После merge W1 и GCE smoke W0+W1:
+После merge W2 и GCE smoke:
 
 ```bash
-scripts/ops/git_task_start.sh mo-find-cases-w2 --pc=1 \
-  --branch=cursor/mo-find-cases-w2-pc1
+scripts/ops/git_task_start.sh mo-find-cases-w3 --pc=1 \
+  --branch=cursor/mo-find-cases-w3-pc1
 ```
 
-W2: SQL `LIMIT` + индексы склада в `mo_backend.py`. Не начинать W3, пока W0 фильтры не подтверждены на `protocol.kravira.by`. Деплой: `SYNC_PROTOCOL_CORPUS=0 bash deploy/gcp-app/deploy_to_gce.sh` из worktree с `.env`.
+W3: полоса оценки + `icd=` + тумблер «Нужен разбор». Затем W0.7 `queue_band` (кнопка очереди = KPI 15), потом W4 меню. Деплой: `SYNC_PROTOCOL_CORPUS=0 bash deploy/gcp-app/deploy_to_gce.sh` из worktree с `.env`.

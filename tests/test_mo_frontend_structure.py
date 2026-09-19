@@ -157,7 +157,7 @@ def test_mo_search_and_filters_have_explicit_apply_actions() -> None:
     assert 'data-filter-clear' in JS
     assert '$("case-search-form").addEventListener("submit"' in JS
     assert '$("case-search").addEventListener("change"' not in JS
-    assert "state.search = q.get(\"q\") || \"\"" in JS
+    assert "state.search = q.get(\"q\") || q.get(\"icd\") || \"\"" in JS
     assert "Pavel" not in SOURCE
 
 
@@ -195,6 +195,17 @@ def test_month_reconciliation_hides_zero_delta_banner() -> None:
     assert "Number(reconciliation.source_delta || 0) === 0" in JS
     assert "Number(reconciliation.evaluated_delta || 0) === 0" in JS
     assert 'textContent = day === minskDateKey(0) ? "Сегодня" : "Рабочий день"' in JS
+
+
+def test_find_bar_exposes_grade_strip_and_icd_query() -> None:
+    assert 'id="grade-strip"' in HTML
+    assert 'data-overall-grade="good"' in HTML
+    assert 'id="documents-queue-only"' in HTML
+    assert "function looksLikeIcd(text)" in JS
+    assert 'q.set("icd", searchRaw.toUpperCase())' in JS
+    assert "function setOverallGrade(grade, opts)" in JS
+    assert "minmax(360px, 1fr)" in CSS
+    assert "state.queueOnly" in JS
 
 
 def test_mo_api_request_does_not_fetch_undefined_legacy() -> None:
