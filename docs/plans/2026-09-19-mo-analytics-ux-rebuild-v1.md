@@ -365,6 +365,8 @@ state.attentionOnly = false;
 
 ### Волна 4. Склейка экранов (frontend, 2 дня)
 
+Статус: **в работе** (ветка `cursor/mo-find-cases-w4-pc1`). HTML `yesterday` и `overview` не склеиваем: Обзор = `yesterday` + зерно День/Неделя/Месяц. Старый `overview` и очередь остаются в «Ещё». Expert.html в этом PR не трогаем.
+
 Осторожно: не удалять `data-page` сразу – алиасы.
 
 1. **Обзор** = `yesterday` + `overview`. Переключатель День/Неделя/Месяц меняет `period` и перерисовывает те же 5 плиток. Таблица дня остаётся на дне. Кольца периода – на месяце. URL: `/methodist/mo/overview?grain=day|month`.

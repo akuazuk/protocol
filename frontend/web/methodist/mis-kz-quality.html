@@ -21,17 +21,24 @@
       </a>
       <nav>
         <ul class="nav-list" id="app-nav">
-          <li><button class="nav-button" data-page="yesterday" aria-current="page" aria-label="Сегодня"><span class="nav-icon" aria-hidden="true">С</span><span class="nav-text">Сегодня</span></button></li>
-          <li><button class="nav-button" data-page="overview" aria-label="Период"><span class="nav-icon" aria-hidden="true">П</span><span class="nav-text">Период</span></button></li>
-          <li><button class="nav-button" data-page="queue" aria-label="Очередь разбора"><span class="nav-icon" aria-hidden="true">!</span><span class="nav-text">Очередь</span></button></li>
-          <li><button class="nav-button" data-page="documents" aria-label="Все случаи"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-text">Все случаи</span></button></li>
+          <li><button class="nav-button" data-page="yesterday" aria-current="page" aria-label="Обзор"><span class="nav-icon" aria-hidden="true">Об</span><span class="nav-text">Обзор</span></button></li>
+          <li><button class="nav-button" data-page="documents" aria-label="Найти МО"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-text">Найти МО</span></button></li>
           <li><button class="nav-button" data-page="doctors" aria-label="Врачи"><span class="nav-icon" aria-hidden="true">Вр</span><span class="nav-text">Врачи</span></button></li>
-          <li><button class="nav-button" data-page="medications" data-legacy-label="Лекарства" aria-label="Проверка назначений"><span class="nav-icon" aria-hidden="true">Лк</span><span class="nav-text">Проверка назначений</span></button></li>
+          <li><button class="nav-button" data-page="medications" data-legacy-label="Лекарства" aria-label="Лекарства"><span class="nav-icon" aria-hidden="true">Лк</span><span class="nav-text">Лекарства</span></button></li>
           <li><button class="nav-button" data-page="labs" aria-label="Анализы"><span class="nav-icon" aria-hidden="true">Ан</span><span class="nav-text">Анализы</span></button></li>
-          <li><button class="nav-button" data-page="reports" aria-label="Отчёты"><span class="nav-icon" aria-hidden="true">⇩</span><span class="nav-text">Отчёты</span></button></li>
-          <li><button class="nav-button" data-page="kp-sync" aria-label="Протоколы МЗ"><span class="nav-icon" aria-hidden="true">КП</span><span class="nav-text">Протоколы МЗ</span></button></li>
-          <li><button class="nav-button" data-page="rceth-sync" data-legacy-label="Инструкции ЛС" aria-label="Инструкции препаратов"><span class="nav-icon" aria-hidden="true">ЛС</span><span class="nav-text">Инструкции препаратов</span></button></li>
-          <li hidden><button class="nav-button" data-page="settings" id="nav-settings" aria-hidden="true"><span class="nav-text">Справка</span></button></li>
+          <li class="nav-more">
+            <details class="nav-more-menu" id="nav-more">
+              <summary>Ещё</summary>
+              <div class="nav-more-list">
+                <button class="nav-button" type="button" data-page="overview" aria-label="Период"><span class="nav-text">Период</span></button>
+                <button class="nav-button" type="button" data-page="queue" aria-label="Очередь разбора"><span class="nav-text">Очередь</span></button>
+                <button class="nav-button" type="button" data-page="reports" aria-label="Отчёты"><span class="nav-text">Отчёты</span></button>
+                <button class="nav-button" type="button" data-page="kp-sync" aria-label="Протоколы МЗ"><span class="nav-text">Протоколы МЗ</span></button>
+                <button class="nav-button" type="button" data-page="rceth-sync" data-legacy-label="Инструкции ЛС" aria-label="Инструкции препаратов"><span class="nav-text">Инструкции ЛС</span></button>
+                <button class="nav-button" type="button" data-page="settings" id="nav-settings" hidden aria-hidden="true"><span class="nav-text">Справка</span></button>
+              </div>
+            </details>
+          </li>
         </ul>
       </nav>
       <div class="sidebar-foot">
@@ -149,12 +156,12 @@
         </div>
       </header>
 
-      <div class="card columns-manager" id="columns-manager" hidden><h2>Видимость колонок</h2><p class="card-sub">Настройка для экранов «Все случаи» и «Очередь разбора».</p><div class="grid"><article class="span-6" id="columns-manager-doc"></article><article class="span-6" id="columns-manager-queue"></article></div></div>
+      <div class="card columns-manager" id="columns-manager" hidden><h2>Видимость колонок</h2><p class="card-sub">Настройка для экранов «Найти МО» и «Очередь разбора».</p><div class="grid"><article class="span-6" id="columns-manager-doc"></article><article class="span-6" id="columns-manager-queue"></article></div></div>
       <main id="main" class="content" tabindex="-1">
-        <nav class="breadcrumbs" id="breadcrumbs" aria-label="Путь по разделу"><ol><li>МО Аналитика</li><li aria-current="page">Сегодня</li></ol></nav>
+        <nav class="breadcrumbs" id="breadcrumbs" aria-label="Путь по разделу"><ol><li>МО Аналитика</li><li aria-current="page">Обзор</li></ol></nav>
         <div id="global-error" class="banner" role="alert" hidden></div>
-        <section class="page" id="page-overview" data-page="overview" aria-labelledby="title-overview">
-          <div class="page-head"><div><h1 id="title-overview">Период</h1><p id="month-period-label">Картина за выбранный диапазон: оформление, диагноз, план по протоколу.</p></div><span class="freshness" id="freshness">Проверяем свежесть</span></div>
+        <section class="page" id="page-overview" data-page="overview" hidden aria-labelledby="title-overview">
+          <div class="page-head"><div><h1 id="title-overview">Период</h1><p id="month-period-label">Подробная картина за выбранный диапазон: оформление, диагноз, план по протоколу.</p></div><span class="freshness" id="freshness">Проверяем свежесть</span></div>
           <div id="month-reconciliation" class="banner" hidden></div>
           <div class="kpis kpis--ops" id="month-kpis"><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div><div class="skeleton"></div></div>
           <div class="attention-strip" id="month-attention"><div class="skeleton"></div></div>
@@ -176,8 +183,8 @@
           </div>
         </section>
 
-        <section class="page" id="page-yesterday" data-page="yesterday" hidden aria-labelledby="title-yesterday">
-          <div class="page-head"><div><h1 id="title-yesterday">Сегодня</h1><p id="yesterday-date">Рабочий экран за вчера: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
+        <section class="page" id="page-yesterday" data-page="yesterday" aria-labelledby="title-yesterday">
+          <div class="page-head"><div><h1 id="title-yesterday">Обзор</h1><p id="yesterday-date">Рабочий экран: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p><div class="grain-strip" role="group" aria-label="Зерно периода"><button class="button secondary" type="button" data-overview-grain="yesterday">День</button><button class="button secondary" type="button" data-overview-grain="7d">Неделя</button><button class="button secondary" type="button" data-overview-grain="month" aria-pressed="true">Месяц</button></div></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
           <div class="kpis score-kpi-strip" id="yesterday-score-kpis"><div class="skeleton"></div></div>
           <div class="attention-strip" id="yesterday-attention"><div class="skeleton"></div></div>
           <div class="family-strip" id="yesterday-family-strip"></div>
@@ -220,7 +227,7 @@
         </section>
 
         <section class="page" id="page-documents" data-page="documents" hidden aria-labelledby="title-documents">
-          <div class="page-head"><div><h1 id="title-documents">Все случаи</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
+          <div class="page-head"><div><h1 id="title-documents">Найти МО</h1><p>Полная выборка МО с едиными фильтрами, сортировкой и постраничной загрузкой.</p></div></div>
           <div class="section-actions"><button class="button secondary" id="documents-queue-only" type="button" aria-pressed="false">Нужен разбор</button><button class="button secondary" id="columns-button" aria-pressed="false">Колонки таблиц</button><label class="filter"><span>Сортировка</span><select class="control" id="sort-by"><option value="date">По дате</option><option value="overall">По баллу</option><option value="reg55">По баллу №55</option><option value="priority">По приоритету</option></select></label><label class="filter"><span>Порядок</span><select class="control" id="sort-dir"><option value="desc">Сначала новые</option><option value="asc">Сначала старые</option></select></label><button class="button secondary" data-action="export">Экспорт всей выборки</button></div>
           <div class="card"><div class="table-wrap sticky-first"><table><caption class="sr-only">Все медицинские документы выбранного среза</caption><thead><tr><th scope="col" class="sortable-th" data-sort-key="visit_id">Визит</th><th scope="col" class="sortable-th" data-sort-key="patient_id">Пациент</th><th scope="col" class="sortable-th" data-sort-key="date">Дата</th><th scope="col" class="sortable-th" data-sort-key="doctor">Врач / специальность</th><th scope="col" class="sortable-th" data-sort-key="filial">Филиал</th><th scope="col">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="overall_grade">Оценка</th><th scope="col" class="sortable-th" data-sort-key="zone1">Оформление</th><th scope="col" class="sortable-th" data-sort-key="zone2a">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="zone2b">План</th><th scope="col">Причина</th><th scope="col" class="sortable-th" data-sort-key="status">Статус</th><th scope="col" class="sortable-th" data-sort-key="overall">Итог</th><th scope="col" class="sortable-th" data-sort-key="reg55">№55 / градация</th><th scope="col">Полнота проверки</th><th scope="col">Надёжность</th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
         </section>
@@ -346,7 +353,7 @@
                 <div class="settings-zone"><h3>Риск</h3><p>Опасные вещи: лекарства, красные флаги, маршрутизация.</p><p class="card-sub">Не процент на первом экране - «есть / нет» в очереди и в разборе.</p></div>
               </div>
               <p class="card-sub" style="margin-top:12px"><b>Приоритет замечания</b> (Критично / Важно / Умеренно / Оформление) - это уровень findings, не статус всей записи. Бейдж «Критично» у замечания ≠ статус записи «Критично».</p>
-              <p class="card-sub"><b>№55</b> - проверка «по инструкции» (постановление МЗ) для роли врача. Это не замена трёх зон; смотрим глубже в разборе случая, не вместо «Сегодня».</p>
+              <p class="card-sub"><b>№55</b> - проверка «по инструкции» (постановление МЗ) для роли врача. Это не замена трёх зон; смотрим глубже в разборе случая, не вместо «Обзор».</p>
               <div id="scoring-method" hidden></div>
             </article>
             <article class="card span-12">

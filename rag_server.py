@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-19-164045Z-mo-queue-band"
+BUILD_VERSION = "2026-09-19-172903Z-mo-nav-more"
 
 
 def _app_version() -> str:
@@ -14990,6 +14990,8 @@ if has_frontend_file("index.html"):
     @app.get("/methodist/mo", include_in_schema=False)
     @app.get("/methodist/mo/yesterday", include_in_schema=False)
     @app.get("/methodist/mo/cases", include_in_schema=False)
+    @app.get("/methodist/mo/queue", include_in_schema=False)
+    @app.get("/methodist/mo/overview", include_in_schema=False)
     def _serve_methodist_mo() -> FileResponse:
         """Канонический CRM/BI workspace массового анализа МО."""
         p = frontend_file("mis-kz-quality.html")

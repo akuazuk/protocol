@@ -63,6 +63,31 @@ button, a, select, input { outline-offset: 3px; }
   font-size: 11px; font-weight: 900;
 }
 .nav-button[aria-current="page"] .nav-icon { background: var(--accent-soft); color: var(--accent-dark); }
+.nav-more { min-width: 0; }
+.nav-more-menu { margin: 0; }
+.nav-more-menu > summary {
+  list-style: none;
+  cursor: pointer;
+  border-radius: 12px;
+  padding: 10px 12px;
+  font-weight: 700;
+}
+.nav-more-menu > summary::-webkit-details-marker { display: none; }
+.nav-more-menu > summary:hover { background: rgba(255,255,255,.08); }
+.nav-more-menu[open] > summary { background: rgba(255,255,255,.1); }
+.nav-more-list { display: grid; gap: 4px; margin: 4px 0 0; padding: 0 0 0 8px; }
+.grain-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+  margin-top: 8px;
+}
+.grain-strip .button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 800;
+}
 .sidebar-foot { margin-top: 22px; padding: 14px 10px 0; border-top: 1px solid rgba(255,255,255,.12); display: grid; gap: 8px; }
 .sidebar-foot a,
 .sidebar-foot .sidebar-help {
@@ -1073,6 +1098,13 @@ kbd {
     line-height: 1.12;
     overflow-wrap: anywhere;
   }
+  .nav-more-menu > summary {
+    min-height: 58px;
+    display: grid;
+    place-items: center;
+    text-align: center;
+    font-size: 10px;
+  }
   .span-4, .span-5, .span-7, .span-8, .span-9, .span-3 { grid-column: span 6; }
   .context-top { grid-template-columns: minmax(280px, 1fr) auto; }
   .toolbar-panel { width: min(850px, calc(100vw - 132px)); }
@@ -1088,6 +1120,20 @@ kbd {
   .nav-list { display: flex; min-width: max-content; gap: 4px; }
   .nav-button { min-width: 64px; min-height: 52px; }
   .nav-text { display: none; }
+  .nav-more-menu { position: relative; }
+  .nav-more-menu > summary { min-width: 64px; min-height: 52px; display: grid; place-items: center; }
+  .nav-more-list {
+    position: absolute;
+    left: 0;
+    bottom: 60px;
+    min-width: 180px;
+    padding: 8px;
+    border-radius: 12px;
+    background: #0f3d34;
+    box-shadow: 0 8px 24px rgba(0,0,0,.28);
+    z-index: 80;
+  }
+  .nav-more-list .nav-text { display: inline; }
   .context-bar { padding: 10px; }
   .context-top { grid-template-columns: 1fr; align-items: stretch; }
   .case-search-form { grid-template-columns: minmax(0, 1fr) auto; }

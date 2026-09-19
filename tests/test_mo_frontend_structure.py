@@ -43,7 +43,7 @@ def _visible_text(html: str) -> str:
 
 
 def test_mo_dashboard_has_complete_crm_navigation() -> None:
-    # Канон меню: 10 видимых (Лекарства/Анализы + КП + Инструкции ЛС) + hidden settings.
+    # Канон меню: 5 рабочих пунктов + Ещё (Период/Очередь/Отчёты/КП/ЛС) + hidden settings.
     for page in (
         "overview",
         "yesterday",
@@ -61,16 +61,17 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
     for gone in ("specialties", "diagnoses", "safety", "doctor-cabinet"):
         assert f'id="page-{gone}"' not in HTML
     for label in (
-        "Сегодня",
+        "Обзор",
+        "Найти МО",
         "Период",
         "Очередь",
-        "Все случаи",
         "Врачи",
         "Лекарства",
         "Анализы",
         "Отчёты",
         "Протоколы МЗ",
         "Инструкции ЛС",
+        "Ещё",
     ):
         assert label in HTML
     assert 'id="breadcrumbs"' in HTML
@@ -195,7 +196,7 @@ def test_cases_table_keeps_rows_while_reloading() -> None:
 def test_month_reconciliation_hides_zero_delta_banner() -> None:
     assert "Number(reconciliation.source_delta || 0) === 0" in JS
     assert "Number(reconciliation.evaluated_delta || 0) === 0" in JS
-    assert 'textContent = day === minskDateKey(0) ? "Сегодня" : "Рабочий день"' in JS
+    assert '$("title-yesterday").textContent = "Обзор"' in JS
 
 
 def test_find_bar_exposes_grade_strip_and_icd_query() -> None:
