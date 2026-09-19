@@ -650,7 +650,29 @@ thead tr.col-filters select:disabled {
 }
 td { font-variant-numeric: tabular-nums; }
 tbody tr { cursor: pointer; transition: background .12s ease; }
+#document-rows tr:nth-child(even) td,
+#queue-rows tr:nth-child(even) td {
+  background: color-mix(in srgb, var(--surface-2) 58%, #fff);
+}
 tbody tr:hover td, tbody tr:focus-within td { background: color-mix(in srgb, var(--accent-soft) 80%, white); }
+#document-rows tr:focus-visible,
+#queue-rows tr:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: -3px;
+}
+#page-documents .table-wrap th:nth-child(3),
+#page-documents .table-wrap td:nth-child(3),
+#page-documents .table-wrap th:nth-child(7),
+#page-documents .table-wrap td:nth-child(7) {
+  position: sticky;
+  z-index: 2;
+  background: inherit;
+}
+#page-documents .table-wrap th:nth-child(3),
+#page-documents .table-wrap td:nth-child(3) { left: 7.2rem; }
+#page-documents .table-wrap th:nth-child(7),
+#page-documents .table-wrap td:nth-child(7) { left: 13.4rem; }
+.column-presets { display: flex; gap: 8px; margin: 0 0 10px; }
 tbody tr.table-row-hidden { display: none; }
 .sticky-first th:first-child,
 .sticky-first td:first-child {
