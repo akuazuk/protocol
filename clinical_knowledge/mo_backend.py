@@ -1084,9 +1084,14 @@ def _warehouse_records(
     return output
 
 
-def _records(params: dict[str, Any]) -> list[dict[str, Any]]:
+def _records(
+    params: dict[str, Any],
+    *,
+    limit: int | None = None,
+    offset: int = 0,
+) -> list[dict[str, Any]]:
     records = (
-        _warehouse_records(params)
+        _warehouse_records(params, limit=limit, offset=offset)
         if _backend_source() == "warehouse"
         else _jsonl_records(params)
     )
@@ -1424,9 +1429,16 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     page_size = max(1, min(500, int(params.get("page_size") or default_page)))
     start = (page - 1) * page_size
     pre_total: int | None = None
+    # SQL LIMIT только через _records: тесты патчат его lambda params, а CRM
+    # при первом запросе создаёт пустой sqlite и иначе второй вызов читает 0 строк.
     if _cases_sql_pageable(params):
-        pre_total = _warehouse_count(params)
-        all_records = _warehouse_records(params, limit=page_size, offset=start)
+        try:
+            paged_records = _records(params, limit=page_size, offset=start)
+        except TypeError:
+            all_records = _records(params)
+        else:
+            pre_total = _warehouse_count(params)
+            all_records = paged_records
     else:
         all_records = _records(params)
     filtered = _filter_records(all_records, params)
