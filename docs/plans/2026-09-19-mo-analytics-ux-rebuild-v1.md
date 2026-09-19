@@ -381,7 +381,7 @@ state.attentionOnly = false;
 
 ### Волна 5. Инспектор случая (frontend + чуть backend, 2–3 дня)
 
-Статус: **в работе** (ветка `cursor/mo-find-cases-w5-pc1`). Split view с 1440, шапка из `caseNavRows` до GET, пустые поля МО по-прежнему скрыты, LLM-черновик убран с первого экрана non-zones.
+Статус: **merged** PR #257 → `e5cbadab`. Split view с 1440, шапка из `caseNavRows` до GET.
 
 Канон ui-target §9, на проде drawer это не выполняет (вкладки Документ/Проверка, LLM-блоки, пустота).
 
@@ -397,6 +397,8 @@ state.attentionOnly = false;
 ---
 
 ### Волна 6. Линзы Лекарства / Анализы и Врачи (1–2 дня)
+
+Статус: **в работе** (ветка `cursor/mo-find-cases-w6-pc1`). KPI семьи идут через `familyCohortQuery` (тот же period/врач/спец/оценка, без leftover finding/zone/очереди). Врачи: сегмент Плохие/Хорошие/Все для «Открыть случаи».
 
 1. `loadFamilyDashboard` использует **тот же** period/doctor/specialty/grade, плюс `family=drug|lab`. Знаменатель = `total_cases` того же cohort contract (`tests/test_mo_cohort_contract.py`).
 2. Клик по коду → Найти МО с `finding_codes=` и сохранёнными чипами врача/спец.

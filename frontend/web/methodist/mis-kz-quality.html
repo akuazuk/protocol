@@ -236,13 +236,18 @@
           <div class="page-head">
             <div>
               <h1 id="title-doctors">Врачи</h1>
-              <p>Кто тянет качество вниз по оформлению, диагнозу и плану. Клик открывает случаи врача с фильтром «плохо».</p>
+              <p>Кто тянет качество вниз по оформлению, диагнозу и плану. «Открыть случаи» берёт выбранную оценку, не только «плохо по зоне».</p>
             </div>
           </div>
           <div class="section-actions doctor-zone-toggle" id="doctor-zone-metric" role="group" aria-label="Раздел для графика">
             <button class="button secondary compact" type="button" data-doctor-zone="zone1" aria-pressed="true">Оформление</button>
             <button class="button secondary compact" type="button" data-doctor-zone="zone2a">Диагноз</button>
             <button class="button secondary compact" type="button" data-doctor-zone="zone2b">План по протоколу</button>
+          </div>
+          <div class="section-actions grain-strip" id="doctor-grade-filter" role="group" aria-label="Какие случаи открывать">
+            <button class="button secondary compact" type="button" data-doctor-grade="poor">Плохие</button>
+            <button class="button secondary compact" type="button" data-doctor-grade="good">Хорошие</button>
+            <button class="button secondary compact" type="button" data-doctor-grade="all" aria-pressed="true">Все</button>
           </div>
           <div class="card">
             <h2>Доля плохого по разделу</h2>
