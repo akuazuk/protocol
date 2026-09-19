@@ -73,6 +73,7 @@
       queueOnly: false,
       queueBand: "",
       doctorZoneMetric: "zone1",
+      doctorGradeFilter: "all",
       caseNavIds: [], caseNavRows: {}, caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
       caseDetailLoading: false,
       protocolSuggest: null,
@@ -530,6 +531,21 @@
       if (state.historyTier) q.set("history_tier", state.historyTier);
       if (state.icdVisitStatus) q.set("icd_visit_status", state.icdVisitStatus);
       if (state.worstSeverity) q.set("worst_severity", state.worstSeverity);
+      return q;
+    }
+    function familyCohortQuery(extra) {
+      var q = query();
+      [
+        "statuses", "finding_family", "finding_codes", "queue_only", "queue_band",
+        "zone", "zone_band", "attention_only", "shadow_attention_only", "kp_status",
+        "q", "icd", "history_tier", "reg55_point", "reg55_band", "reg55_pack",
+        "worst_severity", "icd_visit_status"
+      ].forEach(function (key) { q.delete(key); });
+      extra = extra || {};
+      Object.keys(extra).forEach(function (key) {
+        if (extra[key]) q.set(key, extra[key]);
+        else q.delete(key);
+      });
       return q;
     }
     function applyScoreEligibleOnly(on, silent) {
@@ -4233,7 +4249,7 @@
     }
     function navigateFamily(family, sourceLabel) {
       applyDrill({
-        label: sourceLabel || (family === "lab" ? "Анализы" : "Проверка назначений"),
+        label: sourceLabel || (family === "lab" ? "Анализы" : "Лекарства"),
         findingFamily: family || "",
         findingCode: "",
         search: "",
@@ -4290,7 +4306,7 @@
       var host = $(hostId);
       if (!host) return;
       try {
-        var response = await request("/drugs-labs-kpis?" + query().toString());
+        var response = await request("/drugs-labs-kpis?" + familyCohortQuery().toString());
         if (!response.ok) {
           host.innerHTML = '<p class="card-sub">Сводка по лекарствам и анализам недоступна.</p>';
           return;
@@ -4397,9 +4413,7 @@
     }
     async function loadFamilyDashboardRequest(family) {
       var prefix = family === "lab" ? "labs" : "medications";
-      var kpiQuery = query();
-      kpiQuery.set("family", family);
-      kpiQuery.delete("statuses");
+      var kpiQuery = familyCohortQuery({ family: family });
       var response = await request(
         "/drugs-labs-kpis?" + kpiQuery.toString(),
         "/drugs-labs-kpis?" + kpiQuery.toString()
@@ -4423,8 +4437,7 @@
         }
       }
       try {
-        var q = query();
-        q.set("finding_family", family);
+        var q = familyCohortQuery({ finding_family: family });
         q.set("page_size", "8");
         var casesResp = await request("/cases?" + q.toString(), "/cases?" + q.toString());
         var preview = $(prefix + "-preview");
@@ -4801,13 +4814,20 @@
     function pctOrDash(value) {
       return value == null || value === "" ? "-" : (Number(value).toFixed(1).replace(/\.0$/, "") + "%");
     }
+    function doctorOpenFilters() {
+      var grade = state.doctorGradeFilter || "all";
+      if (grade === "good") return { overallGrade: "good", zoneFilter: "", zoneBandFilter: "" };
+      if (grade === "poor") return { overallGrade: "poor|important|critical", zoneFilter: "", zoneBandFilter: "" };
+      return { overallGrade: "", zoneFilter: "", zoneBandFilter: "" };
+    }
     function openDoctorCases(item, zoneKey) {
-      zoneKey = zoneKey || state.doctorZoneMetric || "zone1";
+      var filters = doctorOpenFilters();
       applyDrill({
         label: "Врач " + (item.label || item.key),
         selected: { doctors: [item.label || item.key] },
-        zoneFilter: zoneKey,
-        zoneBandFilter: "bad",
+        zoneFilter: filters.zoneFilter,
+        zoneBandFilter: filters.zoneBandFilter,
+        overallGrade: filters.overallGrade,
         attentionOnly: false,
         page: "documents"
       });
@@ -4934,8 +4954,12 @@
             "Выделите точки рамкой.";
           var action=$("open-selected-doctors");
           if (action) action.addEventListener("click",function () {
-            applyDrill({ label: "Группа врачей", selected: { doctors: selected.map(function (x) { return x.label; }) },
-              zoneFilter: state.doctorZoneMetric, zoneBandFilter: "bad", page: "documents" });
+            applyDrill(Object.assign({
+              label: "Группа врачей",
+              selected: { doctors: selected.map(function (x) { return x.label; }) },
+              attentionOnly: false,
+              page: "documents"
+            }, doctorOpenFilters()));
           });
         });
       }
@@ -6331,6 +6355,19 @@
           btn.addEventListener("click", function () {
             state.doctorZoneMetric = btn.getAttribute("data-doctor-zone") || "zone1";
             renderDoctorZoneChart(state.data.doctorItems || []);
+          });
+        });
+      }
+      var doctorGrade = $("doctor-grade-filter");
+      if (doctorGrade) {
+        doctorGrade.querySelectorAll("[data-doctor-grade]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            state.doctorGradeFilter = btn.getAttribute("data-doctor-grade") || "all";
+            doctorGrade.querySelectorAll("[data-doctor-grade]").forEach(function (item) {
+              item.setAttribute("aria-pressed", item.getAttribute("data-doctor-grade") === state.doctorGradeFilter ? "true" : "false");
+            });
+            showToast(state.doctorGradeFilter === "good" ? "Открытие: хорошие МО врача" :
+              (state.doctorGradeFilter === "poor" ? "Открытие: плохие МО врача" : "Открытие: все МО врача"));
           });
         });
       }
