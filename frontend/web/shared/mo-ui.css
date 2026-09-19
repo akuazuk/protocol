@@ -111,18 +111,29 @@ button, a, select, input { outline-offset: 3px; }
 }
 .context-top {
   display: grid;
-  grid-template-columns: minmax(320px, 560px) minmax(360px, 1fr);
-  gap: 12px;
+  grid-template-columns: minmax(360px, 1fr);
+  gap: 10px;
   align-items: end;
 }
 .case-search-form {
   display: grid;
-  grid-template-columns: minmax(200px, 1fr) auto auto;
+  grid-template-columns: minmax(360px, 1fr) auto auto;
   gap: 8px;
   align-items: end;
 }
 .case-search-form .search-field,
-.case-search-form .control { width: 100%; max-width: none; }
+.case-search-form .control { width: 100%; max-width: none; min-width: 360px; }
+.grade-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.grade-strip .button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 800;
+}
 .context-top-actions {
   display: flex;
   align-items: end;
@@ -1080,6 +1091,8 @@ kbd {
   .context-bar { padding: 10px; }
   .context-top { grid-template-columns: 1fr; align-items: stretch; }
   .case-search-form { grid-template-columns: minmax(0, 1fr) auto; }
+  .case-search-form .search-field,
+  .case-search-form .control { min-width: 0; }
   .case-search-form #case-search-clear { grid-column: 1 / -1; min-height: 34px; }
   .context-top-actions { justify-content: flex-start; overflow-x: auto; padding: 2px 1px 4px; }
   .toolbar-section { flex: 0 0 auto; }

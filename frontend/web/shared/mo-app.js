@@ -70,6 +70,7 @@
       sortBy: "date", sortDir: "desc",
       zoneFilter: "", zoneBandFilter: "", overallGrade: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
       worstSeverity: "",
+      queueOnly: false,
       doctorZoneMetric: "zone1",
       caseNavIds: [], caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
       caseDetailLoading: false,
@@ -501,7 +502,9 @@
       }
       if (patientMatch) q.set("patient_id", patientMatch[1]);
       else if (visitMatch) q.set("visit_id", visitMatch[1]);
+      else if (looksLikeIcd(searchRaw)) q.set("icd", searchRaw.toUpperCase());
       else if (searchRaw) q.set("q", searchRaw);
+      if (state.queueOnly) q.set("queue_only", "1");
       if (state.findingCode) q.set("finding_codes", state.findingCode);
       if (state.findingFamily) q.set("finding_family", state.findingFamily);
       if (state.rubricCriterion) q.set("reg55_point", state.rubricCriterion);
@@ -765,6 +768,39 @@
       }
       var clearSearch = $("case-search-clear");
       if (clearSearch) clearSearch.hidden = !String(state.search || $("case-search").value || "").trim();
+    }
+    function looksLikeIcd(text) {
+      return /^[A-Za-z]\d{2}(?:\.\d{1,4})?$/.test(String(text || "").trim());
+    }
+    function syncGradeStrip() {
+      var strip = $("grade-strip");
+      if (!strip) return;
+      var current = String(state.overallGrade || "");
+      strip.querySelectorAll("[data-overall-grade]").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", (btn.getAttribute("data-overall-grade") || "") === current ? "true" : "false");
+      });
+      var sel = $("overall-grade-filter");
+      if (sel) sel.value = current;
+    }
+    function setOverallGrade(grade, opts) {
+      opts = opts || {};
+      var next = String(grade || "");
+      if (!opts.force && state.overallGrade === next) next = "";
+      state.overallGrade = next;
+      syncGradeStrip();
+      if (opts.silent) return;
+      var labels = {
+        critical: "Критично", important: "Важно", poor: "Слабо",
+        fair: "С замечанием", good: "Хорошо", na: "Нет оценки"
+      };
+      showToast(next ? ("Оценка: " + (labels[next] || next)) : "Оценка сброшена");
+      filtersChanged();
+    }
+    function syncQueueOnlyButton() {
+      var btn = $("documents-queue-only");
+      if (!btn) return;
+      btn.setAttribute("aria-pressed", state.queueOnly ? "true" : "false");
+      btn.classList.toggle("active", !!state.queueOnly);
     }
     function clearCaseSearch() {
       state.search = "";
@@ -1145,6 +1181,7 @@
         state.overallGrade = "";
         var gradeSel = $("overall-grade-filter");
         if (gradeSel) gradeSel.value = "";
+        syncGradeStrip();
         filtersChanged();
       });
       var clearAttention = $("filter-chips").querySelector("[data-clear-attention]");
@@ -1200,7 +1237,8 @@
       state.period = q.get("period") || (isExpertMode() ? "yesterday" : "month");
       state.compare = q.get("compare_period") || "previous";
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
-      state.search = q.get("q") || "";
+      state.search = q.get("q") || q.get("icd") || "";
+      state.queueOnly = q.get("queue_only") === "1" || q.get("queue_only") === "true";
       state.findingCode = q.get("finding_codes") || "";
       state.findingFamily = q.get("finding_family") || "";
       state.rubricCriterion = q.get("reg55_point") || "";
@@ -1231,6 +1269,8 @@
       if ($("sort-dir")) $("sort-dir").value = state.sortDir;
       if ($("date-from-wrap")) $("date-from-wrap").hidden = state.period !== "custom";
       if ($("date-to-wrap")) $("date-to-wrap").hidden = state.period !== "custom";
+      syncGradeStrip();
+      syncQueueOnlyButton();
       updateFilterSummary();
     }
     function filtersChanged() {
@@ -2442,7 +2482,7 @@
       var q = query();
       q.set("page", state.pageNo);
       q.set("page_size", isSingleDayPeriod() ? "100" : "50");
-      if (queue) q.set("queue_only", "1");
+      if (queue || state.queueOnly) q.set("queue_only", "1");
       var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
       if (epoch !== pageRequestEpoch) throw staleRequestError();
       if (!response.ok) throw new Error("Список случаев временно недоступен.");
@@ -4814,6 +4854,7 @@
       state.overallGrade = "";
       state.findingCode = "";
       if ($("overall-grade-filter")) $("overall-grade-filter").value = "";
+      syncGradeStrip();
       state.zoneFilter = preset.zoneFilter || "";
       state.zoneBandFilter = preset.zoneBandFilter || "";
       state.attentionOnly = !!preset.attentionOnly;
@@ -6086,7 +6127,26 @@
       if (gradeFilter) {
         gradeFilter.value = state.overallGrade || "";
         gradeFilter.addEventListener("change", function () {
-          setFilterDraftValue("overallGrade", this.value || "");
+          setOverallGrade(this.value || "", { force: true });
+        });
+      }
+      var gradeStrip = $("grade-strip");
+      if (gradeStrip) {
+        syncGradeStrip();
+        gradeStrip.addEventListener("click", function (event) {
+          var btn = event.target.closest("[data-overall-grade]");
+          if (!btn) return;
+          setOverallGrade(btn.getAttribute("data-overall-grade") || "");
+        });
+      }
+      var queueOnlyBtn = $("documents-queue-only");
+      if (queueOnlyBtn) {
+        syncQueueOnlyButton();
+        queueOnlyBtn.addEventListener("click", function () {
+          state.queueOnly = !state.queueOnly;
+          syncQueueOnlyButton();
+          showToast(state.queueOnly ? "Фильтр: нужен разбор" : "Фильтр очереди снят");
+          filtersChanged();
         });
       }
       $("case-search-form").addEventListener("submit", function (event) {
@@ -6140,8 +6200,11 @@
         state.zoneFilter = "";
         state.zoneBandFilter = "";
         state.overallGrade = "";
+        state.queueOnly = false;
         var gradeSel = $("overall-grade-filter");
         if (gradeSel) gradeSel.value = "";
+        syncGradeStrip();
+        syncQueueOnlyButton();
         state.attentionOnly = false;
         state.kpStatus = "";
         state.historyTier = "";
@@ -6211,6 +6274,7 @@
         state.attentionOnly = false;
         $("case-search").value = "";
         if ($("overall-grade-filter")) $("overall-grade-filter").value = "critical";
+        syncGradeStrip();
         showToast("Оценка: Критично");
         filtersChanged();
       });
@@ -6332,7 +6396,14 @@
         if (event.key === "ArrowDown" && !$("search-suggestions").hidden) {
           event.preventDefault(); moveOption($("search-suggestions"), 1);
         } else if (event.key === "Escape") {
-          $("search-suggestions").hidden = true; this.setAttribute("aria-expanded", "false");
+          if (!$("search-suggestions").hidden) {
+            $("search-suggestions").hidden = true; this.setAttribute("aria-expanded", "false");
+            return;
+          }
+          if (this.value) {
+            event.preventDefault();
+            clearCaseSearch();
+          }
         }
       });
       $("search-suggestions").addEventListener("keydown", function (event) {
