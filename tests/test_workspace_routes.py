@@ -36,7 +36,13 @@ def test_legacy_methodist_route_redirects_to_workspace() -> None:
 
 def test_methodist_mo_dashboard_has_canonical_routes() -> None:
     client = TestClient(rag_server.app)
-    for path in ("/methodist/mo", "/methodist/mo/yesterday", "/methodist/mo/cases"):
+    for path in (
+        "/methodist/mo",
+        "/methodist/mo/yesterday",
+        "/methodist/mo/cases",
+        "/methodist/mo/queue",
+        "/methodist/mo/overview",
+    ):
         response = client.get(path)
         assert response.status_code == 200
         assert "МО Аналитика" in response.text

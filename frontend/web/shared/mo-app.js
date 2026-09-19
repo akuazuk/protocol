@@ -95,8 +95,8 @@
       "first-plan": { name: "Первый контакт + слабый план", zoneFilter: "zone2b", zoneBandFilter: "bad", historyTier: "first_contact", attentionOnly: false, page: "documents" }
     };
     var PAGE_TITLES = {
-      overview: "Период", yesterday: "Сегодня", queue: "Очередь",
-      documents: "Все случаи", doctors: "Врачи", medications: "Проверка назначений", labs: "Анализы",
+      overview: "Период", yesterday: "Обзор", queue: "Очередь",
+      documents: "Найти МО", doctors: "Врачи", medications: "Лекарства", labs: "Анализы",
       reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции препаратов", settings: "Справка"
     };
     // Compatibility contract for integrations that still identify this page by its former label.
@@ -804,6 +804,28 @@
       btn.setAttribute("aria-pressed", state.queueOnly ? "true" : "false");
       btn.classList.toggle("active", !!state.queueOnly);
     }
+    function syncOverviewGrain() {
+      document.querySelectorAll("[data-overview-grain]").forEach(function (btn) {
+        var grain = btn.getAttribute("data-overview-grain") || "";
+        if (grain && grain === state.period) btn.setAttribute("aria-pressed", "true");
+        else btn.removeAttribute("aria-pressed");
+      });
+    }
+    function applyOverviewGrain(period, opts) {
+      opts = opts || {};
+      var next = String(period || "").trim();
+      if (!next) return;
+      state.period = next;
+      state.filterDraft = null;
+      if ($("period")) $("period").value = next;
+      if ($("date-from-wrap")) $("date-from-wrap").hidden = next !== "custom";
+      if ($("date-to-wrap")) $("date-to-wrap").hidden = next !== "custom";
+      syncOverviewGrain();
+      if (opts.silent) return;
+      var labels = { yesterday: "день", "7d": "неделя", month: "месяц" };
+      showToast("Обзор: " + (labels[next] || next));
+      filtersChanged();
+    }
     function applyQueueBand(band, opts) {
       opts = opts || {};
       state.queueBand = String(band || "");
@@ -1091,7 +1113,7 @@
           '<button type="button" data-clear-finding aria-label="Удалить фильтр замечания">×</button></span>');
       }
       if (state.findingFamily) {
-        html.push('<span class="chip">Раздел: ' + esc(state.findingFamily === "lab" ? "Анализы" : "Проверка назначений") +
+        html.push('<span class="chip">Раздел: ' + esc(state.findingFamily === "lab" ? "Анализы" : "Лекарства") +
           '<button type="button" data-clear-family aria-label="Удалить фильтр раздела">×</button></span>');
       }
       if (state.rubricCriterion) {
@@ -1248,7 +1270,9 @@
         path = state.page === "reports" ? "/methodist/expert/reports" : "/methodist/expert/yesterday";
       } else {
         path = state.page === "yesterday" ? "/methodist/mo/yesterday" :
-          (state.page === "queue" || state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
+          state.page === "queue" ? "/methodist/mo/queue" :
+          state.page === "overview" ? "/methodist/mo/overview" :
+          (state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
       }
       var url = path + "?" + q.toString();
       history[replace ? "replaceState" : "pushState"]({ page: state.page }, "", url);
@@ -1259,8 +1283,10 @@
       if (isExpertMode()) {
         pathPage = location.pathname.indexOf("/reports") >= 0 ? "reports" : "yesterday";
       } else {
-        pathPage = location.pathname.endsWith("/yesterday") ? "yesterday" :
-          (location.pathname.endsWith("/cases") ? "documents" : "overview");
+        pathPage = location.pathname.endsWith("/yesterday") || location.pathname.endsWith("/mo") ? "yesterday" :
+          location.pathname.endsWith("/queue") ? "queue" :
+          location.pathname.endsWith("/overview") ? "overview" :
+          (location.pathname.endsWith("/cases") ? "documents" : "yesterday");
       }
       state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : pathPage;
       if (isExpertMode() && !EXPERT_PAGES[state.page]) state.page = "yesterday";
@@ -1302,6 +1328,7 @@
       if ($("date-to-wrap")) $("date-to-wrap").hidden = state.period !== "custom";
       syncGradeStrip();
       syncQueueOnlyButton();
+      syncOverviewGrain();
       updateFilterSummary();
     }
     function filtersChanged() {
@@ -1310,7 +1337,7 @@
         state.drillSnapshot = null;
       }
       state.pageNo = 1;
-      renderChips(); updateFilterSummary(); syncUrl(true); loadPage(state.page);
+      renderChips(); updateFilterSummary(); syncOverviewGrain(); syncUrl(true); loadPage(state.page);
       renderAnalysisRail();
     }
     function switchPage(page, push) {
@@ -1331,6 +1358,8 @@
         if (button.getAttribute("data-page") === page) button.setAttribute("aria-current", "page");
         else button.removeAttribute("aria-current");
       });
+      var moreMenu = $("nav-more");
+      if (moreMenu) moreMenu.open = false;
       var helpBtn = $("sidebar-help");
       if (helpBtn) {
         if (page === "settings") helpBtn.setAttribute("aria-current", "page");
@@ -2545,7 +2574,7 @@
             esc(data.total || rows.length) + " записей. " + esc(scopeNote) +
             " Колонка «Балл №55» - средний % по формуле пост. МЗ №55.";
         } else {
-          banner.innerHTML = "<b>Все случаи</b> · " + esc(data.total || rows.length) + " записей. " + esc(scopeNote);
+          banner.innerHTML = "<b>Найти МО</b> · " + esc(data.total || rows.length) + " записей. " + esc(scopeNote);
         }
       }
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
@@ -4657,9 +4686,7 @@
           " выгрузки ещё нет).";
       }
       $("yesterday-date").textContent = label;
-      if ($("title-yesterday")) {
-        $("title-yesterday").textContent = day === minskDateKey(0) ? "Сегодня" : "Рабочий день";
-      }
+      if ($("title-yesterday")) $("title-yesterday").textContent = "Обзор";
       var dashPromise = request("/score-dashboard?" + query().toString(), "/score-dashboard");
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (await handleHttpAuth(response)) return;
@@ -5992,7 +6019,7 @@
       ensureColumnState();
       function block(key, targetId) {
         var host = $(targetId);
-        host.innerHTML = '<h3>' + (key === "queue" ? "Очередь" : "Все случаи") + '</h3>' +
+        host.innerHTML = '<h3>' + (key === "queue" ? "Очередь" : "Найти МО") + '</h3>' +
           '<div class="filter-options">' + COLUMN_MAP[key].map(function (label, idx) {
             return '<label class="filter-option"><input type="checkbox" data-col-key="' + key + '" data-col-index="' + idx + '"' +
               (state.columnVisible[key][idx] === false ? '' : ' checked') + '><span>' + esc(label) + '</span></label>';
@@ -6180,6 +6207,12 @@
           filtersChanged();
         });
       }
+      document.querySelectorAll("[data-overview-grain]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          applyOverviewGrain(button.getAttribute("data-overview-grain") || "month");
+        });
+      });
+      syncOverviewGrain();
       $("case-search-form").addEventListener("submit", function (event) {
         event.preventDefault();
         state.search = $("case-search").value.trim();
