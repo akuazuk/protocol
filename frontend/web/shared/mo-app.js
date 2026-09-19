@@ -5209,7 +5209,11 @@
               score((month.kpi || {}).avg_score)));
       }
       if (!items.length) {
-        $("report-list").innerHTML = '<div class="empty">Готовых отчётов пока нет. Дождитесь утреннего приёма данных.</div>';
+        $("report-list").innerHTML = '<div class="empty"><b>Нет файла за дату</b>' +
+          '<div>Готовых ежедневных отчётов нет. Откройте день в Обзоре по свежести склада.</div>' +
+          '<p><button class="button" type="button" id="reports-open-overview">Открыть день в Обзоре</button></p></div>';
+        var openOverview = $("reports-open-overview");
+        if (openOverview) openOverview.addEventListener("click", function () { switchPage("yesterday"); });
         return;
       }
       $("report-list").innerHTML = items.map(function (item) {
@@ -6038,6 +6042,16 @@
         "№55 / градация", "Причина", "Ответственный", "Срок", "Статус", "МО"
       ]
     };
+    var COLUMN_PRESETS = {
+      work: {
+        documents: [true, false, true, true, false, true, true, false, false, false, true, false, false, false, false, false],
+        queue: [true, true, false, true, false, true, false, true, true, true, false, false, false, false, true, false, false, false, false]
+      },
+      review: {
+        documents: [true, false, true, true, false, true, true, true, true, true, true, true, false, true, false, false],
+        queue: [true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, false, false, true, false]
+      }
+    };
     var COLUMN_DEFAULTS = {
       documents: [true, true, true, true, false, true, true, false, false, false, true, true, false, false, false, false],
       queue: [true, true, false, true, false, true, false, true, true, false, false, false, false, false, true, false, false, true, false]
@@ -6079,6 +6093,10 @@
       function block(key, targetId) {
         var host = $(targetId);
         host.innerHTML = '<h3>' + (key === "queue" ? "Очередь" : "Найти МО") + '</h3>' +
+          '<div class="column-presets">' +
+          '<button class="button secondary compact" type="button" data-col-preset="' + key + '" data-preset="work">Работа</button>' +
+          '<button class="button secondary compact" type="button" data-col-preset="' + key + '" data-preset="review">Проверка</button>' +
+          '</div>' +
           '<div class="filter-options">' + COLUMN_MAP[key].map(function (label, idx) {
             return '<label class="filter-option"><input type="checkbox" data-col-key="' + key + '" data-col-index="' + idx + '"' +
               (state.columnVisible[key][idx] === false ? '' : ' checked') + '><span>' + esc(label) + '</span></label>';
@@ -6093,6 +6111,19 @@
           state.columnVisible[key][idx] = !!input.checked;
           saveColumnState();
           applyColumnVisibility(key);
+        });
+      });
+      $("columns-manager").querySelectorAll("[data-col-preset]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var key = button.getAttribute("data-col-preset");
+          var preset = button.getAttribute("data-preset");
+          var cols = (COLUMN_PRESETS[preset] || {})[key];
+          if (!cols) return;
+          state.columnVisible[key] = cols.slice();
+          saveColumnState();
+          applyColumnVisibility(key);
+          renderColumnsManager();
+          showToast(preset === "review" ? "Колонки: проверка" : "Колонки: работа");
         });
       });
     }
@@ -6570,6 +6601,15 @@
             else if (!event.shiftKey && document.activeElement === commandLast) { event.preventDefault(); commandFirst.focus(); }
           }
           return;
+        }
+        if (event.key === "Escape") {
+          var suggestions = $("search-suggestions");
+          if (suggestions && !suggestions.hidden) {
+            event.preventDefault();
+            suggestions.hidden = true;
+            if ($("case-search")) $("case-search").setAttribute("aria-expanded", "false");
+            return;
+          }
         }
         if ($("case-drawer").hidden) return;
         if (event.key === "Escape") closeDrawer();
