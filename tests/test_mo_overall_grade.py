@@ -140,6 +140,21 @@ def test_attach_from_warehouse_row() -> None:
     assert rec["overall_grade"]["grade"] == "fair"
 
 
+def test_attach_mutates_original_dict() -> None:
+    from clinical_knowledge.mo_overall_grade import attach_overall_grade
+
+    rec = {
+        "zone1_band": "ok",
+        "zone2a_band": "ok",
+        "zone2b_band": "na",
+        "zone2b_kp_status": "unmatched",
+        "attention_primary": "none",
+    }
+    out = attach_overall_grade(rec)
+    assert out is rec
+    assert rec["overall_grade"]["grade"] == "good"
+
+
 def test_live_zone_engine_thin_orvi_is_not_good() -> None:
     zones = compute_mo_zone_scores(
         {

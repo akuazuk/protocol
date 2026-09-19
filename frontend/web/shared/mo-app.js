@@ -812,44 +812,45 @@
           option.hidden = option.getAttribute("data-label").indexOf(term) < 0;
         });
       });
+      function publishFacet(next, closeMenu) {
+        draft = next.slice();
+        if (key === "document_types") {
+          draft = ["clinical_visit"];
+          state.scoreEligibleOnly = true;
+          if ($("score-eligible-only")) {
+            $("score-eligible-only").checked = true;
+            $("score-eligible-only").disabled = true;
+          }
+        }
+        selected = draft.slice();
+        state.selected[key] = draft.slice();
+        if (state.filterDraft && state.filterDraft.selected) {
+          state.filterDraft.selected[key] = draft.slice();
+        }
+        details.querySelector("summary b").textContent =
+          key === "document_types" ? "Клинический приём" : (draft.length || "Все");
+        details.classList.remove("has-pending");
+        if (closeMenu) details.open = false;
+        showToast(draft.length ? "Фильтр применён: " + FILTER_LABELS[key] : "Фильтр очищен: " + FILTER_LABELS[key]);
+        filtersChanged();
+      }
       details.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
         input.addEventListener("change", function () {
           var index = draft.indexOf(input.value);
           if (input.checked && index < 0) draft.push(input.value);
           if (!input.checked && index >= 0) draft.splice(index, 1);
           renderDraftState();
+          publishFacet(draft, false);
         });
       });
       details.querySelector("[data-filter-clear]").addEventListener("click", function () {
-        draft = [];
         details.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
           input.checked = false;
         });
-        renderDraftState();
+        publishFacet([], false);
       });
       apply.addEventListener("click", function () {
-        if (state.filterDraft) state.filterDraft.selected[key] = draft.slice();
-        else state.selected[key] = draft.slice();
-        selected = draft.slice();
-        details.querySelector("summary b").textContent = draft.length || "Все";
-        details.classList.remove("has-pending");
-        details.open = false;
-        if (key === "document_types") {
-          // Не даём выбрать процедуры/профосмотры в таблице случаев.
-          draft = ["clinical_visit"];
-          if (state.filterDraft) state.filterDraft.selected.document_types = ["clinical_visit"];
-          else state.selected.document_types = ["clinical_visit"];
-          selected = ["clinical_visit"];
-          state.scoreEligibleOnly = true;
-          details.querySelector("summary b").textContent = "Клинический приём";
-          if ($("score-eligible-only")) {
-            $("score-eligible-only").checked = true;
-            $("score-eligible-only").disabled = true;
-          }
-        }
-        showToast(draft.length ? "Фильтр применён: " + FILTER_LABELS[key] : "Фильтр очищен: " + FILTER_LABELS[key]);
-        if (state.filterDraft) updateFilterSummary(true);
-        else filtersChanged();
+        publishFacet(draft, true);
       });
       details.ontoggle = function () {
         if (details.open) {
@@ -4214,7 +4215,13 @@
     }
     async function loadFamilyDashboardRequest(family) {
       var prefix = family === "lab" ? "labs" : "medications";
-      var response = await request("/drugs-labs-kpis?" + query().toString());
+      var kpiQuery = query();
+      kpiQuery.set("family", family);
+      kpiQuery.delete("statuses");
+      var response = await request(
+        "/drugs-labs-kpis?" + kpiQuery.toString(),
+        "/drugs-labs-kpis?" + kpiQuery.toString()
+      );
       if (!response.ok) throw new Error("Не удалось загрузить сводку " + (family === "lab" ? "анализов" : "лекарств") + ".");
       var data = await response.json();
       var totalCases = Number((data.denominators || {}).total_cases || 0);
@@ -4237,7 +4244,7 @@
         var q = query();
         q.set("finding_family", family);
         q.set("page_size", "8");
-        var casesResp = await request("/cases?" + q.toString());
+        var casesResp = await request("/cases?" + q.toString(), "/cases?" + q.toString());
         var preview = $(prefix + "-preview");
         if (preview && casesResp.ok) {
           var cases = await casesResp.json();
@@ -4738,6 +4745,11 @@
     function applyZonePreset(key) {
       var preset = ZONE_PRESETS[key];
       if (!preset) return;
+      state.filterDraft = null;
+      state.selected.statuses = [];
+      state.overallGrade = "";
+      state.findingCode = "";
+      if ($("overall-grade-filter")) $("overall-grade-filter").value = "";
       state.zoneFilter = preset.zoneFilter || "";
       state.zoneBandFilter = preset.zoneBandFilter || "";
       state.attentionOnly = !!preset.attentionOnly;
@@ -6125,11 +6137,15 @@
         openSelectedQueuePdfs().catch(function (error) { showError(error.message); });
       });
       $("queue-critical-only").addEventListener("click", function () {
+        state.filterDraft = null;
         state.findingCode = "";
         state.search = "";
-        state.selected.statuses = ["critical"];
+        state.selected.statuses = [];
+        state.overallGrade = "critical";
+        state.attentionOnly = false;
         $("case-search").value = "";
-        showToast("Применён фильтр: только критические");
+        if ($("overall-grade-filter")) $("overall-grade-filter").value = "critical";
+        showToast("Оценка: Критично");
         filtersChanged();
       });
       var shadowOnlyBtn = $("queue-shadow-attention-only");

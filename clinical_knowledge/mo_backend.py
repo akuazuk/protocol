@@ -1096,11 +1096,25 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
             primary = str(rec.get("attention_primary") or "none")
             if primary in {"", "none"}:
                 continue
-        overall_grade = str(params.get("overall_grade") or "").strip().lower()
-        if overall_grade:
-            attach_overall_grade(rec)
-            rec_grade = rec.get("overall_grade") if isinstance(rec.get("overall_grade"), Mapping) else {}
-            if str(rec_grade.get("grade") or rec.get("overall_grade") or "").lower() != overall_grade:
+        wanted_grades = {
+            str(value).strip().lower()
+            for value in _values(params.get("overall_grade"))
+            if str(value).strip()
+        }
+        if wanted_grades:
+            from .mo_overall_grade import overall_grade_id
+
+            rec = attach_overall_grade(rec)
+            if overall_grade_id(rec) not in wanted_grades:
+                continue
+        want_icd_code = str(params.get("icd") or "").strip().upper().replace(".", "")
+        if want_icd_code:
+            rec_code = (
+                str(rec.get("diagnosis_code") or rec.get("mkb_code_main") or "")
+                .upper()
+                .replace(".", "")
+            )
+            if not rec_code.startswith(want_icd_code):
                 continue
         kp_status = str(params.get("kp_status") or "").strip().lower()
         if kp_status and str(rec.get("zone2b_kp_status") or "").lower() != kp_status:

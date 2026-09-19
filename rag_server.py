@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-18-190626Z-ilex-kp-2026-wave3"
+BUILD_VERSION = "2026-09-19-144419Z-mo-filter-truth"
 
 
 def _app_version() -> str:
@@ -11863,6 +11863,10 @@ def api_methodist_mo_cases(
     reg55_pack: str = Query("", max_length=500),
     min_severity: str = Query("", max_length=8),
     worst_severity: str = Query("", max_length=8),
+    overall_grade: str = Query("", max_length=64),
+    icd_visit_status: str = Query("", max_length=64),
+    icd: str = Query("", max_length=32),
+    methodology: str = Query("", max_length=16),
     page: int = Query(1, ge=1),
     page_size: int = Query(50, ge=1, le=200),
     sort_by: str = Query("date"),
@@ -13109,18 +13113,24 @@ def api_methodist_mo_drugs_labs_kpis(
     date_from: str = Query("", max_length=10),
     date_to: str = Query("", max_length=10),
     family: str = Query("", max_length=16),
+    finding_family: str = Query("", max_length=16),
     document_kinds: str = Query("", max_length=500),
     statuses: str = Query("", max_length=500),
     specializations: str = Query("", max_length=2000),
     filials: str = Query("", max_length=2000),
     doctors: str = Query("", max_length=5000),
+    overall_grade: str = Query("", max_length=64),
+    score_eligible_only: str = Query("1", max_length=16),
 ) -> dict:
     """KPI unused lab + drug-safety + семейства Лекарства/Анализы."""
     _require_methodist_auth(request)
     from clinical_knowledge.mo_backend import build_mo_drugs_labs_kpis
 
     try:
-        return build_mo_drugs_labs_kpis(_mo_params(**locals()))
+        params = _mo_params(**locals())
+        if not params.get("family") and params.get("finding_family"):
+            params["family"] = params["finding_family"]
+        return build_mo_drugs_labs_kpis(params)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 

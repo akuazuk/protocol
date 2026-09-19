@@ -161,6 +161,25 @@ def test_mo_search_and_filters_have_explicit_apply_actions() -> None:
     assert "Pavel" not in SOURCE
 
 
+def test_queue_critical_uses_overall_grade_not_crm_status() -> None:
+    idx = JS.find('$("queue-critical-only").addEventListener')
+    assert idx >= 0
+    chunk = JS[idx : idx + 900]
+    assert 'overallGrade = "critical"' in chunk
+    assert 'statuses = ["critical"]' not in chunk
+
+
+def test_facet_checkbox_publishes_without_waiting_outer_apply() -> None:
+    assert "function publishFacet(next, closeMenu)" in JS
+    assert "publishFacet(draft, false)" in JS
+
+
+def test_mo_api_request_does_not_fetch_undefined_legacy() -> None:
+    api = (SHARED / "mo-api.js").read_text(encoding="utf-8")
+    assert 'legacy == null || legacy === ""' in api
+    assert "mis-kz-qualityundefined" not in api
+
+
 def test_mo_dashboard_prefers_new_api_with_legacy_fallback() -> None:
     assert 'var API_ROOT = "/api/methodist/mo"' in SOURCE
     assert 'var LEGACY_ROOT = "/api/methodist/mis-kz-quality"' in SOURCE
