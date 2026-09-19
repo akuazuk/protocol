@@ -670,6 +670,14 @@ tbody tr.table-row-hidden { display: none; }
   background-size: 200% 100%; animation: pulse 1.3s infinite;
 }
 @keyframes pulse { to { background-position: -200% 0; } }
+.table-wrap.is-loading {
+  opacity: 0.62;
+  pointer-events: none;
+}
+.is-skeleton-row td { padding: 8px 12px; }
+.is-skeleton-row .skeleton { min-height: 28px; }
+.drawer-body.is-loading { opacity: 0.7; }
+.drawer-nav [disabled] { opacity: 0.45; }
 
 .page { scroll-margin-top: 130px; }
 .section-actions {

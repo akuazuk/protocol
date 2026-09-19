@@ -174,6 +174,29 @@ def test_facet_checkbox_publishes_without_waiting_outer_apply() -> None:
     assert "publishFacet(draft, false)" in JS
 
 
+def test_cases_table_keeps_rows_while_reloading() -> None:
+    assert "function setCasesLoading(queue, on)" in JS
+    assert "if (body.querySelector(\"tr[data-case]\")) return;" in JS
+    assert "setCasesLoading(queue, true)" in JS
+    assert "beginPageRequestScope()" in JS
+    assert "is-skeleton-row" in JS
+    assert "table-wrap.is-loading" in CSS
+    assert "drawer-body.is-loading" in CSS
+    assert "keepBody" in JS
+    assert "caseDetailLoading" in JS
+    idx = JS.find("label: \"Показать критические случаи\"")
+    assert idx >= 0
+    chunk = JS[idx : idx + 280]
+    assert 'overallGrade = "critical"' in chunk
+    assert 'statuses = ["Критично"]' not in chunk
+
+
+def test_month_reconciliation_hides_zero_delta_banner() -> None:
+    assert "Number(reconciliation.source_delta || 0) === 0" in JS
+    assert "Number(reconciliation.evaluated_delta || 0) === 0" in JS
+    assert 'textContent = day === minskDateKey(0) ? "Сегодня" : "Рабочий день"' in JS
+
+
 def test_mo_api_request_does_not_fetch_undefined_legacy() -> None:
     api = (SHARED / "mo-api.js").read_text(encoding="utf-8")
     assert 'legacy == null || legacy === ""' in api
