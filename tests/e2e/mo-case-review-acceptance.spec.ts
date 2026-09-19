@@ -108,7 +108,9 @@ test('E22: keyboard, viewport matrix, zoom and long text stay usable', async ({ 
     const navLabels = await page.locator('#app-nav .nav-button:visible').evaluateAll(
       nodes => nodes.map(node => node.getAttribute('aria-label')).filter(Boolean)
     );
-    expect(navLabels.length).toBeGreaterThan(5);
+    expect(navLabels.length).toBeGreaterThanOrEqual(5);
+    expect(navLabels).toEqual(expect.arrayContaining(["Обзор", "Найти МО", "Врачи", "Лекарства", "Анализы"]));
+    await expect(page.locator("#nav-more > summary")).toBeVisible();
     const filters = page.locator('#filters-panel > summary');
     await filters.focus();
     await page.keyboard.press('Enter');
