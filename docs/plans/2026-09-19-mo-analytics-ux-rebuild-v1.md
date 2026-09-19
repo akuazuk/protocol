@@ -365,7 +365,7 @@ state.attentionOnly = false;
 
 ### Волна 4. Склейка экранов (frontend, 2 дня)
 
-Статус: **в работе** (ветка `cursor/mo-find-cases-w4-pc1`). HTML `yesterday` и `overview` не склеиваем: Обзор = `yesterday` + зерно День/Неделя/Месяц. Старый `overview` и очередь остаются в «Ещё». Expert.html в этом PR не трогаем.
+Статус: **merged** PR #256 → `264b2a2b`. Меню 5+Ещё, Обзор=`yesterday`+зерно, алиасы `/queue` `/overview`. Expert.html не трогали.
 
 Осторожно: не удалять `data-page` сразу – алиасы.
 
@@ -380,6 +380,8 @@ state.attentionOnly = false;
 ---
 
 ### Волна 5. Инспектор случая (frontend + чуть backend, 2–3 дня)
+
+Статус: **в работе** (ветка `cursor/mo-find-cases-w5-pc1`). Split view с 1440, шапка из `caseNavRows` до GET, пустые поля МО по-прежнему скрыты, LLM-черновик убран с первого экрана non-zones.
 
 Канон ui-target §9, на проде drawer это не выполняет (вкладки Документ/Проверка, LLM-блоки, пустота).
 

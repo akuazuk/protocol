@@ -73,7 +73,7 @@
       queueOnly: false,
       queueBand: "",
       doctorZoneMetric: "zone1",
-      caseNavIds: [], caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
+      caseNavIds: [], caseNavRows: {}, caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
       caseDetailLoading: false,
       protocolSuggest: null,
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [] },
@@ -2551,6 +2551,8 @@
       if (epoch !== pageRequestEpoch) throw staleRequestError();
       var rows = (data.rows || data.cases || data.items || data.worst_visits || []).map(rowRecord);
       state.caseNavIds = rows.map(function (item) { return item.id; }).filter(Boolean);
+      state.caseNavRows = {};
+      rows.forEach(function (item) { if (item.id) state.caseNavRows[item.id] = item; });
       state.caseNavTotal = Number(data.total || rows.length);
       state.caseNavPage = state.pageNo;
       state.caseNavPageSize = Number(data.page_size || rows.length || 50);
@@ -2620,6 +2622,37 @@
         });
       }
     }
+    function overallGradeLabel(code) {
+      return ({
+        critical: "Критично", important: "Важно", poor: "Слабо",
+        fair: "С замечанием", good: "Хорошо", na: "Нет оценки"
+      })[String(code || "")] || "";
+    }
+    function paintCaseChrome(item) {
+      if (!item) return;
+      var grade = overallGradeLabel(item.overallGrade);
+      $("drawer-title").textContent = [item.date || "Разбор случая", grade].filter(Boolean).join(" · ");
+      $("drawer-subtitle").textContent = [
+        "визит " + (item.visitId || item.id || "-"),
+        item.doctor, item.specialty, item.diagnosis || ""
+      ].filter(Boolean).join(" · ");
+    }
+    function markOpenCaseRow(id) {
+      document.querySelectorAll("tr[data-case]").forEach(function (row) {
+        var open = row.getAttribute("data-case") === String(id || "");
+        row.classList.toggle("is-open", open);
+        if (open) row.setAttribute("aria-current", "true");
+        else row.removeAttribute("aria-current");
+      });
+    }
+    function setInspecting(on) {
+      document.body.classList.toggle("is-inspecting", !!on);
+      var app = $("dashboard");
+      if (app) app.classList.toggle("is-inspecting", !!on);
+    }
+    function wideInspector() {
+      return window.matchMedia && window.matchMedia("(min-width: 1440px)").matches;
+    }
     async function openCase(id, trigger) {
       if (!id) return;
       if (state.openCaseId && String(id) !== state.openCaseId) {
@@ -2630,12 +2663,16 @@
       state.caseDetailLoading = true;
       if (trigger) state.trigger = trigger;
       var scope = beginCaseDetailScope(id);
-      $("case-drawer").hidden = false; $("drawer-backdrop").hidden = false;
-      document.body.style.overflow = "hidden";
+      setInspecting(true);
+      markOpenCaseRow(id);
+      paintCaseChrome(state.caseNavRows[id] || { id: id, visitId: id });
+      $("case-drawer").hidden = false;
+      $("drawer-backdrop").hidden = wideInspector();
+      document.body.style.overflow = wideInspector() ? "" : "hidden";
       var drawerBody = $("drawer-body");
       var keepBody = !!(drawerBody && drawerBody.querySelector(".case-workspace-grid, .case-workspace-tabs, .detail-block"));
       if (keepBody) drawerBody.classList.add("is-loading");
-      else drawerBody.innerHTML = '<div class="skeleton"></div>';
+      else drawerBody.innerHTML = '<div class="case-inspector-pending"><p class="card-sub">Загружаем текст МО…</p></div>';
       var drawerPdf = $("drawer-pdf");
       if (drawerPdf && drawerPdf.getAttribute("data-open-pdf")) drawerPdf.hidden = false;
       updateDrawerNav();
@@ -3478,12 +3515,7 @@
       ].map(function (option) {
         return '<option value="' + option[0] + '"' + (option[0] === crmStatus ? " selected" : "") + ">" + option[1] + "</option>";
       }).join("");
-      $("drawer-title").textContent = "Разбор случая";
-      $("drawer-subtitle").textContent = [
-        "визит " + (item.visitId || item.id || "-"),
-        "пациент " + (item.patientId || "-"),
-        item.date, item.doctor, item.specialty, item.diagnosis || ""
-      ].filter(Boolean).join(" · ");
+      paintCaseChrome(item);
       var pdfPath = "/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf";
       var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
@@ -3543,7 +3575,7 @@
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
           renderAssessmentStatusStrip(assessment) +
-          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
+          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderMedicationNormativeCards(data.medication_normative_cards) +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
           renderHistoryAndLabs(history, data.lab, data.history_assessment) +
@@ -3567,8 +3599,9 @@
           renderFamilyScores(data) +
           renderLabBundle(data.lab) +
           renderShadowDxPlan(shadowDxPlan) +
-          renderLlmActionJudge(llmJudge, sourceDocument, item) +
-          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Подбираем протоколы…</p></div>' +
+          '<details class="detail-block mo-secondary-details"><summary>Черновик модели</summary>' +
+          renderLlmActionJudge(llmJudge, sourceDocument, item) + "</details>" +
+          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderMedicationNormativeCards(data.medication_normative_cards) +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
           '</div>' + decisionHtml + '</div></div>';
@@ -3886,7 +3919,7 @@
     async function loadProtocolSuggestIntoCase(caseId, scope) {
       var host = $("protocol-suggest-host");
       if (!host || !caseId) return;
-      host.innerHTML = '<div class="detail-block"><p class="card-sub">Подбираем протоколы…</p></div>';
+      host.innerHTML = '<div class="detail-block"><p class="card-sub">Протокол: подбираем…</p></div>';
       try {
         var q = query();
         q.set("month", q.get("month") || minskDateKey(0).slice(0, 7));
@@ -4090,6 +4123,8 @@
       if (caseDetailController) caseDetailController.abort();
       caseDetailController = null;
       $("case-drawer").hidden = true; $("drawer-backdrop").hidden = true; document.body.style.overflow = "";
+      setInspecting(false);
+      markOpenCaseRow("");
       if ($("drawer-pdf")) $("drawer-pdf").hidden = true;
       if (state.trigger) state.trigger.focus();
       state.openCaseId = "";

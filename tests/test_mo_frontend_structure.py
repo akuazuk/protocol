@@ -185,6 +185,8 @@ def test_cases_table_keeps_rows_while_reloading() -> None:
     assert "table-wrap.is-loading" in CSS
     assert "drawer-body.is-loading" in CSS
     assert "keepBody" in JS
+    assert "function paintCaseChrome(item)" in JS
+    assert "case-inspector-pending" in JS
     assert "caseDetailLoading" in JS
     idx = JS.find("label: \"Показать критические случаи\"")
     assert idx >= 0
