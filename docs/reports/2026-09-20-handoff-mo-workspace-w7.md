@@ -15,6 +15,7 @@ Repo: `akuazuk/protocol`
 | W5 dx_text склада | #267 | `b4a900e1` | `2026-09-20-142257Z-mo-w5-dx-text` | да |
 | W6 кнопки / Период | #268 | `e374e996` | `2026-09-20-145012Z-mo-w6-buttons` | да |
 | W7 SQL overall_grade + индексы | #269 | `a22c4744` | `2026-09-20-153919Z-mo-w7-sql-grade` | да |
+| R0 первый экран разбора | #271 | `34488928` | `2026-09-20-163330Z-mo-r0-case-review` | да |
 
 W7 smoke на проде (месяц, клинические, `score_eligible_only=1`):
 
@@ -31,8 +32,8 @@ CI W7: первый прогон красный (`CREATE INDEX` по `zone1_band
 
 - Чипы «Критично» и «Нет оценки» по SQL пустые: на складе нет `safety_band`, CASE не эмитит `critical`; `na` отсекается `score_eligible_only`. Отдельный PR, не смешивать с разбором.
 - Warm `/cases?overall_grade=` около 2.2 с - как список без фильтра; это не python-post-filter 8k, но p95 ещё не «мгновенно».
-- План разбора случая написан, runtime R0 ещё нет.
-- `docs/plans/README.md` не трогали (занят).
+- План разбора случая в PR #270 (нужна строка в `docs/plans/README.md`).
+- Runtime R1-R7 ещё нет. R0 на проде: на 1440 документ и оценка видны сразу, КП не в «Подробнее», вкладки скрыты.
 - PR стола `#261` может быть ещё открыт - это индекс/план W0-W7, не runtime.
 
 ## Делается
@@ -41,11 +42,11 @@ CI W7: первый прогон красный (`CREATE INDEX` по `zone1_band
 
 ## Нужно
 
-Следующий runtime: R0 (split 1440, протокол на первом экране, без смены скоринга).
+Следующий runtime: R1 (честная карточка «план по протоколу», если КП не подобран).
 
 ```bash
-scripts/ops/git_task_start.sh mo-case-review-r0 --pc=pc1 \
-  --branch=cursor/mo-case-review-r0-pc1
+scripts/ops/git_task_start.sh mo-case-review-r1 --pc=pc1 \
+  --branch=cursor/mo-case-review-r1-pc1
 ```
 
 Запреты: не Render; не порт 8000; не dirty Cursor `main`; не `SYNC_PROTOCOL_CORPUS=1`; Gemini только GCE; PHI в чат не писать.
