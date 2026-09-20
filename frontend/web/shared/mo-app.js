@@ -79,7 +79,7 @@
       protocolSuggest: null,
       selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [] },
       scoreEligibleOnly: true,
-      data: {}, facets: {}, trigger: null, openCaseId: "", cabinetDoctorKey: "",
+      data: {}, facets: {}, trigger: null, openCaseId: "", pendingOpenId: "", cabinetDoctorKey: "",
       caseDetail: null, supersedesPackId: "",
       decisionBaseline: "", decisionDirty: false, decisionSaveToken: "",
       drillTrail: [], drillSnapshot: null,
@@ -1326,6 +1326,8 @@
     function syncUrl(replace) {
       var q = query();
       q.set("page", state.page);
+      if (state.openCaseId) q.set("open", state.openCaseId);
+      else q.delete("open");
       var path;
       if (isExpertMode()) {
         path = state.page === "reports" ? "/methodist/expert/reports" : "/methodist/expert/yesterday";
@@ -1336,7 +1338,16 @@
           (state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
       }
       var url = path + "?" + q.toString();
-      history[replace ? "replaceState" : "pushState"]({ page: state.page }, "", url);
+      history[replace ? "replaceState" : "pushState"]({ page: state.page, open: state.openCaseId || "" }, "", url);
+    }
+    function caseIdFromLocation(q) {
+      q = q || new URLSearchParams(location.search);
+      var fromQuery = String(q.get("open") || "").trim();
+      var pathMatch = String(location.pathname || "").match(/\/methodist\/mo\/cases\/([^/]+)\/?$/);
+      if (pathMatch && pathMatch[1]) {
+        try { return decodeURIComponent(pathMatch[1]); } catch (error) { return pathMatch[1]; }
+      }
+      return fromQuery;
     }
     function readUrl() {
       var q = new URLSearchParams(location.search);
@@ -1350,6 +1361,7 @@
           (location.pathname.endsWith("/cases") ? "documents" : "yesterday");
       }
       state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : pathPage;
+      state.pendingOpenId = caseIdFromLocation(q);
       if (isExpertMode() && !EXPERT_PAGES[state.page]) state.page = "yesterday";
       state.period = q.get("period") || (isExpertMode() ? "yesterday" : "month");
       state.compare = q.get("compare_period") || "previous";
@@ -1406,6 +1418,7 @@
       renderAnalysisRail();
     }
     function switchPage(page, push) {
+      if (state.openCaseId && push !== false) closeDrawer(true);
       if (REMOVED_PAGES[page]) page = (page === "access-log" || page === "data-quality") ? "reports" : "documents";
       if (!PAGE_TITLES[page]) page = "yesterday";
       if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
@@ -2708,6 +2721,7 @@
         "визит " + (item.visitId || item.id || "-"),
         item.doctor, item.specialty, item.diagnosis || ""
       ].filter(Boolean).join(" · ");
+      document.title = "Разбор " + (item.visitId || item.id || "") + " | МО Аналитика";
     }
     function markOpenCaseRow(id) {
       document.querySelectorAll("tr[data-case]").forEach(function (row) {
@@ -2721,9 +2735,10 @@
       document.body.classList.toggle("is-inspecting", !!on);
       var app = $("dashboard");
       if (app) app.classList.toggle("is-inspecting", !!on);
+      if (!on && PAGE_TITLES[state.page]) document.title = PAGE_TITLES[state.page] + " | МО Аналитика";
     }
     function wideInspector() {
-      return window.matchMedia && window.matchMedia("(min-width: 1440px)").matches;
+      return false;
     }
     async function openCase(id, trigger) {
       if (!id) return;
@@ -2731,7 +2746,10 @@
         if (!confirmDiscardDecision()) return;
         state.decisionDirty = false;
       }
+      var alreadyInspecting = !!state.openCaseId;
+      var urlHasOpen = !!caseIdFromLocation();
       state.openCaseId = String(id);
+      state.pendingOpenId = String(id);
       state.caseDetailLoading = true;
       if (trigger) state.trigger = trigger;
       var scope = beginCaseDetailScope(id);
@@ -2739,8 +2757,9 @@
       markOpenCaseRow(id);
       paintCaseChrome(state.caseNavRows[id] || { id: id, visitId: id });
       $("case-drawer").hidden = false;
-      $("drawer-backdrop").hidden = wideInspector();
-      document.body.style.overflow = wideInspector() ? "" : "hidden";
+      $("drawer-backdrop").hidden = true;
+      document.body.style.overflow = "hidden";
+      syncUrl(alreadyInspecting || urlHasOpen);
       var drawerBody = $("drawer-body");
       var keepBody = !!(drawerBody && drawerBody.querySelector(".case-workspace-grid, .case-workspace-tabs, .detail-block"));
       if (keepBody) drawerBody.classList.add("is-loading");
@@ -3219,7 +3238,7 @@
           '; диагноз - ' + esc(statusLabel((k.diagnosis || {}).verdict) || "нет") +
           '; план - ' + esc(statusLabel((k.recommendations || {}).verdict) || "нет") + '</p>';
       }
-      return '<div class="detail-block"><h3>Замечания для проверки</h3>' + chips + llmLine +
+      return '<div class="detail-block"><h3>Что не так</h3>' + chips + llmLine +
         '<div class="findings-compact-list">' + list + '</div></div>';
     }
     function renderHistoryContinuity(cont) {
@@ -3647,16 +3666,17 @@
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
           renderAssessmentStatusStrip(assessment) +
+          renderFindingsCompact(findings, crm, llmJudge, assessment) +
+          '<details class="detail-block mo-secondary-details" id="case-more-details"><summary>Подробнее: история, протокол, №55</summary>' +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderMedicationNormativeCards(data.medication_normative_cards) +
-          renderFindingsCompact(findings, crm, llmJudge, assessment) +
           renderHistoryAndLabs(history, data.lab, data.history_assessment) +
           renderZonesCriteriaDetails(zones) +
           '<details class="detail-block mo-secondary-details"><summary>Дополнительные автоматические оценки</summary>' +
           renderFamilyScores(data) +
           renderShadowDxPlan(shadowDxPlan) +
           renderReviewBrief(data.review_brief, data.case_narrative) +
-          serviceHtml + "</details>" +
+          serviceHtml + "</details></details>" +
           '</div>' +
           decisionHtml +
           '</div></div>';
@@ -3664,9 +3684,11 @@
         $("drawer-body").innerHTML =
           renderCaseWorkspaceTabs() +
           '<div class="case-workspace-grid"><div class="case-workspace-clinical case-workspace-pane is-active-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
-          renderClinicalDocument(sourceDocument, findings) + serviceHtml +
+          renderClinicalDocument(sourceDocument, findings) +
           '</div><div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
+          renderFindingsCompact(findings, crm, llmJudge, assessment) +
+          '<details class="detail-block mo-secondary-details" id="case-more-details"><summary>Подробнее: история, протокол, №55</summary>' +
           renderPatientHistory(data.patient_history) +
           renderFamilyScores(data) +
           renderLabBundle(data.lab) +
@@ -3675,7 +3697,7 @@
           renderLlmActionJudge(llmJudge, sourceDocument, item) + "</details>" +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderMedicationNormativeCards(data.medication_normative_cards) +
-          renderFindingsCompact(findings, crm, llmJudge, assessment) +
+          serviceHtml + "</details>" +
           '</div>' + decisionHtml + '</div></div>';
       }
       bindCaseWorkspaceInteractions();
@@ -4189,8 +4211,11 @@
         loadCases(true);
       } catch (e) { showError(e.message); }
     }
-    function closeDrawer(force) {
-      if (force !== true && !confirmDiscardDecision()) return false;
+    function closeDrawer(force, fromHistory) {
+      if (force !== true && !confirmDiscardDecision()) {
+        if (fromHistory && state.openCaseId) syncUrl(true);
+        return false;
+      }
       caseDetailEpoch += 1;
       if (caseDetailController) caseDetailController.abort();
       caseDetailController = null;
@@ -4200,9 +4225,11 @@
       if ($("drawer-pdf")) $("drawer-pdf").hidden = true;
       if (state.trigger) state.trigger.focus();
       state.openCaseId = "";
+      state.pendingOpenId = "";
       state.decisionDirty = false;
       state.decisionBaseline = "";
       state.decisionSaveToken = "";
+      if (!fromHistory) syncUrl(true);
       return true;
     }
     function unavailableBlock(section, fallback) {
@@ -6789,7 +6816,18 @@
           setAuth(true, "Сессия завершена.");
         });
       }
-      window.addEventListener("popstate", function () { readUrl(); renderChips(); switchPage(state.page, false); });
+      window.addEventListener("popstate", function () {
+        readUrl();
+        renderChips();
+        var openId = state.pendingOpenId;
+        if (openId) {
+          switchPage(state.page, false);
+          if (state.openCaseId !== String(openId)) openCase(openId);
+        } else {
+          if (state.openCaseId) closeDrawer(true, true);
+          switchPage(state.page, false);
+        }
+      });
       renderSavedViews(); refreshSavedViews();
     }
     async function init() {
@@ -6830,6 +6868,7 @@
         }
         await loadCapabilities();
         switchPage(state.page, false);
+        if (state.pendingOpenId) openCase(state.pendingOpenId);
       }
     }
     MO.app = Object.freeze({ init: init, switchPage: switchPage, showToast: showToast });
