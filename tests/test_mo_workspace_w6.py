@@ -13,6 +13,9 @@ APP = (ROOT / "frontend" / "web" / "shared" / "mo-app.js").read_text(encoding="u
 def test_period_nav_is_hidden_duplicate() -> None:
     assert 'data-page="overview" hidden' in HTML
     assert 'if (page === "overview") page = "yesterday";' in APP
+    assert "page=overview открывает Обзор" in (
+        ROOT / "tests" / "e2e" / "mo-smoke.spec.ts"
+    ).read_text(encoding="utf-8")
 
 
 def test_doctor_open_uses_overall_grade_not_zone_only() -> None:
