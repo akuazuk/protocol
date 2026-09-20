@@ -1527,6 +1527,8 @@ def initialize_warehouse(path: Path) -> None:
             CREATE TABLE IF NOT EXISTS dim_service (service_code TEXT PRIMARY KEY, service_name TEXT);
             CREATE TABLE IF NOT EXISTS dim_document_kind (document_kind TEXT PRIMARY KEY, label TEXT);
             CREATE INDEX IF NOT EXISTS idx_case_date ON fact_mo_case(visit_date);
+            CREATE INDEX IF NOT EXISTS idx_case_diagnosis_text ON fact_mo_case(diagnosis_text);
+            CREATE INDEX IF NOT EXISTS idx_fact_mo_case_visit ON fact_mo_case(visit_id);
             CREATE INDEX IF NOT EXISTS idx_case_org ON fact_mo_case(filial, specialty);
             CREATE INDEX IF NOT EXISTS idx_case_doctor ON fact_mo_case(doctor_key, visit_date);
             CREATE INDEX IF NOT EXISTS idx_case_date_document ON fact_mo_case(visit_date, document_kind);

@@ -2656,8 +2656,8 @@
       var emptyTitle = emptyState.title || "По выбранным фильтрам случаев нет.";
       var emptyHint = emptyState.hint || "Измените фильтры или расширьте период.";
       if (!rows.length && searchRaw && !looksLikeIcd(searchRaw) && !/^\d{4,}$/.test(searchRaw)) {
-        emptyTitle = emptyState.title || "Код не найден";
-        emptyHint = emptyState.hint || "Выберите МКБ из подсказки или вставьте I10. Поиск ищет врача, код МКБ и visit_id, не название болезни.";
+        emptyTitle = emptyState.title || "Диагноз не найден";
+        emptyHint = emptyState.hint || "Поиск смотрит клинический диагноз склада, врача, код МКБ и visit_id. Уточните подстроку или выберите подсказку.";
       }
       var pageHost = queue ? $("page-queue") : $("page-documents");
       var banner = pageHost ? pageHost.querySelector(".day-table-banner") : null;
@@ -6461,25 +6461,52 @@
           source.push({ label: item.label, type: FILTER_LABELS[key], value: item.value });
         });
       });
-      term = term.trim().toLowerCase();
-      var matches = term ? source.filter(function (item) { return item.label.toLowerCase().indexOf(term) >= 0; }).slice(0, 7) : [];
+      term = term.trim();
+      var termLc = term.toLowerCase();
+      var matches = termLc ? source.filter(function (item) { return item.label.toLowerCase().indexOf(termLc) >= 0; }).slice(0, 4) : [];
       var box = $("search-suggestions");
-      box.innerHTML = matches.map(function (item, index) {
-        return '<button class="suggestion" type="button" role="option" data-suggestion="' + esc(item.value) +
-          '" aria-selected="' + (index === 0 ? "true" : "false") + '"><b>' + esc(item.label) +
-          "</b><small> " + esc(item.type) + "</small></button>";
-      }).join("");
-      box.hidden = !matches.length;
-      $("case-search").setAttribute("aria-expanded", matches.length ? "true" : "false");
-      box.querySelectorAll("[data-suggestion]").forEach(function (button) {
-        button.addEventListener("click", function () {
-          $("case-search").value = button.getAttribute("data-suggestion");
-          box.hidden = true;
-          $("case-search").setAttribute("aria-expanded", "false");
-          updateFilterSummary();
-          $("case-search-submit").focus();
+      var suggestSeq = (renderSearchSuggestions.seq = (renderSearchSuggestions.seq || 0) + 1);
+      function paint(extra) {
+        extra = extra || [];
+        var seen = {};
+        var all = [];
+        matches.concat(extra).forEach(function (item) {
+          var key = String(item.value || item.label || "").toLowerCase();
+          if (!key || seen[key]) return;
+          seen[key] = true;
+          all.push(item);
         });
-      });
+        all = all.slice(0, 8);
+        box.innerHTML = all.map(function (item, index) {
+          return '<button class="suggestion" type="button" role="option" data-suggestion="' + esc(item.value) +
+            '" aria-selected="' + (index === 0 ? "true" : "false") + '"><b>' + esc(item.label) +
+            "</b><small> " + esc(item.type) + "</small></button>";
+        }).join("");
+        box.hidden = !all.length;
+        $("case-search").setAttribute("aria-expanded", all.length ? "true" : "false");
+        box.querySelectorAll("[data-suggestion]").forEach(function (button) {
+          button.addEventListener("click", function () {
+            $("case-search").value = button.getAttribute("data-suggestion");
+            box.hidden = true;
+            $("case-search").setAttribute("aria-expanded", "false");
+            updateFilterSummary();
+            $("case-search-submit").click();
+          });
+        });
+      }
+      paint([]);
+      if (termLc.length < 2 || looksLikeIcd(term) || /^\d{4,}$/.test(term)) return;
+      var params = new URLSearchParams();
+      params.set("q", term);
+      if (state.dateFrom) params.set("date_from", state.dateFrom);
+      if (state.dateTo) params.set("date_to", state.dateTo);
+      rawRequest("/dx-suggest?" + params.toString(), "/dx-suggest?" + params.toString()).then(function (response) {
+        if (suggestSeq !== renderSearchSuggestions.seq || !response.ok) return null;
+        return response.json();
+      }).then(function (data) {
+        if (!data || suggestSeq !== renderSearchSuggestions.seq) return;
+        paint(data.items || []);
+      }).catch(function () {});
     }
     function setFilterDraftValue(key, value) {
       var filterPanel = $("filters-panel");
