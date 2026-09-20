@@ -145,6 +145,9 @@ button, a, select, input { outline-offset: 3px; }
   flex-wrap: wrap;
   gap: 8px;
   align-items: end;
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
 }
 .period-presets {
   display: flex;
@@ -162,9 +165,10 @@ button, a, select, input { outline-offset: 3px; }
   width: 1px;
   height: 1px;
   overflow: hidden;
-  clip: rect(0 0 0 0);
+  clip: rect(0, 0, 0, 0);
 }
-.period-strip .filter { min-width: 132px; }
+.period-strip .filter { min-width: 0; flex: 1 1 124px; max-width: 180px; }
+.period-strip .filter .control { width: 100%; min-width: 0; }
 .chip.chip-reset {
   cursor: pointer;
   border-style: dashed;
@@ -1202,6 +1206,7 @@ kbd {
   .nav-more-list .nav-text { display: inline; }
   .context-bar { padding: 10px; }
   .context-top { grid-template-columns: 1fr; align-items: stretch; }
+  .period-strip .filter { max-width: none; flex: 1 1 calc(50% - 8px); }
   .case-search-form { grid-template-columns: minmax(0, 1fr) auto; }
   .case-search-form .search-field,
   .case-search-form .control { min-width: 0; }
