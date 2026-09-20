@@ -1,7 +1,7 @@
 import { test, expect, type Page } from '@playwright/test';
 
 // Real MO HTML/assets/CSP; synthetic API only. No clinical records or model calls.
-const pages = ['yesterday', 'overview', 'queue', 'documents', 'doctors', 'medications', 'labs', 'reports', 'kp-sync', 'rceth-sync', 'settings'];
+const pages = ['yesterday', 'queue', 'documents', 'doctors', 'medications', 'labs', 'reports', 'kp-sync', 'rceth-sync', 'settings'];
 
 async function mockMo(page: Page, failFamily = false) {
   const requests: URL[] = [];
@@ -49,6 +49,15 @@ for (const name of pages) {
     expect(state.problems).toEqual([]);
   });
 }
+
+test('МО: page=overview открывает Обзор, не дубль Период', async ({ page }) => {
+  const state = await mockMo(page);
+  const response = await page.goto('/methodist/mo?page=overview');
+  expect(response?.status()).toBe(200);
+  await expect(page.locator('#page-yesterday')).toBeVisible();
+  await expect(page.locator('#page-overview')).toBeHidden();
+  expect(state.problems).toEqual([]);
+});
 
 test('МО: ECharts показывает числа API и период передаётся в запрос', async ({ page }) => {
   const state = await mockMo(page);
