@@ -778,6 +778,29 @@ def _sql_like_contains(value: str) -> str:
     return f"%{escaped}%"
 
 
+def _sql_overall_grade_expr(alias: str = "c") -> str:
+    """Тот же порядок правил, что attach_overall_grade для строки склада.
+
+    safety_band в списке = important только если attention_primary = safety
+    (критичный band из compute_mo_overall_grade здесь не приходит).
+    """
+    a = alias
+    return (
+        "CASE"
+        f" WHEN lower(COALESCE({a}.attention_primary, '')) = 'safety' THEN 'important'"
+        f" WHEN lower(COALESCE({a}.zone2a_band, '')) = 'bad' THEN 'important'"
+        f" WHEN lower(COALESCE({a}.zone2b_band, '')) = 'bad'"
+        f"  AND lower(COALESCE({a}.zone2b_kp_status, '')) = 'matched' THEN 'poor'"
+        f" WHEN lower(COALESCE({a}.zone1_band, '')) = 'bad' THEN 'poor'"
+        f" WHEN lower(COALESCE({a}.zone2a_band, '')) = 'weak'"
+        f"  OR lower(COALESCE({a}.zone1_band, '')) = 'weak' THEN 'fair'"
+        f" WHEN lower(COALESCE({a}.zone1_band, '')) = 'ok'"
+        f"  AND lower(COALESCE({a}.zone2a_band, '')) = 'ok'"
+        f"  AND lower(COALESCE({a}.zone2b_band, '')) IN ('ok', 'na') THEN 'good'"
+        " ELSE 'fair' END"
+    )
+
+
 def _warehouse_text_q_clause(q_text: str) -> tuple[str, list[str]]:
     like = _sql_like_contains(q_text)
     clause = (
@@ -884,6 +907,12 @@ def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
     if history_tier:
         where.append("c.history_tier = ?")
         values.append(history_tier)
+    grades = [g.strip().lower() for g in _values(params.get("overall_grade")) if str(g).strip()]
+    if grades:
+        expr = _sql_overall_grade_expr("c")
+        marks = ",".join("?" for _ in grades)
+        where.append(f"({expr}) IN ({marks})")
+        values.extend(grades)
     return where, values
 
 
@@ -903,7 +932,6 @@ def _cases_sql_pageable(params: dict[str, Any]) -> bool:
         "icd_visit_status",
         "min_severity",
         "worst_severity",
-        "overall_grade",
         "queue_band",
         "reg55_point",
         "reg55_band",
