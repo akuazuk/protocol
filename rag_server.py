@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-20-125739Z-mo-w4-catalog-spark"
+BUILD_VERSION = "2026-09-20-142257Z-mo-w5-dx-text"
 
 
 def _app_version() -> str:
@@ -11883,6 +11883,20 @@ def api_methodist_mo_cases(
         return build_cases(params)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/dx-suggest")
+def api_methodist_mo_dx_suggest(
+    request: "Request",
+    q: str = Query("", max_length=200),
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    period: str = Query("", max_length=16),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_dx_suggestions
+
+    return build_dx_suggestions(_mo_params(**locals()))
 
 
 @app.post("/api/methodist/mo/cases/bulk-action")

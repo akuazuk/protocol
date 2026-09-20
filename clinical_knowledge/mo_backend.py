@@ -419,8 +419,8 @@ def _describe_empty_state(*, total_records: int, filtered_records: int, params: 
         if q and not icd:
             return {
                 "reason_code": "search_text_miss",
-                "title": "Код не найден",
-                "hint": "Выберите МКБ из подсказки или вставьте код вроде I10. Поиск ищет врача, код МКБ и visit_id, не название болезни.",
+                "title": "Диагноз не найден",
+                "hint": "Поиск смотрит клинический диагноз склада, врача, код МКБ и visit_id. Уточните подстроку или выберите подсказку.",
             }
         applied = [k for k, v in params.items() if v not in (None, "", [], False)]
         return {
@@ -753,6 +753,32 @@ def _in_clause(column: str, values: list[str]) -> tuple[str, list[str]]:
     return f"{column} IN ({marks})", list(values)
 
 
+def _sql_like_contains(value: str) -> str:
+    """Подстрока для SQLite LIKE с ESCAPE '\\'."""
+    escaped = (
+        str(value or "")
+        .replace("\\", "\\\\")
+        .replace("%", "\\%")
+        .replace("_", "\\_")
+    )
+    return f"%{escaped}%"
+
+
+def _warehouse_text_q_clause(q_text: str) -> tuple[str, list[str]]:
+    like = _sql_like_contains(q_text)
+    clause = (
+        "("
+        "LOWER(COALESCE(c.diagnosis_text, '')) LIKE LOWER(?) ESCAPE '\\' "
+        "OR LOWER(COALESCE(c.diagnosis_code, '')) LIKE LOWER(?) ESCAPE '\\' "
+        "OR LOWER(COALESCE(d.doctor_fio, '')) LIKE LOWER(?) ESCAPE '\\' "
+        "OR LOWER(COALESCE(dx.diagnosis_label, '')) LIKE LOWER(?) ESCAPE '\\' "
+        "OR CAST(c.visit_id AS TEXT) LIKE ? ESCAPE '\\' "
+        "OR CAST(c.mis_id AS TEXT) LIKE ? ESCAPE '\\'"
+        ")"
+    )
+    return clause, [like, like, like, like, like, like]
+
+
 def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
     where: list[str] = []
     values: list[Any] = []
@@ -773,6 +799,11 @@ def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
         )
         values.extend([identity["q_id"], identity["q_id"], patient_key_for(identity["q_id"])])
     else:
+        q_text = str(params.get("q") or "").strip()
+        if q_text:
+            q_clause, q_values = _warehouse_text_q_clause(q_text)
+            where.append(q_clause)
+            values.extend(q_values)
         if params.get("date_from"):
             where.append("c.visit_date >= ?")
             values.append(str(params["date_from"])[:10])
@@ -851,7 +882,6 @@ def _cases_sql_pageable(params: dict[str, Any]) -> bool:
     if sort_by not in {"", "date"}:
         return False
     for key in (
-        "q",
         "finding_codes",
         "finding_family",
         "crm_statuses",
@@ -879,6 +909,7 @@ def _warehouse_count(params: dict[str, Any]) -> int:
     sql = """
         SELECT COUNT(*) FROM fact_mo_case c
         LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
     """
     if where:
         sql += " WHERE " + " AND ".join(where)
@@ -944,6 +975,7 @@ def _warehouse_records(
               SELECT c.mis_id
               FROM fact_mo_case c
               LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+              LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
               {where_sql}
               ORDER BY c.visit_date DESC, c.mis_id DESC
               LIMIT ? OFFSET ?
@@ -968,7 +1000,9 @@ def _warehouse_records(
         score = item.get("overall_pct")
         diagnosis_code = str(item.get("diagnosis_code") or "").strip()
         diagnosis_label = _safe_diagnosis_text(item.get("diagnosis_label"))
+        diagnosis_text = _safe_diagnosis_text(item.get("diagnosis_text"))
         diagnosis_short = _safe_diagnosis_text(
+            diagnosis_text,
             diagnosis_label,
             diagnosis_code if _is_valid_icd_code(diagnosis_code) else "",
         ) or "Не указан"
@@ -1003,6 +1037,7 @@ def _warehouse_records(
                 ),
                 "diagnosis_code": diagnosis_code_public,
                 "diagnosis_short": diagnosis_short,
+                "diagnosis_text": diagnosis_text,
                 "mkb_code_main": diagnosis_code_public,
                 "mkb_code_main_source": str(item.get("mkb_code_main_source") or ""),
                 "mkb_code_main_slot": str(item.get("mkb_code_main_slot") or ""),
@@ -1384,7 +1419,7 @@ def _organization_groups(
 
 
 def _public_row(rec: dict[str, Any]) -> dict[str, Any]:
-    blocked = {"patient_id", "source_path", "_month"}
+    blocked = {"patient_id", "source_path", "_month", "diagnosis_text"}
     return {k: v for k, v in rec.items() if k not in blocked and not k.startswith("_")}
 
 
@@ -1443,6 +1478,70 @@ def is_case_score_eligible(
     if not kinds:
         kinds.append(str((record or {}).get("document_kind") or "").strip())
     return any(is_scored_document_kind(k) for k in kinds if k)
+
+
+def build_dx_suggestions(params: dict[str, Any]) -> dict[str, Any]:
+    """Typeahead по клиническому диагнозу склада, не по МИС."""
+    q_text = str(params.get("q") or "").strip()
+    if len(q_text) < 2:
+        return {"ok": True, "items": []}
+    params = _apply_request_period(dict(params or {}))
+    like = _sql_like_contains(q_text)
+    date_from = str(params.get("date_from") or "")[:10]
+    date_to = str(params.get("date_to") or "")[:10]
+    date_sql = ""
+    chunk: list[Any] = [like]
+    if date_from and date_to:
+        date_sql = "AND c.visit_date >= ? AND c.visit_date <= ?"
+        chunk.extend([date_from, date_to])
+    sql_values: list[Any] = list(chunk) + list(chunk)
+    sql = f"""
+        SELECT label, SUM(n) AS n FROM (
+          SELECT TRIM(c.diagnosis_text) AS label, COUNT(*) AS n
+          FROM fact_mo_case c
+          WHERE TRIM(COALESCE(c.diagnosis_text, '')) != ''
+            AND LOWER(c.diagnosis_text) LIKE LOWER(?) ESCAPE '\\'
+            {date_sql}
+          GROUP BY TRIM(c.diagnosis_text)
+          UNION ALL
+          SELECT TRIM(dx.diagnosis_label) AS label, COUNT(*) AS n
+          FROM fact_mo_case c
+          JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+          WHERE TRIM(COALESCE(dx.diagnosis_label, '')) != ''
+            AND LOWER(dx.diagnosis_label) LIKE LOWER(?) ESCAPE '\\'
+            {date_sql}
+          GROUP BY TRIM(dx.diagnosis_label)
+        ) AS hits
+        WHERE label IS NOT NULL AND TRIM(label) != ''
+        GROUP BY label
+        ORDER BY n DESC
+        LIMIT 8
+    """
+    items: list[dict[str, Any]] = []
+    try:
+        if _backend_source() != "warehouse":
+            return {"ok": True, "items": []}
+        with closing(_read_connection()) as conn:
+            rows = conn.execute(sql, sql_values).fetchall()
+    except Exception:  # noqa: BLE001
+        return {"ok": True, "items": []}
+    seen: set[str] = set()
+    for row in rows:
+        label = _safe_diagnosis_text(row[0] if not isinstance(row, sqlite3.Row) else row["label"])
+        if not label:
+            continue
+        compact = " ".join(label.split())
+        if len(compact) > 80:
+            compact = compact[:77].rstrip() + "…"
+        key = compact.lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        n_raw = row[1] if not isinstance(row, sqlite3.Row) else row["n"]
+        items.append({"label": compact, "type": "Диагноз", "value": compact, "n": int(n_raw or 0)})
+        if len(items) >= 8:
+            break
+    return {"ok": True, "items": items}
 
 
 def build_cases(params: dict[str, Any]) -> dict[str, Any]:

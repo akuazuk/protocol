@@ -724,7 +724,9 @@ def _match_filters(rec: dict[str, Any], flt: dict[str, Any]) -> bool:
         hay = " ".join(
             str(rec.get(key) or "")
             for key in (
+                "diagnosis_text",
                 "diagnosis_short",
+                "diagnosis_label",
                 "doctor_fio",
                 "mkb_code_main",
                 "visit_id",
