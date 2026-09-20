@@ -100,6 +100,10 @@ def ensure_lab_indexes(conn: sqlite3.Connection) -> None:
 def seed_catalog_from_cases(conn: sqlite3.Connection) -> int:
     """Визиты склада сразу видны как «В аналитике», без ночного МИС-прогона."""
     ensure_schema(conn)
+    if conn.execute(
+        "SELECT 1 FROM fact_mis_catalog_meta WHERE key = 'seeded_from_cases'"
+    ).fetchone():
+        return 0
     tables = _table_names(conn)
     if "fact_mo_case" not in tables:
         return 0
@@ -139,6 +143,11 @@ def seed_catalog_from_cases(conn: sqlite3.Connection) -> int:
     )
     conn.commit()
     after = conn.execute("SELECT COUNT(*) FROM fact_mis_catalog").fetchone()[0]
+    conn.execute(
+        "INSERT OR REPLACE INTO fact_mis_catalog_meta(key, value) VALUES (?, ?)",
+        ("seeded_from_cases", _utc_now()),
+    )
+    conn.commit()
     return int(after) - int(before)
 
 
@@ -296,7 +305,7 @@ def patient_visit_spark(
     if not patient_key:
         return []
     rows = conn.execute(
-        """
+        f"""
         SELECT visit_id, visit_date,
                CASE WHEN {_in_analytics_sql(conn)} THEN 1 ELSE 0 END AS in_analytics
         FROM fact_mis_catalog

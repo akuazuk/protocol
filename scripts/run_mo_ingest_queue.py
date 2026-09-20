@@ -14,12 +14,27 @@ import os
 import subprocess
 import sys
 import time
+import types
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 if str(ROOT) not in sys.path:
     sys.path.insert(0, str(ROOT))
 
+
+def _allow_ck_without_pydantic() -> None:
+    """venv-mis has PyMySQL, not pydantic; skip clinical_knowledge/__init__.py."""
+    try:
+        import pydantic  # noqa: F401
+        return
+    except ImportError:
+        pass
+    pkg = types.ModuleType("clinical_knowledge")
+    pkg.__path__ = [str(ROOT / "clinical_knowledge")]  # type: ignore[attr-defined]
+    sys.modules["clinical_knowledge"] = pkg
+
+
+_allow_ck_without_pydantic()
 from clinical_knowledge.mo_mis_catalog import (  # noqa: E402
     mark_job_done_from_warehouse,
     next_queued_job,

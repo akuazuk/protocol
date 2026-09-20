@@ -71,13 +71,36 @@ def test_search_visits_badges_and_typed_id(tmp_path: Path) -> None:
     assert "visit_id" in missing["empty_reason"]
 
 
+def test_patient_spark_uses_analytics_flag(tmp_path: Path) -> None:
+    warehouse = _warehouse(tmp_path)
+    conn = sqlite3.connect(warehouse)
+    conn.execute(
+        """
+        CREATE TABLE fact_mo_case (
+          mis_id TEXT PRIMARY KEY, visit_id TEXT, visit_date TEXT NOT NULL,
+          specialty TEXT, filial TEXT, patient_key TEXT, diagnosis_text TEXT
+        )
+        """
+    )
+    conn.execute("INSERT INTO fact_mo_case VALUES ('c1','30001','2026-09-18','','','pk1','отит')")
+    conn.commit()
+    conn.close()
+    payload = search_visits(q="отит", date_from="2026-09-01", date_to="2026-09-30", warehouse=warehouse)
+    spark = payload["items"][0]["patient_spark"]
+    assert spark[0]["visit_id"] == "30001"
+    assert spark[0]["in_analytics"] is True
+
+
 def test_search_does_not_touch_result() -> None:
     source = (ROOT / "clinical_knowledge/mo_mis_catalog.py").read_text(encoding="utf-8")
     ingest = (ROOT / "scripts/ingest_mo_mis_catalog.py").read_text(encoding="utf-8")
+    queue = (ROOT / "scripts/run_mo_ingest_queue.py").read_text(encoding="utf-8")
     assert "FROM mis_protocol" not in source
     assert "FROM mis_protocol" not in ingest
     block = ingest.split("SELECT_SQL =")[1].split('"""', 2)[1]
     assert "result" not in block.lower().split()
+    assert "_allow_ck_without_pydantic" in ingest
+    assert "_allow_ck_without_pydantic" in queue
 
 
 def test_ingest_queue_and_process(tmp_path: Path) -> None:
