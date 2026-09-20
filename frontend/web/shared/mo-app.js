@@ -1419,7 +1419,6 @@
     }
     function switchPage(page, push) {
       if (state.openCaseId && push !== false) closeDrawer(true);
-      if (page === "overview") page = "yesterday";
       if (REMOVED_PAGES[page]) page = (page === "access-log" || page === "data-quality") ? "reports" : "documents";
       if (!PAGE_TITLES[page]) page = "yesterday";
       if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
@@ -4827,6 +4826,9 @@
         : "Окно выбранного периода.";
       $("yesterday-date").textContent = windowText;
       if ($("title-yesterday")) $("title-yesterday").textContent = "Обзор";
+      if (resolved.fallback && $("yesterday-freshness")) {
+        $("yesterday-freshness").textContent = "Показан последний день с данными: " + day;
+      }
       var dashPromise = request("/score-dashboard?" + query().toString(), "/score-dashboard");
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (await handleHttpAuth(response)) return;
@@ -4842,6 +4844,9 @@
             if (through2 && through2 !== day) {
               resolved = { day: through2, fallback: true, preferred: day };
               day = through2;
+              if ($("yesterday-freshness")) {
+                $("yesterday-freshness").textContent = "Показан последний день с данными: " + day;
+              }
               response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
               if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
               data = await response.json();

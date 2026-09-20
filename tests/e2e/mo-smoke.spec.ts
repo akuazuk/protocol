@@ -56,7 +56,7 @@ test('МО: ECharts показывает числа API и период пере
   const rings = page.locator('#yesterday-score-rings .score-ring-chart');
   await expect(rings).toHaveCount(4);
   await expect(page.locator('#yesterday-score-rings canvas')).toHaveCount(4);
-  await expect(page.locator('#yesterday-score-rings .score-ring-meta')).toHaveText(['78%', '78%', '78%', '82%']);
+  await expect(page.locator('#yesterday-score-rings .score-ring-meta')).toHaveText(['в норме', 'в норме', 'в норме', '82%']);
   const values = await rings.evaluateAll(nodes => nodes.map(node => {
     const charts = (window as unknown as { echarts: { getInstanceByDom(el: Element): { getOption(): { series: { data: { value: number }[] }[] } } } }).echarts;
     return charts.getInstanceByDom(node).getOption().series[0].data.map(item => item.value);

@@ -11,7 +11,7 @@ def test_overview_tiles_read_score_dashboard_window() -> None:
     assert '"то же окно, не рабочий день"' in APP
     assert 'source, "рабочий день"' not in APP
     assert "Окно фильтров:" in APP
-    assert 'page === "overview") page = "yesterday"' in APP
+    assert "Показан последний день с данными" in APP
 
 
 def test_rings_use_scale_words_and_dynamics_show_n() -> None:

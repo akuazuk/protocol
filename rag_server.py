@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-20-102745Z-mo-workspace-w3"
+BUILD_VERSION = "2026-09-20-104809Z-mo-workspace-w3"
 
 
 def _app_version() -> str:
