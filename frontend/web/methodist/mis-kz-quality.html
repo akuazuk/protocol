@@ -59,8 +59,8 @@
             </div>
             <label class="filter" id="date-from-wrap"><span>С даты</span><input class="control" id="date-from" type="date"></label>
             <label class="filter" id="date-to-wrap"><span>По дату</span><input class="control" id="date-to" type="date"></label>
-            <label class="filter sr-only period-select-legacy"><span>Период</span>
-              <select class="control" id="period">
+            <label class="filter sr-only period-select-legacy" aria-hidden="true"><span>Период</span>
+              <select class="control" id="period" tabindex="-1">
                 <option value="yesterday">Вчера</option>
                 <option value="7d">Последние 7 дней</option>
                 <option value="month" selected>Текущий месяц</option>
@@ -415,7 +415,7 @@
           <button class="button secondary compact" type="button" id="drawer-pdf" hidden>МО в PDF</button>
         </div>
       </div>
-      <button class="button secondary icon" id="drawer-close" aria-label="Закрыть разбор">×</button>
+      <button class="button secondary compact" type="button" id="drawer-close">К списку</button>
     </header>
     <div class="drawer-body" id="drawer-body" tabindex="0"></div>
   </aside>

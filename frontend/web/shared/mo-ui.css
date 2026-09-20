@@ -838,16 +838,23 @@ tr[data-case].is-open {
   box-shadow: inset 3px 0 0 var(--accent);
 }
 .case-inspector-pending { padding: 24px 18px; }
-@media (min-width: 1440px) {
-  body.is-inspecting .app {
-    margin-right: min(48vw, 680px);
-  }
-  body.is-inspecting .drawer-backdrop { display: none; }
-  body.is-inspecting .drawer.case-workspace {
-    left: auto;
-    width: min(48vw, 680px);
-    box-shadow: -12px 0 32px rgba(5, 34, 29, .18);
-  }
+body.is-inspecting .workspace,
+body.is-inspecting .context-bar {
+  display: none !important;
+}
+body.is-inspecting .drawer-backdrop { display: none; }
+body.is-inspecting .drawer.case-workspace {
+  left: 252px;
+  right: 0;
+  width: auto;
+  max-width: none;
+  box-shadow: none;
+}
+@media (max-width: 1120px) {
+  body.is-inspecting .drawer.case-workspace { left: 108px; }
+}
+@media (max-width: 720px) {
+  body.is-inspecting .drawer.case-workspace { left: 0; }
 }
 .drawer {
   position: fixed; z-index: 80; top: 0; right: 0; width: min(760px, 100%); height: 100vh;
@@ -857,6 +864,13 @@ tr[data-case].is-open {
 .drawer.case-workspace {
   left: 0; width: 100%; max-width: none; box-shadow: none;
 }
+@media (min-width: 1280px) {
+  body.is-inspecting .case-workspace-clinical,
+  body.is-inspecting .clinical-mo-block {
+    min-width: 600px;
+  }
+}
+.clinical-mo-block { max-width: 800px; }
 .drawer.case-workspace .drawer-body {
   overflow: hidden;
   display: flex;
@@ -1652,10 +1666,10 @@ tr.reg55-row--measures > td { background: rgba(194, 120, 3, 0.05); }
   }
   .drawer-head > div { min-width: 0; }
   .drawer-head #drawer-close {
-    width: 32px;
-    min-width: 32px;
+    min-width: 0;
     height: 32px;
-    padding: 0;
+    padding: 0 8px;
+    font-size: 12px;
   }
   .drawer-nav-position {
     width: 100%;

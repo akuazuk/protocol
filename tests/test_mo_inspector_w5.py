@@ -1,4 +1,4 @@
-"""W5: inspector paints chrome from the row and docks as split view at 1440."""
+"""Inspector paints chrome from the row; W2 uses a full-page workspace."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -13,21 +13,22 @@ def test_inspector_paints_header_before_detail() -> None:
     assert "function markOpenCaseRow(id)" in APP
     assert "function setInspecting(on)" in APP
     assert "function wideInspector()" in APP
-    assert 'paintCaseChrome(state.caseNavRows[id]' in APP
+    assert "function caseIdFromLocation(q)" in APP
+    assert "paintCaseChrome(state.caseNavRows[id]" in APP
     assert "Загружаем текст МО…" in APP
     assert '"пациент " + (item.patientId' not in APP
     assert "state.caseNavRows" in APP
 
 
-def test_inspector_split_view_css() -> None:
-    assert "body.is-inspecting .app" in CSS
-    assert "min-width: 1440px" in CSS
+def test_inspector_full_page_css() -> None:
+    assert "body.is-inspecting .workspace" in CSS
     assert "tr[data-case].is-open" in CSS
     assert ".case-inspector-pending" in CSS
-    assert 'matchMedia("(min-width: 1440px)")' in APP
+    assert "min(48vw, 680px)" not in CSS
+    assert "wideInspector() {\n      return false;" in APP
 
 
 if __name__ == "__main__":
     test_inspector_paints_header_before_detail()
-    test_inspector_split_view_css()
+    test_inspector_full_page_css()
     print("ok")
