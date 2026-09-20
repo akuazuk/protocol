@@ -3,7 +3,8 @@
 Статус: **active**
 Дата: 2026-09-20
 Владелец: методист / руководитель качества
-Прод, с которого снята карта: `https://protocol.kravira.by/methodist/mo`, роль admin, склад сентябрь 2026 = **8062** клинических МО, `BUILD_VERSION` `2026-09-19-192135Z-mo-table-polish`, SHA `58c956d4` (волны W0-W7 уже в проде)
+Прод, с которого снята карта: `https://protocol.kravira.by/methodist/mo`, роль admin, склад сентябрь 2026 = **8062** клинических МО.
+W1 в проде 2026-09-20: SHA `b3a37e3b`, `BUILD_VERSION` `2026-09-20-092349Z-mo-workspace-w1`. Исходный аудит: `58c956d4` / `2026-09-19-192135Z-mo-table-polish`.
 Канон зон и языка: `2026-08-08-mo-analytics-ui-target-v2.md` (не отменяем)
 Предшественник: `2026-09-19-mo-analytics-ux-rebuild-v1.md` - волны закрыли ложь API, не закрыли модель фильтров и разбор
 
@@ -302,7 +303,7 @@ W0-W7 это умеют частично: `overall_grade` и `icd=` уже ре�
 
 Не начинать W3 (красота), пока W1 не на проде: иначе стильный каркас на тех же лживых дате/диагнозе. W4 (Поиск МИС) не смешивать с W1: разные знаменатели.
 
-### Волна 1. Одна выборка (блокер)
+### Волна 1. Одна выборка (блокер) - в проде `#262`
 
 Файлы: `mo-app.js` query/chips/filters-panel, `mis-kz-quality.html` шапка, `rag_server.py` Query date_from, `mo_backend` WHERE.
 
@@ -330,6 +331,8 @@ W0-W7 это умеют частично: `overall_grade` и `icd=` уже ре�
 5. Не логировать PHI.
 
 Приёмка: на 1280 и 1440 текст МО читается колонкой ≥ 600 px; Back возвращает к тем же фильтрам.
+
+**Реализация (ветка `cursor/mo-workspace-w2-pc1`):** список прячется CSS, split 680 px снят, первый экран как §9, Back через `?open=`. Pathname `/methodist/mo/cases/{id}` клиент уже читает, но FastAPI-роут **W2b**: `rag_server.py` занят #186/#113, refresh `/cases/123` пока 404. Скрытый `#period` убран из a11y в том же PR (хвост W1).
 
 ### Волна 3. Обзор честный + визуал графиков
 
@@ -441,11 +444,23 @@ W0-W7 это умеют частично: `overall_grade` и `icd=` уже ре�
 
 ## 12. Одна следующая команда
 
+W1 в проде. W2 - отдельный PR. Дальше:
+
 ```bash
-scripts/ops/git_task_start.sh mo-workspace-w1 --pc=1 \
-  --branch=cursor/mo-workspace-w1-pc1
+scripts/ops/git_task_start.sh mo-workspace-w3 --pc=1 \
+  --branch=cursor/mo-workspace-w3-pc1
 ```
 
-Только W1: календарь в шапке, date_from всегда, снять col-filters склада, одно «Сбросить». Не рисовать полный разбор в этом PR.
+Только W3: зерно Обзора = все плитки и кольца, клик дня в динамике ставит календарь. Не МИС.
 
 Деплой: `SYNC_PROTOCOL_CORPUS=0 bash deploy/gcp-app/deploy_to_gce.sh` из worktree с `.env`, HEAD = `origin/main`.
+
+---
+
+## 13. Замечено при выполнении W1-W2 (добавить, не отменять волны)
+
+- **W2b.** FastAPI `GET /methodist/mo/cases/{case_id}` -> тот же HTML, что `/methodist/mo`. Сейчас клиент держит `?open=` из-за занятости `rag_server.py` (#186/#113). Pathname уже парсится.
+- **W1 a11y.** Скрытый `#period` уходил в дерево доступности (`clip` + combobox). Закрыто в W2: `aria-hidden` + `tabindex=-1`.
+- **Facet «Применить»** внутри меню фильтра - не второй warehouse Apply; не убирать в W6 как «ещё одно Применить».
+- **W3 не ждать W2b.** Кольца Обзора на проде после W1 всё ещё показывают день при зерне Месяц.
+- Overflow шапки: `overflow-x: hidden` на `.workspace` и 720-override `.period-strip .filter` уже в W1. Не откатывать.
