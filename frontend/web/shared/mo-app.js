@@ -3186,6 +3186,96 @@
         '<span class="status ' + tone + '">' + esc(assessmentStatusLabel(status)) + "</span>" +
         '<span>' + esc(coverageLine) + "</span><span>" + esc(protocolLine) + "</span></div>";
     }
+    function renderCaseWhy(zones, assessment) {
+      zones = zones || {};
+      assessment = assessment || {};
+      var lines = [];
+      function add(text) {
+        text = String(text || "").replace(/\s+/g, " ").trim();
+        if (!text || lines.indexOf(text) >= 0 || lines.length >= 4) return;
+        lines.push(text);
+      }
+      var grade = zones.overall_grade || {};
+      add(grade.reason_ru);
+      [
+        ["zone1", "Оформление", "documentation"],
+        ["zone2a", "Диагноз", "diagnosis"],
+        ["zone2b", "План", "plan"]
+      ].forEach(function (pair) {
+        var band = String((zones[pair[0]] || {}).band || "na");
+        if (band === "ok" || band === "na") return;
+        (zones.criteria || []).some(function (item) {
+          if (String(item.zone || "") !== pair[2]) return false;
+          if (!(item.score === 0 || item.score === 0.5)) return false;
+          add(pair[1] + ": " + (item.reason || item.title || ""));
+          return true;
+        });
+      });
+      var kp = String((zones.zone2b || {}).kp_status || "");
+      var applicability = String((assessment.protocol || {}).applicability_status || "");
+      if (kp && kp !== "matched" && applicability !== "applicable" && applicability !== "matched") {
+        add("Протокол не подобран - план не штрафуем за несоответствие протоколу");
+      }
+      if (!lines.length) {
+        add("Краткого объяснения по зонам нет - смотрите карточки оценки.");
+      }
+      return '<section class="case-why" id="case-why">' +
+        "<h3>Почему так</h3>" +
+        '<p class="card-sub">Из официальных зон склада, не из черновика модели.</p>' +
+        "<ul>" + lines.map(function (line) {
+          return "<li>" + esc(line) + "</li>";
+        }).join("") + "</ul></section>";
+    }
+    function pickOpenEvidenceId(zones) {
+      zones = zones || {};
+      var safety = String((zones.safety || {}).band || "none");
+      var z2b = String((zones.zone2b || {}).band || "na");
+      var z2a = String((zones.zone2a || {}).band || "na");
+      var z1 = String((zones.zone1 || {}).band || "na");
+      if (safety && safety !== "none") return "evidence-meds";
+      if (z2b === "bad") return "evidence-criteria";
+      if (z2a === "bad" || z2a === "weak") return "evidence-hist";
+      if (z1 === "bad" || z1 === "weak") return "evidence-criteria";
+      return "evidence-hist";
+    }
+    function renderEvidencePanel(id, title, html, openId) {
+      return '<details class="case-evidence-panel" id="' + id + '"' +
+        (id === openId ? " open" : "") + "><summary>" + esc(title) + "</summary>" +
+        html + "</details>";
+    }
+    function renderEvidenceAccordion(data, history, zones) {
+      var openId = pickOpenEvidenceId(zones);
+      var reg55Payload = data.reg55 || {};
+      var reg55Pct = reg55Payload.reg55_section_pct;
+      if (reg55Pct == null) reg55Pct = reg55Payload.regulatory_compliance_pct;
+      return '<div class="case-evidence-accordion" id="case-evidence-accordion">' +
+        renderEvidencePanel(
+          "evidence-hist",
+          "История эпизода",
+          renderHistoryCompact(history, data.history_assessment),
+          openId
+        ) +
+        renderEvidencePanel("evidence-lab", "Анализы", renderLabBundle(data.lab), openId) +
+        renderEvidencePanel(
+          "evidence-meds",
+          "Назначения",
+          renderMedicationNormativeCards(data.medication_normative_cards),
+          openId
+        ) +
+        renderEvidencePanel(
+          "evidence-reg55",
+          "№55",
+          renderReg55(reg55Payload, reg55Pct),
+          openId
+        ) +
+        renderEvidencePanel(
+          "evidence-criteria",
+          "Критерии методики",
+          renderZonesCriteriaDetails(zones) || '<p class="empty">Таблицы критериев нет.</p>',
+          openId
+        ) +
+        "</div>";
+    }
     function evidenceCardModels(findings) {
       var seen = {};
       return (findings || []).filter(function (finding, index) {
@@ -3197,6 +3287,9 @@
       });
     }
     function renderFindingsCompact(findings, crm, llmJudge, assessment) {
+      findings = (findings || []).filter(function (finding) {
+        return !(finding.shadow || finding.is_shadow);
+      });
       var filters = [
         ["all", "Все"], ["zone1", "Оформление"], ["zone2a", "Диагноз"],
         ["zone2b", "План"], ["safety", "Риск"]
@@ -3245,15 +3338,7 @@
           (refs.length ? '<p>Источники: ' + esc(refs.join(", ")) + "</p>" : "") + "</details>" +
           '</article>';
       }).join("") : '<p class="empty">Замечаний нет.</p>';
-      var llmLine = "";
-      if (llmJudge && llmJudge.available) {
-        var k = llmJudge.kpis || {};
-        llmLine = '<p class="card-sub llm-inline">ИИ: оформление - ' +
-          esc(statusLabel((k.completeness || {}).verdict) || "нет") +
-          '; диагноз - ' + esc(statusLabel((k.diagnosis || {}).verdict) || "нет") +
-          '; план - ' + esc(statusLabel((k.recommendations || {}).verdict) || "нет") + '</p>';
-      }
-      return '<div class="detail-block"><h3>Что не так</h3>' + chips + llmLine +
+      return '<div class="detail-block"><h3>Что не так</h3>' + chips +
         '<div class="findings-compact-list">' + list + '</div></div>';
     }
     function renderHistoryContinuity(cont) {
@@ -3657,8 +3742,7 @@
       if (reg55Pct == null) reg55Pct = item.reg55;
       if (reg55Pct == null) reg55Pct = axes.regulatory;
       var reg55BandLabel = reg55Payload.reg55_band_label_ru || "";
-      var serviceHtml =
-        '<div class="detail-block">' + renderReg55(reg55Payload, reg55Pct) + "</div>" +
+      var serviceKpisHtml =
         '<details class="detail-block mo-secondary-details"><summary>Служебное: deep, покрытие, CRM</summary>' +
         '<div class="drawer-grid">' + kpi("Сводный индекс", score(data.deep_overall_pct != null ? data.deep_overall_pct : item.total), "deep") +
         kpi("Балл №55", score(reg55Pct), reg55BandLabel || "разд. V · 0/0.5/1") +
@@ -3670,6 +3754,9 @@
         '<div class="detail-block"><h3>История CRM</h3>' + (events.length ? events.map(function (event) {
           return notice(new Date(event.created_at).toLocaleString("ru-RU"), statusLabel(event.event_type) + " · " + (event.actor || "методист"), "good");
         }).join("") : '<p class="empty">Событий пока нет.</p>') + '</div></details>';
+      var serviceHtml =
+        '<div class="detail-block">' + renderReg55(reg55Payload, reg55Pct) + "</div>" +
+        serviceKpisHtml;
       if (useZonesUi) {
         $("drawer-body").innerHTML =
           renderCaseWorkspaceTabs() +
@@ -3681,17 +3768,17 @@
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
           renderAssessmentStatusStrip(assessment) +
-          renderFindingsCompact(findings, crm, llmJudge, assessment) +
-          '<details class="detail-block mo-secondary-details" id="case-more-details"><summary>Подробнее: история, протокол, №55</summary>' +
+          renderCaseWhy(zones, assessment) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
-          renderMedicationNormativeCards(data.medication_normative_cards) +
-          renderHistoryAndLabs(history, data.lab, data.history_assessment) +
-          renderZonesCriteriaDetails(zones) +
-          '<details class="detail-block mo-secondary-details"><summary>Дополнительные автоматические оценки</summary>' +
+          renderFindingsCompact(findings, crm, llmJudge, assessment) +
+          renderEvidenceAccordion(data, history, zones) +
+          '<details class="detail-block mo-secondary-details" id="case-more-details">' +
+          '<summary>Черновик модели - не меняет оценку склада</summary>' +
           renderFamilyScores(data) +
           renderShadowDxPlan(shadowDxPlan) +
           renderReviewBrief(data.review_brief, data.case_narrative) +
-          serviceHtml + "</details></details>" +
+          renderLlmActionJudge(llmJudge, sourceDocument, item) +
+          serviceKpisHtml + "</details>" +
           '</div>' +
           decisionHtml +
           '</div></div>';
@@ -4057,6 +4144,8 @@
             var drawer = $("drawer-body");
             var hero = drawer && drawer.querySelector(".zones-hero");
             if (hero) hero.outerHTML = renderZonesHero(suggest.zones);
+            var why = drawer && drawer.querySelector("#case-why");
+            if (why) why.outerHTML = renderCaseWhy(suggest.zones, nextAssessment);
             var criteria = drawer && drawer.querySelector(".zones-criteria-block");
             if (criteria) {
               var criteriaHtml = renderZonesCriteriaDetails(suggest.zones);

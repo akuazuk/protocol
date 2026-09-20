@@ -28,7 +28,11 @@ def test_open_case_is_shareable_and_back_closes() -> None:
 
 def test_first_screen_is_scores_findings_document_decision() -> None:
     assert ">Что не так<" in APP
-    assert "Подробнее: история, протокол, №55" in APP
+    assert "Почему так" in APP
+    assert 'id="case-why"' in APP
+    assert 'id="protocol-suggest-host"' in APP
+    assert "Черновик модели - не меняет оценку склада" in APP
     assert 'id="case-more-details"' in APP
     assert "renderFindingsCompact(findings, crm, llmJudge, assessment)" in APP
     assert "renderClinicalDocument(sourceDocument, findings)" in APP
+    assert "Подробнее: история, протокол, №55" not in APP.split("if (useZonesUi)", 1)[1].split("} else {", 1)[0]
