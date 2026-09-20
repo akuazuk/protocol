@@ -1337,18 +1337,34 @@ kbd {
   color: var(--accent);
   background: color-mix(in srgb, var(--accent) 8%, var(--surface-solid));
 }
-.assessment-status-strip {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 8px 12px;
+.case-why {
   margin: 0 0 12px;
   padding: 10px 12px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface-2);
-  color: var(--muted);
-  font-size: 12px;
+}
+.case-why h3 { margin: 0 0 4px; font-size: 14px; }
+.case-why ul { margin: 6px 0 0; padding-left: 1.2em; }
+.case-why li { margin: 4px 0; }
+.protocol-suggest-host {
+  margin: 0 0 12px;
+}
+.case-evidence-accordion {
+  display: grid;
+  gap: 8px;
+  margin: 0 0 12px;
+}
+.case-evidence-panel {
+  border: 1px solid var(--line);
+  border-radius: 10px;
+  background: var(--surface-solid);
+  padding: 0 10px 10px;
+}
+.case-evidence-panel > summary {
+  cursor: pointer;
+  font-weight: 600;
+  padding: 10px 2px;
 }
 .evidence-card {
   display: grid;
@@ -1503,7 +1519,7 @@ kbd {
   padding-top: 10px;
   border-top: 1px dashed var(--line, #d0d7de);
 }
-@media (max-width: 960px) {
+@media (max-width: 1099px) {
   .review-brief-zones { grid-template-columns: 1fr; }
   .zones-hero-grid { grid-template-columns: 1fr; }
   .case-workspace-grid--zones { grid-template-columns: 1fr; height: auto; }
