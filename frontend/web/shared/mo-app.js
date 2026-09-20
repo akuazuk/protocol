@@ -2982,6 +2982,28 @@
       }
       return viewer;
     }
+    function bindClinicalFocusButtons(root) {
+      if (!root) return;
+      var body = $("drawer-body") || root;
+      root.querySelectorAll("[data-focus-clinical]").forEach(function (button) {
+        if (button.getAttribute("data-bound-focus") === "1") return;
+        button.setAttribute("data-bound-focus", "1");
+        button.addEventListener("click", function () {
+          var field = button.getAttribute("data-focus-clinical");
+          activateCaseWorkspaceTab("document");
+          var target = body.querySelector('[data-clinical-field="' + field + '"]');
+          if (!target) {
+            showToast("Поле в тексте МО не найдено");
+            return;
+          }
+          body.querySelectorAll(".clinical-field").forEach(function (node) {
+            node.classList.remove("clinical-field--focus");
+          });
+          target.classList.add("clinical-field--focus");
+          target.scrollIntoView({ block: "center", behavior: "smooth" });
+        });
+      });
+    }
     function bindProtocolSuggestHost(host) {
       if (!host) return;
       var expand = host.querySelector("#protocol-suggest-expand");
@@ -2998,19 +3020,87 @@
           if (state.openCaseId) loadProtocolSuggestIntoCase(state.openCaseId);
         });
       });
+      bindClinicalFocusButtons(host);
+    }
+    function kpConcordanceStatusChip(status) {
+      if (status === "present") return '<span class="status good">есть в плане</span>';
+      if (status === "missing") return '<span class="status warn">нет в плане</span>';
+      if (status === "off_protocol") return '<span class="status review">вне протокола</span>';
+      return '<span class="status muted">не требуется</span>';
+    }
+    function kpConcordanceKindLabel(kind) {
+      if (kind === "exam") return "Обследование";
+      if (kind === "treatment") return "Лечение";
+      if (kind === "follow_up") return "Наблюдение";
+      if (kind === "off_protocol") return "Вне КП";
+      return kind || "Требование";
+    }
+    function renderKpConcordance(concordance) {
+      concordance = concordance || {};
+      var rows = concordance.rows || [];
+      var head = '<section class="kp-concordance" id="kp-concordance"><h3>План ↔ КП</h3>';
+      if (!concordance.available) {
+        return head + '<p class="empty">' +
+          esc(concordance.reason || "протокол не подобран - сверка плана с КП недоступна") +
+          "</p></section>";
+      }
+      if (!rows.length) {
+        return head + '<p class="empty">' +
+          esc(concordance.reason || "в карточке КП нет полей обследования / лечения / наблюдения") +
+          "</p></section>";
+      }
+      var counts = concordance.counts || {};
+      var meta = [
+        concordance.condition_name ? ("нозология: " + concordance.condition_name) : "",
+        counts.present ? ("есть " + counts.present) : "",
+        counts.missing ? ("нет " + counts.missing) : "",
+        counts.off_protocol ? ("вне КП " + counts.off_protocol) : ""
+      ].filter(Boolean).join(" · ");
+      var body = rows.map(function (row) {
+        var slot = row.slot || "exam_recommendations";
+        return '<tr class="kp-concordance-row">' +
+          "<td>" + esc(kpConcordanceKindLabel(row.kind)) + "</td>" +
+          "<td>" + esc(row.requirement || "") +
+          (row.kp_quote ? '<div class="card-sub">' + esc(String(row.kp_quote).slice(0, 140)) + "</div>" : "") +
+          "</td>" +
+          "<td>" + kpConcordanceStatusChip(row.status) + "</td>" +
+          "<td>" + esc(row.mo_quote || (row.status === "missing" ? "в слоте плана нет" : "")) + "</td>" +
+          '<td><button type="button" class="linkish" data-focus-clinical="' + esc(slot) +
+          '">к рекомендациям</button></td></tr>';
+      }).join("");
+      return head +
+        '<p class="card-sub">Требования из карточки протокола, не новый балл. ' + esc(meta) + "</p>" +
+        '<table class="kp-concordance-table"><thead><tr>' +
+        "<th>Вид</th><th>Требование КП</th><th>В МО</th><th>Цитата плана</th><th></th>" +
+        "</tr></thead><tbody>" + body + "</tbody></table></section>";
+    }
+    function paintKpConcordance(concordance) {
+      var html = renderKpConcordance(concordance);
+      var inner = html.replace(/^<section[^>]*>/, "").replace(/<\/section>$/, "");
+      var panel = document.getElementById("evidence-kp-plan");
+      if (panel) {
+        Array.from(panel.children).forEach(function (node) {
+          if (node.tagName !== "SUMMARY") node.remove();
+        });
+        panel.insertAdjacentHTML("beforeend", inner);
+        bindClinicalFocusButtons(panel);
+      }
     }
     function renderProtocolSuggest(suggest) {
       state.protocolSuggest = suggest || null;
+      var concordanceHtml = renderKpConcordance(suggest && suggest.kp_concordance);
       if (!suggest || !suggest.available) {
         return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
           '<p class="empty">' + esc((suggest && suggest.reason) || "Подбор протоколов пока недоступен для этого случая.") +
           '</p><p class="card-sub">Без подобранного протокола план не штрафуем за несоответствие протоколу.</p>' +
-          '<button type="button" class="button secondary compact" data-retry-protocol-suggest>Повторить подбор</button></div>';
+          '<button type="button" class="button secondary compact" data-retry-protocol-suggest>Повторить подбор</button></div>' +
+          concordanceHtml;
       }
       var list = suggest.items || [];
       if (!list.length) {
         return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-          '<p class="empty">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>';
+          '<p class="empty">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>' +
+          concordanceHtml;
       }
       var top = list[0];
       var topViewer = protocolViewerUrl(top);
@@ -3055,7 +3145,7 @@
       }).join("");
       return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
         '<p class="card-sub">«Открыть протокол» - навигация и PDF по страницам; «Поиск в каталоге» - если нужен другой КП. Без КП план не штрафуем.</p>' +
-        topBar + items + '</div>';
+        topBar + items + '</div>' + concordanceHtml;
     }
     function verdictSelect(id, current) {
       var options = [
@@ -3246,7 +3336,7 @@
       var z2a = String((zones.zone2a || {}).band || "na");
       var z1 = String((zones.zone1 || {}).band || "na");
       if (safety && safety !== "none") return "evidence-meds";
-      if (z2b === "bad") return "evidence-criteria";
+      if (z2b === "bad") return "evidence-kp-plan";
       if (z2a === "bad" || z2a === "weak") return "evidence-hist";
       if (z1 === "bad" || z1 === "weak") return "evidence-criteria";
       return "evidence-hist";
@@ -3262,6 +3352,15 @@
       var reg55Pct = reg55Payload.reg55_section_pct;
       if (reg55Pct == null) reg55Pct = reg55Payload.regulatory_compliance_pct;
       return '<div class="case-evidence-accordion" id="case-evidence-accordion">' +
+        renderEvidencePanel(
+          "evidence-kp-plan",
+          "План ↔ КП",
+          renderKpConcordance((data.protocol_suggest || {}).kp_concordance || {
+            available: false,
+            reason: "ждём подбор протокола"
+          }).replace(/^<section[^>]*>/, "").replace(/<\/section>$/, ""),
+          openId
+        ) +
         renderEvidencePanel(
           "evidence-hist",
           "История эпизода",
@@ -3961,22 +4060,7 @@
         });
       });
       bindZoneCardInteractions(body);
-      body.querySelectorAll("[data-focus-clinical]").forEach(function (button) {
-        button.addEventListener("click", function () {
-          var field = button.getAttribute("data-focus-clinical");
-          activateCaseWorkspaceTab("document");
-          var target = body.querySelector('[data-clinical-field="' + field + '"]');
-          if (!target) {
-            showToast("Поле в тексте МО не найдено");
-            return;
-          }
-          body.querySelectorAll(".clinical-field").forEach(function (node) {
-            node.classList.remove("clinical-field--focus");
-          });
-          target.classList.add("clinical-field--focus");
-          target.scrollIntoView({ block: "center", behavior: "smooth" });
-        });
-      });
+      bindClinicalFocusButtons(body);
       body.querySelectorAll(".patient-history-block [data-case]").forEach(function (button) {
         button.addEventListener("click", function (event) {
           event.preventDefault();
@@ -4152,6 +4236,7 @@
         if (state.openCaseId !== String(caseId) || (scope && isStaleCaseScope(scope))) return;
         host.innerHTML = renderProtocolSuggest(suggest);
         bindProtocolSuggestHost(host);
+        paintKpConcordance(suggest.kp_concordance);
         if (state.caseDetail) {
           state.caseDetail.protocol_suggest = suggest;
           var nextAssessment = assessmentWithProtocolSuggest(

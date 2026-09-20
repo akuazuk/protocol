@@ -789,7 +789,7 @@ def suggest_protocols_for_mo_case(
         bundle = _history_bundle_for_record(
             clinical=clinical, record=record, history_bundle=None
         )
-    return suggest_protocols_for_case(
+    out = suggest_protocols_for_case(
         clinical=clinical,
         record=record,
         findings=findings,
@@ -798,6 +798,27 @@ def suggest_protocols_for_mo_case(
         history_visits=history_visits,
         limit=limit,
     )
+    if not isinstance(out, dict):
+        return out
+    night = None
+    if isinstance(record, dict) and isinstance(record.get("plan_concordance"), dict):
+        night = record.get("plan_concordance")
+    try:
+        from clinical_knowledge.mo_case_kp_concordance import attach_kp_concordance
+
+        attach_kp_concordance(out, clinical=clinical, night_plan=night)
+    except Exception:
+        out.setdefault(
+            "kp_concordance",
+            {
+                "ok": True,
+                "available": False,
+                "engine": "mo_case_kp_concordance_v1",
+                "reason": "сверка плана с КП недоступна",
+                "rows": [],
+            },
+        )
+    return out
 
 
 def suggest_protocols_for_case(

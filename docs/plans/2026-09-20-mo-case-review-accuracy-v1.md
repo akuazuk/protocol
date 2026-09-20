@@ -297,6 +297,8 @@ Findings только `is_shadow=0`, фильтр по зоне. Клик «по
 
 ### R2. Сверка плана с карточками КП (точность)
 
+Статус волны: **in progress** (модуль + UI в этой ветке; merge/GCE после зелёного CI).
+
 Новый узкий модуль, например `clinical_knowledge/mo_case_kp_concordance.py`:
 
 - вход: clinical hit + `protocol_cards` exams/treatment/follow-up + слоты плана МО;
