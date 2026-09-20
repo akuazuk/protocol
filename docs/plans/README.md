@@ -1,6 +1,7 @@
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-09-19-mo-analytics-ux-rebuild-v1.md](2026-09-19-mo-analytics-ux-rebuild-v1.md) | МО Аналитика: удобный поиск хороших и плохих МО (фильтры перестают врать, один рабочий стол, волны W0-W7) | active |
+| [2026-09-20-mo-analytics-workspace-v1.md](2026-09-20-mo-analytics-workspace-v1.md) | МО Аналитика: рабочий стол - одна выборка, календарь, разбор на всю страницу (после W0-W7) | active |
+| [2026-09-19-mo-analytics-ux-rebuild-v1.md](2026-09-19-mo-analytics-ux-rebuild-v1.md) | МО Аналитика: удобный поиск хороших и плохих МО (фильтры перестают врать, один рабочий стол, волны W0-W7) | archived (преемник: mo-analytics-workspace-v1) |
 | [2026-09-17-gemini-night-spend-cut-v1.md](2026-09-17-gemini-night-spend-cut-v1.md) | Ночной Gemini: лимит shadow/judge, без Pro на needs_human, thinking_budget=0 | active |
 | [2026-09-06-mo-case-review-analytics-v1.md](2026-09-06-mo-case-review-analytics-v1.md) | MO: P0-противоречия R01-R14, reproducible assessment A-C, CASE Review D, synthetic E и UI U01-U14 | active |
 | [2026-09-05-corpus-integrity-v1.md](2026-09-05-corpus-integrity-v1.md) | Целостность корпуса: 62 протокола 2026 года не доходили до врачей (закрыто), решения по дублям, векторному индексу и манифесту происхождения | active |
