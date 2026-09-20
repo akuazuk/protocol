@@ -121,7 +121,7 @@ button, a, select, input { outline-offset: 3px; }
 .settings-session-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 8px; }
 .settings-session-row .button { margin-left: auto; }
 
-.workspace { min-width: 0; }
+.workspace { min-width: 0; overflow-x: hidden; }
 .context-bar {
   position: sticky; z-index: 30; top: 0;
   padding: 8px 16px 7px;
@@ -1204,9 +1204,14 @@ kbd {
     z-index: 80;
   }
   .nav-more-list .nav-text { display: inline; }
-  .context-bar { padding: 10px; }
-  .context-top { grid-template-columns: 1fr; align-items: stretch; }
-  .period-strip .filter { max-width: none; flex: 1 1 calc(50% - 8px); }
+  .context-bar { padding: 10px; overflow-x: hidden; }
+  .context-top { grid-template-columns: 1fr; align-items: stretch; min-width: 0; }
+  .period-strip { width: 100%; }
+  .period-strip .filter {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+    max-width: none;
+  }
   .case-search-form { grid-template-columns: minmax(0, 1fr) auto; }
   .case-search-form .search-field,
   .case-search-form .control { min-width: 0; }
