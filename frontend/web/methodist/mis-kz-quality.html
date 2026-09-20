@@ -51,8 +51,26 @@
     <div class="workspace">
       <header class="context-bar" aria-label="Поиск и глобальные фильтры">
         <div class="context-top">
+          <div class="period-strip" id="period-strip" role="group" aria-label="Период выборки">
+            <div class="period-presets" aria-label="Пресеты периода">
+              <button class="button secondary compact" type="button" data-quick-period="yesterday">Вчера</button>
+              <button class="button secondary compact" type="button" data-quick-period="7d">7 дней</button>
+              <button class="button secondary compact" type="button" data-quick-period="month" aria-pressed="true">Месяц</button>
+            </div>
+            <label class="filter" id="date-from-wrap"><span>С даты</span><input class="control" id="date-from" type="date"></label>
+            <label class="filter" id="date-to-wrap"><span>По дату</span><input class="control" id="date-to" type="date"></label>
+            <label class="filter sr-only period-select-legacy"><span>Период</span>
+              <select class="control" id="period">
+                <option value="yesterday">Вчера</option>
+                <option value="7d">Последние 7 дней</option>
+                <option value="month" selected>Текущий месяц</option>
+                <option value="custom">Произвольный</option>
+              </select>
+            </label>
+            <button class="button secondary compact" id="reset-filters" type="button">Сбросить всё</button>
+          </div>
           <form class="case-search-form" id="case-search-form" role="search">
-            <label class="filter search-field"><span>Поиск по выборке случаев</span><input class="control" id="case-search" type="search" placeholder="Врач, диагноз, МКБ, visit_id или patient_id" autocomplete="off" aria-controls="search-suggestions" aria-expanded="false"><span class="suggestions" id="search-suggestions" role="listbox" hidden></span></label>
+            <label class="filter search-field"><span>Поиск по выборке случаев</span><input class="control" id="case-search" type="search" placeholder="Врач, МКБ, visit_id" autocomplete="off" aria-controls="search-suggestions" aria-expanded="false"><span class="suggestions" id="search-suggestions" role="listbox" hidden></span></label>
             <button class="button" id="case-search-submit" type="submit">Найти</button>
             <button class="button secondary" id="case-search-clear" type="button" hidden>Очистить</button>
           </form>
@@ -70,16 +88,6 @@
               <summary><span>Фильтры</span><b id="filter-total">Без дополнительных фильтров</b></summary>
               <div class="toolbar-panel">
                 <div class="context-main context-main--filters">
-                  <label class="filter"><span>Период</span>
-                    <select class="control" id="period">
-                      <option value="yesterday">Вчера</option>
-                      <option value="7d">Последние 7 дней</option>
-                      <option value="month" selected>Текущий месяц</option>
-                      <option value="custom">Произвольный</option>
-                    </select>
-                  </label>
-                  <label class="filter" id="date-from-wrap" hidden><span>С даты</span><input class="control" id="date-from" type="date"></label>
-                  <label class="filter" id="date-to-wrap" hidden><span>По дату</span><input class="control" id="date-to" type="date"></label>
                   <label class="filter"><span>Сравнение</span>
                     <select class="control" id="compare">
                       <option value="previous">Предыдущий период</option>
@@ -87,11 +95,6 @@
                       <option value="none">Без сравнения</option>
                     </select>
                   </label>
-                  <div class="toolbar-inline" aria-label="Быстрый выбор периода">
-                    <button class="button secondary" type="button" data-quick-period="yesterday">Вчера</button>
-                    <button class="button secondary" type="button" data-quick-period="7d">7 дней</button>
-                    <button class="button secondary" type="button" data-quick-period="month">Месяц</button>
-                  </div>
                   <details class="filter-pop" data-filter="months"><summary>Месяцы <b>Все</b></summary><div class="filter-menu"></div></details>
                   <details class="filter-pop" data-filter="branches"><summary>Филиалы <b>Все</b></summary><div class="filter-menu"></div></details>
                   <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
@@ -115,10 +118,7 @@
                   </label>
                 </div>
                 <div class="toolbar-panel-actions">
-                  <span class="panel-help">В таблице только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология не показываются и не оцениваются.</span>
-                  <button class="button secondary" id="reset-filters" type="button">Сбросить фильтры</button>
-                  <button class="button secondary" id="filters-cancel" type="button">Отмена</button>
-                  <button class="button" id="filters-apply" type="button">Применить</button>
+                  <span class="panel-help">В таблице только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология не показываются и не оцениваются. Дата выбирается в календаре сверху.</span>
                 </div>
               </div>
             </details>

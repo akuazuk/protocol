@@ -121,7 +121,7 @@ button, a, select, input { outline-offset: 3px; }
 .settings-session-row { display: flex; flex-wrap: wrap; gap: 10px 18px; align-items: center; margin-top: 8px; }
 .settings-session-row .button { margin-left: auto; }
 
-.workspace { min-width: 0; }
+.workspace { min-width: 0; overflow-x: hidden; }
 .context-bar {
   position: sticky; z-index: 30; top: 0;
   padding: 8px 16px 7px;
@@ -139,6 +139,39 @@ button, a, select, input { outline-offset: 3px; }
   grid-template-columns: minmax(360px, 1fr);
   gap: 10px;
   align-items: end;
+}
+.period-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+  position: relative;
+  min-width: 0;
+  max-width: 100%;
+}
+.period-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.period-presets .button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 800;
+}
+.period-select-legacy {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+}
+.period-strip .filter { min-width: 0; flex: 1 1 124px; max-width: 180px; }
+.period-strip .filter .control { width: 100%; min-width: 0; }
+.chip.chip-reset {
+  cursor: pointer;
+  border-style: dashed;
 }
 .case-search-form {
   display: grid;
@@ -1171,8 +1204,14 @@ kbd {
     z-index: 80;
   }
   .nav-more-list .nav-text { display: inline; }
-  .context-bar { padding: 10px; }
-  .context-top { grid-template-columns: 1fr; align-items: stretch; }
+  .context-bar { padding: 10px; overflow-x: hidden; }
+  .context-top { grid-template-columns: 1fr; align-items: stretch; min-width: 0; }
+  .period-strip { width: 100%; }
+  .period-strip .filter {
+    flex: 1 1 calc(50% - 8px);
+    min-width: 0;
+    max-width: none;
+  }
   .case-search-form { grid-template-columns: minmax(0, 1fr) auto; }
   .case-search-form .search-field,
   .case-search-form .control { min-width: 0; }

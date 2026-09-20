@@ -298,8 +298,10 @@
         host.insertBefore(toolbar, wrap);
       }
       toolbar.innerHTML =
-        '<label class="filter"><span>Фильтр строк этой таблицы</span>' +
-        '<input class="control" type="search" data-table-search placeholder="Только видимые строки таблицы" autocomplete="off"></label>' +
+        '<label class="filter"><span>' + (options.serverSort ? "Среди строк на экране" : "Фильтр строк этой таблицы") + "</span>" +
+        '<input class="control" type="search" data-table-search placeholder="' +
+        (options.serverSort ? "Не меняет склад, только эти строки" : "Только видимые строки таблицы") +
+        '" autocomplete="off"></label>' +
         '<div class="table-toolbar-chips" role="group" aria-label="Быстрый фильтр">' +
         '<button type="button" class="chip-btn" data-chip="all" aria-pressed="true">Все</button>' +
         '<button type="button" class="chip-btn" data-chip="bad" aria-pressed="false">Только плохо</button>' +
@@ -325,12 +327,15 @@
 
       var filterRow = table.tHead.querySelector("tr.col-filters");
       if (filterRow) filterRow.remove();
-      filterRow = document.createElement("tr");
-      filterRow.className = "col-filters";
       headerCells.forEach(function (th, colIndex) {
         th.setAttribute("data-col-index", String(colIndex));
         if (!th.classList.contains("sortable-th")) th.classList.add("sortable-th");
         if (!th.getAttribute("data-sort-key")) th.setAttribute("data-sort-key", "col:" + colIndex);
+      });
+      if (!st.serverSort) {
+      filterRow = document.createElement("tr");
+      filterRow.className = "col-filters";
+      headerCells.forEach(function (th, colIndex) {
         var cell = document.createElement("th");
         cell.scope = "col";
         if (columnIsUtility(th, colIndex, sampleRows)) {
@@ -372,6 +377,7 @@
         filterRow.appendChild(cell);
       });
       table.tHead.appendChild(filterRow);
+      }
 
       headerCells.forEach(function (th) {
         if (th.__moSortBound) return;
@@ -467,6 +473,57 @@
       return calendar.getUTCFullYear() + "-" + String(calendar.getUTCMonth() + 1).padStart(2, "0") +
         "-" + String(calendar.getUTCDate()).padStart(2, "0");
     }
+    function monthDateBounds(monthKey) {
+      var yesterday = minskDateKey(-1);
+      var month = monthKey || yesterday.slice(0, 7);
+      var from = month + "-01";
+      var last = new Date(Number(month.slice(0, 4)), Number(month.slice(5, 7)), 0);
+      var to = month + "-" + String(last.getDate()).padStart(2, "0");
+      if (yesterday.slice(0, 7) === month && yesterday < to) to = yesterday;
+      return { from: from, to: to };
+    }
+    function syncPeriodStrip() {
+      document.querySelectorAll("[data-quick-period]").forEach(function (btn) {
+        var period = btn.getAttribute("data-quick-period") || "";
+        btn.setAttribute("aria-pressed", period && period === state.period ? "true" : "false");
+      });
+    }
+    function applyPeriodPreset(period, opts) {
+      opts = opts || {};
+      var next = String(period || "month").trim() || "month";
+      state.period = next;
+      state.filterDraft = null;
+      if (next === "yesterday") {
+        state.dateFrom = minskDateKey(-1);
+        state.dateTo = state.dateFrom;
+      } else if (next === "7d") {
+        state.dateFrom = minskDateKey(-7);
+        state.dateTo = minskDateKey(-1);
+      } else if (next === "custom") {
+        if (!state.dateFrom) state.dateFrom = minskDateKey(-1);
+        if (!state.dateTo) state.dateTo = state.dateFrom;
+      } else {
+        var bounds = monthDateBounds((state.selected.months[0] || "").slice(0, 7));
+        state.dateFrom = bounds.from;
+        state.dateTo = bounds.to;
+        next = "month";
+        state.period = "month";
+      }
+      if ($("period")) $("period").value = state.period;
+      if ($("date-from")) $("date-from").value = state.dateFrom || "";
+      if ($("date-to")) $("date-to").value = state.dateTo || "";
+      if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
+      if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
+      syncPeriodStrip();
+      syncOverviewGrain();
+      if (opts.silent) return;
+      showToast("Период: " + periodLabel());
+      filtersChanged();
+    }
+    function ensurePeriodDates() {
+      if (state.dateFrom && state.dateTo) return;
+      applyPeriodPreset(state.period || "month", { silent: true });
+    }
     async function exportCurrent(kind) {
       var filters = {};
       query().forEach(function (value, key) { filters[key] = value; });
@@ -485,21 +542,16 @@
       var q = new URLSearchParams();
       q.set("period", state.period); q.set("compare_period", state.compare);
       q.set("methodology", state.methodology);
-      var today = minskDateKey(0);
       var searchRaw = String(state.search || "").trim();
       var patientMatch = searchRaw.match(/^patient(?:_id)?\s*[:=]\s*(\d+)\s*$/i);
       var visitMatch = searchRaw.match(/^visit(?:_id)?\s*[:=]\s*(\d+)\s*$/i);
       var idLookup = !!(patientMatch || visitMatch || /^\d{4,}$/.test(searchRaw));
       if (!idLookup && !state.selected.months.length) {
-        if (state.period === "month") q.set("month", today.slice(0, 7));
-        if (state.period === "yesterday") {
-          q.set("date_from", minskDateKey(-1)); q.set("date_to", minskDateKey(-1));
-        }
-        if (state.period === "7d") {
-          q.set("date_from", minskDateKey(-7)); q.set("date_to", minskDateKey(-1));
-        }
-        if (state.period === "custom" && state.dateFrom && state.dateTo) {
-          q.set("date_from", state.dateFrom); q.set("date_to", state.dateTo);
+        ensurePeriodDates();
+        if (state.period === "month") q.set("month", (state.dateFrom || minskDateKey(0)).slice(0, 7));
+        if (state.dateFrom && state.dateTo) {
+          q.set("date_from", state.dateFrom);
+          q.set("date_to", state.dateTo);
         }
       }
       if (patientMatch) q.set("patient_id", patientMatch[1]);
@@ -828,19 +880,7 @@
       });
     }
     function applyOverviewGrain(period, opts) {
-      opts = opts || {};
-      var next = String(period || "").trim();
-      if (!next) return;
-      state.period = next;
-      state.filterDraft = null;
-      if ($("period")) $("period").value = next;
-      if ($("date-from-wrap")) $("date-from-wrap").hidden = next !== "custom";
-      if ($("date-to-wrap")) $("date-to-wrap").hidden = next !== "custom";
-      syncOverviewGrain();
-      if (opts.silent) return;
-      var labels = { yesterday: "день", "7d": "неделя", month: "месяц" };
-      showToast("Обзор: " + (labels[next] || next));
-      filtersChanged();
+      applyPeriodPreset(period, opts);
     }
     function applyQueueBand(band, opts) {
       opts = opts || {};
@@ -991,8 +1031,8 @@
       $("date-to").value = state.dateTo;
       $("case-search").value = state.search;
       if ($("overall-grade-filter")) $("overall-grade-filter").value = state.overallGrade;
-      $("date-from-wrap").hidden = state.period !== "custom";
-      $("date-to-wrap").hidden = state.period !== "custom";
+      $("date-from-wrap").hidden = false;
+      $("date-to-wrap").hidden = false;
       document.querySelectorAll(".filter-pop").forEach(renderFilter);
     }
     function renderAnalysisRail() {
@@ -1056,8 +1096,8 @@
         if (options.period) {
           state.period = options.period;
           $("period").value = state.period;
-          $("date-from-wrap").hidden = state.period !== "custom";
-          $("date-to-wrap").hidden = state.period !== "custom";
+          if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
+          if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
         }
         if (options.dateFrom !== undefined) { state.dateFrom = options.dateFrom; $("date-from").value = state.dateFrom; }
         if (options.dateTo !== undefined) { state.dateTo = options.dateTo; $("date-to").value = state.dateTo; }
@@ -1193,7 +1233,12 @@
         html.push('<span class="chip">Худший уровень: ' + esc(sevChip) +
           '<button type="button" data-clear-worst-severity aria-label="Сбросить фильтр приоритета">×</button></span>');
       }
+      html.push('<button type="button" class="chip chip-reset" id="chip-reset-all">Сбросить всё</button>');
       $("filter-chips").innerHTML = html.join("");
+      var resetAll = $("chip-reset-all");
+      if (resetAll && $("reset-filters")) {
+        resetAll.addEventListener("click", function () { $("reset-filters").click(); });
+      }
       $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
         button.addEventListener("click", function () {
           var key = button.getAttribute("data-remove"), value = button.getAttribute("data-value");
@@ -1340,11 +1385,15 @@
       if ($("case-search")) $("case-search").value = state.search;
       if ($("sort-by")) $("sort-by").value = state.sortBy;
       if ($("sort-dir")) $("sort-dir").value = state.sortDir;
-      if ($("date-from-wrap")) $("date-from-wrap").hidden = state.period !== "custom";
-      if ($("date-to-wrap")) $("date-to-wrap").hidden = state.period !== "custom";
+      if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
+      if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
+      ensurePeriodDates();
+      if ($("date-from")) $("date-from").value = state.dateFrom;
+      if ($("date-to")) $("date-to").value = state.dateTo;
       syncGradeStrip();
       syncQueueOnlyButton();
       syncOverviewGrain();
+      syncPeriodStrip();
       updateFilterSummary();
     }
     function filtersChanged() {
@@ -2576,6 +2625,13 @@
       setCasesLoading(queue, false);
       clearWidgetError((queue ? $("page-queue") : $("page-documents")).querySelector(".card"), queue ? "queue-cases" : "document-cases");
       var emptyState = data.empty_state || {};
+      var searchRaw = String(state.search || "").trim();
+      var emptyTitle = emptyState.title || "По выбранным фильтрам случаев нет.";
+      var emptyHint = emptyState.hint || "Измените фильтры или расширьте период.";
+      if (!rows.length && searchRaw && !looksLikeIcd(searchRaw) && !/^\d{4,}$/.test(searchRaw)) {
+        emptyTitle = emptyState.title || "Код не найден";
+        emptyHint = emptyState.hint || "Выберите МКБ из подсказки или вставьте I10. Поиск ищет врача, код МКБ и visit_id, не название болезни.";
+      }
       var pageHost = queue ? $("page-queue") : $("page-documents");
       var banner = pageHost ? pageHost.querySelector(".day-table-banner") : null;
       if (!queue && pageHost) {
@@ -2597,8 +2653,8 @@
       }
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
         '<tr><td colspan="' + (queue ? 14 : 12) + '" class="empty"><b>' +
-        esc(emptyState.title || "По выбранным фильтрам случаев нет.") + "</b><div>" +
-        esc(emptyState.hint || "Измените фильтры или расширьте период.") + "</div></td></tr>";
+        esc(emptyTitle) + "</b><div>" +
+        esc(emptyHint) + "</div></td></tr>";
       bindCaseRows(body);
       bindSortableHeaders(body.closest("table"));
       applyColumnVisibility(queue ? "queue" : "documents");
@@ -6188,8 +6244,8 @@
       $("compare").value = source.compare;
       $("date-from").value = source.dateFrom || "";
       $("date-to").value = source.dateTo || "";
-      $("date-from-wrap").hidden = source.period !== "custom";
-      $("date-to-wrap").hidden = source.period !== "custom";
+      $("date-from-wrap").hidden = false;
+      $("date-to-wrap").hidden = false;
       if ($("overall-grade-filter")) {
         $("overall-grade-filter").value = source.overallGrade || "";
       }
@@ -6264,13 +6320,37 @@
       $("columns-button").addEventListener("click", function () { toggleColumnsPanel(this); });
       $("queue-columns-button").addEventListener("click", function () { toggleColumnsPanel(this); });
       $("period").addEventListener("change", function () {
-        setFilterDraftValue("period", this.value);
-        $("date-from-wrap").hidden = this.value !== "custom";
-        $("date-to-wrap").hidden = this.value !== "custom";
+        applyPeriodPreset(this.value);
       });
-      $("date-from").addEventListener("change", function () { setFilterDraftValue("dateFrom", this.value); });
-      $("date-to").addEventListener("change", function () { setFilterDraftValue("dateTo", this.value); });
-      $("compare").addEventListener("change", function () { setFilterDraftValue("compare", this.value); });
+      $("date-from").addEventListener("change", function () {
+        state.dateFrom = this.value;
+        state.period = "custom";
+        if ($("period")) $("period").value = "custom";
+        if (state.dateFrom && !state.dateTo) {
+          state.dateTo = state.dateFrom;
+          if ($("date-to")) $("date-to").value = state.dateTo;
+        }
+        state.filterDraft = null;
+        syncPeriodStrip();
+        filtersChanged();
+      });
+      $("date-to").addEventListener("change", function () {
+        state.dateTo = this.value;
+        state.period = "custom";
+        if ($("period")) $("period").value = "custom";
+        if (state.dateTo && !state.dateFrom) {
+          state.dateFrom = state.dateTo;
+          if ($("date-from")) $("date-from").value = state.dateFrom;
+        }
+        state.filterDraft = null;
+        syncPeriodStrip();
+        filtersChanged();
+      });
+      $("compare").addEventListener("change", function () {
+        state.compare = this.value;
+        state.filterDraft = null;
+        filtersChanged();
+      });
       var gradeFilter = $("overall-grade-filter");
       if (gradeFilter) {
         gradeFilter.value = state.overallGrade || "";
@@ -6316,37 +6396,29 @@
       $("sort-dir").addEventListener("change", function () { state.sortDir = this.value; filtersChanged(); });
       document.querySelectorAll("[data-quick-period]").forEach(function (button) {
         button.addEventListener("click", function () {
-          var period = button.getAttribute("data-quick-period") || "month";
-          setFilterDraftValue("period", period);
-          $("period").value = period;
-          $("date-from-wrap").hidden = period !== "custom";
-          $("date-to-wrap").hidden = period !== "custom";
+          applyPeriodPreset(button.getAttribute("data-quick-period") || "month");
         });
       });
       document.querySelectorAll(".toolbar-section").forEach(function (details) {
         details.addEventListener("toggle", function () {
           if (!details.open) {
             details.classList.remove("is-flipped");
-            if (details.id === "filters-panel" && state.filterDraft && !state.filterPanelApplying) {
-              cancelFilterDraft();
-            }
             return;
           }
           document.querySelectorAll(".toolbar-section[open]").forEach(function (other) {
             if (other !== details) other.open = false;
           });
-          if (details.id === "filters-panel") beginFilterDraft();
           window.setTimeout(function () { clampToolbarPanel(details); }, 0);
         });
       });
       window.addEventListener("resize", function () {
         document.querySelectorAll(".toolbar-section[open]").forEach(clampToolbarPanel);
       });
-      $("filters-apply").addEventListener("click", commitFilterDraft);
-      $("filters-cancel").addEventListener("click", cancelFilterDraft);
+      if ($("filters-apply")) $("filters-apply").addEventListener("click", commitFilterDraft);
+      if ($("filters-cancel")) $("filters-cancel").addEventListener("click", cancelFilterDraft);
       $("reset-filters").addEventListener("click", function () {
         Object.keys(state.selected).forEach(function (key) { state.selected[key] = []; });
-        state.period = "month"; state.compare = "previous"; state.dateFrom = ""; state.dateTo = "";
+        state.compare = "previous";
         state.search = "";
         state.findingCode = "";
         state.sortBy = "date";
@@ -6363,17 +6435,16 @@
         state.attentionOnly = false;
         state.kpStatus = "";
         state.historyTier = "";
-        $("period").value = state.period; $("compare").value = state.compare;
+        $("compare").value = state.compare;
         $("case-search").value = "";
         $("sort-by").value = "date";
         $("sort-dir").value = "desc";
-        $("date-from").value = ""; $("date-to").value = "";
-        $("date-from-wrap").hidden = true; $("date-to-wrap").hidden = true;
+        applyPeriodPreset("month", { silent: true });
         applyScoreEligibleOnly(true, true);
         document.querySelectorAll(".filter-pop").forEach(renderFilter);
-        $("filters-panel").open = false;
+        if ($("filters-panel")) $("filters-panel").open = false;
         filtersChanged();
-        showToast("Фильтры сброшены: только клинические приёмы");
+        showToast("Фильтры сброшены: месяц и только клинические приёмы");
       });
       document.querySelectorAll("[data-zone-preset]").forEach(function (btn) {
         btn.addEventListener("click", function () {

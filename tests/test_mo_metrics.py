@@ -65,7 +65,18 @@ def test_weekday_comparison_shifts_seven_days() -> None:
     }
 
 
-def test_invalid_period_and_custom_dates_are_clear() -> None:
+def test_explicit_dates_override_named_month_period() -> None:
+    resolved = resolve_periods(
+        period="month",
+        month="2026-07",
+        date_from="2026-07-18",
+        date_to="2026-07-18",
+        now=datetime(2026, 7, 30, 8, 0, tzinfo=timezone.utc),
+    )
+    assert resolved.current.to_dict() == {
+        "date_from": "2026-07-18",
+        "date_to": "2026-07-18",
+    }
     with pytest.raises(ValueError, match="Неизвестный period"):
         resolve_periods(period="quarter")
     with pytest.raises(ValueError, match="date_from"):
