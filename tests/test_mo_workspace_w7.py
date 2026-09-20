@@ -113,8 +113,8 @@ def test_overall_grade_is_sql_pageable(monkeypatch) -> None:
 
 
 def test_indexes_are_declared() -> None:
+    assert "idx_finding_mis ON fact_mo_finding(mis_id)" in DAILY
     assert "idx_case_zone_bands" in DAILY
-    assert "idx_case_attention_date" in DAILY
-    assert "idx_finding_mis" in DAILY
+    assert "idx_case_attention" in DAILY
     assert "idx_case_zone_bands" in SCRIPT
     assert "idx_fact_mo_case_visit" in SCRIPT
