@@ -82,10 +82,16 @@ def test_invalid_period_is_rejected_not_silently_ignored(client, endpoint):
     assert response.status_code == 422
 
 
-def test_month_overrides_stale_custom_dates(client):
-    params = {"period": "month", "month": "2026-07", "date_from": "2026-08-01", "date_to": "2026-08-02", "document_kinds": "clinical_visit"}
+def test_month_explicit_dates_win_over_named_period(client):
+    params = {
+        "period": "month",
+        "month": "2026-07",
+        "date_from": "2026-08-01",
+        "date_to": "2026-08-02",
+        "document_kinds": "clinical_visit",
+    }
     kpi = client.get("/api/methodist/mo/drugs-labs-kpis", params=params).json()
     cases = client.get("/api/methodist/mo/cases", params=params).json()
-    assert kpi["date_from"] == "2026-07-01"
-    assert kpi["date_to"] == "2026-07-31"
-    assert kpi["denominators"]["total_cases"] == cases["total"] == 1
+    assert kpi["date_from"] == "2026-08-01"
+    assert kpi["date_to"] == "2026-08-02"
+    assert kpi["denominators"]["total_cases"] == cases["total"] == 3

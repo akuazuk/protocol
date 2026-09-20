@@ -140,6 +140,35 @@ button, a, select, input { outline-offset: 3px; }
   gap: 10px;
   align-items: end;
 }
+.period-strip {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  align-items: end;
+}
+.period-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  align-items: center;
+}
+.period-presets .button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 800;
+}
+.period-select-legacy {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+}
+.period-strip .filter { min-width: 132px; }
+.chip.chip-reset {
+  cursor: pointer;
+  border-style: dashed;
+}
 .case-search-form {
   display: grid;
   grid-template-columns: minmax(360px, 1fr) auto auto;

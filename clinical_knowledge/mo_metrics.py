@@ -135,7 +135,17 @@ def resolve_periods(
         raise ValueError(f"Неизвестный compare={compare!r}; допустимо: previous, weekday, none")
 
     yesterday = minsk_today(now) - timedelta(days=1)
-    if period == "yesterday":
+    explicit_from = (date_from or "").strip()
+    explicit_to = (date_to or "").strip()
+    if explicit_from and explicit_to:
+        start = _parse_date(explicit_from, "date_from")
+        end = _parse_date(explicit_to, "date_to")
+        if start > end:
+            raise ValueError("date_from не может быть позже date_to")
+        if end > yesterday:
+            raise ValueError("date_to должна быть не позже вчера Europe/Minsk")
+        current = DateRange(start, end)
+    elif period == "yesterday":
         current = DateRange(yesterday, yesterday)
     elif period == "7d":
         current = DateRange(yesterday - timedelta(days=6), yesterday)

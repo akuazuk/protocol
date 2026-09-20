@@ -414,6 +414,14 @@ def _describe_empty_state(*, total_records: int, filtered_records: int, params: 
             "hint": "Проверьте ежедневный запуск и свежесть последнего отчёта.",
         }
     if filtered_records == 0:
+        q = str(params.get("q") or "").strip()
+        icd = str(params.get("icd") or "").strip()
+        if q and not icd:
+            return {
+                "reason_code": "search_text_miss",
+                "title": "Код не найден",
+                "hint": "Выберите МКБ из подсказки или вставьте код вроде I10. Поиск ищет врача, код МКБ и visit_id, не название болезни.",
+            }
         applied = [k for k, v in params.items() if v not in (None, "", [], False)]
         return {
             "reason_code": "filters_excluded_all",
