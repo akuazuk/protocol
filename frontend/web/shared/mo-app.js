@@ -1709,24 +1709,19 @@
     function renderYesterdayScoreKpis(daily, dash) {
       var host = $("yesterday-score-kpis");
       if (!host) return;
-      var funnel = (daily && daily.funnel) || {};
-      var evaluated = funnel.evaluated;
-      if (evaluated == null && daily && daily.attention) evaluated = daily.attention.n_evaluated;
-      var eligible = funnel.eligible;
-      var source = funnel.source != null ? funnel.source : eligible;
-      var cov = null;
-      if (eligible != null && Number(eligible) > 0 && evaluated != null) {
-        cov = Math.round(1000 * Number(evaluated) / Number(eligible)) / 10;
-      }
-      var through = (daily && (daily.data_through || daily.date)) || "";
       var win = (dash && dash.window) || {};
+      var windowLabel = analyticsWindowLabel(win);
+      var evaluated = dash && dash.coverage && dash.coverage.evaluated != null
+        ? dash.coverage.evaluated
+        : ((daily && daily.funnel) || {}).evaluated;
+      if (evaluated == null && daily && daily.attention) evaluated = daily.attention.n_evaluated;
+      var queueCritical = dash && dash.queue && dash.queue.critical != null
+        ? dash.queue.critical
+        : ((daily && daily.attention) || {}).queue_critical;
       host.innerHTML =
-        kpi("Получено", source == null ? "-" : source, "рабочий день") +
-        kpi("Оценено", evaluated == null ? "-" : evaluated, "рабочий день") +
-        kpi("Покрытие", cov == null ? "-" : (cov + "%"), "eligible") +
-        kpi("Свежесть", through || "-", win.date_from
-          ? ("кольца: " + analyticsWindowLabel(win))
-          : "склад");
+        kpi("Оценено", evaluated == null ? "-" : evaluated, windowLabel) +
+        kpi("Критично в очереди", queueCritical == null ? "-" : queueCritical, "то же окно, не рабочий день") +
+        kpi("Свежесть", (daily && (daily.data_through || daily.date)) || "-", "склад");
     }
     function renderScoreRing(card, title, centerText, segments, onSelect, denominatorText) {
       card.innerHTML =
@@ -1835,9 +1830,11 @@
           return total + Number((bands[band] || {}).n || 0);
         }, 0);
         var zoneN = assessedN + Number((bands.na || {}).n || 0);
-        var center = assessedN > 0 && block.avg_pct != null
-          ? (Math.round(Number(block.avg_pct)) + "%")
-          : "Не оценено";
+        var dominant = ["ok", "weak", "bad"].reduce(function (best, band) {
+          var n = Number((bands[band] || {}).n || 0);
+          return n > best.n ? { band: band, n: n } : best;
+        }, { band: "na", n: -1 });
+        var center = assessedN > 0 ? (zoneLabels[dominant.band] || "нет данных") : "Не оценено";
         renderScoreRing(card, meta.title, center, segments, function (band) {
           openZoneBandCases(meta.key, band);
         }, "Оценено: n=" + assessedN + "/" + zoneN);
@@ -1894,6 +1891,7 @@
           smooth: true,
           showSymbol: trends.length <= 14,
           symbolSize: 7,
+          connectNulls: false,
           lineStyle: { width: dashed ? 2 : 2.4, color: color, type: dashed ? "dashed" : "solid" },
           itemStyle: { color: color },
           areaStyle: dashed ? undefined : { color: color, opacity: 0.07 },
@@ -1907,7 +1905,20 @@
         color: [c1, c2, c3, c55],
         legend: { top: 4, data: ["Оформление", "Диагноз", "План", "№55"] },
         grid: { left: 42, right: 18, top: 42, bottom: 28 },
-        tooltip: { trigger: "axis" },
+        tooltip: {
+          trigger: "axis",
+          formatter: function (items) {
+            if (!items || !items.length) return "";
+            var idx = items[0].dataIndex;
+            var row = trends[idx] || {};
+            var lines = [row.date || ""];
+            items.forEach(function (item) {
+              lines.push(item.marker + item.seriesName + ": " + (item.value == null ? "нет данных" : item.value + "%"));
+            });
+            if (row.n_evaluated != null) lines.push("n=" + row.n_evaluated);
+            return lines.join("<br/>");
+          }
+        },
         xAxis: { type: "category", data: dates, boundaryGap: false },
         yAxis: { type: "value", min: 0, max: 100, name: "%" },
         series: [
@@ -1940,8 +1951,7 @@
       var win = (dash && dash.window) || {};
       var analytics = $("yesterday-analytics-window");
       if (analytics) {
-        analytics.textContent = "Рабочий день: " + (workingDay || "…") +
-          " · в кольцах и динамике: " + analyticsWindowLabel(win);
+        analytics.textContent = "Все цифры этого экрана: " + analyticsWindowLabel(win);
       }
       renderScoreRings(dash);
       renderScoreDynamics(dash);
@@ -4777,7 +4787,7 @@
     }
     function renderYesterday(data, dash, workingDay) {
       renderYesterdayScoreKpis(data, dash || null);
-      renderAttentionStrip("yesterday-attention", data.attention || null);
+      renderAttentionStrip("yesterday-attention", (dash && dash.attention) || data.attention || null);
       loadFamilyStrips("yesterday-family-strip");
       renderYesterdayScoreDashboard(dash || state.data.scoreDashboard || null, workingDay || data.date || "");
       renderYesterdayActions(data);
@@ -4810,14 +4820,15 @@
     async function loadYesterday() {
       var resolved = await resolveTodayWorkingDay();
       var day = resolved.day;
-      var label = "Итоги за " + new Date(day + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) + ".";
-      if (resolved.fallback) {
-        label += " Показан последний день с данными (за " +
-          new Date(resolved.preferred + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"medium" }) +
-          " выгрузки ещё нет).";
-      }
-      $("yesterday-date").textContent = label;
+      ensurePeriodDates();
+      var windowText = (state.dateFrom && state.dateTo)
+        ? ("Окно фильтров: " + state.dateFrom + (state.dateFrom === state.dateTo ? "" : (" - " + state.dateTo)) + ".")
+        : "Окно выбранного периода.";
+      $("yesterday-date").textContent = windowText;
       if ($("title-yesterday")) $("title-yesterday").textContent = "Обзор";
+      if (resolved.fallback && $("yesterday-freshness")) {
+        $("yesterday-freshness").textContent = "Показан последний день с данными: " + day;
+      }
       var dashPromise = request("/score-dashboard?" + query().toString(), "/score-dashboard");
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (await handleHttpAuth(response)) return;
@@ -4833,9 +4844,9 @@
             if (through2 && through2 !== day) {
               resolved = { day: through2, fallback: true, preferred: day };
               day = through2;
-              $("yesterday-date").textContent = "Итоги за " +
-                new Date(day + "T12:00:00").toLocaleDateString("ru-RU", { dateStyle:"long" }) +
-                ". Показан последний день с данными (свежих выгрузок пока нет).";
+              if ($("yesterday-freshness")) {
+                $("yesterday-freshness").textContent = "Показан последний день с данными: " + day;
+              }
               response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
               if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
               data = await response.json();
