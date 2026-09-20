@@ -74,10 +74,13 @@ def test_search_visits_badges_and_typed_id(tmp_path: Path) -> None:
 def test_search_does_not_touch_result() -> None:
     source = (ROOT / "clinical_knowledge/mo_mis_catalog.py").read_text(encoding="utf-8")
     ingest = (ROOT / "scripts/ingest_mo_mis_catalog.py").read_text(encoding="utf-8")
+    queue = (ROOT / "scripts/run_mo_ingest_queue.py").read_text(encoding="utf-8")
     assert "FROM mis_protocol" not in source
     assert "FROM mis_protocol" not in ingest
     block = ingest.split("SELECT_SQL =")[1].split('"""', 2)[1]
     assert "result" not in block.lower().split()
+    assert "_allow_ck_without_pydantic" in ingest
+    assert "_allow_ck_without_pydantic" in queue
 
 
 def test_ingest_queue_and_process(tmp_path: Path) -> None:
