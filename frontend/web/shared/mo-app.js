@@ -74,6 +74,8 @@
       queueBand: "",
       doctorZoneMetric: "zone1",
       doctorGradeFilter: "all",
+      misTab: "visits",
+      misQuery: "",
       caseNavIds: [], caseNavRows: {}, caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
       caseDetailLoading: false,
       protocolSuggest: null,
@@ -97,7 +99,7 @@
     };
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Обзор", queue: "Очередь",
-      documents: "Найти МО", doctors: "Врачи", medications: "Лекарства", labs: "Анализы",
+      documents: "Найти МО", mis: "Поиск МИС", doctors: "Врачи", medications: "Лекарства", labs: "Анализы",
       reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции препаратов", settings: "Справка"
     };
     // Compatibility contract for integrations that still identify this page by its former label.
@@ -1335,6 +1337,7 @@
         path = state.page === "yesterday" ? "/methodist/mo/yesterday" :
           state.page === "queue" ? "/methodist/mo/queue" :
           state.page === "overview" ? "/methodist/mo/overview" :
+          state.page === "mis" ? "/methodist/mo/mis" :
           (state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
       }
       var url = path + "?" + q.toString();
@@ -1358,6 +1361,7 @@
         pathPage = location.pathname.endsWith("/yesterday") || location.pathname.endsWith("/mo") ? "yesterday" :
           location.pathname.endsWith("/queue") ? "queue" :
           location.pathname.endsWith("/overview") ? "overview" :
+          location.pathname.endsWith("/mis") ? "mis" :
           (location.pathname.endsWith("/cases") ? "documents" : "yesterday");
       }
       state.page = PAGE_TITLES[q.get("page")] ? q.get("page") : pathPage;
@@ -5966,6 +5970,219 @@
         });
       }
     }
+    function misDateQuery() {
+      var q = new URLSearchParams();
+      if (state.dateFrom) q.set("date_from", state.dateFrom);
+      if (state.dateTo) q.set("date_to", state.dateTo);
+      var needle = String(state.misQuery || ($("mis-search") && $("mis-search").value) || "").trim();
+      if (needle) q.set("q", needle);
+      if (/^\d{4,12}$/.test(needle)) q.set("visit_id", needle);
+      return q;
+    }
+    function renderMisCoverage(coverage) {
+      var host = $("mis-coverage-ring");
+      if (!host) return;
+      coverage = coverage || {};
+      var found = Number(coverage.found || 0);
+      var scored = Number(coverage.in_analytics || 0);
+      var rest = Math.max(found - scored, 0);
+      if (!found) {
+        host.innerHTML = '<p class="empty">' +
+          esc(coverage.empty_reason || "в каталоге нет визитов за даты фильтра") + "</p>";
+        return;
+      }
+      var good = cssToken("--good", "#2f6f63");
+      var mute = cssToken("--muted", "#7a8494");
+      renderScoreRing(host, "Покрытие МИС", scored + " / " + found, [
+        { band: "in", name: "В аналитике", value: scored, color: good },
+        { band: "out", name: "Не разобрано", value: rest, color: mute }
+      ], null, coverage.label_ru || "это не KPI склада");
+    }
+    function misSparkHtml(points) {
+      points = (points || []).slice(0, 12);
+      if (!points.length) return "";
+      return '<div class="mis-spark" aria-hidden="true">' + points.map(function (point) {
+        return '<span class="' + (point.in_analytics ? "is-in" : "") + '" title="' +
+          esc(point.visit_date || "") + '"></span>';
+      }).join("") + "</div>";
+    }
+    function renderMisVisits(payload) {
+      var body = $("mis-visit-rows");
+      var empty = $("mis-visits-empty");
+      if (!body) return;
+      var items = (payload && payload.items) || [];
+      if (!items.length) {
+        body.innerHTML = "";
+        if (empty) empty.textContent = (payload && payload.empty_reason) ||
+          "в каталоге нет, попробуйте visit_id";
+        return;
+      }
+      if (empty) empty.textContent = payload.empty_reason ||
+        ("Найдено: " + items.length + ". Это каталог МИС, не KPI склада.");
+      body.innerHTML = items.map(function (row) {
+        var inAn = !!row.in_analytics;
+        var action = inAn
+          ? (row.case_id
+            ? '<button class="button compact" type="button" data-mis-open="' +
+              esc(row.case_id) + '">Открыть разбор</button>'
+            : "")
+          : '<button class="button compact" type="button" data-mis-ingest="' +
+            esc(row.visit_id) + '">Проанализировать</button>';
+        return "<tr data-visit-id=\"" + esc(row.visit_id) + "\">" +
+          "<td>" + esc(row.visit_id) + misSparkHtml(row.patient_spark) + "</td>" +
+          "<td>" + esc(row.visit_date || "") + "</td>" +
+          "<td>" + esc(row.doctor_fio || "") + "</td>" +
+          "<td>" + esc(row.specialization || "") + "</td>" +
+          "<td>" + esc(row.filial || "") + "</td>" +
+          "<td>" + esc(row.dx_short || "") + "</td>" +
+          "<td><span class=\"mis-badge " + (inAn ? "mis-badge--in" : "mis-badge--out") + "\">" +
+          esc(row.badge || (inAn ? "В аналитике" : "Не разобрано")) + "</span></td>" +
+          "<td>" + action + "</td></tr>";
+      }).join("");
+    }
+    function renderMisLabs(payload) {
+      var body = $("mis-lab-rows");
+      var empty = $("mis-labs-empty");
+      var timelineHost = $("mis-lab-timeline");
+      if (!body) return;
+      var items = (payload && payload.items) || [];
+      if (empty) {
+        empty.textContent = items.length
+          ? (payload.reference_note_ru || "Значения по датам. Референс в складе нет.")
+          : ((payload && payload.empty_reason) || "тест не найден");
+      }
+      body.innerHTML = items.map(function (row) {
+        return "<tr><td>" + esc(row.indicator_name || "") + "</td><td>" +
+          esc(row.type_name || "") + "</td><td>" + esc(String(row.n || 0)) + "</td><td>" +
+          esc(row.last_date || "") + "</td><td>" + esc(row.last_value || "") +
+          (row.unit ? (" " + esc(row.unit)) : "") + "</td></tr>";
+      }).join("");
+      var points = ((payload && payload.timeline) || []).filter(function (row) {
+        return row.numeric != null;
+      });
+      if (!timelineHost) return;
+      if (!points.length) {
+        timelineHost.innerHTML = items.length
+          ? '<p class="empty">Числовых точек для таймлайна нет.</p>' : "";
+        return;
+      }
+      if (!MO.moChart) {
+        timelineHost.innerHTML = '<p class="empty">Нет диаграмм</p>';
+        return;
+      }
+      MO.moChart(timelineHost, {
+        tooltip: { trigger: "axis" },
+        xAxis: { type: "category", data: points.map(function (row) { return row.test_date; }) },
+        yAxis: { type: "value", name: points[0].unit || "" },
+        series: [{
+          name: (items[0] && items[0].indicator_name) || "тест",
+          type: "line",
+          connectNulls: false,
+          data: points.map(function (row) { return row.numeric; })
+        }]
+      }, { label: "Значения анализа по датам" });
+    }
+    function syncMisTabs() {
+      var tab = state.misTab === "labs" ? "labs" : "visits";
+      document.querySelectorAll("[data-mis-tab]").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", btn.getAttribute("data-mis-tab") === tab ? "true" : "false");
+      });
+      if ($("mis-visits-card")) $("mis-visits-card").hidden = tab !== "visits";
+      if ($("mis-labs-card")) $("mis-labs-card").hidden = tab !== "labs";
+    }
+    async function loadMisSearch() {
+      syncMisTabs();
+      if ($("mis-search") && state.misQuery) $("mis-search").value = state.misQuery;
+      var params = misDateQuery();
+      try {
+        if (state.misTab === "labs") {
+          var labResp = await request("/mis/labs?" + params.toString(), "/mis/labs?" + params.toString());
+          var labPayload = labResp.ok ? await labResp.json() : { items: [], empty_reason: "тест не найден" };
+          renderMisLabs(labPayload);
+        } else {
+          var visResp = await request("/mis/visits?" + params.toString(), "/mis/visits?" + params.toString());
+          var visPayload = visResp.ok ? await visResp.json() : {
+            items: [],
+            empty_reason: "в каталоге нет, попробуйте visit_id"
+          };
+          renderMisVisits(visPayload);
+          renderMisCoverage(visPayload.coverage || {});
+        }
+        var covResp = await request("/mis/coverage?" + params.toString(), "/mis/coverage?" + params.toString());
+        if (covResp.ok) renderMisCoverage(await covResp.json());
+      } catch (error) {
+        if (!isAbortedRequest(error)) showError(error.message || String(error));
+      }
+    }
+    async function pollMisIngest(jobId, visitId) {
+      var tries = 0;
+      async function tick() {
+        tries += 1;
+        var response = await request(
+          "/ingest-visit/" + encodeURIComponent(jobId),
+          "/ingest-visit/" + encodeURIComponent(jobId)
+        );
+        var job = response.ok ? await response.json() : {};
+        if (job.status === "done") {
+          showToast("Визит в аналитике");
+          await loadMisSearch();
+          if (job.case_id) openCase(job.case_id);
+          return;
+        }
+        if (job.status === "error" || tries > 45) {
+          showToast(job.error ? "Ошибка разбора визита" : "Задание ещё в очереди на GCE");
+          await loadMisSearch();
+          return;
+        }
+        window.setTimeout(tick, 2000);
+      }
+      tick();
+      return visitId;
+    }
+    async function ingestMisVisit(visitId) {
+      var response = await request("/ingest-visit", "/ingest-visit", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ visit_id: visitId })
+      });
+      var job = response.ok ? await response.json() : {};
+      if (job.already_in_analytics && job.case_id) {
+        openCase(job.case_id);
+        return;
+      }
+      if (!response.ok) throw new Error(job.detail || "Не удалось поставить разбор");
+      if (job.job_id) pollMisIngest(job.job_id, visitId);
+      else showToast("Визит уже в аналитике");
+      await loadMisSearch();
+    }
+    function bindMisSearchPage() {
+      var form = $("mis-search-form");
+      if (!form || form.getAttribute("data-bound") === "1") return;
+      form.setAttribute("data-bound", "1");
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        state.misQuery = ($("mis-search") && $("mis-search").value || "").trim();
+        loadMisSearch();
+      });
+      document.querySelectorAll("[data-mis-tab]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          state.misTab = btn.getAttribute("data-mis-tab") === "labs" ? "labs" : "visits";
+          syncMisTabs();
+          loadMisSearch();
+        });
+      });
+      document.addEventListener("click", function (event) {
+        var ingest = event.target.closest("[data-mis-ingest]");
+        if (ingest) {
+          ingestMisVisit(ingest.getAttribute("data-mis-ingest")).catch(function (error) {
+            showError(error.message || String(error));
+          });
+          return;
+        }
+        var openBtn = event.target.closest("[data-mis-open]");
+        if (openBtn) openCase(openBtn.getAttribute("data-mis-open"));
+      });
+    }
     async function loadPage(page) {
       beginPageRequestScope();
       $("global-error").hidden = true;
@@ -5977,6 +6194,7 @@
         else if (page === "doctors") await loadDoctorsDimension();
         else if (page === "medications") await loadFamilyDashboard("drug");
         else if (page === "labs") await loadFamilyDashboard("lab");
+        else if (page === "mis") await loadMisSearch();
         else if (page === "reports") {
           await loadReports();
           try { await loadAccessLog(); } catch (e) {}
@@ -6337,6 +6555,7 @@
       document.querySelectorAll(".nav-button").forEach(function (button) {
         button.addEventListener("click", function () { switchPage(button.getAttribute("data-page")); });
       });
+      bindMisSearchPage();
       document.querySelectorAll("[data-go]").forEach(function (button) {
         button.addEventListener("click", function () { switchPage(button.getAttribute("data-go")); });
       });

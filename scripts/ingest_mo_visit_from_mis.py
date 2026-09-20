@@ -64,7 +64,7 @@ def fetch_visit(visit_id: str) -> tuple[dict[str, str], list[dict[str, str]]]:
     meta = cur.fetchone()
     if not meta:
         con.close()
-        raise SystemExit(f"visit_not_found_in_mis_data:{visit_id}")
+        raise LookupError(f"visit_not_found_in_mis_data:{visit_id}")
     cur.execute(
         """
         SELECT id, date, visit_id, patient_id, result
@@ -75,7 +75,7 @@ def fetch_visit(visit_id: str) -> tuple[dict[str, str], list[dict[str, str]]]:
     protocols = cur.fetchall()
     con.close()
     if not protocols:
-        raise SystemExit(f"visit_not_found_in_mis_protocol:{visit_id}")
+        raise LookupError(f"visit_not_found_in_mis_protocol:{visit_id}")
 
     rows: list[dict[str, str]] = []
     for prot in protocols:
@@ -128,23 +128,10 @@ def fetch_visit(visit_id: str) -> tuple[dict[str, str], list[dict[str, str]]]:
     return header, rows
 
 
-def main() -> int:
-    ap = argparse.ArgumentParser()
-    ap.add_argument("--visit-id", required=True)
-    ap.add_argument("--data-root", default=os.environ.get("MO_DATA_ROOT") or "/var/data/medical_exams")
-    ap.add_argument("--env-file", default="/tmp/.env.mis")
-    args = ap.parse_args()
-    _load_env(Path(args.env_file))
-    _load_env(Path("/opt/protocol/.env.mis"))
-
-    header, rows = fetch_visit(str(args.visit_id))
-    day = header["visit_date"]
-    data_root = Path(args.data_root)
+def merge_visit_csv(rows: list[dict[str, str]], data_root: Path, day: str) -> tuple[Path, int]:
     secure = data_root / "secure_cases" / day[:4] / day[5:7]
     secure.mkdir(parents=True, exist_ok=True)
     csv_path = secure / f"mo_{day}.csv"
-
-    # Merge into day CSV if exists.
     existing: dict[str, dict[str, str]] = {}
     fieldnames: list[str] = list(rows[0].keys())
     if csv_path.is_file():
@@ -157,13 +144,16 @@ def main() -> int:
                     existing[key] = row
     for row in rows:
         existing[str(row["id"])] = {**existing.get(str(row["id"]), {}), **row}
-
     with csv_path.open("w", encoding="utf-8", newline="") as handle:
         writer = csv.DictWriter(handle, fieldnames=fieldnames, extrasaction="ignore")
         writer.writeheader()
         for row in existing.values():
             writer.writerow({key: row.get(key, "") for key in fieldnames})
+    return csv_path, len(existing)
 
+
+def run_score_and_recompute(*, csv_path: Path, day: str, data_root: Path) -> dict:
+    secure = csv_path.parent
     old_argv = sys.argv[:]
     try:
         sys.argv = [
@@ -186,31 +176,67 @@ def main() -> int:
     finally:
         sys.argv = old_argv
     if rc not in (0, None):
-        return int(rc or 1)
-
+        raise RuntimeError(f"score_failed_rc_{rc}")
     from scripts.recompute_mo_days import recompute_day
 
-    result = recompute_day(
+    return recompute_day(
         date.fromisoformat(day),
         data_root=data_root,
         warehouse=data_root / "warehouse" / "mo_analytics.sqlite",
         write_reports=True,
     )
-    print(
-        json.dumps(
-            {
-                "ok": True,
-                "header": header,
-                "csv": str(csv_path),
-                "rows_in_day_csv": len(existing),
-                "recompute": result,
-                "ingested_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
-            },
-            ensure_ascii=False,
-            indent=2,
-        )
-    )
-    return 0
+
+
+def ingest_visit(visit_id: str, *, data_root: Path | str | None = None) -> dict:
+    """Fetch one MIS visit, merge CSV, score, upsert warehouse. Raises LookupError."""
+    root = Path(data_root or os.environ.get("MO_DATA_ROOT") or "/var/data/medical_exams")
+    header, rows = fetch_visit(str(visit_id))
+    day = header["visit_date"]
+    csv_path, n_rows = merge_visit_csv(rows, root, day)
+    result = run_score_and_recompute(csv_path=csv_path, day=day, data_root=root)
+    return {
+        "ok": True,
+        "header": {
+            "visit_id": header.get("visit_id") or str(visit_id),
+            "visit_date": day,
+            "specialty": header.get("specialty") or "",
+        },
+        "csv": str(csv_path),
+        "rows_in_day_csv": n_rows,
+        "recompute": result,
+        "ingested_at": datetime.utcnow().strftime("%Y-%m-%dT%H:%M:%SZ"),
+    }
+
+
+def main() -> int:
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--visit-id", default="")
+    ap.add_argument("--data-root", default=os.environ.get("MO_DATA_ROOT") or "/var/data/medical_exams")
+    ap.add_argument("--env-file", default="/tmp/.env.mis")
+    ap.add_argument("--score-csv", default="", help="пропустить МИС, только оценка уже слитого CSV")
+    ap.add_argument("--day", default="")
+    args = ap.parse_args()
+    _load_env(Path(args.env_file))
+    _load_env(Path("/opt/protocol/.env.mis"))
+    data_root = Path(args.data_root)
+    try:
+        if args.score_csv:
+            csv_path = Path(args.score_csv)
+            day = str(args.day or csv_path.stem.replace("mo_", ""))[:10]
+            result = run_score_and_recompute(csv_path=csv_path, day=day, data_root=data_root)
+            print(json.dumps({"ok": True, "csv": str(csv_path), "recompute": result}, ensure_ascii=False))
+            return 0
+        if not args.visit_id:
+            raise SystemExit("need --visit-id or --score-csv")
+        payload = ingest_visit(str(args.visit_id), data_root=data_root)
+        print(json.dumps(payload, ensure_ascii=False, indent=2))
+        return 0
+    except LookupError as exc:
+        print(str(exc), file=sys.stderr)
+        return 2
+    except RuntimeError as exc:
+        print(str(exc), file=sys.stderr)
+        return 1
 
 
 if __name__ == "__main__":

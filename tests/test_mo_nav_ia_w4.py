@@ -1,4 +1,4 @@
-"""W4: 5 рабочих пунктов + Ещё, Обзор = yesterday, алиасы URL."""
+"""W4: 6 рабочих пунктов + Ещё, Обзор = yesterday, алиасы URL включая /mis."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -27,9 +27,10 @@ def test_primary_nav_is_five_plus_more() -> None:
         page = line.split('data-page="', 1)[1].split('"', 1)[0]
         if not in_more:
             primary_pages.append(page)
-    assert primary_pages == ["yesterday", "documents", "doctors", "medications", "labs"]
+    assert primary_pages == ["yesterday", "documents", "mis", "doctors", "medications", "labs"]
     assert "Обзор" in nav
     assert "Найти МО" in nav
+    assert "Поиск МИС" in nav
     assert "Ещё" in nav
     for extra in ("overview", "queue", "reports", "kp-sync", "rceth-sync"):
         assert f'data-page="{extra}"' in nav
@@ -55,7 +56,9 @@ def test_url_aliases_keep_yesterday_and_queue() -> None:
     assert 'state.page === "queue" ? "/methodist/mo/queue"' in APP
     assert 'state.page === "overview" ? "/methodist/mo/overview"' in APP
     assert '@app.get("/methodist/mo/queue"' in SERVER
-    assert '@app.get("/methodist/mo/overview"' in SERVER
+    assert 'location.pathname.endsWith("/mis") ? "mis"' in APP
+    assert 'state.page === "mis" ? "/methodist/mo/mis"' in APP
+    assert '@app.get("/methodist/mo/mis"' in SERVER
 
 
 if __name__ == "__main__":

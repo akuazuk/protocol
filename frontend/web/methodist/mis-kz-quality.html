@@ -23,6 +23,7 @@
         <ul class="nav-list" id="app-nav">
           <li><button class="nav-button" data-page="yesterday" aria-current="page" aria-label="Обзор"><span class="nav-icon" aria-hidden="true">Об</span><span class="nav-text">Обзор</span></button></li>
           <li><button class="nav-button" data-page="documents" aria-label="Найти МО"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-text">Найти МО</span></button></li>
+          <li><button class="nav-button" data-page="mis" aria-label="Поиск МИС"><span class="nav-icon" aria-hidden="true">МИ</span><span class="nav-text">Поиск МИС</span></button></li>
           <li><button class="nav-button" data-page="doctors" aria-label="Врачи"><span class="nav-icon" aria-hidden="true">Вр</span><span class="nav-text">Врачи</span></button></li>
           <li><button class="nav-button" data-page="medications" data-legacy-label="Лекарства" aria-label="Лекарства"><span class="nav-icon" aria-hidden="true">Лк</span><span class="nav-text">Лекарства</span></button></li>
           <li><button class="nav-button" data-page="labs" aria-label="Анализы"><span class="nav-icon" aria-hidden="true">Ан</span><span class="nav-text">Анализы</span></button></li>
@@ -288,6 +289,24 @@
           <div class="card"><h2>Сигналы алгоритма</h2><p class="card-sub">Это кандидаты на разбор, а не подтверждённые дефекты. Клик открывает связанные МО.</p><div id="medications-codes"></div></div>
           <div class="grid"><article class="card span-6"><h2>По специальности</h2><div id="medications-specialty"></div></article><article class="card span-6"><h2>По врачам</h2><p class="card-sub">Распределение замечаний по врачам. Процент от всех МО периода; не рейтинг качества.</p><div id="medications-doctors"></div></article></div>
           <div class="card"><h2>Случаи для проверки</h2><p class="card-sub">Превью с фильтром раздела. Клик открывает полный список.</p><div id="medications-preview"></div></div>
+        </section>
+        <section class="page" id="page-mis" data-page="mis" hidden aria-labelledby="title-mis">
+          <div class="page-head"><div><h1 id="title-mis">Поиск МИС</h1><p>Визиты и анализы из МИС, которых может не быть в складе оценок. Это не KPI склада и не поиск «Найти МО».</p></div></div>
+          <div class="grid">
+            <article class="card span-4"><h2>Покрытие окна</h2><p class="card-sub">оценено / найдено в каталоге МИС - не оценка качества</p><div class="score-ring score-ring--wide" id="mis-coverage-ring"></div></article>
+            <article class="card span-8"><h2>Запрос</h2>
+              <form class="mis-search-form" id="mis-search-form" role="search">
+                <div class="mis-tabs" role="tablist" aria-label="Раздел поиска МИС">
+                  <button class="button secondary compact" type="button" data-mis-tab="visits" aria-pressed="true">Визиты</button>
+                  <button class="button secondary compact" type="button" data-mis-tab="labs">Анализы</button>
+                </div>
+                <label class="filter search-field"><span>Визит, врач, короткий диагноз или название теста</span><input class="control" id="mis-search" type="search" placeholder="visit_id или название теста" autocomplete="off"></label>
+                <button class="button" id="mis-search-submit" type="submit">Искать в МИС</button>
+              </form>
+            </article>
+          </div>
+          <div class="card" id="mis-visits-card"><h2>Визиты</h2><p class="card-sub" id="mis-visits-empty">Введите visit_id или выберите даты календаря.</p><div class="table-wrap"><table><caption class="sr-only">Визиты каталога МИС</caption><thead><tr><th>Визит</th><th>Дата</th><th>Врач</th><th>Специальность</th><th>Филиал</th><th>Диагноз</th><th>Статус</th><th>Действие</th></tr></thead><tbody id="mis-visit-rows"></tbody></table></div></div>
+          <div class="card" id="mis-labs-card" hidden><h2>Анализы</h2><p class="card-sub" id="mis-labs-empty">Поиск по названию теста в складе лаборатории.</p><div id="mis-lab-timeline" class="lab-timeline"></div><div class="table-wrap"><table><caption class="sr-only">Анализы каталога МИС</caption><thead><tr><th>Показатель</th><th>Панель</th><th>Строк</th><th>Последняя дата</th><th>Значение</th></tr></thead><tbody id="mis-lab-rows"></tbody></table></div></div>
         </section>
         <section class="page" id="page-labs" data-page="labs" hidden aria-labelledby="title-labs">
           <div class="page-head"><div><h1 id="title-labs">Анализы</h1><p>Результаты лаборатории в окне визита: не учтены в диагнозе или плане, отклонение, пропуск по КП.</p></div><span class="draft-badge">черновик, не в общей оценке</span></div>

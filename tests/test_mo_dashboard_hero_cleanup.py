@@ -18,9 +18,9 @@ def test_left_menu_has_exactly_seven_visible_pages() -> None:
         line for line in nav.splitlines()
         if 'class="nav-button"' in line and "nav-settings" not in line
     ]
-    # 5 primary + 5 in Ещё; settings stays hidden for accounts admin
-    assert len(visible) == 10
-    for page in ("yesterday", "overview", "queue", "documents", "doctors", "medications", "labs", "reports", "kp-sync", "rceth-sync"):
+    # 6 primary + 5 in Ещё; settings stays hidden for accounts admin
+    assert len(visible) == 11
+    for page in ("yesterday", "overview", "queue", "documents", "mis", "doctors", "medications", "labs", "reports", "kp-sync", "rceth-sync"):
         assert f'data-page="{page}"' in nav
     assert 'data-page="settings"' in nav
     assert 'id="nav-more"' in nav
