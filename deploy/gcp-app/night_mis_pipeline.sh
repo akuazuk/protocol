@@ -326,6 +326,22 @@ p.write_text(json.dumps(meta, ensure_ascii=False, indent=2) + "\n", encoding="ut
 print("inbound ready", "${INBOUND}/mo_${DAY}.csv", "sha=", "${INBOUND_SHA}"[:16]+"…")
 PY
 
+# Каталог визитов МИС для рубрики «Поиск МИС» (без result).
+CATALOG_FROM="$(python3 -c "from datetime import date,timedelta; d=date.fromisoformat('${DAY}'); print((d-timedelta(days=1)).isoformat())")"
+echo "mis catalog ingest ${CATALOG_FROM}..${NEXT}"
+if "${VENV}/bin/python" "$ROOT/scripts/ingest_mo_mis_catalog.py" \
+    --from "$CATALOG_FROM" --to "$NEXT" \
+    --warehouse "$DATA/warehouse/mo_analytics.sqlite"; then
+  echo "mis catalog ingest ok"
+else
+  echo "mis catalog ingest failed (non-fatal)"
+fi
+if "${VENV}/bin/python" "$ROOT/scripts/run_mo_ingest_queue.py" --once; then
+  echo "mis ingest queue ok"
+else
+  echo "mis ingest queue failed (non-fatal)"
+fi
+
 # Лаборатория: вчера + 1 день overlap (опоздавшие строки). Host venv, не protocol-web.
 LAB_FROM="$(python3 -c "from datetime import date,timedelta; d=date.fromisoformat('${DAY}'); print((d-timedelta(days=1)).isoformat())")"
 echo "lab ingest ${LAB_FROM}..${NEXT} (skip-coverage)"

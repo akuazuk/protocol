@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-20-104809Z-mo-workspace-w3"
+BUILD_VERSION = "2026-09-20-115928Z-mo-workspace-w4"
 
 
 def _app_version() -> str:
@@ -13401,6 +13401,97 @@ def api_methodist_mo_export_download(job_id: str, request: "Request") -> FileRes
     )
 
 
+def _kick_mis_ingest_worker() -> None:
+    """В protocol-web нет PyMySQL: очередь обрабатывает GCE host `run_mo_ingest_queue.sh`."""
+    from clinical_knowledge.mo_mis_catalog import mis_dsn_available
+
+    try:
+        import pymysql  # noqa: F401
+    except ImportError:
+        return
+    if not mis_dsn_available():
+        return
+
+    def _drain() -> None:
+        from clinical_knowledge.mo_mis_catalog import process_next_ingest_job
+
+        try:
+            process_next_ingest_job()
+        except Exception:
+            return
+
+    threading.Thread(target=_drain, name="mo-mis-ingest", daemon=True).start()
+
+
+@app.get("/api/methodist/mo/mis/visits")
+def api_methodist_mo_mis_visits(
+    request: "Request",
+    q: str = Query("", max_length=200),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_mis_catalog import search_visits
+
+    return search_visits(q=q, date_from=date_from, date_to=date_to)
+
+
+@app.get("/api/methodist/mo/mis/labs")
+def api_methodist_mo_mis_labs(
+    request: "Request",
+    q: str = Query("", max_length=200),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    visit_id: str = Query("", max_length=64),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_mis_catalog import search_labs
+
+    return search_labs(q=q, date_from=date_from, date_to=date_to, visit_id=visit_id)
+
+
+@app.get("/api/methodist/mo/mis/coverage")
+def api_methodist_mo_mis_coverage(
+    request: "Request",
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+) -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_mis_catalog import coverage_payload
+
+    return coverage_payload(date_from=date_from, date_to=date_to)
+
+
+@app.post("/api/methodist/mo/ingest-visit")
+def api_methodist_mo_ingest_visit(request: "Request", body: dict[str, Any]) -> dict:
+    _require_methodist_auth(request)
+    if _mo_role(request) not in {"methodist", "lead", "admin"}:
+        raise HTTPException(status_code=403, detail="Недостаточно прав для разбора визита МИС.")
+    from clinical_knowledge.mo_mis_catalog import enqueue_ingest_job
+
+    visit_id = str((body or {}).get("visit_id") or "").strip()
+    try:
+        job = enqueue_ingest_job(visit_id=visit_id, actor=_mo_actor(request))
+    except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+    except RuntimeError as exc:
+        raise HTTPException(status_code=409, detail=str(exc)) from exc
+    if job.get("status") == "queued":
+        _kick_mis_ingest_worker()
+    return job
+
+
+@app.get("/api/methodist/mo/ingest-visit/{job_id}")
+def api_methodist_mo_ingest_job(job_id: str, request: "Request") -> dict:
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_mis_catalog import get_ingest_job
+
+    job = get_ingest_job(str(job_id)[:32])
+    if not job:
+        raise HTTPException(status_code=404, detail="Задание не найдено")
+    return job
+
+
 @app.post("/api/methodist/patient-quality/refresh")
 def api_methodist_patient_quality_refresh(request: "Request") -> dict:
     """Пересобрать ночной отчёт B2C (агрегация + LLM/эвристика, без email)."""
@@ -14992,6 +15083,7 @@ if has_frontend_file("index.html"):
     @app.get("/methodist/mo/cases", include_in_schema=False)
     @app.get("/methodist/mo/queue", include_in_schema=False)
     @app.get("/methodist/mo/overview", include_in_schema=False)
+    @app.get("/methodist/mo/mis", include_in_schema=False)
     def _serve_methodist_mo() -> FileResponse:
         """Канонический CRM/BI workspace массового анализа МО."""
         p = frontend_file("mis-kz-quality.html")

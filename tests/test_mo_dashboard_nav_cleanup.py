@@ -11,7 +11,7 @@ APP = (ROOT / "frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
 def test_nav_only_seven_visible_and_settings_hidden() -> None:
     nav = HTML.split('id="app-nav"')[1].split("</ul>")[0]
     visible = [l for l in nav.splitlines() if "nav-button" in l and "nav-settings" not in l]
-    assert len(visible) == 10
+    assert len(visible) == 11
     assert 'data-page="medications"' in nav
     assert 'data-page="labs"' in nav
     assert 'data-page="rceth-sync"' in nav

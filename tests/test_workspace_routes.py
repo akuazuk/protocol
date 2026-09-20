@@ -42,6 +42,7 @@ def test_methodist_mo_dashboard_has_canonical_routes() -> None:
         "/methodist/mo/cases",
         "/methodist/mo/queue",
         "/methodist/mo/overview",
+        "/methodist/mo/mis",
     ):
         response = client.get(path)
         assert response.status_code == 200
