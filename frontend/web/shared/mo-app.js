@@ -3467,27 +3467,96 @@
         "</span></p>" +
         (cont.usage_ru ? '<p class="card-sub">' + esc(cont.usage_ru) + "</p>" : "");
     }
-    function renderHistoryCompact(bundle, assessment) {
+    function historyCorrectionStatus(bundle, assessment) {
       assessment = assessment || {};
-      if (!bundle || !bundle.summary) {
-        return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
-          '<p class="empty">Нет prior - коррекции плана не оцениваются.</p></div>';
-      }
+      bundle = bundle || {};
       var summary = bundle.summary || {};
       var n = Number(summary.n_visits || 0);
-      var sameDoc = (bundle.same_doctor || []).length;
-      var sameSpec = (bundle.same_specialty || []).length;
+      var tier = String(bundle.tier || "");
       var hasAssessment = assessment.contract_version != null;
       var anyPrior = hasAssessment ? assessment.any_prior_exists === true : n > 0;
       var relevantPrior = hasAssessment
         ? assessment.relevant_episode_prior_exists === true
-        : n > 0;
+        : (bundle.same_doctor || []).length > 0;
       var correctionAssessable = hasAssessment
         ? assessment.correction_assessable === true
-        : n > 0;
-      var prior = correctionAssessable ? "коррекция оценивается" :
-        (relevantPrior ? "релевантный prior без сравнимого плана" :
-          (anyPrior ? "prior другого эпизода" : "нет prior"));
+        : false;
+      if (tier === "first_contact" || (!anyPrior && n === 0)) {
+        return {
+          code: "first_contact",
+          chip: "первый контакт",
+          tone: "muted",
+          line: "первый контакт - коррекции плана не оцениваются"
+        };
+      }
+      if (correctionAssessable) {
+        return {
+          code: "assessable",
+          chip: "коррекция оценивается",
+          tone: "good",
+          line: "коррекция плана оценивается по предыдущему визиту эпизода"
+        };
+      }
+      if (relevantPrior) {
+        return {
+          code: "no_comparable_plan",
+          chip: "нет сравнимого плана",
+          tone: "review",
+          line: "релевантный prior есть, сравнимого плана прошлого визита нет"
+        };
+      }
+      if (anyPrior) {
+        return {
+          code: "other_episode",
+          chip: "другой эпизод",
+          tone: "muted",
+          line: "prior есть, но это другой эпизод - коррекции плана не оцениваются"
+        };
+      }
+      return {
+        code: "no_prior",
+        chip: "нет prior",
+        tone: "muted",
+        line: "нет предыдущего визита - коррекции плана не оцениваются"
+      };
+    }
+    function renderHistoryTimeline(bundle, status) {
+      var visits = [];
+      function pushVisit(visit, shelf) {
+        if (!visit || typeof visit !== "object") return;
+        visits.push({
+          date: visit.visit_date || visit.date || "",
+          code: visit.diagnosis_code || "",
+          id: visit.visit_id || visit.mis_id || "",
+          shelf: shelf
+        });
+      }
+      (bundle.same_doctor || []).slice(0, 4).forEach(function (v) { pushVisit(v, "этот врач"); });
+      if (!visits.length) {
+        (bundle.same_specialty || []).slice(0, 3).forEach(function (v) { pushVisit(v, "специальность"); });
+      }
+      visits.sort(function (a, b) { return String(a.date).localeCompare(String(b.date)); });
+      var items = visits.slice(-5).map(function (visit) {
+        var open = visit.id
+          ? ('<button type="button" class="linkish" data-case="' + esc(visit.id) + '">' +
+            esc(visit.date || "дата н/д") + "</button>")
+          : esc(visit.date || "дата н/д");
+        return "<li><span class=\"history-timeline-dot\"></span>" + open +
+          (visit.code ? (" · " + esc(visit.code)) : "") +
+          (visit.shelf ? ('<span class="card-sub"> · ' + esc(visit.shelf) + "</span>") : "") +
+          "</li>";
+      }).join("");
+      items += '<li class="history-timeline-now"><span class="history-timeline-dot"></span>этот визит' +
+        (status.code === "first_contact" ? " · первый в эпизоде" : "") + "</li>";
+      return '<ol class="history-timeline">' + items + "</ol>";
+    }
+    function renderHistoryCompact(bundle, assessment) {
+      assessment = assessment || {};
+      if (!bundle || !bundle.summary) {
+        return '<div class="detail-block patient-history-block"><h3>История эпизода</h3>' +
+          '<p class="empty">Нет prior - коррекции плана не оцениваются.</p></div>';
+      }
+      var status = historyCorrectionStatus(bundle, assessment);
       var reasonLabels = {
         history_unavailable: "история недоступна",
         no_prior_visit: "нет предыдущего визита",
@@ -3498,18 +3567,28 @@
         return reasonLabels[code] || code;
       }).join("; ");
       var deep = bundle.deep || {};
-      var deepSlots = (deep.already_slots || []).join(", ");
-      var deepLine = deep.prior_visit_date
-        ? ('<p class="card-sub">Слоты прошлого визита ' + esc(deep.prior_visit_date) +
-          (deepSlots ? (": " + esc(deepSlots)) : "") + "</p>")
+      var priorDate = deep.prior_visit_date || "";
+      if (!priorDate && (bundle.same_doctor || [])[0]) {
+        priorDate = (bundle.same_doctor[0].visit_date || bundle.same_doctor[0].date || "");
+      }
+      var deepSlots = (deep.already_slots || []).filter(Boolean);
+      var deepLine = "";
+      if (status.code !== "first_contact" && priorDate) {
+        deepLine = '<p class="card-sub">Предыдущий визит эпизода: ' + esc(priorDate) +
+          (deepSlots.length ? (" · слоты: " + esc(deepSlots.join(", "))) : "") + "</p>";
+      }
+      var firstContactNote = status.code === "first_contact"
+        ? '<p class="empty">Первый контакт с этим врачом - предыдущего визита эпизода нет, коррекции плана не оцениваются.</p>'
         : "";
-      return '<div class="detail-block patient-history-block"><h3>История пациента</h3>' +
+      return '<div class="detail-block patient-history-block"><h3>История эпизода</h3>' +
+        '<p><span class="status ' + status.tone + '">' + esc(status.chip) + "</span> " +
+        esc(status.line) + "</p>" +
+        firstContactNote +
         renderHistoryContinuity(bundle.continuity) +
         deepLine +
-        '<p>К этому врачу: ' + sameDoc + ' · К специальности: ' + sameSpec +
-        ' · Всего: ' + n + ' · Для коррекций плана: ' + prior + '</p>' +
+        renderHistoryTimeline(bundle, status) +
         (exclusions ? '<p class="card-sub">Почему не оценивается: ' + esc(exclusions) + ".</p>" : "") +
-        '<details><summary>Показать визиты</summary>' + renderPatientHistory(bundle) + '</details></div>';
+        '<details><summary>Полки визитов</summary>' + renderPatientHistory(bundle) + '</details></div>';
     }
     function renderLabReconcile(recon) {
       if (!recon) return "";

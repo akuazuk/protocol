@@ -1405,6 +1405,28 @@ kbd {
 .medication-normative-card p { margin: 4px 0; }
 .medication-normative-card .evidence-card__meta { margin: 8px 0; padding-left: 20px; }
 .history-labs-grid { display: grid; gap: 10px; }
+.history-timeline {
+  list-style: none;
+  margin: 10px 0 4px;
+  padding: 0 0 0 14px;
+  border-left: 2px solid var(--line);
+}
+.history-timeline li {
+  position: relative;
+  padding: 0 0 10px 12px;
+}
+.history-timeline-dot {
+  position: absolute;
+  left: -19px;
+  top: 6px;
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: var(--muted);
+}
+.history-timeline-now .history-timeline-dot {
+  background: var(--accent);
+}
 .case-workspace-grid--zones .case-workspace-clinical {
   background: #fbfcfd;
 }
