@@ -2301,9 +2301,16 @@
       return '<span class="status ' + tone + ' overall-grade-chip overall-grade--' + esc(id) +
         '" title="' + esc(hint) + '">' + esc(label) + "</span>";
     }
+    function protocolIsMatched(kpStatus) {
+      var status = String(kpStatus || "").toLowerCase();
+      return status === "matched" || status === "applicable";
+    }
     function zoneBandChip(band, kpStatus) {
+      if (kpStatus != null && String(kpStatus).trim() !== "" && !protocolIsMatched(kpStatus)) {
+        return '<span class="status muted">протокол не подобран</span>';
+      }
       var b = String(band || "na");
-      if (b === "na" && kpStatus === "unmatched") {
+      if (b === "na" && !protocolIsMatched(kpStatus)) {
         return '<span class="status muted">протокол не подобран</span>';
       }
       var map = {
@@ -3128,13 +3135,18 @@
       ].map(function (pair) {
         var z = zones[pair[0]] || {};
         var why = "";
-        (zones.criteria || []).some(function (c) {
-          if (String(c.zone || "") === zoneMap[pair[0]] && (c.score === 0 || c.score === 0.5 || c.na_reason)) {
-            why = c.reason || "";
-            return true;
-          }
-          return false;
-        });
+        var unmatchedPlan = pair[0] === "zone2b" && !protocolIsMatched(z.kp_status);
+        if (unmatchedPlan) {
+          why = "протокол не подобран - план не штрафуем за несоответствие протоколу";
+        } else {
+          (zones.criteria || []).some(function (c) {
+            if (String(c.zone || "") === zoneMap[pair[0]] && (c.score === 0 || c.score === 0.5 || c.na_reason)) {
+              why = c.reason || "";
+              return true;
+            }
+            return false;
+          });
+        }
         return '<article class="zone-card zone-card--' + esc(z.band || "na") + '" data-zone-filter="' + pair[0] + '">' +
           '<div class="zone-card-label">' + esc(z.label_ru || pair[1]) + '</div>' +
           '<div class="zone-card-band">' + zoneBandChip(z.band, z.kp_status) + '</div>' +
@@ -3204,6 +3216,7 @@
       ].forEach(function (pair) {
         var band = String((zones[pair[0]] || {}).band || "na");
         if (band === "ok" || band === "na") return;
+        if (pair[0] === "zone2b" && !protocolIsMatched((zones.zone2b || {}).kp_status)) return;
         (zones.criteria || []).some(function (item) {
           if (String(item.zone || "") !== pair[2]) return false;
           if (!(item.score === 0 || item.score === 0.5)) return false;
@@ -3578,7 +3591,10 @@
       ];
       var all = zones.criteria || [];
       if (!all.length) return "";
+      var planUnmatched = !protocolIsMatched((zones.zone2b || {}).kp_status);
+      var naPlanReason = "протокол не подобран - критерий плана не штрафуем за несоответствие протоколу";
       var weak = all.filter(function (c) {
+        if (planUnmatched && String(c.zone || "") === "plan") return false;
         return c.score === 0 || c.score === 0.5 || (c.score == null && c.na_reason);
       });
       var brief = weak.length
@@ -3588,16 +3604,23 @@
             esc(item.reason || "нужна проверка") + '</li>';
         }).join("") + '</ul>'
         : '<p class="card-sub">По критериям методики замечаний нет (все оценённые пункты = 1).</p>';
+      if (planUnmatched) {
+        brief = '<p class="card-sub">' + esc(naPlanReason) + "</p>" + brief;
+      }
       var sections = zoneOrder.map(function (pair) {
         var rows = all.filter(function (c) { return String(c.zone || "") === pair[0]; });
         if (!rows.length) return "";
         var body = rows.map(function (item) {
-          var tone = item.score === 1 || item.score === 1.0 ? "good"
-            : (item.score === 0.5 ? "review" : (item.score === 0 ? "critical" : "muted"));
+          var unmatched = planUnmatched && pair[0] === "plan";
+          var tone = unmatched ? "muted"
+            : (item.score === 1 || item.score === 1.0 ? "good"
+              : (item.score === 0.5 ? "review" : (item.score === 0 ? "critical" : "muted")));
+          var label = unmatched ? "н/д" : (item.score_label == null ? "н/д" : String(item.score_label));
+          var reason = unmatched ? naPlanReason : (item.reason || "");
           return '<tr class="zones-crit-row zones-crit-row--' + tone + '"><td>' +
             esc(item.title || item.id) + '</td><td><span class="status ' + tone + '">' +
-            esc(item.score_label == null ? "н/д" : String(item.score_label)) +
-            '</span></td><td>' + esc(item.reason || "") + '</td></tr>';
+            esc(label) +
+            '</span></td><td>' + esc(reason) + '</td></tr>';
         }).join("");
         return '<h4 class="zones-crit-group">' + esc(pair[1]) + '</h4>' +
           '<div class="table-wrap"><table class="zones-criteria-table"><thead><tr>' +
