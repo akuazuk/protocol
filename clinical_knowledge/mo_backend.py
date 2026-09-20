@@ -422,6 +422,20 @@ def _describe_empty_state(*, total_records: int, filtered_records: int, params: 
                 "title": "Диагноз не найден",
                 "hint": "Поиск смотрит клинический диагноз склада, врача, код МКБ и visit_id. Уточните подстроку или выберите подсказку.",
             }
+        finding_codes = str(params.get("finding_codes") or "").strip()
+        if finding_codes:
+            return {
+                "reason_code": "finding_miss",
+                "title": "Нет случаев с этим замечанием",
+                "hint": "Снимите чип замечания или расширьте период. Клик по коду в Лекарствах и Анализах ставит finding_codes, не оценку.",
+            }
+        queue_band = str(params.get("queue_band") or "").strip()
+        if queue_band:
+            return {
+                "reason_code": "queue_band_miss",
+                "title": "В очереди этой полосы пусто",
+                "hint": "«Только критические» режет queue_band, не шкалу Хорошо/Слабо. Снимите полосу или расширьте период.",
+            }
         applied = [k for k, v in params.items() if v not in (None, "", [], False)]
         return {
             "reason_code": "filters_excluded_all",

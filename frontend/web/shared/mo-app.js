@@ -1423,6 +1423,7 @@
     }
     function switchPage(page, push) {
       if (state.openCaseId && push !== false) closeDrawer(true);
+      if (page === "overview") page = "yesterday";
       if (REMOVED_PAGES[page]) page = (page === "access-log" || page === "data-quality") ? "reports" : "documents";
       if (!PAGE_TITLES[page]) page = "yesterday";
       if (isExpertMode() && !EXPERT_PAGES[page]) page = "yesterday";
@@ -6289,7 +6290,7 @@
       $("announcer").textContent = "Представление удалено";
     }
     function commandItems() {
-      var items = Object.keys(PAGE_TITLES).map(function (page) {
+      var items = Object.keys(PAGE_TITLES).filter(function (page) { return page !== "overview"; }).map(function (page) {
         return { label: "Перейти: " + PAGE_TITLES[page], action: function () { switchPage(page); } };
       });
       items.push(
@@ -6409,10 +6410,10 @@
           '<button class="button secondary compact" type="button" data-col-preset="' + key + '" data-preset="work">Работа</button>' +
           '<button class="button secondary compact" type="button" data-col-preset="' + key + '" data-preset="review">Проверка</button>' +
           '</div>' +
-          '<div class="filter-options">' + COLUMN_MAP[key].map(function (label, idx) {
+          '<details class="column-all"><summary>Все колонки</summary><div class="filter-options">' + COLUMN_MAP[key].map(function (label, idx) {
             return '<label class="filter-option"><input type="checkbox" data-col-key="' + key + '" data-col-index="' + idx + '"' +
               (state.columnVisible[key][idx] === false ? '' : ' checked') + '><span>' + esc(label) + '</span></label>';
-          }).join('') + '</div>';
+          }).join('') + '</div></details>';
       }
       block("documents", "columns-manager-doc");
       block("queue", "columns-manager-queue");
