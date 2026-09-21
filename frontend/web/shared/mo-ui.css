@@ -934,6 +934,10 @@ body.is-inspecting .drawer.case-workspace {
   border-radius: 12px;
   background: var(--surface-2);
 }
+.case-workspace-decision .methodist-decision-panel.methodist-decision-panel--dock {
+  position: sticky;
+  bottom: 0;
+}
 .methodist-decision-panel .verdict-row {
   display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin: 10px 0;
 }
@@ -1284,6 +1288,10 @@ kbd {
   .case-workspace-clinical,
   .case-workspace-decision { overflow: visible; border-right: 0; }
   .case-workspace-decision .methodist-decision-panel { position: static; }
+  .case-workspace-decision .methodist-decision-panel.methodist-decision-panel--dock {
+    position: sticky;
+    bottom: 0;
+  }
   .methodist-decision-panel .verdict-row,
   .methodist-decision-panel .decision-meta-row { grid-template-columns: 1fr; }
   .control, .filter-pop summary { max-width: none; }
