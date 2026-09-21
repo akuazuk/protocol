@@ -103,6 +103,28 @@ def utc_now() -> str:
     return datetime.now(timezone.utc).replace(microsecond=0).isoformat().replace("+00:00", "Z")
 
 
+# Логин и дашборд пишут в тот же sqlite, что и пересчёт витрины. Без явного
+# busy_timeout Python ждёт ~5 с и отдаёт 500, пока upsert держит запись.
+WAREHOUSE_BUSY_TIMEOUT_MS = 30_000
+
+
+def connect_warehouse(
+    path: Path,
+    *,
+    timeout_sec: float | None = None,
+) -> sqlite3.Connection:
+    """Открыть витрину с ожиданием занятой записи, не с падением через 5 с."""
+    timeout = (
+        float(timeout_sec)
+        if timeout_sec is not None
+        else WAREHOUSE_BUSY_TIMEOUT_MS / 1000.0
+    )
+    conn = sqlite3.connect(str(path), timeout=timeout)
+    conn.row_factory = sqlite3.Row
+    conn.execute(f"PRAGMA busy_timeout={int(timeout * 1000)}")
+    return conn
+
+
 def minsk_today(now: datetime | None = None) -> date:
     current = now or datetime.now(MINSK)
     if current.tzinfo is None:
@@ -1440,7 +1462,7 @@ def _ensure_columns(db: sqlite3.Connection, table: str, columns: Mapping[str, st
 
 def initialize_warehouse(path: Path) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
-    with sqlite3.connect(path) as db:
+    with connect_warehouse(path) as db:
         db.executescript(
             """
             PRAGMA journal_mode=WAL;
@@ -2292,7 +2314,7 @@ def upsert_warehouse(
         "noncompliant": 0,
         "unscored": 0,
     }
-    with sqlite3.connect(path) as db:
+    with connect_warehouse(path) as db:
         seen_ids: list[str] = []
         for raw in raw_rows:
             mis_id = str(raw.get("id") or "")
@@ -2406,6 +2428,7 @@ def upsert_warehouse(
                 )
 
                 diagnosis_text = short_diagnosis_text_for_warehouse(resolve_case)
+                hist_bundle: Mapping[str, Any] | None = None
                 if patient_key:
                     hist_case = {
                         "patient_key": patient_key,
@@ -2425,15 +2448,10 @@ def upsert_warehouse(
                         hist_bundle = attach_bundle_to_case(hist_case, warehouse=db)
                         history_prior_n = int((hist_bundle.get("summary") or {}).get("n_visits") or 0)
                         history_tier = str(hist_bundle.get("tier") or "")
-                        upsert_history_cache(
-                            db,
-                            patient_key=patient_key,
-                            as_of_date=visit_date,
-                            bundle=hist_bundle,
-                        )
                         if isinstance(case, dict):
                             case["_patient_history"] = hist_bundle
                     except Exception:  # noqa: BLE001
+                        hist_bundle = None
                         history_prior_n = 0
                         history_tier = ""
                 eligible_rows_count += 1
@@ -2540,6 +2558,16 @@ def upsert_warehouse(
                     reg55_band_day[band55] += 1
                 except Exception:  # noqa: BLE001
                     reg55_band_day["unscored"] += 1
+                if patient_key and hist_bundle is not None:
+                    try:
+                        upsert_history_cache(
+                            db,
+                            patient_key=patient_key,
+                            as_of_date=visit_date,
+                            bundle=hist_bundle,
+                        )
+                    except Exception:  # noqa: BLE001
+                        pass
             payload = json.dumps(raw, sort_keys=True, default=_json_default)
             source_hash = hashlib.sha256(payload.encode("utf-8")).hexdigest()
             assessment = _assessment_metadata(
@@ -2753,6 +2781,7 @@ def upsert_warehouse(
                     (code, name, name.split(",")[0][:80]),
                 )
                 written["dim_service"] += 1
+            db.commit()
 
         if day_key:
             moment = date.fromisoformat(day_key)

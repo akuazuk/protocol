@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-21-155929Z-mo-u3-trend-clear-band"
+BUILD_VERSION = "2026-09-21-184253Z-warehouse-lock-alerts"
 
 
 def _app_version() -> str:

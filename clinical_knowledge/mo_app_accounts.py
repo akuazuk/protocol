@@ -14,7 +14,7 @@ from contextlib import closing
 from datetime import datetime, timedelta, timezone
 from typing import Any
 
-from .mo_backend import _connect, _utc
+from .mo_backend import _connect, _db_path, _utc
 
 SESSION_TTL_HOURS = 12
 SESSION_HEADER = "x-methodist-session"
@@ -37,6 +37,7 @@ REPORTS_ALLOWED_PREFIXES = (
     "/api/methodist/mo/meta",
 )
 
+_APP_SCHEMA_READY_PATH: str | None = None
 APP_SCHEMA_SQL = """
 CREATE TABLE IF NOT EXISTS crm_app_user (
   user_id TEXT PRIMARY KEY,
@@ -65,12 +66,18 @@ _DATE_RE = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 
 
 def ensure_app_accounts_schema(conn: sqlite3.Connection | None = None) -> None:
+    global _APP_SCHEMA_READY_PATH
+    path = _db_path()
+    path_key = str(path.resolve()) if path.exists() else str(path)
+    if _APP_SCHEMA_READY_PATH == path_key:
+        return
     own = conn is None
     db = conn or _connect()
     try:
         db.executescript(APP_SCHEMA_SQL)
         if own:
             db.commit()
+        _APP_SCHEMA_READY_PATH = str(path.resolve()) if path.exists() else path_key
     finally:
         if own:
             db.close()
