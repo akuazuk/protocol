@@ -3371,7 +3371,7 @@
         renderEvidencePanel(
           "evidence-meds",
           "Назначения",
-          renderMedicationNormativeCards(data.medication_normative_cards),
+          renderMedicationNormativeCards(data.medication_normative_cards, data.findings),
           openId
         ) +
         renderEvidencePanel(
@@ -3829,58 +3829,84 @@
         '<div class="history-labs-grid">' + renderHistoryCompact(history, historyAssessment) + renderLabBundle(lab) +
         "</div></section>";
     }
-    function renderMedicationNormativeCards(payload) {
+    function medicationRiskFindings(card, findings) {
+      var assignment = (card && card.assignment) || {};
+      var inn = String(assignment.inn || "").toLowerCase();
+      var name = String(assignment.drug_name || "").toLowerCase();
+      return (findings || []).filter(function (finding) {
+        var code = String(finding.code || finding.finding_code || "");
+        if (code !== "C_ddi" && code !== "C_high_alert_no_dose") return false;
+        var blob = [
+          finding.title_ru, finding.title, finding.evidence, finding.span_ru,
+          finding.evidence_span, finding.requirement_ru
+        ].join(" ").toLowerCase();
+        if (inn && blob.indexOf(inn) >= 0) return true;
+        return name.length >= 4 && blob.indexOf(name) >= 0;
+      });
+    }
+    function kpSchemeLabel(status) {
+      if (status === "in_scheme") return "в схеме";
+      if (status === "not_in_scheme") return "нет в схеме КП";
+      if (status === "no_drugs_in_kp") return "в КП нет препаратов";
+      return "протокол не подобран";
+    }
+    function renderMedicationNormativeCards(payload, findings) {
       payload = payload || {};
       var cards = payload.cards || [];
       if (!cards.length) {
         return '<section class="detail-block medication-normative-cards" id="medication-normative-cards-host">' +
-          '<h3>Назначения и источники</h3><p class="empty">Структурированные назначения не распознаны.</p></section>';
+          '<h3>Назначения и источники</h3>' +
+          '<p class="empty">Структурированные назначения не распознаны.</p></section>';
       }
-      var sourceLabels = {
-        rceth_label: "Инструкция препарата",
-        national_protocol: "Клинический протокол",
-        local_reg55_pack: "Локальная методика"
-      };
       var rows = cards.slice(0, 20).map(function (card) {
         var assignment = card.assignment || {};
-        var fact = card.patient_fact || {};
+        var rceth = card.rceth || {};
+        var kp = card.kp_scheme || {};
         var title = assignment.drug_name || assignment.inn || "Препарат";
         var dose = [assignment.dose_value, assignment.dose_unit].filter(function (value) {
           return value != null && value !== "";
         }).join(" ");
         var regimen = [dose, assignment.frequency, assignment.duration, assignment.route]
           .filter(Boolean).join(" · ");
-        var sources = (card.instructions || []).map(function (source) {
-          var label = sourceLabels[source.source] || source.source || "Источник";
-          var revision = source.revision ? (" · ред. " + source.revision) : "";
-          var local = source.normative === false ? " · не норматив" : "";
-          return "<li>" + esc(label) + esc(revision) + esc(local) + "</li>";
-        }).join("");
-        var protocol = card.protocol_check === "evaluated"
-          ? "Проверка по протоколу выполнена"
-          : "Проверка по протоколу не выполнена";
-        return '<article class="evidence-card medication-normative-card">' +
-          '<div class="evidence-card__span"><strong>' + esc(title) + '</strong>' +
-          '<span class="badge badge--shadow">черновик</span></div>' +
-          '<p>' + esc(regimen || "Доза и режим не распознаны") + '</p>' +
-          '<p class="card-sub">Статус: ' + esc(assignment.activity_status || "unknown") +
-          ' · факт: ' + esc(fact.assertion || "unknown") +
-          ' · субъект: ' + esc(fact.subject || "unknown") + '</p>' +
-          '<p class="card-sub">' + esc(protocol) + '</p>' +
-          (sources ? '<ul class="evidence-card__meta">' + sources + "</ul>" : "") +
-          ((card.uncertainty_reason_codes || []).length
-            ? '<details><summary>Ограничения проверки</summary><p class="card-sub">' +
-              esc(card.uncertainty_reason_codes.join(", ")) + '</p></details>'
-            : "") + "</article>";
+        var draft = card.draft === true || (card.draft == null && !rceth.available && !kp.has_scheme);
+        var badge = draft
+          ? '<span class="status review">черновик</span>'
+          : (rceth.available
+            ? '<span class="status good">по инструкции реестра' +
+              (rceth.revision ? (", ред. " + esc(rceth.revision)) : "") + "</span>"
+            : '<span class="status good">по схеме КП</span>');
+        var rcethCell = rceth.available
+          ? ('<div><strong>4.1</strong> ' + esc(rceth.indications_4_1 || "текст показаний не извлечён") + "</div>" +
+            "<div><strong>4.3</strong> " + esc(rceth.contraindications_4_3 || "текст противопоказаний не извлечён") + "</div>" +
+            (rceth.revision ? '<p class="card-sub">ред. ' + esc(rceth.revision) + "</p>" : ""))
+          : '<p class="card-sub">инструкции в скачанном реестре нет - проверка по КП и DDI</p>';
+        var risks = medicationRiskFindings(card, findings);
+        var riskCell = risks.length
+          ? risks.map(function (finding) {
+            var label = finding.code === "C_high_alert_no_dose" ? "high-alert" : "DDI";
+            return '<span class="status critical">' + esc(label) + "</span> " +
+              esc(finding.title_ru || finding.title || finding.code || "риск");
+          }).join("<br>")
+          : '<span class="card-sub">нет сигнала</span>';
+        return '<tr class="med-normative-row">' +
+          "<td><strong>" + esc(title) + "</strong> " + badge + "</td>" +
+          "<td>" + esc(regimen || "доза не распознана") + "</td>" +
+          "<td>" + esc(kpSchemeLabel(kp.status)) +
+          (kp.match_name ? '<p class="card-sub">' + esc(kp.match_name) + "</p>" : "") + "</td>" +
+          "<td>" + rcethCell + "</td>" +
+          '<td class="med-normative-risk">' + riskCell + "</td></tr>";
       }).join("");
       var methodology = payload.methodology || {};
       return '<section class="detail-block medication-normative-cards" id="medication-normative-cards-host">' +
         '<h3>Назначения и источники</h3>' +
-        '<p class="card-sub">№55, раздел V - нормативная рамка. №127 - вспомогательный источник. ' +
-        'Профильный pack - локальная адаптация, не отдельный норматив.</p>' +
+        '<p class="card-sub">Контекст разбора, не зона плана. DDI и high-alert - полоса риска. ' +
+        "№55, раздел V - нормативная рамка. №127 - вспомогательный источник.</p>" +
         (methodology.local_pack_label
           ? '<p class="card-sub">Локальный pack: ' + esc(methodology.local_pack_label) + ".</p>"
-          : "") + '<div class="medication-normative-list">' + rows + "</div></section>";
+          : "") +
+        '<div class="med-normative-wrap"><table class="med-normative-table">' +
+        "<thead><tr><th>Препарат</th><th>Доза</th><th>КП</th><th>Rceth</th><th>Риск</th></tr></thead>" +
+        "<tbody>" + rows + "</tbody></table></div></section>";
     }
     function renderCase(data, scope) {
       if (scope && isStaleCaseScope(scope)) return;
@@ -4005,7 +4031,7 @@
           '<details class="detail-block mo-secondary-details"><summary>Черновик модели</summary>' +
           renderLlmActionJudge(llmJudge, sourceDocument, item) + "</details>" +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
-          renderMedicationNormativeCards(data.medication_normative_cards) +
+          renderMedicationNormativeCards(data.medication_normative_cards, findings) +
           serviceHtml + "</details>" +
           '</div>' + decisionHtml + '</div></div>';
       }
@@ -4352,7 +4378,8 @@
             var medicationCards = $("medication-normative-cards-host");
             if (medicationCards) {
               medicationCards.outerHTML = renderMedicationNormativeCards(
-                suggest.medication_normative_cards
+                suggest.medication_normative_cards,
+                state.caseDetail.findings || ((state.caseDetail.record || {}).findings)
               );
             }
           }
