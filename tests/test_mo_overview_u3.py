@@ -20,6 +20,7 @@ def test_trend_click_opens_find_mo_with_day_and_zone() -> None:
     assert 'period: "custom"' in chunk
     assert "dateFrom: day" in chunk
     assert "zoneFilter: zoneKeyFromSeriesName(seriesName)" in chunk
+    assert 'zoneBandFilter: ""' in chunk
     assert "openTrendDayCases(dates[params.dataIndex], params.seriesName)" in APP
     dynamics = APP.split("function renderScoreDynamics", 1)[1].split(
         "function renderYesterdayScoreDashboard", 1

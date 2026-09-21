@@ -1735,6 +1735,7 @@
         dateFrom: day,
         dateTo: day,
         zoneFilter: zoneKeyFromSeriesName(seriesName),
+        zoneBandFilter: "",
         attentionOnly: false,
         page: "documents"
       });
