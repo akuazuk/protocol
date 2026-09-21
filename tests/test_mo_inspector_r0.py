@@ -9,7 +9,7 @@ CSS = (ROOT / "frontend" / "web" / "shared" / "mo-ui.css").read_text(encoding="u
 def test_protocol_strip_is_outside_model_draft() -> None:
     zones_chunk = APP.split("if (useZonesUi)", 1)[1].split("} else {", 1)[0]
     assert 'id="protocol-suggest-host"' in zones_chunk
-    assert "renderCaseWhy(zones, assessment)" in zones_chunk
+    assert "renderCaseWhy(zones, assessment, data.reg55)" in zones_chunk
     assert "renderEvidenceAccordion(data, history, zones)" in zones_chunk
     assert "Черновик модели - не меняет оценку склада" in zones_chunk
     assert zones_chunk.find("protocol-suggest-host") < zones_chunk.find("case-more-details")

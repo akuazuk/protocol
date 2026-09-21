@@ -2409,6 +2409,40 @@
       if (code === "noncompliant") return "critical";
       return "review";
     }
+    function reg55VerdictRank(verdict) {
+      if (verdict === "fail") return 0;
+      if (verdict === "partial") return 1;
+      if (verdict === "pass") return 2;
+      return 3;
+    }
+    function sortReg55Criteria(criteria) {
+      return (criteria || []).slice().sort(function (a, b) {
+        var diff = reg55VerdictRank(a.verdict) - reg55VerdictRank(b.verdict);
+        if (diff) return diff;
+        return String(a.point_no || a.point || "").localeCompare(String(b.point_no || b.point || ""), "ru");
+      });
+    }
+    function renderReg55Row(item, focusPoint) {
+      var verdict = item.verdict || "";
+      var tone = verdict === "pass" ? "good" : (verdict === "fail" ? "critical" : "review");
+      var scoreBit = item.score == null || verdict === "na" ? "n/a" : String(item.score);
+      var point = item.point_no || item.point || "-";
+      var wrong = item.whats_wrong_ru ||
+        (verdict === "fail" || verdict === "partial" ? (item.how_checked_ru || "") : "");
+      var quote = String(item.evidence || item.quote || "").replace(/\s+/g, " ").trim().slice(0, 180);
+      var focus = focusPoint && String(focusPoint) === String(point) ? " rubric-row--focus" : "";
+      var ev127 = item.evidence_from_127 ? ' <span class="card-sub">опора №127</span>' : "";
+      return '<tr class="' + focus + '">' +
+        "<td><b>" + esc(point) + "</b></td>" +
+        "<td>" + esc(item.title || item.id || "критерий") + ev127 +
+        (item.group ? ("<br><small>" + esc(item.group) + "</small>") : "") +
+        "</td>" +
+        '<td><span class="status ' + tone + '">' + esc(item.verdict_ru || verdict || "-") +
+        "</span> · " + esc(scoreBit) + "</td>" +
+        "<td>" + (wrong ? esc(wrong) : (verdict === "na" ? "не учитывается в формуле" : " - ")) + "</td>" +
+        "<td>" + (quote ? esc(quote) : '<span class="card-sub">цитаты нет</span>') + "</td>" +
+        "</tr>";
+    }
     function renderReg55(reg55, fallbackPct) {
       var pct = null;
       if (reg55 && reg55.reg55_section_pct != null && reg55.reg55_section_pct !== "") {
@@ -2419,65 +2453,49 @@
         pct = Number(fallbackPct);
       }
       if ((pct == null || !Number.isFinite(pct)) && !(reg55 && (reg55.criteria || []).length)) {
-        return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3><p class="empty">' +
+        return '<section class="detail-block reg55-block" id="reg55-block-host"><h3>№55, раздел V</h3><p class="empty">' +
           esc((reg55 && reg55.note_ru) || "Нет данных для этого случая (оцениваются только клинические приёмы).") +
-          "</p></div>";
+          "</p></section>";
       }
       var bandCode = (reg55 && reg55.reg55_band) || "";
-      var bandLabel = (reg55 && reg55.reg55_band_label_ru) || "";
-      var head = "Средний балл (п.12): <b style=\"font-size:1.35rem\">" +
-        (pct == null || !Number.isFinite(pct) ? "-" : (Math.round(pct) + "%")) + "</b>";
-      if (bandLabel) {
-        head += ' <span class="status ' + reg55BandTone(bandCode) + '">' + esc(bandLabel) + "</span>";
-      }
-      if (reg55 && reg55.pack_label_ru) {
-        head += "<br><small>" + esc(reg55.pack_label_ru) + "</small>";
-      }
-      if (reg55 && reg55.passed != null && reg55.total != null && reg55.total > 0) {
-        head += "<br>полная оценка 1.0: " + esc(reg55.passed) + " из " + esc(reg55.total) + " применимых";
-      }
-      if (reg55 && reg55.na) head += " · n/a вне знаменателя: " + esc(reg55.na);
+      var bandLabel = (reg55 && reg55.reg55_band_label_ru) || reg55BandLabelRu(bandCode);
       var focusPoint = state.rubricCriterion || "";
-      var criteria = (reg55 && reg55.criteria) || [];
-      var rows = criteria.length ? criteria.map(function (item) {
-        var verdict = item.verdict || "";
-        var tone = verdict === "pass" ? "good" : (verdict === "fail" ? "critical" : "review");
-        var scoreBit = item.score == null || verdict === "na" ? "n/a" : String(item.score);
-        var point = item.point_no || item.point || "-";
-        var wrong = item.whats_wrong_ru || (verdict === "fail" || verdict === "partial" ? (item.how_checked_ru || "") : "");
-        var focus = focusPoint && String(focusPoint) === String(point) ? " rubric-row--focus" : "";
-        var ev127 = item.evidence_from_127 ? ' <span class="card-sub">· опора №127</span>' : "";
-        return '<tr class="' + focus + '">' +
-          '<td><b>' + esc(point) + "</b></td>" +
-          '<td>' + esc(item.title || item.id || "критерий") + ev127 +
-          (item.group ? ('<br><small>' + esc(item.group) + "</small>") : "") +
-          "</td>" +
-          '<td><span class="status ' + tone + '">' + esc(item.verdict_ru || verdict || "-") +
-          "</span> · " + esc(scoreBit) + "</td>" +
-          '<td>' + (wrong ? esc(wrong) : (verdict === "na" ? "не учитывается в формуле" : " - ")) + "</td>" +
-          "</tr>";
-      }).join("") : "";
-      var table = rows ?
-        '<div class="table-wrap compact-table"><table><thead><tr><th>Пункт</th><th>Описание</th><th>Оценка</th><th>Что не так</th></tr></thead><tbody>' +
-        rows + "</tbody></table></div>" :
-        "<p class=\"card-sub\">Детализация пунктов появится после загрузки критериев №55.</p>";
-      var formula = (reg55 && reg55.formula_ru) ||
-        "Средний балл №55 = 100 × (сумма 0/0.5/1) / (применимые пункты разд. V; n/a вне знаменателя)";
-      var measures = (reg55 && reg55.measures) || [];
-      var measuresHtml = "";
-      if (measures.length && (bandCode === "compliant_measures" || bandCode === "noncompliant")) {
-        measuresHtml = "<h4 style=\"margin:12px 0 6px;font-size:13px\">Комплекс мероприятий (score &lt; 1)</h4><ul>" +
-          measures.slice(0, 8).map(function (m) {
-            return "<li><b>" + esc(m.point || "") + "</b> " + esc(m.title || "") +
-              " - " + esc(m.reason || "") + "</li>";
-          }).join("") + "</ul>";
-      }
-      return '<div class="detail-block reg55-block"><h3>Балл по постановлению МЗ №55</h3>' +
-        '<p>' + head + "</p>" +
-        '<p class="card-sub">' + esc(formula) + "</p>" +
+      var criteria = sortReg55Criteria((reg55 && reg55.criteria) || []);
+      var weak = criteria.filter(function (item) {
+        return item.verdict === "fail" || item.verdict === "partial";
+      });
+      var weakList = weak.length
+        ? '<ul class="reg55-fail-list">' + weak.map(function (item) {
+          var point = item.point_no || item.point || "";
+          var scoreBit = item.score == null ? "n/a" : String(item.score);
+          var wrong = item.whats_wrong_ru || item.how_checked_ru || "";
+          var quote = String(item.evidence || "").replace(/\s+/g, " ").trim().slice(0, 140);
+          return "<li><strong>п. " + esc(point) + "</strong> · " +
+            esc(item.verdict_ru || item.verdict || "") + " · " + esc(scoreBit) +
+            (wrong ? " - " + esc(wrong) : "") +
+            (quote ? '<p class="card-sub">«' + esc(quote) + "»</p>" : "") +
+            "</li>";
+        }).join("") + "</ul>"
+        : '<p class="card-sub">Применимые пункты pack выполнены или не оценивались.</p>';
+      var rows = criteria.map(function (item) {
+        return renderReg55Row(item, focusPoint);
+      }).join("");
+      var table = rows
+        ? '<div class="table-wrap compact-table"><table class="reg55-checklist-table"><thead><tr>' +
+          "<th>Пункт</th><th>Описание</th><th>Оценка</th><th>Что не так</th><th>Цитата</th></tr></thead><tbody>" +
+          rows + "</tbody></table></div>"
+        : '<p class="card-sub">Детализация пунктов появится после загрузки критериев №55.</p>';
+      return '<section class="detail-block reg55-block" id="reg55-block-host">' +
+        "<h3>№55, раздел V</h3>" +
+        '<p class="reg55-band-line"><span class="status ' + reg55BandTone(bandCode) + '">' +
+        esc(bandLabel || "Градация п.13 не указана") + "</span>" +
+        (reg55 && reg55.pack_label_ru ? '<span class="card-sub"> · ' + esc(reg55.pack_label_ru) + "</span>" : "") +
+        "</p>" +
+        '<p class="card-sub">Градация п.13 словами - не средний %. Средний % не заменяет зоны оформления, диагноза и плана. №127 - опора, не второй балл.</p>' +
         (reg55 && reg55.reg55_band_detail_ru ? ('<p class="card-sub">' + esc(reg55.reg55_band_detail_ru) + "</p>") : "") +
-        (reg55 && reg55.note_ru ? ('<p class="card-sub">' + esc(reg55.note_ru) + "</p>") : "") +
-        measuresHtml + table + "</div>";
+        weakList +
+        '<details class="reg55-full-checklist"><summary>Все пункты pack, сначала невыполненные</summary>' +
+        table + "</details></section>";
     }
     function renderPatientHistory(bundle) {
       if (!bundle || !bundle.summary) {
@@ -3288,9 +3306,10 @@
         '<span class="status ' + tone + '">' + esc(assessmentStatusLabel(status)) + "</span>" +
         '<span>' + esc(coverageLine) + "</span><span>" + esc(protocolLine) + "</span></div>";
     }
-    function renderCaseWhy(zones, assessment) {
+    function renderCaseWhy(zones, assessment, reg55) {
       zones = zones || {};
       assessment = assessment || {};
+      reg55 = reg55 || {};
       var lines = [];
       function add(text) {
         text = String(text || "").replace(/\s+/g, " ").trim();
@@ -3299,6 +3318,18 @@
       }
       var grade = zones.overall_grade || {};
       add(grade.reason_ru);
+      var regBand = String(reg55.reg55_band || "");
+      if (regBand === "noncompliant" || regBand === "compliant_measures") {
+        var weak = ((reg55.criteria) || []).filter(function (item) {
+          return item.verdict === "fail" || item.verdict === "partial";
+        });
+        var first = weak[0] || ((reg55.measures) || [])[0] || {};
+        var point = first.point_no || first.point || first.id || "";
+        var wrong = first.whats_wrong_ru || first.how_checked_ru || first.reason || first.title || "";
+        if (point || wrong) {
+          add("№55: не выполнен пункт " + point + (wrong ? " - " + wrong : ""));
+        }
+      }
       [
         ["zone1", "Оформление", "documentation"],
         ["zone2a", "Диагноз", "diagnosis"],
@@ -3329,16 +3360,20 @@
           return "<li>" + esc(line) + "</li>";
         }).join("") + "</ul></section>";
     }
-    function pickOpenEvidenceId(zones) {
+    function pickOpenEvidenceId(zones, reg55) {
       zones = zones || {};
+      reg55 = reg55 || {};
       var safety = String((zones.safety || {}).band || "none");
       var z2b = String((zones.zone2b || {}).band || "na");
       var z2a = String((zones.zone2a || {}).band || "na");
       var z1 = String((zones.zone1 || {}).band || "na");
+      var regBand = String(reg55.reg55_band || "");
       if (safety && safety !== "none") return "evidence-meds";
+      if (regBand === "noncompliant") return "evidence-reg55";
       if (z2b === "bad") return "evidence-kp-plan";
       if (z2a === "bad" || z2a === "weak") return "evidence-hist";
       if (z1 === "bad" || z1 === "weak") return "evidence-criteria";
+      if (regBand === "compliant_measures") return "evidence-reg55";
       return "evidence-hist";
     }
     function renderEvidencePanel(id, title, html, openId) {
@@ -3347,10 +3382,11 @@
         html + "</details>";
     }
     function renderEvidenceAccordion(data, history, zones) {
-      var openId = pickOpenEvidenceId(zones);
+      var openId = pickOpenEvidenceId(zones, data.reg55);
       var reg55Payload = data.reg55 || {};
       var reg55Pct = reg55Payload.reg55_section_pct;
       if (reg55Pct == null) reg55Pct = reg55Payload.regulatory_compliance_pct;
+      var bandTitle = (reg55Payload.reg55_band_label_ru || reg55BandLabelRu(reg55Payload.reg55_band) || "").trim();
       return '<div class="case-evidence-accordion" id="case-evidence-accordion">' +
         renderEvidencePanel(
           "evidence-kp-plan",
@@ -3376,7 +3412,7 @@
         ) +
         renderEvidencePanel(
           "evidence-reg55",
-          "№55",
+          bandTitle ? ("№55 · " + bandTitle) : "№55",
           renderReg55(reg55Payload, reg55Pct),
           openId
         ) +
@@ -4001,7 +4037,7 @@
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
           renderAssessmentStatusStrip(assessment) +
-          renderCaseWhy(zones, assessment) +
+          renderCaseWhy(zones, assessment, data.reg55) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
           renderEvidenceAccordion(data, history, zones) +
@@ -4364,7 +4400,11 @@
             var hero = drawer && drawer.querySelector(".zones-hero");
             if (hero) hero.outerHTML = renderZonesHero(suggest.zones);
             var why = drawer && drawer.querySelector("#case-why");
-            if (why) why.outerHTML = renderCaseWhy(suggest.zones, nextAssessment);
+            if (why) why.outerHTML = renderCaseWhy(
+              suggest.zones,
+              nextAssessment,
+              (state.caseDetail || {}).reg55
+            );
             var criteria = drawer && drawer.querySelector(".zones-criteria-block");
             if (criteria) {
               var criteriaHtml = renderZonesCriteriaDetails(suggest.zones);
