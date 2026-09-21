@@ -1599,12 +1599,22 @@
           (meta ? '<div class="kpi-meta">' + esc(meta) + '</div>' : "") +
           '</button>';
       }
+      function planKpiMeta(attn) {
+        attn = attn || {};
+        var z2b = (attn.zones || {}).zone2b || {};
+        var n = Number(attn.n_evaluated || 0);
+        var na = Number(z2b.na || 0);
+        if (n > 0 && na / n >= 0.5) {
+          return "план не сравнивался с КП: " + na + " из " + n;
+        }
+        return attn.zone2b_bad_pct != null ? attn.zone2b_bad_pct + "%" : "";
+      }
       host.innerHTML =
         tile("Критично в очереди", a.queue_critical != null ? a.queue_critical : "-", "открыть очередь", "queue:critical", "critical") +
         tile("Важно в очереди", a.queue_important != null ? a.queue_important : "-", "открыть очередь", "queue:important", "important") +
         tile("Оформление плохо", a.zone1_bad, (a.zone1_bad_pct != null ? a.zone1_bad_pct + "%" : ""), "zone1:bad", "zone1") +
         tile("Диагноз плохо", a.zone2a_bad, (a.zone2a_bad_pct != null ? a.zone2a_bad_pct + "%" : ""), "zone2a:bad", "zone2a") +
-        tile("План плохо", a.zone2b_bad, (a.zone2b_bad_pct != null ? a.zone2b_bad_pct + "%" : ""), "zone2b:bad", "zone2b");
+        tile("План плохо", a.zone2b_bad, planKpiMeta(a), "zone2b:bad", "zone2b");
       host.querySelectorAll("[data-attention-go]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var go = btn.getAttribute("data-attention-go") || "";
@@ -1840,9 +1850,17 @@
           return n > best.n ? { band: band, n: n } : best;
         }, { band: "na", n: -1 });
         var center = assessedN > 0 ? (zoneLabels[dominant.band] || "нет данных") : "Не оценено";
+        var ringSub = "Оценено: n=" + assessedN + "/" + zoneN;
+        if (meta.key === "zone2b") {
+          var naN = Number((bands.na || {}).n || 0);
+          if (zoneN > 0 && naN / zoneN >= 0.5) {
+            center = "не сравнивался с КП";
+            ringSub = "план не сравнивался с КП: " + naN + " из " + zoneN;
+          }
+        }
         renderScoreRing(card, meta.title, center, segments, function (band) {
           openZoneBandCases(meta.key, band);
-        }, "Оценено: n=" + assessedN + "/" + zoneN);
+        }, ringSub);
       });
       var regCard = document.createElement("div");
       regCard.className = "score-ring";
