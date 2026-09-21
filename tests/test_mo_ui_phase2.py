@@ -103,7 +103,10 @@ def test_today_score_rings_and_dynamics_wired_to_period() -> None:
     assert "renderScoreDynamics" in APP
     assert "analyticsWindowLabel" in APP
     assert "/score-dashboard?" in APP
-    assert "reg55_avg" in APP
+    assert 'series("Оформление", "zone1_avg"' in APP
+    assert 'series("Диагноз", "zone2a_avg"' in APP
+    assert 'series("План", "zone2b_avg"' in APP
+    assert 'series("№55", "reg55_avg"' not in APP
 
 
 def test_visual_refresh_tokens_and_table_chrome_helper() -> None:
