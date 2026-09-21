@@ -3602,7 +3602,8 @@
           (extra ? (" - " + esc(extra)) : "") + "</p>";
       }
       var body = line("Назначены и уже есть", recon.ordered_and_present) +
-        line("Есть на складе, в МО не указаны", recon.present_not_in_mo) +
+        line("Связано с диагнозом / планом", recon.present_not_in_mo,
+          "есть на складе, в тексте МО не названы") +
         line("Назначены, на складе за окно нет", recon.ordered_not_in_warehouse,
           "не штраф, покрытие склада неполное") +
         line("Получены после визита", recon.post_visit_present,
@@ -3658,11 +3659,16 @@
         var same = day.same_day ? " · день визита" : "";
         var tables = types.map(function (t) {
           var rows = (t.indicators || []).map(function (ind) {
+            var low = ind.ref_low != null ? ind.ref_low : ind.low;
+            var high = ind.ref_high != null ? ind.ref_high : ind.high;
+            var ref = (low != null && high != null && String(low) !== "" && String(high) !== "")
+              ? (esc(low) + " - " + esc(high))
+              : '<span class="card-sub">референса в складе нет</span>';
             return "<tr><td>" + esc(ind.name || "") + "</td><td>" + esc(ind.value || "") +
-              "</td><td>" + esc(ind.unit || "") + "</td></tr>";
+              "</td><td>" + esc(ind.unit || "") + "</td><td>" + ref + "</td></tr>";
           }).join("");
           return "<h4 class=\"lab-type-name\">" + esc(t.type_name || "анализ") + "</h4>" +
-            '<div class="table-wrap compact-table"><table><thead><tr><th>Показатель</th><th>Значение</th><th>Ед.</th></tr></thead><tbody>' +
+            '<div class="table-wrap compact-table"><table><thead><tr><th>Показатель</th><th>Значение</th><th>Ед.</th><th>Референс</th></tr></thead><tbody>' +
             rows + "</tbody></table></div>";
         }).join("");
         return "<details class=\"lab-day\"" + open + "><summary>" +
