@@ -322,6 +322,7 @@ git archive --format=tar "$RELEASE_SHA" -- \
   data/icd_reference/icd10_who_2016_terminal_codes.json \
   data/regulations \
   output/registry/protocol_cards.jsonl \
+  output/registry/ilex_protocol_passports.jsonl \
   services \
   deploy/gcp-app/Dockerfile deploy/gcp-app/verify_lab_assets.py .dockerignore \
   | gzip -c \

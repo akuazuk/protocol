@@ -213,3 +213,11 @@ def test_match_passports_picks_hypertension_not_gsk(tmp_path, monkeypatch) -> No
     assert "гипертензией" in hits[0]["protocol_title"]
     assert "стволов" not in hits[0]["protocol_title"]
     mod.clear_ilex_passport_cache()
+
+
+def test_packaged_ilex_passports_jsonl_is_present() -> None:
+    from clinical_knowledge.ilex_protocol_passports import DEFAULT_PASSPORTS
+
+    assert DEFAULT_PASSPORTS.is_file()
+    n = sum(1 for line in DEFAULT_PASSPORTS.open(encoding="utf-8") if line.strip())
+    assert n >= 100
