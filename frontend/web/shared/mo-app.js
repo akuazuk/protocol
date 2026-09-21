@@ -3154,19 +3154,15 @@
     }
     function renderProtocolSuggest(suggest) {
       state.protocolSuggest = suggest || null;
-      var concordanceHtml = renderKpConcordance(suggest && suggest.kp_concordance);
       if (!suggest || !suggest.available) {
-        return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-          '<p class="empty">' + esc((suggest && suggest.reason) || "Подбор протоколов пока недоступен для этого случая.") +
-          '</p><p class="card-sub">Без подобранного протокола план не штрафуем за несоответствие протоколу.</p>' +
-          '<button type="button" class="button secondary compact" data-retry-protocol-suggest>Повторить подбор</button></div>' +
-          concordanceHtml;
+        return '<div class="protocol-suggest-top protocol-suggest-top--empty">' +
+          '<span>' + esc((suggest && suggest.reason) || "Протокол не подобран") + '</span>' +
+          '<button type="button" class="button secondary compact" data-retry-protocol-suggest>Повторить подбор</button></div>';
       }
       var list = suggest.items || [];
       if (!list.length) {
-        return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-          '<p class="empty">Протокол не подобран - план не штрафуем за несоответствие протоколу.</p></div>' +
-          concordanceHtml;
+        return '<div class="protocol-suggest-top protocol-suggest-top--empty">' +
+          '<span>Протокол не подобран</span></div>';
       }
       var top = list[0];
       var topViewer = protocolViewerUrl(top);
@@ -3176,8 +3172,8 @@
         esc(top.title || "без названия") + '</b>' +
         (topViewer ? '<a class="button compact" href="' + esc(topViewer) + '" target="_blank" rel="noopener">Открыть протокол</a>' : "") +
         (topSearch ? '<a class="button secondary compact" href="' + esc(topSearch) + '" target="_blank" rel="noopener">Поиск в каталоге</a>' : "") +
-        (list.length > 1 ? '<button type="button" class="linkish" id="protocol-suggest-expand">ещё ' +
-          (list.length - 1) + '</button>' : "") +
+        (list.length ? '<button type="button" class="linkish" id="protocol-suggest-expand">' +
+          (list.length > 1 ? ("ещё " + (list.length - 1)) : "подробнее") + "</button>" : "") +
         '</div>';
       var items = list.map(function (item, index) {
         var pid = item.protocol_id || ("idx-" + index);
@@ -3192,7 +3188,7 @@
             esc(item.title || "Протокол") + '</a>')
           : esc(item.title || "Протокол");
         return '<article class="protocol-suggest-item" data-protocol-id="' + esc(pid) + '"' +
-          (index > 0 ? ' hidden data-protocol-extra="1"' : "") + '>' +
+          ' hidden data-protocol-extra="1">' +
           '<div class="protocol-suggest-title"><b>' + (index + 1) + ". " + titleHtml + '</b></div>' +
           '<div class="protocol-suggest-meta"><span class="status review">' +
           esc(item.match_kind_label || item.match_kind || "клиника") + '</span><span>' +
@@ -3209,9 +3205,7 @@
               (pair[0] === "unreviewed" ? " checked" : "") + '> ' + pair[1] + '</label>';
           }).join("") + '</div></article>';
       }).join("");
-      return '<div class="detail-block protocol-suggest-block"><h3>Протоколы МЗ</h3>' +
-        '<p class="card-sub">«Открыть протокол» - навигация и PDF по страницам; «Поиск в каталоге» - если нужен другой КП. Без КП план не штрафуем.</p>' +
-        topBar + items + '</div>' + concordanceHtml;
+      return '<div class="protocol-suggest-block protocol-suggest-block--strip">' + topBar + items + "</div>";
     }
     function verdictSelect(id, current) {
       var options = [
