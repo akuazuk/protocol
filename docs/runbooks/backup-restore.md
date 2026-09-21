@@ -127,7 +127,31 @@ curl -sS https://protocol.kravira.by/health/live
 | Сбой бэкапа или учения | запись `status=failed` в Cloud Logging | `sudo journalctl -u protocol-backup -n 50` |
 | Бэкапа не было более суток | нет успеха 23,5 часа | `systemctl list-timers 'protocol-*'`, `df -h` |
 | Заканчивается место | диск занят >85% 10 минут | `sudo /usr/local/bin/protocol-vm-cleanup` |
-| Всплеск ошибок | >10 ERROR за 5 минут | `gcloud logging read 'logName:"protocol_web" AND severity>=ERROR' --freshness=30m` |
+| Всплеск ошибок | >10 ERROR за 5 минут | `gcloud logging read 'logName:"protocol_web" AND jsonPayload.log:"ERROR protocol.rag"' --freshness=30m` |
+
+Письмо **Alert recovered** с текстом «is below threshold of 10 with a value of 9» - это не новая
+авария. Политика открывается при >10 ошибок за 5 минут и закрывается, когда счётчик снова
+ниже порога. GCP по умолчанию шлёт оба события. С 2026-09-21 политика уведомляет только
+`OPENED`; recovered на почту больше не уходит.
+
+Метрика `logging/user/protocol_app_errors` считает одну строку логгера
+`ERROR protocol.rag`. Раньше в неё попадали traceback и access-log ` 500 `, поэтому один
+настоящий сбой выглядел как 6-8 ошибок и ложно открывал инцидент.
+
+Типичная причина настоящего всплеска: пересчёт витрины держит SQLite, логин делает DDL на
+каждый запрос и падает `database is locked` за ~5 с. После фикса логин ждёт занятую запись
+до 30 с и не гоняет схему повторно.
+
+Проверить настройку:
+
+```bash
+gcloud logging metrics describe protocol_app_errors --project=protocol-home-e1
+gcloud alpha monitoring policies describe 3428894496387672037 --project=protocol-home-e1 \
+  --format='yaml(alertStrategy,conditions)'
+```
+
+Ожидается: filter `logName:"protocol_web" AND jsonPayload.log:"ERROR protocol.rag"`,
+`notificationPrompts: [OPENED]`.
 
 Алерт на **отсутствие** бэкапа существует отдельно от алерта на сбой не для
 симметрии: сбой ловится только если скрипт запустился. Если таймер отключён,

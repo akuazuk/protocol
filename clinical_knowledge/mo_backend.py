@@ -18,7 +18,14 @@ from pathlib import Path
 from typing import Any, Iterable, Mapping
 from zoneinfo import ZoneInfo
 
-from .mo_daily import CRM_SCHEMA_SQL, initialize_warehouse, migrate_crm, sanitize_mo_org_label
+from .mo_daily import (
+    CRM_SCHEMA_SQL,
+    WAREHOUSE_BUSY_TIMEOUT_MS,
+    connect_warehouse,
+    initialize_warehouse,
+    migrate_crm,
+    sanitize_mo_org_label,
+)
 from .mo_overall_grade import attach_overall_grade
 from .mo_metrics import (
     METRICS,
@@ -94,6 +101,7 @@ CRM_STATUSES = frozenset(
 )
 CRM_ROLES = frozenset({"methodist", "lead", "admin", "expert"})
 _CRM_MIGRATED = False
+_WAREHOUSE_SCHEMA_READY_PATH: str | None = None
 _HEX_ID_RX = re.compile(r"^[a-f0-9]{32,64}$", re.IGNORECASE)
 _ICD_CODE_RX = re.compile(r"^[A-Za-zА-Яа-я]\d{2}(?:\.\d{1,2})?$")
 
@@ -168,22 +176,27 @@ def _migrate_legacy_crm(target: Path) -> dict[str, int]:
 
 
 def _connect() -> sqlite3.Connection:
+    global _WAREHOUSE_SCHEMA_READY_PATH
     path = _db_path()
     path.parent.mkdir(parents=True, exist_ok=True)
     fresh = not path.exists()
-    initialize_warehouse(path)
-    if fresh or not _CRM_MIGRATED:
-        _migrate_legacy_crm(path)
-    conn = sqlite3.connect(path, timeout=10)
-    conn.row_factory = sqlite3.Row
+    path_key = str(path.resolve()) if path.exists() else str(path)
+    need_schema = _WAREHOUSE_SCHEMA_READY_PATH != path_key
+    if need_schema:
+        initialize_warehouse(path)
+        if fresh or not _CRM_MIGRATED:
+            _migrate_legacy_crm(path)
+    conn = connect_warehouse(path)
     conn.execute("PRAGMA foreign_keys=ON")
-    conn.execute("PRAGMA journal_mode=WAL")
-    conn.executescript(CRM_SCHEMA_SQL)
-    conn.commit()
-    try:
-        os.chmod(path, 0o600)
-    except OSError:
-        pass
+    if need_schema:
+        conn.execute("PRAGMA journal_mode=WAL")
+        conn.executescript(CRM_SCHEMA_SQL)
+        conn.commit()
+        _WAREHOUSE_SCHEMA_READY_PATH = str(path.resolve())
+        try:
+            os.chmod(path, 0o600)
+        except OSError:
+            pass
     return conn
 
 
@@ -216,8 +229,10 @@ def _backend_source() -> str:
 def _read_connection() -> sqlite3.Connection:
     if _backend_source() != "warehouse":
         raise RuntimeError("SQL-витрина МО недоступна")
-    conn = sqlite3.connect(f"file:{_db_path()}?mode=ro", uri=True, timeout=10)
+    timeout_sec = WAREHOUSE_BUSY_TIMEOUT_MS / 1000.0
+    conn = sqlite3.connect(f"file:{_db_path()}?mode=ro", uri=True, timeout=timeout_sec)
     conn.row_factory = sqlite3.Row
+    conn.execute(f"PRAGMA busy_timeout={WAREHOUSE_BUSY_TIMEOUT_MS}")
     conn.execute("PRAGMA query_only=ON")
     return conn
 
