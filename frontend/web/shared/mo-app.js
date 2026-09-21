@@ -1676,7 +1676,7 @@
           })
         };
       }
-      MO.moChart(host, {
+      var chart = MO.moChart(host, {
         color: [c1, c2, c3],
         legend: { top: 4, data: ["Оформление", "Диагноз", "План"] },
         grid: { left: 42, right: 18, top: 42, bottom: 28 },
@@ -1690,8 +1690,13 @@
         ]
       }, {
         label: "Тренд трёх оценок",
-        description: "Средние доли оформления, диагноза и плана по дням периода."
+        description: "Средние доли оформления, диагноза и плана по дням периода. Клик открывает Найти МО."
       });
+      if (chart) {
+        chart.on("click", function (params) {
+          openTrendDayCases(dates[params.dataIndex], params.seriesName);
+        });
+      }
     }
     function analyticsWindowLabel(win) {
       win = win || {};
@@ -1712,6 +1717,24 @@
         label: (ZONE_LABELS[zoneKey] || zoneKey) + " · " + (band || ""),
         zoneFilter: zoneKey || "",
         zoneBandFilter: band || "",
+        attentionOnly: false,
+        page: "documents"
+      });
+    }
+    function zoneKeyFromSeriesName(name) {
+      if (name === "Оформление") return "zone1";
+      if (name === "Диагноз") return "zone2a";
+      if (name === "План") return "zone2b";
+      return "";
+    }
+    function openTrendDayCases(day, seriesName) {
+      if (!day) return;
+      applyDrill({
+        label: (seriesName || "день") + " · " + day,
+        period: "custom",
+        dateFrom: day,
+        dateTo: day,
+        zoneFilter: zoneKeyFromSeriesName(seriesName),
         attentionOnly: false,
         page: "documents"
       });
@@ -1886,7 +1909,7 @@
         var from = win.trend_date_from || win.date_from || "";
         var to = win.trend_date_to || win.date_to || "";
         sub.textContent = from && to
-          ? ("Средние % по дням: " + from + " - " + to + " · клик по дню открывает этот день")
+          ? ("Средние % по дням: " + from + " - " + to + " · клик открывает Найти МО")
           : "Средние % трёх зон по дням выбранного периода";
       }
       if (!trends.length) {
@@ -1947,17 +1970,7 @@
       });
       if (chart) {
         chart.on("click", function (params) {
-          var day = dates[params.dataIndex];
-          if (!day) return;
-          state.period = "custom";
-          state.dateFrom = day;
-          state.dateTo = day;
-          if ($("period")) $("period").value = "custom";
-          if ($("date-from")) $("date-from").value = day;
-          if ($("date-to")) $("date-to").value = day;
-          if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
-          if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
-          filtersChanged();
+          openTrendDayCases(dates[params.dataIndex], params.seriesName);
         });
       }
     }
