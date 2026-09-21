@@ -1,6 +1,7 @@
 | Файл | Тема | Статус |
 |------|------|--------|
-| [2026-09-20-mo-case-review-accuracy-v1.md](2026-09-20-mo-case-review-accuracy-v1.md) | Разбор случая: один вердикт, сверка с КП, история / лаб / ЛС / №55 как доказательства, волны R0-R7 | active |
+| [2026-09-21-mo-visual-and-kp-v1.md](2026-09-21-mo-visual-and-kp-v1.md) | Подбор КП в витрину, свёрнутое решение методиста, визуал Обзора (преемник хвостов R7/W7) | active |
+| [2026-09-20-mo-case-review-accuracy-v1.md](2026-09-20-mo-case-review-accuracy-v1.md) | Разбор случая: один вердикт, сверка с КП, история / лаб / ЛС / №55 как доказательства, волны R0-R7 | completed (преемник: mo-visual-and-kp-v1) |
 | [2026-09-19-mo-analytics-ux-rebuild-v1.md](2026-09-19-mo-analytics-ux-rebuild-v1.md) | МО Аналитика: удобный поиск хороших и плохих МО (фильтры перестают врать, один рабочий стол, волны W0-W7) | active |
 | [2026-09-17-gemini-night-spend-cut-v1.md](2026-09-17-gemini-night-spend-cut-v1.md) | Ночной Gemini: лимит shadow/judge, без Pro на needs_human, thinking_budget=0 | active |
 | [2026-09-06-mo-case-review-analytics-v1.md](2026-09-06-mo-case-review-analytics-v1.md) | MO: P0-противоречия R01-R14, reproducible assessment A-C, CASE Review D, synthetic E и UI U01-U14 | active |
