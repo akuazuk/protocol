@@ -4017,7 +4017,7 @@
       var pdfPath = "/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf";
       var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
-        '<details class="methodist-decision-panel methodist-decision-panel--dock" open>' +
+        '<details class="methodist-decision-panel methodist-decision-panel--dock">' +
         '<summary class="decision-dock-summary">Решение методиста <span id="drawer-decision-status" class="status muted">Сохранено</span></summary>' +
         '<div class="decision-dock-body">' +
         '<div class="verdict-row">' +

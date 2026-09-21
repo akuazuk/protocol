@@ -6,9 +6,11 @@ APP = (ROOT / "frontend" / "web" / "shared" / "mo-app.js").read_text(encoding="u
 CSS = (ROOT / "frontend" / "web" / "shared" / "mo-ui.css").read_text(encoding="utf-8")
 
 
-def test_decision_dock_is_sticky_and_open() -> None:
-    assert 'methodist-decision-panel methodist-decision-panel--dock" open' in APP
+def test_decision_dock_is_sticky_and_collapsed() -> None:
+    assert 'methodist-decision-panel methodist-decision-panel--dock">' in APP
+    assert 'methodist-decision-panel methodist-decision-panel--dock" open' not in APP
     assert ".methodist-decision-panel--dock {\n  flex: 0 0 auto;\n  position: sticky;" in CSS
+    assert ".case-workspace-decision .methodist-decision-panel.methodist-decision-panel--dock {\n  position: sticky;" in CSS
     narrow = CSS.split("@media (max-width: 1099px)", 1)[1]
     assert "position: static" not in narrow.split("@media (max-width: 720px)", 1)[0]
 
