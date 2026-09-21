@@ -2972,7 +2972,7 @@
         '<div><h4>Разбор модели</h4>' + dxWhy + chainHtml + planWhy +
         (findingsHtml ? '<div class="llm-judge-findings"><h4>Замечания модели</h4>' + findingsHtml + '</div>' : "") +
         ((conclusions.stage_a_ru || conclusions.stage_b_ru) ?
-          '<section class="llm-judge-slot"><h4>Итог этапов</h4>' +
+          '<section class="llm-judge-slot"><h4>Этапы модели</h4>' +
           (conclusions.stage_a_ru ? '<p><b>A (диагноз):</b> ' + esc(conclusions.stage_a_ru) + '</p>' : "") +
           (conclusions.stage_b_ru ? '<p><b>B (план):</b> ' + esc(conclusions.stage_b_ru) + '</p>' : "") +
           '</section>' : "") +
@@ -3000,25 +3000,62 @@
       }
       return viewer;
     }
+    function caseWorkspaceIsSplit() {
+      return window.matchMedia("(min-width: 1100px)").matches;
+    }
+    function focusClinicalField(field) {
+      var body = $("drawer-body");
+      if (!body || !field) return false;
+      if (!caseWorkspaceIsSplit()) activateCaseWorkspaceTab("document");
+      var target = body.querySelector('[data-clinical-field="' + field + '"]');
+      if (!target) return false;
+      body.querySelectorAll(".clinical-field").forEach(function (node) {
+        node.classList.remove("clinical-field--focus");
+      });
+      target.classList.add("clinical-field--focus");
+      target.scrollIntoView({ block: "center", behavior: "smooth" });
+      return true;
+    }
+    function openEvidencePanel(id) {
+      var panel = document.getElementById(id);
+      if (!panel) return false;
+      panel.open = true;
+      panel.scrollIntoView({ block: "nearest", behavior: "smooth" });
+      return true;
+    }
+    function zoneFocusSpec(zone) {
+      return ({
+        zone1: {
+          evidence: "evidence-criteria",
+          fields: ["complaints", "anamnesis_doctor", "objective_status"]
+        },
+        zone2a: {
+          evidence: "evidence-hist",
+          fields: ["clinical_diagnosis", "mis_diagnos"]
+        },
+        zone2b: {
+          evidence: "evidence-kp-plan",
+          fields: ["treatment_recommendations", "exam_recommendations"]
+        }
+      })[zone] || null;
+    }
+    function applyZoneCardFocus(zone) {
+      var spec = zoneFocusSpec(zone);
+      if (!spec) return;
+      openEvidencePanel(spec.evidence);
+      var i;
+      for (i = 0; i < spec.fields.length; i += 1) {
+        if (focusClinicalField(spec.fields[i])) break;
+      }
+    }
     function bindClinicalFocusButtons(root) {
       if (!root) return;
-      var body = $("drawer-body") || root;
       root.querySelectorAll("[data-focus-clinical]").forEach(function (button) {
         if (button.getAttribute("data-bound-focus") === "1") return;
         button.setAttribute("data-bound-focus", "1");
         button.addEventListener("click", function () {
           var field = button.getAttribute("data-focus-clinical");
-          activateCaseWorkspaceTab("document");
-          var target = body.querySelector('[data-clinical-field="' + field + '"]');
-          if (!target) {
-            showToast("Поле в тексте МО не найдено");
-            return;
-          }
-          body.querySelectorAll(".clinical-field").forEach(function (node) {
-            node.classList.remove("clinical-field--focus");
-          });
-          target.classList.add("clinical-field--focus");
-          target.scrollIntoView({ block: "center", behavior: "smooth" });
+          if (!focusClinicalField(field)) showToast("Поле в тексте МО не найдено");
         });
       });
     }
@@ -3255,7 +3292,8 @@
             return false;
           });
         }
-        return '<article class="zone-card zone-card--' + esc(z.band || "na") + '" data-zone-filter="' + pair[0] + '">' +
+        return '<article class="zone-card zone-card--' + esc(z.band || "na") +
+          '" data-zone-filter="' + pair[0] + '" role="button" tabindex="0">' +
           '<div class="zone-card-label">' + esc(z.label_ru || pair[1]) + '</div>' +
           '<div class="zone-card-band">' + zoneBandChip(z.band, z.kp_status) + '</div>' +
           (why ? '<p class="zone-card-why">' + esc(String(why).slice(0, 140)) + '</p>' : "") +
@@ -3724,8 +3762,8 @@
     }
     function renderReviewBrief(brief, narrative) {
       if (!brief || !brief.available || !brief.ok) {
-        return '<div class="detail-block review-brief-block"><h3>Итог разбора</h3>' +
-          '<p class="empty">' + esc((brief && brief.reason) || "Итог разбора пока недоступен.") +
+        return '<div class="detail-block review-brief-block"><h3>Черновик сводки модели</h3>' +
+          '<p class="empty">' + esc((brief && brief.reason) || "Черновик сводки пока недоступен.") +
           '</p></div>';
       }
       var zones = brief.zones || {};
@@ -3759,7 +3797,7 @@
           esc(narrative.confidence != null ? Math.round(Number(narrative.confidence) * 100) + "%" : " - ") +
           '</p></div>';
       }
-      return '<div class="detail-block review-brief-block"><h3>Итог разбора</h3>' +
+      return '<div class="detail-block review-brief-block"><h3>Черновик сводки модели</h3>' +
         '<p class="card-sub">' + esc(brief.summary_ru || "") + '</p>' +
         '<div class="review-brief-zones">' +
         '<div><b>Оформление</b> - ' + esc((zones.documentation || {}).band_ru || " - ") +
@@ -3979,7 +4017,7 @@
       var pdfPath = "/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf";
       var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
-        '<details class="methodist-decision-panel methodist-decision-panel--dock">' +
+        '<details class="methodist-decision-panel methodist-decision-panel--dock" open>' +
         '<summary class="decision-dock-summary">Решение методиста <span id="drawer-decision-status" class="status muted">Сохранено</span></summary>' +
         '<div class="decision-dock-body">' +
         '<div class="verdict-row">' +
@@ -4172,13 +4210,31 @@
         }
       });
     }
+    function setFindingZoneFilter(body, zone) {
+      body.querySelectorAll("[data-finding-zone]").forEach(function (b) {
+        b.classList.toggle("is-active", (b.getAttribute("data-finding-zone") || "all") === zone);
+      });
+      body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
+        card.classList.toggle("is-active", card.getAttribute("data-zone-filter") === zone);
+      });
+      body.querySelectorAll("[data-finding-zone-item]").forEach(function (card) {
+        card.hidden = zone !== "all" && card.getAttribute("data-finding-zone-item") !== zone;
+      });
+    }
     function bindZoneCardInteractions(body) {
       if (!body) return;
       body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
-        card.addEventListener("click", function () {
+        function activate() {
           var zone = card.getAttribute("data-zone-filter");
-          var btn = body.querySelector('[data-finding-zone="' + zone + '"]');
-          if (btn) btn.click();
+          setFindingZoneFilter(body, zone);
+          applyZoneCardFocus(zone);
+        }
+        card.addEventListener("click", activate);
+        card.addEventListener("keydown", function (event) {
+          if (event.key === "Enter" || event.key === " ") {
+            event.preventDefault();
+            activate();
+          }
         });
       });
     }
@@ -4193,15 +4249,7 @@
       body.querySelectorAll("[data-finding-zone]").forEach(function (button) {
         button.addEventListener("click", function () {
           var zone = button.getAttribute("data-finding-zone") || "all";
-          body.querySelectorAll("[data-finding-zone]").forEach(function (b) {
-            b.classList.toggle("is-active", b === button);
-          });
-          body.querySelectorAll("[data-zone-filter]").forEach(function (card) {
-            card.classList.toggle("is-active", card.getAttribute("data-zone-filter") === zone);
-          });
-          body.querySelectorAll("[data-finding-zone-item]").forEach(function (card) {
-            card.hidden = zone !== "all" && card.getAttribute("data-finding-zone-item") !== zone;
-          });
+          setFindingZoneFilter(body, zone);
           var findingsBlock = body.querySelector(".findings-compact-list");
           if (findingsBlock) findingsBlock.scrollIntoView({ block: "nearest", behavior: "smooth" });
         });
