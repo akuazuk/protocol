@@ -1404,6 +1404,23 @@ kbd {
 .medication-normative-list { display: grid; gap: 10px; margin-top: 12px; }
 .medication-normative-card p { margin: 4px 0; }
 .medication-normative-card .evidence-card__meta { margin: 8px 0; padding-left: 20px; }
+.med-normative-wrap { overflow-x: auto; margin-top: 10px; }
+.med-normative-table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 13px;
+}
+.med-normative-table th,
+.med-normative-table td {
+  text-align: left;
+  vertical-align: top;
+  padding: 8px 6px;
+  border-bottom: 1px solid var(--line);
+}
+.med-normative-table th:nth-child(4),
+.med-normative-table td:nth-child(4) { min-width: 220px; }
+.med-normative-row:hover td { background: var(--surface-2); }
+.med-normative-risk .status { margin-right: 4px; }
 .history-labs-grid { display: grid; gap: 10px; }
 .history-timeline {
   list-style: none;
