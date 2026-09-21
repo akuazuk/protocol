@@ -1599,11 +1599,20 @@
           (meta ? '<div class="kpi-meta">' + esc(meta) + '</div>' : "") +
           '</button>';
       }
-      function planKpiMeta(attn) {
+      function planKpiMeta(attn, zoneHint) {
         attn = attn || {};
-        var z2b = (attn.zones || {}).zone2b || {};
+        var z2b = (attn.zones || {}).zone2b || zoneHint || {};
+        var bands = z2b.bands || {};
+        var na = Number(
+          z2b.na != null ? z2b.na : ((bands.na && bands.na.n) != null ? bands.na.n : 0)
+        );
         var n = Number(attn.n_evaluated || 0);
-        var na = Number(z2b.na || 0);
+        if (!n) {
+          n = ["ok", "weak", "bad", "na"].reduce(function (sum, band) {
+            var fromBand = bands[band] && bands[band].n;
+            return sum + Number(fromBand != null ? fromBand : z2b[band] || 0);
+          }, 0);
+        }
         if (n > 0 && na / n >= 0.5) {
           return "план не сравнивался с КП: " + na + " из " + n;
         }
@@ -1614,7 +1623,7 @@
         tile("Важно в очереди", a.queue_important != null ? a.queue_important : "-", "открыть очередь", "queue:important", "important") +
         tile("Оформление плохо", a.zone1_bad, (a.zone1_bad_pct != null ? a.zone1_bad_pct + "%" : ""), "zone1:bad", "zone1") +
         tile("Диагноз плохо", a.zone2a_bad, (a.zone2a_bad_pct != null ? a.zone2a_bad_pct + "%" : ""), "zone2a:bad", "zone2a") +
-        tile("План плохо", a.zone2b_bad, planKpiMeta(a), "zone2b:bad", "zone2b");
+        tile("План плохо", a.zone2b_bad, planKpiMeta(a, (opts.zones || {}).zone2b), "zone2b:bad", "zone2b");
       host.querySelectorAll("[data-attention-go]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var go = btn.getAttribute("data-attention-go") || "";
@@ -1824,8 +1833,12 @@
         { key: "zone2a", title: "Диагноз" },
         { key: "zone2b", title: "План по протоколу" }
       ];
-      var zoneLabels = { ok: "в норме", weak: "слабо", bad: "плохо", na: "нет данных" };
-      host.innerHTML = "";
+      var zoneLabels = { ok: "Хорошо", weak: "Слабо", bad: "Важно", na: "Нет оценки" };
+      host.innerHTML = '<ul class="score-grade-legend" aria-label="Шкала оценки">' +
+        [["good", "Хорошо"], ["fair", "С замечанием"], ["poor", "Слабо"],
+         ["important", "Важно"], ["critical", "Критично"], ["na", "Нет оценки"]].map(function (row) {
+          return '<li class="score-grade-legend__item score-grade-legend__item--' + row[0] + '">' + esc(row[1]) + "</li>";
+        }).join("") + "</ul>";
       zoneMeta.forEach(function (meta) {
         var card = document.createElement("div");
         card.className = "score-ring";
@@ -1862,27 +1875,6 @@
           openZoneBandCases(meta.key, band);
         }, ringSub);
       });
-      var regCard = document.createElement("div");
-      regCard.className = "score-ring";
-      host.appendChild(regCard);
-      var reg = dash.reg55 || {};
-      if (!reg.available) {
-        regCard.innerHTML =
-          '<p class="score-ring-title">№55</p><p class="empty">№55 недоступен за окно</p>';
-        return;
-      }
-      var share = reg.band_share || {};
-      var regSeg = [
-        { band: "compliant_min", name: "80-100%", color: good },
-        { band: "compliant_measures", name: "55-79.9%", color: warn },
-        { band: "noncompliant", name: "до 54.9%", color: bad },
-        { band: "unscored", name: "не оценено", color: mute }
-      ].map(function (s) {
-        var row = share[s.band] || {};
-        return { band: s.band, name: s.name, value: Number(row.n || 0), color: s.color };
-      });
-      var regCenter = reg.avg_pct == null ? "-" : (Math.round(Number(reg.avg_pct)) + "%");
-      renderScoreRing(regCard, "№55", regCenter, regSeg, openReg55BandCases);
     }
     function renderScoreDynamics(dash) {
       var host = $("yesterday-score-dynamics");
@@ -1895,7 +1887,7 @@
         var to = win.trend_date_to || win.date_to || "";
         sub.textContent = from && to
           ? ("Средние % по дням: " + from + " - " + to + " · клик по дню открывает этот день")
-          : "Средние % зон и №55 по дням выбранного периода";
+          : "Средние % трёх зон по дням выбранного периода";
       }
       if (!trends.length) {
         host.innerHTML = '<p class="empty">Нет динамики за окно аналитики.</p>';
@@ -1925,8 +1917,8 @@
         };
       }
       var chart = MO.moChart(host, {
-        color: [c1, c2, c3, c55],
-        legend: { top: 4, data: ["Оформление", "Диагноз", "План", "№55"] },
+        color: [c1, c2, c3],
+        legend: { top: 4, data: ["Оформление", "Диагноз", "План"] },
         grid: { left: 42, right: 18, top: 42, bottom: 28 },
         tooltip: {
           trigger: "axis",
@@ -1947,12 +1939,11 @@
         series: [
           series("Оформление", "zone1_avg", c1, false),
           series("Диагноз", "zone2a_avg", c2, false),
-          series("План", "zone2b_avg", c3, false),
-          series("№55", "reg55_avg", c55, true)
+          series("План", "zone2b_avg", c3, false)
         ]
       }, {
-        label: "Динамика оценок",
-        description: "Средние проценты зон и №55 по дням окна аналитики."
+        label: "Динамика трёх оценок",
+        description: "Средние проценты оформления, диагноза и плана по дням окна аналитики."
       });
       if (chart) {
         chart.on("click", function (params) {
@@ -1993,7 +1984,9 @@
       // overview API may nest attention on month-report or separate overview call
       var attention = data.attention || (data.overview && data.overview.attention) || null;
       if (!attention && state.data.overviewAttention) attention = state.data.overviewAttention;
-      renderAttentionStrip("month-attention", attention);
+      renderAttentionStrip("month-attention", attention, {
+        zones: data.zones || (data.overview && data.overview.zones) || {}
+      });
       loadFamilyStrips("month-family-strip");
       renderSeverityPriorityRing(data.worst_severity_cases || {});
       renderZoneTrendHost("month-zone-trend", (attention && attention.zone_trends) || data.zone_trends || []);
@@ -5207,7 +5200,9 @@
     }
     function renderYesterday(data, dash, workingDay) {
       renderYesterdayScoreKpis(data, dash || null);
-      renderAttentionStrip("yesterday-attention", (dash && dash.attention) || data.attention || null);
+      renderAttentionStrip("yesterday-attention", (dash && dash.attention) || data.attention || null, {
+        zones: (dash && dash.zones) || data.zones || {}
+      });
       loadFamilyStrips("yesterday-family-strip");
       renderYesterdayScoreDashboard(dash || state.data.scoreDashboard || null, workingDay || data.date || "");
       renderYesterdayActions(data);

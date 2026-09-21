@@ -6,9 +6,9 @@ APP = (ROOT / "frontend" / "web" / "shared" / "mo-app.js").read_text(encoding="u
 
 
 def test_plan_kpi_uses_uncompared_caption_when_na_dominates() -> None:
-    assert "function planKpiMeta(attn)" in APP
+    assert "function planKpiMeta(attn, zoneHint)" in APP
     assert "план не сравнивался с КП:" in APP
-    assert 'tile("План плохо", a.zone2b_bad, planKpiMeta(a)' in APP
+    assert 'tile("План плохо", a.zone2b_bad, planKpiMeta(a, (opts.zones || {}).zone2b)' in APP
 
 
 def test_plan_ring_center_says_not_compared_when_na_dominates() -> None:

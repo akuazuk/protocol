@@ -160,7 +160,7 @@
 
   function moDonut(element, segments, config) {
     config = config || {};
-    var radius = config.radius || ["42%", "82%"];
+    var radius = config.radius || ["48%", "86%"];
     var centerText = config.centerText || "";
     var centerSub = config.centerSub || "";
     var onSelect = config.onSelect;
@@ -213,7 +213,7 @@
         style: {
           text: String(centerText || "").split("\n")[0] || "-",
           fill: token("--ink", "#1c2430"),
-          font: "700 18px Avenir Next, Avenir, Helvetica Neue, sans-serif",
+          font: "700 22px Avenir Next, Avenir, Helvetica Neue, sans-serif",
           align: "center",
           verticalAlign: "middle"
         }

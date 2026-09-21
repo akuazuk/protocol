@@ -1667,25 +1667,56 @@ kbd {
 .score-kpi-strip { margin: 0 0 12px; }
 .score-rings {
   display: grid;
-  grid-template-columns: repeat(4, minmax(0, 1fr));
-  gap: 12px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
   margin-top: 8px;
-  min-height: 220px;
+  min-height: 280px;
 }
+.score-grade-legend {
+  grid-column: 1 / -1;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px 14px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  justify-content: center;
+}
+.score-grade-legend__item {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-size: var(--type-meta);
+  color: var(--ink);
+  font-weight: 650;
+}
+.score-grade-legend__item::before {
+  content: "";
+  width: 10px;
+  height: 10px;
+  border-radius: 99px;
+  background: var(--muted);
+}
+.score-grade-legend__item--good::before { background: var(--good, #2f6f63); }
+.score-grade-legend__item--fair::before { background: color-mix(in srgb, var(--good, #2f6f63) 55%, var(--warn, #9a7b3c)); }
+.score-grade-legend__item--poor::before { background: var(--warn, #9a7b3c); }
+.score-grade-legend__item--important::before { background: var(--bad, #9a5b66); }
+.score-grade-legend__item--critical::before { background: color-mix(in srgb, var(--bad, #9a5b66) 70%, #4a1020); }
+.score-grade-legend__item--na::before { background: var(--muted, #7a8494); }
 .score-ring {
   min-width: 0;
   border: 1px solid color-mix(in srgb, var(--line) 88%, transparent);
   border-radius: 14px;
   background:
     linear-gradient(180deg, color-mix(in srgb, var(--accent) 5%, var(--surface-solid)), var(--surface-solid));
-  padding: 8px 6px 10px;
+  padding: 10px 8px 12px;
 }
 .score-ring--wide {
   max-width: 420px;
 }
 .score-ring--wide .score-ring-chart {
-  height: 220px;
-  min-height: 220px;
+  height: 240px;
+  min-height: 240px;
 }
 .score-ring-title {
   margin: 0 0 2px;
@@ -1695,8 +1726,8 @@ kbd {
   color: var(--ink);
 }
 .score-ring-chart {
-  height: 180px;
-  min-height: 180px;
+  height: 236px;
+  min-height: 236px;
 }
 .score-ring-meta {
   margin: 0;
