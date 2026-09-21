@@ -3,7 +3,7 @@
 Статус: **active**
 Дата: 2026-09-20
 Владелец: методист / руководитель качества
-Прод-база: `https://protocol.kravira.by/methodist/mo`, SHA `ef8771c5` (`2026-09-20-193442Z-mo-r4-lab-evidence`). Разбор на всю страницу с W2; R0-R4 в проде. Стол W1-W7 в проде.
+Прод-база: `https://protocol.kravira.by/methodist/mo`, SHA `82ac1d64` (`2026-09-21-042344Z-mo-r5-meds-rceth`). Разбор на всю страницу с W2; R0-R5 в проде. Стол W1-W7 в проде.
 Канон методики: `2026-08-08-mo-analytics-mz-sheet-layers-v2.md`
 Канон экрана (не отменяем язык зон): `2026-08-08-mo-analytics-ui-target-v2.md` §9
 Смежный план стола: `2026-09-20-mo-analytics-workspace-v1.md` (W2 закрыл **полноэкранность**, не закрыл **смысл оценки**)
@@ -333,7 +333,7 @@ R4b (отдельное решение владельца): включать в 
 
 ### R5. Назначения: реестр Rceth + КП
 
-Статус волны: **in progress**.
+Статус волны: **in prod** (#276, `82ac1d64`, `2026-09-21-042344Z-mo-r5-meds-rceth`).
 
 R5a: убрать ложный «черновик», если есть label или КП-схема. Показать 4.1/4.3 из уже скачанного ctx (`load_rceth_label_ctx`), дату редакции.
 
@@ -342,6 +342,8 @@ R5b: сверка схемы с КП (если в карточке проток�
 Не качать Rceth с Mac. Не класть PDF инструкций в git.
 
 ### R6. №55 читаемый
+
+Статус волны: **in progress**.
 
 Вынести pack-пункты из служебного на аккордеон «№55». Hero по-прежнему зоны, не средний %. Fail-пункты в «Почему так», если band noncompliant / measures.
 
@@ -434,8 +436,8 @@ R5b: сверка схемы с КП (если в карточке проток�
 ## 11. Следующая безопасная команда
 
 ```bash
-scripts/ops/git_task_start.sh mo-case-review-r6 --pc=1 \
-  --branch=cursor/mo-case-review-r6-pc1
+scripts/ops/git_task_start.sh mo-case-review-r7 --pc=1 \
+  --branch=cursor/mo-case-review-r7-pc1
 ```
 
-R6 - №55 читаемый на аккордеоне, без подмены зон 2a/2b. Не включать `MO_LAB_IN_PRIMARY` без владельца. Не качать Rceth с Mac.
+R7 - полировка экрана разбора. Не включать `MO_LAB_IN_PRIMARY`. Не качать Rceth с Mac.
