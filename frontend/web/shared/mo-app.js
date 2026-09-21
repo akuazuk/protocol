@@ -3431,7 +3431,7 @@
         html + "</details>";
     }
     function renderEvidenceAccordion(data, history, zones) {
-      var openId = pickOpenEvidenceId(zones, data.reg55);
+      var openId = "";
       var reg55Payload = data.reg55 || {};
       var reg55Pct = reg55Payload.reg55_section_pct;
       if (reg55Pct == null) reg55Pct = reg55Payload.regulatory_compliance_pct;
@@ -3535,8 +3535,9 @@
           (refs.length ? '<p>Источники: ' + esc(refs.join(", ")) + "</p>" : "") + "</details>" +
           '</article>';
       }).join("") : '<p class="empty">Замечаний нет.</p>';
-      return '<div class="detail-block"><h3>Что не так</h3>' + chips +
-        '<div class="findings-compact-list">' + list + '</div></div>';
+      return '<details class="detail-block case-findings-fold"><summary>Что не так' +
+        (cards.length ? " · " + cards.length : "") + "</summary>" + chips +
+        '<div class="findings-compact-list">' + list + "</div></details>";
     }
     function renderHistoryContinuity(cont) {
       if (!cont || !cont.mode) return "";
@@ -4085,9 +4086,9 @@
           '<div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
           renderZonesHero(zones) +
+          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderAssessmentStatusStrip(assessment) +
           renderCaseWhy(zones, assessment, data.reg55) +
-          '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
           renderEvidenceAccordion(data, history, zones) +
           '<details class="detail-block mo-secondary-details" id="case-more-details">' +

@@ -1367,17 +1367,26 @@ kbd {
   background: color-mix(in srgb, var(--accent) 8%, var(--surface-solid));
 }
 .case-why {
-  margin: 0 0 12px;
-  padding: 10px 12px;
+  margin: 0 0 10px;
+  padding: 8px 10px;
   border: 1px solid var(--line);
   border-radius: 10px;
   background: var(--surface-2);
+}
+.case-findings-fold {
+  margin: 0 0 10px;
+}
+.case-findings-fold > summary {
+  cursor: pointer;
+  font-weight: 650;
+  font-size: 14px;
+  padding: 4px 0;
 }
 .case-why h3 { margin: 0 0 4px; font-size: 14px; }
 .case-why ul { margin: 6px 0 0; padding-left: 1.2em; }
 .case-why li { margin: 4px 0; }
 .protocol-suggest-host {
-  margin: 0 0 12px;
+  margin: 0 0 8px;
 }
 .case-evidence-accordion {
   display: grid;
@@ -1499,7 +1508,7 @@ kbd {
   flex: 1 1 auto;
   min-height: 0;
   overflow: auto;
-  padding: 16px 18px 12px;
+  padding: 12px 16px 8px;
   -webkit-overflow-scrolling: touch;
 }
 .methodist-decision-panel--dock {
@@ -1514,6 +1523,10 @@ kbd {
   box-shadow: 0 -8px 24px rgba(5, 34, 29, 0.08);
   background: color-mix(in srgb, var(--surface-2) 70%, var(--surface-solid));
   padding: 12px 16px 14px;
+}
+.methodist-decision-panel--dock:not([open]) {
+  padding: 6px 16px 8px;
+  box-shadow: 0 -4px 14px rgba(5, 34, 29, 0.06);
 }
 .methodist-decision-panel--dock.is-unsaved {
   border-top-color: var(--warn);
@@ -1540,7 +1553,7 @@ kbd {
   display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-top: 10px;
 }
 .methodist-decision-panel--dock #drawer-summary { min-height: 88px; }
-.zones-hero { margin-bottom: 14px; }
+.zones-hero { margin-bottom: 10px; }
 .zones-hero-head { display: flex; align-items: center; gap: 10px; margin-bottom: 8px; }
 .zones-hero-head h3 { margin: 0; font-size: 16px; }
 .overall-grade-hero { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
