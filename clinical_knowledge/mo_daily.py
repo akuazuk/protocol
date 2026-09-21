@@ -1972,6 +1972,95 @@ def _assessment_input_integrity(
     }
 
 
+def warehouse_protocol_suggest_live_enabled() -> bool:
+    """Live matcher during warehouse persist.
+
+    Default on in production so night/recompute writes the same hit as the UI.
+    Pytest stays off unless MO_WAREHOUSE_PROTOCOL_SUGGEST is explicitly 1, so
+    dummy rows do not load the protocol card registry.
+    """
+    raw = (os.environ.get("MO_WAREHOUSE_PROTOCOL_SUGGEST") or "").strip().lower()
+    if raw in {"0", "false", "no", "off"}:
+        return False
+    if raw in {"1", "true", "yes", "on"}:
+        return True
+    return not bool(os.environ.get("PYTEST_CURRENT_TEST"))
+
+
+def protocol_identity_from_suggest(
+    protocol: Mapping[str, Any] | None,
+) -> tuple[str, str]:
+    """protocol_id / version from clinical_kp_hit, not only top-level suggest keys."""
+    protocol = protocol if isinstance(protocol, Mapping) else {}
+    hit: Mapping[str, Any] | None = None
+    try:
+        from clinical_knowledge.case_protocol_suggest import clinical_kp_hit
+
+        hit = clinical_kp_hit(dict(protocol))
+    except Exception:  # noqa: BLE001
+        hit = None
+    src = hit if isinstance(hit, Mapping) else {}
+    protocol_id = str(
+        src.get("protocol_id")
+        or protocol.get("protocol_id")
+        or protocol.get("id")
+        or protocol.get("slug")
+        or ""
+    ).strip()
+    protocol_version = str(
+        src.get("protocol_version")
+        or src.get("document_date")
+        or protocol.get("protocol_version")
+        or protocol.get("version")
+        or protocol.get("document_date")
+        or ""
+    ).strip()
+    return protocol_id, protocol_version
+
+
+def resolve_case_protocol_suggest(
+    case: Mapping[str, Any] | None,
+    *,
+    raw: Mapping[str, Any] | None = None,
+    findings: Sequence[Mapping[str, Any]] | None = None,
+    clinical: Mapping[str, Any] | None = None,
+) -> dict[str, Any] | None:
+    """Reuse a stored suggest payload, else run the same matcher as live UI."""
+    if isinstance(case, Mapping) and isinstance(case.get("protocol_suggest"), Mapping):
+        existing = dict(case.get("protocol_suggest") or {})
+        if existing:
+            return existing
+    if not warehouse_protocol_suggest_live_enabled():
+        return None
+    try:
+        from clinical_knowledge.case_protocol_suggest import (
+            suggest_enabled,
+            suggest_protocols_for_mo_case,
+        )
+
+        if not suggest_enabled():
+            return None
+        record: dict[str, Any] = {}
+        if isinstance(raw, Mapping):
+            record.update(raw)
+        if isinstance(case, Mapping):
+            record.update({k: v for k, v in case.items() if v not in (None, "")})
+        history = None
+        if isinstance(case, Mapping) and isinstance(case.get("_patient_history"), Mapping):
+            history = case.get("_patient_history")
+        out = suggest_protocols_for_mo_case(
+            clinical=dict(clinical or {}),
+            record=record,
+            findings=list(findings or []),
+            history_bundle=history if isinstance(history, dict) else None,
+            attach_history=False,
+            limit=3,
+        )
+        return out if isinstance(out, dict) else None
+    except Exception:  # noqa: BLE001
+        return None
+
+
 def _assessment_metadata(
     *,
     mis_id: str,
@@ -2040,18 +2129,7 @@ def _assessment_metadata(
 
     protocol = case.get("protocol_suggest")
     protocol = protocol if isinstance(protocol, Mapping) else {}
-    protocol_id = str(
-        protocol.get("protocol_id")
-        or protocol.get("id")
-        or protocol.get("slug")
-        or ""
-    ).strip()
-    protocol_version = str(
-        protocol.get("protocol_version")
-        or protocol.get("version")
-        or protocol.get("document_date")
-        or ""
-    ).strip()
+    protocol_id, protocol_version = protocol_identity_from_suggest(protocol)
     protocol_status = str(
         protocol.get("applicability_status")
         or protocol.get("applicability")
@@ -2059,8 +2137,8 @@ def _assessment_metadata(
     ).strip()
     kp_status = str(zone_cols.get("zone2b_kp_status") or "").strip()
     if not protocol_status:
-        if kp_status == "matched":
-            protocol_status = "unknown"
+        if kp_status == "matched" and protocol_id:
+            protocol_status = "applicable"
         elif kp_status == "unmatched" or not protocol_id:
             protocol_status = "not_evaluated"
         else:
@@ -2398,12 +2476,24 @@ def upsert_warehouse(
                                 block_scores = dict(case.get("block_scores") or {})
                             elif isinstance(evaluation_v4.get("block_scores"), Mapping):
                                 block_scores = dict(evaluation_v4.get("block_scores") or {})
-                        suggest = None
-                        if isinstance(case, Mapping) and isinstance(case.get("protocol_suggest"), Mapping):
-                            suggest = case.get("protocol_suggest")
+                        clinical_slots = clinical_slots_from_mapping(
+                            raw, case if isinstance(case, Mapping) else None
+                        )
+                        if diagnosis_text:
+                            clinical_slots.setdefault("diagnosis_short", diagnosis_text)
+                        if diagnosis_code:
+                            clinical_slots.setdefault("mkb_code_main", diagnosis_code)
+                        suggest = resolve_case_protocol_suggest(
+                            case if isinstance(case, Mapping) else None,
+                            raw=raw,
+                            findings=[*primary_findings, *shadow_findings],
+                            clinical=clinical_slots,
+                        )
+                        if suggest is not None and isinstance(case, dict):
+                            case["protocol_suggest"] = suggest
                         zones = compute_mo_zone_scores(
                             {
-                                "clinical": clinical_slots_from_mapping(raw, case if isinstance(case, Mapping) else None),
+                                "clinical": clinical_slots,
                                 "meta": {
                                     "visit_date": visit_date,
                                     "visit_time": raw.get("visit_time") or (case.get("visit_time") if isinstance(case, Mapping) else None),

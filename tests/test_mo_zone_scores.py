@@ -280,11 +280,13 @@ def test_warehouse_persists_zone_columns(tmp_path: Path) -> None:
         assert "zone1_pct" in cols
         assert "attention_primary" in cols
         clinical = db.execute(
-            "SELECT zone1_band, zone2a_band, zone2b_kp_status, layer_engine "
+            "SELECT zone1_band, zone2a_band, zone2b_kp_status, layer_engine, protocol_id "
             "FROM fact_mo_case WHERE mis_id='1'"
         ).fetchone()
         assert clinical[3] == "mo_zones_v1"
         assert clinical[0] in {"ok", "weak", "bad"}
+        assert clinical[2] == "matched"
+        assert clinical[4] == "t1"
         non = db.execute(
             "SELECT zone1_pct, attention_primary FROM fact_mo_case WHERE mis_id='2'"
         ).fetchone()
