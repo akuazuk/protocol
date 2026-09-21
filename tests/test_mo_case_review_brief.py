@@ -97,7 +97,7 @@ def test_narrative_default_off() -> None:
 def test_frontend_has_review_brief_section() -> None:
     mo_app = Path(__file__).resolve().parents[1] / "frontend" / "web" / "shared" / "mo-app.js"
     text = mo_app.read_text(encoding="utf-8")
-    assert "Итог разбора" in text
+    assert "Черновик сводки модели" in text
     assert "renderReviewBrief" in text
     assert "review-brief-prefill" in text
     assert "Подставить в решение методиста" in text

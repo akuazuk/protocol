@@ -12,7 +12,9 @@ def test_inspector_hides_list_instead_of_squeezing() -> None:
     assert "body.is-inspecting .context-bar" in CSS
     assert "min(48vw, 680px)" not in CSS
     assert "margin-right: min(48vw, 680px)" not in CSS
-    assert "min-width: 600px" in CSS
+    assert "min-width: 600px" not in CSS
+    wide_1280 = CSS.split("@media (min-width: 1280px)", 1)[1][:400]
+    assert "min-width: 0" in wide_1280
     assert "wideInspector() {\n      return false;" in APP
 
 
