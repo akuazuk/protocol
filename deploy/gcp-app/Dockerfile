@@ -46,6 +46,8 @@ COPY data/icd_reference/icd10_who_2016_terminal_codes.json data/icd_reference/ic
 COPY data/regulations/ data/regulations/
 # Карточки КП для case_protocol_suggest / protocol_match (без PDF)
 COPY output/registry/protocol_cards.jsonl output/registry/protocol_cards.jsonl
+# Ilex-паспорта overlay (названия/МКБ/статус; HTML Ilex в образ не кладём)
+COPY output/registry/ilex_protocol_passports.jsonl output/registry/ilex_protocol_passports.jsonl
 # Release-artifact smoke: both JSON files must load and drive the numerical evaluator.
 COPY deploy/gcp-app/verify_lab_assets.py deploy/gcp-app/verify_lab_assets.py
 RUN PYTHONPATH=/app python deploy/gcp-app/verify_lab_assets.py

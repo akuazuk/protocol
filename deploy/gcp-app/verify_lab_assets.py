@@ -5,6 +5,11 @@ from __future__ import annotations
 import os
 import sqlite3
 
+from clinical_knowledge.ilex_protocol_passports import (
+    clear_ilex_passport_cache,
+    load_ilex_passports,
+    passports_path,
+)
 from clinical_knowledge.lab_abnormal_findings import (
     CODE_ABNORMAL_IGNORED,
     load_reference_ranges,
@@ -70,9 +75,19 @@ def main() -> None:
     if payload.get("abnormal_check", {}).get("status") != "completed_limited":
         raise SystemExit("synthetic lab evaluation did not complete")
 
+    os.environ.pop("ILEX_PASSPORTS", None)
+    os.environ.pop("ILEX_PASSPORTS_PATH", None)
+    clear_ilex_passport_cache()
+    passports = load_ilex_passports()
+    if len(passports) < 100:
+        raise SystemExit(
+            f"ilex passports missing in image: path={passports_path()} n={len(passports)}"
+        )
+
     print(
         "lab image verification ok: "
-        f"ranges={len(ranges)} panels={len(panels)} shadow_findings={len(abnormal)}"
+        f"ranges={len(ranges)} panels={len(panels)} shadow_findings={len(abnormal)} "
+        f"ilex_passports={len(passports)}"
     )
 
 
