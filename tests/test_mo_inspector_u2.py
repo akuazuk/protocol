@@ -25,6 +25,15 @@ def test_findings_and_evidence_start_folded() -> None:
     assert "openEvidencePanel(spec.evidence)" in APP
 
 
+def test_protocol_host_is_a_name_strip_not_concordance() -> None:
+    chunk = APP.split("function renderProtocolSuggest(", 1)[1].split("function verdictSelect(", 1)[0]
+    assert "protocol-suggest-block--strip" in chunk
+    assert "protocol-suggest-top--empty" in chunk
+    assert "Протокол не подобран" in chunk
+    assert "+ concordanceHtml" not in chunk
+    assert "paintKpConcordance" in APP
+
+
 def test_collapsed_dock_is_thinner_and_wide_split_has_no_tabs() -> None:
     assert ".methodist-decision-panel--dock:not([open])" in CSS
     assert ".case-workspace-tabs {\n  display: none;" in CSS
