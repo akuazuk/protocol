@@ -239,6 +239,9 @@ elif [[ "$MODE" != "main" ]]; then
   exit 2
 fi
 
+# Чтобы 03:15 UTC check не слал missing_status_file, пока score ещё идёт.
+write_status "running" "started"
+
 # shellcheck disable=SC1090
 # shellcheck disable=SC1091
 source "$LOAD_MIS"
