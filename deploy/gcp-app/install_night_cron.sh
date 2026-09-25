@@ -52,8 +52,10 @@ MO_DAILY_WORKERS=2
 0 2 * * * ${proto_root}/deploy/gcp-app/night_mis_pipeline.sh main
 # 03:00 server/UTC - retry +1h if main failed
 0 3 * * * ${proto_root}/deploy/gcp-app/night_mis_pipeline.sh retry
-# 03:15 server/UTC - alert if still not success
+# 03:15 server/UTC - alert if failed; silent while main still holds the lock
 15 3 * * * ${proto_root}/deploy/gcp-app/check_gce_night_status.sh
+# 07:15 server/UTC - deadline: lock older than 5h or missing/failed status
+15 7 * * * ${proto_root}/deploy/gcp-app/check_gce_night_status.sh
 EOF
   crontab "$cron_file"
   rm -f "$cron_file"

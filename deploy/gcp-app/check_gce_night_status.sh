@@ -1,6 +1,7 @@
 #!/usr/bin/env bash
 # After night retry window: alert if yesterday still failed / missing.
-# Cron suggestion: 15 3 * * * (UTC), 15 min after retry.
+# 03:15 UTC - не орём, если main ещё пишет файл (после K1 score+recompute >75 мин).
+# 07:15 UTC - дедлайн: lock старше 5 ч = зависание.
 set -euo pipefail
 
 ROOT="${PROTOCOL_ROOT:-/opt/protocol}"
@@ -20,6 +21,9 @@ PY
 fi
 STATUS_FILE="${STATE_DIR}/gce_night_${DAY}.json"
 LAB_STATUS_FILE="${STATE_DIR}/gce_lab_${DAY}.json"
+LOCK="${STATE_DIR}/gce-night.lock"
+# 5 ч от старта 02:00 UTC: ночь после live-КП в витрине занимает ~2-4.5 ч.
+MAX_RUN_SEC="${MO_NIGHT_MAX_RUN_SEC:-18000}"
 mkdir -p "$LOG_DIR"
 exec >>"${LOG_DIR}/gce-night-check.log" 2>&1
 echo "======== CHECK day=${DAY} $(date -u +%Y-%m-%dT%H:%M:%SZ) ========"
@@ -51,6 +55,41 @@ load_telegram_env() {
     esac
   done < "$ENV_WEB"
 }
+
+lock_live=0
+lock_age_sec=0
+if [[ -f "$LOCK" ]]; then
+  owner="$(tr -d '[:space:]' < "$LOCK" 2>/dev/null || true)"
+  if [[ -n "$owner" ]] && kill -0 "$owner" 2>/dev/null; then
+    lock_live=1
+    if stat -c %Y "$LOCK" >/dev/null 2>&1; then
+      lock_age_sec=$(( $(date +%s) - $(stat -c %Y "$LOCK") ))
+    else
+      lock_age_sec=$(( $(date +%s) - $(stat -f %m "$LOCK") ))
+    fi
+  fi
+fi
+
+if [[ "$lock_live" -eq 1 ]]; then
+  if [[ "$lock_age_sec" -ge "$MAX_RUN_SEC" ]]; then
+    detail="still_running_too_long"
+    echo "ALERT_NEEDED day=${DAY} detail=${detail} lock_age_sec=${lock_age_sec}"
+    load_telegram_env
+    python3 "$ROOT/scripts/telegram_notify.py" \
+      "МО GCE night FAIL day=${DAY} mode=check detail=${detail} host=gce" >/dev/null 2>&1 || true
+    exit 1
+  fi
+  night_status=""
+  if [[ -f "$STATUS_FILE" ]]; then
+    night_status="$(python3 -c "import json; print(json.load(open('${STATUS_FILE}')).get('status') or '')" 2>/dev/null || true)"
+  fi
+  if [[ "$night_status" == "failed" ]]; then
+    echo "lock live but status=failed; fall through to alert"
+  else
+    echo "STILL_RUNNING day=${DAY} lock_age_sec=${lock_age_sec} status=${night_status:-missing}"
+    exit 0
+  fi
+fi
 
 if [[ ! -f "$STATUS_FILE" ]] || [[ ! -f "$LAB_STATUS_FILE" ]]; then
   detail="missing_status_file"
