@@ -27,8 +27,9 @@ def test_warehouse_q_searches_diagnosis_text() -> None:
         {"q": "гипертон", "date_from": "2026-09-01", "date_to": "2026-09-20"}
     )
     joined = " AND ".join(where)
-    assert "c.diagnosis_text" in joined
-    assert "dx.diagnosis_label" in joined
+    # Текст диагноза - через FTS-индекс fact_mo_case_search, название МКБ - через dim_diagnosis.
+    assert "fact_mo_case_search MATCH ?" in joined
+    assert "FROM dim_diagnosis WHERE" in joined and "diagnosis_label" in joined
     assert any("гипертон" in str(v).lower() for v in values)
 
 

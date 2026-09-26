@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import re
+import sqlite3
 from dataclasses import dataclass, field
 from functools import lru_cache
 from pathlib import Path
@@ -47,6 +48,71 @@ ALL_CHIPS = (CHIP_ICD, CHIP_PHRASE, CHIP_TERMS, CHIP_SYNONYMS, CHIP_FUZZY, CHIP_
 _ICD_CODE_RE = re.compile(r"^[A-Z]\d(?:\d(?:\.\d{0,2})?)?\.?$")
 _ICD_RANGE_RE = re.compile(r"^([A-Z])(\d{2})\s*-\s*(?:([A-Z]))?(\d{2})$")
 _TOKEN_RE = re.compile(r"[а-яa-z0-9]+")
+_FTS_TOKEN_RE = re.compile(r"^[0-9a-zа-яё]+$")
+
+# Полнотекстовый индекс склада: нормализованная копия diagnosis_text (ё->е; регистр и
+# пунктуацию снимает токенизатор unicode61). Поддерживается триггерами, при расхождении
+# пересобирается в ensure_search_index(). Поиск подстрокой с REPLACE/LIKE по 120 тыс.
+# строк занимал 11-70 с; MATCH по индексу - миллисекунды.
+FTS_TABLE = "fact_mo_case_search"
+_FTS_TEXT_EXPR = "REPLACE(REPLACE(COALESCE({row}.diagnosis_text, ''), 'ё', 'е'), 'Ё', 'Е')"
+FTS_SCHEMA_SQL = f"""
+CREATE VIRTUAL TABLE IF NOT EXISTS {FTS_TABLE}
+  USING fts5(search_text, mis_id UNINDEXED, tokenize='unicode61 remove_diacritics 2');
+CREATE TRIGGER IF NOT EXISTS trg_{FTS_TABLE}_ai AFTER INSERT ON fact_mo_case BEGIN
+  INSERT INTO {FTS_TABLE}(rowid, search_text, mis_id)
+  VALUES (new.rowid, {_FTS_TEXT_EXPR.format(row="new")}, new.mis_id);
+END;
+CREATE TRIGGER IF NOT EXISTS trg_{FTS_TABLE}_ad AFTER DELETE ON fact_mo_case BEGIN
+  DELETE FROM {FTS_TABLE} WHERE rowid = old.rowid;
+END;
+CREATE TRIGGER IF NOT EXISTS trg_{FTS_TABLE}_au AFTER UPDATE OF diagnosis_text, mis_id ON fact_mo_case BEGIN
+  DELETE FROM {FTS_TABLE} WHERE rowid = old.rowid;
+  INSERT INTO {FTS_TABLE}(rowid, search_text, mis_id)
+  VALUES (new.rowid, {_FTS_TEXT_EXPR.format(row="new")}, new.mis_id);
+END;
+"""
+
+
+def ensure_search_index(conn: sqlite3.Connection) -> dict[str, Any]:
+    """Создать FTS-индекс и триггеры, при расхождении с fact_mo_case - пересобрать.
+
+    Возвращает {"rows": n, "rebuilt": bool}. Вызывать на записывающем соединении;
+    идемпотентно и дёшево, когда индекс уже согласован (один JOIN по rowid)."""
+    conn.executescript(FTS_SCHEMA_SQL)
+    facts = int(conn.execute("SELECT COUNT(*) FROM fact_mo_case").fetchone()[0])
+    indexed = int(conn.execute(f"SELECT COUNT(*) FROM {FTS_TABLE}").fetchone()[0])
+    consistent = indexed == facts
+    if consistent and facts:
+        matched = int(
+            conn.execute(
+                f"SELECT COUNT(*) FROM {FTS_TABLE} s JOIN fact_mo_case c "
+                "ON c.rowid = s.rowid AND c.mis_id = s.mis_id"
+            ).fetchone()[0]
+        )
+        consistent = matched == facts
+    if consistent:
+        return {"rows": facts, "rebuilt": False}
+    conn.execute("BEGIN IMMEDIATE")
+    try:
+        conn.execute(f"DELETE FROM {FTS_TABLE}")
+        conn.execute(
+            f"INSERT INTO {FTS_TABLE}(rowid, search_text, mis_id) "
+            f"SELECT rowid, {_FTS_TEXT_EXPR.format(row='fact_mo_case')}, mis_id FROM fact_mo_case"
+        )
+        conn.execute("COMMIT")
+    except sqlite3.Error:
+        conn.execute("ROLLBACK")
+        raise
+    return {"rows": facts, "rebuilt": True}
+
+
+def fts_query(stems: Iterable[str], abbrevs: Iterable[str] = ()) -> str:
+    """MATCH-выражение: стеммы - как начало слова (`"гипертон"*`), сокращения - целым словом.
+    Токены только из букв/цифр, поэтому строку можно и параметризовать, и инлайнить."""
+    parts = [f'"{s}"*' for s in stems if _FTS_TOKEN_RE.match(s)]
+    parts += [f'"{a}"' for a in abbrevs if _FTS_TOKEN_RE.match(a)]
+    return " AND ".join(parts)
 # Кириллические двойники латиницы в кодах МКБ: «І10», «Е11», «К29» с русской раскладки.
 _CYR_TO_LATIN_LOOKALIKE = str.maketrans(
     {"А": "A", "В": "B", "С": "C", "Е": "E", "Н": "H", "К": "K", "М": "M", "О": "O", "Р": "P", "Т": "T", "Х": "X", "У": "Y", "І": "I"}
@@ -118,8 +184,9 @@ def text_stem(word: str) -> str:
 
 
 def _pad_text(text: str) -> str:
-    """Текст с границами слов для проверки «стем - начало слова»."""
-    return " " + re.sub(r"[.,;()/\-]", " ", text) + " "
+    """Текст с границами слов для проверки «стем - начало слова» (как токенизатор unicode61:
+    любой не буквенно-цифровой символ - разделитель)."""
+    return " " + re.sub(r"[\W_]+", " ", text) + " "
 
 
 def _icd_prefix_from_token(token: str) -> str | None:
@@ -587,22 +654,36 @@ def _ci_prefix(column: str, stem_value: str) -> tuple[str, list[str]]:
     return clause, [f"% {_like_contains(v)[1:]}" for v in variants]
 
 
-def _stems_clause(stems: list[str], columns: list[str], abbrevs: list[str] | None = None) -> tuple[str, list[str]]:
-    """Все стеммы (и сокращения целым словом) должны встретиться в одной колонке."""
-    parts: list[str] = []
+def _label_clause(stems: list[str], abbrevs: list[str] | None = None) -> tuple[str, list[str]]:
+    """Все стеммы/сокращения - в названии МКБ (dim_diagnosis, ~2,4 тыс. строк; подзапрос
+    некоррелированный, SQLite считает его один раз)."""
+    ands: list[str] = []
     values: list[str] = []
-    for column in columns:
-        ands = []
-        for s in stems:
-            clause, vals = _ci_prefix(column, s)
-            ands.append(clause)
-            values.extend(vals)
-        for a in abbrevs or []:
-            clause, vals = _ci_word(column, a)
-            ands.append(clause)
-            values.extend(vals)
-        parts.append("(" + " AND ".join(ands) + ")")
-    return "(" + " OR ".join(parts) + ")", values
+    for s in stems:
+        clause, vals = _ci_prefix("diagnosis_label", s)
+        ands.append(clause)
+        values.extend(vals)
+    for a in abbrevs or []:
+        clause, vals = _ci_word("diagnosis_label", a)
+        ands.append(clause)
+        values.extend(vals)
+    return (
+        "c.diagnosis_code IN (SELECT diagnosis_code FROM dim_diagnosis WHERE " + " AND ".join(ands) + ")",
+        values,
+    )
+
+
+def _stems_clause(stems: list[str], columns: list[str], abbrevs: list[str] | None = None) -> tuple[str, list[str]]:
+    """Все стеммы (и сокращения целым словом) - в тексте диагноза (FTS) или в названии МКБ.
+
+    `columns` сохранён для совместимости сигнатуры: текст ищется по индексу
+    `fact_mo_case_search`, название - по dim_diagnosis."""
+    match = fts_query(stems, abbrevs or [])
+    label_clause, label_values = _label_clause(stems, abbrevs)
+    if not match:
+        return "(" + label_clause + ")", label_values
+    fts = f"c.rowid IN (SELECT rowid FROM {FTS_TABLE} WHERE {FTS_TABLE} MATCH ?)"
+    return "(" + fts + " OR " + label_clause + ")", [match, *label_values]
 
 
 def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
@@ -616,8 +697,10 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
         ors = []
         values: list[Any] = []
         for pref in plan.icd_prefixes:
-            ors.append("REPLACE(UPPER(COALESCE(c.diagnosis_code, '')), '.', '') LIKE ? ESCAPE '\\'")
-            values.append(pref.replace(".", "") + "%")
+            # Коды склада - верхний регистр с точкой (I11.9); GLOB чувствителен к регистру
+            # и использует индекс по diagnosis_code.
+            ors.append("c.diagnosis_code GLOB ?")
+            values.append(_glob_prefix(pref))
         out[CHIP_ICD] = ("(" + " OR ".join(ors) + ")", values)
     if (plan.phrase_stems or plan.abbrevs) and plan.enabled(CHIP_PHRASE):
         out[CHIP_PHRASE] = _stems_clause(plan.phrase_stems, text_cols, plan.abbrevs)
@@ -636,8 +719,8 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
         ors = []
         values = []
         for code in plan.term_codes:
-            ors.append("REPLACE(UPPER(COALESCE(c.diagnosis_code, '')), '.', '') LIKE ? ESCAPE '\\'")
-            values.append(code.replace(".", "") + "%")
+            ors.append("c.diagnosis_code GLOB ?")
+            values.append(_glob_prefix(code))
         out[CHIP_TERMS] = ("(" + " OR ".join(ors) + ")", values)
     if plan.fuzzy_stems and plan.enabled(CHIP_FUZZY):
         ors = []
@@ -648,9 +731,10 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
             values.extend(vals)
         out[CHIP_FUZZY] = ("(" + " OR ".join(ors) + ")", values)
     if plan.has_doctor_chip and plan.enabled(CHIP_DOCTOR):
-        fio_clause, fio_values = _ci_like("d.doctor_fio", plan.normalized)
+        fio_clause, fio_values = _ci_like("doctor_fio", plan.normalized)
         doctor_clause = (
-            f"({fio_clause} OR CAST(c.visit_id AS TEXT) LIKE ? ESCAPE '\\' "
+            f"(c.doctor_key IN (SELECT doctor_key FROM dim_doctor WHERE {fio_clause}) "
+            "OR CAST(c.visit_id AS TEXT) LIKE ? ESCAPE '\\' "
             "OR CAST(c.mis_id AS TEXT) LIKE ? ESCAPE '\\')"
         )
         out[CHIP_DOCTOR] = (doctor_clause, [*fio_values, _like_contains(plan.normalized), _like_contains(plan.normalized)])
@@ -685,7 +769,12 @@ def sql_rank(plan: SearchPlan) -> tuple[str, list[Any]]:
 
 
 _RANK_ORDER = (CHIP_ICD, CHIP_PHRASE, CHIP_SYNONYMS, CHIP_TERMS, CHIP_FUZZY, CHIP_DOCTOR)
-_SAFE_LITERAL_RE = re.compile(r"[^0-9a-zA-Zа-яА-ЯёЁ .\-%]")
+_SAFE_LITERAL_RE = re.compile(r"[^0-9a-zA-Zа-яА-ЯёЁ .\-%\"*()]")
+
+
+def _glob_prefix(code: str) -> str:
+    """`I10` -> `I10*`; символы GLOB в коде невозможны (валидируется регуляркой кода)."""
+    return re.sub(r"[^A-Z0-9.]", "", code.upper()) + "*"
 
 
 def chip_for_rank(rank: int) -> str | None:

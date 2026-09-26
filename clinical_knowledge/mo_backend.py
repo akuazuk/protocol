@@ -959,10 +959,33 @@ def _search_plan(params: Mapping[str, Any]) -> "mo_search.SearchPlan | None":
     return plan
 
 
+_SEARCH_INDEX_READY_PATH: str | None = None
+
+
+def _ensure_search_index() -> None:
+    """FTS-индекс текста диагнозов (`fact_mo_case_search`) для SQL-поиска.
+
+    Один раз на процесс и путь к складу: создать таблицу/триггеры, при расхождении
+    пересобрать. Пишущее соединение `_connect()` - индекс живёт в самом складе,
+    дальше его поддерживают триггеры на fact_mo_case (в том числе из ночного конвейера)."""
+    global _SEARCH_INDEX_READY_PATH
+    if _backend_source() != "warehouse":
+        return
+    path_key = str(_db_path().resolve())
+    if _SEARCH_INDEX_READY_PATH == path_key:
+        return
+    with closing(_connect()) as conn:
+        status = mo_search.ensure_search_index(conn)
+    if status.get("rebuilt"):
+        _LOG.info("FTS-индекс поиска МО пересобран: rows=%s", status.get("rows"))
+    _SEARCH_INDEX_READY_PATH = path_key
+
+
 def _warehouse_text_q_clause(q_text: str, params: Mapping[str, Any] | None = None) -> tuple[str, list[Any]]:
     plan = _search_plan(params) if params is not None else mo_search.expand_query(q_text)
     if plan is None:
         plan = mo_search.expand_query(q_text)
+    _ensure_search_index()
     return mo_search.sql_clause(plan)
 
 
