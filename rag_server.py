@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-26-152505Z-mo-wave-c-weighted-axes"
+BUILD_VERSION = "2026-09-26-154630Z-probe-sort-overall"
 
 
 def _app_version() -> str:

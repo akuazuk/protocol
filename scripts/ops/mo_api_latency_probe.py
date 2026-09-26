@@ -35,7 +35,7 @@ API = "/api/methodist/mo"
 # (имя, путь, параметры, порог мс). Параметры с {from}/{to}/{month} подставляются.
 PROBES: list[tuple[str, str, dict[str, str], int]] = [
     ("cases_month_p1", "/cases", {"date_from": "{from}", "date_to": "{to}", "page": "1", "page_size": "50"}, 1500),
-    ("cases_sort_score", "/cases", {"date_from": "{from}", "date_to": "{to}", "sort_by": "score", "page_size": "50"}, 800),
+    ("cases_sort_score", "/cases", {"date_from": "{from}", "date_to": "{to}", "sort_by": "overall", "page_size": "50"}, 800),
     ("cases_queue_only", "/cases", {"date_from": "{from}", "date_to": "{to}", "queue_only": "1", "page_size": "50"}, 1000),
     ("cases_finding_lab", "/cases", {"date_from": "{from}", "date_to": "{to}", "finding_family": "lab", "page_size": "50"}, 800),
     ("cases_grade_poor", "/cases", {"date_from": "{from}", "date_to": "{to}", "overall_grade": "poor", "page_size": "50"}, 800),
