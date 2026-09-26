@@ -148,7 +148,10 @@ def _mini_warehouse(path: Path) -> None:
               ('3','3','2026-09-01','K29.7','Хронический гастрит','d2'),
               ('4','4','2026-09-01','H52.1','Миопия слабой степени','d2'),
               ('5','5','2026-09-01','M42.1','Остеохондроз поясничного отдела','d1'),
-              ('6','6','2026-09-01','J06.9','ОРВИ','d2');
+              ('6','6','2026-09-01','J06.9','ОРВИ','d2'),
+              ('7','7','2026-09-01','G72.9','Миопатия неуточненная','d1'),
+              ('8','8','2026-09-01','I15.0','Реноваскулярная гипертензия (АГ) 2 ст.','d2'),
+              ('9','9','2026-09-01','K86.1','Хр. панкреатит','d2');
             INSERT INTO dim_doctor VALUES ('d1','Иванова А.А.'),('d2','Петров Б.Б.');
             INSERT INTO dim_diagnosis VALUES ('I10','Эссенциальная гипертензия'),('H52.1','Миопия');
             """
@@ -175,21 +178,21 @@ def test_sql_clause_finds_by_code_synonym_and_typo(tmp_path: Path) -> None:
     # Синоним: «гипертония» находит и «гипертензию» (I10) и «гипертоническую болезнь».
     hits = _run(db, "гипертония")
     ids = [m for m, _r in hits]
-    assert set(ids) == {"1", "2"}
+    assert set(ids) == {"1", "2", "8"}
     ranks = dict(hits)
     assert ranks["2"] == 2, "прямое слово запроса - ранг фразы"
     assert ranks["1"] in {3, 4}, "гипертензия - синоним или код по названию"
     # Без синонимов остаётся только фраза (и код I10 по названию).
     assert {m for m, _r in _run(db, "гипертония", disabled="synonyms,terms")} == {"2"}
     # Опечатка.
-    assert {m for m, _r in _run(db, "гипертенизя")} == {"1"}
+    assert {m for m, _r in _run(db, "гипертенизя")} == {"1", "8"}
     # Код и диапазон.
-    assert {m for m, _r in _run(db, "I10-I15")} == {"1", "2"}
+    assert {m for m, _r in _run(db, "I10-I15")} == {"1", "2", "8"}
     assert {m for m, _r in _run(db, "K29")} == {"3"}
     # Синоним близорукость -> миопия.
     assert {m for m, _r in _run(db, "близорукость")} == {"4"}
     # Врач.
-    assert {m for m, _r in _run(db, "Петров")} == {"3", "4", "6"}
+    assert {m for m, _r in _run(db, "Петров")} == {"3", "4", "6", "8", "9"}
     # Мусор ничего не ломает.
     assert _run(db, "x'); DROP TABLE fact_mo_case; --") == []
 
@@ -212,6 +215,40 @@ def test_match_record_mirrors_sql(tmp_path: Path) -> None:
         sql_ids = {m for m, _r in _run(db, q)}
         py_ids = {r["mis_id"] for r in rows if ms.match_record(plan, r) is not None}
         assert py_ids == sql_ids, q
+
+
+def test_text_stem_matches_word_start_not_substring(tmp_path: Path) -> None:
+    """«близорукость» -> синоним «миопия»: стем `миопи` не должен ловить «миопатию» (Bugbot)."""
+    assert ms.text_stem("миопия") == "миопи"
+    assert ms.text_stem("острая") == "остр", "у прилагательных короткий стем остаётся"
+    assert ms.text_stem("гипертония") == "гипертон"
+    db = tmp_path / "w.sqlite"
+    _mini_warehouse(db)
+    for q in ("близорукость", "миопия"):
+        ids = {m for m, _r in _run(db, q)}
+        assert "4" in ids and "7" not in ids, (q, ids)
+    # Совпадение только с начала слова: «тония» внутри «гипертония» не находится.
+    assert {m for m, _r in _run(db, "тония")} == set()
+    # Скобки и точки - границы слов и для сокращения целым словом.
+    assert "8" in {m for m, _r in _run(db, "АГ")}
+
+
+def test_word_expansions_apply_to_query(tmp_path: Path) -> None:
+    plan = ms.expand_query("хр. панкреатит")
+    assert plan.normalized == "хронический панкреатит"
+    db = tmp_path / "w.sqlite"
+    _mini_warehouse(db)
+    ids = {m for m, _r in _run(db, "хронический панкреатит")}
+    assert "9" in ids, "«Хр. панкреатит» в тексте должен находиться по расширенному запросу"
+    assert "9" in {m for m, _r in _run(db, "хр. панкреатит")}
+
+
+def test_fuzzy_is_per_token_even_when_other_word_gives_codes() -> None:
+    plan = ms.expand_query("орви ринитт")
+    assert plan.term_codes, "«орви» даёт коды по названию через seed-коды алиаса"
+    assert plan.fuzzy and plan.fuzzy[0]["suggestion"] == "ринит", plan.fuzzy
+    plan = ms.expand_query("острая респираторнная")
+    assert plan.fuzzy and plan.fuzzy[0]["suggestion"].startswith("респираторн"), plan.fuzzy
 
 
 def test_suggest_returns_aliases_words_and_typos() -> None:

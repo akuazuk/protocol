@@ -23,6 +23,8 @@ from functools import lru_cache
 from pathlib import Path
 from typing import Any, Iterable
 
+from .mo_icd_aliases import _apply_word_expansions
+
 ROOT = Path(__file__).resolve().parents[1]
 ALIASES_PATH = ROOT / "data" / "icd_reference" / "dx_aliases_ru.json"
 ICD_RU_PATH = ROOT / "data" / "icd_reference" / "icd10_ru_mkb10su.json"
@@ -93,6 +95,31 @@ def stem(word: str) -> str:
         if w.endswith(suffix) and len(w) - len(suffix) >= STEM_MIN:
             return w[: -len(suffix)]
     return w
+
+
+_ADJ_SUFFIXES = (
+    "ого", "его", "ому", "ему", "ыми", "ими", "ая", "яя", "ое", "ее", "ые", "ой", "ый", "ий",
+    "ых", "их", "ую", "юю",
+)
+TEXT_STEM_MIN = 5
+
+
+def text_stem(word: str) -> str:
+    """Стем для поиска по тексту (совпадение с начала слова).
+
+    Короткий стем существительного дотягиваем до 5 букв, иначе «миопия» -> `миоп`
+    ловила бы «миопатию». У прилагательных («острая» -> `остр`) короткий стем оставляем:
+    он нужен, чтобы «острая» находила «острый»/«острое»."""
+    w = (word or "").lower().replace("ё", "е")
+    s = stem(w)
+    if len(s) < TEXT_STEM_MIN and len(w) > TEXT_STEM_MIN and not w.endswith(_ADJ_SUFFIXES):
+        return w[:TEXT_STEM_MIN]
+    return s
+
+
+def _pad_text(text: str) -> str:
+    """Текст с границами слов для проверки «стем - начало слова»."""
+    return " " + re.sub(r"[.,;()/\-]", " ", text) + " "
 
 
 def _icd_prefix_from_token(token: str) -> str | None:
@@ -409,7 +436,9 @@ def _parse_disabled(raw: Any) -> list[str]:
 def expand_query(q: str, *, disabled: Any = None, extra_vocab: Iterable[str] = ()) -> SearchPlan:
     """Построить план поиска по строке запроса. Пустой запрос -> пустой план."""
     raw = (q or "").strip()
-    normalized = normalize(raw)
+    # «хр. панкреатит» -> «хронический панкреатит» (word_expansions словаря).
+    expanded_raw = _apply_word_expansions(raw, _word_expansions())
+    normalized = normalize(expanded_raw)
     plan = SearchPlan(raw=raw, normalized=normalized, disabled=_parse_disabled(disabled))
     if not normalized:
         return plan
@@ -439,7 +468,7 @@ def expand_query(q: str, *, disabled: Any = None, extra_vocab: Iterable[str] = (
     plan.tokens = words
     index = alias_index()
     meaningful = [w for w in words if len(w) >= 3 and w not in _STOP]
-    plan.phrase_stems = _dedupe([stem(w) for w in meaningful if len(stem(w)) >= 3])
+    plan.phrase_stems = _dedupe([text_stem(w) for w in meaningful if len(stem(w)) >= 3])
     # Двухбуквенные сокращения из словаря («аг», «сд») ищутся целым словом, не подстрокой.
     plan.abbrevs = _dedupe([w for w in words if len(w) < 3 and w in index])
 
@@ -454,7 +483,7 @@ def expand_query(q: str, *, disabled: Any = None, extra_vocab: Iterable[str] = (
     expansions = expansions[:MAX_PHRASES]
     plan.synonyms = expansions
     plan.synonym_stems = [
-        _dedupe([stem(t) for t in tokens(exp) if len(t) >= 3 and t not in _STOP and len(stem(t)) >= 3])
+        _dedupe([text_stem(t) for t in tokens(exp) if len(t) >= 3 and t not in _STOP and len(stem(t)) >= 3])
         for exp in expansions
     ]
 
@@ -472,12 +501,13 @@ def expand_query(q: str, *, disabled: Any = None, extra_vocab: Iterable[str] = (
         plan.term_codes = _collapse_codes(codes)
 
     # Опечатки: только для слов, которых нет ни в словаре, ни среди алиасов.
+    # Проверка пословная: в «острая респираторнная» опечатка второго слова исправляется,
+    # хотя первое слово уже дало коды. Слово из словаря («гипертония») похожих не получает -
+    # иначе оно тянуло бы «гипотонию».
     vocab = set(icd_vocabulary())
     fuzzy: list[dict[str, Any]] = []
     for w in meaningful:
-        # Нет точных попаданий ни в словаре, ни в алиасах, ни кодов по названию -
-        # иначе «гипертония» получала бы «гипотонию» как похожее слово.
-        if w in vocab or w in index or plan.term_codes:
+        if w in vocab or w in index:
             continue
         if any(w == t for exp in expansions for t in tokens(exp)):
             continue
@@ -491,8 +521,14 @@ def expand_query(q: str, *, disabled: Any = None, extra_vocab: Iterable[str] = (
         seen_stems.add(st)
         unique_fuzzy.append(item)
     plan.fuzzy = unique_fuzzy[:MAX_FUZZY]
-    plan.fuzzy_stems = [[stem(f["suggestion"])] for f in plan.fuzzy]
+    plan.fuzzy_stems = [[text_stem(f["suggestion"])] for f in plan.fuzzy]
     return plan
+
+
+@lru_cache(maxsize=1)
+def _word_expansions() -> list[dict[str, Any]]:
+    rows = _alias_file().get("word_expansions")
+    return [r for r in rows if isinstance(r, dict)] if isinstance(rows, list) else []
 
 
 def _dedupe(items: Iterable[str]) -> list[str]:
@@ -527,15 +563,28 @@ def _ci_like(column: str, value: str) -> tuple[str, list[str]]:
     return clause, [_like_contains(v) for v in variants]
 
 
+def _padded_col(column: str) -> str:
+    """Колонка с ё=е и границами слов (знаки -> пробел, пробелы по краям)."""
+    inner = f"REPLACE(REPLACE(COALESCE({column}, ''), 'ё', 'е'), 'Ё', 'Е')"
+    for ch in (",", ".", ";", "(", ")", "/", "-"):
+        inner = f"REPLACE({inner}, '{ch}', ' ')"
+    return f"(' ' || {inner} || ' ')"
+
+
 def _ci_word(column: str, word: str) -> tuple[str, list[str]]:
     """`column` содержит `word` целым словом (границы - пробел/знаки), без учёта регистра."""
-    col = (
-        "(' ' || REPLACE(REPLACE(REPLACE(REPLACE(REPLACE("
-        f"COALESCE({column}, ''), ',', ' '), '.', ' '), ';', ' '), '(', ' '), ')', ' ') || ' ')"
-    )
+    col = _padded_col(column)
     variants = _case_variants(word)
     clause = "(" + " OR ".join(f"{col} LIKE ? ESCAPE '\\'" for _ in variants) + ")"
     return clause, [f"% {v} %" for v in variants]
+
+
+def _ci_prefix(column: str, stem_value: str) -> tuple[str, list[str]]:
+    """В `column` есть слово, начинающееся со `stem_value` (не подстрока внутри слова)."""
+    col = _padded_col(column)
+    variants = _case_variants(stem_value)
+    clause = "(" + " OR ".join(f"{col} LIKE ? ESCAPE '\\'" for _ in variants) + ")"
+    return clause, [f"% {_like_contains(v)[1:]}" for v in variants]
 
 
 def _stems_clause(stems: list[str], columns: list[str], abbrevs: list[str] | None = None) -> tuple[str, list[str]]:
@@ -545,7 +594,7 @@ def _stems_clause(stems: list[str], columns: list[str], abbrevs: list[str] | Non
     for column in columns:
         ands = []
         for s in stems:
-            clause, vals = _ci_like(column, s)
+            clause, vals = _ci_prefix(column, s)
             ands.append(clause)
             values.extend(vals)
         for a in abbrevs or []:
@@ -698,18 +747,18 @@ def match_record(plan: SearchPlan, rec: dict[str, Any]) -> int | None:
     if plan.icd_prefixes and plan.enabled(CHIP_ICD):
         if any(code.startswith(p.replace(".", "")) for p in plan.icd_prefixes):
             return 1
+    padded = _pad_text(text)
     if (plan.phrase_stems or plan.abbrevs) and plan.enabled(CHIP_PHRASE):
-        padded = " " + re.sub(r"[.,;()]", " ", text) + " "
-        if all(s in text for s in plan.phrase_stems) and all(f" {a} " in padded for a in plan.abbrevs):
+        if all(f" {s}" in padded for s in plan.phrase_stems) and all(f" {a} " in padded for a in plan.abbrevs):
             return 2
     if plan.synonym_stems and plan.enabled(CHIP_SYNONYMS):
-        if any(stems and all(s in text for s in stems) for stems in plan.synonym_stems):
+        if any(stems and all(f" {s}" in padded for s in stems) for stems in plan.synonym_stems):
             return 3
     if plan.term_codes and plan.enabled(CHIP_TERMS):
         if any(code.startswith(c.replace(".", "")) for c in plan.term_codes):
             return 4
     if plan.fuzzy_stems and plan.enabled(CHIP_FUZZY):
-        if any(all(s in text for s in stems) for stems in plan.fuzzy_stems):
+        if any(all(f" {s}" in padded for s in stems) for stems in plan.fuzzy_stems):
             return 5
     if plan.has_doctor_chip and plan.enabled(CHIP_DOCTOR):
         hay = normalize(
