@@ -10,6 +10,7 @@ import json
 import sqlite3
 import subprocess
 import sys
+import datetime as dt
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -39,7 +40,11 @@ def test_probe_list_covers_hot_endpoints_and_hides_query_text() -> None:
 def test_probe_month_bounds() -> None:
     probe = _load("mo_api_latency_probe")
     assert probe._month_bounds("2026-02") == ("2026-02-01", "2026-02-28")
-    assert probe._month_bounds("2026-12") == ("2026-12-01", "2026-12-31")
+    # Текущий и будущий месяц обрезаются по «вчера» (Минск): API иначе отвечает 422.
+    first, last = probe._month_bounds(probe._yesterday_minsk().strftime("%Y-%m"))
+    assert last == probe._yesterday_minsk().isoformat() or last == first
+    future = (probe._yesterday_minsk() + dt.timedelta(days=40)).strftime("%Y-%m")
+    assert probe._month_bounds(future)[1] == probe._month_bounds(future)[0]
 
 
 def test_probe_compare_flags_regression(tmp_path: Path) -> None:

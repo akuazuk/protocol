@@ -43,7 +43,7 @@ PROBES: list[tuple[str, str, dict[str, str], int]] = [
     ("cases_q_word", "/cases", {"date_from": "{from}", "date_to": "{to}", "q": "гипертензия", "page_size": "50"}, 800),
     ("facets", "/facets", {"date_from": "{from}", "date_to": "{to}"}, 500),
     ("score_dashboard", "/score-dashboard", {"date_from": "{from}", "date_to": "{to}", "period": "custom"}, 1500),
-    ("daily_report", "/daily-report", {"date_from": "{from}", "date_to": "{to}"}, 1000),
+    ("daily_report", "/daily-report", {"date": "{to}"}, 1000),
     ("freshness", "/freshness", {}, 300),
     ("drugs_labs_kpis_drug", "/drugs-labs-kpis", {"date_from": "{from}", "date_to": "{to}", "family": "drug"}, 1500),
     ("drugs_labs_kpis_lab", "/drugs-labs-kpis", {"date_from": "{from}", "date_to": "{to}", "family": "lab"}, 1500),
@@ -55,11 +55,21 @@ PROBES: list[tuple[str, str, dict[str, str], int]] = [
 ]
 
 
+def _yesterday_minsk() -> dt.date:
+    # API отвергает date_to позже «вчера» по Минску (UTC+3): для текущего
+    # месяца конец окна нужно обрезать, иначе все зондирования дадут 422.
+    now_minsk = dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=3)
+    return now_minsk.date() - dt.timedelta(days=1)
+
+
 def _month_bounds(month: str) -> tuple[str, str]:
     year, mon = (int(x) for x in month.split("-"))
     first = dt.date(year, mon, 1)
     nxt = dt.date(year + (mon == 12), 1 if mon == 12 else mon + 1, 1)
-    return first.isoformat(), (nxt - dt.timedelta(days=1)).isoformat()
+    last = min(nxt - dt.timedelta(days=1), _yesterday_minsk())
+    if last < first:
+        last = first
+    return first.isoformat(), last.isoformat()
 
 
 def _request(base: str, path: str, params: dict[str, str], token: str, timeout: float) -> dict[str, Any]:
