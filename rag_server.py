@@ -1443,6 +1443,9 @@ def _run_load_data_background() -> None:
                 from clinical_knowledge import mo_backend as _mo_backend_prewarm
 
                 _mo_backend_prewarm._ensure_search_index()
+                from clinical_knowledge import mo_search as _mo_search_prewarm
+
+                _log.info("MO search caches prewarmed: %s", _mo_search_prewarm.warm_caches())
             except Exception as exc:
                 _log.warning("MO search index prewarm failed: %s", exc)
         if env_bool("MO_PREWARM_PROTOCOL_SUGGEST", True):
@@ -8540,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-26-193317Z-mo-search-perf2"
+BUILD_VERSION = "2026-09-26-202914Z-mo-search-perf3"
 
 
 def _app_version() -> str:
