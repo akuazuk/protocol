@@ -65,3 +65,32 @@ def test_retired_i84_maps_to_k64() -> None:
     assert is_code_in_ru_reference("I84.9") is True
     title = (ru_title("I84.9") or "").lower()
     assert "геморрой" in title
+
+
+def test_lexicon_prefilter_matches_full_scan() -> None:
+    """Предфильтр `_row_may_score` не меняет результат: сравнение с полным перебором строк."""
+    import icd_mkb
+
+    def brute(text: str) -> list[tuple[str, float]]:
+        words, qlow = icd_mkb._ru_lexicon_cache_key(text)
+        best: dict[str, float] = {}
+        for code, title, _tlow in icd_mkb._ru_terminal_title_rows():
+            sc = icd_mkb._lexicon_score_one_row(list(words), qlow, code, title)
+            if sc <= 0:
+                continue
+            n = icd_mkb._norm_icd_code(code)
+            best[n] = max(best.get(n, 0.0), sc)
+        return sorted(((c, round(s, 2)) for c, s in best.items()), key=lambda x: (-x[1], x[0]))
+
+    for text in (
+        "Артериальная гипертензия 2 степени, риск 3. Головные боли",
+        "кровь в кале",
+        "ОРВИ. Кашель, насморк, температура 38",
+        "Мигрень",
+        "Хромота у ребёнка, боль в бедре",
+    ):
+        fast = sorted(
+            ((r["code"], float(r["lex_score"])) for r in icd_mkb.ru_lexicon_scored_entries(text)),
+            key=lambda x: (-x[1], x[0]),
+        )
+        assert fast == brute(text), text
