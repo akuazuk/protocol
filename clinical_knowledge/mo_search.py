@@ -754,7 +754,9 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
             values.append(_glob_prefix(code))
         out[CHIP_TERMS] = ("(" + " OR ".join(ors) + ")", values)
     if plan.fuzzy_stems and plan.enabled(CHIP_FUZZY):
-        out[CHIP_FUZZY] = _phrases_clause([(stems, []) for stems in plan.fuzzy_stems if stems])
+        fuzzy_phrases = [(stems, []) for stems in plan.fuzzy_stems if stems]
+        if fuzzy_phrases:
+            out[CHIP_FUZZY] = _phrases_clause(fuzzy_phrases)
     if plan.has_doctor_chip and plan.enabled(CHIP_DOCTOR):
         fio_clause, fio_values = _ci_like("doctor_fio", plan.normalized)
         doctor_clause = f"c.doctor_key IN (SELECT doctor_key FROM dim_doctor WHERE {fio_clause})"

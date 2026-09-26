@@ -305,6 +305,12 @@ def test_synonyms_use_single_match_and_single_dim_subquery() -> None:
     assert " OR (" in values[0], "все синонимы - в одном MATCH через OR"
 
 
+def test_fuzzy_chip_skipped_when_all_stem_lists_empty() -> None:
+    plan = ms.expand_query("гипертенизя")
+    plan.fuzzy_stems = [[]]
+    assert ms.CHIP_FUZZY not in ms.sql_parts(plan)
+
+
 def test_suggest_returns_aliases_words_and_typos() -> None:
     items = ms.suggest("гиперт")
     labels = [item["label"] for item in items]
