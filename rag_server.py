@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-26-122558Z-mo-redesign-t-measure-tools"
+BUILD_VERSION = "2026-09-26-131419Z-mo-redesign-e-webfonts"
 
 
 def _app_version() -> str:
@@ -15185,6 +15185,25 @@ if has_frontend_file("index.html"):
             path=str(path),
             media_type=media_type,
             headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
+
+    _FONT_FILE_RE = re.compile(r"^[a-z0-9-]+\.woff2$")
+
+    @app.get("/vendor/fonts/{name}", include_in_schema=False)
+    def _serve_vendor_font(name: str) -> FileResponse:
+        """Самохостинг webfont (OFL) для кабинета МО; CSP font-src 'self'.
+
+        Файлы неизменяемы и версионируются именем, поэтому кэш долгий.
+        """
+        if not _FONT_FILE_RE.match(name):
+            raise HTTPException(status_code=404, detail="Ресурс не найден")
+        path = frontend_file(f"shared/vendor/fonts/{name}")
+        if not path.is_file():
+            raise HTTPException(status_code=404, detail="Ресурс не найден")
+        return FileResponse(
+            path=str(path),
+            media_type="font/woff2",
+            headers={"Cache-Control": "public, max-age=31536000, immutable"},
         )
 
     @app.get("/methodist/mis-kz-quality", include_in_schema=False)

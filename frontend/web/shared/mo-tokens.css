@@ -1,16 +1,56 @@
+/* Шрифты кабинета: самохостинг, OFL, кириллица нативная (план 2026-09-26, волна E).
+   Onest - заголовки и KPI-цифры, Golos Text - интерфейс и таблицы,
+   JetBrains Mono - коды МКБ, visit_id, версии. Variable-шрифты: вес любой от 400 до 800,
+   синтез жирности браузером не нужен. Файлы в frontend/web/shared/vendor/fonts/. */
+@font-face {
+  font-family: "Onest"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("/vendor/fonts/onest-var-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Onest"; font-style: normal; font-weight: 100 900; font-display: swap;
+  src: url("/vendor/fonts/onest-var-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Golos Text"; font-style: normal; font-weight: 400 900; font-display: swap;
+  src: url("/vendor/fonts/golos-text-var-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "Golos Text"; font-style: normal; font-weight: 400 900; font-display: swap;
+  src: url("/vendor/fonts/golos-text-var-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap;
+  src: url("/vendor/fonts/jetbrains-mono-var-cyrillic.woff2") format("woff2");
+  unicode-range: U+0301, U+0400-045F, U+0490-0491, U+04B0-04B1, U+2116;
+}
+@font-face {
+  font-family: "JetBrains Mono"; font-style: normal; font-weight: 100 800; font-display: swap;
+  src: url("/vendor/fonts/jetbrains-mono-var-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+
 :root {
   color-scheme: light;
-  --font-display: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
-  --font-ui: "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-display: "Onest", "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-ui: "Golos Text", "Avenir Next", "Segoe UI", "Helvetica Neue", sans-serif;
+  --font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, Consolas, monospace;
+  /* Шкала размеров 12 / 13 / 14 / 16 / 20 / 24 / 32 / 44 (план, раздел 4.1). */
   --type-page: clamp(26px, 3vw, 32px);
-  --type-card: 17px;
-  --type-kpi: clamp(24px, 2.2vw, 30px);
-  --type-body: 14.5px;
+  --type-card: 20px;
+  --type-kpi: clamp(28px, 2.6vw, 44px);
+  --type-body: 14px;
   --type-control: 13px;
-  --type-label: 11px;
+  --type-label: 12px;
   --type-table: 13px;
   --type-chart: 12px;
   --type-meta: 12px;
+  --type-mono: 12.5px;
+  --tracking-kpi: -0.02em;
+  --tracking-label: 0.04em;
   --space-1: 4px;
   --space-2: 8px;
   --space-3: 12px;
@@ -161,3 +201,13 @@
     --sidebar-ink: #e6f1ed;
   }
 }
+
+/* Базовая типографика поверх токенов: табличные цифры везде, моноширинный для кодов. */
+:root { font-variant-numeric: tabular-nums; }
+.id-cell, .mono, code, kbd, .icd-code, .visit-id, .build-version, [data-mono] {
+  font-family: var(--font-mono); font-size: var(--type-mono); font-variant-numeric: tabular-nums;
+  letter-spacing: 0;
+}
+.kpi-value, .kpi-num, .score-ring-meta, .tile-value { font-family: var(--font-display); letter-spacing: var(--tracking-kpi); font-variant-numeric: tabular-nums; }
+h1, h2, h3, .card h2, .section-title { font-family: var(--font-display); }
+th, .kpi-label, .card-sub, .filter > span, .panel-help { letter-spacing: var(--tracking-label); }
