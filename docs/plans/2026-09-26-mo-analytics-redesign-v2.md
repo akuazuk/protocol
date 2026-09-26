@@ -548,6 +548,16 @@ GCE 12:58 UTC; `GET /ingest-visit/{id}` теперь отдаёт `status_ru` / 
 `age_sec`. Пункт 1 (лог фаз) и `/rubric-summary`, `/protocol-suggest` из пункта 6 -
 не делались: тайминги ниже порогов после SQL-пейджинга.
 
+Релиз B: PR #299 -> `a87e7e4c`, деплой 15:13 UTC, `PUBLIC_OK`, версия
+`2026-09-26-142851Z-mo-wave-b-review-fixes`. Приёмка пробой на GCE
+(`/tmp/probe_release2_a87e7e4c.json`, месяц, warm): `cases_month_p1` 436 мс,
+`queue_only` 461, `finding_lab` 604, `grade_poor` 437, `q_icd` 725, `q_word` 749,
+`facets` 457 -> 6 (кэш), `freshness` 216 -> 5, `score_dashboard` 981, `reports` 36,
+`drugs_labs_kpis` 1,15-1,47 с; `/facets` отдаёт `engine: facets_sql_v1`. Над порогом
+осталась одна строка `cases_sort_score` (3,6 с) - дефект пробы: она слала `sort_by=score`,
+которого UI не отправляет; реальные ключи `overall/priority/reg55/overall_grade` -
+0,16-0,84 с. Проба исправлена отдельным PR #303 (`scripts/ops/`, уровень 4).
+
 ### C. Данные с 1 января (данные, GCE; не UI)
 
 Цель: `clinical_visit` с зонами за 2026-01-01..2026-06-30 в складе, тексты в
