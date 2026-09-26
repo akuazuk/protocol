@@ -63,19 +63,12 @@ button, a, select, input { outline-offset: 3px; }
   font-size: 11px; font-weight: 900;
 }
 .nav-button[aria-current="page"] .nav-icon { background: var(--accent-soft); color: var(--accent-dark); }
-.nav-more { min-width: 0; }
-.nav-more-menu { margin: 0; }
-.nav-more-menu > summary {
-  list-style: none;
-  cursor: pointer;
-  border-radius: 12px;
-  padding: 10px 12px;
-  font-weight: 700;
+/* Меню плоское: две группы, ничего не спрятано за «Ещё». */
+.nav-group-label {
+  padding: 12px 12px 4px; color: rgba(232,246,241,.55);
+  font-size: 10px; font-weight: 800; text-transform: uppercase; letter-spacing: .1em;
 }
-.nav-more-menu > summary::-webkit-details-marker { display: none; }
-.nav-more-menu > summary:hover { background: rgba(255,255,255,.08); }
-.nav-more-menu[open] > summary { background: rgba(255,255,255,.1); }
-.nav-more-list { display: grid; gap: 4px; margin: 4px 0 0; padding: 0 0 0 8px; }
+.nav-group-label:first-child { padding-top: 4px; }
 .grain-strip {
   display: flex;
   flex-wrap: wrap;
@@ -167,8 +160,18 @@ button, a, select, input { outline-offset: 3px; }
   overflow: hidden;
   clip: rect(0, 0, 0, 0);
 }
-.period-strip .filter { min-width: 0; flex: 1 1 124px; max-width: 180px; }
+.period-strip .filter { min-width: 0; flex: 0 1 150px; max-width: 180px; }
 .period-strip .filter .control { width: 100%; min-width: 0; }
+.period-strip .filter > span { white-space: nowrap; }
+/* Одна строка без переносов только там, где полоса занимает всю ширину
+   (context-top в одну колонку). До 1120 px сетка двухколоночная и полоса
+   получает ~280 px: там нужен перенос, иначе селекты сжимаются до 47 px. */
+@media (min-width: 1121px) and (max-width: 1280px) {
+  .period-strip { flex-wrap: nowrap; }
+  .period-strip .filter { flex: 0 1 132px; }
+  .period-strip .filter .control { font-size: 12px; padding-inline: 6px; }
+  .period-strip .button.compact { padding-inline: 8px; }
+}
 .chip.chip-reset {
   cursor: pointer;
   border-style: dashed;
@@ -1207,13 +1210,7 @@ kbd {
     line-height: 1.12;
     overflow-wrap: anywhere;
   }
-  .nav-more-menu > summary {
-    min-height: 58px;
-    display: grid;
-    place-items: center;
-    text-align: center;
-    font-size: 10px;
-  }
+  .nav-group-label { display: none; }
   .span-4, .span-5, .span-7, .span-8, .span-9, .span-3 { grid-column: span 6; }
   .context-top { grid-template-columns: minmax(280px, 1fr) auto; }
   .toolbar-panel { width: min(850px, calc(100vw - 132px)); }
@@ -1229,20 +1226,7 @@ kbd {
   .nav-list { display: flex; min-width: max-content; gap: 4px; }
   .nav-button { min-width: 64px; min-height: 52px; }
   .nav-text { display: none; }
-  .nav-more-menu { position: relative; }
-  .nav-more-menu > summary { min-width: 64px; min-height: 52px; display: grid; place-items: center; }
-  .nav-more-list {
-    position: absolute;
-    left: 0;
-    bottom: 60px;
-    min-width: 180px;
-    padding: 8px;
-    border-radius: 12px;
-    background: #0f3d34;
-    box-shadow: 0 8px 24px rgba(0,0,0,.28);
-    z-index: 80;
-  }
-  .nav-more-list .nav-text { display: inline; }
+  .nav-group-label { display: none; }
   .context-bar { padding: 10px; overflow-x: hidden; }
   .context-top { grid-template-columns: 1fr; align-items: stretch; min-width: 0; }
   .period-strip { width: 100%; }
@@ -1883,3 +1867,7 @@ tr.reg55-row--measures > td { background: rgba(194, 120, 3, 0.05); }
   background: var(--line);
 }
 .mis-spark span.is-in { background: var(--accent); }
+
+/* Статусная строка разбора: фразы разделены точкой, не слеплены. */
+.assessment-status-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
+.assessment-status-strip .strip-sep { color: var(--muted); }

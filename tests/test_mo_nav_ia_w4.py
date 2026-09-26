@@ -1,4 +1,4 @@
-"""W4: 6 рабочих пунктов + Ещё, Обзор = yesterday, алиасы URL включая /mis."""
+"""Меню без «Ещё» (редизайн v2, волна A): все пункты видны, Обзор = yesterday, алиасы URL включая /mis и /overview."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -14,26 +14,26 @@ def _nav() -> str:
     return HTML.split('id="app-nav"')[1].split("</ul>")[0]
 
 
-def test_primary_nav_is_five_plus_more() -> None:
+def test_primary_nav_is_flat_without_more_menu() -> None:
     nav = _nav()
     assert "<ul" not in nav
-    primary_pages = []
-    in_more = False
+    assert "nav-more" not in nav
+    assert "Ещё" not in nav
+    pages = []
     for line in nav.splitlines():
-        if 'class="nav-more"' in line:
-            in_more = True
-        if "nav-button" not in line or "nav-settings" in line or 'data-page="' not in line:
+        if "nav-button" not in line or 'data-page="' not in line:
             continue
-        page = line.split('data-page="', 1)[1].split('"', 1)[0]
-        if not in_more:
-            primary_pages.append(page)
-    assert primary_pages == ["yesterday", "documents", "mis", "doctors", "medications", "labs"]
-    assert "Обзор" in nav
-    assert "Найти МО" in nav
-    assert "Поиск МИС" in nav
-    assert "Ещё" in nav
-    for extra in ("overview", "queue", "reports", "kp-sync", "rceth-sync"):
-        assert f'data-page="{extra}"' in nav
+        assert " hidden" not in line.replace("aria-hidden", ""), line
+        pages.append(line.split('data-page="', 1)[1].split('"', 1)[0])
+    assert pages == [
+        "yesterday", "documents", "mis", "doctors", "medications", "labs", "queue",
+        "reports", "kp-sync", "rceth-sync", "settings",
+    ]
+    # «Период» слит с Обзором: кнопки нет, URL остаётся алиасом (см. test_url_aliases…).
+    assert 'data-page="overview"' not in nav
+    assert nav.count('class="nav-group-label"') == 2
+    for label in ("Обзор", "Найти МО", "Поиск МИС", "Очередь", "Справка"):
+        assert label in nav
 
 
 def test_overview_grain_and_titles() -> None:
@@ -47,7 +47,7 @@ def test_overview_grain_and_titles() -> None:
     assert "function applyOverviewGrain" in APP
     assert "function syncOverviewGrain" in APP
     assert ".grain-strip" in CSS
-    assert ".nav-more-menu" in CSS
+    assert ".nav-group-label" in CSS
 
 
 def test_url_aliases_keep_yesterday_and_queue() -> None:
@@ -62,7 +62,7 @@ def test_url_aliases_keep_yesterday_and_queue() -> None:
 
 
 if __name__ == "__main__":
-    test_primary_nav_is_five_plus_more()
+    test_primary_nav_is_flat_without_more_menu()
     test_overview_grain_and_titles()
     test_url_aliases_keep_yesterday_and_queue()
     print("ok")

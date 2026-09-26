@@ -66,7 +66,9 @@ test('МО: ECharts показывает числа API и период пере
   await expect(rings).toHaveCount(3);
   await expect(page.locator('#yesterday-score-rings canvas')).toHaveCount(3);
   await expect(page.locator('#yesterday-score-rings .score-grade-legend__item')).toHaveCount(6);
-  await expect(page.locator('#yesterday-score-rings .score-ring-meta')).toHaveText(['Хорошо', 'Хорошо', 'Хорошо']);
+  // Центр кольца - доля «хорошо» (70 из 100 в моке), слово шкалы - в подписи под кольцом.
+  await expect(page.locator('#yesterday-score-rings .score-ring-meta')).toHaveText(['70%', '70%', '70%']);
+  await expect(page.locator('#yesterday-score-rings .score-ring-denominator').first()).toContainText('чаще всего: хорошо');
   const values = await rings.evaluateAll(nodes => nodes.map(node => {
     const charts = (window as unknown as { echarts: { getInstanceByDom(el: Element): { getOption(): { series: { data: { value: number }[] }[] } } } }).echarts;
     return charts.getInstanceByDom(node).getOption().series[0].data.map(item => item.value);

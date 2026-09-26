@@ -63,7 +63,6 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
     for label in (
         "Обзор",
         "Найти МО",
-        "Период",
         "Очередь",
         "Врачи",
         "Лекарства",
@@ -71,9 +70,10 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "Отчёты",
         "Протоколы МЗ",
         "Инструкции ЛС",
-        "Ещё",
+        "Справка",
     ):
         assert label in HTML
+    assert "Ещё" not in HTML.split('id="app-nav"')[1].split("</ul>")[0]
     assert 'id="breadcrumbs"' in HTML
     assert 'id="doctor-zone-chart"' in HTML
     assert 'data-zone-preset="dx"' in HTML
@@ -132,7 +132,7 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "case-workspace-grid--zones" in CSS or "case-workspace-grid--zones" in SOURCE
     assert "protocol-suggest-top" in JS
     assert 'id="drawer-pdf"' in HTML
-    assert 'details class="methodist-decision-panel methodist-decision-panel--dock"' in JS
+    assert 'details open class="methodist-decision-panel methodist-decision-panel--dock"' in JS  # раскрыто по умолчанию (v2, волна A)
     assert "decision-dock-summary" in JS
     assert 'methodist-decision-panel--dock[open]' in CSS or "decision-dock-summary" in CSS
     assert "data-sort-key" in HTML

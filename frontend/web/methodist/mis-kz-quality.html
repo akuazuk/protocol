@@ -21,25 +21,19 @@
       </a>
       <nav>
         <ul class="nav-list" id="app-nav">
+          <li class="nav-group-label" aria-hidden="true">Работа</li>
           <li><button class="nav-button" data-page="yesterday" aria-current="page" aria-label="Обзор"><span class="nav-icon" aria-hidden="true">Об</span><span class="nav-text">Обзор</span></button></li>
           <li><button class="nav-button" data-page="documents" aria-label="Найти МО"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-text">Найти МО</span></button></li>
           <li><button class="nav-button" data-page="mis" aria-label="Поиск МИС"><span class="nav-icon" aria-hidden="true">МИ</span><span class="nav-text">Поиск МИС</span></button></li>
           <li><button class="nav-button" data-page="doctors" aria-label="Врачи"><span class="nav-icon" aria-hidden="true">Вр</span><span class="nav-text">Врачи</span></button></li>
           <li><button class="nav-button" data-page="medications" data-legacy-label="Лекарства" aria-label="Лекарства"><span class="nav-icon" aria-hidden="true">Лк</span><span class="nav-text">Лекарства</span></button></li>
           <li><button class="nav-button" data-page="labs" aria-label="Анализы"><span class="nav-icon" aria-hidden="true">Ан</span><span class="nav-text">Анализы</span></button></li>
-          <li class="nav-more">
-            <details class="nav-more-menu" id="nav-more">
-              <summary>Ещё</summary>
-              <div class="nav-more-list">
-                <button class="nav-button" type="button" data-page="overview" hidden aria-hidden="true" aria-label="Период"><span class="nav-text">Период</span></button>
-                <button class="nav-button" type="button" data-page="queue" aria-label="Очередь разбора"><span class="nav-text">Очередь</span></button>
-                <button class="nav-button" type="button" data-page="reports" aria-label="Отчёты"><span class="nav-text">Отчёты</span></button>
-                <button class="nav-button" type="button" data-page="kp-sync" aria-label="Протоколы МЗ"><span class="nav-text">Протоколы МЗ</span></button>
-                <button class="nav-button" type="button" data-page="rceth-sync" data-legacy-label="Инструкции ЛС" aria-label="Инструкции препаратов"><span class="nav-text">Инструкции ЛС</span></button>
-                <button class="nav-button" type="button" data-page="settings" id="nav-settings" hidden aria-hidden="true"><span class="nav-text">Справка</span></button>
-              </div>
-            </details>
-          </li>
+          <li><button class="nav-button" data-page="queue" aria-label="Очередь разбора"><span class="nav-icon" aria-hidden="true">Оч</span><span class="nav-text">Очередь</span></button></li>
+          <li class="nav-group-label" aria-hidden="true">Служба</li>
+          <li><button class="nav-button" data-page="reports" aria-label="Отчёты"><span class="nav-icon" aria-hidden="true">От</span><span class="nav-text">Отчёты</span></button></li>
+          <li><button class="nav-button" data-page="kp-sync" aria-label="Протоколы МЗ"><span class="nav-icon" aria-hidden="true">МЗ</span><span class="nav-text">Протоколы МЗ</span></button></li>
+          <li><button class="nav-button" data-page="rceth-sync" data-legacy-label="Инструкции ЛС" aria-label="Инструкции препаратов"><span class="nav-icon" aria-hidden="true">ЛС</span><span class="nav-text">Инструкции ЛС</span></button></li>
+          <li><button class="nav-button" data-page="settings" id="nav-settings" aria-label="Справка"><span class="nav-icon" aria-hidden="true">?</span><span class="nav-text">Справка</span></button></li>
         </ul>
       </nav>
       <div class="sidebar-foot">
@@ -171,7 +165,7 @@
             <article class="card span-12"><h2>Приоритет замечаний</h2><p class="card-sub">Худший уровень замечания за период. Клик открывает случаи с этим фильтром</p><div id="month-severity-ring" class="score-ring score-ring--wide"></div></article>
             <article class="card span-12"><h2>Тренд трёх оценок</h2><p class="card-sub">Оформление · Диагноз · План по протоколу</p><div id="month-zone-trend"></div></article>
             <article class="card span-12"><h2>Куда смотреть</h2><p class="card-sub">Врачи с высокой долей «плохо» по зонам</p><div id="month-look-where"></div></article>
-            <details class="card span-12 mo-secondary-details"><summary>Подробнее: №55, МКБ и клиника</summary>
+            <details open class="card span-12 mo-secondary-details"><summary>Подробнее: №55, МКБ и клиника</summary>
             <div class="grid">
             <article class="card span-6"><h2>Соответствие №55 (разд. V)</h2><p class="card-sub">Средний % по п.12 и доли градаций п.13 (80-100 / 55-79,9 / ≤54,9)</p><div id="month-reg55"></div></article>
             <article class="card span-6"><h2>№55: слабые пункты разд. V</h2><p class="card-sub">Top-fail по пунктам section-pack; клик открывает очередь с фокусом пункта</p><div id="month-rubric-mz"></div></article>
@@ -204,7 +198,7 @@
               <div id="yesterday-zone-trend" hidden></div>
             </article>
             <article class="card span-12"><h2>Таблица дня</h2><p class="card-sub">Сначала риск и случаи, где история может сменить вердикт. Клик открывает разбор</p><div class="table-wrap sticky-first"><table><thead><tr><th>Приоритет</th><th>Раздел</th><th>Визит</th><th>Пациент</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
-            <details class="card span-12 mo-secondary-details"><summary>Подробнее: полнота данных за день</summary>
+            <details open class="card span-12 mo-secondary-details"><summary>Подробнее: полнота данных за день</summary>
             <div class="grid">
             <article class="card span-12"><h2>Полнота данных</h2><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
             <div id="yesterday-index-cards" hidden></div>
@@ -275,7 +269,7 @@
               </table>
             </div>
           </div>
-          <details class="mo-secondary-details">
+          <details open class="mo-secondary-details">
             <summary>Подробнее: дельта к ожидаемой (старый scatter)</summary>
             <div class="grid">
               <article class="card span-9"><h2>Объём и дельта к ожидаемой</h2><div id="doctor-scatter-chart"></div></article>
@@ -327,7 +321,7 @@
           </div>
           <div class="kpis" id="report-kpis"></div>
           <div class="card"><h2>Готовые ежедневные отчёты</h2><p class="card-sub">Клик открывает отчёт за выбранный день на экране «Вчера»</p><div class="report-grid" id="report-list"></div></div>
-          <details class="card mo-secondary-details"><summary>Подробнее: журнал доступа и качество данных</summary>
+          <details open class="card mo-secondary-details"><summary>Подробнее: журнал доступа и качество данных</summary>
             <div class="grid">
               <article class="card span-6"><h2>Журнал доступа</h2><p class="card-sub">Только администратор</p><div id="access-log-content"></div></article>
               <article class="card span-6"><h2>Качество данных</h2><p class="card-sub">Свежесть и полнота среза</p><div class="kpis" id="quality-kpis"></div><div class="bars" id="quality-chart"></div><div id="quality-warnings"></div><div class="health-components" id="health-components"></div></article>
@@ -357,7 +351,7 @@
           </div>
           <div class="kpis" id="rceth-sync-kpis"></div>
           <div class="card"><h2>Журнал прогонов</h2><p class="card-sub">Итоги дневных сверок на data volume</p><div id="rceth-sync-history-table"></div></div>
-          <div class="card"><h2>Замечания по назначениям</h2><p class="card-sub">Это не лог синка. Label-check findings появятся после разметки корпуса (шаг F). Сейчас смотрите статус и журнал выше.</p><div id="rceth-sync-notes"><p class="empty">Пока нет findings - пилот и bulk идут на GCE (/var/data/rceth).</p></div></div>
+          <div class="card"><h2>Замечания по назначениям</h2><p class="card-sub">Сверка назначений с инструкциями идёт в разборе случая (раздел «Назначения») и на экране «Лекарства». Здесь - только состояние корпуса инструкций.</p><div id="rceth-sync-notes"><p class="empty">Корпус инструкций пополняется на GCE; дата последнего прогона - в плитках выше.</p></div></div>
         </section>
         <section class="page" id="page-settings" data-page="settings" hidden aria-labelledby="title-settings">
           <div class="page-head"><div><h1 id="title-settings">Справка и настройки</h1><p>Как мы смотрим запись, кто вошёл и личные настройки экрана.</p></div></div>
