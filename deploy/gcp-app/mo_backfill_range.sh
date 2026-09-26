@@ -148,11 +148,21 @@ json.dump({
 }, open(path, "w", encoding="utf-8"), ensure_ascii=False, indent=2)
 PY
   log "day=$DAY rows=$ROWS score (workers=$WORKERS nice=$NICE)"
-  set +e
-  sudo docker exec \
-    -e MO_DATA_ROOT="$DATA" -e DAY="$DAY" -e Y="$Y" -e M="$M" \
-    -e MO_DAILY_WORKERS="$WORKERS" -e RUN_HOST=gcp -e NICE_LEVEL="$NICE" \
-    "$CONTAINER" bash -lc '
+  # Деплой перезапускает protocol-web и убивает docker exec: скоринг идёт с --resume,
+  # поэтому повтор дня дешёвый - пробуем до SCORE_ATTEMPTS раз с паузой.
+  rc=1
+  score_attempt=1
+  while [[ "$score_attempt" -le "${MO_BACKFILL_SCORE_ATTEMPTS:-3}" ]]; do
+    if [[ "$score_attempt" -gt 1 ]]; then
+      log "day=$DAY score retry attempt=$score_attempt"
+      sleep 120
+      wait_for_window
+    fi
+    set +e
+    sudo docker exec \
+      -e MO_DATA_ROOT="$DATA" -e DAY="$DAY" -e Y="$Y" -e M="$M" \
+      -e MO_DAILY_WORKERS="$WORKERS" -e RUN_HOST=gcp -e NICE_LEVEL="$NICE" \
+      "$CONTAINER" bash -lc '
 set -euo pipefail
 DATA="${MO_DATA_ROOT}"
 SECURE="$DATA/secure_cases/${Y}/${M}"
@@ -166,9 +176,13 @@ nice -n "$NICE_LEVEL" python scripts/recompute_mo_days.py \
   --data-root "$DATA" --first-date "$DAY" --last-date "$DAY" \
   --warehouse "$DATA/warehouse/mo_analytics.sqlite" --skip-reports >/dev/null
 echo BACKFILL_DAY_OK
-'
-  rc=$?
-  set -e
+  '
+    rc=$?
+    set -e
+    [[ "$rc" -eq 0 ]] && break
+    log "day=$DAY score failed rc=$rc attempt=$score_attempt"
+    score_attempt=$((score_attempt + 1))
+  done
   if [[ "$rc" -ne 0 ]]; then
     log "day=$DAY score failed rc=$rc (will retry on next run)"
     write_progress "$DAY" "score_failed" "rc=$rc"
