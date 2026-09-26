@@ -59,7 +59,7 @@ def test_icd_code_query_has_no_text_stems_or_doctor_chip() -> None:
     clause, values = parts[ms.CHIP_ICD]
     assert "diagnosis_code GLOB" in clause and values == ["K29.7*"]
     phrase_values = ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_PHRASE][1]
-    assert phrase_values[0] == '"гипертон"*', "текст - через FTS MATCH по началу слова"
+    assert phrase_values[0] == '("гипертон"*)', "текст - через FTS MATCH по началу слова"
     assert "Гипертон" in str(phrase_values[1:]), "регистр кириллицы для LIKE по названиям МКБ"
 
 
@@ -281,7 +281,28 @@ def test_fts_query_only_accepts_plain_tokens() -> None:
     assert ms.fts_query(["гипертон", "i10"], ["аг"]) == '"гипертон"* AND "i10"* AND "аг"'
     assert ms.fts_query(['x" OR 1=1', "ok"]) == '"ok"*', "токены с кавычками и пробелами отбрасываются"
     inline = ms.sql_rank_inline(ms.expand_query("гипертония"))
-    assert "MATCH '" in inline and "'\"гипертон\"*" in inline
+    assert "MATCH '" in inline and "'(\"гипертон\"*)'" in inline
+
+
+def test_subphrase_of_multiword_synonym_expands_group() -> None:
+    """«острая респираторная» входит в термин группы ОРВИ - группа подключается целиком;
+    однословная «острая» - нет (входила бы в сотни терминов)."""
+    plan = ms.expand_query("острая респираторная")
+    assert "орви" in plan.synonyms and any(exp.startswith("острая респираторная вирусная") for exp in plan.synonyms)
+    assert ms.expand_query("острая").synonyms == []
+
+
+def test_doctor_chip_searches_ids_only_for_digit_queries() -> None:
+    word = ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_DOCTOR][0]
+    assert "visit_id" not in word and "dim_doctor" in word, "для слов - только ФИО через dim_doctor"
+    digits = ms.sql_parts(ms.expand_query("иванова 37"))[ms.CHIP_DOCTOR][0]
+    assert "CAST(c.visit_id AS TEXT) LIKE ?" in digits
+
+
+def test_synonyms_use_single_match_and_single_dim_subquery() -> None:
+    clause, values = ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_SYNONYMS]
+    assert clause.count("MATCH ?") == 1 and clause.count("FROM dim_diagnosis") == 1
+    assert " OR (" in values[0], "все синонимы - в одном MATCH через OR"
 
 
 def test_suggest_returns_aliases_words_and_typos() -> None:

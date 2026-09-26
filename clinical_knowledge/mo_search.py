@@ -539,12 +539,17 @@ def expand_query(q: str, *, disabled: Any = None, extra_vocab: Iterable[str] = (
     # Двухбуквенные сокращения из словаря («аг», «сд») ищутся целым словом, не подстрокой.
     plan.abbrevs = _dedupe([w for w in words if len(w) < 3 and w in index])
 
-    # Алиасы: весь запрос целиком, затем отдельные слова.
+    # Алиасы: весь запрос целиком, затем отдельные слова, затем многословные термины,
+    # в которые запрос входит целиком («острая респираторная» -> группа ОРВИ).
     expansions: list[str] = []
     if normalized in index:
         expansions.extend(index[normalized])
     for w in [*meaningful, *plan.abbrevs]:
         for exp in index.get(w, []):
+            if exp not in expansions and exp != normalized:
+                expansions.append(exp)
+    if normalized not in index and len(meaningful) >= 2:
+        for exp in _subphrase_expansions(meaningful, index):
             if exp not in expansions and exp != normalized:
                 expansions.append(exp)
     expansions = expansions[:MAX_PHRASES]
@@ -596,6 +601,23 @@ def expand_query(q: str, *, disabled: Any = None, extra_vocab: Iterable[str] = (
 def _word_expansions() -> list[dict[str, Any]]:
     rows = _alias_file().get("word_expansions")
     return [r for r in rows if isinstance(r, dict)] if isinstance(rows, list) else []
+
+
+def _subphrase_expansions(meaningful: list[str], index: dict[str, list[str]]) -> list[str]:
+    """Расширения групп, чей многословный термин содержит все стеммы запроса (≥ 2 слов).
+
+    Однословные запросы сюда не попадают - «острая» входила бы в сотни терминов."""
+    query_stems = {stem(w) for w in meaningful}
+    out: list[str] = []
+    for key, exps in index.items():
+        key_words = [t for t in tokens(key) if len(t) >= 3 and t not in _STOP]
+        if len(key_words) <= len(query_stems):
+            continue
+        if query_stems <= {stem(t) for t in key_words}:
+            for exp in [key, *exps]:
+                if exp not in out:
+                    out.append(exp)
+    return out
 
 
 def _dedupe(items: Iterable[str]) -> list[str]:
@@ -678,12 +700,28 @@ def _stems_clause(stems: list[str], columns: list[str], abbrevs: list[str] | Non
 
     `columns` сохранён для совместимости сигнатуры: текст ищется по индексу
     `fact_mo_case_search`, название - по dim_diagnosis."""
-    match = fts_query(stems, abbrevs or [])
-    label_clause, label_values = _label_clause(stems, abbrevs)
-    if not match:
+    return _phrases_clause([(stems, abbrevs or [])])
+
+
+def _phrases_clause(phrases: list[tuple[list[str], list[str]]]) -> tuple[str, list[str]]:
+    """Несколько фраз (каждая - стеммы + сокращения, внутри AND) одним MATCH с OR и одним
+    подзапросом по dim_diagnosis: 7 синонимов - 2 подзапроса вместо 14."""
+    matches: list[str] = []
+    label_ors: list[str] = []
+    label_values: list[str] = []
+    for stems, abbrevs in phrases:
+        match = fts_query(stems, abbrevs)
+        if match:
+            matches.append("(" + match + ")")
+        clause, vals = _label_clause(stems, abbrevs)
+        inner = clause[clause.index("WHERE ") + len("WHERE "):-1]
+        label_ors.append("(" + inner + ")")
+        label_values.extend(vals)
+    label_clause = "c.diagnosis_code IN (SELECT diagnosis_code FROM dim_diagnosis WHERE " + " OR ".join(label_ors) + ")"
+    if not matches:
         return "(" + label_clause + ")", label_values
     fts = f"c.rowid IN (SELECT rowid FROM {FTS_TABLE} WHERE {FTS_TABLE} MATCH ?)"
-    return "(" + fts + " OR " + label_clause + ")", [match, *label_values]
+    return "(" + fts + " OR " + label_clause + ")", [" OR ".join(matches), *label_values]
 
 
 def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
@@ -705,16 +743,9 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
     if (plan.phrase_stems or plan.abbrevs) and plan.enabled(CHIP_PHRASE):
         out[CHIP_PHRASE] = _stems_clause(plan.phrase_stems, text_cols, plan.abbrevs)
     if plan.synonym_stems and plan.enabled(CHIP_SYNONYMS):
-        ors = []
-        values = []
-        for stems in plan.synonym_stems:
-            if not stems:
-                continue
-            clause, vals = _stems_clause(stems, text_cols)
-            ors.append(clause)
-            values.extend(vals)
-        if ors:
-            out[CHIP_SYNONYMS] = ("(" + " OR ".join(ors) + ")", values)
+        phrases = [(stems, []) for stems in plan.synonym_stems if stems]
+        if phrases:
+            out[CHIP_SYNONYMS] = _phrases_clause(phrases)
     if plan.term_codes and plan.enabled(CHIP_TERMS):
         ors = []
         values = []
@@ -723,21 +754,20 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
             values.append(_glob_prefix(code))
         out[CHIP_TERMS] = ("(" + " OR ".join(ors) + ")", values)
     if plan.fuzzy_stems and plan.enabled(CHIP_FUZZY):
-        ors = []
-        values = []
-        for stems in plan.fuzzy_stems:
-            clause, vals = _stems_clause(stems, text_cols)
-            ors.append(clause)
-            values.extend(vals)
-        out[CHIP_FUZZY] = ("(" + " OR ".join(ors) + ")", values)
+        out[CHIP_FUZZY] = _phrases_clause([(stems, []) for stems in plan.fuzzy_stems if stems])
     if plan.has_doctor_chip and plan.enabled(CHIP_DOCTOR):
         fio_clause, fio_values = _ci_like("doctor_fio", plan.normalized)
-        doctor_clause = (
-            f"(c.doctor_key IN (SELECT doctor_key FROM dim_doctor WHERE {fio_clause}) "
-            "OR CAST(c.visit_id AS TEXT) LIKE ? ESCAPE '\\' "
-            "OR CAST(c.mis_id AS TEXT) LIKE ? ESCAPE '\\')"
-        )
-        out[CHIP_DOCTOR] = (doctor_clause, [*fio_values, _like_contains(plan.normalized), _like_contains(plan.normalized)])
+        doctor_clause = f"c.doctor_key IN (SELECT doctor_key FROM dim_doctor WHERE {fio_clause})"
+        doctor_values: list[Any] = [*fio_values]
+        if any(ch.isdigit() for ch in plan.normalized):
+            # Подстрока в visit_id/mis_id - только если в запросе есть цифры: CAST+LIKE по
+            # 120 тыс. строк стоил 0,65 с на каждый проход и для слов был бессмыслен.
+            doctor_clause += (
+                " OR CAST(c.visit_id AS TEXT) LIKE ? ESCAPE '\\' "
+                "OR CAST(c.mis_id AS TEXT) LIKE ? ESCAPE '\\'"
+            )
+            doctor_values += [_like_contains(plan.normalized), _like_contains(plan.normalized)]
+        out[CHIP_DOCTOR] = ("(" + doctor_clause + ")", doctor_values)
     return out
 
 

@@ -1436,6 +1436,15 @@ def _run_load_data_background() -> None:
                 prewarm_protocol_icd_index()
             except Exception:
                 pass
+        if env_bool("MO_PREWARM_SEARCH_INDEX", True):
+            # FTS-индекс поиска МО строится/сверяется при старте, а не в первом запросе
+            # пользователя (на 121 тыс. строк под чужой записью это было 24 с).
+            try:
+                from clinical_knowledge import mo_backend as _mo_backend_prewarm
+
+                _mo_backend_prewarm._ensure_search_index()
+            except Exception as exc:
+                _log.warning("MO search index prewarm failed: %s", exc)
         if env_bool("MO_PREWARM_PROTOCOL_SUGGEST", True):
             try:
                 from clinical_knowledge.mo_case_detail_latency import prewarm_protocol_suggest_match
@@ -8531,7 +8540,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-26-183454Z-mo-search-fts"
+BUILD_VERSION = "2026-09-26-191646Z-mo-search-perf2"
 
 
 def _app_version() -> str:
