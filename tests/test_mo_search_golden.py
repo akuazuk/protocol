@@ -170,6 +170,21 @@ def test_cyrillic_case_and_yo_do_not_matter(warehouse: Path) -> None:
     assert set(_ids(mo_backend.build_cases({**PERIOD, "q": "Близорукость", "page_size": "100"}))) == {"m1", "m2"}
 
 
+def test_search_index_is_revalidated_after_ttl(warehouse: Path, monkeypatch) -> None:
+    """Долгоживущий воркер сам лечит FTS-индекс: повреждение -> следующий поиск после TTL
+    пересобирает индекс (Bugbot: одноразовый кэш пропускал перепроверку)."""
+    assert set(_ids(mo_backend.build_cases({**PERIOD, "q": "гипертония", "page_size": "100"}))) == {"h1", "h2", "h3", "h4"}
+    with sqlite3.connect(warehouse) as conn:
+        conn.execute(f"DELETE FROM {mo_search.FTS_TABLE}")
+        conn.commit()
+    # Внутри TTL проверка не повторяется - индекс пуст, остаются только коды и названия МКБ.
+    broken = mo_backend.build_cases({**PERIOD, "q": "гипертония", "page_size": "100"})
+    assert "h4" not in _ids(broken), _ids(broken)
+    monkeypatch.setattr(mo_backend, "_SEARCH_INDEX_CHECKED_AT", 0.0)
+    healed = mo_backend.build_cases({**PERIOD, "q": "гипертония", "page_size": "100"})
+    assert set(_ids(healed)) == {"h1", "h2", "h3", "h4"}
+
+
 def test_identity_lookup_still_wins_over_text_plan(warehouse: Path) -> None:
     result = mo_backend.build_cases({**PERIOD, "q": "5000", "page_size": "100"})
     assert _ids(result) == ["h1"]
