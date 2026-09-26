@@ -119,6 +119,7 @@ def ensure_search_index(conn: sqlite3.Connection) -> dict[str, Any]:
         "WHERE COALESCE(diagnosis_code, '') != '' "
         "AND diagnosis_code NOT IN (SELECT diagnosis_code FROM dim_diagnosis)"
     )
+    fill_missing_labels(conn)
     if _fts_meta(conn, "schema_version") != FTS_SCHEMA_VERSION:
         # Старая раскладка (без label_text) или индекс, созданный не этим кодом: триггеры
         # старой схемы ссылаются на другие колонки, поэтому сносим всё и создаём заново.
@@ -353,6 +354,49 @@ def _icd_titles() -> tuple[tuple[str, str, frozenset[str]], ...]:
         stems = frozenset(stem(t) for t in tokens(title) if len(t) >= 3 and t not in _STOP)
         out.append((code, title, stems))
     return tuple(out)
+
+
+@lru_cache(maxsize=1)
+def icd_title_map() -> dict[str, str]:
+    """Код МКБ -> русское название из справочника (без префикса кода), для display."""
+    if not ICD_RU_PATH.is_file():
+        return {}
+    try:
+        rows = json.loads(ICD_RU_PATH.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        return {}
+    out: dict[str, str] = {}
+    for row in rows if isinstance(rows, list) else []:
+        code = str(row.get("code") or "").strip().upper()
+        title = re.sub(r"^[A-Za-z]\d{2}(?:\.\d+)?\s*-\s*", "", str(row.get("title_ru") or "").strip())
+        if code and title:
+            out[code] = title
+    return out
+
+
+def fill_missing_labels(conn: sqlite3.Connection) -> int:
+    """Проставить пустым `dim_diagnosis.diagnosis_label` названия из справочника МКБ.
+
+    mo_daily пишет коды в справочник с пустым названием, поэтому на проде поиск по
+    названию и подпись кода в UI не работали. Возвращает число обновлённых строк."""
+    rows = conn.execute(
+        "SELECT diagnosis_code FROM dim_diagnosis WHERE TRIM(COALESCE(diagnosis_label, '')) = ''"
+    ).fetchall()
+    if not rows:
+        return 0
+    titles = icd_title_map()
+    updates = []
+    for (code,) in rows:
+        key = str(code or "").strip().upper()
+        title = titles.get(key) or titles.get(key.rstrip("."))
+        if title:
+            updates.append((title, code))
+    if updates:
+        conn.executemany(
+            "UPDATE dim_diagnosis SET diagnosis_label = ? WHERE diagnosis_code = ? AND TRIM(COALESCE(diagnosis_label, '')) = ''",
+            updates,
+        )
+    return len(updates)
 
 
 @lru_cache(maxsize=1)

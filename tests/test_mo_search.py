@@ -188,7 +188,8 @@ def test_sql_clause_finds_by_code_synonym_and_typo(tmp_path: Path) -> None:
     # Без синонимов остаётся только фраза (и код I10 по названию).
     assert {m for m, _r in _run(db, "гипертония", disabled="synonyms,terms")} == {"2"}
     # Опечатка.
-    assert {m for m, _r in _run(db, "гипертенизя")} == {"1", "8"}
+    # «2» (I11.9) - через название из справочника «Гипертензивная […] болезнь», подтянутое в label_text.
+    assert {m for m, _r in _run(db, "гипертенизя")} == {"1", "2", "8"}
     # Код и диапазон.
     assert {m for m, _r in _run(db, "I10-I15")} == {"1", "2", "8"}
     assert {m for m, _r in _run(db, "K29")} == {"3"}
@@ -317,8 +318,26 @@ def test_code_chips_resolve_prefixes_through_dim_diagnosis(tmp_path: Path) -> No
         conn.commit()
         assert conn.execute("SELECT COUNT(*) FROM dim_diagnosis WHERE diagnosis_code='I13.2'").fetchone()[0] == 0
         ms.ensure_search_index(conn)
-        assert conn.execute("SELECT diagnosis_label FROM dim_diagnosis WHERE diagnosis_code='I13.2'").fetchone()[0] == ""
+        label = conn.execute("SELECT diagnosis_label FROM dim_diagnosis WHERE diagnosis_code='I13.2'").fetchone()[0]
+        assert label == ms.icd_title_map()["I13.2"], "код добавлен и сразу подписан названием из справочника"
     assert ("11", 1) in _run(db, "I10-I15")
+
+
+def test_missing_dim_labels_are_filled_from_icd_reference_and_searchable(tmp_path: Path) -> None:
+    """Прод: mo_daily пишет коды в dim_diagnosis с пустым названием (отпечаток `2441:0`);
+    ensure_search_index подтягивает названия из справочника, и они попадают в label_text."""
+    db = tmp_path / "w.sqlite"
+    _mini_warehouse(db)
+    with sqlite3.connect(db) as conn:
+        label = conn.execute("SELECT diagnosis_label FROM dim_diagnosis WHERE diagnosis_code='I11.9'").fetchone()[0]
+        assert label.startswith("Гипертензивная"), label
+        assert conn.execute("SELECT COUNT(*) FROM dim_diagnosis WHERE TRIM(COALESCE(diagnosis_label,''))=''").fetchone()[0] == 0
+        assert ms.fill_missing_labels(conn) == 0, "повторный вызов ничего не трогает"
+        # Уже заполненные названия не перетираются.
+        assert conn.execute("SELECT diagnosis_label FROM dim_diagnosis WHERE diagnosis_code='I10'").fetchone()[0] == "Эссенциальная гипертензия"
+    # Текст «Гипертоническая болезнь 2 ст» + название «Гипертензивная [гипертоническая] болезнь…»: фраза по названию.
+    assert ("2", 2) in _run(db, "гипертензивная болезнь")
+    assert ms.icd_title_map()["I10"] == "Эссенциальная [первичная] гипертензия"
 
 
 def test_codes_for_phrase_uses_inverted_index_and_matches_full_scan() -> None:

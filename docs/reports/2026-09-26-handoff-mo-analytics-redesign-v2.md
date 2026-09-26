@@ -1,11 +1,12 @@
-# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C в проде; D merged, релиз 4 откачен
+# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C, D в проде; приёмка D пройдена
 
-Дата: 2026-09-26 (вечер UTC)
+Дата: 2026-09-26 (ночь UTC)
 План: `docs/plans/2026-09-26-mo-analytics-redesign-v2.md` (active; журнал релизов - §6b,
 метрики «было / стало / цель» - §7).
 Прод: GCE `https://protocol.kravira.by`, контейнер `protocol-web`, образ
-`protocol-gcp-app:4745229c642d`, `/api/version` = `2026-09-26-152505Z-mo-wave-c-weighted-axes`,
-`git_commit` = `4745229c`. Render не прод и не откат.
+`protocol-gcp-app:bc7a596af624`, `/api/version` = `2026-09-26-202914Z-mo-search-perf3`,
+`git_commit` = `bc7a596a` (релиз 7). Render не прод и не откат. Предыдущий образ для
+отката - `protocol-gcp-app:1ec1b39d2e1f` (релиз 6).
 
 Директива владельца: «Все подтверждаю работай автономно и все реализуй по плану». Режим:
 одна волна = один PR (Bugbot по diff до merge) = merge после зелёного CI = релиз
@@ -27,7 +28,10 @@
 | T проба `sort_by=overall` | #303 | `fb80f2ce` | не требует релиза |
 | handoff + журнал релизов | #304 | `4ba84da3` | docs |
 | D умный поиск | #305 | `caa79964` | релиз 4 17:40 UTC `PUBLIC_OK`, **откачен 17:48** на `4745229c` |
-| D perf: FTS5 вместо LIKE (fix отката) | #306 | - | PR открыт, CI + Bugbot; ветка `cursor/mo-search-perf-pc1` |
+| D perf: FTS5 вместо LIKE (fix отката) | #306 | `2ca743fb` | релиз 5 19:03 UTC, приёмка частично (p95 4,35 с) |
+| D perf 2: чип врача, один GROUP BY, один MATCH на синонимы, подфраза ОРВИ, прогрев индекса | #307 | `1ec1b39d` | релиз 6 20:02 UTC, 5/5 порогов, p95 2,28 с |
+| D perf 3: название МКБ в FTS (схема v2), обратный индекс стемм, коды через `dim_diagnosis`, JOIN по надобности, `warm_caches` | #308 | `bc7a596a` | релиз 7 21:01 UTC, **приёмка §D пройдена**: p50 154 мс, p95 487 мс |
+| D: названия для пустых `dim_diagnosis` из справочника | #309 | - | PR открыт, Bugbot чист, CI; ветка `cursor/mo-search-dim-labels-pc1` |
 
 Приёмка релизов (все `PUBLIC_OK`, `/health/live` ok):
 
@@ -56,8 +60,28 @@
 повторялись в WHERE, ORDER BY, COUNT и GROUP BY чипов - четыре прохода по 121 тыс. строк.
 Теперь FTS5 `fact_mo_case_search` (триггеры на `fact_mo_case`, пересборка при расхождении,
 создаётся при первом поиске после релиза), коды - `GLOB`, название/врач - подзапросы по
-dim-таблицам. Синтетика 120 тыс. строк: 0,5-1,1 с на запрос. FTS5 есть в контейнере (3.46)
-и в `/opt/protocol/venv-mis` (3.40) - триггеры безопасны для ночного конвейера.
+dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/protocol/venv-mis` (3.40) - триггеры
+безопасны для ночного конвейера.
+
+Релизы 5-7 (поиск, приёмка `/tmp/search_accept.py` на VM, 5 золотых + 20 контрольных
++ 40 замеров задержки):
+
+- 2ca743fb (релиз 5): 4 из 5 порогов, p95 4,35 с - чип «врач/ID» с `CAST(visit_id) LIKE`
+  по всем строкам, «острая респираторная» 30 (не ключ группы ОРВИ). Не откатывался.
+- 1ec1b39d (релиз 6): 5 из 5, «острая респираторная» 11 622, p95 2,28 с. Профиль на GCE
+  (`cProfile` + `set_trace_callback` в контейнере): 1,1 с Python `codes_for_phrase`,
+  0,7-1,1 с SQL - подзапросы `dim_diagnosis` с REPLACE-цепочками в WHERE и ранге,
+  `LEFT JOIN` к справочникам на каждую строку, `GLOB` по кодам на каждую строку.
+- bc7a596a (релиз 7): 5 из 5, 0 ложных, p50 154 мс, p95 487 мс, max 684 мс («СД 2»,
+  цифра в запросе -> `CAST(visit_id) LIKE`). Индекс v2 пересобран при старте за ~7 с
+  (в логе `MO search caches prewarmed: icd_titles 15616, stems 5973, aliases 950`),
+  121 519 строк = фактов, `fact_mo_case_search_meta`: `schema_version 2`,
+  `dim_fingerprint 2441:0`. Отпечаток `…:0` = у всех кодов `dim_diagnosis` пустое
+  название - исправление в #309 (2362 из 2441 кодов получат название из справочника).
+- Для замеров на копии склада без риска для прода: `cp mo_analytics.sqlite /tmp/mo_exp.sqlite`
+  внутри контейнера + `PYTHONPATH=/tmp/newcode:/app MO_ANALYTICS_DB=/tmp/mo_exp.sqlite`
+  (в `/tmp/newcode` - новый `clinical_knowledge`, `data` симлинком на `/app/data`).
+  Скрипты на Mac: `/tmp/mo_wave/bench_new.py`, `profile_sql3.py`, `profile_ytd.py`.
 
 Прочее, сделанное на GCE руками координатора (не в git):
 
@@ -91,9 +115,11 @@ dim-таблицам. Синтетика 120 тыс. строк: 0,5-1,1 с на
 
 - Финальный `recompute` истории пациентов после всех месяцев; п. 5 волны C (лаборатория
   с 2025-12) - в G/F5.
-- Приёмка волны D на проде (пороги §D плана, p95 ≤ 1 с) - после релиза 5 (#306).
-  Скрипт приёмки: `/tmp/mo_wave/search_accept.py` на Mac, копия `/tmp/search_accept.py` на VM
+- Релиз 8 (#309, названия `dim_diagnosis`) и его проверка: `dim_fingerprint` ≠ `…:0`,
+  «гипертензивная болезнь» даёт чип «фраза» > 0, повтор `/tmp/search_accept.py` на VM
   (`export METHODIST_TOKEN=…; python3 /tmp/search_accept.py --base http://127.0.0.1:8000`).
+- «СД 2»: 3 из 10 строк выборки эвристика скрипта не объясняет (она не видит
+  `diagnosis_text`); движок даёт ранг 2 по целому слову «СД» - проверить методисту вручную.
 - Шаг 8 волны D (эмбеддинги «похожие») - после F. Ревью словаря `dx_aliases_ru.json`
   врачом - долг H1.
 - Волны J, F1-F7, G, K, H1/I, H2/H3 - не начаты.
@@ -107,12 +133,11 @@ dim-таблицам. Синтетика 120 тыс. строк: 0,5-1,1 с на
 gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo tail -5 /var/data/medical_exams/logs/gce-mo-backfill.log; sudo cat /var/data/medical_exams/state/mo_backfill_range.json | tail -20'
 ```
 
-2. Дождаться зелёного CI и Bugbot по #306, `gh pr merge 306 --squash --delete-branch`,
-   затем релиз 5 из нового detached worktree на `origin/main` (`.env` симлинк), между днями
-   backfill. После `PUBLIC_OK` - приёмка `/tmp/search_accept.py` на VM; если p95 > 1 с или
-   ложные срабатывания - откат на `4745229c642d` тем же способом.
-3. Прод сейчас на образе релиза 3 (`4745229c642d`), а `origin/main` уже содержит D
-   (`caa79964`): не деплоить `origin/main` без #306.
+2. Дождаться зелёного CI по #309, `gh pr merge 309 --squash --delete-branch`, затем релиз 8
+   из нового detached worktree на `origin/main` (`.env` симлинк), между днями backfill
+   (после `DONE ok=` в логе). После `PUBLIC_OK` - проверка из «Не сделано»; если p95 > 1 с
+   или ложные срабатывания - откат на `bc7a596af624` по runbook §5.
+3. Дальше по плану: волна J (контракт фильтров, удаление legacy), затем F1-F7.
 
 ## Базовые цифры утреннего аудита (PR #295, прод `8000354f`) - для сравнения
 
