@@ -27,10 +27,19 @@ def test_warehouse_q_searches_diagnosis_text() -> None:
         {"q": "гипертон", "date_from": "2026-09-01", "date_to": "2026-09-20"}
     )
     joined = " AND ".join(where)
-    # Текст диагноза - через FTS-индекс fact_mo_case_search, название МКБ - через dim_diagnosis.
+    # Текст диагноза и название МКБ - через FTS-индекс fact_mo_case_search (search_text + label_text).
     assert "fact_mo_case_search MATCH ?" in joined
-    assert "FROM dim_diagnosis WHERE" in joined and "diagnosis_label" in joined
+    assert "diagnosis_label" not in joined, "название МКБ - в индексе, не в LIKE по dim_diagnosis"
     assert any("гипертон" in str(v).lower() for v in values)
+
+
+def test_dim_joins_only_when_sql_references_dimensions() -> None:
+    from clinical_knowledge.mo_backend import _dim_joins_sql
+
+    assert "dim_doctor" not in _dim_joins_sql("c.visit_date >= ?", "ORDER BY c.visit_date DESC")
+    assert "dim_doctor" in _dim_joins_sql("COALESCE(d.specialty, c.specialty) IN (?)")
+    assert "dim_diagnosis" in _dim_joins_sql("", "dx.diagnosis_label LIKE ?")
+    assert "dim_doctor" not in _dim_joins_sql("c.visit_id.5 old.x"), "`id.` и `old.` - не алиасы справочников"
 
 
 def test_q_is_sql_pageable(monkeypatch) -> None:

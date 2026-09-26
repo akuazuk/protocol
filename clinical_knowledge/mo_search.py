@@ -18,6 +18,7 @@ from __future__ import annotations
 
 import json
 import re
+from bisect import bisect_left
 import sqlite3
 from dataclasses import dataclass, field
 from functools import lru_cache
@@ -50,39 +51,86 @@ _ICD_RANGE_RE = re.compile(r"^([A-Z])(\d{2})\s*-\s*(?:([A-Z]))?(\d{2})$")
 _TOKEN_RE = re.compile(r"[а-яa-z0-9]+")
 _FTS_TOKEN_RE = re.compile(r"^[0-9a-zа-яё]+$")
 
-# Полнотекстовый индекс склада: нормализованная копия diagnosis_text (ё->е; регистр и
-# пунктуацию снимает токенизатор unicode61). Поддерживается триггерами, при расхождении
-# пересобирается в ensure_search_index(). Поиск подстрокой с REPLACE/LIKE по 120 тыс.
-# строк занимал 11-70 с; MATCH по индексу - миллисекунды.
+# Полнотекстовый индекс склада: нормализованные копии diagnosis_text и названия МКБ
+# из dim_diagnosis (ё->е; регистр и пунктуацию снимает токенизатор unicode61).
+# Поддерживается триггерами, при расхождении со складом, смене схемы или словаря
+# диагнозов пересобирается в ensure_search_index(). Поиск подстрокой с REPLACE/LIKE
+# по 120 тыс. строк занимал 11-70 с; MATCH по индексу - миллисекунды. Название МКБ
+# лежит в индексе, а не в подзапросе к dim_diagnosis: подзапрос с цепочкой REPLACE
+# на каждый чип и каждую копию в ранге стоил 0,7-1,1 с на запрос.
 FTS_TABLE = "fact_mo_case_search"
+FTS_META_TABLE = f"{FTS_TABLE}_meta"
+FTS_SCHEMA_VERSION = "2"
 _FTS_TEXT_EXPR = "REPLACE(REPLACE(COALESCE({row}.diagnosis_text, ''), 'ё', 'е'), 'Ё', 'Е')"
+_FTS_LABEL_EXPR = (
+    "REPLACE(REPLACE(COALESCE((SELECT MAX(dx.diagnosis_label) FROM dim_diagnosis dx "
+    "WHERE dx.diagnosis_code = {row}.diagnosis_code), ''), 'ё', 'е'), 'Ё', 'Е')"
+)
+_FTS_TRIGGERS = (f"trg_{FTS_TABLE}_ai", f"trg_{FTS_TABLE}_ad", f"trg_{FTS_TABLE}_au")
 FTS_SCHEMA_SQL = f"""
 CREATE VIRTUAL TABLE IF NOT EXISTS {FTS_TABLE}
-  USING fts5(search_text, mis_id UNINDEXED, tokenize='unicode61 remove_diacritics 2');
+  USING fts5(search_text, label_text, mis_id UNINDEXED,
+             tokenize='unicode61 remove_diacritics 2', prefix='4 5 6 7 8');
+CREATE TABLE IF NOT EXISTS {FTS_META_TABLE} (k TEXT PRIMARY KEY, v TEXT NOT NULL);
 CREATE TRIGGER IF NOT EXISTS trg_{FTS_TABLE}_ai AFTER INSERT ON fact_mo_case BEGIN
-  INSERT INTO {FTS_TABLE}(rowid, search_text, mis_id)
-  VALUES (new.rowid, {_FTS_TEXT_EXPR.format(row="new")}, new.mis_id);
+  INSERT INTO {FTS_TABLE}(rowid, search_text, label_text, mis_id)
+  VALUES (new.rowid, {_FTS_TEXT_EXPR.format(row="new")}, {_FTS_LABEL_EXPR.format(row="new")}, new.mis_id);
 END;
 CREATE TRIGGER IF NOT EXISTS trg_{FTS_TABLE}_ad AFTER DELETE ON fact_mo_case BEGIN
   DELETE FROM {FTS_TABLE} WHERE rowid = old.rowid;
 END;
-CREATE TRIGGER IF NOT EXISTS trg_{FTS_TABLE}_au AFTER UPDATE OF diagnosis_text, mis_id ON fact_mo_case BEGIN
+CREATE TRIGGER IF NOT EXISTS trg_{FTS_TABLE}_au AFTER UPDATE OF diagnosis_text, diagnosis_code, mis_id ON fact_mo_case BEGIN
   DELETE FROM {FTS_TABLE} WHERE rowid = old.rowid;
-  INSERT INTO {FTS_TABLE}(rowid, search_text, mis_id)
-  VALUES (new.rowid, {_FTS_TEXT_EXPR.format(row="new")}, new.mis_id);
+  INSERT INTO {FTS_TABLE}(rowid, search_text, label_text, mis_id)
+  VALUES (new.rowid, {_FTS_TEXT_EXPR.format(row="new")}, {_FTS_LABEL_EXPR.format(row="new")}, new.mis_id);
 END;
 """
+_FTS_DROP_SQL = "".join(f"DROP TRIGGER IF EXISTS {t};\n" for t in _FTS_TRIGGERS) + f"DROP TABLE IF EXISTS {FTS_TABLE};\n"
+
+
+def _fts_meta(conn: sqlite3.Connection, key: str) -> str | None:
+    try:
+        row = conn.execute(f"SELECT v FROM {FTS_META_TABLE} WHERE k = ?", (key,)).fetchone()
+    except sqlite3.OperationalError:
+        return None
+    return None if row is None else str(row[0])
+
+
+def _dim_fingerprint(conn: sqlite3.Connection) -> str:
+    """Дешёвый отпечаток словаря названий: число строк и суммарная длина названий.
+    Меняется - в индексе устарели label_text, нужна пересборка."""
+    row = conn.execute("SELECT COUNT(*), TOTAL(LENGTH(COALESCE(diagnosis_label, ''))) FROM dim_diagnosis").fetchone()
+    return f"{int(row[0])}:{int(row[1] or 0)}"
 
 
 def ensure_search_index(conn: sqlite3.Connection) -> dict[str, Any]:
     """Создать FTS-индекс и триггеры, при расхождении с fact_mo_case - пересобрать.
 
-    Возвращает {"rows": n, "rebuilt": bool}. Вызывать на записывающем соединении;
-    идемпотентно и дёшево, когда индекс уже согласован (один JOIN по rowid)."""
+    Пересборка также при смене версии схемы индекса (старый индекс без label_text
+    сносится вместе с триггерами) и при изменении dim_diagnosis (в строках индекса
+    лежит копия названия). Возвращает {"rows": n, "rebuilt": bool}. Вызывать на
+    записывающем соединении; идемпотентно и дёшево, когда индекс согласован."""
+    conn.execute(f"CREATE TABLE IF NOT EXISTS {FTS_META_TABLE} (k TEXT PRIMARY KEY, v TEXT NOT NULL)")
+    # Страховка инварианта «каждый код склада есть в dim_diagnosis»: чипы по кодам ищут
+    # через справочник. Обычно 0 строк; после записи мимо mo_daily - добавит коды без названия.
+    conn.execute(
+        "INSERT OR IGNORE INTO dim_diagnosis(diagnosis_code, diagnosis_label) "
+        "SELECT DISTINCT diagnosis_code, '' FROM fact_mo_case "
+        "WHERE COALESCE(diagnosis_code, '') != '' "
+        "AND diagnosis_code NOT IN (SELECT diagnosis_code FROM dim_diagnosis)"
+    )
+    if _fts_meta(conn, "schema_version") != FTS_SCHEMA_VERSION:
+        # Старая раскладка (без label_text) или индекс, созданный не этим кодом: триггеры
+        # старой схемы ссылаются на другие колонки, поэтому сносим всё и создаём заново.
+        conn.executescript(_FTS_DROP_SQL)
+        consistent = False
+    else:
+        consistent = _fts_meta(conn, "dim_fingerprint") == _dim_fingerprint(conn)
     conn.executescript(FTS_SCHEMA_SQL)
     facts = int(conn.execute("SELECT COUNT(*) FROM fact_mo_case").fetchone()[0])
-    indexed = int(conn.execute(f"SELECT COUNT(*) FROM {FTS_TABLE}").fetchone()[0])
-    consistent = indexed == facts
+    if consistent:
+        indexed = int(conn.execute(f"SELECT COUNT(*) FROM {FTS_TABLE}").fetchone()[0])
+        consistent = indexed == facts
     if consistent and facts:
         matched = int(
             conn.execute(
@@ -97,8 +145,14 @@ def ensure_search_index(conn: sqlite3.Connection) -> dict[str, Any]:
     try:
         conn.execute(f"DELETE FROM {FTS_TABLE}")
         conn.execute(
-            f"INSERT INTO {FTS_TABLE}(rowid, search_text, mis_id) "
-            f"SELECT rowid, {_FTS_TEXT_EXPR.format(row='fact_mo_case')}, mis_id FROM fact_mo_case"
+            f"INSERT INTO {FTS_TABLE}(rowid, search_text, label_text, mis_id) "
+            f"SELECT rowid, {_FTS_TEXT_EXPR.format(row='fact_mo_case')}, "
+            f"{_FTS_LABEL_EXPR.format(row='fact_mo_case')}, mis_id FROM fact_mo_case"
+        )
+        conn.execute(f"INSERT INTO {FTS_TABLE}({FTS_TABLE}) VALUES('optimize')")
+        conn.execute(
+            f"INSERT OR REPLACE INTO {FTS_META_TABLE}(k, v) VALUES ('schema_version', ?), ('dim_fingerprint', ?)",
+            (FTS_SCHEMA_VERSION, _dim_fingerprint(conn)),
         )
         conn.execute("COMMIT")
     except sqlite3.Error:
@@ -370,19 +424,51 @@ def _collapse_codes(codes: Iterable[str], limit: int = MAX_CODE_PREFIXES) -> lis
     return blocks[:limit]
 
 
-def codes_for_phrase(phrase: str) -> list[str]:
-    """Коды МКБ, в названии которых есть все стеммы фразы (стоп-слова не считаются)."""
-    stems = [stem(t) for t in tokens(phrase) if len(t) >= 3 and t not in _STOP]
-    stems = [s for s in stems if len(s) >= 3]
-    if not stems:
-        return []
-    out: list[str] = []
+@lru_cache(maxsize=1)
+def _icd_stem_index() -> tuple[dict[str, frozenset[str]], tuple[str, ...]]:
+    """Обратный индекс: стемма названия МКБ -> коды; плюс отсортированные стеммы для
+    префиксного поиска. Полный проход по 15 тыс. названий на каждую фразу стоил ~0,25 с,
+    а у запроса с синонимами таких фраз десяток."""
+    by_stem: dict[str, set[str]] = {}
     for code, _title, title_stems in _icd_titles():
         if "-" in code:
             continue  # блоки вида J00-J06 не бывают кодом диагноза
-        if all(any(_stem_hit(ts, s) for ts in title_stems) for s in stems):
-            out.append(code)
-    return out
+        for ts in title_stems:
+            by_stem.setdefault(ts, set()).add(code)
+    return {k: frozenset(v) for k, v in by_stem.items()}, tuple(sorted(by_stem))
+
+
+def _codes_for_stem(query_stem: str) -> frozenset[str]:
+    """Коды, в названии которых есть стемма, равная запросу (или начинающаяся с него -
+    только для длинных стемм, как в `_stem_hit`)."""
+    by_stem, sorted_stems = _icd_stem_index()
+    codes: set[str] = set(by_stem.get(query_stem, ()))
+    if len(query_stem) >= 6:
+        i = bisect_left(sorted_stems, query_stem)
+        while i < len(sorted_stems) and sorted_stems[i].startswith(query_stem):
+            codes |= by_stem[sorted_stems[i]]
+            i += 1
+    return frozenset(codes)
+
+
+@lru_cache(maxsize=4096)
+def _codes_for_phrase_cached(phrase: str) -> tuple[str, ...]:
+    stems = [stem(t) for t in tokens(phrase) if len(t) >= 3 and t not in _STOP]
+    stems = [s for s in stems if len(s) >= 3]
+    if not stems:
+        return ()
+    found: frozenset[str] | None = None
+    for s in stems:
+        hit = _codes_for_stem(s)
+        found = hit if found is None else found & hit
+        if not found:
+            return ()
+    return tuple(sorted(found or ()))
+
+
+def codes_for_phrase(phrase: str) -> list[str]:
+    """Коды МКБ, в названии которых есть все стеммы фразы (стоп-слова не считаются)."""
+    return list(_codes_for_phrase_cached(phrase))
 
 
 def _stem_hit(title_stem: str, query_stem: str) -> bool:
@@ -652,76 +738,38 @@ def _ci_like(column: str, value: str) -> tuple[str, list[str]]:
     return clause, [_like_contains(v) for v in variants]
 
 
-def _padded_col(column: str) -> str:
-    """Колонка с ё=е и границами слов (знаки -> пробел, пробелы по краям)."""
-    inner = f"REPLACE(REPLACE(COALESCE({column}, ''), 'ё', 'е'), 'Ё', 'Е')"
-    for ch in (",", ".", ";", "(", ")", "/", "-"):
-        inner = f"REPLACE({inner}, '{ch}', ' ')"
-    return f"(' ' || {inner} || ' ')"
-
-
-def _ci_word(column: str, word: str) -> tuple[str, list[str]]:
-    """`column` содержит `word` целым словом (границы - пробел/знаки), без учёта регистра."""
-    col = _padded_col(column)
-    variants = _case_variants(word)
-    clause = "(" + " OR ".join(f"{col} LIKE ? ESCAPE '\\'" for _ in variants) + ")"
-    return clause, [f"% {v} %" for v in variants]
-
-
-def _ci_prefix(column: str, stem_value: str) -> tuple[str, list[str]]:
-    """В `column` есть слово, начинающееся со `stem_value` (не подстрока внутри слова)."""
-    col = _padded_col(column)
-    variants = _case_variants(stem_value)
-    clause = "(" + " OR ".join(f"{col} LIKE ? ESCAPE '\\'" for _ in variants) + ")"
-    return clause, [f"% {_like_contains(v)[1:]}" for v in variants]
-
-
-def _label_clause(stems: list[str], abbrevs: list[str] | None = None) -> tuple[str, list[str]]:
-    """Все стеммы/сокращения - в названии МКБ (dim_diagnosis, ~2,4 тыс. строк; подзапрос
-    некоррелированный, SQLite считает его один раз)."""
-    ands: list[str] = []
-    values: list[str] = []
-    for s in stems:
-        clause, vals = _ci_prefix("diagnosis_label", s)
-        ands.append(clause)
-        values.extend(vals)
-    for a in abbrevs or []:
-        clause, vals = _ci_word("diagnosis_label", a)
-        ands.append(clause)
-        values.extend(vals)
-    return (
-        "c.diagnosis_code IN (SELECT diagnosis_code FROM dim_diagnosis WHERE " + " AND ".join(ands) + ")",
-        values,
-    )
-
-
 def _stems_clause(stems: list[str], columns: list[str], abbrevs: list[str] | None = None) -> tuple[str, list[str]]:
-    """Все стеммы (и сокращения целым словом) - в тексте диагноза (FTS) или в названии МКБ.
+    """Все стеммы (и сокращения целым словом) - в тексте диагноза или названии МКБ.
 
-    `columns` сохранён для совместимости сигнатуры: текст ищется по индексу
-    `fact_mo_case_search`, название - по dim_diagnosis."""
+    `columns` сохранён для совместимости сигнатуры: и текст, и название ищутся по
+    индексу `fact_mo_case_search` (колонки search_text и label_text)."""
     return _phrases_clause([(stems, abbrevs or [])])
 
 
 def _phrases_clause(phrases: list[tuple[list[str], list[str]]]) -> tuple[str, list[str]]:
-    """Несколько фраз (каждая - стеммы + сокращения, внутри AND) одним MATCH с OR и одним
-    подзапросом по dim_diagnosis: 7 синонимов - 2 подзапроса вместо 14."""
+    """Несколько фраз (каждая - стеммы + сокращения, внутри AND) одним MATCH через OR.
+    Некоррелированный подзапрос SQLite материализует один раз на запрос."""
     matches: list[str] = []
-    label_ors: list[str] = []
-    label_values: list[str] = []
     for stems, abbrevs in phrases:
         match = fts_query(stems, abbrevs)
         if match:
             matches.append("(" + match + ")")
-        clause, vals = _label_clause(stems, abbrevs)
-        inner = clause[clause.index("WHERE ") + len("WHERE "):-1]
-        label_ors.append("(" + inner + ")")
-        label_values.extend(vals)
-    label_clause = "c.diagnosis_code IN (SELECT diagnosis_code FROM dim_diagnosis WHERE " + " OR ".join(label_ors) + ")"
     if not matches:
-        return "(" + label_clause + ")", label_values
-    fts = f"c.rowid IN (SELECT rowid FROM {FTS_TABLE} WHERE {FTS_TABLE} MATCH ?)"
-    return "(" + fts + " OR " + label_clause + ")", [" OR ".join(matches), *label_values]
+        return "1=0", []
+    return f"(c.rowid IN (SELECT rowid FROM {FTS_TABLE} WHERE {FTS_TABLE} MATCH ?))", [" OR ".join(matches)]
+
+
+def _codes_clause(prefixes: list[str]) -> tuple[str, list[Any]]:
+    """Код случая начинается с одного из префиксов. Префиксы сравниваются не с каждой из
+    120 тыс. строк склада, а с 2,4 тыс. кодов справочника dim_diagnosis (GLOB по PK -
+    диапазон по индексу), дальше - один IN по материализованному списку. Коды склада -
+    верхний регистр с точкой (I11.9); GLOB чувствителен к регистру. Полноту справочника
+    держит mo_daily (INSERT OR IGNORE на каждый код) и страхует ensure_search_index()."""
+    ors = " OR ".join("diagnosis_code GLOB ?" for _ in prefixes)
+    return (
+        f"c.diagnosis_code IN (SELECT diagnosis_code FROM dim_diagnosis WHERE {ors})",
+        [_glob_prefix(p) for p in prefixes],
+    )
 
 
 def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
@@ -732,14 +780,7 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
     text_cols = ["c.diagnosis_text", "dx.diagnosis_label"]
     out: dict[str, tuple[str, list[Any]]] = {}
     if plan.icd_prefixes and plan.enabled(CHIP_ICD):
-        ors = []
-        values: list[Any] = []
-        for pref in plan.icd_prefixes:
-            # Коды склада - верхний регистр с точкой (I11.9); GLOB чувствителен к регистру
-            # и использует индекс по diagnosis_code.
-            ors.append("c.diagnosis_code GLOB ?")
-            values.append(_glob_prefix(pref))
-        out[CHIP_ICD] = ("(" + " OR ".join(ors) + ")", values)
+        out[CHIP_ICD] = _codes_clause(plan.icd_prefixes)
     if (plan.phrase_stems or plan.abbrevs) and plan.enabled(CHIP_PHRASE):
         out[CHIP_PHRASE] = _stems_clause(plan.phrase_stems, text_cols, plan.abbrevs)
     if plan.synonym_stems and plan.enabled(CHIP_SYNONYMS):
@@ -747,12 +788,7 @@ def sql_parts(plan: SearchPlan) -> dict[str, tuple[str, list[Any]]]:
         if phrases:
             out[CHIP_SYNONYMS] = _phrases_clause(phrases)
     if plan.term_codes and plan.enabled(CHIP_TERMS):
-        ors = []
-        values = []
-        for code in plan.term_codes:
-            ors.append("c.diagnosis_code GLOB ?")
-            values.append(_glob_prefix(code))
-        out[CHIP_TERMS] = ("(" + " OR ".join(ors) + ")", values)
+        out[CHIP_TERMS] = _codes_clause(plan.term_codes)
     if plan.fuzzy_stems and plan.enabled(CHIP_FUZZY):
         fuzzy_phrases = [(stems, []) for stems in plan.fuzzy_stems if stems]
         if fuzzy_phrases:
@@ -888,6 +924,17 @@ def match_record(plan: SearchPlan, rec: dict[str, Any]) -> int | None:
         if plan.normalized in hay:
             return 6
     return None
+
+
+def warm_caches() -> dict[str, int]:
+    """Прогреть словари поиска при старте процесса: названия МКБ, обратный индекс стемм,
+    алиасы и триграммы. Иначе первый запрос пользователя платит ~2 с за их загрузку."""
+    titles = _icd_titles()
+    by_stem, _sorted = _icd_stem_index()
+    aliases = alias_index()
+    vocab = _vocab_trigrams()
+    expand_query("гипертония")
+    return {"icd_titles": len(titles), "stems": len(by_stem), "aliases": len(aliases), "vocab": len(vocab)}
 
 
 def suggest(q: str, *, limit: int = 8, extra_labels: Iterable[str] = ()) -> list[dict[str, Any]]:

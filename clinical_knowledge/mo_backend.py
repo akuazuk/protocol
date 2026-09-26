@@ -552,6 +552,22 @@ def _describe_empty_state(*, total_records: int, filtered_records: int, params: 
     return {"reason_code": "ok", "title": "", "hint": ""}
 
 
+_DIM_REF_RE = re.compile(r"\b(?:d|dx)\.")
+_DIM_JOINS_SQL = """
+        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+"""
+
+
+def _dim_joins_sql(*fragments: str) -> str:
+    """LEFT JOIN к dim_doctor/dim_diagnosis - только если SQL к ним обращается (`d.`/`dx.`).
+
+    На выборке за год (120 тыс. строк) два поиска по индексам на каждую строку стоили
+    ~0,25 с на каждый COUNT/страницу, хотя обычный запрос без фильтра по специальности
+    и филиалу к справочникам не обращается."""
+    return _DIM_JOINS_SQL if any(_DIM_REF_RE.search(f or "") for f in fragments) else "\n"
+
+
 def _freshness_counts_sql(params: dict[str, Any]) -> tuple[int, int, str, str]:
     """(всего в срезе периода, после фильтров, max дата в фильтре, max дата в срезе) одним SQL.
 
@@ -563,17 +579,12 @@ def _freshness_counts_sql(params: dict[str, Any]) -> tuple[int, int, str, str]:
         for key in ("date_from", "date_to", "periods", "period", "month")
         if params.get(key) not in (None, "")
     }
-    base_sql = """
-        FROM fact_mo_case c
-        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
-        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
-    """
     where_all, values_all = _warehouse_where(period_only)
     where_f, values_f = _warehouse_where(params)
-    sql_all = "SELECT COUNT(*), COALESCE(MAX(c.visit_date), '')" + base_sql
+    sql_all = "SELECT COUNT(*), COALESCE(MAX(c.visit_date), '') FROM fact_mo_case c" + _dim_joins_sql(*where_all)
     if where_all:
         sql_all += " WHERE " + " AND ".join(where_all)
-    sql_f = "SELECT COUNT(*), COALESCE(MAX(c.visit_date), '')" + base_sql
+    sql_f = "SELECT COUNT(*), COALESCE(MAX(c.visit_date), '') FROM fact_mo_case c" + _dim_joins_sql(*where_f)
     if where_f:
         sql_f += " WHERE " + " AND ".join(where_f)
     with closing(_read_connection()) as conn:
@@ -1263,11 +1274,7 @@ def _warehouse_count(params: dict[str, Any]) -> int:
             params["_search_chip_counts"] = counts
         return int(sum(counts.values()))
     where, values = _warehouse_where(params)
-    sql = """
-        SELECT COUNT(*) FROM fact_mo_case c
-        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
-        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
-    """
+    sql = "SELECT COUNT(*) FROM fact_mo_case c" + _dim_joins_sql(*where)
     if where:
         sql += " WHERE " + " AND ".join(where)
     with closing(_read_connection()) as conn:
@@ -1342,8 +1349,7 @@ def _warehouse_records(
             WITH page AS (
               SELECT c.mis_id
               FROM fact_mo_case c
-              LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
-              LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+              {_dim_joins_sql(where_sql, order_sql)}
               {where_sql}
               {order_sql}
               LIMIT ? OFFSET ?
@@ -2149,8 +2155,7 @@ def _search_chip_counts_sql(params: dict[str, Any], plan: "mo_search.SearchPlan"
     sql = f"""
         SELECT {rank} AS q_rank, COUNT(*) AS n
         FROM fact_mo_case c
-        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
-        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+        {_dim_joins_sql(where_sql, rank)}
         {where_sql}
         GROUP BY q_rank
     """
@@ -2246,8 +2251,7 @@ def _facet_rows(
     sql = f"""
         SELECT {expr} AS facet_value{", " + extra_group if extra_group else ""}, COUNT(*) AS n
         FROM fact_mo_case c
-        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
-        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+        {_dim_joins_sql(expr, extra_group, *where)}
     """
     if where:
         sql += " WHERE " + " AND ".join(where)

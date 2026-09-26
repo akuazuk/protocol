@@ -59,8 +59,7 @@ def test_icd_code_query_has_no_text_stems_or_doctor_chip() -> None:
     clause, values = parts[ms.CHIP_ICD]
     assert "diagnosis_code GLOB" in clause and values == ["K29.7*"]
     phrase_values = ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_PHRASE][1]
-    assert phrase_values[0] == '("гипертон"*)', "текст - через FTS MATCH по началу слова"
-    assert "Гипертон" in str(phrase_values[1:]), "регистр кириллицы для LIKE по названиям МКБ"
+    assert phrase_values == ['("гипертон"*)'], "текст и название МКБ - одним FTS MATCH по началу слова"
 
 
 def test_aliases_dictionary_is_large_and_consistent() -> None:
@@ -299,10 +298,97 @@ def test_doctor_chip_searches_ids_only_for_digit_queries() -> None:
     assert "CAST(c.visit_id AS TEXT) LIKE ?" in digits
 
 
-def test_synonyms_use_single_match_and_single_dim_subquery() -> None:
+def test_synonyms_use_single_match_without_dim_subquery() -> None:
     clause, values = ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_SYNONYMS]
-    assert clause.count("MATCH ?") == 1 and clause.count("FROM dim_diagnosis") == 1
+    assert clause.count("MATCH ?") == 1 and "dim_diagnosis" not in clause, "название МКБ - в индексе, не в подзапросе"
     assert " OR (" in values[0], "все синонимы - в одном MATCH через OR"
+    assert "diagnosis_label" not in ms.sql_clause(ms.expand_query("острая респираторная", disabled="doctor"))[0]
+
+
+def test_code_chips_resolve_prefixes_through_dim_diagnosis(tmp_path: Path) -> None:
+    clause, values = ms.sql_parts(ms.expand_query("I10-I15"))[ms.CHIP_ICD]
+    assert clause.startswith("c.diagnosis_code IN (SELECT diagnosis_code FROM dim_diagnosis WHERE")
+    assert values == ["I10*", "I11*", "I12*", "I13*", "I14*", "I15*"]
+    db = tmp_path / "w.sqlite"
+    _mini_warehouse(db)
+    with sqlite3.connect(db) as conn:
+        # Код есть в складе, но не в справочнике: ensure_search_index добавляет его без названия.
+        conn.execute("INSERT INTO fact_mo_case VALUES ('11','11','2026-09-02','I13.2','ГБ с поражением сердца и почек','d1')")
+        conn.commit()
+        assert conn.execute("SELECT COUNT(*) FROM dim_diagnosis WHERE diagnosis_code='I13.2'").fetchone()[0] == 0
+        ms.ensure_search_index(conn)
+        assert conn.execute("SELECT diagnosis_label FROM dim_diagnosis WHERE diagnosis_code='I13.2'").fetchone()[0] == ""
+    assert ("11", 1) in _run(db, "I10-I15")
+
+
+def test_codes_for_phrase_uses_inverted_index_and_matches_full_scan() -> None:
+    """Обратный индекс даёт тот же результат, что полный проход по названиям."""
+    for phrase in ("гипертония", "хронический гастрит", "острая респираторная вирусная инфекция", "миопия", "нет такого"):
+        stems = [ms.stem(t) for t in ms.tokens(phrase) if len(t) >= 3 and t not in ms._STOP]
+        stems = [s for s in stems if len(s) >= 3]
+        expected = sorted(
+            code
+            for code, _title, title_stems in ms._icd_titles()
+            if "-" not in code and stems and all(any(ms._stem_hit(ts, s) for ts in title_stems) for s in stems)
+        )
+        assert sorted(ms.codes_for_phrase(phrase)) == expected, phrase
+    assert ms.codes_for_phrase("миопия") and not any(c.startswith("G72") for c in ms.codes_for_phrase("миопия"))
+
+
+def test_search_index_rebuilds_on_schema_version_and_dim_change(tmp_path: Path) -> None:
+    db = tmp_path / "w.sqlite"
+    _mini_warehouse(db)
+    with sqlite3.connect(db) as conn:
+        # Название МКБ попало в индекс: «миопия» из dim_diagnosis находит строку с текстом «Близорукость».
+        conn.execute("INSERT INTO fact_mo_case VALUES ('10','10','2026-09-02','H52.1','Близорукость','d1')")
+        conn.commit()
+    assert ("10", 2) in _run(db, "миопия"), "ранг 2 (фраза) возможен только через название МКБ в индексе"
+    with sqlite3.connect(db) as conn:
+        # Словарь диагнозов поменялся -> отпечаток другой -> пересборка подтягивает новые названия.
+        conn.execute("UPDATE dim_diagnosis SET diagnosis_label='Хронический панкреатит' WHERE diagnosis_code='K86.1'")
+        assert conn.total_changes >= 1, "код K86.1 уже добавлен страховкой инварианта без названия"
+        conn.commit()
+        assert ms.ensure_search_index(conn)["rebuilt"] is True
+        assert ms.ensure_search_index(conn)["rebuilt"] is False
+    assert ("9", 2) in _run(db, "хронический панкреатит"), "«хронический» - из названия МКБ, «панкреатит» - из текста"
+    with sqlite3.connect(db) as conn:
+        # Старая версия схемы - индекс и триггеры сносятся и создаются заново.
+        conn.execute(f"UPDATE {ms.FTS_META_TABLE} SET v='1' WHERE k='schema_version'")
+        conn.commit()
+        assert ms.ensure_search_index(conn)["rebuilt"] is True
+        cols = [r[1] for r in conn.execute(f"PRAGMA table_info({ms.FTS_TABLE})")]
+        assert cols == ["search_text", "label_text", "mis_id"]
+        trg = {r[0] for r in conn.execute("SELECT name FROM sqlite_master WHERE type='trigger'")}
+        assert set(ms._FTS_TRIGGERS) <= trg
+    assert "10" in {m for m, _r in _run(db, "миопия")}
+
+
+def test_search_index_upgrades_from_v1_layout(tmp_path: Path) -> None:
+    """Прод после релиза 5: таблица без label_text и без meta - ensure_search_index её заменяет."""
+    db = tmp_path / "w.sqlite"
+    with sqlite3.connect(db) as conn:
+        conn.executescript(
+            """
+            CREATE TABLE fact_mo_case (mis_id TEXT, visit_id TEXT, visit_date TEXT, diagnosis_code TEXT,
+                diagnosis_text TEXT, doctor_key TEXT);
+            CREATE TABLE dim_doctor (doctor_key TEXT, doctor_fio TEXT);
+            CREATE TABLE dim_diagnosis (diagnosis_code TEXT, diagnosis_label TEXT);
+            INSERT INTO fact_mo_case VALUES ('1','1','2026-09-01','I10','Эссенциальная гипертензия','d1');
+            CREATE VIRTUAL TABLE fact_mo_case_search USING fts5(search_text, mis_id UNINDEXED);
+            INSERT INTO fact_mo_case_search(rowid, search_text, mis_id) VALUES (1, 'Эссенциальная гипертензия', '1');
+            CREATE TRIGGER trg_fact_mo_case_search_ad AFTER DELETE ON fact_mo_case BEGIN
+              DELETE FROM fact_mo_case_search WHERE rowid = old.rowid; END;
+            """
+        )
+        assert ms.ensure_search_index(conn) == {"rows": 1, "rebuilt": True}
+        cols = [r[1] for r in conn.execute(f"PRAGMA table_info({ms.FTS_TABLE})")]
+        assert cols == ["search_text", "label_text", "mis_id"]
+    assert "1" in {m for m, _r in _run(db, "гипертензия")}
+
+
+def test_warm_caches_loads_dictionaries() -> None:
+    stats = ms.warm_caches()
+    assert stats["icd_titles"] > 10000 and stats["stems"] > 5000 and stats["aliases"] > 100 and stats["vocab"] > 1000
 
 
 def test_fuzzy_chip_skipped_when_all_stem_lists_empty() -> None:
