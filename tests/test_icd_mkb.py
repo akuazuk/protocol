@@ -94,3 +94,29 @@ def test_lexicon_prefilter_matches_full_scan() -> None:
             key=lambda x: (-x[1], x[0]),
         )
         assert fast == brute(text), text
+
+
+def test_ru_title_index_matches_linear_scan_semantics() -> None:
+    """Индекс код -> название даёт то же, что первый проход по справочнику."""
+    import icd_mkb
+
+    def linear(code: str) -> str | None:
+        c = icd_mkb.canonical_ru_code(code)
+        for row in icd_mkb._ru_rows():
+            if icd_mkb._norm_icd_code(row.get("code") or "") == c:
+                return (row.get("title_ru") or "").strip() or None
+        return None
+
+    for code in ("I10", "i10", "K29.7", "I84.9", "J06.9", "N17-N19", "A00.-", "ZZZ", ""):
+        assert icd_mkb.ru_title(code) == linear(code), code
+    assert icd_mkb.ru_title("I10")
+
+
+def test_candidate_rows_equal_prefilter_over_all_rows() -> None:
+    import icd_mkb
+
+    rows = icd_mkb._ru_terminal_title_rows()
+    for text in ("гипертония", "кровь в кале", "Мигрень", "Открытая рана уха", "боль в горле"):
+        words, qlow = icd_mkb._ru_lexicon_cache_key(text)
+        expected = [i for i, (_c, _t, tlow) in enumerate(rows) if icd_mkb._row_may_score(list(words), qlow, tlow)]
+        assert icd_mkb._candidate_row_indices(list(words), qlow) == expected, text

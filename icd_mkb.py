@@ -8,6 +8,7 @@ from __future__ import annotations
 import json
 import os
 import re
+from bisect import bisect_right
 from collections import Counter
 from functools import lru_cache
 from pathlib import Path
@@ -508,13 +509,19 @@ def who_title_en(code: str) -> str | None:
     return (row.get("title_en") or "").strip() or None
 
 
-def ru_title(code: str) -> str | None:
-    c = canonical_ru_code(code)
+@lru_cache(maxsize=1)
+def _ru_title_by_norm_code() -> dict[str, str]:
+    """Нормализованный код -> название первой строки с этим кодом (как линейный проход по справочнику)."""
+    out: dict[str, str] = {}
     for row in _ru_rows():
-        if _norm_icd_code(row.get("code") or "") == c:
-            t = (row.get("title_ru") or "").strip()
-            return t or None
-    return None
+        n = _norm_icd_code(row.get("code") or "")
+        if n and n not in out:
+            out[n] = (row.get("title_ru") or "").strip()
+    return out
+
+
+def ru_title(code: str) -> str | None:
+    return _ru_title_by_norm_code().get(canonical_ru_code(code)) or None
 
 
 def extract_icd_codes_raw(text: str) -> list[str]:
@@ -1691,10 +1698,47 @@ def _row_may_score(words: list[str], qlow: str, tlow: str) -> bool:
     return any(w in tlow for w in words)
 
 
+@lru_cache(maxsize=1)
+def _ru_terminal_title_blob() -> tuple[str, list[int]]:
+    """Все нормализованные названия одной строкой через '\n' + смещения начала каждой.
+
+    Один проход C-регекспа по ~700 КБ дешевле 15k Python-итераций `_row_may_score`.
+    """
+    parts: list[str] = []
+    offsets: list[int] = []
+    pos = 0
+    for _code, _title, tlow in _ru_terminal_title_rows():
+        offsets.append(pos)
+        parts.append(tlow)
+        pos += len(tlow) + 1
+    return "\n".join(parts), offsets
+
+
+def _candidate_row_indices(words: list[str], qlow: str) -> list[int]:
+    """Индексы строк, для которых `_row_may_score` истинен, одним поиском по blob.
+
+    Литералы (слова запроса и весь qlow при длине ≥ 6) не содержат '\n', поэтому
+    совпадение всегда лежит внутри одного названия и bisect по смещениям даёт его номер.
+    """
+    literals = {w for w in words if w and "\n" not in w}
+    if len(qlow) >= 6 and "\n" not in qlow:
+        literals.add(qlow)
+    if not literals:
+        return []
+    blob, offsets = _ru_terminal_title_blob()
+    pattern = re.compile("|".join(re.escape(lit) for lit in sorted(literals, key=len, reverse=True)))
+    found: set[int] = set()
+    for match in pattern.finditer(blob):
+        found.add(bisect_right(offsets, match.start()) - 1)
+    return sorted(found)
+
+
 def _ru_lexicon_scored_entries_uncached(words: list[str], qlow: str) -> list[dict]:
     """Внутренний скоринг без кэша (words и qlow уже нормализованы)."""
     best: dict[str, tuple[float, str, str]] = {}
-    for code, title, tlow in _ru_terminal_title_rows():
+    rows = _ru_terminal_title_rows()
+    for index in _candidate_row_indices(words, qlow):
+        code, title, tlow = rows[index]
         if not _row_may_score(words, qlow, tlow):
             continue
         sc = _lexicon_score_one_row(words, qlow, code, title)
@@ -1742,6 +1786,8 @@ def clear_ru_lexicon_cache() -> None:
     """Сброс LRU-кэша лексикона (тесты / hot reload)."""
     _ru_lexicon_cache_key.cache_clear()
     _ru_terminal_title_rows.cache_clear()
+    _ru_terminal_title_blob.cache_clear()
+    _ru_title_by_norm_code.cache_clear()
 
 
 def suggest_icd_from_russian(text: str, max_results: int = 8) -> list[dict]:
