@@ -1477,12 +1477,19 @@ def filter_icd_pool_for_complaint(scored: list[dict], text: str) -> list[dict]:
     return out if out else list(scored)
 
 
+@lru_cache(maxsize=4096)
+def _lex_short_word_pattern(word: str) -> re.Pattern[str]:
+    """Скомпилированный шаблон «целое слово» для короткого токена (кэш вместо re.compile в цикле по 15k строк)."""
+    return re.compile(rf"(?<![а-яё]){re.escape(word)}(?![а-яё])", re.IGNORECASE)
+
+
 def _lex_word_in_title(word: str, tlow: str) -> bool:
     """Совпадение слова в названии МКБ; короткие токены - только целым словом."""
     if len(word) > _LEX_SHORT_WORD_MAX:
         return word in tlow
-    pat = re.compile(rf"(?<![а-яё]){re.escape(word)}(?![а-яё])", re.IGNORECASE)
-    return bool(pat.search(tlow))
+    if word not in tlow:
+        return False
+    return bool(_lex_short_word_pattern(word).search(tlow))
 
 
 def _penalize_external_cause_for_clinical(qlow: str, code: str, score: float) -> float:
@@ -1656,15 +1663,39 @@ def _lexicon_score_one_row(
     return score
 
 
-def _ru_lexicon_scored_entries_uncached(words: list[str], qlow: str) -> list[dict]:
-    """Внутренний скоринг без кэша (words и qlow уже нормализованы)."""
-    best: dict[str, tuple[float, str, str]] = {}
+@lru_cache(maxsize=1)
+def _ru_terminal_title_rows() -> tuple[tuple[str, str, str], ...]:
+    """Терминальные коды справочника с названием и его нормализованной формой (один раз на процесс)."""
+    out: list[tuple[str, str, str]] = []
     for row in _ru_rows():
         code = (row.get("code") or "").strip()
         if not ICD10_TERMINAL_RU_RE.match(code):
             continue
         title = (row.get("title_ru") or "").strip()
         if not title:
+            continue
+        out.append((code, title, title.lower().replace("ё", "е")))
+    return tuple(out)
+
+
+def _row_may_score(words: list[str], qlow: str, tlow: str) -> bool:
+    """Точный предфильтр: балл строки > 0 только при вхождении слова запроса или всего запроса в название.
+
+    `_lexicon_score_one_row` начинает с 0 и прибавляет лишь за совпавшие слова
+    (`_lex_word_in_title` требует вхождения подстроки) или за `qlow in tlow`; все
+    остальные шаги - штрафы. Значит строки без единого вхождения дают 0 и их можно
+    не считать - это убирает ~95% из 15k строк без изменения результата.
+    """
+    if len(qlow) >= 6 and qlow in tlow:
+        return True
+    return any(w in tlow for w in words)
+
+
+def _ru_lexicon_scored_entries_uncached(words: list[str], qlow: str) -> list[dict]:
+    """Внутренний скоринг без кэша (words и qlow уже нормализованы)."""
+    best: dict[str, tuple[float, str, str]] = {}
+    for code, title, tlow in _ru_terminal_title_rows():
+        if not _row_may_score(words, qlow, tlow):
             continue
         sc = _lexicon_score_one_row(words, qlow, code, title)
         if sc <= 0:
@@ -1710,6 +1741,7 @@ def ru_lexicon_scored_entries(text: str) -> list[dict]:
 def clear_ru_lexicon_cache() -> None:
     """Сброс LRU-кэша лексикона (тесты / hot reload)."""
     _ru_lexicon_cache_key.cache_clear()
+    _ru_terminal_title_rows.cache_clear()
 
 
 def suggest_icd_from_russian(text: str, max_results: int = 8) -> list[dict]:

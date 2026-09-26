@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-26-133916Z-mo-redesign-a-open-ui"
+BUILD_VERSION = "2026-09-26-141616Z-icd-lexicon-prefilter"
 
 
 def _app_version() -> str:
