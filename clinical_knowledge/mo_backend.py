@@ -4274,11 +4274,16 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
                                SUM(scored_rows) AS evaluated,
                                ROUND(SUM(avg_score * scored_rows) /
                                    NULLIF(SUM(scored_rows), 0), 2) AS overall,
-                               ROUND(AVG(avg_documentation), 2) AS documentation,
-                               ROUND(AVG(avg_clinical_concordance), 2) AS clinical_concordance,
-                               ROUND(AVG(avg_safety), 2) AS safety,
-                               ROUND(AVG(avg_regulatory), 2) AS regulatory,
-                               ROUND(AVG(coverage_pct), 2) AS coverage,
+                               ROUND(SUM(avg_documentation * scored_rows) /
+                                   NULLIF(SUM(scored_rows), 0), 2) AS documentation,
+                               ROUND(SUM(avg_clinical_concordance * scored_rows) /
+                                   NULLIF(SUM(scored_rows), 0), 2) AS clinical_concordance,
+                               ROUND(SUM(avg_safety * scored_rows) /
+                                   NULLIF(SUM(scored_rows), 0), 2) AS safety,
+                               ROUND(SUM(avg_regulatory * scored_rows) /
+                                   NULLIF(SUM(scored_rows), 0), 2) AS regulatory,
+                               ROUND(SUM(coverage_pct * source_rows) /
+                                   NULLIF(SUM(source_rows), 0), 2) AS coverage,
                                SUM(critical) AS critical
                         FROM fact_mo_daily WHERE visit_date BETWEEN ? AND ?
                         GROUP BY {daily_bucket} ORDER BY date""",

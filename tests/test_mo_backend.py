@@ -560,6 +560,16 @@ def test_timeseries_granularity_auto_week_month_and_ytd_period(monkeypatch, tmp_
     meta = client.get("/api/methodist/mo/meta", headers=headers).json()
     assert "ytd" in meta["periods"]
     assert meta["granularities"] == ["auto", "day", "week", "month"]
+    # Оси в месячном бакете взвешены по оценённым строкам, а не средние по дням.
+    with sqlite3.connect(warehouse) as conn:
+        conn.execute(
+            "UPDATE fact_mo_daily SET scored_rows=30, avg_documentation=90 WHERE visit_date='2026-07-14'"
+        )
+        conn.execute(
+            "UPDATE fact_mo_daily SET scored_rows=10, avg_documentation=50 WHERE visit_date='2026-07-15'"
+        )
+    weighted = client.get(base + "&granularity=month&metrics=documentation", headers=headers).json()
+    assert weighted["series"][0]["documentation"] == 80.0
 
 
 def test_doctor_expected_score_uses_specialty_not_clinic_mean(monkeypatch, tmp_path: Path) -> None:
