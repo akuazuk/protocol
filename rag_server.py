@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-26-163603Z-mo-redesign-handoff"
+BUILD_VERSION = "2026-09-26-164701Z-mo-wave-d-search"
 
 
 def _app_version() -> str:
@@ -11848,6 +11848,7 @@ def api_methodist_mo_cases(
     exclude_filials: str = Query("", max_length=2000),
     exclude_document_kinds: str = Query("", max_length=500),
     q: str = Query("", max_length=200),
+    search_off: str = Query("", max_length=64, pattern=r"^[a-z_,|]*$"),
     visit_id: str = Query("", max_length=64),
     patient_id: str = Query("", max_length=64),
     queue_only: bool = Query(False),
@@ -11883,6 +11884,37 @@ def api_methodist_mo_cases(
         return build_cases(params)
     except ValueError as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/search/suggest")
+def api_methodist_mo_search_suggest(
+    request: "Request",
+    q: str = Query("", max_length=200),
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    period: str = Query("", max_length=16),
+) -> dict:
+    """Автодополнение умного поиска: алиасы, синонимы, слова МКБ, названия склада, опечатки."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_search_suggest
+
+    return build_search_suggest(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/search/plan")
+def api_methodist_mo_search_plan(
+    request: "Request",
+    q: str = Query("", max_length=200),
+    search_off: str = Query("", max_length=64, pattern=r"^[a-z_,|]*$"),
+) -> dict:
+    """План поиска без выборки: что распознано в запросе (МКБ, синонимы, стеммы, опечатки)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge import mo_search
+
+    plan = mo_search.expand_query(q, disabled=search_off)
+    payload = plan.to_dict()
+    payload["chips"] = [chip for chip in payload["chips"] if chip]
+    return {"ok": True, "engine": "mo_search_v1", "plan": payload}
 
 
 @app.get("/api/methodist/mo/dx-suggest")

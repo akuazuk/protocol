@@ -1149,6 +1149,20 @@ body.is-inspecting .drawer.case-workspace {
 .search-field { position: relative; min-width: 180px; }
 .search-field .control { max-width: 240px; }
 .case-search-form .search-field .control { max-width: none; }
+.search-plan {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px;
+  margin: 8px 0 2px; font-size: 13px; color: var(--muted);
+}
+.search-plan-title { font-weight: 600; color: var(--ink); }
+.search-chip {
+  display: inline-flex; align-items: center; gap: 6px; min-height: 30px; padding: 4px 10px;
+  border: 1px solid var(--line); border-radius: 999px; background: var(--accent-soft);
+  color: var(--accent-dark); font: inherit; font-size: 13px; cursor: pointer;
+}
+.search-chip b { font-variant-numeric: tabular-nums; }
+.search-chip.is-off { background: transparent; color: var(--muted); text-decoration: line-through; }
+.search-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.search-plan-hint { flex-basis: 100%; }
 .suggestions {
   position: absolute; z-index: 50; top: calc(100% + 4px); left: 0; right: 0;
   padding: 6px; border: 1px solid var(--line); border-radius: 12px;

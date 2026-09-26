@@ -29,6 +29,7 @@ from .mo_daily import (
     migrate_crm,
     sanitize_mo_org_label,
 )
+from . import mo_search
 from .mo_overall_grade import attach_overall_grade
 from .mo_metrics import (
     METRICS,
@@ -944,19 +945,39 @@ def _sql_overall_grade_expr(alias: str = "c") -> str:
     )
 
 
-def _warehouse_text_q_clause(q_text: str) -> tuple[str, list[str]]:
-    like = _sql_like_contains(q_text)
-    clause = (
-        "("
-        "LOWER(COALESCE(c.diagnosis_text, '')) LIKE LOWER(?) ESCAPE '\\' "
-        "OR LOWER(COALESCE(c.diagnosis_code, '')) LIKE LOWER(?) ESCAPE '\\' "
-        "OR LOWER(COALESCE(d.doctor_fio, '')) LIKE LOWER(?) ESCAPE '\\' "
-        "OR LOWER(COALESCE(dx.diagnosis_label, '')) LIKE LOWER(?) ESCAPE '\\' "
-        "OR CAST(c.visit_id AS TEXT) LIKE ? ESCAPE '\\' "
-        "OR CAST(c.mis_id AS TEXT) LIKE ? ESCAPE '\\'"
-        ")"
-    )
-    return clause, [like, like, like, like, like, like]
+def _search_plan(params: Mapping[str, Any]) -> "mo_search.SearchPlan | None":
+    """План умного поиска по `q` (МКБ, синонимы, стеммы, опечатки) или None без текста."""
+    q_text = str(params.get("q") or "").strip()
+    if not q_text or _identity_lookup(params):
+        return None
+    cached = params.get("_search_plan") if isinstance(params, dict) else None
+    if cached is not None and getattr(cached, "raw", None) == q_text:
+        return cached
+    plan = mo_search.expand_query(q_text, disabled=params.get("search_off"))
+    if isinstance(params, dict):
+        params["_search_plan"] = plan
+    return plan
+
+
+def _warehouse_text_q_clause(q_text: str, params: Mapping[str, Any] | None = None) -> tuple[str, list[Any]]:
+    plan = _search_plan(params) if params is not None else mo_search.expand_query(q_text)
+    if plan is None:
+        plan = mo_search.expand_query(q_text)
+    return mo_search.sql_clause(plan)
+
+
+def _search_relevance_order(params: dict[str, Any]) -> str | None:
+    """ORDER BY по рангу совпадения (код > фраза > синонимы > коды по названию > похожие),
+    когда есть текстовый запрос и сортировка не задана явно (`date`) или `relevance`."""
+    plan = _search_plan(params)
+    if plan is None or plan.is_empty:
+        return None
+    sort_by = str(params.get("sort_by") or "date")
+    if sort_by not in {"date", "relevance"}:
+        return None
+    rank = mo_search.sql_rank_inline(plan)
+    direction = "ASC" if str(params.get("sort_dir") or "desc").lower() == "asc" else "DESC"
+    return f"ORDER BY {rank} ASC, c.visit_date {direction}, c.mis_id {direction}"
 
 
 def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
@@ -981,7 +1002,7 @@ def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
     else:
         q_text = str(params.get("q") or "").strip()
         if q_text:
-            q_clause, q_values = _warehouse_text_q_clause(q_text)
+            q_clause, q_values = _warehouse_text_q_clause(q_text, params)
             where.append(q_clause)
             values.extend(q_values)
         if params.get("date_from"):
@@ -1153,7 +1174,12 @@ def _sql_overall_grade_rank(alias: str = "c") -> str:
 
 def _warehouse_order_sql(params: dict[str, Any]) -> str | None:
     """ORDER BY для SQL-пейджинга или None, если сортировка не выражается колонками склада."""
+    relevance = _search_relevance_order(params)
+    if relevance:
+        return relevance
     sort_by = str(params.get("sort_by") or "date")
+    if sort_by == "relevance":
+        sort_by = "date"
     if sort_by == "overall_grade":
         column = _sql_overall_grade_rank("c")
     elif sort_by == "reg55" and not _warehouse_has_column(str(_db_path()), "fact_mo_case", "reg55_section_pct"):
@@ -1346,6 +1372,7 @@ def _warehouse_records(
                 "diagnosis_code": diagnosis_code_public,
                 "diagnosis_short": diagnosis_short,
                 "diagnosis_text": diagnosis_text,
+                "diagnosis_label": diagnosis_label,
                 "mkb_code_main": diagnosis_code_public,
                 "mkb_code_main_source": str(item.get("mkb_code_main_source") or ""),
                 "mkb_code_main_slot": str(item.get("mkb_code_main_slot") or ""),
@@ -1508,6 +1535,7 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
     identity = _identity_lookup(params)
     # Поиск по ID не режется периодом UI (иначе «вчера» прячет июньский визит).
     date_keys = () if identity else ("date_from", "date_to")
+    search_plan = _search_plan(params)
     single = {
         key: params.get(key)
         for key in (
@@ -1531,6 +1559,9 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
         )
         if params.get(key) not in (None, "")
     }
+    if search_plan is not None:
+        # Текстовый поиск идёт через план (МКБ, синонимы, стеммы), не подстрокой.
+        single.pop("q", None)
     selected = {field: set(_values(params.get(key))) for key, field in _MULTI_FILTERS.items()}
     finding_codes = set(_values(params.get("finding_codes")))
     finding_family = str(params.get("finding_family") or "").strip().lower()
@@ -1554,6 +1585,11 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
     for rec in records:
         if not _match_filters(rec, single):
             continue
+        if search_plan is not None:
+            rank = mo_search.match_record(search_plan, rec)
+            if rank is None:
+                continue
+            rec["_q_rank"] = rank
         if any(vals and str(rec.get(field) or "") not in vals for field, vals in selected.items()):
             continue
         if any(vals and str(rec.get(field) or "") in vals for field, vals in excludes.items()):
@@ -1962,6 +1998,8 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     reverse = str(params.get("sort_dir") or "desc").lower() == "desc"
     if pre_total is None:
         filtered.sort(key=lambda r: (r.get(sort_field) is None, r.get(sort_field) or ""), reverse=reverse)
+        if _search_relevance_order(params):
+            filtered.sort(key=lambda r: int(r.get("_q_rank") or 7))
     page_rows = filtered if pre_total is not None else filtered[start : start + page_size]
     rows = []
     for rec in page_rows:
@@ -2030,7 +2068,72 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
             filtered_records=pre_total if pre_total is not None else len(filtered),
             params=params,
         ),
+        "search_plan": _search_plan_payload(params, filtered if pre_total is None else None),
     }
+
+
+def _search_plan_payload(
+    params: dict[str, Any], python_rows: list[dict[str, Any]] | None
+) -> dict[str, Any] | None:
+    """`search_plan` для UI: чипы «нашли по» со счётчиками (SQL - один GROUP BY по рангу)."""
+    plan = _search_plan(params)
+    if plan is None or plan.is_empty:
+        return None
+    payload = plan.to_dict()
+    payload["chips"] = [chip for chip in payload["chips"] if chip]
+    counts: dict[str, int] = {}
+    try:
+        if python_rows is not None:
+            for rec in python_rows:
+                chip = mo_search.chip_for_rank(int(rec.get("_q_rank") or 0))
+                if chip:
+                    counts[chip] = counts.get(chip, 0) + 1
+        elif _backend_source() == "warehouse":
+            counts = _search_chip_counts_sql(params, plan)
+    except (sqlite3.Error, ValueError, TypeError):
+        _LOG.warning("Счётчики чипов поиска не посчитаны", exc_info=True)
+        counts = {}
+    for chip in payload["chips"]:
+        chip["count"] = int(counts.get(chip["id"], 0))
+    return payload
+
+
+def _search_chip_counts_sql(params: dict[str, Any], plan: "mo_search.SearchPlan") -> dict[str, int]:
+    """Сколько случаев выборки нашлось по каждому чипу (по лучшему рангу строки)."""
+    where, values = _warehouse_where(params)
+    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+    rank = mo_search.sql_rank_inline(plan)
+    sql = f"""
+        SELECT {rank} AS q_rank, COUNT(*) AS n
+        FROM fact_mo_case c
+        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+        {where_sql}
+        GROUP BY q_rank
+    """
+    out: dict[str, int] = {}
+    with closing(_read_connection()) as conn:
+        for row in conn.execute(sql, values):
+            chip = mo_search.chip_for_rank(int(row["q_rank"] or 0))
+            if chip:
+                out[chip] = out.get(chip, 0) + int(row["n"] or 0)
+    return out
+
+
+def build_search_suggest(params: dict[str, Any]) -> dict[str, Any]:
+    """Автодополнение поиска: словарь алиасов/МКБ + названия диагнозов склада за период."""
+    q_text = str(params.get("q") or "").strip()
+    if len(q_text) < 2:
+        return {"ok": True, "items": [], "engine": "mo_search_v1"}
+    labels: list[str] = []
+    if _backend_source() == "warehouse":
+        try:
+            dx = build_dx_suggestions({**params, "q": q_text})
+            labels = [str(item.get("label") or "") for item in dx.get("items") or []]
+        except (sqlite3.Error, ValueError, TypeError):
+            _LOG.warning("dx-suggest для автодополнения недоступен", exc_info=True)
+    items = mo_search.suggest(q_text, limit=8, extra_labels=labels)
+    return {"ok": True, "items": items, "engine": "mo_search_v1"}
 
 
 def _period_total_for_empty_state(
@@ -2065,7 +2168,7 @@ _FACETS_SQL_KEYS = frozenset(
         "date_from", "date_to", "period", "periods", "month", "compare_period",
         "document_kinds", "specializations", "filials", "doctors", "statuses",
         "mkb_chapters", "exclude_specializations", "exclude_filials", "exclude_document_kinds",
-        "q", "zone", "zone_band", "attention_only", "icd", "kp_status", "history_tier",
+        "q", "search_off", "zone", "zone_band", "attention_only", "icd", "kp_status", "history_tier",
         "overall_grade", "finding_codes", "finding_family", "queue_only",
         "score_eligible_only", "sort_by", "sort_dir", "page", "page_size",
         "include_patient_id", "methodology",
