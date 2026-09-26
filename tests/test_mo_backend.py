@@ -527,6 +527,51 @@ def test_new_mo_endpoints_require_auth_and_use_seeded_warehouse(monkeypatch, tmp
     assert heatmap["cells"] == []
 
 
+def test_timeseries_granularity_auto_week_month_and_ytd_period(monkeypatch, tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo.sqlite"
+    _seed_analytics_warehouse(warehouse)
+    monkeypatch.setenv("METHODIST_TOKEN", "mo-test-token")
+    monkeypatch.setenv("MO_ANALYTICS_DB", str(warehouse))
+    monkeypatch.setenv("MO_BACKEND_SOURCE", "warehouse")
+    client = TestClient(rag_server.app)
+    headers = {"X-Methodist-Token": "mo-test-token"}
+    base = "/api/methodist/mo/timeseries?period=custom&date_from=2026-05-01&date_to=2026-07-15"
+    # 76 дней без granularity -> auto -> недели.
+    auto = client.get(base, headers=headers).json()
+    assert auto["granularity"] == "week"
+    assert all(item["date"].startswith("2026-W") for item in auto["series"])
+    # Явный месяц: обе точки июля схлопываются в один бакет.
+    month = client.get(base + "&granularity=month", headers=headers).json()
+    assert month["granularity"] == "month"
+    assert [item["date"] for item in month["series"]] == ["2026-07"]
+    assert month["series"][0]["volume"] == 20
+    assert month["series"][0]["overall"] == 75.0
+    # Короткое окно остаётся по дням; чужое зерно - 422.
+    day = client.get(
+        "/api/methodist/mo/timeseries?period=custom&date_from=2026-07-14&date_to=2026-07-15",
+        headers=headers,
+    ).json()
+    assert day["granularity"] == "day"
+    assert client.get(base + "&granularity=year", headers=headers).status_code == 422
+    # Пресет «С начала года» принимается API и объявлен в meta.
+    ytd = client.get("/api/methodist/mo/timeseries?period=ytd", headers=headers)
+    assert ytd.status_code == 200, ytd.text
+    assert ytd.json()["periods"]["current"]["date_from"].endswith("-01-01")
+    meta = client.get("/api/methodist/mo/meta", headers=headers).json()
+    assert "ytd" in meta["periods"]
+    assert meta["granularities"] == ["auto", "day", "week", "month"]
+    # Оси в месячном бакете взвешены по оценённым строкам, а не средние по дням.
+    with sqlite3.connect(warehouse) as conn:
+        conn.execute(
+            "UPDATE fact_mo_daily SET scored_rows=30, avg_documentation=90 WHERE visit_date='2026-07-14'"
+        )
+        conn.execute(
+            "UPDATE fact_mo_daily SET scored_rows=10, avg_documentation=50 WHERE visit_date='2026-07-15'"
+        )
+    weighted = client.get(base + "&granularity=month&metrics=documentation", headers=headers).json()
+    assert weighted["series"][0]["documentation"] == 80.0
+
+
 def test_doctor_expected_score_uses_specialty_not_clinic_mean(monkeypatch, tmp_path: Path) -> None:
     warehouse = tmp_path / "mo.sqlite"
     _seed_analytics_warehouse(warehouse)

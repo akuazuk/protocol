@@ -94,3 +94,37 @@ def test_suppression_and_confidence_interval() -> None:
     interval = mean_confidence_interval([70, 80, 90])
     assert interval["mean"] == 80
     assert interval["low"] < 80 < interval["high"]
+
+
+def test_ytd_runs_from_january_first_through_minsk_yesterday() -> None:
+    resolved = resolve_periods(
+        period="ytd",
+        now=datetime(2026, 9, 26, 8, 0, tzinfo=timezone.utc),
+    )
+    assert resolved.current.to_dict() == {
+        "date_from": "2026-01-01",
+        "date_to": "2026-09-25",
+    }
+    assert resolved.current.days == 268
+
+
+def test_ytd_on_january_first_minsk_is_a_single_day_of_previous_year() -> None:
+    # 1 января 02:00 Минска: «вчера» - 31 декабря, год берётся от него.
+    resolved = resolve_periods(
+        period="ytd",
+        now=datetime(2025, 12, 31, 23, 30, tzinfo=timezone.utc),
+    )
+    assert resolved.current.to_dict() == {
+        "date_from": "2025-01-01",
+        "date_to": "2025-12-31",
+    }
+
+
+def test_auto_granularity_by_window_length() -> None:
+    from clinical_knowledge.mo_metrics import auto_granularity
+
+    assert auto_granularity(1) == "day"
+    assert auto_granularity(62) == "day"
+    assert auto_granularity(63) == "week"
+    assert auto_granularity(190) == "week"
+    assert auto_granularity(268) == "month"

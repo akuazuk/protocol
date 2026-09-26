@@ -548,6 +548,16 @@ GCE 12:58 UTC; `GET /ingest-visit/{id}` теперь отдаёт `status_ru` / 
 `age_sec`. Пункт 1 (лог фаз) и `/rubric-summary`, `/protocol-suggest` из пункта 6 -
 не делались: тайминги ниже порогов после SQL-пейджинга.
 
+Релиз B: PR #299 -> `a87e7e4c`, деплой 15:13 UTC, `PUBLIC_OK`, версия
+`2026-09-26-142851Z-mo-wave-b-review-fixes`. Приёмка пробой на GCE
+(`/tmp/probe_release2_a87e7e4c.json`, месяц, warm): `cases_month_p1` 436 мс,
+`queue_only` 461, `finding_lab` 604, `grade_poor` 437, `q_icd` 725, `q_word` 749,
+`facets` 457 -> 6 (кэш), `freshness` 216 -> 5, `score_dashboard` 981, `reports` 36,
+`drugs_labs_kpis` 1,15-1,47 с; `/facets` отдаёт `engine: facets_sql_v1`. Над порогом
+осталась одна строка `cases_sort_score` (3,6 с) - дефект пробы: она слала `sort_by=score`,
+которого UI не отправляет; реальные ключи `overall/priority/reg55/overall_grade` -
+0,16-0,84 с. Проба исправлена отдельным PR #303 (`scripts/ops/`, уровень 4).
+
 ### C. Данные с 1 января (данные, GCE; не UI)
 
 Цель: `clinical_visit` с зонами за 2026-01-01..2026-06-30 в складе, тексты в
@@ -573,6 +583,42 @@ document_kind='clinical_visit' and zone1_band is not null group by 1` даёт �
 Обзор «С начала года» открывается ≤ 2 с.
 
 Не делать: LLM-judge за январь-июнь (расход Gemini), полный `rewrite deep` истории.
+
+**Статус C (2026-09-26, PR `cursor/mo-redesign-c-backfill-pc1`, `cursor/icd-lexicon-perf-pc1`):**
+
+- Код: `deploy/gcp-app/mo_backfill_range.sh` (по дням от июня к январю, тот же путь,
+  что ночной `score_inbound_day.sh`, `nice 15`, 2 воркера, resume по маркерам
+  `state/mo_backfill_done_<день>`, пауза на окно 01:00-04:45 UTC и живой
+  `gce-night.lock`, мягкий стоп `state/mo_backfill_stop`, прогресс
+  `state/mo_backfill_range.json`); пресет `ytd` («С начала года») в `resolve_periods`
+  и UI; `/timeseries` `granularity=auto` (день ≤ 62 дней, неделя ≤ 190, дальше месяц).
+- Замер одного дня на GCE (`2026-06-25`, 470 строк → 383 случая): export 1 мин,
+  скоринг 28 мин (`ThreadPoolExecutor` под GIL - фактически одно ядро), а
+  `recompute_mo_days.py` за один день > 27 мин: `py-spy` показал весь стек в
+  `icd_mkb._lexicon_score_one_row` - лексический подбор МКБ для protocol suggest
+  перебирал 15 157 строк справочника на каждый запрос. Исправлено точным
+  предфильтром (`_row_may_score`, PR `cursor/icd-lexicon-perf-pc1`): тот же результат
+  на 239 текстах, 10,9× быстрее. Полный диапазон январь-июнь (~76 000 строк) до
+  этого стоил бы ~5-6 суток. Перемер после релиза `306e29ec` (перф-PR #301 в проде):
+  тот же день `2026-06-25` с `--resume` (скоринг уже готов) - `recompute` 15 мин
+  вместо 27+; `py-spy` показал следующее узкое место - `icd_mkb.ru_title` линейно
+  проходил ~15,6 тыс. строк на каждый код каждой карточки КП из
+  `protocol_match._card_match_blob`, плюс предфильтр лексикона всё ещё обходил все
+  строки. Второй перф-PR (#302, `cursor/icd-lexicon-perf2-pc1`): индекс код→название
+  и поиск кандидатов одним `re.finditer` по склеенным названиям; 0 расхождений на
+  15 627 кодах и 244 текстах, суммарно 12,7× быстрее лексикон. После его релиза -
+  третий замер дня, затем запуск полного диапазона.
+- Серверные тайминги окна 9 месяцев на проде до волны B (для порогов п. 4):
+  `/score-dashboard` 4,0 с (Python-очередь `_queue_bands_by_visit`), `/drugs-labs-kpis`
+  12-14 с, `/cases queue_only` 56 с (в B уходит в SQL), `/facets` 49 с (в B - SQL),
+  `/overview` 123 с (используется только legacy-страницей «Период»; в F1 заменяется
+  `/overview/charts`). Пороги ≤ 2 с на окне «С начала года» закрываются волнами B, F1,
+  F4/F5 - не одним пресетом.
+- Не сделано: сам прогон январь-июнь (запускается координатором после деплоя
+  перф-PR: `nohup bash /opt/protocol/deploy/gcp-app/mo_backfill_range.sh 2026-01-01
+  2026-06-30 >> /var/data/medical_exams/logs/gce-mo-backfill.log 2>&1 &`), финальный
+  `recompute` истории пациентов после всех месяцев, п. 5 (лаборатория с 2025-12 -
+  волна G/F5).
 
 ### D. Умный поиск (backend `clinical_knowledge/mo_search.py` - новый модуль; UI чипы)
 
