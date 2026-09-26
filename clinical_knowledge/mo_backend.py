@@ -960,7 +960,7 @@ def _search_plan(params: Mapping[str, Any]) -> "mo_search.SearchPlan | None":
 
 
 _SEARCH_INDEX_READY_PATH: str | None = None
-_SEARCH_INDEX_CHECKED_AT: float = 0.0
+_SEARCH_INDEX_CHECKED_AT: float = float("-inf")  # monotonic; -inf = ещё не проверяли
 SEARCH_INDEX_RECHECK_SEC = float(os.environ.get("MO_SEARCH_INDEX_RECHECK_SEC") or 600)
 
 

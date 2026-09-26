@@ -180,7 +180,7 @@ def test_search_index_is_revalidated_after_ttl(warehouse: Path, monkeypatch) -> 
     # Внутри TTL проверка не повторяется - индекс пуст, остаются только коды и названия МКБ.
     broken = mo_backend.build_cases({**PERIOD, "q": "гипертония", "page_size": "100"})
     assert "h4" not in _ids(broken), _ids(broken)
-    monkeypatch.setattr(mo_backend, "_SEARCH_INDEX_CHECKED_AT", 0.0)
+    monkeypatch.setattr(mo_backend, "_SEARCH_INDEX_CHECKED_AT", float("-inf"))  # TTL истёк
     healed = mo_backend.build_cases({**PERIOD, "q": "гипертония", "page_size": "100"})
     assert set(_ids(healed)) == {"h1", "h2", "h3", "h4"}
 
