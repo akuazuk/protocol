@@ -1,4 +1,4 @@
-"""Smoke: меню 8 видимых пунктов; legacy charts не на hero Сегодня/Период."""
+"""Smoke: меню 11 видимых пунктов без «Ещё»; legacy charts не на hero Обзора."""
 from __future__ import annotations
 
 from pathlib import Path
@@ -12,18 +12,15 @@ def _nav_block() -> str:
     return HTML.split('id="app-nav"')[1].split("</ul>")[0]
 
 
-def test_left_menu_has_exactly_seven_visible_pages() -> None:
+def test_left_menu_has_eleven_visible_pages() -> None:
     nav = _nav_block()
-    visible = [
-        line for line in nav.splitlines()
-        if 'class="nav-button"' in line and "nav-settings" not in line
-    ]
-    # 6 primary + 5 in Ещё; settings stays hidden for accounts admin
+    visible = [line for line in nav.splitlines() if 'class="nav-button"' in line]
+    # 7 рабочих + 4 служебных, включая Справку; ничего не спрятано за «Ещё».
     assert len(visible) == 11
-    for page in ("yesterday", "overview", "queue", "documents", "mis", "doctors", "medications", "labs", "reports", "kp-sync", "rceth-sync"):
+    for page in ("yesterday", "queue", "documents", "mis", "doctors", "medications", "labs", "reports", "kp-sync", "rceth-sync", "settings"):
         assert f'data-page="{page}"' in nav
-    assert 'data-page="settings"' in nav
-    assert 'id="nav-more"' in nav
+    assert 'data-page="overview"' not in nav
+    assert 'id="nav-more"' not in nav
     assert "Безопасность" not in nav
     assert "Специальности" not in nav
 
@@ -58,7 +55,7 @@ def test_today_hero_has_table_and_score_rings() -> None:
 
 
 if __name__ == "__main__":
-    test_left_menu_has_exactly_seven_visible_pages()
+    test_left_menu_has_eleven_visible_pages()
     test_period_hero_keeps_zones_not_heatmap()
     test_today_hero_has_table_and_score_rings()
     print("ok")

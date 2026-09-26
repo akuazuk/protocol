@@ -20,7 +20,7 @@ def test_history_compact_has_timeline_and_statuses() -> None:
 def test_first_contact_is_visible_without_details() -> None:
     chunk = APP.split("function renderHistoryCompact", 1)[1].split("function renderLabReconcile", 1)[0]
     assert "Первый контакт с этим врачом" in chunk
-    assert chunk.find("first_contact") < chunk.find("<details>")
+    assert chunk.find("first_contact") < chunk.find("<details open>")
     assert "patient_id" not in chunk
     assert "К этому врачу:" not in chunk
 

@@ -37,7 +37,9 @@
 
   function themedOption(option, config) {
     option = Object.assign({}, option || {});
-    option.aria = Object.assign({ enabled: true, decal: { show: true } }, option.aria || {});
+    // Штриховка (decal) читается плохо и спорит с палитрой оценки: заливки сплошные,
+    // доступность обеспечивает aria.description и tooltip.
+    option.aria = Object.assign({ enabled: true, decal: { show: false } }, option.aria || {});
     option.animation = !reduceMotion.matches;
     option.animationDuration = reduceMotion.matches ? 0 : 420;
     option.animationEasing = "cubicOut";
@@ -165,6 +167,13 @@
     var centerSub = config.centerSub || "";
     var onSelect = config.onSelect;
     var data = (segments || []).filter(function (s) { return Number(s.value) > 0; });
+    // Центр кольца - короткая подпись: длинный текст режется до 12 знаков и уменьшается,
+    // чтобы не вылезать за внутренний радиус.
+    var centerLabel = String(centerText || "").split("\n")[0] || "-";
+    if (centerLabel.length > 12) centerLabel = centerLabel.slice(0, 11) + "…";
+    var centerSize = centerLabel.length <= 4 ? 24 : (centerLabel.length <= 7 ? 18 : 13);
+    var displayFont = token("--font-display", "Avenir Next, Avenir, Helvetica Neue, sans-serif");
+    var uiFont = token("--font-ui", "Avenir Next, Avenir, Helvetica Neue, sans-serif");
     if (!element) return null;
     if (!data.length) {
       element.innerHTML = '<p class="empty">' + (config.emptyText || "Нет данных") + "</p>";
@@ -211,9 +220,9 @@
         left: "center",
         top: centerSub ? "38%" : "42%",
         style: {
-          text: String(centerText || "").split("\n")[0] || "-",
+          text: centerLabel,
           fill: token("--ink", "#1c2430"),
-          font: "700 22px Avenir Next, Avenir, Helvetica Neue, sans-serif",
+          font: "700 " + centerSize + "px " + displayFont,
           align: "center",
           verticalAlign: "middle"
         }
@@ -224,7 +233,7 @@
         style: {
           text: String(centerSub),
           fill: token("--muted", "#5b6f6a"),
-          font: "500 11px Avenir Next, Avenir, Helvetica Neue, sans-serif",
+          font: "500 11px " + uiFont,
           align: "center",
           verticalAlign: "middle"
         }

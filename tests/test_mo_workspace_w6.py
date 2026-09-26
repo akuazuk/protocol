@@ -38,8 +38,8 @@ def test_family_clicks_set_finding_codes() -> None:
     assert "function navigateFamilyCode(family, codes, sourceLabel)" in APP
 
 
-def test_column_checkboxes_start_collapsed() -> None:
-    assert '<details class="column-all"><summary>Все колонки</summary>' in APP
+def test_column_checkboxes_visible_in_manager() -> None:
+    assert '<details open class="column-all"><summary>Все колонки</summary>' in APP
     assert 'data-preset="work"' in APP
     assert 'data-preset="review"' in APP
 

@@ -110,7 +110,9 @@ test('E22: keyboard, viewport matrix, zoom and long text stay usable', async ({ 
     );
     expect(navLabels.length).toBeGreaterThanOrEqual(5);
     expect(navLabels).toEqual(expect.arrayContaining(["Обзор", "Найти МО", "Врачи", "Лекарства", "Анализы"]));
-    await expect(page.locator("#nav-more > summary")).toBeVisible();
+    // Меню плоское: «Ещё» нет, служебные пункты и Справка видны на любой ширине.
+    expect(navLabels).toEqual(expect.arrayContaining(["Очередь разбора", "Отчёты", "Справка"]));
+    await expect(page.locator("#app-nav")).not.toContainText("Ещё");
     const filters = page.locator('#filters-panel > summary');
     await filters.focus();
     await page.keyboard.press('Enter');
