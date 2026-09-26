@@ -1253,6 +1253,15 @@ def _cases_sql_pageable(params: dict[str, Any]) -> bool:
 
 
 def _warehouse_count(params: dict[str, Any]) -> int:
+    plan = _search_plan(params)
+    if plan is not None and not plan.is_empty:
+        # При поиске итог = сумма счётчиков чипов: один GROUP BY вместо COUNT + GROUP BY,
+        # счётчики переиспользует _search_plan_payload.
+        counts = params.get("_search_chip_counts")
+        if not isinstance(counts, dict):
+            counts = _search_chip_counts_sql(params, plan)
+            params["_search_chip_counts"] = counts
+        return int(sum(counts.values()))
     where, values = _warehouse_where(params)
     sql = """
         SELECT COUNT(*) FROM fact_mo_case c
@@ -2122,7 +2131,8 @@ def _search_plan_payload(
                 if chip:
                     counts[chip] = counts.get(chip, 0) + 1
         elif _backend_source() == "warehouse":
-            counts = _search_chip_counts_sql(params, plan)
+            cached = params.get("_search_chip_counts")
+            counts = cached if isinstance(cached, dict) else _search_chip_counts_sql(params, plan)
     except (sqlite3.Error, ValueError, TypeError):
         _LOG.warning("Счётчики чипов поиска не посчитаны", exc_info=True)
         counts = {}

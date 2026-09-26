@@ -185,6 +185,14 @@ def test_search_index_is_revalidated_after_ttl(warehouse: Path, monkeypatch) -> 
     assert set(_ids(healed)) == {"h1", "h2", "h3", "h4"}
 
 
+def test_total_equals_sum_of_chip_counts(warehouse: Path) -> None:
+    result = mo_backend.build_cases({**PERIOD, "q": "гипертония", "page_size": "2"})
+    chips = {chip["id"]: chip["count"] for chip in result["search_plan"]["chips"]}
+    assert result["total"] == sum(chips.values()) == 4
+    assert len(result["rows"]) == 2, "страница режется LIMIT, итог - из счётчиков чипов"
+    assert not any(str(k).startswith("_") for k in result["applied_filters"]), "внутренние кэши плана и счётчиков не уходят в API"
+
+
 def test_identity_lookup_still_wins_over_text_plan(warehouse: Path) -> None:
     result = mo_backend.build_cases({**PERIOD, "q": "5000", "page_size": "100"})
     assert _ids(result) == ["h1"]
