@@ -1819,11 +1819,12 @@ tr.reg55-row--measures > td { background: rgba(194, 120, 3, 0.05); }
 @media (max-width: 240px) {
   .drawer-head {
     display: grid;
-    grid-template-columns: minmax(0, 1fr) 32px;
+    grid-template-columns: minmax(0, 1fr) auto;
     gap: 4px;
     padding: 10px;
   }
-  .drawer-head > div { min-width: 0; }
+  .drawer-head > div { min-width: 0; overflow-wrap: anywhere; }
+  .drawer-head h2 { font-size: 16px; }
   .drawer-head #drawer-close {
     min-width: 0;
     height: 32px;
