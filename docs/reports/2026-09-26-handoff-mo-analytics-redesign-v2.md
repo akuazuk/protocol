@@ -5,6 +5,7 @@
 Ветка: `cursor/mo-analytics-redesign-v2-pc1`
 Worktree: `/Users/pavelkuzauka/Cursor_Folders/Protocol-worktrees/mo-analytics-redesign-v2`
 База: `origin/main` `0bb084cf`
+HEAD: `0b2bd559`, PR: https://github.com/akuazuk/protocol/pull/295 (docs only)
 Прод на момент аудита: `8000354f`, `2026-09-21-184253Z-warehouse-lock-alerts`
 Merge / deploy в этой сессии: **нет**. Код не менялся, только docs.
 
