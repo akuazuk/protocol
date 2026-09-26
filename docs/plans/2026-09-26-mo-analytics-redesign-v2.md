@@ -574,6 +574,34 @@ document_kind='clinical_visit' and zone1_band is not null group by 1` даёт �
 
 Не делать: LLM-judge за январь-июнь (расход Gemini), полный `rewrite deep` истории.
 
+**Статус C (2026-09-26, PR `cursor/mo-redesign-c-backfill-pc1`, `cursor/icd-lexicon-perf-pc1`):**
+
+- Код: `deploy/gcp-app/mo_backfill_range.sh` (по дням от июня к январю, тот же путь,
+  что ночной `score_inbound_day.sh`, `nice 15`, 2 воркера, resume по маркерам
+  `state/mo_backfill_done_<день>`, пауза на окно 01:00-04:45 UTC и живой
+  `gce-night.lock`, мягкий стоп `state/mo_backfill_stop`, прогресс
+  `state/mo_backfill_range.json`); пресет `ytd` («С начала года») в `resolve_periods`
+  и UI; `/timeseries` `granularity=auto` (день ≤ 62 дней, неделя ≤ 190, дальше месяц).
+- Замер одного дня на GCE (`2026-06-25`, 470 строк → 383 случая): export 1 мин,
+  скоринг 28 мин (`ThreadPoolExecutor` под GIL - фактически одно ядро), а
+  `recompute_mo_days.py` за один день > 27 мин: `py-spy` показал весь стек в
+  `icd_mkb._lexicon_score_one_row` - лексический подбор МКБ для protocol suggest
+  перебирал 15 157 строк справочника на каждый запрос. Исправлено точным
+  предфильтром (`_row_may_score`, PR `cursor/icd-lexicon-perf-pc1`): тот же результат
+  на 239 текстах, 10,9× быстрее. Полный диапазон январь-июнь (~76 000 строк) до
+  этого стоил бы ~5-6 суток; после merge перф-PR - перемерить день и записать сюда.
+- Серверные тайминги окна 9 месяцев на проде до волны B (для порогов п. 4):
+  `/score-dashboard` 4,0 с (Python-очередь `_queue_bands_by_visit`), `/drugs-labs-kpis`
+  12-14 с, `/cases queue_only` 56 с (в B уходит в SQL), `/facets` 49 с (в B - SQL),
+  `/overview` 123 с (используется только legacy-страницей «Период»; в F1 заменяется
+  `/overview/charts`). Пороги ≤ 2 с на окне «С начала года» закрываются волнами B, F1,
+  F4/F5 - не одним пресетом.
+- Не сделано: сам прогон январь-июнь (запускается координатором после деплоя
+  перф-PR: `nohup bash /opt/protocol/deploy/gcp-app/mo_backfill_range.sh 2026-01-01
+  2026-06-30 >> /var/data/medical_exams/logs/gce-mo-backfill.log 2>&1 &`), финальный
+  `recompute` истории пациентов после всех месяцев, п. 5 (лаборатория с 2025-12 -
+  волна G/F5).
+
 ### D. Умный поиск (backend `clinical_knowledge/mo_search.py` - новый модуль; UI чипы)
 
 Конвейер `expand_query(q) → SearchPlan`:
