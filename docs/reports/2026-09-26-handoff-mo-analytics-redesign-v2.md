@@ -1,4 +1,4 @@
-# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C в проде
+# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C в проде; D merged, релиз 4 откачен
 
 Дата: 2026-09-26 (вечер UTC)
 План: `docs/plans/2026-09-26-mo-analytics-redesign-v2.md` (active; журнал релизов - §6b,
@@ -10,7 +10,7 @@
 Директива владельца: «Все подтверждаю работай автономно и все реализуй по плану». Режим:
 одна волна = один PR (Bugbot по diff до merge) = merge после зелёного CI = релиз
 `deploy_to_gce.sh` = приёмка (version/health, проба таймингов на GCE, DOM-аудит,
-сценарии) = запись в план. Откат - предыдущий образ по SHA; откатов не было.
+сценарии) = запись в план. Откат - предыдущий образ по SHA; один откат (релиз 4, см. ниже).
 
 ## Сделано (факты)
 
@@ -25,6 +25,9 @@
 | perf ICD 2 (индекс `ru_title`, блоб кандидатов) | #302 | `262c5758` | 4745229c |
 | C данные с 1 января (runner, YTD, granularity) | #300 | `4745229c` | релиз 3, 15:55 UTC |
 | T проба `sort_by=overall` | #303 | `fb80f2ce` | не требует релиза |
+| handoff + журнал релизов | #304 | `4ba84da3` | docs |
+| D умный поиск | #305 | `caa79964` | релиз 4 17:40 UTC `PUBLIC_OK`, **откачен 17:48** на `4745229c` |
+| D perf: FTS5 вместо LIKE (fix отката) | #306 | - | PR открыт, CI + Bugbot; ветка `cursor/mo-search-perf-pc1` |
 
 Приёмка релизов (все `PUBLIC_OK`, `/health/live` ok):
 
@@ -40,6 +43,21 @@
   без горизонтального overflow на 740-1440 (Playwright, mock API); YTD-тайминги на GCE:
   `/cases` 0,72 с, `/summary` 1,4 с, `/facets` 2,6 с (first), `/score-dashboard` 5,4 с,
   `/drugs-labs-kpis` 9,7 с - закрываются F1/F4/F5 (SQL-агрегаты вместо Python-очереди).
+- caa79964 (релиз 4, **откачен**): функционально верно - `гипертония` за месяц 257
+  (фраза 15 / синонимы 174 / коды по названию 68), `I10` 0,39 с, `/search/plan` работает;
+  но текстовый поиск 11,5 с за месяц и 70 с за YTD (цель ≤ 1 с), первый запрос приёмки
+  ушёл в таймаут 60 с. Откат вручную по runbook §5: `docker inspect` -> тот же набор
+  `-v/-e`, образ `protocol-gcp-app:4745229c642d`, `GIT_COMMIT_SHA` предыдущего релиза
+  (первый запуск скопировал `GIT_COMMIT_SHA` нового релиза - `/api/version` показывал
+  чужой SHA, перезапущено с правильным). Проверено: `version` = `…mo-wave-c-weighted-axes`,
+  `git_commit` = `4745229c`, `/health/live` ok.
+
+Причина и исправление (PR #306): LIKE с цепочками REPLACE × 3 регистра × до 12 синонимов
+повторялись в WHERE, ORDER BY, COUNT и GROUP BY чипов - четыре прохода по 121 тыс. строк.
+Теперь FTS5 `fact_mo_case_search` (триггеры на `fact_mo_case`, пересборка при расхождении,
+создаётся при первом поиске после релиза), коды - `GLOB`, название/врач - подзапросы по
+dim-таблицам. Синтетика 120 тыс. строк: 0,5-1,1 с на запрос. FTS5 есть в контейнере (3.46)
+и в `/opt/protocol/venv-mis` (3.40) - триггеры безопасны для ночного конвейера.
 
 Прочее, сделанное на GCE руками координатора (не в git):
 
@@ -73,7 +91,12 @@
 
 - Финальный `recompute` истории пациентов после всех месяцев; п. 5 волны C (лаборатория
   с 2025-12) - в G/F5.
-- Волны D, J, F1-F7, G, K, H1/I, H2/H3 - не начаты.
+- Приёмка волны D на проде (пороги §D плана, p95 ≤ 1 с) - после релиза 5 (#306).
+  Скрипт приёмки: `/tmp/mo_wave/search_accept.py` на Mac, копия `/tmp/search_accept.py` на VM
+  (`export METHODIST_TOKEN=…; python3 /tmp/search_accept.py --base http://127.0.0.1:8000`).
+- Шаг 8 волны D (эмбеддинги «похожие») - после F. Ревью словаря `dx_aliases_ru.json`
+  врачом - долг H1.
+- Волны J, F1-F7, G, K, H1/I, H2/H3 - не начаты.
 - Скриншоты прода с ФИО врачей в git не кладутся.
 
 ## Следующий безопасный шаг
@@ -84,9 +107,12 @@
 gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo tail -5 /var/data/medical_exams/logs/gce-mo-backfill.log; sudo cat /var/data/medical_exams/state/mo_backfill_range.json | tail -20'
 ```
 
-2. Волна D: `scripts/ops/git_task_start.sh mo-redesign-d-search --pc=pc1 --branch=cursor/mo-redesign-d-search-pc1`
-   (новый модуль `clinical_knowledge/mo_search.py`, алиасы в `data/icd_reference/dx_aliases_ru.json`
-   через `clinical_knowledge/mo_icd_aliases.py`, `tests/test_mo_search_golden.py`).
+2. Дождаться зелёного CI и Bugbot по #306, `gh pr merge 306 --squash --delete-branch`,
+   затем релиз 5 из нового detached worktree на `origin/main` (`.env` симлинк), между днями
+   backfill. После `PUBLIC_OK` - приёмка `/tmp/search_accept.py` на VM; если p95 > 1 с или
+   ложные срабатывания - откат на `4745229c642d` тем же способом.
+3. Прод сейчас на образе релиза 3 (`4745229c642d`), а `origin/main` уже содержит D
+   (`caa79964`): не деплоить `origin/main` без #306.
 
 ## Базовые цифры утреннего аудита (PR #295, прод `8000354f`) - для сравнения
 

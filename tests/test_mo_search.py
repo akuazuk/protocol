@@ -57,8 +57,10 @@ def test_icd_code_query_has_no_text_stems_or_doctor_chip() -> None:
     parts = ms.sql_parts(plan)
     assert set(parts) == {ms.CHIP_ICD}
     clause, values = parts[ms.CHIP_ICD]
-    assert "diagnosis_code" in clause and values == ["K297%"]
-    assert "Гипертон" in str(ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_PHRASE][1]), "регистр кириллицы"
+    assert "diagnosis_code GLOB" in clause and values == ["K29.7*"]
+    phrase_values = ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_PHRASE][1]
+    assert phrase_values[0] == '"гипертон"*', "текст - через FTS MATCH по началу слова"
+    assert "Гипертон" in str(phrase_values[1:]), "регистр кириллицы для LIKE по названиям МКБ"
 
 
 def test_aliases_dictionary_is_large_and_consistent() -> None:
@@ -156,6 +158,8 @@ def _mini_warehouse(path: Path) -> None:
             INSERT INTO dim_diagnosis VALUES ('I10','Эссенциальная гипертензия'),('H52.1','Миопия');
             """
         )
+        status = ms.ensure_search_index(conn)
+        assert status == {"rows": 9, "rebuilt": True}
 
 
 def _run(path: Path, q: str, disabled: str = "") -> list[tuple[str, int]]:
@@ -249,6 +253,35 @@ def test_fuzzy_is_per_token_even_when_other_word_gives_codes() -> None:
     assert plan.fuzzy and plan.fuzzy[0]["suggestion"] == "ринит", plan.fuzzy
     plan = ms.expand_query("острая респираторнная")
     assert plan.fuzzy and plan.fuzzy[0]["suggestion"].startswith("респираторн"), plan.fuzzy
+
+
+def test_search_index_follows_writes_and_rebuilds_when_inconsistent(tmp_path: Path) -> None:
+    db = tmp_path / "w.sqlite"
+    _mini_warehouse(db)
+    with sqlite3.connect(db) as conn:
+        assert ms.ensure_search_index(conn) == {"rows": 9, "rebuilt": False}, "согласованный индекс не пересобирается"
+        # Триггеры: вставка, обновление текста, удаление.
+        conn.execute("INSERT INTO fact_mo_case VALUES ('10','10','2026-09-02','H52.1','Близорукость обоих глаз','d1')")
+        conn.execute("UPDATE fact_mo_case SET diagnosis_text='Ёжик: гипертонический криз' WHERE mis_id='3'")
+        conn.execute("DELETE FROM fact_mo_case WHERE mis_id='6'")
+        conn.commit()
+    assert "10" in {m for m, _r in _run(db, "близорукость")}
+    assert "3" in {m for m, _r in _run(db, "ежик")}, "ё в тексте = е в запросе"
+    assert "3" in {m for m, _r in _run(db, "гипертония")}
+    assert {m for m, _r in _run(db, "орви")} == set()
+    # Рассинхрон (например, после VACUUM или записи без триггеров) - пересборка.
+    with sqlite3.connect(db) as conn:
+        conn.execute(f"DELETE FROM {ms.FTS_TABLE} WHERE rowid IN (SELECT rowid FROM fact_mo_case WHERE mis_id='1')")
+        conn.commit()
+        assert ms.ensure_search_index(conn)["rebuilt"] is True
+    assert "1" in {m for m, _r in _run(db, "гипертензия")}
+
+
+def test_fts_query_only_accepts_plain_tokens() -> None:
+    assert ms.fts_query(["гипертон", "i10"], ["аг"]) == '"гипертон"* AND "i10"* AND "аг"'
+    assert ms.fts_query(['x" OR 1=1', "ok"]) == '"ok"*', "токены с кавычками и пробелами отбрасываются"
+    inline = ms.sql_rank_inline(ms.expand_query("гипертония"))
+    assert "MATCH '" in inline and "'\"гипертон\"*" in inline
 
 
 def test_suggest_returns_aliases_words_and_typos() -> None:

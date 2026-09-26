@@ -959,10 +959,43 @@ def _search_plan(params: Mapping[str, Any]) -> "mo_search.SearchPlan | None":
     return plan
 
 
+_SEARCH_INDEX_READY_PATH: str | None = None
+_SEARCH_INDEX_CHECKED_AT: float = float("-inf")  # monotonic; -inf = ещё не проверяли
+SEARCH_INDEX_RECHECK_SEC = float(os.environ.get("MO_SEARCH_INDEX_RECHECK_SEC") or 600)
+
+
+def _ensure_search_index(*, force: bool = False) -> None:
+    """FTS-индекс текста диагнозов (`fact_mo_case_search`) для SQL-поиска.
+
+    При первом поиске в процессе и затем не чаще раза в `SEARCH_INDEX_RECHECK_SEC`
+    (по умолчанию 10 мин): создать таблицу/триггеры, сверить с fact_mo_case (счётчик +
+    JOIN по rowid/mis_id, ~0,15 с на 120 тыс. строк) и пересобрать при расхождении -
+    так долгоживущий воркер сам лечит индекс после подмены файла склада или сбоя
+    триггеров. Между проверками индекс поддерживают триггеры на fact_mo_case."""
+    global _SEARCH_INDEX_READY_PATH, _SEARCH_INDEX_CHECKED_AT
+    if _backend_source() != "warehouse":
+        return
+    path_key = str(_db_path().resolve())
+    now = time.monotonic()
+    if (
+        not force
+        and _SEARCH_INDEX_READY_PATH == path_key
+        and now - _SEARCH_INDEX_CHECKED_AT < SEARCH_INDEX_RECHECK_SEC
+    ):
+        return
+    with closing(_connect()) as conn:
+        status = mo_search.ensure_search_index(conn)
+    if status.get("rebuilt"):
+        _LOG.info("FTS-индекс поиска МО пересобран: rows=%s", status.get("rows"))
+    _SEARCH_INDEX_READY_PATH = path_key
+    _SEARCH_INDEX_CHECKED_AT = now
+
+
 def _warehouse_text_q_clause(q_text: str, params: Mapping[str, Any] | None = None) -> tuple[str, list[Any]]:
     plan = _search_plan(params) if params is not None else mo_search.expand_query(q_text)
     if plan is None:
         plan = mo_search.expand_query(q_text)
+    _ensure_search_index()
     return mo_search.sql_clause(plan)
 
 
