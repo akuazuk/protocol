@@ -65,7 +65,7 @@
     };
     var EXPERT_PAGES = { yesterday: true, reports: true };
     var state = {
-      page: "yesterday", period: "yesterday", compare: "previous", methodology: "v4", pageNo: 1, dateFrom: "", dateTo: "", search: "", findingCode: "", findingFamily: "", rubricCriterion: "",
+      page: "yesterday", period: "yesterday", compare: "previous", methodology: "v4", pageNo: 1, dateFrom: "", dateTo: "", search: "", searchOff: [], findingCode: "", findingFamily: "", rubricCriterion: "",
       reg55Band: "", reg55Pack: "", icdVisitStatus: "",
       sortBy: "date", sortDir: "desc",
       zoneFilter: "", zoneBandFilter: "", overallGrade: "", attentionOnly: false, shadowAttentionOnly: false, kpStatus: "", historyTier: "",
@@ -579,6 +579,7 @@
       else if (visitMatch) q.set("visit_id", visitMatch[1]);
       else if (looksLikeIcd(searchRaw)) q.set("icd", searchRaw.toUpperCase());
       else if (searchRaw) q.set("q", searchRaw);
+      if (q.has("q") && state.searchOff.length) q.set("search_off", state.searchOff.join(","));
       if (state.queueOnly) q.set("queue_only", "1");
       if (state.queueBand) q.set("queue_band", state.queueBand);
       if (state.findingCode) q.set("finding_codes", state.findingCode);
@@ -611,7 +612,7 @@
       [
         "statuses", "finding_family", "finding_codes", "queue_only", "queue_band",
         "zone", "zone_band", "attention_only", "shadow_attention_only", "kp_status",
-        "q", "icd", "history_tier", "reg55_point", "reg55_band", "reg55_pack",
+        "q", "icd", "search_off", "history_tier", "reg55_point", "reg55_band", "reg55_pack",
         "worst_severity", "icd_visit_status"
       ].forEach(function (key) { q.delete(key); });
       extra = extra || {};
@@ -923,6 +924,7 @@
     }
     function clearCaseSearch() {
       state.search = "";
+      state.searchOff = [];
       $("case-search").value = "";
       $("search-suggestions").hidden = true;
       $("case-search").setAttribute("aria-expanded", "false");
@@ -1391,6 +1393,7 @@
       state.compare = q.get("compare_period") || "previous";
       state.dateFrom = q.get("date_from") || ""; state.dateTo = q.get("date_to") || "";
       state.search = q.get("q") || q.get("icd") || "";
+      state.searchOff = String(q.get("search_off") || "").split(",").filter(function (chip) { return /^[a-z_]+$/.test(chip); });
       state.queueOnly = q.get("queue_only") === "1" || q.get("queue_only") === "true";
       state.queueBand = (q.get("queue_band") || "").trim().toLowerCase();
       state.findingCode = q.get("finding_codes") || "";
@@ -2764,6 +2767,7 @@
           banner.innerHTML = "<b>Найти МО</b> · " + esc(data.total || rows.length) + " записей. " + esc(scopeNote);
         }
       }
+      if (!queue) renderSearchPlan(data.search_plan, rows.length);
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
         '<tr><td colspan="' + (queue ? 14 : 12) + '" class="empty"><b>' +
         esc(emptyTitle) + "</b><div>" +
@@ -6957,13 +6961,54 @@
       params.set("q", term);
       if (state.dateFrom) params.set("date_from", state.dateFrom);
       if (state.dateTo) params.set("date_to", state.dateTo);
-      rawRequest("/dx-suggest?" + params.toString(), "/dx-suggest?" + params.toString()).then(function (response) {
+      var suggestPath = "/search/suggest?" + params.toString();
+      rawRequest(suggestPath, suggestPath).then(function (response) {
         if (suggestSeq !== renderSearchSuggestions.seq || !response.ok) return null;
         return response.json();
       }).then(function (data) {
         if (!data || suggestSeq !== renderSearchSuggestions.seq) return;
-        paint(data.items || []);
+        paint((data.items || []).map(function (item) {
+          return { label: item.label, value: item.value || item.label, type: SEARCH_SUGGEST_KINDS[item.kind] || item.kind || "" };
+        }));
       }).catch(function () {});
+    }
+    var SEARCH_SUGGEST_KINDS = {
+      alias: "сокращение", synonym: "синоним", dx: "диагноз", word: "термин", typo: "возможно, вы имели в виду"
+    };
+    function renderSearchPlan(plan, rowCount) {
+      var form = $("case-search-form");
+      if (!form) return;
+      var host = $("search-plan");
+      if (!host) {
+        host = document.createElement("div");
+        host.id = "search-plan";
+        host.className = "search-plan";
+        host.setAttribute("aria-live", "polite");
+        form.insertAdjacentElement("afterend", host);
+      }
+      var chips = plan && Array.isArray(plan.chips) ? plan.chips : [];
+      if (!plan || !chips.length) {
+        host.hidden = true;
+        host.innerHTML = "";
+        return;
+      }
+      host.hidden = false;
+      host.innerHTML = '<span class="search-plan-title">Нашли по:</span>' + chips.map(function (chip) {
+        var count = chip.count === null || chip.count === undefined ? "" : ' <b>' + esc(chip.count) + "</b>";
+        var off = chip.enabled === false;
+        return '<button type="button" class="search-chip' + (off ? " is-off" : "") + '" data-search-chip="' + esc(chip.id) +
+          '" aria-pressed="' + (off ? "false" : "true") + '" title="' + (off ? "Включить этот способ поиска" : "Отключить этот способ поиска") + '">' +
+          esc(chip.label) + count + "</button>";
+      }).join("") + (rowCount === 0 ? '<span class="search-plan-hint">Ничего не нашли - попробуйте включить отключённые способы или уточнить запрос.</span>' : "");
+      host.querySelectorAll("[data-search-chip]").forEach(function (button) {
+        button.addEventListener("click", function () {
+          var id = button.getAttribute("data-search-chip");
+          var index = state.searchOff.indexOf(id);
+          if (index >= 0) state.searchOff.splice(index, 1);
+          else state.searchOff.push(id);
+          filtersChanged();
+        });
+      });
     }
     function setFilterDraftValue(key, value) {
       var filterPanel = $("filters-panel");
@@ -7126,7 +7171,9 @@
       syncOverviewGrain();
       $("case-search-form").addEventListener("submit", function (event) {
         event.preventDefault();
-        state.search = $("case-search").value.trim();
+        var nextSearch = $("case-search").value.trim();
+        if (nextSearch !== state.search) state.searchOff = [];
+        state.search = nextSearch;
         $("search-suggestions").hidden = true;
         $("case-search").setAttribute("aria-expanded", "false");
         showToast(state.search ? "Поиск применён: " + state.search : "Поиск очищен");
