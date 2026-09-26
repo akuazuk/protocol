@@ -704,15 +704,63 @@ def lab_timeline(
     return points
 
 
+_JOB_ERROR_RU: dict[str, str] = {
+    "visit_not_found_in_mis_protocol": (
+        "В МИС по этому визиту нет консультативного заключения: это процедура, анализ "
+        "или пустой документ, оценивать нечего."
+    ),
+    "docker_score_failed": "Оценка внутри protocol-web не выполнилась; см. лог очереди на GCE.",
+    "mis_unavailable": "МИС недоступна с GCE; повторите позже.",
+}
+
+
+def job_error_ru(error: str) -> str:
+    """Человеческое объяснение кода ошибки очереди (код:детали → текст)."""
+    code = str(error or "").split(":", 1)[0].strip()
+    if not code:
+        return ""
+    for key, text in _JOB_ERROR_RU.items():
+        if code == key or code.startswith(key):
+            return text
+    return "Разбор визита не удался: " + str(error)[:160]
+
+
+def job_status_ru(status: str, *, age_sec: float | None = None) -> str:
+    if status == "queued":
+        if age_sec is not None and age_sec > 120:
+            return "В очереди дольше 2 минут: воркер очереди на GCE не работает или МИС недоступна."
+        return "В очереди: воркер заберёт визит в течение нескольких секунд."
+    if status == "running":
+        return "Выгружаем из МИС и оцениваем."
+    if status == "done":
+        return "Визит в аналитике."
+    if status == "error":
+        return "Ошибка."
+    return ""
+
+
 def _job_public(row: Mapping[str, Any] | sqlite3.Row) -> dict[str, Any]:
     data = dict(row)
+    status = str(data.get("status") or "")
+    created = str(data.get("created_at") or "")
+    age_sec: float | None = None
+    if created:
+        try:
+            created_dt = datetime.fromisoformat(created.replace("Z", "+00:00"))
+            age_sec = max(0.0, (datetime.now(timezone.utc) - created_dt).total_seconds())
+        except ValueError:
+            age_sec = None
+    error = str(data.get("error") or "")
     return {
         "job_id": str(data.get("job_id") or ""),
         "visit_id": str(data.get("visit_id") or ""),
-        "status": str(data.get("status") or ""),
+        "status": status,
+        "status_ru": job_status_ru(status, age_sec=age_sec),
         "case_id": str(data.get("case_id") or ""),
-        "error": str(data.get("error") or ""),
-        "created_at": str(data.get("created_at") or ""),
+        "error": error,
+        "error_ru": job_error_ru(error) if status == "error" else "",
+        "age_sec": int(age_sec) if age_sec is not None else None,
+        "created_at": created,
         "updated_at": str(data.get("updated_at") or ""),
         "engine": ENGINE,
     }

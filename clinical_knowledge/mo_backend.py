@@ -3,12 +3,15 @@ from __future__ import annotations
 
 import csv
 import calendar
+import copy
 import json
 import logging
 import os
 import re
 import sqlite3
 import statistics
+import threading
+import time
 import uuid
 from collections import Counter
 from contextlib import closing, suppress
@@ -102,6 +105,11 @@ CRM_STATUSES = frozenset(
 CRM_ROLES = frozenset({"methodist", "lead", "admin", "expert"})
 _CRM_MIGRATED = False
 _WAREHOUSE_SCHEMA_READY_PATH: str | None = None
+# Кэш тяжёлых сводок (freshness, facets): ключ включает отпечаток файла витрины
+# и её WAL, поэтому ночная запись или догрузка случая сбрасывают его сами.
+_RESULT_CACHE: dict[str, tuple[float, str, Any]] = {}
+_RESULT_CACHE_LOCK = threading.Lock()
+_RESULT_CACHE_MAX = 256
 _HEX_ID_RX = re.compile(r"^[a-f0-9]{32,64}$", re.IGNORECASE)
 _ICD_CODE_RX = re.compile(r"^[A-Za-zА-Яа-я]\d{2}(?:\.\d{1,2})?$")
 
@@ -145,6 +153,58 @@ def _db_path() -> Path:
         if root.parent.is_dir() and os.access(root.parent, os.W_OK):
             return warehouse / "mo_analytics.sqlite"
     return ROOT / "data" / "medical_exams" / "warehouse" / "mo_analytics.sqlite"
+
+
+def _warehouse_stamp() -> str:
+    """Отпечаток витрины: mtime и размер основного файла и WAL."""
+    parts: list[str] = []
+    base = _db_path()
+    for path in (base, Path(str(base) + "-wal")):
+        try:
+            st = path.stat()
+        except OSError:
+            parts.append("-")
+            continue
+        parts.append(f"{st.st_mtime_ns}:{st.st_size}")
+    return "|".join(parts)
+
+
+def _cache_key(name: str, params: Mapping[str, Any] | None) -> str:
+    public = {
+        str(k): v
+        for k, v in (params or {}).items()
+        if not str(k).startswith("_") and v not in (None, "", [], False)
+    }
+    return name + "|" + json.dumps(public, ensure_ascii=False, sort_keys=True, default=str)
+
+
+def _cached_result(name: str, params: Mapping[str, Any] | None, ttl_sec: float, producer):
+    """Вернуть результат producer() из кэша, если витрина не менялась и TTL не истёк."""
+    if ttl_sec <= 0 or str(os.environ.get("MO_RESULT_CACHE") or "1").strip().lower() in {"0", "off", "false"}:
+        return producer()
+    key = _cache_key(name, params)
+    stamp = _warehouse_stamp()
+    now = time.monotonic()
+    with _RESULT_CACHE_LOCK:
+        hit = _RESULT_CACHE.get(key)
+    if hit and hit[1] == stamp and now - hit[0] < ttl_sec:
+        return copy.deepcopy(hit[2])
+    value = producer()
+    # Отпечаток берём после вычисления: первое подключение процесса само
+    # инициализирует схему CRM и меняет WAL, иначе следующий вызов промахнётся.
+    stamp = _warehouse_stamp()
+    with _RESULT_CACHE_LOCK:
+        if len(_RESULT_CACHE) >= _RESULT_CACHE_MAX:
+            oldest = sorted(_RESULT_CACHE.items(), key=lambda kv: kv[1][0])[: _RESULT_CACHE_MAX // 4]
+            for old_key, _ in oldest:
+                _RESULT_CACHE.pop(old_key, None)
+        _RESULT_CACHE[key] = (now, stamp, copy.deepcopy(value))
+    return value
+
+
+def _result_cache_clear() -> None:
+    with _RESULT_CACHE_LOCK:
+        _RESULT_CACHE.clear()
 
 
 def _legacy_crm_paths() -> list[Path]:
@@ -243,6 +303,35 @@ def _warehouse_has_column(db_path: str, table: str, column: str) -> bool:
         try:
             cols = {row[1] for row in conn.execute(f"PRAGMA table_info({table})")}
             return column in cols
+        finally:
+            conn.close()
+    except sqlite3.Error:
+        return False
+
+
+@lru_cache(maxsize=8)
+def _warehouse_slim_columns(db_path: str) -> tuple[str, ...]:
+    """Колонки fact_mo_case без *_json (для light-чтения)."""
+    try:
+        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=5)
+        try:
+            cols = [str(row[1]) for row in conn.execute("PRAGMA table_info(fact_mo_case)")]
+        finally:
+            conn.close()
+    except sqlite3.Error:
+        return ()
+    slim = tuple(name for name in cols if not name.endswith("_json"))
+    return slim if slim and len(slim) < len(cols) else ()
+
+
+def _warehouse_has_table(db_path: str, table: str) -> bool:
+    try:
+        conn = sqlite3.connect(f"file:{db_path}?mode=ro", uri=True, timeout=5)
+        try:
+            row = conn.execute(
+                "SELECT 1 FROM sqlite_master WHERE type='table' AND name=?", (table,)
+            ).fetchone()
+            return row is not None
         finally:
             conn.close()
     except sqlite3.Error:
@@ -461,15 +550,53 @@ def _describe_empty_state(*, total_records: int, filtered_records: int, params: 
     return {"reason_code": "ok", "title": "", "hint": ""}
 
 
+def _freshness_counts_sql(params: dict[str, Any]) -> tuple[int, int, str, str]:
+    """(всего в срезе периода, после фильтров, max дата в фильтре, max дата в срезе) одним SQL.
+
+    Раньше freshness поднимал все строки месяца в Python (3-9 с на проде) только ради
+    двух дат и двух счётчиков.
+    """
+    period_only = {
+        key: params.get(key)
+        for key in ("date_from", "date_to", "periods", "period", "month")
+        if params.get(key) not in (None, "")
+    }
+    base_sql = """
+        FROM fact_mo_case c
+        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+    """
+    where_all, values_all = _warehouse_where(period_only)
+    where_f, values_f = _warehouse_where(params)
+    sql_all = "SELECT COUNT(*), COALESCE(MAX(c.visit_date), '')" + base_sql
+    if where_all:
+        sql_all += " WHERE " + " AND ".join(where_all)
+    sql_f = "SELECT COUNT(*), COALESCE(MAX(c.visit_date), '')" + base_sql
+    if where_f:
+        sql_f += " WHERE " + " AND ".join(where_f)
+    with closing(_read_connection()) as conn:
+        total, latest_any = conn.execute(sql_all, values_all).fetchone()
+        filtered, latest = conn.execute(sql_f, values_f).fetchone()
+    return int(total or 0), int(filtered or 0), str(latest or ""), str(latest_any or "")
+
+
 def build_freshness(params: dict[str, Any] | None = None) -> dict[str, Any]:
     params = params or {}
-    records = _records(params)
-    filtered = _filter_records(records, params)
+    return _cached_result("freshness", params, 60.0, lambda: _build_freshness_uncached(params))
+
+
+def _build_freshness_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    if _backend_source() == "warehouse":
+        total_n, filtered_n, latest_case_date, latest_any_case_date = _freshness_counts_sql(params)
+    else:
+        records = _records(params)
+        filtered = _filter_records(records, params)
+        total_n, filtered_n = len(records), len(filtered)
+        latest_case_date = max((str(r.get("date") or "") for r in filtered), default="")
+        latest_any_case_date = max((str(r.get("date") or "") for r in records), default="")
     now_minsk = datetime.now(ZoneInfo("Europe/Minsk"))
     report_payload, report_path = _latest_pipeline_report()
     state_info = _pipeline_state_snapshot()
-    latest_case_date = max((str(r.get("date") or "") for r in filtered), default="")
-    latest_any_case_date = max((str(r.get("date") or "") for r in records), default="")
     report_date = str((report_payload or {}).get("date") or "")
     data_through = max([d for d in (report_date, latest_case_date, latest_any_case_date) if d], default="")
     lag_days: int | None = None
@@ -488,8 +615,8 @@ def build_freshness(params: dict[str, Any] | None = None) -> dict[str, Any]:
     else:
         status = "critical"
     empty_state = _describe_empty_state(
-        total_records=len(records),
-        filtered_records=len(filtered),
+        total_records=total_n,
+        filtered_records=filtered_n,
         params=params,
     )
     return {
@@ -514,8 +641,8 @@ def build_freshness(params: dict[str, Any] | None = None) -> dict[str, Any]:
             }
             for root in _medical_exam_roots()
         ],
-        "filtered_records": len(filtered),
-        "total_records": len(records),
+        "filtered_records": filtered_n,
+        "total_records": total_n,
         "empty_state": empty_state,
         "checked_at": now_minsk.replace(microsecond=0).isoformat(),
     }
@@ -928,7 +1055,114 @@ def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
         marks = ",".join("?" for _ in grades)
         where.append(f"({expr}) IN ({marks})")
         values.extend(grades)
+    statuses = [str(v) for v in _values(params.get("statuses")) if str(v)]
+    if statuses:
+        clause, status_values = _in_clause("c.status", statuses)
+        where.append(clause)
+        values.extend(status_values)
+    chapters = [str(v) for v in _values(params.get("mkb_chapters")) if str(v)]
+    if chapters:
+        clause, chapter_values = _in_clause("COALESCE(c.icd_chapter, '')", chapters)
+        where.append(clause)
+        values.extend(chapter_values)
+    for key, column in (
+        ("exclude_specializations", "COALESCE(d.specialty, c.specialty, '')"),
+        ("exclude_filials", "COALESCE(d.filial, c.filial, '')"),
+        ("exclude_document_kinds", "COALESCE(c.document_kind, '')"),
+    ):
+        excluded = [str(v) for v in _values(params.get(key)) if str(v)]
+        if excluded:
+            marks = ",".join("?" for _ in excluded)
+            where.append(f"{column} NOT IN ({marks})")
+            values.extend(excluded)
+    finding_clause, finding_values = _warehouse_finding_clause(params)
+    if finding_clause:
+        where.append(finding_clause)
+        values.extend(finding_values)
+    if str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}:
+        # Та же логика, что _needs_review + исключение закрытых CRM-статусов,
+        # но в SQL: иначе очередь поднимала весь месяц в Python (5 с на проде).
+        where.append(
+            "("
+            "EXISTS (SELECT 1 FROM fact_mo_finding fq WHERE fq.mis_id = c.mis_id"
+            " AND fq.severity IN ('P0', 'P1'))"
+            " OR (c.overall_pct IS NOT NULL AND c.overall_pct < ?)"
+            " OR c.status = 'manual_review_required'"
+            ")"
+        )
+        values.append(float(_attention_score_cutoff()))
+        if _warehouse_has_table(str(_db_path()), "crm_case_state"):
+            where.append(
+                "COALESCE((SELECT s.status FROM crm_case_state s WHERE s.case_id = "
+                "CAST(CASE WHEN c.visit_id IS NULL OR c.visit_id = '' THEN c.mis_id ELSE c.visit_id END AS TEXT)"
+                "), 'new') NOT IN ('false_positive', 'resolved', 'closed')"
+            )
     return where, values
+
+
+def _warehouse_finding_clause(params: dict[str, Any]) -> tuple[str, list[Any]]:
+    """EXISTS по fact_mo_finding для finding_codes / finding_family (семантика _filter_records)."""
+    finding_codes = {str(v) for v in _values(params.get("finding_codes")) if str(v)}
+    finding_family = str(params.get("finding_family") or "").strip().lower()
+    if finding_family in {"drug", "lab"}:
+        from .mo_finding_families import codes_for_family
+
+        family_codes = {str(v) for v in codes_for_family(finding_family)}
+        if finding_codes:
+            finding_codes = finding_codes & family_codes
+            if not finding_codes:
+                return "1 = 0", []
+        else:
+            finding_codes = set(family_codes)
+    if not finding_codes:
+        return "", []
+    codes = sorted(finding_codes)
+    marks = ",".join("?" for _ in codes)
+    return (
+        f"EXISTS (SELECT 1 FROM fact_mo_finding ff WHERE ff.mis_id = c.mis_id AND ff.finding_code IN ({marks}))",
+        codes,
+    )
+
+
+_SQL_SORT_COLUMNS: dict[str, str] = {
+    "date": "c.visit_date",
+    "overall": "c.overall_pct",
+    "reg55": "c.reg55_section_pct",
+    "doctor": "d.doctor_fio",
+    "specialty": "COALESCE(d.specialty, c.specialty)",
+    "filial": "COALESCE(d.filial, c.filial)",
+    "status": "c.status",
+    "visit_id": "CAST(c.visit_id AS INTEGER)",
+    "zone1": "c.zone1_pct",
+    "zone2a": "c.zone2a_pct",
+    "zone2b": "c.zone2b_pct",
+    "attention": "c.attention_primary",
+    "priority": "(SELECT COUNT(*) FROM fact_mo_finding fp WHERE fp.mis_id = c.mis_id AND fp.severity = 'P0')",
+}
+
+
+def _sql_overall_grade_rank(alias: str = "c") -> str:
+    return (
+        "CASE " + _sql_overall_grade_expr(alias)
+        + " WHEN 'good' THEN 4 WHEN 'fair' THEN 3 WHEN 'poor' THEN 2 WHEN 'important' THEN 1 ELSE 0 END"
+    )
+
+
+def _warehouse_order_sql(params: dict[str, Any]) -> str | None:
+    """ORDER BY для SQL-пейджинга или None, если сортировка не выражается колонками склада."""
+    sort_by = str(params.get("sort_by") or "date")
+    if sort_by == "overall_grade":
+        column = _sql_overall_grade_rank("c")
+    elif sort_by == "reg55" and not _warehouse_has_column(str(_db_path()), "fact_mo_case", "reg55_section_pct"):
+        return None
+    else:
+        column = _SQL_SORT_COLUMNS.get(sort_by)
+    if not column:
+        return None
+    direction = "ASC" if str(params.get("sort_dir") or "desc").lower() == "asc" else "DESC"
+    if sort_by == "date":
+        return f"ORDER BY c.visit_date {direction}, c.mis_id {direction}"
+    return f"ORDER BY {column} {direction} NULLS LAST, c.visit_date DESC, c.mis_id DESC"
 
 
 def _cases_sql_pageable(params: dict[str, Any]) -> bool:
@@ -936,12 +1170,9 @@ def _cases_sql_pageable(params: dict[str, Any]) -> bool:
         return False
     if _identity_lookup(params):
         return False
-    sort_by = str(params.get("sort_by") or "date")
-    if sort_by not in {"", "date"}:
+    if _warehouse_order_sql(params) is None:
         return False
     for key in (
-        "finding_codes",
-        "finding_family",
         "crm_statuses",
         "assignees",
         "icd_visit_status",
@@ -954,8 +1185,6 @@ def _cases_sql_pageable(params: dict[str, Any]) -> bool:
     ):
         if _param_active(params.get(key)):
             return False
-    if str(params.get("queue_only") or "").lower() in {"1", "true", "yes"}:
-        return False
     if str(params.get("shadow_attention_only") or "").lower() in {"1", "true", "yes"}:
         return False
     return True
@@ -980,7 +1209,10 @@ def _warehouse_records(
     *,
     limit: int | None = None,
     offset: int = 0,
+    light: bool = False,
 ) -> list[dict[str, Any]]:
+    """Строки склада. light=True - без разбора JSON-снимка оценки и №55:
+    для фасетов и счётчиков это половина времени на 10 тыс. строк."""
     where, values = _warehouse_where(params)
     has_reg55 = _warehouse_has_column(str(_db_path()), "fact_mo_case", "reg55_section_pct")
     if has_reg55:
@@ -1006,8 +1238,15 @@ def _warehouse_records(
                  GROUP_CONCAT(DISTINCT finding_code) finding_codes
           FROM fact_mo_finding {findings_where} GROUP BY mis_id
     """
+    case_columns = "c.*"
+    if light:
+        # Без тяжёлых JSON-колонок (снимок оценки, №55): фасетам они не нужны,
+        # а читать их для 10 тыс. строк - половина времени запроса.
+        slim = _warehouse_slim_columns(str(_db_path()))
+        if slim:
+            case_columns = ", ".join(f"c.{name}" for name in slim)
     select_sql = f"""
-        SELECT c.*, d.doctor_fio,
+        SELECT {case_columns}, d.doctor_fio,
                COALESCE(d.specialty, c.specialty) AS doctor_specialty,
                COALESCE(d.filial, c.filial) AS doctor_filial,
                COALESCE(NULLIF(dx.diagnosis_label, ''), '') AS diagnosis_label,
@@ -1027,6 +1266,7 @@ def _warehouse_records(
     query_values: list[Any] = list(values)
     if limit is not None:
         where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+        order_sql = _warehouse_order_sql(params) or "ORDER BY c.visit_date DESC, c.mis_id DESC"
         sql = f"""
             WITH page AS (
               SELECT c.mis_id
@@ -1034,15 +1274,15 @@ def _warehouse_records(
               LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
               LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
               {where_sql}
-              ORDER BY c.visit_date DESC, c.mis_id DESC
+              {order_sql}
               LIMIT ? OFFSET ?
             )
         """ + select_sql.replace(
             "{findings_where}",
             "WHERE mis_id IN (SELECT mis_id FROM page)",
-        ) + """
+        ) + f"""
             JOIN page ON page.mis_id = c.mis_id
-            ORDER BY c.visit_date DESC, c.mis_id DESC
+            {order_sql}
         """
         query_values.extend([int(limit), int(offset or 0)])
     else:
@@ -1076,7 +1316,15 @@ def _warehouse_records(
             scorer_version=scorer_version,
             schema_version=schema_version,
         )
-        assessment = _assessment_contract_from_row(item)
+        assessment = (
+            {
+                "evaluation_run_id": str(item.get("evaluation_run_id") or "") or None,
+                "document_revision": None,
+                "light": True,
+            }
+            if light
+            else _assessment_contract_from_row(item)
+        )
         output.append(
             {
                 "case_id": str(item.get("visit_id") or item["mis_id"]),
@@ -1147,9 +1395,10 @@ def _warehouse_records(
                     if isinstance(item.get("reg55_applicable_n"), (int, float))
                     else None
                 ),
-                "reg55_weak_points": _parse_reg55_weak_points(
-                    item.get("reg55_weak_points_json")
+                "reg55_weak_points": (
+                    [] if light else _parse_reg55_weak_points(item.get("reg55_weak_points_json"))
                 ),
+                "_reg55_weak_points_json": item.get("reg55_weak_points_json") if light else None,
                 "score_reason": (
                     None
                     if isinstance(score, (int, float))
@@ -1181,7 +1430,8 @@ def _warehouse_records(
                 "_source": "warehouse",
             }
         )
-        attach_overall_grade(output[-1])
+        if not light:
+            attach_overall_grade(output[-1])
     return output
 
 
@@ -1190,9 +1440,10 @@ def _records(
     *,
     limit: int | None = None,
     offset: int = 0,
+    light: bool = False,
 ) -> list[dict[str, Any]]:
     records = (
-        _warehouse_records(params, limit=limit, offset=offset)
+        _warehouse_records(params, limit=limit, offset=offset, light=light)
         if _backend_source() == "warehouse"
         else _jsonl_records(params)
     )
@@ -1406,7 +1657,11 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
                 if str(p)
             }
             if not weak:
-                weak = set(_parse_reg55_weak_points(rec.get("reg55_weak_points_json")))
+                weak = set(
+                    _parse_reg55_weak_points(
+                        rec.get("reg55_weak_points_json") or rec.get("_reg55_weak_points_json")
+                    )
+                )
             if not (reg55_points & weak):
                 continue
         want_icd = str(params.get("icd_visit_status") or "").strip().lower()
@@ -1698,6 +1953,7 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         "zone2a": "zone2a_pct",
         "zone2b": "zone2b_pct",
         "attention": "attention_primary",
+        "overall_grade": "overall_pct",
     }
     sort_field = sort_map.get(str(params.get("sort_by") or ""), "date")
     reverse = str(params.get("sort_dir") or "desc").lower() == "desc"
@@ -1776,7 +2032,192 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
 
 def build_facets(params: dict[str, Any]) -> dict[str, Any]:
     params = _apply_request_period(params)
-    all_records = _records(params)
+    return _cached_result("facets", params, 300.0, lambda: _build_facets_uncached(params))
+
+
+# Параметры, которые _warehouse_where выражает целиком: только при таком наборе
+# фасеты считаются GROUP BY на складе, иначе - старый путь через строки.
+_FACETS_SQL_KEYS = frozenset(
+    {
+        "date_from", "date_to", "period", "periods", "month", "compare_period",
+        "document_kinds", "specializations", "filials", "doctors", "statuses",
+        "mkb_chapters", "exclude_specializations", "exclude_filials", "exclude_document_kinds",
+        "q", "zone", "zone_band", "attention_only", "icd", "kp_status", "history_tier",
+        "overall_grade", "finding_codes", "finding_family", "queue_only",
+        "score_eligible_only", "sort_by", "sort_dir", "page", "page_size",
+        "include_patient_id", "methodology",
+    }
+)
+
+
+def _facets_sql_supported(params: dict[str, Any]) -> bool:
+    if _backend_source() != "warehouse":
+        return False
+    if _identity_lookup(params):
+        return False
+    for key, value in params.items():
+        if str(key).startswith("_"):
+            continue
+        if not _param_active(value):
+            continue
+        if key not in _FACETS_SQL_KEYS:
+            return False
+    return True
+
+
+def _facet_rows(
+    conn: sqlite3.Connection,
+    expr: str,
+    where: list[str],
+    values: list[Any],
+    *,
+    limit: int | None = 60,
+    extra_group: str = "",
+) -> list[tuple[Any, ...]]:
+    sql = f"""
+        SELECT {expr} AS facet_value{", " + extra_group if extra_group else ""}, COUNT(*) AS n
+        FROM fact_mo_case c
+        LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+        LEFT JOIN dim_diagnosis dx ON dx.diagnosis_code = c.diagnosis_code
+    """
+    if where:
+        sql += " WHERE " + " AND ".join(where)
+    sql += f" GROUP BY facet_value{', ' + extra_group if extra_group else ''} ORDER BY n DESC"
+    if limit:
+        sql += f" LIMIT {int(limit)}"
+    return [tuple(row) for row in conn.execute(sql, values).fetchall()]
+
+
+def _org_facet(conn: sqlite3.Connection, column: str, where: list[str], values: list[Any]) -> list[dict[str, Any]]:
+    """Фасет specialty/filial: группируем в SQL, затем чистим метку как строки склада."""
+    merged: Counter[str] = Counter()
+    for label, scorer_version, schema_version, n in _facet_rows(
+        conn,
+        column,
+        where,
+        values,
+        limit=None,
+        extra_group="COALESCE(c.scorer_version, ''), COALESCE(c.score_schema_version, '')",
+    ):
+        clean = sanitize_mo_org_label(label, scorer_version=str(scorer_version or ""), schema_version=str(schema_version or ""))
+        if clean:
+            merged[clean] += int(n or 0)
+    return [{"value": key, "n": n} for key, n in merged.most_common(60)]
+
+
+def _build_facets_sql(params: dict[str, Any]) -> dict[str, Any]:
+    where, values = _warehouse_where(params)
+    params_without_kinds = {
+        key: value for key, value in params.items() if key not in {"document_kinds", "score_eligible_only"}
+    }
+    where_kinds, values_kinds = _warehouse_where(params_without_kinds)
+    score_band_expr = (
+        "CASE WHEN c.overall_pct IS NULL THEN 'unscored'"
+        " WHEN c.overall_pct >= 90 THEN '90-100'"
+        " WHEN c.overall_pct >= 75 THEN '75-90' ELSE '0-75' END"
+    )
+    with closing(_read_connection()) as conn:
+        count_rows = _facet_rows(conn, "1", where, values, limit=None)
+        n_filtered = int(count_rows[0][1]) if count_rows else 0
+        specialties = _org_facet(conn, "COALESCE(d.specialty, c.specialty, '')", where, values)
+        filials = _org_facet(conn, "COALESCE(d.filial, c.filial, '')", where, values)
+        statuses = [
+            {"value": str(v), "n": int(n)}
+            for v, n in _facet_rows(conn, "COALESCE(c.status, '')", where, values)
+            if str(v or "")
+        ]
+        score_bands = [
+            {"value": str(v), "n": int(n)} for v, n in _facet_rows(conn, score_band_expr, where, values)
+        ]
+        chapters = [
+            {"key": str(v), "label": None, "n": int(n)}
+            for v, n in _facet_rows(conn, "COALESCE(c.icd_chapter, '')", where, values, limit=None)
+            if str(v or "")
+        ]
+        doctors_raw = [
+            (str(v), int(n))
+            for v, n in _facet_rows(conn, "COALESCE(d.doctor_fio, '')", where, values, limit=200)
+            if str(v or "")
+        ]
+        kinds_raw = [
+            (str(v or "unknown"), int(n))
+            for v, n in _facet_rows(conn, "COALESCE(NULLIF(c.document_kind, ''), 'unknown')", where_kinds, values_kinds, limit=None)
+        ]
+        crm_rows = []
+        if _warehouse_has_table(str(_db_path()), "crm_case_state"):
+            crm_expr = (
+                "COALESCE((SELECT s.status FROM crm_case_state s WHERE s.case_id = "
+                "CAST(CASE WHEN c.visit_id IS NULL OR c.visit_id = '' THEN c.mis_id ELSE c.visit_id END AS TEXT)), 'new')"
+            )
+            crm_rows = [(str(v), int(n)) for v, n in _facet_rows(conn, crm_expr, where, values, limit=None)]
+        else:
+            crm_rows = [("new", n_filtered)] if n_filtered else []
+    facets: dict[str, Any] = {
+        "specialties": specialties,
+        "filials": filials,
+        "kz_kinds": [],
+        "document_kinds": [],
+        "statuses": statuses,
+        "score_bands": score_bands,
+        "age_groups": [],
+        "agreements": [],
+        "mkb_chapters": chapters,
+        "finding_axes": [],
+    }
+    facets["doctors"] = [
+        {
+            "value": key,
+            "n": count if count >= SUPPRESSION_N else None,
+            "n_bucket": None if count >= SUPPRESSION_N else f"<{SUPPRESSION_N}",
+            "suppressed": count < SUPPRESSION_N,
+        }
+        for key, count in doctors_raw
+    ]
+    facets["document_kinds"] = [
+        {
+            "value": key,
+            "label": DOCUMENT_KIND_LABELS.get(key, key),
+            "n": count if count >= SUPPRESSION_N else None,
+            "n_bucket": None if count >= SUPPRESSION_N else f"<{SUPPRESSION_N}",
+            "suppressed": count < SUPPRESSION_N,
+            "score_eligible": key in {"clinical_visit", "consultation"},
+        }
+        for key, count in kinds_raw
+    ]
+    for values_list in facets.values():
+        if not isinstance(values_list, list):
+            continue
+        for item in values_list:
+            if isinstance(item, dict) and isinstance(item.get("n"), int) and item["n"] < SUPPRESSION_N:
+                item["n"] = None
+                item["n_bucket"] = f"<{SUPPRESSION_N}"
+                item["suppressed"] = True
+    facets["crm_statuses"] = [
+        {"value": key, "n": n if n >= SUPPRESSION_N else None, "n_bucket": None if n >= SUPPRESSION_N else f"<{SUPPRESSION_N}"}
+        for key, n in crm_rows
+    ]
+    return {
+        "ok": True,
+        "source": _backend_source(),
+        "facets": facets,
+        "n_filtered": n_filtered,
+        "suppression_n": SUPPRESSION_N,
+        "default_document_kinds": ["clinical_visit"],
+        "engine": "facets_sql_v1",
+    }
+
+
+def _build_facets_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    if _facets_sql_supported(params):
+        try:
+            return _build_facets_sql(params)
+        except sqlite3.Error:
+            _LOG.warning("SQL-фасеты не удались, считаем по строкам", exc_info=True)
+    try:
+        all_records = _records(params, light=True)
+    except TypeError:
+        # тесты подменяют _records на lambda params
+        all_records = _records(params)
     filtered = _filter_records(all_records, params)
     facets = _facets(filtered)
     doctor_counts = Counter(str(r.get("doctor_fio") or "") for r in filtered if r.get("doctor_fio"))

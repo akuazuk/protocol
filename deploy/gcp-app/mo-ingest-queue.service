@@ -1,0 +1,34 @@
+# Воркер очереди «Проанализировать» (POST /api/methodist/mo/ingest-visit).
+# Хост GCE protocol-app: PyMySQL живёт в venv-mis, оценка идёт внутри protocol-web
+# через `sudo docker exec`. Без этого сервиса задания вечно висят в queued.
+#
+# Установка (один раз, релиз-координатор):
+#   sudo cp /opt/protocol/deploy/gcp-app/mo-ingest-queue.service /etc/systemd/system/
+#   sudo systemctl daemon-reload
+#   sudo systemctl enable --now mo-ingest-queue.service
+# Проверка:
+#   systemctl status mo-ingest-queue.service
+#   journalctl -u mo-ingest-queue.service -n 50 --no-pager
+[Unit]
+Description=Protocol MO ingest queue worker (MIS visit -> warehouse)
+After=network-online.target docker.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+User=pavel
+Group=pavel
+WorkingDirectory=/opt/protocol
+Environment=PROTOCOL_ROOT=/opt/protocol
+Environment=GCE_MO_DATA_ROOT=/var/data/medical_exams
+Environment=MO_INGEST_DOCKER_SCORE=1
+Environment=MO_WEB_CONTAINER=protocol-web
+ExecStart=/bin/bash /opt/protocol/deploy/gcp-app/run_mo_ingest_queue.sh --loop
+Restart=always
+RestartSec=10
+# Секрет пароля МИС берёт load_mis_env.sh из Secret Manager; журнал без PHI.
+StandardOutput=append:/var/data/medical_exams/logs/gce-mo-ingest-queue.log
+StandardError=append:/var/data/medical_exams/logs/gce-mo-ingest-queue.log
+
+[Install]
+WantedBy=multi-user.target

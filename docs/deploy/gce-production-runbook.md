@@ -135,6 +135,30 @@ gcloud compute disks create protocol-data-restored \
   --source-snapshot=<snapshot> --zone=europe-central2-a
 ```
 
+## 5a. Фоновые службы хоста (не в контейнере)
+
+| Служба | Как запускается | Лог | Что проверить |
+|---|---|---|---|
+| Ночной MIS extract + score | cron `pavel` 02:00 / 03:00 UTC (`night_mis_pipeline.sh`) | `logs/gce-night-main.log` | `check_gce_night_status.sh` |
+| Сверка КП МЗ | cron `pavel` 01:00 / 01:40 UTC (`night_kp_sync.sh`) | `logs/gce-kp-sync.log` | `_sync/kp_sync_<день>.ok` в `/var/data/protocol_corpus` |
+| Watchdog Rceth | cron `*/10` (`rceth_sync_watchdog.sh`) | `logs/gce-rceth-watchdog.log` | только resume прерванной задачи; периодического re-crawl нет |
+| Очередь «Проанализировать» | systemd `mo-ingest-queue.service` (`run_mo_ingest_queue.sh --loop`) | `logs/gce-mo-ingest-queue.log` | `systemctl status mo-ingest-queue`; в складе `mo_ingest_job` нет `queued` старше 2 минут |
+
+Установка воркера очереди (один раз):
+
+```bash
+gcloud compute ssh protocol-app --zone=europe-central2-a --command='
+sudo cp /opt/protocol/deploy/gcp-app/mo-ingest-queue.service /etc/systemd/system/ &&
+sudo systemctl daemon-reload && sudo systemctl enable --now mo-ingest-queue.service &&
+systemctl --no-pager status mo-ingest-queue.service | head -5'
+```
+
+Инцидент 2026-08-26 → 2026-09-26: `night_kp_sync.sh` месяц падал с `PermissionError`
+на `/var/data/protocol_corpus/_sync/site_<день>.json` - каталог корпуса 2026-09-07
+переписали от другого пользователя, cron идёт от `pavel`. Лечение:
+`sudo chown -R pavel:pavel /var/data/protocol_corpus`. Признак в UI: карточка
+«Протоколы МЗ» показывает `sync_day` старше двух дней.
+
 ## 6. Чего пока нет
 
 - **Автоматического деплоя из GitHub.** Workflow
