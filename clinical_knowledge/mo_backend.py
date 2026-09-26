@@ -1142,9 +1142,11 @@ _SQL_SORT_COLUMNS: dict[str, str] = {
 
 
 def _sql_overall_grade_rank(alias: str = "c") -> str:
+    """Ранг шкалы GRADE_ORDER (critical < important < poor < fair < good); неизвестное - NULL (NULLS LAST)."""
     return (
         "CASE " + _sql_overall_grade_expr(alias)
-        + " WHEN 'good' THEN 4 WHEN 'fair' THEN 3 WHEN 'poor' THEN 2 WHEN 'important' THEN 1 ELSE 0 END"
+        + " WHEN 'good' THEN 5 WHEN 'fair' THEN 4 WHEN 'poor' THEN 3"
+        + " WHEN 'important' THEN 2 WHEN 'critical' THEN 1 ELSE NULL END"
     )
 
 
@@ -2023,11 +2025,31 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
             and v not in (None, "", [], False)
         },
         "empty_state": _describe_empty_state(
-            total_records=pre_total if pre_total is not None else len(all_records),
+            total_records=_period_total_for_empty_state(params, pre_total, all_records),
             filtered_records=pre_total if pre_total is not None else len(filtered),
             params=params,
         ),
     }
+
+
+def _period_total_for_empty_state(
+    params: dict[str, Any], pre_total: int | None, all_records: list[dict[str, Any]]
+) -> int:
+    """Сколько строк в срезе периода без прочих фильтров - чтобы пустой результат
+    жёстких фильтров не выглядел как «нет загруженных данных».
+
+    На SQL-пейджинге `all_records` уже отфильтрованы, поэтому при нулевом `pre_total`
+    берём COUNT только по периоду (один дешёвый запрос); при непустом результате
+    точное число не нужно - empty_state смотрит лишь на 0/не 0.
+    """
+    if pre_total is None:
+        return len(all_records)
+    if pre_total > 0:
+        return pre_total
+    try:
+        return _freshness_counts_sql(params)[0]
+    except sqlite3.Error:
+        return 0
 
 
 def build_facets(params: dict[str, Any]) -> dict[str, Any]:
@@ -2213,11 +2235,17 @@ def _build_facets_uncached(params: dict[str, Any]) -> dict[str, Any]:
             return _build_facets_sql(params)
         except sqlite3.Error:
             _LOG.warning("SQL-фасеты не удались, считаем по строкам", exc_info=True)
+    # Типы документов - по всему срезу периода (без фильтра document_kinds),
+    # чтобы при default «только clinical_visit» в меню остались процедуры/профосмотры.
+    # Поэтому строки поднимаем без kinds и режем их уже в Python.
+    params_without_kinds = {
+        key: value for key, value in params.items() if key not in {"document_kinds", "score_eligible_only"}
+    }
     try:
-        all_records = _records(params, light=True)
+        all_records = _records(params_without_kinds, light=True)
     except TypeError:
         # тесты подменяют _records на lambda params
-        all_records = _records(params)
+        all_records = _records(params_without_kinds)
     filtered = _filter_records(all_records, params)
     facets = _facets(filtered)
     doctor_counts = Counter(str(r.get("doctor_fio") or "") for r in filtered if r.get("doctor_fio"))
@@ -2230,11 +2258,6 @@ def _build_facets_uncached(params: dict[str, Any]) -> dict[str, Any]:
         }
         for key, count in doctor_counts.most_common(200)
     ]
-    # Типы документов - по всему срезу периода (без фильтра document_kinds),
-    # чтобы при default «только clinical_visit» в меню остались процедуры/профосмотры.
-    params_without_kinds = {
-        key: value for key, value in params.items() if key not in {"document_kinds", "score_eligible_only"}
-    }
     kind_base = _filter_records(all_records, params_without_kinds)
     kind_counts = Counter(str(r.get("document_kind") or "unknown") for r in kind_base)
     facets["document_kinds"] = [

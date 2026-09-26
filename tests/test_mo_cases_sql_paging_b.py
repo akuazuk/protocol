@@ -222,3 +222,45 @@ def test_facets_sql_matches_row_path(warehouse: Path, monkeypatch) -> None:
     sql_n = mo_backend._build_facets_sql(dict(narrowed))
     rows_n = mo_backend._build_facets_uncached(dict(narrowed))
     assert sql_n["n_filtered"] == rows_n["n_filtered"] > 0
+
+
+def test_sql_grade_rank_orders_every_grade_of_scale() -> None:
+    """Ранг для ORDER BY покрывает всю шкалу, включая critical; неизвестное - NULL."""
+    from clinical_knowledge.mo_overall_grade import GRADE_ORDER
+
+    sql = mo_backend._sql_overall_grade_rank("c")
+    ranks = []
+    for grade in GRADE_ORDER:
+        marker = f"WHEN '{grade}' THEN "
+        assert marker in sql, grade
+        ranks.append(int(sql.split(marker, 1)[1].split()[0]))
+    assert ranks == sorted(ranks) and len(set(ranks)) == len(ranks)
+    assert sql.rstrip().endswith("ELSE NULL END")
+
+
+def test_empty_result_of_strict_filter_is_not_no_source_data(warehouse: Path) -> None:
+    result = mo_backend.build_cases({**PERIOD, "statuses": "nonexistent_status"})
+    assert result["total"] == 0 and result["rows"] == []
+    assert result["empty_state"]["reason_code"] != "no_source_data"
+    truly_empty = mo_backend.build_cases(
+        {"period": "custom", "date_from": "2025-01-01", "date_to": "2025-01-31", "statuses": "ok"}
+    )
+    assert truly_empty["empty_state"]["reason_code"] == "no_source_data"
+
+
+def test_row_facets_fallback_keeps_other_document_kinds(warehouse: Path) -> None:
+    with sqlite3.connect(warehouse) as conn:
+        conn.execute(
+            """INSERT INTO fact_mo_case(mis_id,visit_id,visit_date,document_kind,content_hash,updated_at)
+               VALUES('p1','2001','2026-07-03','procedure','p1','2026-07-31T00:00:00Z')"""
+        )
+        conn.commit()
+    # crm_statuses не выражается складом -> путь по строкам.
+    params = {**PERIOD, "document_kinds": "clinical_visit", "crm_statuses": "new"}
+    assert not mo_backend._facets_sql_supported(params)
+    facets = mo_backend.build_facets(params)["facets"]
+    kinds = {item["value"] for item in facets["document_kinds"]}
+    assert {"clinical_visit", "procedure"} <= kinds
+    via_sql = mo_backend.build_facets({**PERIOD, "document_kinds": "clinical_visit"})
+    assert via_sql["engine"] == "facets_sql_v1"
+    assert {item["value"] for item in via_sql["facets"]["document_kinds"]} == kinds
