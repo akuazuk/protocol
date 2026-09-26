@@ -517,6 +517,9 @@
       } else if (next === "7d") {
         state.dateFrom = minskDateKey(-7);
         state.dateTo = minskDateKey(-1);
+      } else if (next === "ytd") {
+        state.dateTo = minskDateKey(-1);
+        state.dateFrom = state.dateTo.slice(0, 4) + "-01-01";
       } else if (next === "custom") {
         if (!state.dateFrom) state.dateFrom = minskDateKey(-1);
         if (!state.dateTo) state.dateTo = state.dateFrom;
@@ -1159,6 +1162,7 @@
       if (state.selected.months.length) return "Месяц: " + (abs || facetLabel("months", state.selected.months[0]));
       if (state.period === "yesterday") return "Период: вчера" + (abs ? " · " + abs : "");
       if (state.period === "7d") return "Период: последние 7 дней" + (abs ? " · " + abs : "");
+      if (state.period === "ytd") return "Период: с начала года" + (abs ? " · " + abs : "");
       if (state.period === "custom") return "Период: " + (abs || ((state.dateFrom || "?") + " - " + (state.dateTo || "?")));
       return "Период: текущий месяц" + (abs ? " · " + abs : "");
     }
@@ -1719,6 +1723,7 @@
       }
       if (state.period === "7d") return "последние 7 дней";
       if (state.period === "month") return "текущий месяц (по дням)";
+      if (state.period === "ytd") return "с начала года (по дням)";
       if (win.date_from && win.date_to) {
         return win.date_from === win.date_to
           ? win.date_from
@@ -6747,6 +6752,7 @@
         { label: "Период: вчера", action: function () { state.period = "yesterday"; $("period").value = state.period; filtersChanged(); } },
         { label: "Период: последние 7 дней", action: function () { state.period = "7d"; $("period").value = state.period; filtersChanged(); } },
         { label: "Период: текущий месяц", action: function () { state.period = "month"; $("period").value = state.period; filtersChanged(); } },
+        { label: "Период: с начала года", action: function () { applyPeriodPreset("ytd"); } },
         { label: "Показать критические случаи", action: function () {
           applyQueueBand("critical", { page: "queue" });
         } }

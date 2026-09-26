@@ -34,6 +34,7 @@ from .mo_metrics import (
     METRICS,
     SCHEMA_VERSION,
     DateRange,
+    auto_granularity,
     mean_confidence_interval,
     metric_catalog,
     resolve_periods,
@@ -4174,6 +4175,15 @@ def _month_reg55_section(params: dict[str, Any]) -> dict[str, Any]:
         return _unavailable(f"Сводка №55 недоступна: {exc}")
 
 
+def _timeseries_bucket_sql(granularity: str, column: str) -> str:
+    """Выражение группировки ряда: день / ISO-неделя / месяц."""
+    if granularity == "week":
+        return f"strftime('%Y-W%W', {column})"
+    if granularity == "month":
+        return f"substr({column}, 1, 7)"
+    return column
+
+
 def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
     resolved = _resolve_request_period(params)
     requested = set(_values(params.get("metrics"))) or {
@@ -4182,9 +4192,11 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
     unknown = requested - set(METRICS)
     if unknown:
         raise ValueError(f"Неизвестные metrics: {', '.join(sorted(unknown))}")
-    granularity = str(params.get("granularity") or "day").lower()
-    if granularity not in {"day", "week"}:
-        raise ValueError("granularity должен быть day или week")
+    granularity = str(params.get("granularity") or "auto").lower()
+    if granularity not in {"auto", "day", "week", "month"}:
+        raise ValueError("granularity должен быть auto, day, week или month")
+    if granularity == "auto":
+        granularity = auto_granularity(resolved.current.days)
     source = _source_for_period(resolved.current)
     if source != "warehouse":
         legacy = build_trends(resolved.current.to_dict())
@@ -4205,7 +4217,7 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
         if str(params.get("methodology") or "").lower() == "v3"
         else "c.overall_pct"
     )
-    bucket = "c.visit_date" if granularity == "day" else "strftime('%Y-W%W', c.visit_date)"
+    bucket = _timeseries_bucket_sql(granularity, "c.visit_date")
     with closing(_read_connection()) as conn:
         if case_filters:
             where, values = _sql_case_filter(resolved.current, params)
@@ -4254,9 +4266,7 @@ def build_timeseries(params: dict[str, Any]) -> dict[str, Any]:
                 if target is not None:
                     target["critical"] = int(row["critical"])
         else:
-            daily_bucket = (
-                "visit_date" if granularity == "day" else "strftime('%Y-W%W', visit_date)"
-            )
+            daily_bucket = _timeseries_bucket_sql(granularity, "visit_date")
             rows = [
                 dict(row)
                 for row in conn.execute(
@@ -4575,7 +4585,8 @@ def build_meta() -> dict[str, Any]:
         "source": _backend_source(),
         "schema_version": SCHEMA_VERSION,
         "timezone": "Europe/Minsk",
-        "periods": sorted({"yesterday", "7d", "month", "custom"}),
+        "periods": sorted({"yesterday", "7d", "month", "ytd", "custom"}),
+        "granularities": ["auto", "day", "week", "month"],
         "compare": sorted({"previous", "weekday", "none"}),
         "dimensions": sorted(_BREAKDOWN_DIMENSIONS),
         "metrics": metric_catalog(),

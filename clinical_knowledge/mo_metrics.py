@@ -10,7 +10,20 @@ from zoneinfo import ZoneInfo
 
 MINSK = ZoneInfo("Europe/Minsk")
 SCHEMA_VERSION = 1
-VALID_PERIODS = frozenset({"yesterday", "7d", "month", "custom"})
+VALID_PERIODS = frozenset({"yesterday", "7d", "month", "ytd", "custom"})
+# Окно > 62 дней агрегируем по неделям, > 190 дней - по месяцам (волна C плана
+# 2026-09-26): 9 месяцев по дням - 270 точек, которые в спарклайне не читаются.
+GRANULARITY_DAY_MAX_DAYS = 62
+GRANULARITY_WEEK_MAX_DAYS = 190
+
+
+def auto_granularity(days: int) -> str:
+    """Зерно ряда по длине окна: day / week / month."""
+    if days <= GRANULARITY_DAY_MAX_DAYS:
+        return "day"
+    if days <= GRANULARITY_WEEK_MAX_DAYS:
+        return "week"
+    return "month"
 VALID_COMPARE = frozenset({"previous", "weekday", "none"})
 
 METRICS: dict[str, dict[str, Any]] = {
@@ -130,7 +143,7 @@ def resolve_periods(
     period = (period or "month").strip().lower()
     compare = (compare or "none").strip().lower()
     if period not in VALID_PERIODS:
-        raise ValueError(f"Неизвестный period={period!r}; допустимо: yesterday, 7d, month, custom")
+        raise ValueError(f"Неизвестный period={period!r}; допустимо: yesterday, 7d, month, ytd, custom")
     if compare not in VALID_COMPARE:
         raise ValueError(f"Неизвестный compare={compare!r}; допустимо: previous, weekday, none")
 
@@ -152,6 +165,9 @@ def resolve_periods(
     elif period == "month":
         selected_month = month or yesterday.strftime("%Y-%m")
         current = _month_range(selected_month, last_available=yesterday)
+    elif period == "ytd":
+        # С начала года: 1 января года «вчера» по вчера (Europe/Minsk).
+        current = DateRange(yesterday.replace(month=1, day=1), yesterday)
     else:
         start = _parse_date(date_from, "date_from")
         end = _parse_date(date_to, "date_to")

@@ -8531,7 +8531,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-26-145904Z-icd-title-index"
+BUILD_VERSION = "2026-09-26-152504Z-mo-wave-c-ytd"
 
 
 def _app_version() -> str:
@@ -11618,7 +11618,7 @@ def api_methodist_mo_timeseries(
     date_from: str = Query("", max_length=10),
     date_to: str = Query("", max_length=10),
     metrics: str = Query("", max_length=500),
-    granularity: str = Query("day"),
+    granularity: str = Query("auto", pattern="^(auto|day|week|month)$"),
     specializations: str = Query("", max_length=2000),
     filials: str = Query("", max_length=2000),
     doctors: str = Query("", max_length=5000),

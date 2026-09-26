@@ -51,6 +51,7 @@
               <button class="button secondary compact" type="button" data-quick-period="yesterday">Вчера</button>
               <button class="button secondary compact" type="button" data-quick-period="7d">7 дней</button>
               <button class="button secondary compact" type="button" data-quick-period="month" aria-pressed="true">Месяц</button>
+              <button class="button secondary compact" type="button" data-quick-period="ytd">С начала года</button>
             </div>
             <label class="filter" id="date-from-wrap"><span>С даты</span><input class="control" id="date-from" type="date"></label>
             <label class="filter" id="date-to-wrap"><span>По дату</span><input class="control" id="date-to" type="date"></label>
@@ -59,6 +60,7 @@
                 <option value="yesterday">Вчера</option>
                 <option value="7d">Последние 7 дней</option>
                 <option value="month" selected>Текущий месяц</option>
+                <option value="ytd">С начала года</option>
                 <option value="custom">Произвольный</option>
               </select>
             </label>
@@ -179,7 +181,7 @@
         </section>
 
         <section class="page" id="page-yesterday" data-page="yesterday" aria-labelledby="title-yesterday">
-          <div class="page-head"><div><h1 id="title-yesterday">Обзор</h1><p id="yesterday-date">Рабочий экран: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p><div class="grain-strip" role="group" aria-label="Зерно периода"><button class="button secondary" type="button" data-overview-grain="yesterday">День</button><button class="button secondary" type="button" data-overview-grain="7d">Неделя</button><button class="button secondary" type="button" data-overview-grain="month" aria-pressed="true">Месяц</button></div></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
+          <div class="page-head"><div><h1 id="title-yesterday">Обзор</h1><p id="yesterday-date">Рабочий экран: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p><div class="grain-strip" role="group" aria-label="Зерно периода"><button class="button secondary" type="button" data-overview-grain="yesterday">День</button><button class="button secondary" type="button" data-overview-grain="7d">Неделя</button><button class="button secondary" type="button" data-overview-grain="month" aria-pressed="true">Месяц</button><button class="button secondary" type="button" data-overview-grain="ytd">С начала года</button></div></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
           <div class="kpis score-kpi-strip" id="yesterday-score-kpis"><div class="skeleton"></div></div>
           <div class="attention-strip" id="yesterday-attention"><div class="skeleton"></div></div>
           <div class="family-strip" id="yesterday-family-strip"></div>
