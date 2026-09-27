@@ -27,9 +27,10 @@ async function mockMo(page: Page, failFamily = false) {
     }
     if (p.endsWith('/daily-report')) data = { ok: true, date: '2026-08-02', data_through: '2026-08-02', attention: { n_evaluated: 100 }, actions: [], data_completeness: {} };
     if (p.endsWith('/month-report')) data = { ok: true, available: false, reason: 'Нет синтетических данных месяца', facets: {} };
-    if (p.endsWith('/score-dashboard')) {
+    if (p.endsWith('/score-dashboard') || p.endsWith('/overview-dashboard')) {
+      // F1: Обзор берёт один /overview-dashboard; /score-dashboard остаётся fallback для старого образа.
       const bands = { ok: { n: 70 }, weak: { n: 20 }, bad: { n: 10 }, na: { n: 0 } };
-      data = { ok: true, available: true, window: { date_from: '2026-08-01', date_to: '2026-08-02' },
+      data = { ok: true, available: true, granularity: 'day', window: { date_from: '2026-08-01', date_to: '2026-08-02' },
         zones: Object.fromEntries(['zone1', 'zone2a', 'zone2b'].map(key => [key, { avg_pct: 78, bands }])),
         reg55: { available: true, avg_pct: 82, band_share: { compliant_min: { n: 70 }, compliant_measures: { n: 20 }, noncompliant: { n: 10 }, unscored: { n: 0 } } }, trends: [] };
     }
@@ -65,7 +66,8 @@ test('МО: ECharts показывает числа API и период пере
   const rings = page.locator('#yesterday-score-rings .score-ring-chart');
   await expect(rings).toHaveCount(3);
   await expect(page.locator('#yesterday-score-rings canvas')).toHaveCount(3);
-  await expect(page.locator('#yesterday-score-rings .score-grade-legend__item')).toHaveCount(6);
+  // Компактные кольца: общая легенда из 4 сегментов кольца (хорошо / слабо / важно / нет оценки).
+  await expect(page.locator('#yesterday-score-rings .score-grade-legend__item')).toHaveCount(4);
   // Центр кольца - доля «хорошо» (70 из 100 в моке), слово шкалы - в подписи под кольцом.
   await expect(page.locator('#yesterday-score-rings .score-ring-meta')).toHaveText(['70%', '70%', '70%']);
   await expect(page.locator('#yesterday-score-rings .score-ring-denominator').first()).toContainText('чаще всего: хорошо');
@@ -74,7 +76,7 @@ test('МО: ECharts показывает числа API и период пере
     return charts.getInstanceByDom(node).getOption().series[0].data.map(item => item.value);
   }));
   expect(values).toEqual(Array.from({ length: 3 }, () => [70, 20, 10]));
-  expect(state.requests.find(url => url.pathname.endsWith('/score-dashboard'))?.searchParams.get('period')).toBe('month');
+  expect(state.requests.find(url => url.pathname.endsWith('/overview-dashboard'))?.searchParams.get('period')).toBe('month');
   expect(state.problems).toEqual([]);
 });
 
