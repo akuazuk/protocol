@@ -1457,7 +1457,7 @@
       else q.delete("open");
       try {
         var live = new URLSearchParams(window.location.search || "");
-        ["step", "proof", "lens", "lab_date"].forEach(function (key) {
+        ["steps", "step", "proof", "lens", "lab_date"].forEach(function (key) {
           if (live.get(key)) q.set(key, live.get(key));
         });
       } catch (error) {}
