@@ -248,6 +248,18 @@ def test_facets_are_fetched_for_non_overview_pages_and_on_panel_open() -> None:
     key_fn = JS[JS.find("function facetsQueryKey()") :][:300]
     for param in ("page", "page_size", "sort_by", "sort_dir"):
         assert f'"{param}"' in key_fn
+    # поздний ответ /facets перерисовывает меню - набранный поиск по фильтру сохраняется,
+    # а отметки берутся из filterDraft/selected (publishFacet пишет туда сразу)
+    render = JS[JS.find("function renderFilter(details)") :][:2600]
+    assert "var previousTerm = previousSearch ? previousSearch.value : \"\";" in render
+    assert "if (previousTerm) {" in render
+    assert "state.filterDraft.selected" in render
+    # поздний ответ /facets перерисовывает меню - набранный поиск по фильтру сохраняется,
+    # а отметки берутся из filterDraft/selected (publishFacet пишет туда сразу)
+    render = JS[JS.find("function renderFilter(details)") :][:2600]
+    assert "var previousTerm = previousSearch ? previousSearch.value : \"\";" in render
+    assert "if (previousTerm) {" in render
+    assert "state.filterDraft.selected" in render
 
 
 def test_facet_checkbox_publishes_without_waiting_outer_apply() -> None:

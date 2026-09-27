@@ -1025,6 +1025,10 @@
         : state.selected;
       var selected = (selectedSource[key] || []).slice();
       var draft = selected.slice();
+      // Перерисовка может прийти асинхронно (ensureFacets) при открытом меню -
+      // сохраняем набранный текст поиска по фильтру.
+      var previousSearch = details.querySelector('.filter-menu input[type="search"]');
+      var previousTerm = previousSearch ? previousSearch.value : "";
       details.classList.toggle("has-applied", selected.length > 0);
       details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
       details.querySelector(".filter-menu").innerHTML =
@@ -1045,12 +1049,17 @@
         apply.disabled = !changed;
         details.classList.toggle("has-pending", changed);
       }
-      search.addEventListener("input", function () {
+      function applySearchTerm() {
         var term = search.value.trim().toLowerCase();
         details.querySelectorAll(".filter-option").forEach(function (option) {
           option.hidden = option.getAttribute("data-label").indexOf(term) < 0;
         });
-      });
+      }
+      search.addEventListener("input", applySearchTerm);
+      if (previousTerm) {
+        search.value = previousTerm;
+        applySearchTerm();
+      }
       function publishFacet(next, closeMenu) {
         draft = next.slice();
         if (key === "document_types") {
