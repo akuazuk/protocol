@@ -27,3 +27,10 @@ def test_app_uses_stepper_when_enabled() -> None:
 
 def test_html_loads_steps_before_app() -> None:
     assert HTML.index("/mo-steps.js") < HTML.index("/mo-app.js")
+
+
+def test_patient_page_opens_step_one() -> None:
+    assert 'data-page="patient"' in HTML
+    assert 'id="patient-resolve-form"' in HTML
+    assert "resolvePatientPassport" in APP
+    assert "MO.steps.setStep(1)" in APP

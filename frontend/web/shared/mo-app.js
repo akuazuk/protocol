@@ -99,7 +99,7 @@
     };
     var PAGE_TITLES = {
       overview: "Период", yesterday: "Обзор", queue: "Очередь",
-      documents: "Найти МО", mis: "Поиск МИС", doctors: "Врачи", medications: "Лекарства", labs: "Анализы",
+      documents: "Найти МО", patient: "Пациент", mis: "Поиск МИС", doctors: "Врачи", medications: "Лекарства", labs: "Анализы",
       reports: "Отчёты", "kp-sync": "Протоколы МЗ", "rceth-sync": "Инструкции препаратов", settings: "Справка"
     };
     // Compatibility contract for integrations that still identify this page by its former label.
@@ -1463,6 +1463,7 @@
           state.page === "queue" ? "/methodist/mo/queue" :
           state.page === "overview" ? "/methodist/mo/overview" :
           state.page === "mis" ? "/methodist/mo/mis" :
+          state.page === "patient" ? "/methodist/mo/patient" :
           (state.page === "documents" ? "/methodist/mo/cases" : "/methodist/mo");
       }
       var url = path + "?" + q.toString();
@@ -7672,6 +7673,40 @@
       await loadMisDashboard();
       await loadMisSearch();
     }
+    function bindPatientPage() {
+      var form = $("patient-resolve-form");
+      if (!form || form.getAttribute("data-bound") === "1") return;
+      form.setAttribute("data-bound", "1");
+      form.addEventListener("submit", function (event) {
+        event.preventDefault();
+        resolvePatientPassport().catch(function (error) {
+          var status = $("patient-resolve-status");
+          if (status) status.textContent = error.message || "Не удалось открыть.";
+        });
+      });
+    }
+    async function resolvePatientPassport() {
+      var input = $("patient-resolve");
+      var status = $("patient-resolve-status");
+      var q = input && input.value ? String(input.value).trim() : "";
+      if (status) status.textContent = "Ищу паспорт…";
+      var response = await request("/patients/resolve?q=" + encodeURIComponent(q), "");
+      var data = {};
+      try { data = await response.json(); } catch (error) { data = {}; }
+      if (!response.ok || !data.ok) {
+        var err = data.error || (data.detail && String(data.detail)) || "";
+        if (status) {
+          status.textContent = err === "passport_not_found" ? "Паспорт не найден." :
+            (err === "empty_query" ? "Введите визит или ключ." : "Не удалось открыть.");
+        }
+        return;
+      }
+      if (status) status.textContent = data.context || "паспорт найден";
+      if (data.latest_visit_id) {
+        if (MO.steps && MO.steps.setStep) MO.steps.setStep(1);
+        openCase(data.latest_visit_id);
+      }
+    }
     function bindMisSearchPage() {
       var form = $("mis-search-form");
       if (!form || form.getAttribute("data-bound") === "1") return;
@@ -7712,6 +7747,7 @@
         else if (page === "medications") await loadMedicationsDashboard();
         else if (page === "labs") await loadLabsDashboard();
         else if (page === "mis") { await loadMisDashboard(); await loadMisSearch(); }
+        else if (page === "patient") { /* форма резолва, данных среза нет */ }
         else if (page === "reports") {
           await loadReports();
           try { await loadAccessLog(); } catch (e) {}
@@ -8168,6 +8204,7 @@
         button.addEventListener("click", function () { switchPage(button.getAttribute("data-page")); });
       });
       bindMisSearchPage();
+      bindPatientPage();
       document.querySelectorAll("[data-go]").forEach(function (button) {
         button.addEventListener("click", function () { switchPage(button.getAttribute("data-go")); });
       });

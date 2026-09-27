@@ -24,6 +24,7 @@
           <li class="nav-group-label" aria-hidden="true">Работа</li>
           <li><button class="nav-button" data-page="yesterday" aria-current="page" aria-label="Обзор"><span class="nav-icon" aria-hidden="true">Об</span><span class="nav-text">Обзор</span></button></li>
           <li><button class="nav-button" data-page="documents" aria-label="Найти МО"><span class="nav-icon" aria-hidden="true">≡</span><span class="nav-text">Найти МО</span></button></li>
+          <li><button class="nav-button" data-page="patient" aria-label="Пациент"><span class="nav-icon" aria-hidden="true">Па</span><span class="nav-text">Пациент</span></button></li>
           <li><button class="nav-button" data-page="mis" aria-label="Поиск МИС"><span class="nav-icon" aria-hidden="true">МИ</span><span class="nav-text">Поиск МИС</span></button></li>
           <li><button class="nav-button" data-page="doctors" aria-label="Врачи"><span class="nav-icon" aria-hidden="true">Вр</span><span class="nav-text">Врачи</span></button></li>
           <li><button class="nav-button" data-page="medications" data-legacy-label="Лекарства" aria-label="Лекарства"><span class="nav-icon" aria-hidden="true">Лк</span><span class="nav-text">Лекарства</span></button></li>
@@ -303,6 +304,11 @@
             <article class="card span-5"><h2>Взаимодействия</h2><p class="card-sub">Пары препаратов, если их не меньше 10. Клик открывает МО с взаимодействиями.</p><div id="medications-pairs" class="mo-chart-host"></div></article>
           </div>
           <div hidden><div id="medications-specialty"></div><div id="medications-doctors"></div><div id="medications-preview"></div></div>
+        </section>
+        <section class="page" id="page-patient" data-page="patient" hidden aria-labelledby="title-patient">
+          <div class="page-head"><div><h1 id="title-patient">Пациент</h1><p>Визит или ключ паспорта. Сервер находит карту. ФИО и id клиента не показываются.</p></div></div>
+          <form class="mis-search-form" id="patient-resolve-form" role="search"><label class="filter search-field"><span>Визит или ключ паспорта</span><input class="control" id="patient-resolve" type="search" placeholder="visit_id" autocomplete="off"></label><button class="button" type="submit">Открыть паспорт</button></form>
+          <p class="card-sub" id="patient-resolve-status">Без строки Найти МО: сразу шаг 1.</p>
         </section>
         <section class="page" id="page-mis" data-page="mis" hidden aria-labelledby="title-mis">
           <div class="page-head"><div><h1 id="title-mis">Поиск МИС</h1><p>Каталог визитов МИС, не KPI склада. Месяцы с января, специальности и живая очередь догрузки.</p></div></div>

@@ -49,6 +49,7 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
         "yesterday",
         "queue",
         "documents",
+        "patient",
         "doctors",
         "medications",
         "labs",
@@ -63,6 +64,7 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
     for label in (
         "Обзор",
         "Найти МО",
+        "Пациент",
         "Очередь",
         "Врачи",
         "Лекарства",
