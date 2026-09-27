@@ -1,14 +1,12 @@
-# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C, D, J в проде; J закрыта релизом 9, фикс фасетов - релиз 10, дальше F1
+# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C, D, J в проде (релизы 1-10); J закрыта, дальше F1
 
-Дата: 2026-09-27 (~06:00 UTC)
+Дата: 2026-09-27 (~06:50 UTC)
 План: `docs/plans/2026-09-26-mo-analytics-redesign-v2.md` (active; журнал релизов - §6b,
 метрики «было / стало / цель» - §7).
 Прод: GCE `https://protocol.kravira.by`, контейнер `protocol-web`, образ
-`protocol-gcp-app:53791c4cde9e`, `/api/version` = `2026-09-27-045511Z-mo-redesign-j-filters`,
-`git_commit` = `53791c4c` (релиз 9, 05:33 UTC 27.09). Render не прод и не откат. Предыдущий
-образ для отката - `protocol-gcp-app:51a031b152e0` (релиз 8). Если этот handoff читается
-после merge PR `cursor/mo-redesign-j-facets-deeplink-pc1` - сверить `/api/version` с
-`BUILD_VERSION` в `rag_server.py`: релиз 10 мог уже уехать (см. §6b плана).
+`protocol-gcp-app:4d2a69d6d1e3`, `/api/version` = `2026-09-27-060457Z-mo-facets-deeplink`,
+`git_commit` = `4d2a69d6` (релиз 10, 06:44 UTC 27.09). Render не прод и не откат. Предыдущий
+образ для отката - `protocol-gcp-app:53791c4cde9e` (релиз 9).
 
 Директива владельца: «Все подтверждаю работай автономно и все реализуй по плану». Режим:
 одна волна = один PR (Bugbot по diff до merge) = merge после зелёного CI = релиз
@@ -36,7 +34,7 @@
 | D: названия для пустых `dim_diagnosis` из справочника | #309 | `51a031b1` | релиз 8 04:06 UTC 27.09 (попытка 1 в 21:37 - авто-откат: публичный `/api/version` не ответил за 15 с под скорингом backfill) |
 | D close-out (план, handoff) | #310 | `e6303c72` | docs |
 | J контракт фильтров, legacy-колонки, CRM-статус в SQL, hidden-хосты | #311 | `53791c4c` | релиз 9 05:33 UTC 27.09, **приёмка §J пройдена** (см. Статус J в плане) |
-| J фасеты при deep-link (`ensureFacets`), приёмка J, план/handoff | `cursor/mo-redesign-j-facets-deeplink-pc1` | - | релиз 10 после merge |
+| J фасеты при deep-link (`ensureFacets`), приёмка J, план/handoff | #312 | `4d2a69d6` | релиз 10 06:44 UTC 27.09, приёмка пройдена: меню фасетов при `?page=documents` заполнены (врачи 100, специальности 23, филиалы 3, статусы 1) |
 
 Приёмка релизов (все `PUBLIC_OK`, `/health/live` ok):
 
@@ -146,8 +144,8 @@ dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/p
   разбора) пусты при deep-link `?page=documents` / `?page=queue` - `/cases` не отдаёт
   `facets`, `/facets` запрашивал только «Обзор» (дефект с `cbeb805c`). Фикс -
   `ensureFacets()` в `loadPage` и `beginFilterDraft`, PR `cursor/mo-redesign-j-facets-deeplink-pc1`.
-  Приёмка релиза 10 на проде: `?page=documents` -> открыть «Фильтры» -> «Статус разбора
-  методиста» и «Врачи» с опциями (скрипт `/tmp/mo_wave/j_panel_check.mjs` на Mac).
+  Релиз 10 принят на проде 06:44 UTC: `?page=documents` -> «Фильтры» -> меню заполнены
+  (скрипт `/tmp/mo_wave/j_panel_check.mjs` на Mac). **Волна J закрыта.**
 - `icd_chapter` пуст у 23% случаев сентября (2472 из ~10,5 тыс.) - в аудит данных I.
 - Волны F1-F7, G, K, H1/I, H2/H3 - не начаты.
 - Скриншоты прода с ФИО врачей в git не кладутся.
@@ -160,10 +158,8 @@ dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/p
 gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo tail -5 /var/data/medical_exams/logs/gce-mo-backfill.log; sudo cat /var/data/medical_exams/state/mo_backfill_range.json | tail -20'
 ```
 
-2. Если PR `cursor/mo-redesign-j-facets-deeplink-pc1` ещё не в `origin/main` - merge после
-   зелёного CI и релиз 10 (мягкий стоп runner, см. ниже), приёмка: меню фасетов при
-   `?page=documents`. Затем волна F1 (Обзор O1-O8) по плану §5/§6 - один PR от свежего
-   `origin/main`, Bugbot, merge, релиз между днями backfill.
+2. Волна F1 (Обзор O1-O8) по плану §5/§6 - один PR от свежего `origin/main`, Bugbot,
+   merge, релиз 11 между днями backfill (мягкий стоп runner, см. ниже).
 3. Перед любым деплоем проверить `date -u`: не 01:00-04:30 UTC. Релиз 8 попал в окно
    (04:01) из-за сна Mac между командами; ночной конвейер уже завершился (02:15), вреда нет.
 
@@ -186,7 +182,8 @@ gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo -u pave
 
 Шаг 4 держит ssh-сессию открытой (nohup наследует stdout) - запускать в фоне/с таймаутом.
 Runner перезапущен 04:08 UTC 27.09, остановлен мягко 05:22 (после 06-02) для релиза 9 и
-перезапущен 05:34 (продолжает с 06-01 -> 01-01); день `2026-06-22` в состоянии
+перезапущен 05:34; остановлен мягко 06:37 (после 05-28) для релиза 10 и перезапущен 06:44
+(продолжает с 05-27 -> 01-01; день с ~450 строками занимает ~35 мин); день `2026-06-22` в состоянии
 `score_failed` (без маркера) - runner его повторит. Длинные ssh-циклы ожидания (> ~15 мин)
 рвутся с exit 255 - опрашивать короткими отдельными ssh.
 
