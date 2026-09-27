@@ -12,7 +12,7 @@ import re
 import sqlite3
 import threading
 import uuid
-from datetime import datetime, timezone
+from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any, Callable, Mapping
 
@@ -24,6 +24,22 @@ ENGINE = "mo_mis_catalog_v1"
 DX_SHORT_MAX = 80
 SEARCH_LIMIT = 50
 MAX_QUEUED_JOBS = 20
+_MIS_SPEC_ROWS = 12
+_INGEST_LIST = 20
+_MONTH_LABELS = (
+    "январь",
+    "февраль",
+    "март",
+    "апрель",
+    "май",
+    "июнь",
+    "июль",
+    "август",
+    "сентябрь",
+    "октябрь",
+    "ноябрь",
+    "декабрь",
+)
 _ID_RE = re.compile(r"^\d{4,12}$")
 _JOB_LOCK = threading.Lock()
 _log = logging.getLogger("protocol.mo_mis_catalog")
@@ -462,6 +478,190 @@ def coverage_payload(
         out = coverage_for_window(conn, date_from=date_from, date_to=date_to)
         out["ok"] = True
         return out
+    finally:
+        conn.close()
+
+
+def _month_keys_from_january(date_from: str, date_to: str) -> list[str]:
+    raw = str(date_from or date_to or "2026-01-01")[:10]
+    year = raw[:4] if raw[:4].isdigit() else "2026"
+    start = date(int(year), 1, 1)
+    end_raw = str(date_to or date_from or datetime.now(timezone.utc).strftime("%Y-%m-%d"))[:10]
+    try:
+        end = date.fromisoformat(end_raw)
+    except ValueError:
+        end = date(int(year), 12, 31)
+    if end < start:
+        end = start
+    keys: list[str] = []
+    year_i, month_i = start.year, start.month
+    while (year_i, month_i) <= (end.year, end.month):
+        keys.append(f"{year_i}-{month_i:02d}")
+        month_i += 1
+        if month_i > 12:
+            month_i = 1
+            year_i += 1
+    return keys
+
+
+def _month_label(key: str) -> str:
+    try:
+        month_i = int(key[5:7])
+    except ValueError:
+        return key
+    if 1 <= month_i <= 12:
+        return _MONTH_LABELS[month_i - 1]
+    return key
+
+
+def monthly_coverage(
+    conn: sqlite3.Connection, *, date_from: str, date_to: str
+) -> list[dict[str, Any]]:
+    keys = _month_keys_from_january(date_from, date_to)
+    if not keys:
+        return []
+    window_from = f"{keys[0]}-01"
+    window_to = date_to or f"{keys[-1]}-31"
+    rows = conn.execute(
+        f"""
+        SELECT substr(visit_date, 1, 7) AS month,
+               COUNT(*) AS found,
+               SUM(CASE WHEN {_in_analytics_sql(conn)} THEN 1 ELSE 0 END) AS in_analytics
+        FROM fact_mis_catalog
+        WHERE visit_date >= ? AND visit_date <= ?
+        GROUP BY 1
+        """,
+        (window_from, window_to),
+    ).fetchall()
+    by_month = {
+        str(row["month"]): (int(row["found"] or 0), int(row["in_analytics"] or 0)) for row in rows
+    }
+    items = []
+    for key in keys:
+        found_n, scored_n = by_month.get(key, (0, 0))
+        items.append(
+            {
+                "month": key,
+                "label": _month_label(key),
+                "found": found_n,
+                "in_analytics": scored_n,
+                "not_scored": max(found_n - scored_n, 0),
+            }
+        )
+    return items
+
+
+def specialty_histogram(
+    conn: sqlite3.Connection, *, date_from: str, date_to: str
+) -> list[dict[str, Any]]:
+    rows = conn.execute(
+        f"""
+        SELECT COALESCE(NULLIF(specialization, ''), 'не указана') AS label,
+               COUNT(*) AS found,
+               SUM(CASE WHEN {_in_analytics_sql(conn)} THEN 1 ELSE 0 END) AS in_analytics
+        FROM fact_mis_catalog
+        WHERE visit_date >= ? AND visit_date <= ?
+        GROUP BY 1
+        ORDER BY found DESC
+        LIMIT ?
+        """,
+        (date_from or "0000-01-01", date_to or "9999-12-31", _MIS_SPEC_ROWS),
+    ).fetchall()
+    return [
+        {
+            "label": _clip(row["label"], 80),
+            "found": int(row["found"] or 0),
+            "in_analytics": int(row["in_analytics"] or 0),
+            "not_scored": max(int(row["found"] or 0) - int(row["in_analytics"] or 0), 0),
+        }
+        for row in rows
+    ]
+
+
+def list_ingest_jobs(
+    *, warehouse: Path | str | None = None, limit: int = _INGEST_LIST
+) -> list[dict[str, Any]]:
+    conn = _open_warehouse(warehouse)
+    if conn is None:
+        return []
+    try:
+        ensure_schema(conn)
+        rows = conn.execute(
+            """
+            SELECT * FROM mo_ingest_job
+            ORDER BY CASE status
+              WHEN 'running' THEN 0
+              WHEN 'queued' THEN 1
+              WHEN 'error' THEN 2
+              ELSE 3
+            END, created_at DESC
+            LIMIT ?
+            """,
+            (max(1, min(int(limit or _INGEST_LIST), 50)),),
+        ).fetchall()
+        items = []
+        for row in rows:
+            public = _job_public(row)
+            status = public["status"]
+            public["progress"] = (
+                100 if status == "done" else 55 if status == "running" else 10 if status == "queued" else 0
+            )
+            items.append(public)
+        return items
+    finally:
+        conn.close()
+
+
+def dashboard_payload(
+    *,
+    date_from: str = "",
+    date_to: str = "",
+    warehouse: Path | str | None = None,
+) -> dict[str, Any]:
+    date_from = str(date_from or "")[:10]
+    date_to = str(date_to or "")[:10]
+    window_from = date_from or "0000-01-01"
+    window_to = date_to or "9999-12-31"
+    conn = _open_warehouse(warehouse)
+    if conn is None:
+        return {
+            "ok": False,
+            "available": False,
+            "engine": ENGINE,
+            "reason": "склад недоступен",
+            "coverage": {},
+            "months": [],
+            "specialties": [],
+            "ingest": [],
+            "tiles": [],
+        }
+    try:
+        seed_catalog_from_cases(conn)
+        coverage = coverage_for_window(conn, date_from=window_from, date_to=window_to)
+        months = monthly_coverage(conn, date_from=date_from or window_from, date_to=window_to)
+        specialties = specialty_histogram(conn, date_from=window_from, date_to=window_to)
+        ingest = list_ingest_jobs(warehouse=warehouse)
+        queued_n = sum(1 for job in ingest if job.get("status") in {"queued", "running"})
+        found_n = int(coverage.get("found") or 0)
+        scored_n = int(coverage.get("in_analytics") or 0)
+        rest_n = int(coverage.get("not_scored") or 0)
+        available = found_n > 0 or bool(ingest)
+        return {
+            "ok": True,
+            "available": available,
+            "engine": ENGINE,
+            "reason": None if available else "в каталоге нет визитов за даты фильтра",
+            "coverage": coverage,
+            "months": months,
+            "specialties": specialties,
+            "ingest": ingest,
+            "tiles": [
+                {"id": "found", "label": "В каталоге", "n": found_n, "tone": "lake"},
+                {"id": "in_analytics", "label": "Оценено", "n": scored_n, "tone": "moss"},
+                {"id": "not_scored", "label": "Не разобрано", "n": rest_n, "tone": "rose"},
+                {"id": "queued", "label": "Догрузка", "n": queued_n, "tone": "clay"},
+            ],
+        }
     finally:
         conn.close()
 

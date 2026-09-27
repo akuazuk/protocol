@@ -79,7 +79,7 @@
       caseNavIds: [], caseNavRows: {}, caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
       caseDetailLoading: false,
       protocolSuggest: null,
-      selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [] },
+      selected: { months: [], branches: [], specialties: [], doctors: [], document_types: ["clinical_visit"], statuses: [], assignees: [] },
       scoreEligibleOnly: true,
       data: {}, facets: {}, trigger: null, openCaseId: "", pendingOpenId: "", cabinetDoctorKey: "",
       caseDetail: null, supersedesPackId: "",
@@ -110,11 +110,11 @@
     };
     var FILTER_LABELS = {
       months: "Месяц", branches: "Филиал", specialties: "Специальность", doctors: "Врач",
-      document_types: "Тип документа", statuses: "Статус разбора методиста"
+      document_types: "Тип документа", statuses: "Статус разбора методиста", assignees: "Ответственный"
     };
     var API_FILTER_KEYS = {
       months: "periods", branches: "filials", specialties: "specializations", doctors: "doctors",
-      document_types: "document_kinds", statuses: "crm_statuses"
+      document_types: "document_kinds", statuses: "crm_statuses", assignees: "assignees"
     };
     function $(id) { return document.getElementById(id); }
     function preference(key, fallback) {
@@ -7349,6 +7349,248 @@
       if ($("mis-visits-card")) $("mis-visits-card").hidden = tab !== "visits";
       if ($("mis-labs-card")) $("mis-labs-card").hidden = tab !== "labs";
     }
+    function queueTileColor(tone) {
+      var map = {
+        moss: cssToken("--num-moss", "#2d7a64"),
+        lake: cssToken("--num-lake", "#3a6d8c"),
+        clay: cssToken("--num-clay", "#a87438"),
+        heather: cssToken("--num-heather", "#7a5e7d"),
+        rose: cssToken("--num-rose", "#a85a62"),
+        slate: cssToken("--num-slate", "#4a635c")
+      };
+      return map[tone] || map.slate;
+    }
+    function shiftMinskDate(days) {
+      return minskDateKey(days);
+    }
+    function drillQueue(extra) {
+      extra = extra || {};
+      state.queueOnly = true;
+      syncQueueOnlyButton();
+      if (extra.status) state.selected.statuses = [extra.status];
+      if (extra.assignee && extra.assignee !== "не назначен") {
+        state.selected.assignees = [extra.assignee];
+      }
+      if (extra.dateFrom) {
+        state.period = "custom";
+        state.dateFrom = extra.dateFrom;
+        state.dateTo = extra.dateTo || extra.dateFrom;
+      }
+      switchPage("documents");
+    }
+    function renderQueueKpis(dash) {
+      var host = $("queue-kpis");
+      if (!host) return;
+      var tiles = (dash && dash.tiles) || [];
+      if (!tiles.length) {
+        host.innerHTML = '<p class="empty">' + esc((dash && dash.reason) || "В очереди нет случаев.") + "</p>";
+        return;
+      }
+      host.innerHTML = tiles.map(function (tile) {
+        return '<button type="button" class="kpi kpi--clickable kpi--' + esc(tile.tone || "slate") +
+          '" data-queue-status="' + esc(tile.id || "") + '">' +
+          '<div class="kpi-label">' + esc(tile.label) + "</div>" +
+          '<div class="kpi-value">' + esc(tile.n == null ? "Нет данных" : tile.n) + "</div>" +
+          '<div class="kpi-meta">из ' + esc((dash && dash.total) || 0) + " в очереди</div></button>";
+      }).join("");
+      host.querySelectorAll("[data-queue-status]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          drillQueue({ status: btn.getAttribute("data-queue-status") || "" });
+        });
+      });
+    }
+    function renderQueueAges(dash) {
+      var host = $("queue-ages");
+      if (!host) return;
+      var items = (dash && dash.ages) || [];
+      if (!items.length || !(dash && dash.available)) {
+        overviewEmpty(host, (dash && dash.reason) || "В очереди нет случаев.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        grid: { left: 88, right: 18, top: 8, bottom: 24 },
+        xAxis: { type: "value", name: "случаи" },
+        yAxis: { type: "category", data: items.map(function (d) { return d.label; }).reverse() },
+        series: [{
+          type: "bar",
+          barMaxWidth: 16,
+          itemStyle: { color: cssToken("--num-clay", "#a87438") },
+          data: items.map(function (d) { return d.n; }).reverse()
+        }]
+      }, { label: "Возраст задачи в очереди" });
+      if (chart) chart.on("click", function (params) {
+        var item = items.slice().reverse()[params.dataIndex];
+        if (!item) return;
+        var hi = item.hi == null ? 60 : item.hi;
+        drillQueue({
+          dateFrom: shiftMinskDate(-(hi)),
+          dateTo: shiftMinskDate(-(item.lo || 0))
+        });
+      });
+    }
+    function renderQueueOwners(dash) {
+      var host = $("queue-owners");
+      if (!host) return;
+      var items = (dash && dash.owners) || [];
+      if (!items.length) {
+        overviewEmpty(host, "Ответственные не назначены.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        grid: { left: 140, right: 18, top: 8, bottom: 24 },
+        xAxis: { type: "value", name: "случаи" },
+        yAxis: { type: "category", data: items.map(function (d) { return d.label; }).reverse() },
+        series: [{
+          type: "bar",
+          barMaxWidth: 16,
+          itemStyle: { color: cssToken("--num-lake", "#3a6d8c") },
+          data: items.map(function (d) { return d.n; }).reverse()
+        }]
+      }, { label: "Ответственные в очереди" });
+      if (chart) chart.on("click", function (params) {
+        var item = items.slice().reverse()[params.dataIndex];
+        if (item) drillQueue({ assignee: item.label });
+      });
+    }
+    async function loadQueueDashboard() {
+      var host = $("queue-kpis");
+      var chartHosts = ["queue-ages", "queue-owners"];
+      try {
+        var response = await request("/queue-dashboard?" + query().toString());
+        if (!response.ok) throw new Error("Не удалось загрузить очередь.");
+        var dash = await response.json();
+        renderQueueKpis(dash);
+        renderQueueAges(dash);
+        renderQueueOwners(dash);
+      } catch (error) {
+        if (isAbortedRequest(error)) throw error;
+        if (host) host.innerHTML = '<p class="empty">Дашборд очереди временно недоступен.</p>';
+        chartHosts.forEach(function (id) {
+          overviewEmpty($(id), "Дашборд очереди временно недоступен.");
+        });
+      }
+    }
+    function renderMisKpis(dash) {
+      var host = $("mis-kpis");
+      if (!host) return;
+      var tiles = (dash && dash.tiles) || [];
+      if (!tiles.length) {
+        host.innerHTML = '<p class="empty">' + esc((dash && dash.reason) || "в каталоге нет визитов") + "</p>";
+        return;
+      }
+      host.innerHTML = tiles.map(function (tile) {
+        return '<div class="kpi kpi--' + esc(tile.tone || "slate") + '">' +
+          '<div class="kpi-label">' + esc(tile.label) + "</div>" +
+          '<div class="kpi-value">' + esc(tile.n == null ? "Нет данных" : tile.n) + "</div>" +
+          '<div class="kpi-meta">каталог МИС, не KPI склада</div></div>';
+      }).join("");
+    }
+    function renderMisMonths(dash) {
+      var host = $("mis-months");
+      if (!host) return;
+      var items = (dash && dash.months) || [];
+      if (!items.length) {
+        overviewEmpty(host, (dash && dash.reason) || "нет месяцев в каталоге");
+        return;
+      }
+      MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        legend: { data: ["В каталоге", "Оценено", "Не разобрано"] },
+        grid: { left: 40, right: 18, top: 28, bottom: 28 },
+        xAxis: { type: "category", data: items.map(function (d) { return d.label; }) },
+        yAxis: { type: "value", name: "визиты" },
+        series: [
+          { name: "В каталоге", type: "bar", itemStyle: { color: cssToken("--num-lake", "#3a6d8c") }, data: items.map(function (d) { return d.found; }) },
+          { name: "Оценено", type: "bar", itemStyle: { color: cssToken("--num-moss", "#2d7a64") }, data: items.map(function (d) { return d.in_analytics; }) },
+          { name: "Не разобрано", type: "bar", itemStyle: { color: cssToken("--num-rose", "#a85a62") }, data: items.map(function (d) { return d.not_scored; }) }
+        ]
+      }, { label: "Покрытие МИС по месяцам с января" });
+    }
+    function renderMisSpecialty(dash) {
+      var host = $("mis-specialty");
+      if (!host) return;
+      var items = (dash && dash.specialties) || [];
+      if (!items.length) {
+        overviewEmpty(host, "в каталоге нет специальностей");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        grid: { left: 140, right: 18, top: 8, bottom: 24 },
+        xAxis: { type: "value", name: "визиты" },
+        yAxis: { type: "category", data: items.map(function (d) { return d.label; }).reverse() },
+        series: [{
+          type: "bar",
+          barMaxWidth: 16,
+          itemStyle: { color: cssToken("--num-heather", "#7a5e7d") },
+          data: items.map(function (d) { return d.found; }).reverse()
+        }]
+      }, { label: "Специальности каталога МИС" });
+      if (chart) chart.on("click", function (params) {
+        var item = items.slice().reverse()[params.dataIndex];
+        if (!item) return;
+        state.misQuery = item.label;
+        state.misTab = "visits";
+        if ($("mis-search")) $("mis-search").value = item.label;
+        loadMisSearch();
+      });
+    }
+    function renderMisIngest(dash) {
+      var host = $("mis-ingest-queue");
+      var empty = $("mis-ingest-empty");
+      if (!host) return;
+      var jobs = (dash && dash.ingest) || [];
+      if (empty) {
+        empty.textContent = jobs.length
+          ? ("Заданий: " + jobs.length + ". Воркер GCE забирает queued.")
+          : "Очередь догрузки пуста. «Проанализировать» ставит визит сюда.";
+      }
+      if (!jobs.length) {
+        host.innerHTML = '<p class="empty">Нет заданий.</p>';
+        return;
+      }
+      host.innerHTML = '<ol class="mis-ingest-list">' + jobs.map(function (job) {
+        var pct = Number(job.progress || 0);
+        return '<li class="mis-ingest-item">' +
+          '<div class="mis-ingest-head"><b>' + esc(job.visit_id) + "</b><span>" +
+          esc(job.status_ru || job.status) + "</span></div>" +
+          '<div class="track"><div class="fill" style="width:' + pct + '%"></div></div>' +
+          (job.error_ru ? '<p class="card-sub">' + esc(job.error_ru) + "</p>" : "") +
+          "</li>";
+      }).join("") + "</ol>";
+    }
+    async function loadMisDashboard() {
+      var host = $("mis-kpis");
+      var chartHosts = ["mis-months", "mis-specialty"];
+      try {
+        var response = await request("/mis-dashboard?" + query().toString());
+        if (!response.ok) throw new Error("Не удалось загрузить покрытие МИС.");
+        var dash = await response.json();
+        renderMisKpis(dash);
+        renderMisCoverage(dash.coverage || {});
+        renderMisMonths(dash);
+        renderMisSpecialty(dash);
+        renderMisIngest(dash);
+        var sub = $("mis-coverage-sub");
+        if (sub) {
+          sub.textContent = dash.available
+            ? "оценено / в каталоге - не оценка качества"
+            : ((dash && dash.reason) || "в каталоге нет визитов за даты фильтра");
+        }
+      } catch (error) {
+        if (isAbortedRequest(error)) throw error;
+        if (host) host.innerHTML = '<p class="empty">Дашборд МИС временно недоступен.</p>';
+        chartHosts.forEach(function (id) {
+          overviewEmpty($(id), "Дашборд МИС временно недоступен.");
+        });
+        var ingest = $("mis-ingest-queue");
+        if (ingest) ingest.innerHTML = '<p class="empty">Дашборд МИС временно недоступен.</p>';
+        var sub = $("mis-coverage-sub");
+        if (sub) sub.textContent = "Дашборд МИС временно недоступен.";
+      }
+    }
     async function loadMisSearch() {
       syncMisTabs();
       if ($("mis-search") && state.misQuery) $("mis-search").value = state.misQuery;
@@ -7384,12 +7626,14 @@
         var job = response.ok ? await response.json() : {};
         if (job.status === "done") {
           showToast("Визит в аналитике");
+          await loadMisDashboard();
           await loadMisSearch();
           if (job.case_id) openCase(job.case_id);
           return;
         }
         if (job.status === "error" || tries > 45) {
           showToast(job.error ? "Ошибка разбора визита" : "Задание ещё в очереди на GCE");
+          await loadMisDashboard();
           await loadMisSearch();
           return;
         }
@@ -7412,6 +7656,7 @@
       if (!response.ok) throw new Error(job.detail || "Не удалось поставить разбор");
       if (job.job_id) pollMisIngest(job.job_id, visitId);
       else showToast("Визит уже в аналитике");
+      await loadMisDashboard();
       await loadMisSearch();
     }
     function bindMisSearchPage() {
@@ -7448,12 +7693,12 @@
       try {
         if (page === "overview") await loadOverview();
         else if (page === "yesterday") await loadYesterday();
-        else if (page === "queue") await loadCases(true);
+        else if (page === "queue") { await loadQueueDashboard(); await loadCases(true); }
         else if (page === "documents") await loadCases(false);
         else if (page === "doctors") await loadDoctorsDimension();
         else if (page === "medications") await loadMedicationsDashboard();
         else if (page === "labs") await loadLabsDashboard();
-        else if (page === "mis") await loadMisSearch();
+        else if (page === "mis") { await loadMisDashboard(); await loadMisSearch(); }
         else if (page === "reports") {
           await loadReports();
           try { await loadAccessLog(); } catch (e) {}

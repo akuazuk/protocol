@@ -1824,6 +1824,41 @@ kbd {
 @media (max-width: 1100px) {
   .labs-grid > .card, .labs-grid > .span-7, .labs-grid > .span-5 { grid-column: 1 / -1; }
 }
+.mis-grid, .queue-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.mis-grid > .card, .queue-grid > .card { grid-column: span 6; }
+.mis-grid > .span-4 { grid-column: span 4; }
+.mis-grid > .span-8 { grid-column: span 8; }
+.queue-grid > .span-7 { grid-column: span 7; }
+.queue-grid > .span-5 { grid-column: span 5; }
+.mis-grid > .span-12 { grid-column: 1 / -1; }
+@media (max-width: 1100px) {
+  .mis-grid > .card, .queue-grid > .card,
+  .mis-grid > .span-4, .mis-grid > .span-8,
+  .queue-grid > .span-5, .queue-grid > .span-7 { grid-column: 1 / -1; }
+}
+.table-wrap--scroll {
+  overflow-x: auto;
+  max-width: 100%;
+}
+.table-wrap--scroll > table {
+  width: max-content;
+  min-width: 100%;
+}
+#page-queue .table-wrap tbody tr { height: 40px; }
+#page-queue .table-wrap th,
+#page-queue .table-wrap td {
+  padding: 4px 8px;
+  font-size: 12px;
+  white-space: nowrap;
+}
+.mis-ingest-list { margin: 0; padding: 0; list-style: none; display: grid; gap: 10px; }
+.mis-ingest-head { display: flex; justify-content: space-between; gap: 8px; font-size: 12px; }
+.mis-ingest-item .track { margin-top: 4px; }
 .cases-summary-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.2fr);

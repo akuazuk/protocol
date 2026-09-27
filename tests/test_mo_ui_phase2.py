@@ -94,6 +94,34 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_mis_queue_pages_have_f6_hosts() -> None:
+    assert 'id="mis-months"' in HTML
+    assert 'id="mis-specialty"' in HTML
+    assert 'id="mis-ingest-queue"' in HTML
+    assert 'id="mis-kpis"' in HTML
+    assert 'id="queue-kpis"' in HTML
+    assert 'id="queue-ages"' in HTML
+    assert 'id="queue-owners"' in HTML
+    assert "loadMisDashboard" in APP
+    assert "loadQueueDashboard" in APP
+    assert "/mis-dashboard?" in APP
+    assert "/queue-dashboard?" in APP
+    assert ".mis-grid" in UI
+    assert ".queue-grid" in UI
+    assert ".table-wrap--scroll" in UI
+    assert "Дашборд МИС временно недоступен." in APP
+    assert "Дашборд очереди временно недоступен." in APP
+    mis = APP.split("async function loadMisDashboard")[1].split("async function ")[0]
+    assert 'sub.textContent = "Дашборд МИС временно недоступен."' in mis
+    queue = APP.split("async function loadQueueDashboard")[1].split("async function ")[0]
+    assert "Дашборд очереди временно недоступен." in queue
+    drill = APP.split("function drillQueue")[1].split("function renderQueueKpis")[0]
+    assert "state.queueOnly = true" in drill
+    assert "syncQueueOnlyButton()" in drill
+    assert 'switchPage("documents")' in drill
+    assert 'if (queue || state.queueOnly) q.set("queue_only", "1")' in APP
+
+
 def test_labs_page_has_f5_hosts() -> None:
     assert 'id="labs-window"' in HTML
     assert 'id="labs-unused-tests"' in HTML
