@@ -8,6 +8,8 @@ from pathlib import Path
 from clinical_knowledge.mo_daily import initialize_warehouse, patient_key_for
 from clinical_knowledge.mo_patient_passport import (
     ENGINE,
+    merge_mis_lab_coverage,
+    merge_mis_visit_cards,
     public_passport,
     rebuild_passports,
 )
@@ -192,3 +194,128 @@ def test_incremental_rebuild_only_touched_key(tmp_path: Path) -> None:
     assert n_a == 1
     assert n_b[0] == 2
     assert n_b[1] == 2
+
+
+def test_mis_history_survives_warehouse_rebuild(tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo_analytics.sqlite"
+    initialize_warehouse(warehouse)
+    pk = patient_key_for("p-hist")
+    with sqlite3.connect(warehouse) as db:
+        _insert_case(
+            db,
+            mis_id="now",
+            visit_id="v-2026",
+            patient_key=pk,
+            visit_date="2026-09-02",
+            specialty="Терапевт",
+            grade="fair",
+        )
+        db.commit()
+    rebuild_passports(warehouse)
+    merge_mis_visit_cards(
+        warehouse,
+        [
+            {
+                "patient_key": pk,
+                "visit_id": "v-2024",
+                "visit_date": "2024-03-11",
+                "specialty": "ЛОР",
+                "diagnosis_code": "J32.0",
+                "dx_label": "Хронический гайморит",
+            },
+            {
+                "patient_key": pk,
+                "visit_id": "v-2026",
+                "visit_date": "2026-09-02",
+                "specialty": "Терапевт",
+            },
+        ],
+    )
+    rebuilt = rebuild_passports(warehouse)
+    assert rebuilt["mis_cards_kept"] == 1
+    with sqlite3.connect(warehouse) as db:
+        n = db.execute("SELECT n_visits, first_date, last_date FROM fact_mo_patient_passport").fetchone()
+        grade = db.execute(
+            "SELECT overall_grade, source FROM fact_mo_visit_index WHERE visit_id='v-2026'"
+        ).fetchone()
+        old = db.execute(
+            "SELECT source, overall_grade FROM fact_mo_visit_index WHERE visit_id='v-2024'"
+        ).fetchone()
+    assert n[0] == 2
+    assert n[1] == "2024-03-11"
+    assert n[2] == "2026-09-02"
+    assert grade[0] == "fair"
+    assert grade[1] == "warehouse"
+    assert old[0] == "mis"
+    assert not old[1]
+
+
+def test_merge_does_not_overwrite_grade(tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo_analytics.sqlite"
+    initialize_warehouse(warehouse)
+    pk = patient_key_for("p-grade")
+    with sqlite3.connect(warehouse) as db:
+        _insert_case(
+            db,
+            mis_id="g1",
+            visit_id="vg",
+            patient_key=pk,
+            visit_date="2026-08-01",
+            specialty="Терапевт",
+            grade="poor",
+        )
+        db.commit()
+    rebuild_passports(warehouse)
+    merge_mis_visit_cards(
+        warehouse,
+        [
+            {
+                "patient_key": pk,
+                "visit_id": "vg",
+                "visit_date": "2026-08-01",
+                "specialty": "",
+                "dx_label": "должен остаться ярлык склада",
+            }
+        ],
+    )
+    with sqlite3.connect(warehouse) as db:
+        row = db.execute(
+            "SELECT overall_grade, specialty, dx_label FROM fact_mo_visit_index"
+        ).fetchone()
+    assert row[0] == "poor"
+    assert row[1] == "Терапевт"
+
+
+def test_lab_coverage_adds_stub_passport(tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo_analytics.sqlite"
+    initialize_warehouse(warehouse)
+    pk = patient_key_for("p-lab-only")
+    out = merge_mis_lab_coverage(
+        warehouse,
+        [{"patient_key": pk, "n_lab_rows": 4, "n_lab_dates": 2, "first_date": "2025-01-01", "last_date": "2025-02-01"}],
+    )
+    assert out["lab_passports"] == 1
+    with sqlite3.connect(warehouse) as db:
+        row = db.execute(
+            "SELECT n_visits, n_lab_rows, n_lab_dates FROM fact_mo_patient_passport"
+        ).fetchone()
+    assert row == (0, 4, 2)
+    dumped = json.dumps(out, ensure_ascii=False)
+    assert "patient_id" not in dumped
+    assert "p-lab-only" not in dumped
+
+
+def test_same_visit_two_keys_from_mis(tmp_path: Path) -> None:
+    warehouse = tmp_path / "mo_analytics.sqlite"
+    initialize_warehouse(warehouse)
+    a = patient_key_for("mis-a")
+    b = patient_key_for("mis-b")
+    out = merge_mis_visit_cards(
+        warehouse,
+        [
+            {"patient_key": a, "visit_id": "shared", "visit_date": "2023-05-01", "specialty": "ЛОР"},
+            {"patient_key": b, "visit_id": "shared", "visit_date": "2023-05-01", "specialty": "ЛОР"},
+        ],
+    )
+    assert out["inserted_cards"] == 2
+    assert out["passports"] == 2
