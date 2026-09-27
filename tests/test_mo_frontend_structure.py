@@ -109,7 +109,7 @@ def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     assert 'statuses: values(rawFacets.crm_statuses' in JS
     # Legacy-значения шкалы из старых ссылок / представлений не уходят в crm_statuses.
     assert "CRM_STATUS_ORDER.indexOf(value) >= 0" in JS
-    assert 'state.selected[key].join("|")' in SOURCE
+    assert 'q.set(API_FILTER_KEYS[key] || key, chosen.join("|"))' in SOURCE
     assert 'id="case-search"' in SOURCE
     assert 'data-quick-period=' in SOURCE
     assert 'id="score-eligible-only"' in SOURCE
