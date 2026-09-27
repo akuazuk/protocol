@@ -26,13 +26,13 @@ def test_primary_nav_is_flat_without_more_menu() -> None:
         assert " hidden" not in line.replace("aria-hidden", ""), line
         pages.append(line.split('data-page="', 1)[1].split('"', 1)[0])
     assert pages == [
-        "yesterday", "documents", "mis", "doctors", "medications", "labs", "queue",
+        "yesterday", "documents", "patient", "mis", "doctors", "medications", "labs", "queue",
         "reports", "kp-sync", "rceth-sync", "settings",
     ]
     # «Период» слит с Обзором: кнопки нет, URL остаётся алиасом (см. test_url_aliases…).
     assert 'data-page="overview"' not in nav
     assert nav.count('class="nav-group-label"') == 2
-    for label in ("Обзор", "Найти МО", "Поиск МИС", "Очередь", "Справка"):
+    for label in ("Обзор", "Найти МО", "Пациент", "Поиск МИС", "Очередь", "Справка"):
         assert label in nav
 
 
@@ -59,6 +59,8 @@ def test_url_aliases_keep_yesterday_and_queue() -> None:
     assert 'location.pathname.endsWith("/mis") ? "mis"' in APP
     assert 'state.page === "mis" ? "/methodist/mo/mis"' in APP
     assert '@app.get("/methodist/mo/mis"' in SERVER
+    assert 'state.page === "patient" ? "/methodist/mo/patient"' in APP
+    assert '@app.get("/methodist/mo/patient"' in SERVER
 
 
 if __name__ == "__main__":
