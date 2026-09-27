@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-150840Z-mis-index-range"
+BUILD_VERSION = "2026-09-27-151336Z-mis-index-oneshot"
 
 
 def _app_version() -> str:
