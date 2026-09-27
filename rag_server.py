@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-151336Z-mis-index-oneshot"
+BUILD_VERSION = "2026-09-27-155743Z-passport-signals-p2"
 
 
 def _app_version() -> str:

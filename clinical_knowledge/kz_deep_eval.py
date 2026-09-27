@@ -863,6 +863,16 @@ def evaluate_kz_deep(
                 shadow_findings = list(shadow_findings) + list(hist_shadow)
                 if patient_history_primary_enabled():
                     findings.extend({**item, "shadow": False} for item in hist_shadow)
+            from .mo_passport_signals import (
+                evaluate_mo_passport_signals,
+                passport_in_score_enabled,
+            )
+
+            passport_shadow = evaluate_mo_passport_signals(case)
+            if passport_shadow:
+                shadow_findings = list(shadow_findings) + list(passport_shadow)
+                if passport_in_score_enabled():
+                    findings.extend({**item, "shadow": False} for item in passport_shadow)
     except Exception:  # noqa: BLE001
         # Мягкая деградация: оценка продолжается без этого блока.
         # Молчать нельзя - пропавшие findings означают, что случай

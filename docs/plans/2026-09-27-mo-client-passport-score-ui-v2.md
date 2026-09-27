@@ -297,9 +297,9 @@ H3-prep (другие файлы, можно раньше): мягкие/жёс�
 
 ### P2. Сигналы в score, тень
 
-Коды `B_repeat_same_plan`, `B_cross_spec_episode`,
-`B_lab_result_after_plan` + существующие lab-коды, `is_shadow=1`.
-Результат: на шаге 3/4 видно «почему», итог сентября не скачет.
+Статус: **в этой ветке**. Коды `B_repeat_same_plan`, `B_cross_spec_episode`,
+`B_lab_result_after_plan` + существующие lab-коды, `is_shadow=1` пока
+`MO_PASSPORT_IN_SCORE=0`. Итог склада не пересчитываем.
 
 ### P3. API
 
