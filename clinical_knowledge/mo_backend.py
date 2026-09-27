@@ -2893,6 +2893,300 @@ def build_score_dashboard(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+OVERVIEW_GRADE_KEYS: tuple[str, ...] = ("good", "fair", "poor", "important", "critical", "na")
+_OVERVIEW_HEATMAP_ROWS = 12
+_OVERVIEW_HEATMAP_WEEKS = 26
+_OVERVIEW_FINDINGS_TOP = 10
+_OVERVIEW_ZONE_KEYS: tuple[str, ...] = ("zone1", "zone2a", "zone2b")
+
+
+def _overview_grade_sql(alias: str = "c") -> str:
+    """Оценка для ленты Обзора: 'na' для случаев без единой зоны и без записанной оценки."""
+    a = alias
+    return (
+        f"CASE WHEN COALESCE({a}.overall_grade,'')='' AND COALESCE({a}.zone1_band,'')=''"
+        f" AND COALESCE({a}.zone2a_band,'')='' AND COALESCE({a}.zone2b_band,'')='' THEN 'na'"
+        f" ELSE {_sql_overall_grade_expr(a)} END"
+    )
+
+
+def _overview_case_where(period: DateRange, params: dict[str, Any], *, alias: str = "c") -> tuple[str, list[Any]]:
+    """Тот же набор фасетов, что у /timeseries, плюс только клинические документы."""
+    where, values = _sql_case_filter(period, params, alias=alias)
+    return f"{where} AND {alias}.document_kind IN ('clinical_visit', 'consultation')", values
+
+
+def _overview_zone_rows(conn: sqlite3.Connection, where: str, values: list[Any]) -> dict[str, Any]:
+    """Полосы трёх зон и средние % для окна (кольца O2)."""
+    row = conn.execute(
+        f"""SELECT COUNT(*) AS n,
+                   {', '.join(
+                       f"SUM(CASE WHEN lower(COALESCE(c.{z}_band,'')) = '{band}' THEN 1 ELSE 0 END) AS {z}_{band}"
+                       for z in _OVERVIEW_ZONE_KEYS for band in ("ok", "weak", "bad")
+                   )},
+                   {', '.join(
+                       f"SUM(CASE WHEN lower(COALESCE(c.{z}_band,'')) IN ('', 'na') THEN 1 ELSE 0 END) AS {z}_na"
+                       for z in _OVERVIEW_ZONE_KEYS
+                   )},
+                   {', '.join(f"AVG(c.{z}_pct) AS {z}_avg" for z in _OVERVIEW_ZONE_KEYS)}
+            FROM fact_mo_case c
+            WHERE {where} AND c.layer_engine IS NOT NULL""",
+        values,
+    ).fetchone()
+    n = int((row["n"] if row else 0) or 0)
+    zones: dict[str, Any] = {}
+    for z in _OVERVIEW_ZONE_KEYS:
+        counts = {band: int((row[f"{z}_{band}"] if row else 0) or 0) for band in ("ok", "weak", "bad", "na")}
+        assessed = counts["ok"] + counts["weak"] + counts["bad"]
+        avg = row[f"{z}_avg"] if row else None
+        zones[z] = {
+            "n": n,
+            "assessed": assessed,
+            "ok_pct": round(100.0 * counts["ok"] / assessed, 1) if assessed else None,
+            "bad_pct": round(100.0 * counts["bad"] / n, 1) if n else 0.0,
+            "avg_pct": round(float(avg), 1) if avg is not None else None,
+            "bands": _band_share_payload(counts, n=n),
+            **{band: counts[band] for band in ("ok", "weak", "bad", "na")},
+        }
+    return {"n_evaluated": n, "zones": zones}
+
+
+def _overview_trend_rows(conn: sqlite3.Connection, bucket: str, where: str, values: list[Any]) -> list[dict[str, Any]]:
+    rows = conn.execute(
+        f"""SELECT {bucket} AS date, COUNT(*) AS n_evaluated,
+                   AVG(c.zone1_pct) AS zone1_avg, AVG(c.zone2a_pct) AS zone2a_avg, AVG(c.zone2b_pct) AS zone2b_avg,
+                   SUM(CASE WHEN lower(COALESCE(c.zone1_band,''))='bad' THEN 1 ELSE 0 END) AS zone1_bad,
+                   SUM(CASE WHEN lower(COALESCE(c.zone2a_band,''))='bad' THEN 1 ELSE 0 END) AS zone2a_bad,
+                   SUM(CASE WHEN lower(COALESCE(c.zone2b_band,''))='bad' THEN 1 ELSE 0 END) AS zone2b_bad
+            FROM fact_mo_case c
+            WHERE {where} AND c.layer_engine IS NOT NULL
+            GROUP BY {bucket} ORDER BY date""",
+        values,
+    ).fetchall()
+    out: list[dict[str, Any]] = []
+    for t in rows:
+        n = int(t["n_evaluated"] or 0)
+        item: dict[str, Any] = {"date": str(t["date"]), "n_evaluated": n}
+        for z in _OVERVIEW_ZONE_KEYS:
+            avg = t[f"{z}_avg"]
+            item[f"{z}_avg"] = round(float(avg), 1) if avg is not None else None
+            item[f"{z}_bad_pct"] = round(100.0 * int(t[f"{z}_bad"] or 0) / n, 1) if n else None
+        out.append(item)
+    return out
+
+
+def _build_overview_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    resolved = _resolve_request_period(params)
+    current = resolved.current
+    comparison = resolved.comparison
+    granularity = str(params.get("granularity") or "auto").lower()
+    if granularity not in {"auto", "day", "week", "month"}:
+        raise ValueError("granularity должен быть auto, day, week или month")
+    if granularity == "auto":
+        granularity = auto_granularity(current.days)
+    bucket = _timeseries_bucket_sql(granularity, "c.visit_date")
+    week_bucket = _timeseries_bucket_sql("week", "c.visit_date")
+    grade_sql = _overview_grade_sql("c")
+    where, values = _overview_case_where(current, params)
+    from .mo_finding_labels_ru import finding_label_ru
+
+    with closing(_read_connection()) as conn:
+        cols = {row[1] for row in conn.execute("PRAGMA table_info(fact_mo_case)")}
+        if "zone1_band" not in cols:
+            return {
+                "ok": False,
+                "available": False,
+                "reason": "Нет витрины зон (нужен recompute с layer_engine).",
+                "source": _backend_source(),
+            }
+        # O1: лента оценок по корзинам периода
+        grade_rows = conn.execute(
+            f"""SELECT {bucket} AS date, {grade_sql} AS grade, COUNT(*) AS n
+                FROM fact_mo_case c WHERE {where}
+                GROUP BY {bucket}, grade ORDER BY date""",
+            values,
+        ).fetchall()
+        grade_buckets: dict[str, dict[str, Any]] = {}
+        grade_totals = {key: 0 for key in OVERVIEW_GRADE_KEYS}
+        for row in grade_rows:
+            key = str(row["date"])
+            grade = str(row["grade"] or "na")
+            if grade not in grade_totals:
+                grade = "fair"
+            item = grade_buckets.setdefault(key, {"date": key, "n": 0, **{g: 0 for g in OVERVIEW_GRADE_KEYS}})
+            item[grade] += int(row["n"] or 0)
+            item["n"] += int(row["n"] or 0)
+            grade_totals[grade] += int(row["n"] or 0)
+        # O2 + O3: зоны и тренд текущего окна
+        zones_now = _overview_zone_rows(conn, where, values)
+        trend_now = _overview_trend_rows(conn, bucket, where, values)
+        zones_prev: dict[str, Any] | None = None
+        trend_prev: list[dict[str, Any]] = []
+        if comparison is not None:
+            where_prev, values_prev = _overview_case_where(comparison, params)
+            zones_prev = _overview_zone_rows(conn, where_prev, values_prev)
+            trend_prev = _overview_trend_rows(conn, _timeseries_bucket_sql(granularity, "c.visit_date"), where_prev, values_prev)
+        # O4: специальность × неделя, доля «плохо» (poor / important / critical)
+        heat_rows = conn.execute(
+            f"""SELECT COALESCE(NULLIF(c.specialty,''), 'Без специальности') AS specialty,
+                       {week_bucket} AS week, COUNT(*) AS n,
+                       SUM(CASE WHEN {grade_sql} IN ('poor','important','critical') THEN 1 ELSE 0 END) AS bad
+                FROM fact_mo_case c WHERE {where}
+                GROUP BY specialty, week""",
+            values,
+        ).fetchall()
+        # O5: топ причин замечаний по числу случаев
+        finding_cols = {row[1] for row in conn.execute("PRAGMA table_info(fact_mo_finding)")}
+        findings_top: list[dict[str, Any]] = []
+        if "finding_code" in finding_cols:
+            shadow_clause = " AND COALESCE(f.is_shadow, 0) = 0" if "is_shadow" in finding_cols else ""
+            title_sql = "MAX(NULLIF(f.title_ru,''))" if "title_ru" in finding_cols else "NULL"
+            passed_clause = " AND COALESCE(f.passed, 0) = 0" if "passed" in finding_cols else ""
+            for row in conn.execute(
+                f"""SELECT f.finding_code AS code, MAX(f.severity) AS severity, {title_sql} AS title,
+                           COUNT(DISTINCT c.mis_id) AS n_cases
+                    FROM fact_mo_case c JOIN fact_mo_finding f ON f.mis_id = c.mis_id
+                    WHERE {where}{passed_clause}{shadow_clause}
+                    GROUP BY f.finding_code ORDER BY n_cases DESC, code LIMIT ?""",
+                [*values, _OVERVIEW_FINDINGS_TOP],
+            ):
+                code = str(row["code"] or "")
+                findings_top.append(
+                    {
+                        "code": code,
+                        "label": finding_label_ru(code, row["title"]),
+                        "severity": str(row["severity"] or ""),
+                        "n_cases": int(row["n_cases"] or 0),
+                    }
+                )
+        # O6: воронка КП по корзинам
+        kp_rows = conn.execute(
+            f"""SELECT {bucket} AS date,
+                       SUM(CASE WHEN lower(COALESCE(c.zone2b_kp_status,''))='matched' THEN 1 ELSE 0 END) AS matched,
+                       SUM(CASE WHEN lower(COALESCE(c.zone2b_kp_status,''))='unmatched' THEN 1 ELSE 0 END) AS unmatched,
+                       SUM(CASE WHEN lower(COALESCE(c.zone2b_kp_status,'')) NOT IN ('matched','unmatched') THEN 1 ELSE 0 END) AS na,
+                       COUNT(*) AS n
+                FROM fact_mo_case c WHERE {where}
+                GROUP BY {bucket} ORDER BY date""",
+            values,
+        ).fetchall()
+        queue_critical, queue_important = _queue_band_counts(
+            conn, date_from=current.date_from.isoformat(), date_to=current.date_to.isoformat()
+        )
+
+    # Тепловая карта: топ специальностей по n, последние недели окна
+    spec_n: Counter[str] = Counter()
+    weeks: set[str] = set()
+    cell: dict[tuple[str, str], tuple[int, int]] = {}
+    for row in heat_rows:
+        spec = str(row["specialty"])
+        week = str(row["week"])
+        n = int(row["n"] or 0)
+        spec_n[spec] += n
+        weeks.add(week)
+        cell[(spec, week)] = (n, int(row["bad"] or 0))
+    week_list = sorted(weeks)[-_OVERVIEW_HEATMAP_WEEKS:]
+    heat_specs = [spec for spec, _ in spec_n.most_common(_OVERVIEW_HEATMAP_ROWS)]
+    heatmap_rows = []
+    for spec in heat_specs:
+        cells = []
+        for week in week_list:
+            n, bad = cell.get((spec, week), (0, 0))
+            cells.append(
+                {
+                    "week": week,
+                    "n": n,
+                    "bad": bad,
+                    "bad_pct": round(100.0 * bad / n, 1) if n else None,
+                    "suppressed": 0 < n < SUPPRESSION_N,
+                }
+            )
+        heatmap_rows.append({"specialty": spec, "n": spec_n[spec], "cells": cells})
+
+    zones_payload: dict[str, Any] = {}
+    for z in _OVERVIEW_ZONE_KEYS:
+        now = zones_now["zones"][z]
+        prev = (zones_prev or {}).get("zones", {}).get(z) if zones_prev else None
+        delta = None
+        if prev and prev.get("ok_pct") is not None and now.get("ok_pct") is not None:
+            delta = round(now["ok_pct"] - prev["ok_pct"], 1)
+        zones_payload[z] = {**now, "prev_ok_pct": (prev or {}).get("ok_pct"), "delta_ok_pct": delta}
+
+    kp_buckets = [
+        {
+            "date": str(row["date"]),
+            "matched": int(row["matched"] or 0),
+            "unmatched": int(row["unmatched"] or 0),
+            "na": int(row["na"] or 0),
+            "n": int(row["n"] or 0),
+        }
+        for row in kp_rows
+    ]
+    kp_totals = {
+        key: sum(int(item[key]) for item in kp_buckets) for key in ("matched", "unmatched", "na", "n")
+    }
+    n_total = sum(grade_totals.values())
+    return {
+        "ok": True,
+        "available": True,
+        "source": _backend_source(),
+        "schema_version": SCHEMA_VERSION,
+        "periods": resolved.to_dict(),
+        "granularity": granularity,
+        "window": {
+            "date_from": current.date_from.isoformat(),
+            "date_to": current.date_to.isoformat(),
+            "trend_date_from": current.date_from.isoformat(),
+            "trend_date_to": current.date_to.isoformat(),
+            "granularity": granularity,
+        },
+        "coverage": {"evaluated": zones_now["n_evaluated"], "cases": n_total, "target_pct": 99.0},
+        "queue": {"critical": queue_critical, "important": queue_important},
+        "grades": {
+            "buckets": list(grade_buckets.values()),
+            "totals": grade_totals,
+            "n": n_total,
+            "bad_pct": round(
+                100.0 * (grade_totals["poor"] + grade_totals["important"] + grade_totals["critical"]) / n_total, 1
+            )
+            if n_total
+            else None,
+        },
+        "zones": zones_payload,
+        "trends": trend_now,
+        "trends_compare": trend_prev,
+        "heatmap": {"weeks": week_list, "rows": heatmap_rows, "suppression_n": SUPPRESSION_N},
+        "findings_top": findings_top,
+        "kp_funnel": {"buckets": kp_buckets, "totals": kp_totals},
+        "attention": {
+            "n_evaluated": zones_now["n_evaluated"],
+            "zone1_bad": zones_payload["zone1"]["bad"],
+            "zone2a_bad": zones_payload["zone2a"]["bad"],
+            "zone2b_bad": zones_payload["zone2b"]["bad"],
+            "zone1_bad_pct": zones_payload["zone1"]["bad_pct"],
+            "zone2a_bad_pct": zones_payload["zone2a"]["bad_pct"],
+            "zone2b_bad_pct": zones_payload["zone2b"]["bad_pct"],
+            "queue_critical": queue_critical,
+            "queue_important": queue_important,
+            "zone_avgs": {z: zones_payload[z]["avg_pct"] for z in _OVERVIEW_ZONE_KEYS},
+        },
+    }
+
+
+def build_overview_dashboard(params: dict[str, Any]) -> dict[str, Any]:
+    """Обзор O1-O6 одним ответом: лента оценок, зоны с дельтой, тренд с прошлым периодом,
+    тепловая карта специальность × неделя, топ причин, воронка КП. Все блоки - за окно
+    периода и с теми же фасетами (специальности, филиалы, врачи, тип документа)."""
+    if _backend_source() != "warehouse":
+        return {
+            "ok": False,
+            "available": False,
+            "reason": "Обзор строится только из склада МО.",
+            "source": _backend_source(),
+        }
+    return _cached_result("overview_dashboard", params, 120.0, lambda: _build_overview_dashboard_uncached(params))
+
+
 
 def _secondary_icd_and_gaps(filtered: list[dict[str, Any]], *, small_slice: bool) -> dict[str, Any]:
     """Сводки МКБ-чипа и clinical gaps для Period «Подробнее» (не hero)."""

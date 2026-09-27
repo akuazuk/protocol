@@ -184,22 +184,39 @@
           <div class="family-strip" id="yesterday-family-strip"></div>
           <div id="partial-banner" class="banner" hidden>Данные неполные. Публикация итогового отчёта заблокирована до завершения проверки.</div>
           <div class="section-actions"><button class="button" data-action="download">Скачать отчёт</button><button class="button secondary" data-go="queue">Открыть очередь</button><button class="button secondary" id="share-yesterday">Поделиться ссылкой на срез</button></div>
-          <div class="grid">
-            <article class="card span-12">
-              <h2>Распределение оценок</h2>
-              <p class="card-sub">Три зоны одной шкалы оценки. Клик по сегменту открывает Найти МО.</p>
-              <div class="score-rings" id="yesterday-score-rings"><div class="skeleton"></div></div>
+          <div class="grid overview-grid">
+            <article class="card span-7">
+              <h2>Лента оценок за период</h2>
+              <p class="card-sub" id="yesterday-grades-sub">Доля оценок по дням. Клик открывает Найти МО за этот день с этой оценкой</p>
+              <div id="yesterday-grade-band" class="mo-chart-host mo-chart-host--band"></div>
             </article>
-            <article class="card span-12">
-              <h2>Динамика</h2>
+            <article class="card span-5">
+              <h2>Три зоны</h2>
+              <p class="card-sub">Доля «хорошо» в каждой зоне и изменение к прошлому периоду. Клик по сегменту открывает Найти МО.</p>
+              <div class="score-rings score-rings--compact" id="yesterday-score-rings"><div class="skeleton"></div></div>
+            </article>
+            <article class="card span-7">
+              <h2>Тренд зон</h2>
               <p class="card-sub" id="yesterday-dynamics-sub">Средние % трёх зон по дням выбранного периода</p>
               <div id="yesterday-score-dynamics" class="zone-trend-chart"></div>
             </article>
-            <article class="card span-12"><h2>Таблица дня</h2><p class="card-sub">Сначала риск и случаи, где история может сменить вердикт. Клик открывает разбор</p><div class="table-wrap sticky-first"><table><thead><tr><th>Оценка</th><th>Раздел</th><th>Визит</th><th>Пациент</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
-            <details open class="card span-12 mo-secondary-details"><summary>Подробнее: полнота данных за день</summary>
-            <div class="grid">
-            <article class="card span-12"><h2>Полнота данных</h2><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
-            </div></details>
+            <article class="card span-5">
+              <h2>Воронка КП</h2>
+              <p class="card-sub">Случаи с подобранным клиническим протоколом, без него и без сравнения. Клик открывает Найти МО.</p>
+              <div id="yesterday-kp-funnel" class="mo-chart-host"></div>
+            </article>
+            <article class="card span-7">
+              <h2>Специальность и неделя</h2>
+              <p class="card-sub">Доля оценок «слабо», «важно» и «критично» по неделям. Клик открывает Найти МО по специальности за неделю.</p>
+              <div id="yesterday-heatmap" class="mo-chart-host mo-chart-host--heat"></div>
+            </article>
+            <article class="card span-5">
+              <h2>Топ причин замечаний</h2>
+              <p class="card-sub">Сколько случаев затронуто каждым замечанием. Клик открывает Найти МО с этим замечанием.</p>
+              <div id="yesterday-findings-top" class="mo-chart-host"></div>
+            </article>
+            <article class="card span-12"><h2>Таблица дня</h2><p class="card-sub">Сначала риск и случаи, где история может сменить вердикт. Клик открывает разбор</p><div class="table-wrap sticky-first table-wrap--dense"><table class="table-dense"><thead><tr><th>Оценка</th><th>Визит</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
+            <article class="card span-12"><h2>Полнота данных за день</h2><p class="card-sub">Получено, ожидалось и оценено. Всё видно сразу, без раскрывашек.</p><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
           </div>
         </section>
 
