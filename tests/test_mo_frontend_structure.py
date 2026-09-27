@@ -234,6 +234,34 @@ def test_server_tables_map_chrome_to_query_params() -> None:
     assert "state.search = next;" in body
 
 
+def test_facets_are_fetched_for_non_overview_pages_and_on_panel_open() -> None:
+    """/cases не отдаёт facets: при deep-link на «Найти МО»/«Очередь» меню фильтров
+    должны заполняться отдельным запросом /facets (и при открытии панели)."""
+    assert "async function ensureFacets(force)" in JS
+    assert 'request("/facets?" + key, "/cases?" + key)' in JS
+    load_page = JS[JS.find("async function loadPage(page)") :]
+    load_page = load_page[: load_page.find("function savedViews")]
+    assert 'if (page !== "overview") ensureFacets().catch(function () {});' in load_page
+    draft = JS[JS.find("function beginFilterDraft()") :][:400]
+    assert "ensureFacets().catch(function () {});" in draft
+    # ключ кэша не зависит от пагинации/сортировки
+    key_fn = JS[JS.find("function facetsQueryKey()") :][:300]
+    for param in ("page", "page_size", "sort_by", "sort_dir"):
+        assert f'"{param}"' in key_fn
+    # поздний ответ /facets перерисовывает меню - набранный поиск по фильтру сохраняется,
+    # а отметки берутся из filterDraft/selected (publishFacet пишет туда сразу)
+    render = JS[JS.find("function renderFilter(details)") :][:2600]
+    assert "var previousTerm = previousSearch ? previousSearch.value : \"\";" in render
+    assert "if (previousTerm) {" in render
+    assert "state.filterDraft.selected" in render
+    # поздний ответ /facets перерисовывает меню - набранный поиск по фильтру сохраняется,
+    # а отметки берутся из filterDraft/selected (publishFacet пишет туда сразу)
+    render = JS[JS.find("function renderFilter(details)") :][:2600]
+    assert "var previousTerm = previousSearch ? previousSearch.value : \"\";" in render
+    assert "if (previousTerm) {" in render
+    assert "state.filterDraft.selected" in render
+
+
 def test_facet_checkbox_publishes_without_waiting_outer_apply() -> None:
     assert "function publishFacet(next, closeMenu)" in JS
     assert "publishFacet(draft, false)" in JS

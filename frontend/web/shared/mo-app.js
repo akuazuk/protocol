@@ -873,8 +873,31 @@
       }
       return out;
     }
+    // Фасеты (врачи, филиалы, статусы разбора) приходят только из /facets.
+    // /cases их не отдаёт, поэтому при deep-link на «Найти МО»/«Очередь»
+    // меню фильтров без этого запроса остаются пустыми.
+    var facetsKey = null;
+    function facetsQueryKey() {
+      var q = query();
+      ["page", "page_size", "sort_by", "sort_dir"].forEach(function (key) { q.delete(key); });
+      return q.toString();
+    }
+    async function ensureFacets(force) {
+      var key = facetsQueryKey();
+      if (!force && key === facetsKey) return false;
+      var response = await request("/facets?" + key, "/cases?" + key);
+      if (!response.ok) return false;
+      var payload = await response.json();
+      if (facetsQueryKey() !== key) return false;
+      buildFacets((state.data && state.data.summary) || normalizeSummary({}), payload.facets || payload);
+      if (state.filterDraft && JSON.stringify(state.filterDraft) !== JSON.stringify(selectionSnapshot())) {
+        updateFilterSummary(true);
+      }
+      return true;
+    }
     function buildFacets(summary, rawFacets) {
       rawFacets = rawFacets || {};
+      facetsKey = facetsQueryKey();
       state.facets = {
         months: monthValues(),
         branches: values(rawFacets.branches || rawFacets.filials || summary.branches, ["value","filial","branch"]),
@@ -1002,6 +1025,10 @@
         : state.selected;
       var selected = (selectedSource[key] || []).slice();
       var draft = selected.slice();
+      // Перерисовка может прийти асинхронно (ensureFacets) при открытом меню -
+      // сохраняем набранный текст поиска по фильтру.
+      var previousSearch = details.querySelector('.filter-menu input[type="search"]');
+      var previousTerm = previousSearch ? previousSearch.value : "";
       details.classList.toggle("has-applied", selected.length > 0);
       details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
       details.querySelector(".filter-menu").innerHTML =
@@ -1022,12 +1049,17 @@
         apply.disabled = !changed;
         details.classList.toggle("has-pending", changed);
       }
-      search.addEventListener("input", function () {
+      function applySearchTerm() {
         var term = search.value.trim().toLowerCase();
         details.querySelectorAll(".filter-option").forEach(function (option) {
           option.hidden = option.getAttribute("data-label").indexOf(term) < 0;
         });
-      });
+      }
+      search.addEventListener("input", applySearchTerm);
+      if (previousTerm) {
+        search.value = previousTerm;
+        applySearchTerm();
+      }
       function publishFacet(next, closeMenu) {
         draft = next.slice();
         if (key === "document_types") {
@@ -6380,6 +6412,9 @@
         else if (page === "rceth-sync") await loadRcethSync();
         else if (page === "settings") await loadSettingsPage();
         else await ensureSummary();
+        // Обзор строит фасеты из своего /facets; остальным страницам подгружаем
+        // их отдельно, чтобы меню фильтров были заполнены и при deep-link.
+        if (page !== "overview") ensureFacets().catch(function () {});
       } catch (e) {
         if (!isAbortedRequest(e)) showError(e.message || String(e));
       }
@@ -6778,6 +6813,7 @@
       state.filterDraft = selectionSnapshot();
       syncFilterDraftControls();
       updateFilterSummary(false);
+      ensureFacets().catch(function () {});
     }
     function commitFilterDraft() {
       if (!state.filterDraft) return;
