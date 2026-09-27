@@ -7,17 +7,21 @@ APP = (ROOT / "frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
 HTML = (ROOT / "frontend/web/methodist/mis-kz-quality.html").read_text(encoding="utf-8")
 
 
-def test_steps_module_has_host_and_three_panels() -> None:
+def test_steps_module_has_host_and_five_panels() -> None:
     assert "id=\"case-stepper\"" in STEPS
     assert "data-step-panel=\"1\"" in STEPS
     assert "data-step-panel=\"2\"" in STEPS
     assert "data-step-panel=\"3\"" in STEPS
+    assert "data-step-panel=\"4\"" in STEPS
+    assert "data-step-panel=\"5\"" in STEPS
+    assert "proof" in STEPS
     assert "case-review-pane" not in STEPS
 
 
 def test_app_uses_stepper_when_enabled() -> None:
     assert "MO.steps.enabled()" in APP
     assert "case-stepper-host" in APP
+    assert "case-decision-dock" in APP
     assert 'id="case-review-pane"' in APP
 
 

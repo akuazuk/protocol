@@ -4541,9 +4541,9 @@
           '<div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div id="case-stepper-host"></div>' +
           '<div id="protocol-suggest-host" class="protocol-suggest-host" hidden></div>' +
-          decisionHtml +
+          '<div id="case-decision-dock">' + decisionHtml + '</div>' +
           '</div></div>';
-        MO.steps.mount($("case-stepper-host"), data, item.id);
+        MO.steps.mount($("case-stepper-host"), data, item.id, { decisionDock: $("case-decision-dock") });
       } else if (useZonesUi) {
         $("drawer-body").innerHTML =
           renderCaseWorkspaceTabs() +
