@@ -624,8 +624,15 @@
       q.set("sort_by", state.sortBy);
       q.set("sort_dir", state.sortDir);
       Object.keys(state.selected).forEach(function (key) {
+        var chosen = state.selected[key] || [];
+        if (key === "statuses") {
+          // Старые ссылки и представления хранили подписи шкалы («Критично»); в CRM-статусах
+          // их нет - не отправляем, иначе список пуст без понятной причины.
+          chosen = chosen.filter(function (value) { return CRM_STATUS_ORDER.indexOf(value) >= 0; });
+          state.selected.statuses = chosen;
+        }
         // `|` - не запятая: адреса филиалов содержат "," и ломали split на API
-        if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join("|"));
+        if (chosen.length) q.set(API_FILTER_KEYS[key] || key, chosen.join("|"));
       });
       if (state.selected.months.length) q.set("month", state.selected.months[0]);
       // Жёстко: non-clinical вне таблицы; URL не даёт opt-out.
