@@ -4,9 +4,12 @@
   var STEPS = [
     { id: 1, key: "patient", label: "Пациент" },
     { id: 2, key: "lens", label: "Линза" },
-    { id: 3, key: "visit", label: "Визит" }
+    { id: 3, key: "visit", label: "Визит" },
+    { id: 4, key: "proof", label: "Доказательство" },
+    { id: 5, key: "decision", label: "Решение" }
   ];
   var LENS_PAGE = 12;
+  var QUOTE_MAX = 240;
 
   function enabled() {
     try {
@@ -19,9 +22,17 @@
   function currentStep() {
     try {
       var raw = parseInt(new URLSearchParams(window.location.search || "").get("step") || "3", 10);
-      if (raw === 1 || raw === 2 || raw === 3) return raw;
+      if (raw >= 1 && raw <= 5) return raw;
     } catch (error) {}
     return 3;
+  }
+
+  function currentProof() {
+    try {
+      return String(new URLSearchParams(window.location.search || "").get("proof") || "");
+    } catch (error) {
+      return "";
+    }
   }
 
   function currentLens() {
@@ -65,6 +76,8 @@
       url.searchParams.set("step", String(step));
       if (extra.lens) url.searchParams.set("lens", extra.lens);
       if (extra.date) url.searchParams.set("lab_date", extra.date);
+      if (extra.proof) url.searchParams.set("proof", extra.proof);
+      if (extra.clearProof) url.searchParams.delete("proof");
       window.history.replaceState(window.history.state, "", url);
     } catch (error) {}
   }
@@ -156,7 +169,9 @@
       return '<span class="case-stepper__chip">' + esc(label) + " · " + esc(bandRu(band)) + "</span>";
     }).join("");
     var defects = findings.map(function (item) {
-      return "<li>" + esc(item.title_ru || item.code || "замечание") + "</li>";
+      var code = item.code || item.finding_code || "";
+      return '<li><button type="button" class="case-stepper__row" data-step="4" data-proof="' +
+        esc(code) + '">' + esc(item.title_ru || code || "замечание") + "</button></li>";
     }).join("");
     return '<section class="case-stepper__panel" data-step-panel="3">' +
       "<h3>Визит</h3>" +
@@ -166,6 +181,67 @@
       '<p class="case-stepper__context">' + esc(summary.context || coverageLine(summary.coverage)) + "</p>" +
       '<p class="card-sub">' + esc(kpLine) + "</p>" +
       (defects ? "<ol>" + defects + "</ol>" : '<p class="empty">До 5 дефектов: сейчас пусто.</p>') +
+      '<p><button type="button" class="button secondary" data-step="4">К доказательству</button> ' +
+      '<button type="button" class="button" data-step="5">К решению</button></p>' +
+      "</section>";
+  }
+
+  function officialFindings(data) {
+    return ((data && data.findings) || []).filter(function (item) {
+      return item && !item.is_shadow;
+    });
+  }
+
+  function clipQuote(value) {
+    var text = String(value || "").replace(/\s+/g, " ").trim();
+    if (text.length <= QUOTE_MAX) return text;
+    return text.slice(0, QUOTE_MAX - 1).replace(/\s+\S*$/, "").trim() + "...";
+  }
+
+  function proofBasket(item) {
+    if (!item) return "контекст";
+    if (item.is_shadow) return "черновик";
+    var axis = String(item.axis || "");
+    if (axis === "history" || axis === "context") return "контекст";
+    return "дефект";
+  }
+
+  function stepProof(data) {
+    var items = officialFindings(data);
+    var proof = currentProof();
+    var idx = 0;
+    items.forEach(function (item, i) {
+      if ((item.code || item.finding_code) === proof) idx = i;
+    });
+    var item = items[idx] || null;
+    var assessment = (data && data.assessment) || {};
+    var version = assessment.evaluator_version || assessment.scorer_version ||
+      (data && data.record && data.record.evaluation_run_id) || "";
+    var quote = item ? clipQuote(item.detail_ru || item.evidence || item.source_ref || item.title_ru) : "";
+    var prev = items[idx - 1];
+    var next = items[idx + 1];
+    return '<section class="case-stepper__panel" data-step-panel="4">' +
+      "<h3>Доказательство</h3>" +
+      (item
+        ? "<p><strong>" + esc(item.title_ru || item.code) + "</strong> · " +
+          esc(proofBasket(item)) + "</p>" +
+          '<blockquote class="case-stepper__quote">' + esc(quote || "Цитаты нет.") + "</blockquote>" +
+          '<p class="card-sub">evaluator_version: ' + esc(version || "нет") + "</p>"
+        : '<p class="empty">Нет официального замечания для доказательства.</p>') +
+      '<div class="case-stepper__proof-nav">' +
+      '<button type="button" data-step="4" data-proof="' + esc((prev && (prev.code || prev.finding_code)) || "") + '"' +
+      (prev ? "" : " disabled") + ">Предыдущее</button>" +
+      "<span>" + (items.length ? (idx + 1) + " / " + items.length : "0 / 0") + "</span>" +
+      '<button type="button" data-step="4" data-proof="' + esc((next && (next.code || next.finding_code)) || "") + '"' +
+      (next ? "" : " disabled") + ">Следующее</button>" +
+      '<button type="button" class="button" data-step="5">К решению</button>' +
+      "</div></section>";
+  }
+
+  function stepDecision() {
+    return '<section class="case-stepper__panel" data-step-panel="5">' +
+      "<h3>Решение</h3>" +
+      '<p class="case-stepper__context">Три вердикта, комментарий и PDF. Статус CRM сюда не выносится.</p>' +
       "</section>";
   }
 
@@ -184,15 +260,28 @@
     if (!slot) return;
     if (step === 1) slot.innerHTML = stepPatient(passport);
     else if (step === 2) slot.innerHTML = stepLens(passport, currentLens(), "");
+    else if (step === 4) slot.innerHTML = stepProof(data);
+    else if (step === 5) slot.innerHTML = stepDecision();
     else slot.innerHTML = stepVisit(data, passport);
+    syncDecisionDock(host._decisionDock, step);
+  }
+
+  function syncDecisionDock(dock, step) {
+    if (!dock) return;
+    dock.hidden = step !== 5;
+    var crm = dock.querySelector("#drawer-status");
+    var crmLabel = crm && crm.closest("label");
+    if (crmLabel) crmLabel.hidden = true;
   }
 
   function bind(host, ctx) {
     if (!host) return;
     host.addEventListener("click", function (event) {
       var crumb = event.target.closest("[data-step]");
-      if (crumb) {
-        setStep(Number(crumb.getAttribute("data-step") || "3"));
+      if (crumb && !crumb.disabled) {
+        var nextStep = Number(crumb.getAttribute("data-step") || "3");
+        var proof = crumb.getAttribute("data-proof") || "";
+        setStep(nextStep, proof ? { proof: proof } : (nextStep === 4 ? {} : { clearProof: true }));
         renderSlot(host, ctx.data, ctx.passport);
         return;
       }
@@ -221,8 +310,10 @@
     }
   }
 
-  async function mount(host, data, caseId) {
+  async function mount(host, data, caseId, options) {
     if (!host) return;
+    options = options || {};
+    host._decisionDock = options.decisionDock || null;
     host.innerHTML = hostHtml();
     var passport = data && data.passport_summary && data.passport_summary.ok
       ? data.passport_summary
