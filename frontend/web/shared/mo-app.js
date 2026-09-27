@@ -110,11 +110,11 @@
     };
     var FILTER_LABELS = {
       months: "Месяц", branches: "Филиал", specialties: "Специальность", doctors: "Врач",
-      document_types: "Тип документа", statuses: "Статус"
+      document_types: "Тип документа", statuses: "Статус разбора методиста"
     };
     var API_FILTER_KEYS = {
       months: "periods", branches: "filials", specialties: "specializations", doctors: "doctors",
-      document_types: "document_kinds", statuses: "statuses"
+      document_types: "document_kinds", statuses: "crm_statuses"
     };
     function $(id) { return document.getElementById(id); }
     function preference(key, fallback) {
@@ -268,7 +268,9 @@
       });
       if (st.metaEl) {
         var total = dataRows.length || rows.length;
-        st.metaEl.textContent = "Показано " + visible + " из " + total;
+        st.metaEl.textContent = st.serverSort
+          ? ("На странице " + total + (state.caseNavTotal ? " · всего " + state.caseNavTotal : ""))
+          : ("Показано " + visible + " из " + total);
       }
       table.querySelectorAll("thead tr:first-child th").forEach(function (th) {
         var col = Number(th.getAttribute("data-col-index"));
@@ -315,11 +317,42 @@
         toolbar.setAttribute("data-table-toolbar", id);
         host.insertBefore(toolbar, wrap);
       }
+      if (st.serverSort) {
+        // Серверная таблица: поиск и «Только плохо» - это параметры запроса
+        // (q, overall_grade), а не фильтр строк одной страницы.
+        st.search = "";
+        st.chip = "all";
+        toolbar.innerHTML =
+          '<form class="filter" data-table-server-search><span>Поиск по всей выборке</span>' +
+          '<input class="control" type="search" data-table-search placeholder="Диагноз, МКБ, врач, № визита" autocomplete="off"></form>' +
+          '<div class="table-toolbar-chips" role="group" aria-label="Оценка МО">' +
+          '<button type="button" class="chip-btn" data-server-grade="" aria-pressed="true">Все оценки</button>' +
+          '<button type="button" class="chip-btn" data-server-grade="' + BAD_GRADES + '" aria-pressed="false">Только плохо</button>' +
+          "</div>" +
+          '<div class="table-toolbar-meta" data-table-meta></div>';
+        st.metaEl = toolbar.querySelector("[data-table-meta]");
+        var serverSearch = toolbar.querySelector("[data-table-search]");
+        serverSearch.value = state.search || "";
+        toolbar.querySelector("[data-table-server-search]").addEventListener("submit", function (event) {
+          event.preventDefault();
+          var next = String(serverSearch.value || "").trim();
+          if (next !== state.search) state.searchOff = [];
+          state.search = next;
+          if ($("case-search")) $("case-search").value = next;
+          showToast(next ? "Поиск применён: " + next : "Поиск очищен");
+          filtersChanged();
+        });
+        toolbar.querySelectorAll("[data-server-grade]").forEach(function (btn) {
+          var value = btn.getAttribute("data-server-grade") || "";
+          btn.setAttribute("aria-pressed", String(state.overallGrade || "") === value ? "true" : "false");
+          btn.addEventListener("click", function () {
+            setOverallGrade(value, { force: true });
+          });
+        });
+      } else {
       toolbar.innerHTML =
-        '<label class="filter"><span>' + (options.serverSort ? "Среди строк на экране" : "Фильтр строк этой таблицы") + "</span>" +
-        '<input class="control" type="search" data-table-search placeholder="' +
-        (options.serverSort ? "Не меняет склад, только эти строки" : "Только видимые строки таблицы") +
-        '" autocomplete="off"></label>' +
+        '<label class="filter"><span>Фильтр строк этой таблицы</span>' +
+        '<input class="control" type="search" data-table-search placeholder="Только видимые строки таблицы" autocomplete="off"></label>' +
         '<div class="table-toolbar-chips" role="group" aria-label="Быстрый фильтр">' +
         '<button type="button" class="chip-btn" data-chip="all" aria-pressed="true">Все</button>' +
         '<button type="button" class="chip-btn" data-chip="bad" aria-pressed="false">Только плохо</button>' +
@@ -342,6 +375,7 @@
           applyTableChrome(table);
         });
       });
+      }
 
       var filterRow = table.tHead.querySelector("tr.col-filters");
       if (filterRow) filterRow.remove();
@@ -590,8 +624,15 @@
       q.set("sort_by", state.sortBy);
       q.set("sort_dir", state.sortDir);
       Object.keys(state.selected).forEach(function (key) {
+        var chosen = state.selected[key] || [];
+        if (key === "statuses") {
+          // Старые ссылки и представления хранили подписи шкалы («Критично»); в CRM-статусах
+          // их нет - не отправляем, иначе список пуст без понятной причины.
+          chosen = chosen.filter(function (value) { return CRM_STATUS_ORDER.indexOf(value) >= 0; });
+          state.selected.statuses = chosen;
+        }
         // `|` - не запятая: адреса филиалов содержат "," и ломали split на API
-        if (state.selected[key].length) q.set(API_FILTER_KEYS[key] || key, state.selected[key].join("|"));
+        if (chosen.length) q.set(API_FILTER_KEYS[key] || key, chosen.join("|"));
       });
       if (state.selected.months.length) q.set("month", state.selected.months[0]);
       // Жёстко: non-clinical вне таблицы; URL не даёт opt-out.
@@ -840,7 +881,10 @@
         specialties: values(rawFacets.specialties || summary.specialties, ["value","specialization","specialty"]),
         doctors: values(rawFacets.doctors || summary.doctors, ["value","doctor_fio","doctor"]),
         document_types: values(rawFacets.document_types || rawFacets.document_kinds || rawFacets.kz_kind || ["clinical_visit","procedure_session","medical_exam","diagnostic","non_clinical"], ["value"]),
-        statuses: values(rawFacets.statuses || ["Хорошо","Требует внимания","Критично","Недостаточно данных"], ["value"])
+        statuses: values(rawFacets.crm_statuses || CRM_STATUS_ORDER, ["value"]).map(function (item) {
+          item.label = statusLabel(item.value);
+          return item;
+        })
       };
       document.querySelectorAll(".filter-pop").forEach(renderFilter);
       updateFilterSummary();
@@ -861,6 +905,10 @@
       var clearSearch = $("case-search-clear");
       if (clearSearch) clearSearch.hidden = !String(state.search || $("case-search").value || "").trim();
     }
+    var CRM_STATUS_ORDER = [
+      "new", "assigned", "in_review", "confirmed_issue", "false_positive",
+      "needs_more_data", "sent_to_doctor", "resolved", "closed"
+    ];
     function looksLikeIcd(text) {
       return /^[A-Za-z]\d{2}(?:\.\d{1,4})?$/.test(String(text || "").trim());
     }
@@ -873,6 +921,20 @@
       });
       var sel = $("overall-grade-filter");
       if (sel) sel.value = current;
+      document.querySelectorAll("[data-server-grade]").forEach(function (btn) {
+        btn.setAttribute("aria-pressed", (btn.getAttribute("data-server-grade") || "") === current ? "true" : "false");
+      });
+    }
+    var BAD_GRADES = "critical|important|poor";
+    var OVERALL_GRADE_LABELS = {
+      critical: "Критично", important: "Важно", poor: "Слабо",
+      fair: "С замечанием", good: "Хорошо", na: "Нет оценки"
+    };
+    function overallGradeLabelRu(value) {
+      var parts = String(value || "").split("|").filter(Boolean);
+      if (!parts.length) return "";
+      if (value === BAD_GRADES) return "плохо (критично, важно, слабо)";
+      return parts.map(function (part) { return OVERALL_GRADE_LABELS[part] || part; }).join(", ");
     }
     function setOverallGrade(grade, opts) {
       opts = opts || {};
@@ -881,11 +943,7 @@
       state.overallGrade = next;
       syncGradeStrip();
       if (opts.silent) return;
-      var labels = {
-        critical: "Критично", important: "Важно", poor: "Слабо",
-        fair: "С замечанием", good: "Хорошо", na: "Нет оценки"
-      };
-      showToast(next ? ("Оценка: " + (labels[next] || next)) : "Оценка сброшена");
+      showToast(next ? ("Оценка: " + overallGradeLabelRu(next)) : "Оценка сброшена");
       filtersChanged();
     }
     function syncQueueOnlyButton() {
@@ -1218,10 +1276,7 @@
           '<button type="button" data-clear-zone aria-label="Удалить фильтр раздела">×</button></span>');
       }
       if (state.overallGrade) {
-        var gradeLabel = ({
-          critical: "критично", important: "важно", poor: "слабо",
-          fair: "с замечанием", good: "хорошо"
-        })[state.overallGrade] || state.overallGrade;
+        var gradeLabel = overallGradeLabelRu(state.overallGrade).toLowerCase();
         html.push('<span class="chip">Оценка: ' + esc(gradeLabel) +
           '<button type="button" data-clear-overall-grade aria-label="Удалить фильтр оценки">×</button></span>');
       }
@@ -1481,128 +1536,6 @@
     }
     async function loadLegacyOverview(suffix) {
       return request("/overview" + suffix, "__root__");
-    }
-    function hostActive(id) {
-      var el = $(id);
-      return !!(el && !el.hasAttribute("hidden"));
-    }
-    function renderMonthTrend(data) {
-      if (!hostActive("month-trend-chart")) return;
-      var items = (data.timeseries || {}).items || [], dates = items.map(function (item) { return item.date; });
-      var names = {
-        overall:"Итог", documentation:"Оформление", clinical_concordance:"Клиническая согласованность",
-        safety:"Безопасность", regulatory:"Регуляторика"
-      };
-      var series = Object.keys(names).map(function (key) {
-        return { name:names[key], type:"line", connectNulls:true, symbolSize:6,
-          data:items.map(function (item) { return item[key]; }) };
-      });
-      series = series.map(function (item) {
-        return Object.assign({}, item, {
-          smooth: true,
-          showSymbol: false,
-          lineStyle: { width: 2.4 },
-          areaStyle: item.name === "Итог" ? { opacity: 0.08 } : undefined
-        });
-      });
-      series.push({ name:"Объём", type:"bar", yAxisIndex:1, barMaxWidth:18,
-        itemStyle:{ borderRadius:[6,6,0,0], opacity:.45 },
-        data:items.map(function (item) {
-          return { value:item.volume, itemStyle:item.anomaly ? { color:"#be123c", opacity:1 } : null };
-        }), markPoint:{ data:items.map(function (item, index) {
-          return item.anomaly ? { name:"Аномалия", coord:[index,item.volume], value:"!" } : null;
-        }).filter(Boolean) } });
-      var chart = MO.moChart($("month-trend-chart"), {
-        tooltip:{ trigger:"axis" }, legend:{ type:"scroll" }, grid:{ left:48,right:54,top:58,bottom:68 },
-        dataZoom:[{ type:"inside" },{ type:"slider", bottom:10 }],
-        xAxis:{ type:"category", name:"Дата", data:dates },
-        yAxis:[{ type:"value", name:"Индекс, %", min:0, max:100 },{ type:"value", name:"Записи" }],
-        series:series
-      }, { label:"Динамика четырёх индексов и объёма за месяц",
-        description:"Линии показывают индексы, столбцы объём, красные маркеры аномальные дни.",
-        fallback:function (target) { target.innerHTML=items.map(function (item) { return bar(item.date,item.overall); }).join(""); } });
-      if (chart) chart.on("click", function (params) {
-        var day = items[params.dataIndex] && items[params.dataIndex].date;
-        if (day) applyDrill({ label: "День " + day, period: "custom", dateFrom: day, dateTo: day, page: "documents" });
-      });
-    }
-    function renderMonthHeatmap(data) {
-      if (!hostActive("month-heatmap-chart")) return;
-      var cells=((data.heatmap || {}).cells || []), rows=Array.from(new Set(cells.map(function (x) { return x.row; }))),
-        cols=Array.from(new Set(cells.map(function (x) { return x.col; })));
-      if (!cells.length) { $("month-heatmap-chart").innerHTML=unavailableBlock(data.heatmap); return; }
-      var chart=MO.moChart($("month-heatmap-chart"), {
-        tooltip:{ formatter:function (p) { var x=cells[p.dataIndex]; return esc(x.row)+"<br>"+esc(x.col)+"<br>Оценка: "+x.avg_score+"%<br>n = "+x.n; } },
-        grid:{ left:135,right:22,top:18,bottom:70 }, dataZoom:[{ type:"inside" }],
-        xAxis:{ type:"category", name:"Глава МКБ", data:cols }, yAxis:{ type:"category", name:"Специальность", data:rows },
-        visualMap:{ min:50,max:100,calculable:true,orient:"horizontal",left:"center",bottom:4 },
-        series:[{ type:"heatmap", data:cells.map(function (x) { return [cols.indexOf(x.col),rows.indexOf(x.row),x.avg_score,x.n]; }), label:{ show:true,formatter:function (p) { return p.data[3]; } } }]
-      }, { label:"Тепловая карта специальностей и глав МКБ", description:"Цвет означает среднюю оценку, подпись число случаев.",
-        fallback:function (target) { target.innerHTML=cells.slice(0,12).map(function (x) { return bar(x.row+" / "+x.col,x.avg_score,x.n); }).join(""); } });
-      if (chart) chart.on("click", function (params) {
-        var cell=cells[params.dataIndex]; applyDrill({ label: "Специальность " + cell.row, selected: { specialties: [cell.row] }, page: "documents" });
-      });
-    }
-    function renderMonthDoctors(data) {
-      if (!hostActive("month-doctor-chart")) return;
-      var section=data.doctor_case_mix || {}, items=(section.items || []).filter(function (x) {
-        return x.enough_data && !x.suppressed && x.delta != null;
-      }).slice(0,15);
-      if (!items.length) { $("month-doctor-chart").innerHTML=unavailableBlock(section,"Нет врачей, прошедших порог n."); }
-      else {
-        var chart=MO.moChart($("month-doctor-chart"), {
-          tooltip:{ formatter:function (p) { var x=items[p.dataIndex], ci=x.delta_ci95 || {}; return esc(x.label)+"<br>Дельта: "+signed(x.delta)+"<br>95% ДИ: "+signed(ci.low)+" ... "+signed(ci.high)+"<br>n = "+x.n; } },
-          grid:{ left:145,right:24,top:18,bottom:42 }, xAxis:{ type:"value",name:"Дельта, п.п." },
-          yAxis:{ type:"category",data:items.map(function (x) { return x.label; }) },
-          series:[{ type:"bar",barMaxWidth:18,itemStyle:{ borderRadius:[0,8,8,0] },
-          data:items.map(function (x) { return x.delta; }),markLine:{ symbol:"none",data:[{ xAxis:0 }] } }]
-        }, { label:"Рейтинг врачей по case-mix дельте",description:"Показаны врачи с достаточной выборкой и доверительным интервалом.",
-          fallback:function (target) { target.innerHTML=items.map(function (x) { return notice(x.label,signed(x.delta)+", n="+x.n,"review"); }).join(""); } });
-        if (chart) chart.on("click",function (p) { applyDrill({ label: "Врач " + items[p.dataIndex].label, selected: { doctors: [items[p.dataIndex].label] }, page: "documents" }); });
-      }
-      $("month-doctor-note").innerHTML='<p class="inline-note">'+esc(section.rule || "")+"</p>";
-    }
-    function renderMonthPareto(data) {
-      if (!hostActive("month-pareto-chart")) return;
-      var section=data.pareto || {}, items=section.items || [];
-      if (!items.length) { $("month-pareto-chart").innerHTML=unavailableBlock(section); return; }
-      var chart=MO.moChart($("month-pareto-chart"), {
-        tooltip:{ trigger:"axis", formatter:function (params) {
-          var x=items[params[0].dataIndex] || {};
-          return esc(x.label || x.finding_code || "") + "<br>" + esc(x.cases) + " случаев";
-        } }, grid:{ left:48,right:48,top:28,bottom:110 },
-        xAxis:{ type:"category",axisLabel:{ rotate:28, interval:0, formatter:function (value) {
-          return String(value || "").length > 28 ? String(value).slice(0, 26) + "…" : value;
-        } },data:items.map(function (x) { return x.label || x.finding_code; }) },
-        yAxis:[{ type:"value",name:"Случаи" },{ type:"value",name:"Накоплено, %",min:0,max:100 }],
-        series:[{ type:"bar",name:"Случаи",barMaxWidth:22,itemStyle:{ borderRadius:[6,6,0,0] },data:items.map(function (x) { return x.cases; }) },
-          { type:"line",name:"Накопленная доля",smooth:true,showSymbol:false,yAxisIndex:1,data:items.map(function (x) { return x.cumulative_share_pct; }) }]
-      }, { label:"Парето замечаний месяца",description:"Клик открывает документы с этим замечанием.",
-        fallback:function (target) { target.innerHTML=items.map(function (x) { return bar(x.label || x.finding_code,x.cumulative_share_pct,x.cases); }).join(""); } });
-      if (chart) chart.on("click",function (p) {
-        var item = items[p.dataIndex] || {};
-        navigateFinding(item.finding_code, item.label || item.finding_code);
-      });
-    }
-    function renderMonthFunnel(data) {
-      if (!hostActive("month-funnel-chart") && !hostActive("month-crm-chart")) return;
-      var funnel=data.funnel || {}, stages=[
-        ["Источник",funnel.source],["Допущено",funnel.eligible],["Оценено",funnel.evaluated],
-        ["С замечаниями",funnel.with_findings],["В работе CRM",funnel.in_crm_work],["Закрыто",funnel.closed]
-      ];
-      MO.moChart($("month-funnel-chart"), { tooltip:{ trigger:"item" },
-        series:[{ type:"funnel",left:"8%",width:"84%",label:{ formatter:"{b}: {c}" },
-          itemStyle:{ borderRadius:6, borderColor:"#fff", borderWidth:1 },
-          data:stages.map(function (x) { return { name:x[0],value:x[1] || 0 }; }) }] },
-      { label:"Воронка месяца",description:"Путь записей от источника до закрытия в CRM.",
-        fallback:function (target) { target.innerHTML=stages.map(function (x) { return bar(x[0],funnel.source ? 100*x[1]/funnel.source : 0,x[1]); }).join(""); } });
-      var statuses=(data.crm_progress || {}).statuses || {}, keys=Object.keys(statuses);
-      if (!keys.length) $("month-crm-chart").innerHTML=unavailableBlock(data.crm_progress);
-      else MO.moChart($("month-crm-chart"), { tooltip:{ trigger:"axis" },grid:{ left:105,right:18,top:18,bottom:40 },
-        xAxis:{ type:"value",name:"Случаи" },yAxis:{ type:"category",data:keys.map(statusLabel) },
-        series:[{ type:"bar",barMaxWidth:18,itemStyle:{ borderRadius:[0,8,8,0] },data:keys.map(function (key) { return statuses[key]; }) }] },
-      { label:"Прогресс CRM по статусам",description:"Количество оценённых случаев в каждом рабочем статусе.",
-        fallback:function (target) { target.innerHTML=keys.map(function (key) { return notice(statusLabel(key),statuses[key]+" случаев","good"); }).join(""); } });
     }
     function renderAttentionStrip(hostId, attention, opts) {
       var host = $(hostId);
@@ -2071,20 +2004,6 @@
         });
         enhanceTablesIn(look, { idPrefix: "chrome-month-look" });
       }
-      if (hostActive("month-forecast")) {
-        $("month-forecast").innerHTML=kpi("Прогноз записей",forecast.projected_source,forecast.method)+
-          kpi("Прогноз оценённых",forecast.projected_evaluated,"при текущем темпе")+
-          kpi("Прогноз оценки",score(forecast.projected_avg_score),"без изменения среднего");
-      }
-      if (hostActive("month-compare")) {
-        var comparisons=data.comparison || {};
-        $("month-compare").innerHTML=Object.keys(comparisons).map(function (key) {
-          var item=comparisons[key];
-          return item.available ? notice(item.label,
-            "Записи "+signed(item.deltas.source_records,"")+"; оценка "+signed(item.deltas.avg_score),"good") :
-            notice("Сравнение недоступно",item.reason,"review");
-        }).join("")+"<p class=\"inline-note\">"+esc((forecast.assumptions || []).join(". "))+"</p>";
-      }
       var reconciliation=data.reconciliation || {}, banner=$("month-reconciliation");
       banner.hidden = reconciliation.status === "ok" || (
         Number(reconciliation.source_delta || 0) === 0 &&
@@ -2093,7 +2012,6 @@
       banner.className="banner critical";
       banner.textContent="Расхождение дневных и MTD итогов: источник "+reconciliation.source_delta+
         ", оценено "+reconciliation.evaluated_delta+". Данные не замаскированы.";
-      renderMonthTrend(data);renderMonthHeatmap(data);renderMonthDoctors(data);renderMonthPareto(data);renderMonthFunnel(data);
       renderMonthReg55Section(data.reg55);
       renderMonthIcdStatus(data.icd_visit_status);
       renderMonthClinicalGaps(data.clinical_gaps, data.kp_unmatched);
@@ -2628,23 +2546,34 @@
       return '<tr tabindex="0" class="' + reg55RowClass(band).trim() + '" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
-        icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
+        '</td><td>' + (icdVisitChip(item.raw || item) || '<span class="status muted">нет данных</span>') +
+        '</td><td>' + historyPresenceChip(item.raw || item) +
+        '</td><td>' + kpPresenceChip(item.zone2bKp) +
         '</td><td>' + overallGradeChip(item.overallGrade) +
         '</td><td>' + zoneBandChip(item.zone1Band) + '</td><td>' + zoneBandChip(item.zone2aBand) +
         '</td><td>' + zoneBandChip(item.zone2bBand, item.zone2bKp) +
         '</td><td>' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
-        '</td><td><span class="status ' + statusClass(item.status) + '">' +
-        esc(statusLabel(item.status)) + "</span></td>" +
-        '<td><b>' + esc(scoreLabel(item.total, item.raw.score_reason)) + '</b></td>' +
-        '<td>' + reg55BandPill(band, item.reg55) + '</td>' +
-        '<td>' + esc(score(item.coverage)) + '</td>' +
-        '<td>' + esc(score(item.confidence)) + '</td></tr>';
+        '</td><td>' + reg55BandPill(band, item.reg55) + '</td></tr>';
+    }
+    function historyPresenceChip(row) {
+      var raw = row && (row.raw || row) || {};
+      var n = Number(raw.history_prior_n || 0);
+      var tier = String(raw.history_tier || "");
+      if (!n && !tier) return '<span class="status muted">нет данных</span>';
+      var has = n > 0 && tier !== "first_contact" && tier !== "insufficient";
+      var title = historyTierLabelRu(tier) || "История пациента до этого визита";
+      return '<span class="status ' + (has ? "good" : "review") + ' history-visit-chip" title="' + esc(title) + '">' +
+        (has ? "есть · " + n : "нет") + "</span>";
+    }
+    function kpPresenceChip(kpStatus) {
+      var status = String(kpStatus || "").trim();
+      if (!status) return '<span class="status muted">нет данных</span>';
+      return protocolIsMatched(status)
+        ? '<span class="status good">подобран</span>'
+        : '<span class="status review">не подобран</span>';
     }
     function queueRow(item) {
       var raw = item.raw || {};
-      var priority = raw.severity_label_ru || severityLabel(raw) ||
-        (Number(raw.p0 || 0) > 0 ? "Критично" : Number(raw.p1 || 0) > 0 ? "Важно" : "Низкий балл");
-      var tone = raw.severity_tone || severityTone(raw) || statusClass(item.status);
       var crm = raw.crm || {};
       var pdfUrl = raw.pdf_url || ("/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf");
       var layer = raw.layer_ru || layerLabelRu(item.attentionPrimary || raw.attention_primary);
@@ -2659,13 +2588,12 @@
         ? ('<br><span class="' + shadowBandClass(shadowBand) + '" title="' +
           esc(shadow.disclaimer_ru || "shadow") + '">' + esc(shadowBandLabel(shadowBand)) + "</span>")
         : "";
-      return '<tr tabindex="0" class="' + reg55RowClass(band).trim() + '" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td><span class="status ' +
-        esc(tone) + '">' + esc(priority) + '</span>' + shadowBadge + '</td><td>' + esc(layer || "-") +
+      return '<tr tabindex="0" class="' + reg55RowClass(band).trim() + '" data-case="' + esc(item.id) + '"><td><input type="checkbox" data-case-select="' + esc(item.id) + '" aria-label="Выбрать случай"></td><td>' +
+        overallGradeChip(item.overallGrade || raw.overall_grade) + shadowBadge + '</td><td>' + esc(layer || "-") +
         '</td><td class="id-cell">' + esc(item.visitId || item.id || "-") +
         '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) +
         '</td><td>' + esc(item.branch) + '</td><td><b>' + esc(item.doctor) + '</b><br><small>' + esc(item.specialty) +
         '</small></td><td>' + esc(item.diagnosis) + icdVisitChip(item.raw || item) + historyVisitChip(item.raw || item) +
-        '</td><td>' + overallGradeChip(item.overallGrade || raw.overall_grade) +
         '</td><td>' + zoneBandChip(item.zone1Band || raw.zone1_band) +
         '</td><td>' + zoneBandChip(item.zone2aBand || raw.zone2a_band) +
         '</td><td>' + zoneBandChip(item.zone2bBand || raw.zone2b_band, item.zone2bKp || raw.zone2b_kp_status) +
@@ -2769,7 +2697,7 @@
       }
       if (!queue) renderSearchPlan(data.search_plan, rows.length);
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
-        '<tr><td colspan="' + (queue ? 14 : 12) + '" class="empty"><b>' +
+        '<tr><td colspan="' + (queue ? 18 : 15) + '" class="empty"><b>' +
         esc(emptyTitle) + "</b><div>" +
         esc(emptyHint) + "</div></td></tr>";
       bindCaseRows(body);
@@ -4764,35 +4692,6 @@
         }).join("") : '<tr><td colspan="5" class="empty">Разбивка по типам документов недоступна.</td></tr>';
       attachTableChrome($("yesterday-kind-rows").closest("table"), { id: "chrome-yesterday-kind-rows" });
     }
-    function renderYesterdayIndices(data) {
-      if (!hostActive("yesterday-index-cards")) return;
-      var items = ((data.indices || {}).items || []);
-      $("yesterday-index-cards").innerHTML = items.map(function (item) {
-        return kpi(item.label, item.available ? score(item.value) : "Нет данных",
-          "к предыдущему дню: " + signed(item.delta_previous_day),
-          item.delta_weekday_mean == null ? "" : signed(item.delta_weekday_mean) + " к среднему дня недели");
-      }).join("") || unavailableBlock(data.indices);
-      var available = items.filter(function (item) { return item.available; });
-      var chart = MO.moChart($("yesterday-index-chart"), {
-        tooltip: { trigger: "axis" },
-        legend: { data: ["За день", "Предыдущий день", "Среднее дня недели"] },
-        grid: { left: 48, right: 18, top: 46, bottom: 52 },
-        xAxis: { type: "category", name: "Индекс", data: available.map(function (item) { return item.label; }) },
-        yAxis: { type: "value", name: "Оценка, %", min: 0, max: 100 },
-        series: [
-          { name: "За день", type: "bar", barMaxWidth: 28, itemStyle: { borderRadius: [6,6,0,0] }, data: available.map(function (item) { return item.value; }) },
-          { name: "Предыдущий день", type: "bar", barMaxWidth: 28, itemStyle: { borderRadius: [6,6,0,0] }, data: available.map(function (item) { return item.previous_day; }) },
-          { name: "Среднее дня недели", type: "line", smooth: true, symbolSize: 9, data: available.map(function (item) { return item.weekday_mean_8w; }) }
-        ]
-      }, {
-        label: "Сравнение четырёх индексов за вчера",
-        description: "Для каждого индекса показано значение дня, предыдущего дня и среднее того же дня недели.",
-        fallback: function (target) {
-          target.innerHTML = available.map(function (item) { return bar(item.label, item.value); }).join("");
-        }
-      });
-      if (chart) chart.on("click", function () { applyDrill({ label: "Индексы за вчера", page: "documents" }); });
-    }
     function navigateFinding(code, sourceLabel) {
       applyDrill({
         label: sourceLabel || ("Замечание " + (code || "")),
@@ -5047,126 +4946,6 @@
       return '<div class="family-score-row">' + chip("Проверка назначений", scores.drug_score, scores.drug) +
         chip("Анализы", scores.lab_score, scores.lab) + "</div>";
     }
-    function navigateYesterdayFinding(code, label, day) {
-      applyDrill({
-        label: label || ("Замечание " + (code || "")),
-        findingCode: code || "",
-        search: "",
-        caseSearchValue: "",
-        period: day ? "custom" : state.period,
-        dateFrom: day || state.dateFrom,
-        dateTo: day || state.dateTo,
-        page: "documents"
-      });
-    }
-    function renderYesterdayFindings(data) {
-      if (!hostActive("yesterday-findings-chart")) return;
-      var items = ((data.top_findings || {}).items || []).slice(0, 12);
-      var day = (data.top_findings || {}).day || data.day || data.data_through || "";
-      if (!items.length) {
-        $("yesterday-findings-chart").innerHTML = unavailableBlock(data.top_findings);
-        $("yesterday-findings-list").innerHTML = "";
-        return;
-      }
-      var total = items.reduce(function (sum, item) { return sum + Number(item.cases || 0); }, 0), running = 0;
-      var cumulative = items.map(function (item) { running += Number(item.cases || 0); return total ? Math.round(1000 * running / total) / 10 : 0; });
-      var chartLabels = items.map(function (item) { return item.label || item.finding_code; });
-      var chart = MO.moChart($("yesterday-findings-chart"), {
-        tooltip: { trigger: "axis", formatter: function (params) {
-          var item = items[params[0].dataIndex] || {};
-          return esc(item.label || item.finding_code || "") + "<br>" + esc(item.severity || "") +
-            " · " + esc(item.cases) + " случаев";
-        } },
-        grid: { left: 48, right: 48, top: 30, bottom: 110 },
-        xAxis: { type: "category", name: "Замечание", axisLabel: { rotate: 28, interval: 0, formatter: function (value) {
-          return String(value || "").length > 28 ? String(value).slice(0, 26) + "…" : value;
-        } }, data: chartLabels },
-        yAxis: [{ type: "value", name: "Случаи" }, { type: "value", name: "Накоплено, %", min: 0, max: 100 }],
-        series: [
-          { name: "Случаи", type: "bar", data: items.map(function (item) {
-            return { value: item.cases, itemStyle: { decal: { symbol: item.severity === "P0" ? "rect" : "line" } } };
-          }) },
-          { name: "Накопленная доля", type: "line", yAxisIndex: 1, data: cumulative }
-        ]
-      }, {
-        label: "Парето замечаний за вчера",
-        description: "Клик открывает список МО с этим замечанием за день.",
-        fallback: function (target) {
-          target.innerHTML = items.map(function (item) { return bar(item.label || item.finding_code, Math.min(100, item.cases), item.cases); }).join("");
-        }
-      });
-      if (chart) chart.on("click", function (params) {
-        var item = items[params.dataIndex] || {};
-        navigateYesterdayFinding(item.finding_code, item.label, day);
-      });
-      $("yesterday-findings-list").innerHTML = items.map(function (item) {
-        var samples = (item.sample_cases || []).slice(0, 5).map(function (sample) {
-          return '<button class="finding-case-link" type="button" data-open-case="' + esc(sample.case_id) + '">' +
-            esc(sample.doctor || sample.case_id) +
-            (sample.specialty ? ' <small>' + esc(sample.specialty) + '</small>' : '') +
-            '</button>';
-        }).join("");
-        return '<div class="finding-card">' +
-          '<button class="finding-link" type="button" data-yesterday-finding="' + esc(item.finding_code) +
-          '" data-yesterday-label="' + esc(item.label || item.finding_code) +
-          '" data-yesterday-day="' + esc(day) + '">' +
-          '<span class="status ' + esc(severityTone(item)) + '">' +
-          esc(severityLabel(item)) + '</span> <b>' + esc(item.label || item.finding_code) + '</b>' +
-          '<span class="finding-meta">' + esc(item.cases) + ' случаев · открыть список МО</span></button>' +
-          (samples ? '<div class="finding-cases">' + samples + '</div>' : '') +
-          '</div>';
-      }).join("");
-    }
-    function renderYesterdayDoctors(data) {
-      if (!hostActive("yesterday-doctor-chart")) return;
-      var section = data.doctor_outliers || {}, items = section.items || [];
-      if (!items.length) {
-        $("yesterday-doctor-chart").innerHTML = unavailableBlock(section);
-        $("yesterday-doctor-note").innerHTML = "";
-        return;
-      }
-      $("yesterday-doctor-note").innerHTML = section.note
-        ? notice("Ожидаемое", section.note, "review")
-        : "";
-      var chart = MO.moChart($("yesterday-doctor-chart"), {
-        tooltip: { trigger: "axis", axisPointer: { type: "shadow" }, formatter: function (params) {
-          var item = items[params[0].dataIndex], ci = item.delta_ci95 || {};
-          return esc(item.label) + "<br>Дельта: " + signed(item.delta) + "<br>95% ДИ: " +
-            (ci.low == null ? "недоступен" : signed(ci.low) + " ... " + signed(ci.high)) + "<br>n = " + item.n;
-        } },
-        grid: { left: 145, right: 28, top: 20, bottom: 42 },
-        xAxis: { type: "value", name: "Дельта к ожидаемой, п.п." },
-        yAxis: { type: "category", name: "Врач", data: items.map(function (item) { return item.label; }) },
-        series: [{ name: "Дельта", type: "bar", data: items.map(function (item) { return item.delta; }),
-          markLine: { symbol: "none", data: [{ xAxis: -10, name: "Порог -10" }] } }]
-      }, {
-        label: "Врачи с оценкой ниже ожидаемой",
-        description: "Ранжирование по дельте к ожидаемой оценке своей специальности.",
-        fallback: function (target) {
-          target.innerHTML = items.map(function (item) { return notice(item.label, signed(item.delta) + ", n=" + item.n, "review"); }).join("");
-        }
-      });
-      if (chart) chart.on("click", function (params) {
-        var doctor = items[params.dataIndex].label;
-        state.findingCode = "";
-        applyDrill({ label: "Врач " + doctor, selected: { doctors: [doctor] }, page: "documents" });
-      });
-      $("yesterday-doctor-note").innerHTML = '<p class="inline-note">' + esc(section.rule) + "</p>";
-    }
-    function llmJudgeMini(item) {
-      var judge = item.llm_action_judge || {};
-      if (!judge.available || !judge.kpis) return "";
-      var k = judge.kpis;
-      function chip(label, payload) {
-        var pct = payload && payload.score_pct;
-        var tone = verdictTone(payload && payload.verdict);
-        return '<span class="status ' + tone + ' llm-mini-chip" title="' + esc(label) + '">' +
-          esc(label[0]) + " " + esc(pct == null ? "-" : Math.round(Number(pct)) + "%") + '</span>';
-      }
-      return '<div class="llm-mini-kpis">' +
-        chip("Полнота", k.completeness) + chip("Диагноз", k.diagnosis) + chip("Рекомендации", k.recommendations) +
-        '</div>';
-    }
     function renderYesterdayActions(data) {
       var section = data.action_cases || {}, items = section.items || [];
       $("yesterday-action-rows").innerHTML = items.length ? items.map(function (item) {
@@ -5176,9 +4955,8 @@
         var reason = item.attention_reason_ru || item.reason || item.finding_title || item.finding_code || "";
         var deep = item.deep_run_track_ru || item.history_mode_ru || "";
         if (deep) reason = (reason ? reason + " · " : "") + deep;
-        return '<tr data-case="' + esc(item.case_id) + '"><td><span class="status ' +
-          esc(severityTone(item)) + '">' + esc(severityLabel(item)) +
-          '</span></td><td>' + esc(layer) +
+        return '<tr data-case="' + esc(item.case_id) + '"><td>' + overallGradeChip(item.overall_grade) +
+          '</td><td>' + esc(layer) +
           '</td><td class="id-cell">' + esc(visitId) +
           '</td><td class="id-cell">' + esc(item.patient_id || "-") +
           '</td><td>' + esc(item.visit_date || data.date || "-") +
@@ -5191,62 +4969,6 @@
       bindCaseRows($("yesterday-action-rows"));
       attachTableChrome($("yesterday-action-rows").closest("table"), { id: "chrome-yesterday-action-rows" });
     }
-    function renderYesterdayFlow(data, dimension) {
-      if (!hostActive("yesterday-flow-chart")) return;
-      var section = data.flow_changes || {}, dimensions = section.dimensions || {};
-      var items = (dimensions[dimension] || []).filter(function (item) { return item.available; }).slice(0, 12);
-      if (!items.length) {
-        $("yesterday-flow-chart").innerHTML = unavailableBlock(section, "Нет публикуемых групп в этом разрезе.");
-        $("yesterday-flow-note").innerHTML = "";
-        return;
-      }
-      var chart = MO.moChart($("yesterday-flow-chart"), {
-        tooltip: { trigger: "axis" },
-        legend: { data: ["За день", "Предыдущий день"] },
-        grid: { left: 48, right: 18, top: 45, bottom: 95 },
-        xAxis: { type: "category", name: "Группа", axisLabel: { rotate: 30 }, data: items.map(function (item) { return item.key; }) },
-        yAxis: { type: "value", name: "Доля потока, %" },
-        series: [
-          { name: "За день", type: "bar", data: items.map(function (item) { return item.share_pct; }) },
-          { name: "Предыдущий день", type: "bar", data: items.map(function (item) { return item.previous_share_pct; }) }
-        ]
-      }, {
-        label: "Состав потока и изменение против предыдущего дня",
-        description: "Сравниваются доли групп в текущем и предыдущем полном дне.",
-        fallback: function (target) {
-          target.innerHTML = items.map(function (item) { return bar(item.key, item.share_pct); }).join("");
-        }
-      });
-      if (chart) chart.on("click", function (params) {
-        var stateKey = dimension === "specialty" ? "specialties" : dimension === "branch" ? "branches" : "document_types";
-        state.findingCode = "";
-        applyDrill({ label: "Поток " + items[params.dataIndex].key, selected: (function(){ var obj={}; obj[stateKey]=[items[params.dataIndex].key]; return obj; })(), page: "documents" });
-      });
-      $("yesterday-flow-note").innerHTML = items.slice(0, 4).map(function (item) {
-        return notice(item.key, "Доля " + item.share_pct + "%, изменение " + signed(item.share_delta_pp), Math.abs(item.share_delta_pp || 0) >= 5 ? "review" : "good");
-      }).join("");
-    }
-    function renderYesterdaySourceQuality(data) {
-      if (!hostActive("yesterday-source-quality")) return;
-      var section = data.source_quality || {}, items = section.items || [];
-      $("yesterday-source-quality").innerHTML = items.length ? items.map(function (item) {
-        if (!item.available) return notice(item.label, item.reason, "review");
-        var inverse = item.key === "date_mismatch_pct";
-        return bar(item.label, inverse ? Math.max(0, 100 - Number(item.value)) : item.value,
-          Number(item.value).toFixed(1) + "%" + (inverse ? " расхождений" : ""));
-      }).join("") : unavailableBlock(section);
-    }
-    async function takeYesterdayCase(caseId, button) {
-      button.disabled = true;
-      try {
-        await postCaseChanges([caseId], { status: "in_review" }, "Взято в работу из отчёта за вчера");
-        button.textContent = "Уже в работе";
-        showToast("Случай " + caseId + " взят в работу");
-      } catch (error) {
-        button.disabled = false;
-        showError(error.message);
-      }
-    }
     function renderYesterday(data, dash, workingDay) {
       renderYesterdayScoreKpis(data, dash || null);
       renderAttentionStrip("yesterday-attention", (dash && dash.attention) || data.attention || null, {
@@ -5256,12 +4978,6 @@
       renderYesterdayScoreDashboard(dash || state.data.scoreDashboard || null, workingDay || data.date || "");
       renderYesterdayActions(data);
       renderYesterdayCompleteness(data);
-      renderYesterdayIndices(data);
-      renderYesterdayFindings(data);
-      renderYesterdayDoctors(data);
-      var flowDim = $("yesterday-flow-dimension");
-      renderYesterdayFlow(data, (flowDim && flowDim.value) || "specialty");
-      renderYesterdaySourceQuality(data);
     }
     async function resolveTodayWorkingDay() {
       if (state.period === "custom" && state.dateFrom) {
@@ -6806,29 +6522,37 @@
     var COLUMN_MAP = {
       documents: [
         "Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз",
-        "Оценка", "Оформление", "Диагноз (зона)", "План", "Причина", "Статус",
-        "Итог", "№55 / градация", "Полнота проверки", "Надёжность"
+        "МКБ", "История", "КП", "Оценка", "Оформление", "Диагноз (зона)", "План",
+        "Причина", "№55 / градация"
       ],
       queue: [
-        "Выбор", "Приоритет", "Раздел", "Визит", "Пациент", "Дата", "Филиал",
-        "Врач / специальность", "Диагноз", "Оценка", "Оформление", "Диагноз (зона)", "План",
-        "№55 / градация", "Причина", "Ответственный", "Срок", "Статус", "МО"
+        "Выбор", "Оценка", "Раздел", "Визит", "Пациент", "Дата", "Филиал",
+        "Врач / специальность", "Диагноз", "Оформление", "Диагноз (зона)", "План",
+        "№55 / градация", "Причина", "Ответственный", "Срок", "Разбор", "МО"
       ]
     };
     var COLUMN_PRESETS = {
       work: {
-        documents: [true, false, true, true, false, true, true, false, false, false, true, false, false, false, false, false],
-        queue: [true, true, false, true, false, true, false, true, true, true, false, false, false, false, true, false, false, false, false]
+        documents: [true, false, true, true, false, true, true, true, true, true, false, false, false, true, false],
+        queue: [true, true, false, true, false, true, false, true, true, false, false, false, false, true, false, false, true, false]
       },
       review: {
-        documents: [true, false, true, true, false, true, true, true, true, true, true, true, false, true, false, false],
-        queue: [true, true, true, true, false, true, false, true, true, true, true, true, true, true, true, false, false, true, false]
+        documents: [true, false, true, true, true, true, true, true, true, true, true, true, true, true, true],
+        queue: [true, true, true, true, false, true, true, true, true, true, true, true, true, true, true, true, true, true]
       }
     };
-    var COLUMN_DEFAULTS = {
-      documents: [true, true, true, true, false, true, true, false, false, false, true, true, false, false, false, false],
-      queue: [true, true, false, true, false, true, false, true, true, false, false, false, false, false, true, false, false, true, false]
-    };
+    var COLUMN_DEFAULTS = { documents: COLUMN_PRESETS.work.documents, queue: COLUMN_PRESETS.work.queue };
+    function columnPresetActive(key) {
+      var visible = state.columnVisible[key] || [];
+      var found = "";
+      Object.keys(COLUMN_PRESETS).forEach(function (preset) {
+        var cols = COLUMN_PRESETS[preset][key] || [];
+        if (!found && cols.length === visible.length && cols.every(function (v, i) { return !!v === (visible[i] !== false); })) {
+          found = preset;
+        }
+      });
+      return found;
+    }
     function ensureColumnState() {
       if (!state.columnsLoaded) {
         state.columnsLoaded = true;
@@ -6865,15 +6589,26 @@
       ensureColumnState();
       function block(key, targetId) {
         var host = $(targetId);
+        var active = columnPresetActive(key);
+        function presetButton(preset, label, hint) {
+          return '<button class="button secondary compact" type="button" data-col-preset="' + key + '" data-preset="' + preset +
+            '" aria-pressed="' + (active === preset ? "true" : "false") + '" title="' + esc(hint) + '">' + label + "</button>";
+        }
+        function presetSummary(preset) {
+          var cols = COLUMN_PRESETS[preset][key] || [];
+          return COLUMN_MAP[key].filter(function (_, idx) { return cols[idx]; }).join(", ");
+        }
         host.innerHTML = '<h3>' + (key === "queue" ? "Очередь" : "Найти МО") + '</h3>' +
-          '<div class="column-presets">' +
-          '<button class="button secondary compact" type="button" data-col-preset="' + key + '" data-preset="work">Работа</button>' +
-          '<button class="button secondary compact" type="button" data-col-preset="' + key + '" data-preset="review">Проверка</button>' +
+          '<div class="column-presets" role="group" aria-label="Наборы колонок">' +
+          presetButton("work", "Работа", presetSummary("work")) +
+          presetButton("review", "Проверка", presetSummary("review")) +
           '</div>' +
-          '<details open class="column-all"><summary>Все колонки</summary><div class="filter-options">' + COLUMN_MAP[key].map(function (label, idx) {
+          '<p class="inline-note">Работа: ' + esc(presetSummary("work")) + '.</p>' +
+          '<p class="inline-note">Проверка: ' + esc(presetSummary("review")) + '.</p>' +
+          '<div class="filter-options column-all" aria-label="Отдельные колонки">' + COLUMN_MAP[key].map(function (label, idx) {
             return '<label class="filter-option"><input type="checkbox" data-col-key="' + key + '" data-col-index="' + idx + '"' +
               (state.columnVisible[key][idx] === false ? '' : ' checked') + '><span>' + esc(label) + '</span></label>';
-          }).join('') + '</div></details>';
+          }).join('') + '</div>';
       }
       block("documents", "columns-manager-doc");
       block("queue", "columns-manager-queue");
@@ -6884,6 +6619,9 @@
           state.columnVisible[key][idx] = !!input.checked;
           saveColumnState();
           applyColumnVisibility(key);
+          $("columns-manager").querySelectorAll('[data-col-preset="' + key + '"]').forEach(function (button) {
+            button.setAttribute("aria-pressed", button.getAttribute("data-preset") === columnPresetActive(key) ? "true" : "false");
+          });
         });
       });
       $("columns-manager").querySelectorAll("[data-col-preset]").forEach(function (button) {
@@ -7292,9 +7030,6 @@
       $("queue-open-pdf-selected").addEventListener("click", function () {
         openSelectedQueuePdfs().catch(function (error) { showError(error.message); });
       });
-      $("queue-critical-only").addEventListener("click", function () {
-        applyQueueBand("critical");
-      });
       var shadowOnlyBtn = $("queue-shadow-attention-only");
       if (shadowOnlyBtn) {
         shadowOnlyBtn.addEventListener("click", function () {
@@ -7308,22 +7043,6 @@
           filtersChanged();
         });
       }
-      $("yesterday-findings-list").addEventListener("click", function (event) {
-        var caseButton = event.target.closest("[data-open-case]");
-        if (caseButton) {
-          event.preventDefault();
-          openCase(caseButton.getAttribute("data-open-case"), caseButton);
-          return;
-        }
-        var button = event.target.closest("[data-yesterday-finding]");
-        if (button) {
-          navigateYesterdayFinding(
-            button.getAttribute("data-yesterday-finding"),
-            button.getAttribute("data-yesterday-label"),
-            button.getAttribute("data-yesterday-day")
-          );
-        }
-      });
       document.addEventListener("click", function (event) {
         var pdfButton = event.target.closest("[data-open-pdf]");
         if (!pdfButton) return;
@@ -7339,19 +7058,6 @@
           .catch(function (error) { showError(error.message); });
       });
 
-      $("yesterday-action-rows").addEventListener("click", function (event) {
-        var button = event.target.closest("[data-take-case]");
-        if (button) {
-          event.preventDefault();
-          event.stopPropagation();
-          takeYesterdayCase(button.getAttribute("data-take-case"), button);
-        }
-      });
-      if ($("yesterday-flow-dimension")) {
-        $("yesterday-flow-dimension").addEventListener("change", function () {
-          if (state.data.daily) renderYesterdayFlow(state.data.daily, this.value);
-        });
-      }
       $("saved-view").addEventListener("change", function () { if (this.value !== "") loadView(this.value); });
       $("view-manager").addEventListener("click", function (event) {
         var loadButton = event.target.closest("[data-load-view]");

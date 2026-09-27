@@ -173,19 +173,19 @@ def test_month_http_requires_auth_and_is_private(monkeypatch, month_db: Path) ->
 def test_month_markup_and_javascript_source() -> None:
     html = HTML_PATH.read_text(encoding="utf-8")
     app = APP_PATH.read_text(encoding="utf-8")
-    for marker in (
-        'id="month-kpis"', 'id="month-forecast"', 'id="month-trend-chart"',
-        'id="month-heatmap-chart"', 'id="month-doctor-chart"', 'id="month-pareto-chart"',
-        'id="month-funnel-chart"', 'id="month-crm-chart"', 'id="month-reg55"',
-    ):
+    for marker in ('id="month-kpis"', 'id="month-reg55"', 'id="month-zone-trend"', 'id="month-look-where"'):
         assert marker in html
+    # Волна J: скрытые хосты и их рендереры удалены, мёртвого кода в month-отчёте нет.
+    for legacy in (
+        'id="month-forecast"', 'id="month-trend-chart"', 'id="month-heatmap-chart"',
+        'id="month-doctor-chart"', 'id="month-pareto-chart"', 'id="month-funnel-chart"',
+        'id="month-crm-chart"',
+    ):
+        assert legacy not in html
     assert 'request("/month-report"' in app
-    assert "renderMonthTrend" in app
-    assert "renderMonthHeatmap" in app
-    assert "renderMonthDoctors" in app
-    assert "renderMonthPareto" in app
-    assert app.count('MO.moChart($("month-') >= 6
-    assert "dataZoom" in app
+    for renderer in ("renderMonthTrend", "renderMonthHeatmap", "renderMonthDoctors", "renderMonthPareto", "renderMonthFunnel"):
+        assert renderer not in app
+    assert "hostActive" not in app
 
 
 def test_month_javascript_syntax() -> None:

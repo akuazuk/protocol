@@ -540,7 +540,7 @@ def _describe_empty_state(*, total_records: int, filtered_records: int, params: 
             return {
                 "reason_code": "queue_band_miss",
                 "title": "В очереди этой полосы пусто",
-                "hint": "«Только критические» режет queue_band, не шкалу Хорошо/Слабо. Снимите полосу или расширьте период.",
+                "hint": "Полоса очереди режет queue_band, не шкалу оценки. Снимите полосу или расширьте период.",
             }
         applied = [k for k, v in params.items() if v not in (None, "", [], False)]
         return {
@@ -940,8 +940,12 @@ def _sql_overall_grade_expr(alias: str = "c") -> str:
     (критичный band из compute_mo_overall_grade здесь не приходит).
     """
     a = alias
+    stored = f"lower(COALESCE({a}.overall_grade, ''))"
     return (
         "CASE"
+        # Записанная скорером оценка первична (как attach_overall_grade): только она
+        # умеет 'critical' - склад не хранит safety_band, а attention_primary даёт important.
+        f" WHEN {stored} IN ('critical', 'important', 'poor', 'fair', 'good') THEN {stored}"
         f" WHEN lower(COALESCE({a}.attention_primary, '')) = 'safety' THEN 'important'"
         f" WHEN lower(COALESCE({a}.zone2a_band, '')) = 'bad' THEN 'important'"
         f" WHEN lower(COALESCE({a}.zone2b_band, '')) = 'bad'"
@@ -1022,6 +1026,13 @@ def _search_relevance_order(params: dict[str, Any]) -> str | None:
     rank = mo_search.sql_rank_inline(plan)
     direction = "ASC" if str(params.get("sort_dir") or "desc").lower() == "asc" else "DESC"
     return f"ORDER BY {rank} ASC, c.visit_date {direction}, c.mis_id {direction}"
+
+
+_CRM_STATUS_SQL_EXPR = (
+    "COALESCE((SELECT s.status FROM crm_case_state s WHERE s.case_id = "
+    "CAST(CASE WHEN c.visit_id IS NULL OR c.visit_id = '' THEN c.mis_id ELSE c.visit_id END AS TEXT)"
+    "), 'new')"
+)
 
 
 def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
@@ -1126,6 +1137,16 @@ def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
         clause, status_values = _in_clause("c.status", statuses)
         where.append(clause)
         values.extend(status_values)
+    crm_statuses = [str(v).strip() for v in _values(params.get("crm_statuses")) if str(v).strip()]
+    if crm_statuses:
+        # Статус разбора методиста режет выборку в SQL: иначе total и страницы
+        # считались бы до фильтра, а чип «Статус разбора» не менял бы total.
+        if _warehouse_has_table(str(_db_path()), "crm_case_state"):
+            marks = ",".join("?" for _ in crm_statuses)
+            where.append(f"{_CRM_STATUS_SQL_EXPR} IN ({marks})")
+            values.extend(crm_statuses)
+        elif "new" not in crm_statuses:
+            where.append("1=0")
     chapters = [str(v) for v in _values(params.get("mkb_chapters")) if str(v)]
     if chapters:
         clause, chapter_values = _in_clause("COALESCE(c.icd_chapter, '')", chapters)
@@ -1246,7 +1267,6 @@ def _cases_sql_pageable(params: dict[str, Any]) -> bool:
     if _warehouse_order_sql(params) is None:
         return False
     for key in (
-        "crm_statuses",
         "assignees",
         "icd_visit_status",
         "min_severity",
@@ -1448,6 +1468,11 @@ def _warehouse_records(
                 "zone2b_kp_status": str(item.get("zone2b_kp_status") or "") or None,
                 "attention_primary": str(item.get("attention_primary") or "") or None,
                 "attention_reason_ru": str(item.get("attention_reason_ru") or "") or None,
+                # Записанная скорером оценка: attach_overall_grade берёт её первой,
+                # как и SQL-выражение _sql_overall_grade_expr (иначе 'critical' терялся).
+                "overall_grade": str(item.get("overall_grade") or "").strip().lower() or None,
+                "overall_grade_ru": str(item.get("overall_grade_ru") or "") or None,
+                "overall_grade_reason_ru": str(item.get("overall_grade_reason_ru") or "") or None,
                 "overall_pct": score,
                 "evaluation_run_id": assessment["evaluation_run_id"],
                 "document_revision": assessment["document_revision"],
