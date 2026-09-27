@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-161031Z-passport-api-p3"
+BUILD_VERSION = "2026-09-27-163848Z-case-steps-p4"
 
 
 def _app_version() -> str:
@@ -15484,6 +15484,7 @@ if has_frontend_file("index.html"):
         "mo-protocol-viewer.css": "text/css; charset=utf-8",
         "mo-api.js": "application/javascript; charset=utf-8",
         "mo-charts.js": "application/javascript; charset=utf-8",
+        "mo-steps.js": "application/javascript; charset=utf-8",
         "mo-app.js": "application/javascript; charset=utf-8",
         "mo-calibration.css": "text/css; charset=utf-8",
         "mo-calibration.js": "application/javascript; charset=utf-8",
@@ -15508,6 +15509,7 @@ if has_frontend_file("index.html"):
     @app.get("/mo-protocol-viewer.css", include_in_schema=False)
     @app.get("/mo-api.js", include_in_schema=False)
     @app.get("/mo-charts.js", include_in_schema=False)
+    @app.get("/mo-steps.js", include_in_schema=False)
     @app.get("/mo-app.js", include_in_schema=False)
     @app.get("/mo-calibration.css", include_in_schema=False)
     @app.get("/mo-calibration.js", include_in_schema=False)

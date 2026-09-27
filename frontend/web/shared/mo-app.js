@@ -4531,7 +4531,20 @@
       var serviceHtml =
         '<div class="detail-block">' + renderReg55(reg55Payload, reg55Pct) + "</div>" +
         serviceKpisHtml;
-      if (useZonesUi) {
+      if (useZonesUi && window.MO && MO.steps && MO.steps.enabled()) {
+        $("drawer-body").innerHTML =
+          renderCaseWorkspaceTabs() +
+          '<div class="case-workspace-grid case-workspace-grid--zones">' +
+          '<div class="case-workspace-clinical case-workspace-pane is-active-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
+          renderClinicalDocument(sourceDocument, findings) +
+          '</div>' +
+          '<div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
+          '<div id="case-stepper-host"></div>' +
+          '<div id="protocol-suggest-host" class="protocol-suggest-host" hidden></div>' +
+          decisionHtml +
+          '</div></div>';
+        MO.steps.mount($("case-stepper-host"), data, item.id);
+      } else if (useZonesUi) {
         $("drawer-body").innerHTML =
           renderCaseWorkspaceTabs() +
           '<div class="case-workspace-grid case-workspace-grid--zones">' +

@@ -48,6 +48,7 @@ CANONICAL_ASSET_MAP: dict[str, str] = {
     "mo-ui.css": "shared/mo-ui.css",
     "mo-api.js": "shared/mo-api.js",
     "mo-charts.js": "shared/mo-charts.js",
+    "mo-steps.js": "shared/mo-steps.js",
     "mo-app.js": "shared/mo-app.js",
     "mo-calibration.css": "shared/mo-calibration.css",
     "mo-calibration.js": "shared/mo-calibration.js",
