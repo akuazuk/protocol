@@ -7366,6 +7366,7 @@
     function drillQueue(extra) {
       extra = extra || {};
       state.queueOnly = true;
+      syncQueueOnlyButton();
       if (extra.status) state.selected.statuses = [extra.status];
       if (extra.assignee && extra.assignee !== "не назначен") {
         state.selected.assignees = [extra.assignee];

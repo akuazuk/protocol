@@ -115,6 +115,11 @@ def test_mis_queue_pages_have_f6_hosts() -> None:
     assert 'sub.textContent = "Дашборд МИС временно недоступен."' in mis
     queue = APP.split("async function loadQueueDashboard")[1].split("async function ")[0]
     assert "Дашборд очереди временно недоступен." in queue
+    drill = APP.split("function drillQueue")[1].split("function renderQueueKpis")[0]
+    assert "state.queueOnly = true" in drill
+    assert "syncQueueOnlyButton()" in drill
+    assert 'switchPage("documents")' in drill
+    assert 'if (queue || state.queueOnly) q.set("queue_only", "1")' in APP
 
 
 def test_labs_page_has_f5_hosts() -> None:
