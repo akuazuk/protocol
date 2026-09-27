@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-155743Z-passport-signals-p2"
+BUILD_VERSION = "2026-09-27-161031Z-passport-api-p3"
 
 
 def _app_version() -> str:
@@ -12762,7 +12762,96 @@ def api_methodist_mo_case_detail(
                 "engine": "mo_case_review_brief_v1",
                 "reason": "brief_unavailable",
             }
+    if isinstance(result, dict):
+        try:
+            from clinical_knowledge.mo_patient_passport import passport_summary_for_case
+
+            result["passport_summary"] = passport_summary_for_case(case_id)
+        except Exception:  # noqa: BLE001
+            result["passport_summary"] = {"ok": False, "error": "passport_unavailable"}
     return result
+
+
+@app.get("/api/methodist/mo/patients/{patient_key}/passport")
+def api_methodist_mo_patient_passport(
+    patient_key: str,
+    request: "Request",
+    response: "Response",
+) -> dict:
+    """Паспорт клиента по hash-ключу: покрытие, плитки визитов, сигналы. Без PHI."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_patient_passport import build_patient_passport
+
+    response.headers["Cache-Control"] = "private, no-store"
+    payload = build_patient_passport(patient_key)
+    if not payload.get("ok"):
+        status = 400 if payload.get("error") == "bad_patient_key" else 404
+        raise HTTPException(status_code=status, detail=payload.get("error") or "passport_not_found")
+    return payload
+
+
+@app.get("/api/methodist/mo/cases/{case_id}/passport")
+def api_methodist_mo_case_passport(
+    case_id: str,
+    request: "Request",
+    response: "Response",
+) -> dict:
+    """Паспорт по случаю: ключ из склада, без patient_id и ФИО."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_patient_passport import build_case_passport
+
+    response.headers["Cache-Control"] = "private, no-store"
+    payload = build_case_passport(case_id)
+    if not payload.get("ok"):
+        raise HTTPException(status_code=404, detail=payload.get("error") or "passport_not_found")
+    return payload
+
+
+@app.get("/api/methodist/mo/patients/{patient_key}/passport/labs")
+def api_methodist_mo_patient_passport_labs(
+    patient_key: str,
+    request: "Request",
+    response: "Response",
+    date: str = Query("", max_length=10),
+) -> dict:
+    """Значения анализов паспорта только на выбранный день (шаг 2)."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_patient_passport import build_passport_labs
+
+    response.headers["Cache-Control"] = "private, no-store"
+    payload = build_passport_labs(patient_key, day=date)
+    if not payload.get("ok"):
+        status = 400 if payload.get("error") == "bad_patient_key" else 404
+        raise HTTPException(status_code=status, detail=payload.get("error") or "passport_not_found")
+    return payload
+
+
+@app.get("/api/methodist/mo/cases/{case_id}/passport/labs")
+def api_methodist_mo_case_passport_labs(
+    case_id: str,
+    request: "Request",
+    response: "Response",
+    date: str = Query("", max_length=10),
+) -> dict:
+    """Лабы паспорта по случаю: сначала ключ, потом день."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_patient_passport import (
+        build_passport_labs,
+        default_warehouse_path,
+        lookup_patient_key,
+    )
+
+    response.headers["Cache-Control"] = "private, no-store"
+    warehouse = default_warehouse_path()
+    if warehouse is None:
+        raise HTTPException(status_code=404, detail="warehouse_unavailable")
+    key = lookup_patient_key(warehouse, case_id)
+    if not key:
+        raise HTTPException(status_code=404, detail="passport_not_found")
+    payload = build_passport_labs(key, day=date, warehouse=warehouse)
+    if not payload.get("ok"):
+        raise HTTPException(status_code=404, detail=payload.get("error") or "passport_not_found")
+    return payload
 
 
 @app.get("/api/methodist/mo/cases/{case_id}/protocol-suggest")

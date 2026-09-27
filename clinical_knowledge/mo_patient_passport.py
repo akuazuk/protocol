@@ -7,14 +7,33 @@
 """
 from __future__ import annotations
 
+import copy
 import os
+import re
 import sqlite3
+import time
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable, Mapping, Sequence
 
 ENGINE = "mo_patient_passport_v1"
 DX_LABEL_MAX = 80
+VISITS_LIMIT = 80
+CACHE_TTL_SEC = 60.0
+PATIENT_KEY_RE = re.compile(r"^[0-9a-f]{20}$")
+PHI_KEYS = {
+    "patient_id",
+    "patient_fio",
+    "doctor_fio",
+    "fio",
+    "first_name",
+    "last_name",
+    "full_name",
+    "фамилия",
+    "имя",
+    "отчество",
+}
+_CACHE: dict[str, tuple[float, dict[str, Any]]] = {}
 
 KIND_RANK = {
     "clinical_visit": 0,
@@ -723,3 +742,392 @@ def public_passport(row: Mapping[str, Any] | None) -> dict[str, Any]:
         "n_lab_dates": int(rec.get("n_lab_dates") or 0),
         "rebuilt_at": rec.get("rebuilt_at") or None,
     }
+
+
+def clear_passport_cache() -> None:
+    _CACHE.clear()
+
+
+def is_patient_key(value: Any) -> bool:
+    return bool(PATIENT_KEY_RE.fullmatch(_norm(value).lower()))
+
+
+def strip_phi(payload: Any) -> Any:
+    """Убрать идентификаторы и ФИО из ответа API."""
+    if isinstance(payload, Mapping):
+        out: dict[str, Any] = {}
+        for key, value in payload.items():
+            if str(key).strip().lower() in PHI_KEYS:
+                continue
+            out[str(key)] = strip_phi(value)
+        return out
+    if isinstance(payload, list):
+        return [strip_phi(item) for item in payload]
+    return payload
+
+
+def json_has_phi(payload: Any) -> bool:
+    blob = json_dumps_public(payload).lower()
+    return any(token in blob for token in ("patient_id", "doctor_fio", "patient_fio", '"fio"'))
+
+
+def json_dumps_public(payload: Any) -> str:
+    import json
+
+    return json.dumps(strip_phi(payload), ensure_ascii=False)
+
+
+def _cached(key: str, builder) -> dict[str, Any]:
+    now = time.monotonic()
+    hit = _CACHE.get(key)
+    if hit and now - hit[0] < CACHE_TTL_SEC:
+        return copy.deepcopy(hit[1])
+    payload = builder()
+    _CACHE[key] = (now, payload)
+    return copy.deepcopy(payload)
+
+
+def _context_line(coverage: Mapping[str, Any]) -> str:
+    visits = int(coverage.get("n_visits") or 0)
+    specs = int(coverage.get("n_specialties") or 0)
+    labs = int(coverage.get("n_lab_dates") or 0)
+    return f"{visits} визитов, {specs} специальностей, {labs} дней анализов"
+
+
+def _public_signal(item: Mapping[str, Any]) -> dict[str, Any]:
+    return {
+        "code": _norm(item.get("code")),
+        "axis": _norm(item.get("axis")),
+        "title_ru": _norm(item.get("title_ru")),
+        "detail_ru": _norm(item.get("detail_ru")),
+        "is_shadow": bool(item.get("is_shadow", True)),
+    }
+
+
+def _load_coverage(db: sqlite3.Connection, patient_key: str) -> dict[str, Any] | None:
+    tables = {str(row[0]) for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    if "fact_mo_patient_passport" not in tables:
+        return None
+    row = db.execute(
+        """
+        SELECT n_visits, n_specialties, first_date, last_date, n_lab_rows, n_lab_dates, rebuilt_at
+          FROM fact_mo_patient_passport
+         WHERE patient_key = ?
+        """,
+        (patient_key,),
+    ).fetchone()
+    if not row:
+        return None
+    return public_passport(
+        {
+            "n_visits": row[0],
+            "n_specialties": row[1],
+            "first_date": row[2],
+            "last_date": row[3],
+            "n_lab_rows": row[4],
+            "n_lab_dates": row[5],
+            "rebuilt_at": row[6],
+        }
+    )
+
+
+def _load_visits(db: sqlite3.Connection, patient_key: str) -> list[dict[str, Any]]:
+    tables = {str(row[0]) for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    if "fact_mo_visit_index" not in tables:
+        return []
+    cols = _table_columns(db, "fact_mo_visit_index")
+    source_sql = "source" if "source" in cols else "NULL"
+    rows = db.execute(
+        f"""
+        SELECT visit_id, visit_date, specialty, diagnosis_code, dx_label,
+               overall_grade, document_kind, mis_id, {source_sql}
+          FROM fact_mo_visit_index
+         WHERE patient_key = ?
+         ORDER BY visit_date DESC, visit_id DESC
+         LIMIT ?
+        """,
+        (patient_key, VISITS_LIMIT),
+    ).fetchall()
+    return [
+        {
+            "visit_id": _norm(row[0]),
+            "visit_date": _norm(row[1])[:10] or None,
+            "specialty": _norm(row[2]) or None,
+            "diagnosis_code": _norm(row[3]) or None,
+            "dx_label": _norm(row[4]) or None,
+            "overall_grade": _norm(row[5]) or None,
+            "document_kind": _norm(row[6]) or None,
+            "mis_id": _norm(row[7]) or None,
+            "source": _norm(row[8]) or "warehouse",
+        }
+        for row in rows
+    ]
+
+
+def _load_specialties(db: sqlite3.Connection, patient_key: str) -> list[dict[str, Any]]:
+    tables = {str(row[0]) for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    if "fact_mo_patient_specialty" not in tables:
+        return []
+    rows = db.execute(
+        """
+        SELECT specialty, n_visits, last_date, last_icd, last_grade
+          FROM fact_mo_patient_specialty
+         WHERE patient_key = ?
+         ORDER BY last_date DESC, specialty
+        """,
+        (patient_key,),
+    ).fetchall()
+    return [
+        {
+            "specialty": _norm(row[0]),
+            "n_visits": int(row[1] or 0),
+            "last_date": _norm(row[2])[:10] or None,
+            "last_icd": _norm(row[3]) or None,
+            "last_grade": _norm(row[4]) or None,
+        }
+        for row in rows
+    ]
+
+
+def _signals_for_latest(
+    db: sqlite3.Connection,
+    *,
+    patient_key: str,
+    visits: Sequence[Mapping[str, Any]],
+    warehouse: Path,
+    lab_path: Path | None,
+) -> list[dict[str, Any]]:
+    if not visits:
+        return []
+    latest = dict(visits[0])
+    latest["patient_key"] = patient_key
+    from clinical_knowledge.mo_passport_signals import evaluate_mo_passport_signals
+
+    raw = evaluate_mo_passport_signals(
+        latest,
+        warehouse=db,
+        lab_path=lab_path or default_lab_path(warehouse),
+    )
+    return [_public_signal(item) for item in raw if _norm(item.get("code"))]
+
+
+def lookup_patient_key(
+    warehouse: Path,
+    case_id: str,
+) -> str:
+    cid = _norm(case_id)
+    if not cid:
+        return ""
+    with sqlite3.connect(str(warehouse)) as db:
+        tables = {str(row[0]) for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        if "fact_mo_case" in tables and "patient_key" in _table_columns(db, "fact_mo_case"):
+            row = db.execute(
+                """
+                SELECT patient_key FROM fact_mo_case
+                 WHERE visit_id = ? OR mis_id = ?
+                 ORDER BY CASE WHEN document_kind IN ('clinical_visit', 'consultation') THEN 0 ELSE 1 END
+                 LIMIT 1
+                """,
+                (cid, cid),
+            ).fetchone()
+            if row and is_patient_key(row[0]):
+                return _norm(row[0])
+        if "fact_mo_visit_index" in tables:
+            row = db.execute(
+                """
+                SELECT patient_key FROM fact_mo_visit_index
+                 WHERE visit_id = ? OR mis_id = ?
+                 LIMIT 1
+                """,
+                (cid, cid),
+            ).fetchone()
+            if row and is_patient_key(row[0]):
+                return _norm(row[0])
+    return ""
+
+
+def build_patient_passport(
+    patient_key: str,
+    *,
+    warehouse: Path | None = None,
+    lab_path: Path | None = None,
+) -> dict[str, Any]:
+    key = _norm(patient_key).lower()
+    if not is_patient_key(key):
+        return {"ok": False, "error": "bad_patient_key"}
+    path = warehouse or default_warehouse_path()
+    if path is None or not Path(path).is_file():
+        return {"ok": False, "error": "warehouse_unavailable"}
+    path = Path(path)
+
+    def _build() -> dict[str, Any]:
+        with sqlite3.connect(str(path)) as db:
+            coverage = _load_coverage(db, key)
+            if coverage is None:
+                return {"ok": False, "error": "passport_not_found"}
+            visits = _load_visits(db, key)
+            specialties = _load_specialties(db, key)
+            signals = _signals_for_latest(
+                db,
+                patient_key=key,
+                visits=visits,
+                warehouse=path,
+                lab_path=lab_path,
+            )
+        return strip_phi(
+            {
+                "ok": True,
+                "engine": ENGINE,
+                "patient_key": key,
+                "coverage": coverage,
+                "specialties": specialties,
+                "visits": visits,
+                "signals": signals,
+                "context": _context_line(coverage),
+            }
+        )
+
+    return _cached(f"passport:{path}:{key}", _build)
+
+
+def build_case_passport(
+    case_id: str,
+    *,
+    warehouse: Path | None = None,
+    lab_path: Path | None = None,
+) -> dict[str, Any]:
+    path = warehouse or default_warehouse_path()
+    if path is None or not Path(path).is_file():
+        return {"ok": False, "error": "warehouse_unavailable"}
+    path = Path(path)
+    key = lookup_patient_key(path, case_id)
+    if not key:
+        return {"ok": False, "error": "passport_not_found"}
+    payload = build_patient_passport(key, warehouse=path, lab_path=lab_path)
+    if not payload.get("ok"):
+        return payload
+    payload["case_id"] = _norm(case_id)
+    return payload
+
+
+def passport_summary_for_case(
+    case_id: str,
+    *,
+    warehouse: Path | None = None,
+    lab_path: Path | None = None,
+) -> dict[str, Any]:
+    """Короткая сводка для /cases/{id}: без индекса визитов и без значений анализов."""
+    full = build_case_passport(case_id, warehouse=warehouse, lab_path=lab_path)
+    if not full.get("ok"):
+        return strip_phi({"ok": False, "error": full.get("error") or "passport_not_found"})
+    coverage = full.get("coverage") if isinstance(full.get("coverage"), dict) else {}
+    return strip_phi(
+        {
+            "ok": True,
+            "engine": ENGINE,
+            "patient_key": full.get("patient_key"),
+            "coverage": coverage,
+            "signals": list(full.get("signals") or []),
+            "context": full.get("context") or _context_line(coverage),
+        }
+    )
+
+
+def _lab_dates(db: sqlite3.Connection, patient_key: str, lab_path: Path | None) -> list[str]:
+    dates: list[str] = []
+    tables = {str(row[0]) for row in db.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+    if "fact_mo_lab_coverage" in tables:
+        row = db.execute(
+            "SELECT first_date, last_date FROM fact_mo_lab_coverage WHERE patient_key=?",
+            (patient_key,),
+        ).fetchone()
+        if row:
+            for item in row:
+                day = _norm(item)[:10]
+                if day:
+                    dates.append(day)
+    path = lab_path or default_lab_path()
+    if path is not None and Path(path).is_file():
+        with sqlite3.connect(str(path)) as lab:
+            lab_tables = {str(r[0]) for r in lab.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+            if "fact_mo_lab" in lab_tables:
+                for item in lab.execute(
+                    """
+                    SELECT DISTINCT test_date FROM fact_mo_lab
+                     WHERE patient_key = ? AND TRIM(COALESCE(test_date,'')) != ''
+                     ORDER BY test_date DESC
+                     LIMIT 40
+                    """,
+                    (patient_key,),
+                ):
+                    day = _norm(item[0])[:10]
+                    if day:
+                        dates.append(day)
+    return sorted({day for day in dates if day}, reverse=True)
+
+
+def _lab_items(lab_path: Path, patient_key: str, day: str) -> list[dict[str, Any]]:
+    with sqlite3.connect(str(lab_path)) as lab:
+        tables = {str(r[0]) for r in lab.execute("SELECT name FROM sqlite_master WHERE type='table'")}
+        if "fact_mo_lab" not in tables:
+            return []
+        rows = lab.execute(
+            """
+            SELECT test_date, type_name, indicator_name, value, unit
+              FROM fact_mo_lab
+             WHERE patient_key = ? AND test_date = ?
+             ORDER BY type_name, indicator_name
+             LIMIT 200
+            """,
+            (patient_key, day),
+        ).fetchall()
+    return [
+        {
+            "test_date": _norm(row[0])[:10],
+            "type_name": _norm(row[1]) or None,
+            "indicator_name": _norm(row[2]) or None,
+            "value": _norm(row[3]) or None,
+            "unit": _norm(row[4]) or None,
+        }
+        for row in rows
+    ]
+
+
+def build_passport_labs(
+    patient_key: str,
+    *,
+    day: str = "",
+    warehouse: Path | None = None,
+    lab_path: Path | None = None,
+) -> dict[str, Any]:
+    key = _norm(patient_key).lower()
+    if not is_patient_key(key):
+        return {"ok": False, "error": "bad_patient_key"}
+    path = warehouse or default_warehouse_path()
+    if path is None or not Path(path).is_file():
+        return {"ok": False, "error": "warehouse_unavailable"}
+    path = Path(path)
+    wanted = _norm(day)[:10]
+    cache_key = f"labs:{path}:{key}:{wanted}"
+
+    def _build() -> dict[str, Any]:
+        with sqlite3.connect(str(path)) as db:
+            if _load_coverage(db, key) is None:
+                return {"ok": False, "error": "passport_not_found"}
+            dates = _lab_dates(db, key, lab_path)
+        items: list[dict[str, Any]] = []
+        labs = lab_path or default_lab_path(path)
+        if wanted and labs is not None and Path(labs).is_file():
+            items = _lab_items(Path(labs), key, wanted)
+        return strip_phi(
+            {
+                "ok": True,
+                "engine": ENGINE,
+                "patient_key": key,
+                "date": wanted or None,
+                "dates": dates,
+                "items": items,
+            }
+        )
+
+    return _cached(cache_key, _build)
