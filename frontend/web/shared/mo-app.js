@@ -1330,7 +1330,7 @@
         html.push('<span class="chip">Только shadow-сигналы внимания</span>');
       }
       if (state.kpStatus) {
-        html.push('<span class="chip">КП: ' + esc(state.kpStatus === "matched" ? "подобран" : "не подобран") +
+        html.push('<span class="chip">КП: ' + esc(state.kpStatus === "matched" ? "подобран" : state.kpStatus === "na" ? "без сравнения" : "не подобран") +
           '<button type="button" data-clear-kp aria-label="Удалить фильтр КП">×</button></span>');
       }
       if (state.historyTier) {
@@ -2169,7 +2169,7 @@
         chart.on("click", function (params) {
           var d = params && params.data;
           if (!d || !d.bucket) return;
-          openBucketCases(d.bucket, gran, win, { overallGrade: d.grade === "na" ? "" : d.grade },
+          openBucketCases(d.bucket, gran, win, { overallGrade: d.grade },
             (OVERALL_GRADE_LABELS[d.grade] || d.grade) + " · " + d.bucket);
         });
       }
@@ -2216,7 +2216,7 @@
         chart.on("click", function (params) {
           var d = params && params.data;
           if (!d || !d.bucket) return;
-          openBucketCases(d.bucket, gran, win, { kpStatus: d.kp === "na" ? "" : d.kp }, "КП · " + d.bucket);
+          openBucketCases(d.bucket, gran, win, { kpStatus: d.kp }, "КП · " + d.bucket);
         });
       }
     }

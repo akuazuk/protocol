@@ -946,6 +946,11 @@ def _sql_overall_grade_expr(alias: str = "c") -> str:
         # Записанная скорером оценка первична (как attach_overall_grade): только она
         # умеет 'critical' - склад не хранит safety_band, а attention_primary даёт important.
         f" WHEN {stored} IN ('critical', 'important', 'poor', 'fair', 'good') THEN {stored}"
+        # Ни одной зоны и нет записанной оценки - 'na' (как compute_mo_overall_grade),
+        # а не 'fair': иначе непересчитанные случаи считались бы «С замечанием».
+        f" WHEN COALESCE({a}.zone1_band, '') = '' AND COALESCE({a}.zone2a_band, '') = ''"
+        f"  AND COALESCE({a}.zone2b_band, '') = ''"
+        f"  AND lower(COALESCE({a}.attention_primary, '')) <> 'safety' THEN 'na'"
         f" WHEN lower(COALESCE({a}.attention_primary, '')) = 'safety' THEN 'important'"
         f" WHEN lower(COALESCE({a}.zone2a_band, '')) = 'bad' THEN 'important'"
         f" WHEN lower(COALESCE({a}.zone2b_band, '')) = 'bad'"
@@ -1119,7 +1124,10 @@ def _warehouse_where(params: dict[str, Any]) -> tuple[list[str], list[Any]]:
         where.append("replace(upper(COALESCE(c.diagnosis_code, '')), '.', '') LIKE ?")
         values.append(want_icd + "%")
     kp_status = str(params.get("kp_status") or "").strip().lower()
-    if kp_status:
+    if kp_status == "na":
+        # «Без сравнения» из воронки КП: всё, что не matched/unmatched (пусто, старые статусы).
+        where.append("lower(COALESCE(c.zone2b_kp_status, '')) NOT IN ('matched', 'unmatched')")
+    elif kp_status:
         where.append("lower(COALESCE(c.zone2b_kp_status, '')) = ?")
         values.append(kp_status)
     history_tier = str(params.get("history_tier") or "").strip()
@@ -1751,7 +1759,11 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
             if not rec_code.startswith(want_icd_code):
                 continue
         kp_status = str(params.get("kp_status") or "").strip().lower()
-        if kp_status and str(rec.get("zone2b_kp_status") or "").lower() != kp_status:
+        rec_kp = str(rec.get("zone2b_kp_status") or "").lower()
+        if kp_status == "na":
+            if rec_kp in {"matched", "unmatched"}:
+                continue
+        elif kp_status and rec_kp != kp_status:
             continue
         history_tier = str(params.get("history_tier") or "").strip()
         if history_tier and str(rec.get("history_tier") or "") != history_tier:
@@ -2901,13 +2913,8 @@ _OVERVIEW_ZONE_KEYS: tuple[str, ...] = ("zone1", "zone2a", "zone2b")
 
 
 def _overview_grade_sql(alias: str = "c") -> str:
-    """Оценка для ленты Обзора: 'na' для случаев без единой зоны и без записанной оценки."""
-    a = alias
-    return (
-        f"CASE WHEN COALESCE({a}.overall_grade,'')='' AND COALESCE({a}.zone1_band,'')=''"
-        f" AND COALESCE({a}.zone2a_band,'')='' AND COALESCE({a}.zone2b_band,'')='' THEN 'na'"
-        f" ELSE {_sql_overall_grade_expr(a)} END"
-    )
+    """Оценка для ленты Обзора: та же шкала, что и у /cases ('na' без единой зоны)."""
+    return _sql_overall_grade_expr(alias)
 
 
 def _overview_case_where(period: DateRange, params: dict[str, Any], *, alias: str = "c") -> tuple[str, list[Any]]:

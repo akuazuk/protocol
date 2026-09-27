@@ -177,3 +177,27 @@ def test_small_heatmap_cells_are_marked_suppressed(warehouse: Path) -> None:
     cells = [c for r in out["heatmap"]["rows"] for c in r["cells"] if 0 < c["n"] < mo_backend.SUPPRESSION_N]
     assert cells and all(c["suppressed"] for c in cells)
     assert out["heatmap"]["suppression_n"] == mo_backend.SUPPRESSION_N
+
+
+def test_na_drills_from_overview_charts_filter_cases(warehouse: Path) -> None:
+    """Клик по «Нет оценки» и «Без сравнения» на Обзоре должен резать /cases, а не сбрасывать фильтр."""
+    from clinical_knowledge.mo_overall_grade import overall_grade_id
+
+    dash = mo_backend.build_overview_dashboard(dict(BASE))
+    na_total = dash["grades"]["totals"]["na"]
+    kp_na_total = dash["kp_funnel"]["totals"]["na"]
+    assert na_total > 0 and kp_na_total > 0
+
+    cases_na = mo_backend.build_cases({**BASE, "overall_grade": "na", "document_kinds": "clinical_visit", "page_size": 200})
+    assert cases_na["total"] == na_total
+    assert cases_na["rows"]
+    assert all(overall_grade_id(item) == "na" for item in cases_na["rows"])
+
+    cases_kp_na = mo_backend.build_cases({**BASE, "kp_status": "na", "document_kinds": "clinical_visit", "page_size": 200})
+    assert cases_kp_na["total"] == kp_na_total
+    assert cases_kp_na["rows"]
+    assert all(str(item.get("zone2b_kp_status") or "").lower() not in {"matched", "unmatched"} for item in cases_kp_na["rows"])
+
+    cases_all = mo_backend.build_cases({**BASE, "document_kinds": "clinical_visit", "page_size": 200})
+    assert cases_all["total"] > cases_kp_na["total"]
+    assert cases_all["total"] > cases_na["total"]
