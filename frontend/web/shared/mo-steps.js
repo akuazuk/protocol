@@ -3,9 +3,9 @@
 
   var STEPS = [
     { id: 1, key: "patient", label: "Пациент" },
-    { id: 2, key: "lens", label: "Линза" },
+    { id: 2, key: "lens", label: "Срез" },
     { id: 3, key: "visit", label: "Визит" },
-    { id: 4, key: "proof", label: "Доказательство" },
+    { id: 4, key: "proof", label: "Основание" },
     { id: 5, key: "decision", label: "Решение" }
   ];
   var LENS_PAGE = 12;
@@ -140,7 +140,7 @@
         '" data-lab-date="' + esc(day) + '">' + esc(day) + "</button>";
     }).join("");
     return '<section class="case-stepper__panel" data-step-panel="2">' +
-      "<h3>Линза</h3>" +
+      "<h3>Срез</h3>" +
       '<p class="case-stepper__context">Все визиты, одна специальность или анализы. На экране 12 строк.</p>' +
       '<div class="case-stepper__lenses">' +
       '<button type="button" data-lens="all">Все</button>' +
@@ -181,7 +181,7 @@
       '<p class="case-stepper__context">' + esc(summary.context || coverageLine(summary.coverage)) + "</p>" +
       '<p class="card-sub">' + esc(kpLine) + "</p>" +
       (defects ? "<ol>" + defects + "</ol>" : '<p class="empty">До 5 дефектов: сейчас пусто.</p>') +
-      '<p><button type="button" class="button secondary" data-step="4">К доказательству</button> ' +
+      '<p><button type="button" class="button secondary" data-step="4">К основанию</button> ' +
       '<button type="button" class="button" data-step="5">К решению</button></p>' +
       "</section>";
   }
@@ -221,13 +221,13 @@
     var prev = items[idx - 1];
     var next = items[idx + 1];
     return '<section class="case-stepper__panel" data-step-panel="4">' +
-      "<h3>Доказательство</h3>" +
+      "<h3>Основание</h3>" +
       (item
         ? "<p><strong>" + esc(item.title_ru || item.code) + "</strong> · " +
           esc(proofBasket(item)) + "</p>" +
           '<blockquote class="case-stepper__quote">' + esc(quote || "Цитаты нет.") + "</blockquote>" +
           '<p class="card-sub">evaluator_version: ' + esc(version || "нет") + "</p>"
-        : '<p class="empty">Нет официального замечания для доказательства.</p>') +
+        : '<p class="empty">Нет официального замечания для основания.</p>') +
       '<div class="case-stepper__proof-nav">' +
       '<button type="button" data-step="4" data-proof="' + esc((prev && (prev.code || prev.finding_code)) || "") + '"' +
       (prev ? "" : " disabled") + ">Предыдущее</button>" +
@@ -268,7 +268,7 @@
 
   function syncDecisionDock(dock, step) {
     if (!dock) return;
-    dock.hidden = step !== 5;
+    dock.hidden = false;
     var crm = dock.querySelector("#drawer-status");
     var crmLabel = crm && crm.closest("label");
     if (crmLabel) crmLabel.hidden = true;
