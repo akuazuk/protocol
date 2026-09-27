@@ -2157,6 +2157,89 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+_CASES_SUMMARY_GRADE_KEYS: tuple[str, ...] = ("good", "fair", "poor", "important", "critical", "na")
+_CASES_SUMMARY_GRADE_LABELS: dict[str, str] = {
+    "good": "Хорошо",
+    "fair": "С замечанием",
+    "poor": "Слабо",
+    "important": "Важно",
+    "critical": "Критично",
+    "na": "Нет оценки",
+}
+
+
+def build_cases_summary(params: dict[str, Any]) -> dict[str, Any]:
+    """Сводка выборки «Найти МО»: оценки, топ специальностей и недели. Тот же WHERE, что `/cases`."""
+    params = _apply_request_period(params)
+    params = _apply_score_eligible_default(params)
+    params = _attach_queue_band_visit_filter(params)
+    if _backend_source() != "warehouse":
+        return {
+            "ok": False,
+            "available": False,
+            "reason": "Сводка строится только из склада МО.",
+            "source": _backend_source(),
+        }
+    return _cached_result("cases_summary", params, 60.0, lambda: _build_cases_summary_uncached(params))
+
+
+def _build_cases_summary_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    where, values = _warehouse_where(params)
+    grade_expr = _sql_overall_grade_expr("c")
+    spec_expr = "COALESCE(NULLIF(TRIM(COALESCE(d.specialty, c.specialty)), ''), 'без специальности')"
+    week_expr = "strftime('%Y-W%W', c.visit_date)"
+    joins = _dim_joins_sql(*where, spec_expr)
+    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+    from_sql = f"FROM fact_mo_case c {joins} {where_sql}"
+    grades = {key: 0 for key in _CASES_SUMMARY_GRADE_KEYS}
+    specialties: list[dict[str, Any]] = []
+    weeks: list[dict[str, Any]] = []
+    with closing(_read_connection()) as conn:
+        for row in conn.execute(
+            f"SELECT {grade_expr} AS g, COUNT(*) AS n {from_sql} GROUP BY g",
+            values,
+        ):
+            key = str(row[0] or "na")
+            if key not in grades:
+                key = "na"
+            grades[key] += int(row[1] or 0)
+        for row in conn.execute(
+            f"SELECT {spec_expr} AS spec, COUNT(*) AS n {from_sql} GROUP BY spec ORDER BY n DESC LIMIT 8",
+            values,
+        ):
+            specialties.append({"value": str(row[0] or ""), "n": int(row[1] or 0)})
+        for row in conn.execute(
+            f"SELECT {week_expr} AS week, MIN(c.visit_date) AS d0, MAX(c.visit_date) AS d1, COUNT(*) AS n "
+            f"{from_sql} GROUP BY week ORDER BY week",
+            values,
+        ):
+            weeks.append(
+                {
+                    "week": str(row[0] or ""),
+                    "date_from": str(row[1] or "")[:10],
+                    "date_to": str(row[2] or "")[:10],
+                    "n": int(row[3] or 0),
+                }
+            )
+    total = int(sum(grades.values()))
+    return {
+        "ok": True,
+        "available": True,
+        "n": total,
+        "grades": {
+            "totals": grades,
+            "buckets": [
+                {"id": key, "label": _CASES_SUMMARY_GRADE_LABELS[key], "n": grades[key]}
+                for key in _CASES_SUMMARY_GRADE_KEYS
+            ],
+        },
+        "specialties": specialties,
+        "weeks": weeks,
+        "search_plan": _search_plan_payload(params, None),
+        "source": "warehouse",
+    }
+
+
 def _search_plan_payload(
     params: dict[str, Any], python_rows: list[dict[str, Any]] | None
 ) -> dict[str, Any] | None:

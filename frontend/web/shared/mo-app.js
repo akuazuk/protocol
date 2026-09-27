@@ -3006,12 +3006,109 @@
       }
       body.innerHTML = html;
     }
+    function casesTableCard(pageHost) {
+      if (!pageHost) return null;
+      return pageHost.querySelector(".card:not(#cases-summary)") || pageHost.querySelector(".card");
+    }
+    function renderCasesSummaryBars(el, items, onClick, colorFn) {
+      if (!el) return;
+      if (!items.length) {
+        el.innerHTML = '<p class="empty">Нет данных.</p>';
+        return;
+      }
+      var max = items.reduce(function (m, item) { return Math.max(m, item.n || 0); }, 0) || 1;
+      el.innerHTML = items.map(function (item) {
+        var label = item.label || item.value || item.id || "";
+        var n = item.n || 0;
+        var pct = Math.round(100 * n / max);
+        var color = colorFn ? colorFn(item) : cssToken("--accent", "#2f6f63");
+        return '<button type="button" class="cases-summary-bar" data-id="' + esc(item.id || item.value || "") + '">' +
+          '<span class="cases-summary-bar__label">' + esc(label) + "</span>" +
+          '<span class="cases-summary-bar__track"><span class="cases-summary-bar__fill" style="width:' + pct +
+          "%;background:" + color + '"></span></span>' +
+          '<span class="cases-summary-bar__n">' + n + "</span></button>";
+      }).join("");
+      el.querySelectorAll("button").forEach(function (button, index) {
+        button.addEventListener("click", function () { onClick(items[index]); });
+      });
+    }
+    function renderCasesSummaryWeeks(weeks) {
+      var host = $("cases-summary-weeks");
+      if (!host) return;
+      if (!weeks.length) {
+        overviewEmpty(host, "Нет недель в выборке.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        grid: { left: 28, right: 8, top: 12, bottom: 24 },
+        tooltip: { trigger: "axis" },
+        xAxis: {
+          type: "category",
+          data: weeks.map(function (week) { return bucketLabel(week.week, "week"); }),
+          axisLabel: { fontSize: 10 }
+        },
+        yAxis: { type: "value", minInterval: 1, splitLine: { show: false } },
+        series: [{
+          type: "line",
+          smooth: true,
+          showSymbol: weeks.length <= 12,
+          symbolSize: 6,
+          areaStyle: { opacity: 0.12 },
+          data: weeks.map(function (week) { return { value: week.n, week: week }; })
+        }]
+      }, {
+        label: "Случаи по неделям",
+        description: "Число случаев текущей выборки по неделям. Клик сужает период."
+      });
+      if (chart) {
+        chart.on("click", function (params) {
+          var week = params && params.data && params.data.week;
+          if (!week) return;
+          applyDrill({
+            label: week.week,
+            period: "custom",
+            dateFrom: week.date_from,
+            dateTo: week.date_to,
+            page: "documents"
+          });
+        });
+      }
+    }
+    function renderCasesSummary(data) {
+      var host = $("cases-summary");
+      if (!host) return;
+      if (!data || !data.ok || !data.available) {
+        host.hidden = true;
+        return;
+      }
+      host.hidden = false;
+      var sub = $("cases-summary-sub");
+      if (sub) {
+        sub.textContent = "Сводка текущей выборки - " + (data.n || 0) +
+          " случаев. Клик по оценке, специальности или неделе уточняет фильтры.";
+      }
+      renderCasesSummaryBars($("cases-summary-grades"), (data.grades && data.grades.buckets) || [], function (item) {
+        applyDrill({ label: item.label || item.id, overallGrade: item.id, page: "documents" });
+      }, function (item) { return gradeColor(item.id); });
+      renderCasesSummaryBars($("cases-summary-specialties"), data.specialties || [], function (item) {
+        applyDrill({ label: item.value, selected: { specialties: [item.value] }, page: "documents" });
+      });
+      renderCasesSummaryWeeks(data.weeks || []);
+      if (data.search_plan) renderSearchPlan(data.search_plan, data.n || 0);
+    }
     async function loadCasesRequest(queue) {
       var epoch = pageRequestEpoch;
       var q = query();
       q.set("page", state.pageNo);
       q.set("page_size", isSingleDayPeriod() ? "100" : "50");
       if (queue || state.queueOnly) q.set("queue_only", "1");
+      var summaryPromise = null;
+      if (!queue) {
+        var summaryQuery = query();
+        ["page", "page_size", "sort_by", "sort_dir"].forEach(function (key) { summaryQuery.delete(key); });
+        if (state.queueOnly) summaryQuery.set("queue_only", "1");
+        summaryPromise = request("/cases/summary?" + summaryQuery.toString());
+      }
       var response = await request("/cases?" + q.toString(), "/cases?" + q.toString());
       if (epoch !== pageRequestEpoch) throw staleRequestError();
       if (!response.ok) throw new Error("Список случаев временно недоступен.");
@@ -3026,7 +3123,7 @@
       state.caseNavPageSize = Number(data.page_size || rows.length || 50);
       var body = casesTableBody(queue);
       setCasesLoading(queue, false);
-      clearWidgetError((queue ? $("page-queue") : $("page-documents")).querySelector(".card"), queue ? "queue-cases" : "document-cases");
+      clearWidgetError(casesTableCard(queue ? $("page-queue") : $("page-documents")), queue ? "queue-cases" : "document-cases");
       var emptyState = data.empty_state || {};
       var searchRaw = String(state.search || "").trim();
       var emptyTitle = emptyState.title || "По выбранным фильтрам случаев нет.";
@@ -3041,7 +3138,7 @@
         if (!banner) {
           banner = document.createElement("div");
           banner.className = "day-table-banner";
-          var card = pageHost.querySelector(".card");
+          var card = casesTableCard(pageHost) || pageHost.querySelector("#cases-summary");
           if (card) pageHost.insertBefore(banner, card);
         }
         banner.hidden = false;
@@ -3054,7 +3151,17 @@
           banner.innerHTML = "<b>Найти МО</b> · " + esc(data.total || rows.length) + " записей. " + esc(scopeNote);
         }
       }
-      if (!queue) renderSearchPlan(data.search_plan, rows.length);
+      if (!queue) {
+        renderSearchPlan(data.search_plan, rows.length);
+        try {
+          var summaryResp = summaryPromise ? await summaryPromise : null;
+          if (epoch !== pageRequestEpoch) throw staleRequestError();
+          renderCasesSummary(summaryResp && summaryResp.ok ? await summaryResp.json() : null);
+        } catch (summaryError) {
+          if (isAbortedRequest(summaryError)) throw summaryError;
+          renderCasesSummary(null);
+        }
+      }
       body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
         '<tr><td colspan="' + (queue ? 18 : 15) + '" class="empty"><b>' +
         esc(emptyTitle) + "</b><div>" +
@@ -3085,7 +3192,7 @@
     async function loadCases(queue) {
       beginPageRequestScope();
       var pageHost = queue ? $("page-queue") : $("page-documents");
-      var card = pageHost && pageHost.querySelector(".card");
+      var card = casesTableCard(pageHost);
       var key = queue ? "queue-cases" : "document-cases";
       try {
         setCasesLoading(queue, true);
