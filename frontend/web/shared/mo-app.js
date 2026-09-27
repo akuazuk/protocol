@@ -5674,8 +5674,20 @@
       }
       host.innerHTML = tiles.map(function (tile) {
         var pct = tile.pct == null ? "нет доли" : (String(tile.pct).replace(".", ",") + "% МО");
-        return kpi(tile.label, tile.n_cases, pct + " · " + (tile.n || 0) + " сигналов", null, tile.tone || "slate");
+        return '<button type="button" class="kpi kpi--clickable kpi--' + esc(tile.tone || "slate") +
+          '" data-lab-codes="' + esc((tile.codes || []).join("|")) +
+          '" data-lab-label="' + esc(tile.label || "Анализы") + '">' +
+          '<div class="kpi-label">' + esc(tile.label) + "</div>" +
+          '<div class="kpi-value">' + esc(tile.n_cases == null ? "Нет данных" : tile.n_cases) + "</div>" +
+          '<div class="kpi-meta">' + esc(pct + " · " + (tile.n || 0) + " сигналов") + "</div></button>";
       }).join("");
+      host.querySelectorAll("[data-lab-codes]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          drillLabFamily(btn.getAttribute("data-lab-label") || "Анализы", {
+            findingCode: btn.getAttribute("data-lab-codes") || ""
+          });
+        });
+      });
     }
     function renderLabWindow(dash) {
       var host = $("labs-window");
