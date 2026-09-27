@@ -297,16 +297,15 @@ H3-prep (другие файлы, можно раньше): мягкие/жёс�
 
 ### P2. Сигналы в score, тень
 
-Статус: **в этой ветке**. Коды `B_repeat_same_plan`, `B_cross_spec_episode`,
-`B_lab_result_after_plan` + существующие lab-коды, `is_shadow=1` пока
-`MO_PASSPORT_IN_SCORE=0`. Итог склада не пересчитываем.
+Статус: **влито** (`d3239fe3`, #330). Коды `B_repeat_same_plan`,
+`B_cross_spec_episode`, `B_lab_result_after_plan` + существующие lab-коды,
+`is_shadow=1` пока `MO_PASSPORT_IN_SCORE=0`. Итог склада не пересчитываем.
 
 ### P3. API
 
-`/patients/{key}/passport`, `/cases/{id}/passport`, лаб по `?date=`.
-В `/cases/{id}` - только сводка, не 400 строк.
-Результат: контракт-тест, в JSON нет `patient_id` и ФИО; p95 паспорта
-&lt; 500 мс.
+Статус: **в этой ветке**. `/patients/{key}/passport`, `/cases/{id}/passport`,
+лаб по `?date=`. В `/cases/{id}` - только `passport_summary`, не индекс визитов.
+Результат: контракт-тест, в JSON нет `patient_id` и ФИО; кэш процесса 60 с.
 
 ### P4. Шаги 1-3 вместо скролла
 
