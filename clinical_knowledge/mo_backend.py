@@ -2412,21 +2412,25 @@ def _doctor_profile_block(
     spec_median: list[dict[str, Any]] = []
     spec_values = list(values) + [specialty]
     spec_expr = "COALESCE(NULLIF(TRIM(COALESCE(d.specialty, c.specialty)), ''), 'без специальности')"
+    by_week: dict[str, dict[str, list[float]]] = {}
     for row in conn.execute(
-        f"""SELECT {week_expr} AS week,
-                   ROUND(AVG(c.zone1_pct), 1) AS zone1_avg,
-                   ROUND(AVG(c.zone2a_pct), 1) AS zone2a_avg,
-                   ROUND(AVG(c.zone2b_pct), 1) AS zone2b_avg
-            FROM fact_mo_case c {joins} {and_sql}{spec_expr} = ?
-            GROUP BY week ORDER BY week""",
+        f"""SELECT {week_expr} AS week, c.zone1_pct, c.zone2a_pct, c.zone2b_pct
+            FROM fact_mo_case c {joins} {and_sql}{spec_expr} = ?""",
         spec_values,
     ):
+        week = str(row["week"] or "")
+        bucket = by_week.setdefault(week, {"zone1_avg": [], "zone2a_avg": [], "zone2b_avg": []})
+        for key, col in (("zone1_avg", "zone1_pct"), ("zone2a_avg", "zone2a_pct"), ("zone2b_avg", "zone2b_pct")):
+            if row[col] is not None:
+                bucket[key].append(float(row[col]))
+    for week in sorted(by_week):
+        bucket = by_week[week]
         spec_median.append(
             {
-                "week": str(row["week"] or ""),
-                "zone1_avg": row["zone1_avg"],
-                "zone2a_avg": row["zone2a_avg"],
-                "zone2b_avg": row["zone2b_avg"],
+                "week": week,
+                "zone1_avg": round(statistics.median(bucket["zone1_avg"]), 1) if bucket["zone1_avg"] else None,
+                "zone2a_avg": round(statistics.median(bucket["zone2a_avg"]), 1) if bucket["zone2a_avg"] else None,
+                "zone2b_avg": round(statistics.median(bucket["zone2b_avg"]), 1) if bucket["zone2b_avg"] else None,
             }
         )
     findings: list[dict[str, Any]] = []

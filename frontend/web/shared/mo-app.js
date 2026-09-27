@@ -5599,6 +5599,9 @@
       var pctKey = metric + "_bad_pct";
       var ranked = items.filter(function (x) {
         return x[pctKey] != null;
+      }).map(function (x) {
+        if (x.enough == null) x.enough = !!(x.enough_data && !x.suppressed);
+        return x;
       }).slice().sort(function (a, b) {
         return Number(b[pctKey] || 0) - Number(a[pctKey] || 0);
       }).slice(0, 20).reverse();
@@ -5807,7 +5810,14 @@
         if (dash && dash.ok && (dash.ranking || []).length) items = dash.ranking;
         else {
           var legacy = await dimensionData("doctors");
-          items = legacy.items || [];
+          items = (legacy.items || []).map(function (x) {
+            x.enough = !!(x.enough_data && !x.suppressed);
+            return x;
+          });
+          renderDoctorHeatmap(null);
+          renderDoctorScatter([]);
+          renderDoctorTrend(null);
+          renderDoctorProfile(null);
         }
       } finally {
         if (wrap) {

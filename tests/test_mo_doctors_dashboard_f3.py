@@ -43,6 +43,15 @@ def test_blocks_present_and_two_doctors(warehouse: Path) -> None:
     assert selected["radar"] and {r["id"] for r in selected["radar"]} == {"zone1", "zone2a", "zone2b"}
 
 
+def test_specialty_series_is_median_not_mean(warehouse: Path) -> None:
+    out = mo_backend.build_doctors_dashboard({**BASE, "document_kinds": "clinical_visit", "doctors": "Врач А"})
+    series = out["selected"]["specialty_median"]
+    assert series
+    # В фикстуре у специальности две точки на часть недель: медиана обязана быть числом, не AVG-алиасом.
+    assert all("zone1_avg" in row for row in series)
+    assert any(row["zone1_avg"] is not None for row in series)
+
+
 def test_doctor_filter_selects_profile(warehouse: Path) -> None:
     out = mo_backend.build_doctors_dashboard(
         {**BASE, "document_kinds": "clinical_visit", "doctors": "Врач Б"}

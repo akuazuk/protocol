@@ -101,6 +101,8 @@ def test_doctors_page_has_f3_hosts() -> None:
     assert 'id="doctor-profile-radar"' in HTML
     assert "renderDoctorHeatmap" in APP
     assert "/doctors-dashboard?" in APP
+    assert "renderDoctorHeatmap(null)" in APP
+    assert "x.enough = !!(x.enough_data && !x.suppressed)" in APP
     assert ".doctors-grid" in UI
     assert "Подробнее: дельта к ожидаемой" not in HTML
 
