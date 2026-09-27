@@ -1760,6 +1760,58 @@ kbd {
 #yesterday-score-dynamics.mo-chart {
   min-height: var(--chart-height, 300px);
 }
+/* Обзор F1: хосты диаграмм O1/O4/O5/O6, компактные кольца, дельта, плотная таблица дня */
+.mo-chart-host { min-height: var(--chart-height, 300px); height: var(--chart-height, 300px); }
+.mo-chart-host--band { --chart-height: 320px; }
+.mo-chart-host--heat { --chart-height: 320px; }
+.mo-chart-host .empty { min-height: 0; }
+.score-rings--compact { min-height: 0; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
+.score-rings--compact .score-ring { padding: 8px 4px 10px; }
+.score-rings--compact .score-ring-chart { height: 150px; min-height: 150px; }
+.score-rings--compact .score-ring-title { font-size: var(--type-label); }
+.score-rings--compact .score-ring-denominator { font-size: 10px; }
+.delta-chip {
+  display: inline-flex; align-items: center; gap: 3px;
+  padding: 1px 7px; border-radius: 99px;
+  font-size: 11px; font-weight: 750; letter-spacing: 0;
+  font-variant-numeric: tabular-nums; vertical-align: middle;
+  background: color-mix(in srgb, var(--muted) 12%, var(--surface-solid)); color: var(--muted);
+}
+.delta-chip--up { background: color-mix(in srgb, var(--good) 14%, var(--surface-solid)); color: var(--good); }
+.delta-chip--down { background: color-mix(in srgb, var(--bad) 14%, var(--surface-solid)); color: var(--bad); }
+.table-wrap--dense { max-height: 520px; }
+.table-dense th, .table-dense td { padding: 4px 8px; line-height: 1.25; }
+.table-dense tbody tr { height: 36px; }
+.table-dense small { color: var(--muted); font-size: 11px; }
+.table-dense .button.compact { min-height: 26px; padding: 2px 8px; font-size: 11px; }
+.table-dense .grade-chip, .table-dense .chip { padding-top: 1px; padding-bottom: 1px; }
+.table-dense .cell-clamp { max-width: none; }
+.table-dense { table-layout: fixed; min-width: 760px; }
+.table-dense th:nth-child(1) { width: 9%; }
+.table-dense th:nth-child(2) { width: 8%; }
+.table-dense th:nth-child(3) { width: 9%; }
+.table-dense th:nth-child(4) { width: 21%; }
+.table-dense th:nth-child(5) { width: 12%; }
+.table-dense th:nth-child(6) { width: 22%; }
+.table-dense th:nth-child(7) { width: 13%; }
+.table-dense th:nth-child(8) { width: 6%; }
+.table-dense th { white-space: normal; line-height: 1.15; }
+.cell-clamp { max-width: 260px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.nowrap { white-space: nowrap; }
+.daily-split > #yesterday-completeness { display: block; }
+.mini-bars { display: grid; gap: 8px; }
+.mini-bars .bar { grid-template-columns: 96px minmax(80px, 1fr) minmax(64px, auto); }
+.completeness-status { margin: 10px 0 0; }
+.completeness-status--critical { color: var(--bad); }
+.completeness-status--review { color: var(--warn); }
+.completeness-status--good { color: var(--good); }
+@media (max-width: 1100px) {
+  .overview-grid .span-7, .overview-grid .span-5 { grid-column: 1 / -1; }
+  .score-rings--compact { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+  .score-rings--compact { grid-template-columns: 1fr; }
+}
 .zone-presets { display: flex; flex-wrap: wrap; gap: 8px; margin: 10px 0 12px; }
 .doctor-zone-toggle { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 12px; }
 .doctor-zone-toggle [aria-pressed="true"] {

@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-060457Z-mo-facets-deeplink"
+BUILD_VERSION = "2026-09-27-073722Z-mo-redesign-f1-overview"
 
 
 def _app_version() -> str:
@@ -13073,6 +13073,35 @@ def api_methodist_mo_score_dashboard(
 
     response.headers["Cache-Control"] = "private, no-store"
     return build_score_dashboard(_mo_params(**locals()))
+
+
+@app.get("/api/methodist/mo/overview-dashboard")
+def api_methodist_mo_overview_dashboard(
+    request: "Request",
+    response: "Response",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    compare: str = Query("none"),
+    compare_period: str = Query(""),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    granularity: str = Query("auto", pattern="^(auto|day|week|month)$"),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    """Обзор O1-O6 одним ответом (волна F1): лента оценок, зоны с дельтой, тренд с прошлым
+    периодом, тепловая карта специальность x неделя, топ причин, воронка КП."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_overview_dashboard
+
+    response.headers["Cache-Control"] = "private, no-store"
+    try:
+        return build_overview_dashboard(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 
 @app.get("/api/methodist/mo/cases/{case_id}/document")

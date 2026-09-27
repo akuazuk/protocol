@@ -162,7 +162,9 @@
 
   function moDonut(element, segments, config) {
     config = config || {};
-    var radius = config.radius || ["48%", "86%"];
+    // compact: кольцо без встроенной легенды и toolbox (легенда общая снаружи).
+    var compact = !!config.compact;
+    var radius = config.radius || (compact ? ["56%", "90%"] : ["48%", "86%"]);
     var centerText = config.centerText || "";
     var centerSub = config.centerSub || "";
     var onSelect = config.onSelect;
@@ -188,15 +190,16 @@
             (p.percent != null ? " (" + p.percent + "%)" : "") + openHint;
         }
       },
-      legend: config.legend === false ? { show: false } : {
+      legend: (config.legend === false || compact) ? { show: false } : {
         bottom: 0,
         left: "center",
         textStyle: { fontSize: 11 }
       },
+      toolbox: compact ? { show: false } : undefined,
       series: [{
         type: "pie",
         radius: radius,
-        center: config.center || ["50%", "46%"],
+        center: config.center || (compact ? ["50%", "50%"] : ["50%", "46%"]),
         avoidLabelOverlap: true,
         label: { show: false },
         labelLine: { show: false },
@@ -218,7 +221,7 @@
       graphic: [{
         type: "text",
         left: "center",
-        top: centerSub ? "38%" : "42%",
+        top: compact ? (centerSub ? "40%" : "46%") : (centerSub ? "38%" : "42%"),
         style: {
           text: centerLabel,
           fill: token("--ink", "#1c2430"),
@@ -229,7 +232,7 @@
       }].concat(centerSub ? [{
         type: "text",
         left: "center",
-        top: "50%",
+        top: compact ? "54%" : "50%",
         style: {
           text: String(centerSub),
           fill: token("--muted", "#5b6f6a"),

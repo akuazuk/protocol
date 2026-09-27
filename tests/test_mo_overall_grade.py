@@ -169,3 +169,17 @@ def test_live_zone_engine_thin_orvi_is_not_good() -> None:
     # Пустые жалобы/осмотр роняют и опору диагноза → Важно, не «Слабо».
     assert grade["grade"] in {"important", "poor"}
     assert grade["grade"] != "good"
+
+
+def test_unscored_row_is_na_not_fair() -> None:
+    """Строка склада без единой зоны и без записанной оценки - «нет оценки», не «С замечанием»."""
+    from clinical_knowledge.mo_overall_grade import overall_grade_id
+
+    grade = compute_mo_overall_grade({"zone1_band": None, "zone2a_band": None, "zone2b_band": None})
+    assert grade["grade"] == "na"
+    assert grade["rank"] is None
+    assert overall_grade_id({"case_id": "x", "overall_grade": None}) == "na"
+    # Одна рассчитанная зона - уже оценка по обычным правилам.
+    assert compute_mo_overall_grade({"zone1_band": "weak"})["grade"] == "fair"
+    # Сигнал безопасности без зон - тоже оценка.
+    assert compute_mo_overall_grade({"safety": {"band": "important"}})["grade"] == "important"

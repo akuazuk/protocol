@@ -401,3 +401,33 @@ def test_health_and_capabilities_are_rendered_without_guessing_features() -> Non
 
 def test_programmatic_main_focus_does_not_draw_workspace_frame() -> None:
     assert ".content:focus { outline: none; }" in SOURCE
+
+
+def test_overview_f1_dashboards_are_present_and_have_no_collapsibles() -> None:
+    """Волна F1: Обзор O1-O8 - 6 диаграмм, компактная таблица дня и полнота без раскрывашек."""
+    page = re.search(r'<section class="page" id="page-yesterday".*?</section>', HTML, re.S)
+    assert page is not None
+    overview = page.group(0)
+    assert "<details" not in overview, "на Обзоре не должно быть скрытых блоков"
+    for host in (
+        "yesterday-grade-band",
+        "yesterday-score-rings",
+        "yesterday-score-dynamics",
+        "yesterday-kp-funnel",
+        "yesterday-heatmap",
+        "yesterday-findings-top",
+        "yesterday-action-rows",
+        "yesterday-completeness",
+    ):
+        assert f'id="{host}"' in overview, host
+    headers = re.findall(r"<th>([^<]+)</th>", re.search(r'<table class="table-dense">.*?</thead>', overview, re.S).group(0))
+    assert headers == ["Оценка", "Визит", "Дата", "Врач / специальность", "Филиал", "Диагноз", "Причина", "МО"]
+    app = (SHARED / "mo-app.js").read_text(encoding="utf-8")
+    assert '"/overview-dashboard?"' in app
+    for renderer in ("renderGradeBand", "renderKpFunnel", "renderSpecialtyHeatmap", "renderFindingsTop"):
+        assert f"function {renderer}(dash)" in app, renderer
+        assert f"{renderer}(dash);" in app, renderer
+    assert "trends_compare" in app, "сравнение с прошлым периодом рисуется пунктиром"
+    assert 'id: "chrome-yesterday-action-rows", dense: true' in app
+    assert "color-mix(" not in re.search(r"function mixHex.*?function isoDate", app, re.S).group(0)
+    assert ".table-dense th, .table-dense td { padding: 4px 8px" in CSS

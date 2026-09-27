@@ -56,6 +56,19 @@ def compute_mo_overall_grade(
     zone2b = _band(z.get("zone2b_band") or (z.get("zone2b") or {}).get("band"))
     kp = str(z.get("zone2b_kp_status") or (z.get("zone2b") or {}).get("kp_status") or "unmatched")
 
+    if zone1 == "na" and zone2a == "na" and zone2b == "na" and safety_band in {"na", "none"}:
+        # Ни одной зоны - случай не оценивался (нет витрины зон / ещё не пересчитан).
+        # Раньше падал в ELSE 'fair' и в таблицах выглядел как «С замечанием».
+        return {
+            "ok": True,
+            "engine": ENGINE,
+            "grade": "na",
+            "label_ru": "нет оценки",
+            "hint_ru": "Зоны не рассчитаны, оценки нет.",
+            "reason_ru": "",
+            "rank": None,
+        }
+
     if safety_band == "critical":
         grade, reason = "critical", "Критичный риск (безопасность)"
     elif safety_band == "important":

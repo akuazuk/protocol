@@ -309,15 +309,21 @@
       st.serverSort = !!options.serverSort;
       st.clientSort = !options.serverSort;
       tableChromeState[id] = st;
+      st.dense = !!options.dense;
 
       var toolbar = host.querySelector('[data-table-toolbar="' + id + '"]');
-      if (!toolbar) {
+      if (!toolbar && !st.dense) {
         toolbar = document.createElement("div");
         toolbar.className = "table-toolbar";
         toolbar.setAttribute("data-table-toolbar", id);
         host.insertBefore(toolbar, wrap);
       }
-      if (st.serverSort) {
+      if (st.dense) {
+        // Плотная таблица (Таблица дня): только сортировка по заголовкам,
+        // без панели поиска и строки фильтров - 36 px на строку.
+        if (toolbar) toolbar.remove();
+        st.metaEl = null;
+      } else if (st.serverSort) {
         // Серверная таблица: поиск и «Только плохо» - это параметры запроса
         // (q, overall_grade), а не фильтр строк одной страницы.
         st.search = "";
@@ -384,7 +390,7 @@
         if (!th.classList.contains("sortable-th")) th.classList.add("sortable-th");
         if (!th.getAttribute("data-sort-key")) th.setAttribute("data-sort-key", "col:" + colIndex);
       });
-      if (!st.serverSort) {
+      if (!st.serverSort && !st.dense) {
       filterRow = document.createElement("tr");
       filterRow.className = "col-filters";
       headerCells.forEach(function (th, colIndex) {
@@ -1324,7 +1330,7 @@
         html.push('<span class="chip">Только shadow-сигналы внимания</span>');
       }
       if (state.kpStatus) {
-        html.push('<span class="chip">КП: ' + esc(state.kpStatus === "matched" ? "подобран" : "не подобран") +
+        html.push('<span class="chip">КП: ' + esc(state.kpStatus === "matched" ? "подобран" : state.kpStatus === "na" ? "без сравнения" : "не подобран") +
           '<button type="button" data-clear-kp aria-label="Удалить фильтр КП">×</button></span>');
       }
       if (state.historyTier) {
@@ -1764,11 +1770,19 @@
         kpi("Нужен разбор", needReview == null ? "-" : needReview, "критично + важно, то же окно") +
         kpi("Свежесть", (daily && (daily.data_through || daily.date)) || "-", "склад");
     }
-    function renderScoreRing(card, title, centerText, segments, onSelect, denominatorText, centerSub) {
+    function deltaChip(delta, unit) {
+      if (delta == null || !Number.isFinite(Number(delta))) return "";
+      var n = Number(delta);
+      var tone = n > 0 ? "up" : n < 0 ? "down" : "flat";
+      var arrow = n > 0 ? "▲" : n < 0 ? "▼" : "•";
+      var text = (n > 0 ? "+" : "") + String(Math.round(n * 10) / 10).replace(".", ",") + (unit || " п.п.");
+      return '<span class="delta-chip delta-chip--' + tone + '" title="К прошлому периоду">' + arrow + " " + esc(text) + "</span>";
+    }
+    function renderScoreRing(card, title, centerText, segments, onSelect, denominatorText, centerSub, delta, compact) {
       card.innerHTML =
         '<p class="score-ring-title">' + esc(title) + "</p>" +
         '<div class="score-ring-chart"></div>' +
-        '<p class="score-ring-meta">' + esc(centerText || "") + "</p>" +
+        '<p class="score-ring-meta">' + esc(centerText || "") + (delta == null ? "" : " " + deltaChip(delta)) + "</p>" +
         (denominatorText ? '<p class="score-ring-denominator">' + esc(denominatorText) + "</p>" : "");
       var chartHost = card.querySelector(".score-ring-chart");
       if (!MO.moDonut) {
@@ -1781,7 +1795,8 @@
         label: title,
         description: "Распределение оценок. Клик по сегменту открывает случаи.",
         onSelect: onSelect,
-        emptyText: "Нет оценок"
+        emptyText: "Нет оценок",
+        compact: !!compact
       });
     }
     function renderSeverityPriorityRing(counts) {
@@ -1852,9 +1867,13 @@
         { key: "zone2b", title: "План по протоколу" }
       ];
       var zoneLabels = { ok: "Хорошо", weak: "Слабо", bad: "Важно", na: "Нет оценки" };
+      var compact = host.classList.contains("score-rings--compact");
+      var legendRows = compact
+        ? [["good", "Хорошо"], ["poor", "Слабо"], ["important", "Важно"], ["na", "Нет оценки"]]
+        : [["good", "Хорошо"], ["fair", "С замечанием"], ["poor", "Слабо"],
+           ["important", "Важно"], ["critical", "Критично"], ["na", "Нет оценки"]];
       host.innerHTML = '<ul class="score-grade-legend" aria-label="Шкала оценки">' +
-        [["good", "Хорошо"], ["fair", "С замечанием"], ["poor", "Слабо"],
-         ["important", "Важно"], ["critical", "Критично"], ["na", "Нет оценки"]].map(function (row) {
+        legendRows.map(function (row) {
           return '<li class="score-grade-legend__item score-grade-legend__item--' + row[0] + '">' + esc(row[1]) + "</li>";
         }).join("") + "</ul>";
       zoneMeta.forEach(function (meta) {
@@ -1893,9 +1912,13 @@
             ringSub = "план не сравнивался с КП: " + naN + " из " + zoneN;
           }
         }
+        var delta = block.delta_ok_pct;
+        if (delta != null && block.prev_ok_pct != null) {
+          ringSub += " · прошлый период: " + block.prev_ok_pct + "%";
+        }
         renderScoreRing(card, meta.title, center, segments, function (band) {
           openZoneBandCases(meta.key, band);
-        }, ringSub, centerSub);
+        }, ringSub, centerSub, centerSub === "хорошо" ? delta : null, compact);
       });
     }
     function renderScoreDynamics(dash) {
@@ -1903,12 +1926,19 @@
       var sub = $("yesterday-dynamics-sub");
       if (!host) return;
       var trends = (dash && dash.trends) || [];
+      var compare = (dash && dash.trends_compare) || [];
       var win = (dash && dash.window) || {};
+      var gran = (dash && dash.granularity) || "day";
+      var granText = gran === "month" ? "по месяцам" : gran === "week" ? "по неделям" : "по дням";
+      var periods = (dash && dash.periods) || {};
+      var prevRange = periods.comparison || null;
       if (sub) {
         var from = win.trend_date_from || win.date_from || "";
         var to = win.trend_date_to || win.date_to || "";
         sub.textContent = from && to
-          ? ("Средние % по дням: " + from + " - " + to + " · клик открывает Найти МО")
+          ? ("Средние % " + granText + ": " + from + " - " + to +
+            (compare.length && prevRange ? " · пунктир: прошлый период " + prevRange.date_from + " - " + prevRange.date_to : "") +
+            " · клик открывает Найти МО")
           : "Средние % трёх зон по дням выбранного периода";
       }
       if (!trends.length) {
@@ -1920,37 +1950,57 @@
       var c1 = cssToken("--zone-1", cssToken("--chart-1", "#2f6f63"));
       var c2 = cssToken("--zone-2a", cssToken("--chart-2", "#4a6fa5"));
       var c3 = cssToken("--zone-2b", cssToken("--chart-3", "#8a7a5a"));
-      var c55 = cssToken("--accent", "#3d5a80");
-      function series(name, key, color, dashed) {
+      function series(name, key, color, dashed, rows) {
         return {
           name: name,
           type: "line",
           smooth: true,
-          showSymbol: trends.length <= 14,
+          showSymbol: !dashed && trends.length <= 14,
           symbolSize: 7,
           connectNulls: false,
-          lineStyle: { width: dashed ? 2 : 2.4, color: color, type: dashed ? "dashed" : "solid" },
+          lineStyle: { width: dashed ? 1.6 : 2.4, color: color, type: dashed ? "dashed" : "solid", opacity: dashed ? 0.7 : 1 },
           itemStyle: { color: color },
           areaStyle: dashed ? undefined : { color: color, opacity: 0.07 },
-          data: trends.map(function (row) {
-            var v = row[key];
+          tooltip: dashed ? { show: true } : undefined,
+          data: dates.map(function (_, idx) {
+            var row = rows[idx];
+            var v = row ? row[key] : null;
             return v == null ? null : Number(v);
           })
         };
       }
+      var legendNames = ["Оформление", "Диагноз", "План"];
+      var seriesList = [
+        series("Оформление", "zone1_avg", c1, false, trends),
+        series("Диагноз", "zone2a_avg", c2, false, trends),
+        series("План", "zone2b_avg", c3, false, trends)
+      ];
+      if (compare.length) {
+        // Прошлый период выравнивается по порядку корзин: i-я корзина против i-й.
+        legendNames = legendNames.concat(["Оформление (пред.)", "Диагноз (пред.)", "План (пред.)"]);
+        seriesList = seriesList.concat([
+          series("Оформление (пред.)", "zone1_avg", c1, true, compare),
+          series("Диагноз (пред.)", "zone2a_avg", c2, true, compare),
+          series("План (пред.)", "zone2b_avg", c3, true, compare)
+        ]);
+      }
       var chart = MO.moChart(host, {
-        color: [c1, c2, c3],
-        legend: { top: 4, data: ["Оформление", "Диагноз", "План"] },
-        grid: { left: 42, right: 40, top: 42, bottom: 28 },
+        color: [c1, c2, c3, c1, c2, c3],
+        legend: { bottom: 0, data: legendNames },
+        grid: { left: 42, right: 40, top: 36, bottom: 56 },
         tooltip: {
           trigger: "axis",
           formatter: function (items) {
             if (!items || !items.length) return "";
             var idx = items[0].dataIndex;
             var row = trends[idx] || {};
+            var prev = compare[idx] || null;
             var lines = [row.date || ""];
             items.forEach(function (item) {
-              lines.push(item.marker + item.seriesName + ": " + (item.value == null ? "нет данных" : item.value + "%"));
+              var isPrev = /\(пред\.\)$/.test(item.seriesName);
+              if (isPrev && !prev) return;
+              lines.push(item.marker + item.seriesName + (isPrev ? " " + prev.date : "") + ": " +
+                (item.value == null ? "нет данных" : item.value + "%"));
             });
             if (row.n_evaluated != null) lines.push("n=" + row.n_evaluated);
             return lines.join("<br/>");
@@ -1960,22 +2010,26 @@
           type: "category", data: dates, boundaryGap: false,
           axisLabel: {
             hideOverlap: true, showMinLabel: true, showMaxLabel: true,
-            formatter: function (value) { return String(value || "").slice(5); }
+            formatter: function (value) { return bucketLabel(value, gran); }
           }
         },
         yAxis: { type: "value", min: 0, max: 100, name: "%" },
-        series: [
-          series("Оформление", "zone1_avg", c1, false),
-          series("Диагноз", "zone2a_avg", c2, false),
-          series("План", "zone2b_avg", c3, false)
-        ]
+        series: seriesList
       }, {
         label: "Динамика трёх оценок",
-        description: "Средние проценты оформления, диагноза и плана по дням окна аналитики."
+        description: "Средние проценты оформления, диагноза и плана по корзинам периода; пунктир - прошлый период."
       });
       if (chart) {
         chart.on("click", function (params) {
-          openTrendDayCases(dates[params.dataIndex], params.seriesName);
+          if (/\(пред\.\)$/.test(params.seriesName || "")) return;
+          var range = bucketRange(dates[params.dataIndex], gran, win);
+          if (range.from === range.to) openTrendDayCases(range.from, params.seriesName);
+          else applyDrill({
+            label: (params.seriesName || "период") + " · " + dates[params.dataIndex],
+            period: "custom", dateFrom: range.from, dateTo: range.to,
+            zoneFilter: zoneKeyFromSeriesName(params.seriesName), zoneBandFilter: "", attentionOnly: false,
+            page: "documents"
+          });
         });
       }
     }
@@ -1987,6 +2041,279 @@
       }
       renderScoreRings(dash);
       renderScoreDynamics(dash);
+    }
+    // --- Обзор F1: O1 лента оценок, O4 тепловая карта, O5 топ причин, O6 воронка КП ---
+    var GRADE_ORDER = ["good", "fair", "poor", "important", "critical", "na"];
+    function mixHex(a, b, weightA) {
+      // Смесь двух hex-цветов (аналог color-mix для canvas ECharts).
+      function rgb(hex) {
+        var h = String(hex || "").replace("#", "");
+        if (h.length === 3) h = h.split("").map(function (c) { return c + c; }).join("");
+        if (h.length !== 6) return null;
+        return [parseInt(h.slice(0, 2), 16), parseInt(h.slice(2, 4), 16), parseInt(h.slice(4, 6), 16)];
+      }
+      var x = rgb(a), y = rgb(b);
+      if (!x || !y) return a;
+      var w = Math.max(0, Math.min(1, weightA));
+      return "#" + [0, 1, 2].map(function (i) {
+        return pad2(Math.round(x[i] * w + y[i] * (1 - w)).toString(16));
+      }).join("");
+    }
+    function gradeColor(grade) {
+      var good = cssToken("--good", "#0f7a68"), warn = cssToken("--warn", "#c47830"), bad = cssToken("--bad", "#c0455a");
+      return ({
+        good: good,
+        fair: mixHex(good, warn, 0.55),
+        poor: warn,
+        important: bad,
+        critical: mixHex(bad, "#4a1020", 0.7),
+        na: cssToken("--muted", "#7a8494")
+      })[grade] || cssToken("--muted", "#7a8494");
+    }
+    function pad2(n) { return String(n).padStart(2, "0"); }
+    function isoDate(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
+    function bucketRange(label, granularity, win) {
+      // Корзина сервера -> календарный диапазон, обрезанный окном периода.
+      label = String(label || "");
+      var from = label, to = label;
+      if (granularity === "month" || /^\d{4}-\d{2}$/.test(label)) {
+        from = label + "-01";
+        to = isoDate(new Date(Number(label.slice(0, 4)), Number(label.slice(5, 7)), 0));
+      } else if (granularity === "week" || /^\d{4}-W\d{2}$/.test(label)) {
+        // SQLite %W: неделя года с понедельника, дни до первого понедельника - неделя 00.
+        var year = Number(label.slice(0, 4)), week = Number(label.slice(6, 8));
+        var jan1 = new Date(year, 0, 1);
+        var dow = (jan1.getDay() + 6) % 7; // 0 = понедельник
+        var firstMonday = new Date(year, 0, 1 + (dow === 0 ? 0 : 7 - dow));
+        var start = week === 0 ? jan1 : new Date(firstMonday.getFullYear(), 0, firstMonday.getDate() + (week - 1) * 7);
+        var end = week === 0 ? new Date(firstMonday.getFullYear(), 0, firstMonday.getDate() - 1) : new Date(start.getFullYear(), start.getMonth(), start.getDate() + 6);
+        from = isoDate(start);
+        to = isoDate(end);
+      }
+      win = win || {};
+      if (win.date_from && from < win.date_from) from = win.date_from;
+      if (win.date_to && to > win.date_to) to = win.date_to;
+      return { from: from, to: to };
+    }
+    function bucketLabel(label, granularity) {
+      label = String(label || "");
+      if (granularity === "month") return label.slice(5, 7) + "." + label.slice(2, 4);
+      if (granularity === "week") return "нед. " + label.slice(6, 8);
+      return label.slice(8, 10) + "." + label.slice(5, 7);
+    }
+    function overviewEmpty(host, text) {
+      if (host) host.innerHTML = '<p class="empty">' + esc(text || "Нет данных за выбранный период.") + "</p>";
+    }
+    function openBucketCases(label, granularity, win, extra, drillLabel) {
+      var range = bucketRange(label, granularity, win);
+      applyDrill(Object.assign({
+        label: drillLabel || label,
+        period: "custom",
+        dateFrom: range.from,
+        dateTo: range.to,
+        page: "documents"
+      }, extra || {}));
+    }
+    function renderGradeBand(dash) {
+      var host = $("yesterday-grade-band"), sub = $("yesterday-grades-sub");
+      if (!host) return;
+      var grades = dash && dash.grades;
+      if (!dash || !dash.ok || !grades || !(grades.buckets || []).length) {
+        overviewEmpty(host, (dash && dash.reason) || "Нет оценок за выбранный период.");
+        return;
+      }
+      var gran = dash.granularity || "day", win = dash.window || {};
+      var buckets = grades.buckets;
+      var granText = gran === "month" ? "по месяцам" : gran === "week" ? "по неделям" : "по дням";
+      if (sub) {
+        sub.textContent = "Доля оценок " + granText + " · всего " + esc(grades.n || 0) +
+          (grades.bad_pct != null ? " · плохо " + grades.bad_pct + "%" : "") + " · клик открывает Найти МО";
+      }
+      var series = GRADE_ORDER.map(function (grade) {
+        return {
+          name: OVERALL_GRADE_LABELS[grade] || grade,
+          type: "bar",
+          stack: "grades",
+          barMaxWidth: 34,
+          emphasis: { focus: "series" },
+          itemStyle: { color: gradeColor(grade) },
+          data: buckets.map(function (b) {
+            return { value: b.n ? Math.round(1000 * (b[grade] || 0) / b.n) / 10 : 0, n: b[grade] || 0, total: b.n, grade: grade, bucket: b.date };
+          })
+        };
+      });
+      var chart = MO.moChart(host, {
+        legend: { bottom: 0, data: series.map(function (s) { return s.name; }) },
+        grid: { left: 40, right: 12, top: 36, bottom: 56 },
+        tooltip: {
+          trigger: "axis",
+          axisPointer: { type: "shadow" },
+          formatter: function (items) {
+            if (!items || !items.length) return "";
+            var b = buckets[items[0].dataIndex] || {};
+            var lines = [b.date + " · n=" + (b.n || 0)];
+            items.forEach(function (item) {
+              if (item.data && item.data.n) lines.push(item.marker + item.seriesName + ": " + item.data.n + " (" + item.value + "%)");
+            });
+            return lines.join("<br/>");
+          }
+        },
+        xAxis: { type: "category", data: buckets.map(function (b) { return bucketLabel(b.date, gran); }) },
+        yAxis: { type: "value", min: 0, max: 100, name: "%" },
+        series: series
+      }, {
+        label: "Лента оценок за период",
+        description: "Стек долей оценок по корзинам периода. Клик открывает Найти МО за корзину с этой оценкой."
+      });
+      if (chart) {
+        chart.on("click", function (params) {
+          var d = params && params.data;
+          if (!d || !d.bucket) return;
+          openBucketCases(d.bucket, gran, win, { overallGrade: d.grade },
+            (OVERALL_GRADE_LABELS[d.grade] || d.grade) + " · " + d.bucket);
+        });
+      }
+    }
+    function renderKpFunnel(dash) {
+      var host = $("yesterday-kp-funnel");
+      if (!host) return;
+      var kp = dash && dash.kp_funnel;
+      if (!dash || !dash.ok || !kp || !(kp.buckets || []).length) {
+        overviewEmpty(host, (dash && dash.reason) || "Нет данных о клинических протоколах.");
+        return;
+      }
+      var gran = dash.granularity || "day", win = dash.window || {};
+      var buckets = kp.buckets, totals = kp.totals || {};
+      var meta = [
+        { key: "matched", name: "КП подобран", color: cssToken("--good", "#0f7a68") },
+        { key: "unmatched", name: "КП не подобран", color: cssToken("--warn", "#c47830") },
+        { key: "na", name: "Без сравнения", color: cssToken("--muted", "#7a8494") }
+      ];
+      var chart = MO.moChart(host, {
+        legend: {
+          bottom: 0,
+          data: meta.map(function (m) { return m.name + " · " + (totals[m.key] || 0); })
+        },
+        grid: { left: 40, right: 12, top: 36, bottom: 56 },
+        tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+        xAxis: { type: "category", data: buckets.map(function (b) { return bucketLabel(b.date, gran); }) },
+        yAxis: { type: "value", minInterval: 1 },
+        series: meta.map(function (m) {
+          return {
+            name: m.name + " · " + (totals[m.key] || 0),
+            type: "bar",
+            stack: "kp",
+            barMaxWidth: 34,
+            itemStyle: { color: m.color },
+            data: buckets.map(function (b) { return { value: b[m.key] || 0, bucket: b.date, kp: m.key }; })
+          };
+        })
+      }, {
+        label: "Воронка клинических протоколов",
+        description: "Число случаев с подобранным КП, без КП и без сравнения по корзинам периода."
+      });
+      if (chart) {
+        chart.on("click", function (params) {
+          var d = params && params.data;
+          if (!d || !d.bucket) return;
+          openBucketCases(d.bucket, gran, win, { kpStatus: d.kp }, "КП · " + d.bucket);
+        });
+      }
+    }
+    function renderSpecialtyHeatmap(dash) {
+      var host = $("yesterday-heatmap");
+      if (!host) return;
+      var heat = dash && dash.heatmap;
+      if (!dash || !dash.ok || !heat || !(heat.rows || []).length || !(heat.weeks || []).length) {
+        overviewEmpty(host, (dash && dash.reason) || "Нет специальностей за выбранный период.");
+        return;
+      }
+      var win = dash.window || {};
+      var rows = heat.rows.slice().reverse();
+      var data = [];
+      rows.forEach(function (row, y) {
+        row.cells.forEach(function (cell, x) {
+          if (!cell.n) return;
+          data.push({ value: [x, y, cell.suppressed ? null : cell.bad_pct], n: cell.n, bad: cell.bad, suppressed: cell.suppressed, week: cell.week, specialty: row.specialty });
+        });
+      });
+      host.style.setProperty("--chart-height", Math.max(240, 34 * rows.length + 110) + "px");
+      var chart = MO.moChart(host, {
+        tooltip: {
+          formatter: function (p) {
+            var d = p.data || {};
+            if (d.suppressed) return d.specialty + " · " + d.week + "<br/>Группа меньше " + (heat.suppression_n || 5) + " случаев - доля скрыта";
+            return d.specialty + " · " + d.week + "<br/>плохо: " + (d.bad || 0) + " из " + (d.n || 0) + " (" + (d.value[2] == null ? "-" : d.value[2] + "%") + ")<br/>Открыть случаи";
+          }
+        },
+        toolbox: { show: false },
+        grid: { left: 8, right: 16, top: 12, bottom: 64 },
+        xAxis: { type: "category", data: heat.weeks.map(function (w) { return bucketLabel(w, "week"); }), splitArea: { show: true } },
+        yAxis: { type: "category", data: rows.map(function (r) { return r.specialty + " (" + r.n + ")"; }), axisLabel: { width: 150, overflow: "truncate" } },
+        visualMap: {
+          min: 0, max: 100, calculable: false, orient: "horizontal", left: "center", bottom: 0,
+          itemWidth: 10, itemHeight: 120,
+          text: ["100% плохо", "0%"], textStyle: { fontSize: 10 },
+          inRange: { color: [cssToken("--good", "#0f7a68"), cssToken("--warn", "#c47830"), cssToken("--bad", "#c0455a")] }
+        },
+        series: [{
+          type: "heatmap",
+          data: data,
+          label: {
+            show: true, fontSize: 10,
+            formatter: function (p) { return p.data.suppressed ? "<" + (heat.suppression_n || 5) : (p.data.value[2] == null ? "" : Math.round(p.data.value[2]) + "%"); }
+          },
+          itemStyle: { borderColor: cssToken("--surface-solid", "#fff"), borderWidth: 2 },
+          emphasis: { itemStyle: { shadowBlur: 6, shadowColor: "rgba(0,0,0,.25)" } }
+        }]
+      }, {
+        label: "Доля плохих оценок: специальность и неделя",
+        description: "Тепловая карта: доля оценок слабо, важно и критично по специальностям и неделям периода."
+      });
+      if (chart) {
+        chart.on("click", function (params) {
+          var d = params && params.data;
+          if (!d || !d.week) return;
+          openBucketCases(d.week, "week", win, { selected: { specialties: [d.specialty] }, overallGrade: BAD_GRADES },
+            d.specialty + " · " + bucketLabel(d.week, "week"));
+        });
+      }
+    }
+    function renderFindingsTop(dash) {
+      var host = $("yesterday-findings-top");
+      if (!host) return;
+      var top = (dash && dash.findings_top) || [];
+      if (!dash || !dash.ok || !top.length) {
+        overviewEmpty(host, (dash && dash.reason) || "Замечаний за выбранный период нет.");
+        return;
+      }
+      var items = top.slice().reverse();
+      host.style.setProperty("--chart-height", Math.max(220, 30 * items.length + 80) + "px");
+      var chart = MO.moChart(host, {
+        grid: { left: 8, right: 48, top: 28, bottom: 8 },
+        tooltip: {
+          trigger: "item",
+          formatter: function (p) { var d = p.data || {}; return d.label + "<br/>случаев: " + d.value + (d.code ? "<br/><small>" + d.code + "</small>" : "") + "<br/>Открыть случаи"; }
+        },
+        xAxis: { type: "value", minInterval: 1, splitLine: { show: false }, axisLabel: { show: false } },
+        yAxis: { type: "category", data: items.map(function (f) { return f.label; }), axisLabel: { width: 190, overflow: "truncate", fontSize: 11 } },
+        series: [{
+          type: "bar",
+          barMaxWidth: 20,
+          label: { show: true, position: "right", fontSize: 11, formatter: "{c}" },
+          itemStyle: { color: cssToken("--chart-2", "#4a6fa5"), borderRadius: [0, 6, 6, 0] },
+          data: items.map(function (f) { return { value: f.n_cases, code: f.code, label: f.label }; })
+        }]
+      }, {
+        label: "Топ причин замечаний",
+        description: "Десять самых частых замечаний по числу затронутых случаев. Клик открывает Найти МО с этим замечанием."
+      });
+      if (chart) {
+        chart.on("click", function (params) {
+          var d = params && params.data;
+          if (d && d.code) navigateFinding(d.code, d.label);
+        });
+      }
     }
     function renderOverview(data) {
       if (!data.available) { showError(data.reason || "Данные месяца недоступны."); return; }
@@ -4699,12 +5026,26 @@
             statusLine += " (" + completeness.llm_queue_pending + ")";
           }
         }
+        // O7: мини-бары получено / ожидалось / оценено вместо карточек и раскрывашки.
+        var funnelNow = data.funnel || {};
+        var actual = Number(completeness.actual_rows || 0);
+        var expectedN = expected.available ? Number(expected.value || 0) : 0;
+        var base = Math.max(actual, expectedN, 1);
+        var evaluatedN = funnelNow.available ? Number(funnelNow.evaluated || 0) : null;
+        var eligibleN = funnelNow.available ? Number(funnelNow.eligible || 0) : null;
         $("yesterday-completeness").innerHTML =
-          kpi("Получено", completeness.actual_rows, "строк из источника") +
-          kpi("Ожидалось", expected.available ? expected.value : "Нет базы", expected.available ? expected.samples + " сопоставимых дней" : expected.reason) +
-          notice("Лаг", completeness.lag_days + " дн. · ревизия " + (completeness.revision == null ? "не указана" : completeness.revision) +
-            " · " + statusLine,
-            completeness.partial ? "critical" : (completeness.advisory_reasons && completeness.advisory_reasons.length ? "review" : "good")) +
+          '<div class="mini-bars" aria-label="Полнота данных за день">' +
+          bar("Получено", 100 * actual / base, String(actual) + " строк") +
+          bar("Ожидалось", expected.available ? 100 * expectedN / base : null,
+            expected.available ? String(expectedN) + " · база " + expected.samples + " дн." : (expected.reason || "нет базы")) +
+          (eligibleN == null ? "" : bar("Допущено", 100 * eligibleN / base, String(eligibleN))) +
+          (evaluatedN == null ? "" : bar("Оценено", eligibleN ? 100 * evaluatedN / Math.max(eligibleN, 1) : null,
+            String(evaluatedN) + (eligibleN ? " из " + eligibleN : ""))) +
+          "</div>" +
+          '<p class="card-sub completeness-status completeness-status--' +
+          (completeness.partial ? "critical" : (completeness.advisory_reasons && completeness.advisory_reasons.length ? "review" : "good")) + '">' +
+          esc("Лаг " + completeness.lag_days + " дн. · ревизия " + (completeness.revision == null ? "не указана" : completeness.revision) + " · " + statusLine) +
+          "</p>" +
           (completeness.flags || []).map(function (flag) {
             return notice(flag.level === "blocking" ? "Блокирующий флаг" : "Предупреждение",
               flag.message || flag.code, flag.level === "blocking" ? "critical" : "review");
@@ -4987,19 +5328,18 @@
         var reason = item.attention_reason_ru || item.reason || item.finding_title || item.finding_code || "";
         var deep = item.deep_run_track_ru || item.history_mode_ru || "";
         if (deep) reason = (reason ? reason + " · " : "") + deep;
+        // O8: 8 колонок, одна строка на случай; раздел - подсказкой у причины, пациент - в разборе.
         return '<tr data-case="' + esc(item.case_id) + '"><td>' + overallGradeChip(item.overall_grade) +
-          '</td><td>' + esc(layer) +
           '</td><td class="id-cell">' + esc(visitId) +
-          '</td><td class="id-cell">' + esc(item.patient_id || "-") +
-          '</td><td>' + esc(item.visit_date || data.date || "-") +
-          '</td><td><b>' + esc(item.doctor_fio || item.doctor) + "</b><br><small>" + esc(item.specialty) +
-          "</small>" +
-          "</td><td>" + esc(item.filial || item.branch) + "</td><td>" + esc(cleanClinicalText(item.diagnosis)) +
-          "</td><td>" + esc(reason) +
-          '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">МО в PDF</button></td></tr>';
-      }).join("") : '<tr><td colspan="10">' + unavailableBlock(section, "Случаев для разбора нет.") + "</td></tr>";
+          '</td><td class="nowrap">' + esc(item.visit_date || data.date || "-") +
+          '</td><td class="cell-clamp"><b>' + esc(item.doctor_fio || item.doctor) + "</b> <small>" + esc(item.specialty) + "</small>" +
+          '</td><td class="cell-clamp">' + esc(item.filial || item.branch) +
+          '</td><td class="cell-clamp" title="' + esc(cleanClinicalText(item.diagnosis)) + '">' + esc(cleanClinicalText(item.diagnosis)) +
+          '</td><td class="cell-clamp" title="' + esc(layer + (reason ? ": " + reason : "")) + '">' + esc(reason || layer) +
+          '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.case_id) + '.pdf">PDF</button></td></tr>';
+      }).join("") : '<tr><td colspan="8">' + unavailableBlock(section, "Случаев для разбора нет.") + "</td></tr>";
       bindCaseRows($("yesterday-action-rows"));
-      attachTableChrome($("yesterday-action-rows").closest("table"), { id: "chrome-yesterday-action-rows" });
+      attachTableChrome($("yesterday-action-rows").closest("table"), { id: "chrome-yesterday-action-rows", dense: true });
     }
     function renderYesterday(data, dash, workingDay) {
       renderYesterdayScoreKpis(data, dash || null);
@@ -5008,6 +5348,10 @@
       });
       loadFamilyStrips("yesterday-family-strip");
       renderYesterdayScoreDashboard(dash || state.data.scoreDashboard || null, workingDay || data.date || "");
+      renderGradeBand(dash);
+      renderKpFunnel(dash);
+      renderSpecialtyHeatmap(dash);
+      renderFindingsTop(dash);
       renderYesterdayActions(data);
       renderYesterdayCompleteness(data);
     }
@@ -5041,7 +5385,12 @@
       if (resolved.fallback && $("yesterday-freshness")) {
         $("yesterday-freshness").textContent = "Показан последний день с данными: " + day;
       }
-      var dashPromise = request("/score-dashboard?" + query().toString(), "/score-dashboard");
+      // Обзор O1-O6 одним ответом; на старом сервере (404) - кольца и тренд из /score-dashboard.
+      var dashQuery = query().toString();
+      var dashPromise = request("/overview-dashboard?" + dashQuery).then(function (resp) {
+        if (resp && resp.status === 404) return request("/score-dashboard?" + dashQuery);
+        return resp;
+      });
       var response = await request("/daily-report?date=" + encodeURIComponent(day), "__root__");
       if (await handleHttpAuth(response)) return;
       if (!response.ok) throw new Error("Отчёт за " + day + " пока недоступен.");
@@ -5071,10 +5420,10 @@
         var dashResp = await dashPromise;
         if (dashResp && dashResp.ok) dash = await dashResp.json();
         else if (dashResp && dashResp.status === 404) {
-          dash.reason = "API score-dashboard ещё не на сервере.";
+          dash.reason = "API overview-dashboard ещё не на сервере.";
         }
       } catch (e) {
-        dash.reason = "Не удалось загрузить кольца и динамику.";
+        dash.reason = "Не удалось загрузить диаграммы обзора.";
       }
       state.data.daily = data;
       state.data.scoreDashboard = dash;

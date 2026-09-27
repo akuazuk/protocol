@@ -743,6 +743,42 @@ F4 Лекарства (M1-M5) → F5 Анализы (L1-L5) → F6 Поиск М
 Протоколы МЗ / Инструкции. Каждая диаграмма: клик → Найти МО; `n` в подписи; пустое
 состояние с причиной; snapshot-тест опций ECharts (`tests/test_mo_charts_options.py`).
 
+**Статус F1 (2026-09-27, PR `cursor/mo-redesign-f1-overview-pc1`):** Обзор собран
+одним запросом `GET /api/methodist/mo/overview-dashboard` (`build_overview_dashboard`,
+склад, кэш 120 с, те же фасеты `_sql_case_filter`, что и `/cases`) вместо двух новых
+эндпоинтов из 5.1 (`/dimensions/specializations?by=week`, `/findings/top`) - одна
+поездка на сервер, все блоки считаются по одному WHERE и не расходятся между собой.
+Блоки ответа: `grades.buckets` (O1), `zones` с `prev_ok_pct`/`delta_ok_pct` (O2),
+`trends` + `trends_compare` (O3, прошлый период выровнен по индексу), `heatmap` (O4,
+специальность × неделя ISO `%W`, ячейки `n < 5` подавлены как `<5`, до 12 строк × 26
+недель), `findings_top` (O5, `passed = 0`, не shadow, DISTINCT случаев, подписи из
+`mo_finding_labels_ru`), `kp_funnel` (O6, `zone2b_kp_status` по бакетам).
+Гранулярность автоматом: день ≤ 62 сут., неделя ≤ 190, дальше месяц (`granularity=`
+переопределяет). Фронт: `#page-yesterday` -> `overview-grid` из 8 карточек (7/5 колонок,
+на 1100 px - в столбик); клик по любой диаграмме открывает Найти МО с нужным срезом
+(`overall_grade` + даты бакета, `specialties` + плохие оценки за неделю,
+`finding_codes`, `kp_status`, `zone*` за день). O7 - мини-бары получено / ожидалось /
+допущено / оценено, `details` на Обзоре нет. O8 - `table-dense`, 8 колонок,
+`table-layout: fixed`, `attachTableChrome(..., { dense: true })` без панели поиска и
+строки фильтров; строка 36 px; при 1280 и 1024 за правым краем 0 элементов.
+`moDonut({ compact })` - кольца 150 px без встроенной легенды и toolbox (легенда общая
+над кольцами и совпадает с сегментами). Fallback: если `/overview-dashboard` отвечает
+404 (старый образ), фронт берёт `/score-dashboard`. Тесты:
+`tests/test_mo_overview_dashboard_f1.py` (6: контракт, согласованность блоков,
+фасеты во всех блоках, гранулярность, подавление ячеек), structure-тест Обзора
+(хосты, 8 заголовков, нет `details`, рендереры, `trends_compare`). Playwright на моке
+(вне репозитория): диаграмм 8+, колец 3, дельт 2 (zone2b в режиме «без КП» - без
+дельты, по замыслу), ошибок JS 0, клик по «Топ причин» -> `page=documents` +
+`finding_codes=`. Bugbot: клики по «Нет оценки» (лента) и «Без сравнения» (воронка КП)
+передавали пустой фильтр и открывали все случаи корзины. Исправлено на уровне шкалы:
+`compute_mo_overall_grade` и `_sql_overall_grade_expr` теперь дают `na` для строки без
+единой зоны, без записанной оценки и без сигнала безопасности (раньше такая строка падала в
+`fair` и в таблицах выглядела как «С замечанием» - дефект старше F1, касается
+непересчитанных случаев); `overall_grade=na` и `kp_status=na` (всё, что не
+matched/unmatched) режут `/cases` и в SQL, и в Python-пути. Регресс-тесты:
+`test_na_drills_from_overview_charts_filter_cases`, `test_unscored_row_is_na_not_fair`.
+Приёмка на проде - после релиза 11 (см. 6b).
+
 ### G. Разбор случая без свёртков (`mo-app.js` renderCase, `mo-ui.css`)
 
 Раздел 5.9. Убрать `details`, три колонки, липкие якоря, спарклайны лаборатории за
