@@ -1637,6 +1637,7 @@ def initialize_warehouse(path: Path) -> None:
                 "zone2b_kp_status": "TEXT",
                 "attention_primary": "TEXT",
                 "attention_reason_ru": "TEXT",
+                "safety_band": "TEXT",
                 "overall_grade": "TEXT",
                 "overall_grade_ru": "TEXT",
                 "overall_grade_reason_ru": "TEXT",
@@ -2735,6 +2736,11 @@ def upsert_warehouse(
                         zone_cols.get("overall_grade_reason_ru"),
                         mis_id,
                     ),
+                )
+            if zone_cols.get("safety_band"):
+                db.execute(
+                    "UPDATE fact_mo_case SET safety_band=? WHERE mis_id=?",
+                    (str(zone_cols.get("safety_band") or "none"), mis_id),
                 )
 
             if doctor_key:

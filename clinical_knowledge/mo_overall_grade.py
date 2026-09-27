@@ -149,16 +149,19 @@ def attach_overall_grade(record: Mapping[str, Any] | None) -> dict[str, Any]:
             "rank": GRADE_ORDER.index(stored_id),
         }
         return rec
-    safety_band = "none"
-    if str(rec.get("attention_primary") or "") == "safety":
-        safety_band = "important"
+    stored_safety = str(rec.get("safety_band") or "").strip().lower()
+    if stored_safety not in {"critical", "important", "none"}:
+        stored_safety = "none"
+        if str(rec.get("attention_primary") or "") == "safety":
+            stored_safety = "important"
     rec["overall_grade"] = compute_mo_overall_grade(
         {
             "zone1_band": rec.get("zone1_band"),
             "zone2a_band": rec.get("zone2a_band"),
             "zone2b_band": rec.get("zone2b_band"),
             "zone2b_kp_status": rec.get("zone2b_kp_status"),
-            "safety": {"band": safety_band},
+            "safety": {"band": stored_safety},
+            "safety_band": stored_safety,
         }
     )
     return rec

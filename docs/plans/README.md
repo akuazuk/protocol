@@ -1,5 +1,7 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-09-27-mo-client-passport-score-ui-v2.md](2026-09-27-mo-client-passport-score-ui-v2.md) | Паспорт 205 тыс. из МИС (индекс), оценка дыр 2026, разбор пятью шагами; цифры было/станет по шкале и UI | active |
+| [2026-09-27-mo-patient-passport-v1.md](2026-09-27-mo-patient-passport-v1.md) | Паспорт клиента, каркас (преемник - client-passport-score-ui-v2) | archived |
 | [2026-09-26-mo-analytics-redesign-v2.md](2026-09-26-mo-analytics-redesign-v2.md) | МО Аналитика: повторный аудит прода 8000354f (каждый экран, диаграмма, фильтр, тайминги, поиск), редизайн без «Ещё» и свёртков, каталог 35+ дашбордов, webfont, данные с 1 января + догрузка по кнопке, умный поиск (МКБ + синонимы + опечатки), волны A-H | active |
 | [2026-09-25-mo-analytics-audit-and-redesign-v1.md](2026-09-25-mo-analytics-audit-and-redesign-v1.md) | МО Аналитика: аудит v1 (по отставшему checkout; IA с «Ещё» отменена владельцем) | archived → mo-analytics-redesign-v2 |
 | [2026-09-25-mo-kp-embed-passport-v1.md](2026-09-25-mo-kp-embed-passport-v1.md) | Подбор КП: паспорт Ilex первым, `gemini-embedding-2` вторым проходом; золотой набор; база пересмотрена после K1-K3 | active (волны 1-3) |

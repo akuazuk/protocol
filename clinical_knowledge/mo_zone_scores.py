@@ -179,17 +179,55 @@ def _mean_pct(scores: list[float]) -> float | None:
     return round(100.0 * sum(scores) / len(scores), 1)
 
 
+# H3-prep: одно мягкое 0.5 не роняет всю зону оформления.
+# Жёсткий ноль - пустой обязательный блок. Мягкая половинка - неполная детализация.
+_DOC_HARD_ZERO_IDS = frozenset({"mo_complete", "complaints", "anamnesis", "objective"})
+_DOC_SOFT_HALF_IDS = frozenset(
+    {"datetime", "risk_factors", "exam_data", "complaints", "anamnesis", "objective"}
+)
+_DOC_OK_AT = 75.0
+
+
+def _item_score(item: Mapping[str, Any]) -> float | None:
+    raw = item.get("score")
+    if isinstance(raw, (int, float)):
+        return float(raw)
+    return None
+
+
 def band_for_zone(
     pct: float | None,
     scored_items: Sequence[Mapping[str, Any]],
     *,
     bands: Mapping[str, Any] | None = None,
+    zone: str = "",
 ) -> str:
     cfg = bands or load_zone_bands()
     bad_below = float(cfg["bad_below"])
     ok_at = float(cfg["ok_at_or_above"])
     if pct is None or not scored_items:
         return "na"
+    if zone == "documentation":
+        hard_zero = False
+        soft_halves = 0
+        mo_half = False
+        for item in scored_items:
+            score = _item_score(item)
+            if score is None:
+                continue
+            cid = str(item.get("id") or "")
+            optional = bool(item.get("optional"))
+            if cid in _DOC_HARD_ZERO_IDS and score <= 0.001 and not optional:
+                hard_zero = True
+            if cid == "mo_complete" and 0.001 < score < 0.999:
+                mo_half = True
+            if cid in _DOC_SOFT_HALF_IDS and 0.001 < score < 0.999:
+                soft_halves += 1
+        if pct < bad_below or hard_zero:
+            return "bad"
+        if pct < _DOC_OK_AT or soft_halves >= 2 or mo_half:
+            return "weak"
+        return "ok"
     has_zero = any(
         isinstance(i.get("score"), (int, float)) and float(i["score"]) <= 0.001
         and not i.get("optional")
@@ -417,9 +455,9 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
     zone2a_pct = _mean_pct([float(i["score"]) for i in z2a_scored])
     zone2b_pct = _mean_pct([float(i["score"]) for i in z2b_scored])
 
-    zone1_band = band_for_zone(zone1_pct, z1_scored, bands=bands_cfg)
-    zone2a_band = band_for_zone(zone2a_pct, z2a_scored, bands=bands_cfg)
-    zone2b_band = band_for_zone(zone2b_pct, z2b_scored, bands=bands_cfg)
+    zone1_band = band_for_zone(zone1_pct, z1_scored, bands=bands_cfg, zone="documentation")
+    zone2a_band = band_for_zone(zone2a_pct, z2a_scored, bands=bands_cfg, zone="diagnosis")
+    zone2b_band = band_for_zone(zone2b_pct, z2b_scored, bands=bands_cfg, zone="plan")
     if kp_status != "matched":
         # Без подобранного КП план нельзя звать «не по протоколу».
         zone2b_band = "na"
@@ -504,6 +542,7 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
         "zone2b_kp_status": kp_status,
         "attention_primary": attention_primary,
         "attention_reason_ru": attention_reason,
+        "safety_band": str((safety or {}).get("band") or "none"),
         "safety": safety,
         "criteria": compact_criteria,
         "rubric_pct": rubric_pct,
@@ -555,6 +594,9 @@ def warehouse_zone_columns(zones: Mapping[str, Any]) -> dict[str, Any]:
         "zone2b_kp_status": zones.get("zone2b_kp_status") or "unmatched",
         "attention_primary": zones.get("attention_primary") or "none",
         "attention_reason_ru": (zones.get("attention_reason_ru") or "")[:240],
+        "safety_band": (
+            str((zones.get("safety") or {}).get("band") or zones.get("safety_band") or "none")
+        ),
         "overall_grade": (zones.get("overall_grade") or {}).get("grade"),
         "overall_grade_ru": (zones.get("overall_grade") or {}).get("label_ru"),
         "overall_grade_reason_ru": ((zones.get("overall_grade") or {}).get("reason_ru") or "")[:240],

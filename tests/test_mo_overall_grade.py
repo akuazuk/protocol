@@ -140,6 +140,22 @@ def test_attach_from_warehouse_row() -> None:
     assert rec["overall_grade"]["grade"] == "fair"
 
 
+def test_attach_keeps_critical_from_safety_band() -> None:
+    from clinical_knowledge.mo_overall_grade import attach_overall_grade
+
+    rec = attach_overall_grade(
+        {
+            "zone1_band": "ok",
+            "zone2a_band": "ok",
+            "zone2b_band": "ok",
+            "zone2b_kp_status": "matched",
+            "attention_primary": "safety",
+            "safety_band": "critical",
+        }
+    )
+    assert rec["overall_grade"]["grade"] == "critical"
+
+
 def test_attach_mutates_original_dict() -> None:
     from clinical_knowledge.mo_overall_grade import attach_overall_grade
 
