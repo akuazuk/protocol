@@ -25,10 +25,11 @@ def test_doctor_open_uses_overall_grade_not_zone_only() -> None:
     assert "function openDoctorCases(item, zoneKey)" in APP
 
 
-def test_queue_critical_uses_queue_band() -> None:
+def test_queue_band_drill_stays_but_only_critical_button_is_gone() -> None:
     assert "function applyQueueBand(band, opts)" in APP
     assert "state.overallGrade = \"\";" in APP
-    assert 'applyQueueBand("critical")' in APP
+    # Волна J: кнопки «Только критические» нет, полоса очереди ставится только с KPI.
+    assert "queue-critical-only" not in APP
     assert 'applyQueueBand("critical", { page: "queue" })' in APP
 
 
@@ -39,9 +40,10 @@ def test_family_clicks_set_finding_codes() -> None:
 
 
 def test_column_checkboxes_visible_in_manager() -> None:
-    assert '<details open class="column-all"><summary>Все колонки</summary>' in APP
-    assert 'data-preset="work"' in APP
-    assert 'data-preset="review"' in APP
+    # Волна J: чекбоксы колонок видны всегда (без <details>), пресеты - основной контрол.
+    assert '<div class="filter-options column-all" aria-label="Отдельные колонки">' in APP
+    assert 'presetButton("work"' in APP
+    assert 'presetButton("review"' in APP
 
 
 def test_finding_empty_state() -> None:

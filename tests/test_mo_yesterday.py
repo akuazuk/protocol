@@ -330,36 +330,30 @@ def test_yesterday_markup_rendering_and_minsk_date_contract() -> None:
         'id="yesterday-score-rings"',
         'id="yesterday-score-dynamics"',
         'id="yesterday-action-rows"',
-        'id="yesterday-zone-trend"',
         'id="yesterday-completeness"',
-        'id="yesterday-index-cards"',
-        'id="yesterday-index-chart"',
-        'id="yesterday-findings-chart"',
-        'id="yesterday-doctor-chart"',
-        'id="yesterday-flow-chart"',
-        'id="yesterday-source-quality"',
     ):
         assert marker in html
-    assert "взят в работу" in app
+    for legacy in (
+        'id="yesterday-zone-trend"', 'id="yesterday-index-cards"', 'id="yesterday-index-chart"',
+        'id="yesterday-findings-chart"', 'id="yesterday-doctor-chart"', 'id="yesterday-flow-chart"',
+        'id="yesterday-source-quality"', 'id="yesterday-flow-dimension"',
+    ):
+        assert legacy not in html
     assert "МО в PDF" in app
     assert "Europe/Minsk" in app
     assert "formatToParts" in app
     assert "Date.now() - 86400000" not in app
-    assert "navigateYesterdayFinding" in app
     assert "data-open-case" in app or 'data-case="' in app
-    assert "открыть список МО" in app
     assert "renderScoreRings" in app
     assert "renderScoreDynamics" in app
     assert "/score-dashboard?" in app
-    for renderer in (
-        "renderYesterdayIndices",
-        "renderYesterdayFindings",
-        "renderYesterdayDoctors",
-        "renderYesterdayFlow",
-        "renderAttentionStrip",
-    ):
+    for renderer in ("renderYesterdayActions", "renderYesterdayCompleteness", "renderAttentionStrip"):
         assert renderer in app
-    assert app.count("MO.moChart($(\"yesterday-") >= 3
+    for legacy in (
+        "renderYesterdayIndices", "renderYesterdayFindings", "renderYesterdayDoctors",
+        "renderYesterdayFlow", "renderYesterdaySourceQuality", "navigateYesterdayFinding", "takeYesterdayCase",
+    ):
+        assert legacy not in app
 
 
 def test_yesterday_javascript_syntax() -> None:

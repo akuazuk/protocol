@@ -73,23 +73,33 @@ def test_sql_overall_grade_matches_python() -> None:
     conn = sqlite3.connect(":memory:")
     conn.execute(
         "CREATE TABLE t (attention_primary TEXT, zone1_band TEXT, zone2a_band TEXT, "
-        "zone2b_band TEXT, zone2b_kp_status TEXT)"
+        "zone2b_band TEXT, zone2b_kp_status TEXT, overall_grade TEXT)"
     )
     for row in SAMPLES:
         conn.execute(
-            "INSERT INTO t VALUES (?,?,?,?,?)",
+            "INSERT INTO t VALUES (?,?,?,?,?,?)",
             (
                 row["attention_primary"],
                 row["zone1_band"],
                 row["zone2a_band"],
                 row["zone2b_band"],
                 row["zone2b_kp_status"],
+                row.get("overall_grade"),
             ),
         )
         sql_grade = conn.execute(f"SELECT {expr} FROM t").fetchone()[0]
         py_grade = attach_overall_grade(dict(row))["overall_grade"]["grade"]
         assert sql_grade == py_grade, (row, sql_grade, py_grade)
         conn.execute("DELETE FROM t")
+    # Записанная скорером оценка первична и в SQL, и в Python (safety critical склад иначе не знает).
+    conn.execute("INSERT INTO t VALUES ('safety','ok','ok','ok','matched','critical')")
+    assert conn.execute(f"SELECT {expr} FROM t").fetchone()[0] == "critical"
+    stored = attach_overall_grade({"attention_primary": "safety", "zone1_band": "ok", "zone2a_band": "ok",
+                                   "zone2b_band": "ok", "zone2b_kp_status": "matched", "overall_grade": "critical"})
+    assert stored["overall_grade"]["grade"] == "critical"
+    conn.execute("DELETE FROM t")
+    conn.execute("INSERT INTO t VALUES ('none','ok','ok','ok','matched','garbage')")
+    assert conn.execute(f"SELECT {expr} FROM t").fetchone()[0] == "good"
 
 
 def test_warehouse_where_filters_overall_grade() -> None:

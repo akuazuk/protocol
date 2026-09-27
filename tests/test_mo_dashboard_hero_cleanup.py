@@ -30,9 +30,11 @@ def test_period_hero_keeps_zones_not_heatmap() -> None:
     assert "month-zone-trend" in overview
     assert "month-look-where" in overview
     assert "month-attention" in overview
-    assert 'id="month-heatmap-chart" hidden' in overview
-    assert 'id="month-pareto-chart" hidden' in overview
-    assert 'id="month-funnel-chart" hidden' in overview
+    # Волна J: скрытых хостов графиков в разметке больше нет.
+    assert "month-heatmap-chart" not in overview
+    assert "month-pareto-chart" not in overview
+    assert "month-funnel-chart" not in overview
+    assert "month-forecast" not in overview
     assert 'Подробнее: №55' in overview
     assert 'id="month-reg55"' in overview
     assert 'id="month-rubric-mz"' in overview
@@ -44,9 +46,9 @@ def test_today_hero_has_table_and_score_rings() -> None:
     assert "yesterday-score-rings" in today
     assert "yesterday-score-dynamics" in today
     assert "yesterday-score-kpis" in today
-    assert "yesterday-zone-trend" in today
-    assert 'id="yesterday-index-cards" hidden' in today
-    assert "hostActive" in APP
+    assert "yesterday-zone-trend" not in today
+    assert "yesterday-index-cards" not in today
+    assert "hostActive" not in APP
     assert "renderScoreRings" in APP
     assert "renderScoreDynamics" in APP
     assert "/score-dashboard?" in APP

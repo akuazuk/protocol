@@ -128,6 +128,9 @@ button, a, select, input { outline-offset: 3px; }
   display: flex; align-items: end; gap: 10px; flex-wrap: wrap;
 }
 .context-top {
+  /* Панели «Фильтры» / «Представления» позиционируются от всего блока периода,
+     а не от своей кнопки: иначе на 1280px панель уезжала под сайдбар. */
+  position: relative;
   display: grid;
   grid-template-columns: minmax(360px, 1fr);
   gap: 10px;
@@ -202,7 +205,7 @@ button, a, select, input { outline-offset: 3px; }
   gap: 8px;
   min-width: 0;
 }
-.toolbar-section { position: relative; }
+.toolbar-section { position: static; }
 .toolbar-section > summary {
   min-height: var(--control-height);
   min-width: 160px;
@@ -250,7 +253,7 @@ button, a, select, input { outline-offset: 3px; }
   z-index: 45;
   top: calc(100% + 9px);
   right: 0;
-  width: min(940px, calc(100vw - 310px));
+  width: min(940px, 100%);
   padding: 16px;
   border: 1px solid var(--line);
   border-radius: 16px;
@@ -261,6 +264,8 @@ button, a, select, input { outline-offset: 3px; }
   overscroll-behavior: contain;
 }
 .toolbar-section.is-flipped .toolbar-panel { top: auto; bottom: calc(100% + 9px); }
+/* Открытое меню фасета не должно резаться прокруткой панели: список виден целиком. */
+.toolbar-panel:has(.filter-pop[open]) { overflow: visible; max-height: none; }
 .toolbar-panel--views {
   width: min(420px, calc(100vw - 32px));
   display: grid;
@@ -633,7 +638,8 @@ button.linkish {
   background: color-mix(in srgb, var(--bad) 14%, var(--surface-solid));
   color: var(--bad);
 }
-.table-toolbar-chips .chip-btn[data-chip="all"][aria-pressed="true"] {
+.table-toolbar-chips .chip-btn[data-chip="all"][aria-pressed="true"],
+.table-toolbar-chips .chip-btn[data-server-grade=""][aria-pressed="true"] {
   border-color: color-mix(in srgb, var(--accent) 45%, var(--control-line));
   background: color-mix(in srgb, var(--accent) 14%, var(--surface-solid));
   color: var(--accent-dark);
@@ -698,17 +704,23 @@ tbody tr:hover td, tbody tr:focus-within td { background: color-mix(in srgb, var
 }
 #page-documents .table-wrap th:nth-child(3),
 #page-documents .table-wrap td:nth-child(3),
-#page-documents .table-wrap th:nth-child(7),
-#page-documents .table-wrap td:nth-child(7) {
+#page-documents .table-wrap th:nth-child(10),
+#page-documents .table-wrap td:nth-child(10) {
   position: sticky;
   z-index: 2;
   background: inherit;
 }
 #page-documents .table-wrap th:nth-child(3),
 #page-documents .table-wrap td:nth-child(3) { left: 7.2rem; }
-#page-documents .table-wrap th:nth-child(7),
-#page-documents .table-wrap td:nth-child(7) { left: 13.4rem; }
+#page-documents .table-wrap th:nth-child(10),
+#page-documents .table-wrap td:nth-child(10) { left: 13.4rem; }
 .column-presets { display: flex; gap: 8px; margin: 0 0 10px; }
+.column-presets .button[aria-pressed="true"] {
+  background: var(--accent-soft);
+  color: var(--accent-dark);
+  font-weight: 800;
+}
+.column-all { margin-top: 8px; }
 tbody tr.table-row-hidden { display: none; }
 .sticky-first th:first-child,
 .sticky-first td:first-child {
@@ -784,17 +796,9 @@ tbody tr.table-row-hidden { display: none; }
 .daily-split > div { display: grid; grid-template-columns: repeat(2, minmax(120px,1fr)); gap: 10px; align-content: start; }
 .daily-split .kpi { box-shadow: none; background: var(--surface-2); }
 .index-kpis { margin-top: 12px; }
-.month-compare {
-  display: grid; grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
-  gap: 10px; margin-bottom: 12px;
-}
-#month-trend-chart, #month-heatmap-chart, #month-doctor-chart,
-#month-pareto-chart, #month-funnel-chart, #month-crm-chart,
-#yesterday-index-chart, #yesterday-findings-chart, #yesterday-doctor-chart,
-#yesterday-flow-chart, #doctor-scatter-chart, #specialty-boxplot-chart,
+#doctor-scatter-chart, #specialty-boxplot-chart,
 #icd-treemap-chart, #safety-severity-chart { min-height: 360px; }
 
-#month-trend-chart, #month-pareto-chart, #yesterday-findings-chart,
 #doctor-scatter-chart, #specialty-boxplot-chart, #safety-severity-chart {
   min-height: 390px;
 }
@@ -1227,7 +1231,7 @@ kbd {
   .nav-group-label { display: none; }
   .span-4, .span-5, .span-7, .span-8, .span-9, .span-3 { grid-column: span 6; }
   .context-top { grid-template-columns: minmax(280px, 1fr) auto; }
-  .toolbar-panel { width: min(850px, calc(100vw - 132px)); }
+  .toolbar-panel { width: min(850px, 100%); }
 }
 @media (max-width: 720px) {
   .app { display: block; padding-bottom: 72px; }
@@ -1752,7 +1756,7 @@ kbd {
 @media (max-width: 640px) {
   .score-rings { grid-template-columns: 1fr; }
 }
-.zone-trend-chart, #month-zone-trend.mo-chart, #yesterday-zone-trend.mo-chart,
+.zone-trend-chart, #month-zone-trend.mo-chart,
 #yesterday-score-dynamics.mo-chart {
   min-height: var(--chart-height, 300px);
 }

@@ -21,7 +21,9 @@ def test_query_always_sends_date_window() -> None:
     assert "function applyPeriodPreset(period, opts)" in APP
     assert 'q.set("date_from", state.dateFrom)' in APP
     assert "if (!st.serverSort)" in APP
-    assert "Среди строк на экране" in APP
+    # Волна J: chrome серверных таблиц - это параметры запроса, не фильтр строк экрана.
+    assert "Среди строк на экране" not in APP
+    assert "Поиск по всей выборке" in APP
     assert "Диагноз не найден" in APP
     assert "chip-reset-all" in APP
     assert "applyPeriodPreset(button.getAttribute" in APP

@@ -10,8 +10,8 @@ CSS = (ROOT / "frontend/web/shared/mo-ui.css").read_text(encoding="utf-8")
 
 def test_column_presets_and_reports_empty() -> None:
     assert "var COLUMN_PRESETS" in APP
-    assert 'data-preset="work"' in APP
-    assert 'data-preset="review"' in APP
+    assert 'presetButton("work"' in APP
+    assert 'presetButton("review"' in APP
     assert "Нет файла за дату" in APP
     assert 'id="reports-open-overview"' in APP
     assert 'switchPage("yesterday")' in APP

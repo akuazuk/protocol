@@ -101,8 +101,12 @@ def test_mo_dashboard_has_complete_crm_navigation() -> None:
 def test_mo_filters_are_multi_select_and_use_backend_contract() -> None:
     for key in ("months", "branches", "specialties", "doctors", "document_types", "statuses"):
         assert f'data-filter="{key}"' in SOURCE
-    for api_key in ("periods", "filials", "specializations", "doctors", "document_kinds", "statuses"):
+    for api_key in ("periods", "filials", "specializations", "doctors", "document_kinds", "crm_statuses"):
         assert f'"{api_key}"' in SOURCE
+    # Волна J: фильтр статусов - это статус разбора методиста (CRM), не внутренний c.status.
+    assert 'statuses: "crm_statuses"' in JS
+    assert "Статус разбора методиста" in HTML
+    assert 'statuses: values(rawFacets.crm_statuses' in JS
     assert 'state.selected[key].join("|")' in SOURCE
     assert 'id="case-search"' in SOURCE
     assert 'data-quick-period=' in SOURCE
@@ -162,13 +166,70 @@ def test_mo_search_and_filters_have_explicit_apply_actions() -> None:
     assert "Pavel" not in SOURCE
 
 
-def test_queue_critical_uses_queue_band_not_overall_grade() -> None:
-    idx = JS.find('$("queue-critical-only").addEventListener')
-    assert idx >= 0
-    chunk = JS[idx : idx + 400]
-    assert 'applyQueueBand("critical")' in chunk
-    assert 'overallGrade = "critical"' not in chunk
-    assert 'statuses = ["critical"]' not in chunk
+def test_queue_has_no_only_critical_button_grade_chip_instead() -> None:
+    # Волна J: «Только критические» заменён чипом оценки «Критично» в шапке.
+    assert "queue-critical-only" not in SOURCE
+    assert 'data-overall-grade="critical"' in HTML
+    assert "Только критические" not in _visible_text(HTML)
+
+
+def _table_headers(section_id: str, next_id: str) -> list[str]:
+    chunk = HTML.split(f'id="{section_id}"')[1].split(f'id="{next_id}"')[0]
+    return re.findall(r"<th(?:\s[^>]*)?>(.*?)</th>", chunk)
+
+
+def test_case_lists_have_no_legacy_columns_and_no_p_levels() -> None:
+    documents = _table_headers("page-documents", "page-doctors")
+    queue = _table_headers("page-queue", "page-documents")
+    day = _table_headers("page-yesterday", "page-queue")
+    for legacy in ("Статус", "Итог", "Полнота проверки", "Надёжность", "Приоритет"):
+        assert legacy not in documents, legacy
+        assert legacy not in queue, legacy
+        assert legacy not in day, legacy
+    for wanted in ("МКБ", "История", "КП", "Оценка"):
+        assert wanted in documents, wanted
+    assert "Оценка" in queue and "Разбор" in queue
+    assert day[0] == "Оценка"
+    # Число ячеек строки = число колонок шапки; пустое состояние повторяет ту же ширину.
+    assert "(queue ? 18 : 15)" in JS
+    assert len(documents) == 15
+    assert len(queue) == 18
+    assert '"МКБ", "История", "КП", "Оценка"' in JS
+    assert '"Ответственный", "Срок", "Разбор", "МО"' in JS
+    # P0-P3 не попадают в строки очереди и таблицы дня: там оценка МО.
+    for fn in ("function queueRow", "function documentRow", "function renderYesterdayActions"):
+        start = JS.find(fn)
+        assert start >= 0, fn
+        body = JS[start : JS.find("\n    }\n", start)]
+        assert "severityLabel(" not in body and "severityTone(" not in body, fn
+        assert "overallGradeChip(" in body, fn
+
+
+def test_no_hidden_hosts_and_no_dead_host_guard() -> None:
+    # Пустые скрытые хосты (<div id="month-…" hidden></div>) - мёртвая разметка; баннеры
+    # состояния (month-reconciliation, partial-banner) скрыты по смыслу и остаются.
+    assert not re.search(r'id="(?:month|yesterday)-[a-z-]+"\s+hidden(?:\s+aria-hidden="true")?>\s*(?:<option[^<]*</option>\s*)?</(?:div|select)>', HTML)
+    assert not re.search(r'class="nav-button"[^>]*\shidden', HTML)
+    assert "hostActive" not in JS
+
+
+def test_column_presets_are_primary_and_not_collapsible() -> None:
+    start = JS.find("function renderColumnsManager")
+    body = JS[start : start + 3000]
+    assert 'presetButton("work"' in body and 'presetButton("review"' in body
+    assert "<details" not in body
+    assert "columnPresetActive(key)" in body
+    assert "aria-pressed" in body
+
+
+def test_server_tables_map_chrome_to_query_params() -> None:
+    start = JS.find("function attachTableChrome")
+    body = JS[start : start + 6000]
+    assert "data-table-server-search" in body
+    assert 'data-server-grade="' in body
+    assert "setOverallGrade(value, { force: true })" in body
+    assert 'var BAD_GRADES = "critical|important|poor";' in JS
+    assert "state.search = next;" in body
 
 
 def test_facet_checkbox_publishes_without_waiting_outer_apply() -> None:
