@@ -104,7 +104,8 @@ def _discover_range(cur) -> tuple[str, str]:
         """
         SELECT MIN(date), MAX(date)
           FROM mis_protocol
-         WHERE patient_id IS NOT NULL AND CAST(patient_id AS CHAR) <> ''
+         WHERE date >= '2000-01-01' AND date < '2100-01-01'
+           AND patient_id IS NOT NULL AND CAST(patient_id AS CHAR) <> ''
         """
     )
     lo, hi = cur.fetchone()
@@ -232,6 +233,8 @@ def main() -> int:
     parser.add_argument("--lab", default="")
     parser.add_argument("--skip-labs", action="store_true")
     parser.add_argument("--skip-mis-data", action="store_true")
+    parser.add_argument("--monthly", action="store_true", help="Медленный помесячный обход")
+    parser.add_argument("--batch", type=int, default=25000)
     parser.add_argument("--dry-run", action="store_true")
     args = parser.parse_args()
     warehouse = Path(args.warehouse)
@@ -259,6 +262,7 @@ def main() -> int:
                     "from": date_from,
                     "to": date_to,
                     "months": len(chunks),
+                    "mode": "monthly" if args.monthly else "oneshot",
                 },
                 ensure_ascii=False,
             ),
@@ -268,9 +272,64 @@ def main() -> int:
         merged = 0
         protocol_rows = 0
         unique_keys: set[str] = set()
+        if not args.monthly:
+            cards = _fetch_protocol_month(cur, date_from, date_to)
+            protocol_rows = len(cards)
+            unique_keys.update(c["patient_key"] for c in cards)
+            print(
+                json.dumps(
+                    {"phase": "oneshot_fetch", "rows": protocol_rows, "keys": len(unique_keys)},
+                    ensure_ascii=False,
+                ),
+                flush=True,
+            )
+            if not args.dry_run:
+                batch = max(1000, int(args.batch))
+                for i in range(0, len(cards), batch):
+                    chunk = cards[i : i + batch]
+                    stats = passport.merge_mis_visit_cards(
+                        warehouse,
+                        chunk,
+                        lab_path=lab_path,
+                        refresh=False,
+                    )
+                    inserted += int(stats.get("inserted_cards") or 0)
+                    merged += int(stats.get("merged_cards") or 0)
+                    print(
+                        json.dumps(
+                            {
+                                "phase": "oneshot_merge",
+                                "offset": i,
+                                "rows": len(chunk),
+                                "inserted": stats.get("inserted_cards"),
+                                "visit_cards": stats.get("visit_cards"),
+                            },
+                            ensure_ascii=False,
+                        ),
+                        flush=True,
+                    )
+            else:
+                merged = protocol_rows
+            cards = []
+            chunks = []
         for start, end in chunks:
             cards = _fetch_protocol_month(cur, start.isoformat(), end.isoformat())
             protocol_rows += len(cards)
+            if not cards:
+                print(
+                    json.dumps(
+                        {
+                            "phase": "month",
+                            "from": start.isoformat(),
+                            "to": end.isoformat(),
+                            "rows": 0,
+                            "skipped": "empty",
+                        },
+                        ensure_ascii=False,
+                    ),
+                    flush=True,
+                )
+                continue
             if not args.skip_mis_data:
                 extra = _fetch_mis_data_month(cur, start.isoformat(), end.isoformat())
                 for card in cards:
