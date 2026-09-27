@@ -1,6 +1,6 @@
 # Карта проекта: МО Аналитика, редизайн v2
 
-Дата: 2026-09-27 (~11:55 UTC).
+Дата: 2026-09-27 (~12:45 UTC).
 Для следующего агента: читать этот файл вместо повторного обхода всего репозитория.
 Канон плана: `docs/plans/2026-09-26-mo-analytics-redesign-v2.md`.
 Журнал релизов: там же, §6b. Метрики: §7.
@@ -13,8 +13,8 @@
 
 ## 0. Очередь: что закончено, что нет
 
-**План целиком не закончен.** Закрыты волны A, T, E, B, C, D, J, F1, F2, F3, F4 (в проде,
-релизы 1-14, SHA `9927e256`). F5-F7, G, K, H1/I, H2/H3 не начаты.
+**План целиком не закончен.** Закрыты волны A, T, E, B, C, D, J, F1, F2, F3, F4, F5
+(в проде, релизы 1-15, SHA `5bee2668`). F6-F7, G, K, H1/I, H2/H3 не начаты.
 
 | Волна | Смысл | Где сейчас |
 |--|--|--|
@@ -29,7 +29,7 @@
 | F2 | сводка «Найти МО» `/cases/summary` | прод, релиз 12 `c52b9038` |
 | F3 | Врачи D1-D5 `/doctors-dashboard` | прод, релиз 13 `a7279024` |
 | F4 | Лекарства M1-M5 `/medications-dashboard` | прод, релиз 14 `9927e256` |
-| F5 | Анализы L1-L5 | не начато |
+| F5 | Анализы L1-L5 `/labs-dashboard` | прод, релиз 15 `5bee2668` |
 | F6 | Поиск МИС + Очередь | не начато (долг: overflow широких таблиц) |
 | F7 | Отчёты / Протоколы МЗ / Rceth | не начато |
 | G | разбор случая без свёртков | не начато |
@@ -38,11 +38,11 @@
 | H2/H3 | шкала, две «критично», перекалибровка | не начато |
 
 Прод на момент этой карты: `https://protocol.kravira.by`
-`/api/version` = `2026-09-27-112708Z-meds-dash-f4-stale`,
-`git_commit` = `9927e256` (релиз 14). Образ `protocol-gcp-app:9927e256fed0`.
-Откат: `protocol-gcp-app:a7279024893c` (релиз 13).
+`/api/version` = `2026-09-27-121936Z-labs-dash-f5-e2e`,
+`git_commit` = `5bee2668` (релиз 15). Образ `protocol-gcp-app:5bee2668f30f`.
+Откат: `protocol-gcp-app:9927e256fed0` (релиз 14).
 
-Открытый продуктовый PR после merge #321: нет. Зомби: #261 (план workspace),
+Открытый продуктовый PR после merge #323: нет. Зомби: #261 (план workspace),
 #113 (calibration, HARD overlap только `BUILD_VERSION`), #186 (статья РЗ),
 Dependabot #194-#203, #248. Их не мержить попутно с редизайном.
 
@@ -183,6 +183,7 @@ summary 60 с, doctors 90 с. Ключ включает штамп склада 
 | GET | `/overview-dashboard` | F1 | O1-O8 одним ответом, кэш 120 с |
 | GET | `/doctors-dashboard` | F3 | D1-D5, кэш 90 с |
 | GET | `/medications-dashboard` | F4 | M1-M5, кэш 90 с; finding_family=drug в drill |
+| GET | `/labs-dashboard` | F5 | L1-L5, кэш 90 с; ATTACH mo_lab; finding_family=lab в drill |
 | GET | `/score-dashboard` | старше F1 | fallback Обзора, если overview 404 |
 | GET | `/facets` | B, J | врачи / филиалы / специальности / crm_statuses |
 | GET | `/dimensions/doctors` | старше F3 | fallback страницы Врачи |
@@ -190,11 +191,12 @@ summary 60 с, doctors 90 с. Ключ включает штамп склада 
 | GET | `/freshness` | B | свежесть склада |
 | GET | `/meta` | C | `ytd`, granularities |
 | GET | `/timeseries` | C | точки по grain |
-| GET | `/drugs-labs-kpis` | старше F | семьи drug/lab; F4 уже не читает страницу Лекарства, F5 ещё читает Анализы |
+| GET | `/drugs-labs-kpis` | старше F | семьи drug/lab; F4/F5 читают только как fallback |
 | GET | `/health/live`, `/api/version` | всегда | smoke релиза |
 
-Маршруты `/cases/summary`, `/doctors-dashboard`, `/medications-dashboard`
-зарегистрированы **до** `/cases/{case_id}`, иначе FastAPI съест сегмент как id.
+Маршруты `/cases/summary`, `/doctors-dashboard`, `/medications-dashboard`,
+`/labs-dashboard` зарегистрированы **до** `/cases/{case_id}`, иначе FastAPI
+съест сегмент как id.
 
 Период: `_apply_request_period` + `_apply_score_eligible_default`.
 Пресеты: yesterday / 7d / month / ytd / custom. Grain авто: день ≤62 сут.,
@@ -275,7 +277,23 @@ F6 ещё не дала свои диаграммы.
 в hidden-контейнеры. Тесты: `tests/test_mo_medications_dashboard_f4.py`.
 HTML 468 строк (<480).
 
-Анализы пока на `/drugs-labs-kpis` (волна F5).
+### Анализы (`#page-labs`, F5)
+
+`.labs-grid` + KPI из `tiles`. Один запрос `/labs-dashboard`. Знаменатель -
+все МО окна. Лаборатория в окне: `patient_key` + `mo_lab.sqlite` ATTACH,
+lookback 14 / lookahead 1 (`MO_LAB_*_DAYS`). Коды семейства `lab` из
+`families_v1.json`.
+
+- L1 кольцо: есть (accounted) / не учтена (unused ∩ has) / нет. Сумма = total.
+- L2 бар топ-15 панелей из unused-текстов (`lab_canons` + префиксы «Есть результаты»).
+- L3 бар % МО с `B_lab_abnormal_ignored` по специальности (топ-12).
+- L4 линии по неделям плиток unused / present_not_in_mo / abnormal / exams_gap / ordered.
+- L5 бар покрытия `mo_lab` по месяцам с 2025-12 (те же фасеты, дата с декабря).
+
+`n_cases` плитки - `COUNT(DISTINCT mis_id)`, не сумма по кодам. Клик KPI и
+графиков → Найти МО с `findingFamily=lab`. При ошибке API хосты чистятся,
+`#labs-fallback` снимает `hidden`, затем `loadFamilyDashboard("lab")`.
+Тесты: `tests/test_mo_labs_dashboard_f5.py`. HTML 472 строки (<480).
 
 ### Поиск МИС, Отчёты, Протоколы МЗ, Rceth, Справка
 
@@ -350,7 +368,7 @@ PR #298.
 `ensureFacets()` после любой страницы кроме Обзора (#312). Приёмка: 20 чипов
 меняют `total`. PR #311 + #312, релизы 9-10.
 
-### F1 / F2 / F3 / F4 - дашборды по одному PR на экран
+### F1 / F2 / F3 / F4 / F5 - дашборды по одному PR на экран
 
 Паттерн: один GET, один WHERE (`_warehouse_where` + score_eligible), один кэш
 90-120 с, клик → Найти МО, пустое состояние с причиной, structure-тест +
@@ -358,12 +376,17 @@ PR #298.
 Не пушить в ветку после зелёного CI. Маршрут - до `{case_id}`.
 
 F3 Bugbot: stale charts / AVG / `enough`. F4 Bugbot: stale charts на ошибке
-API - `overviewEmpty` по хостам до `loadFamilyDashboard("drug")`.
+API. F5 Bugbot: сумма `n_cases` по кодам, пересечение кольца unused∩none,
+hidden fallback, stale `#labs-coverage`.
 
 F4 принцип данных: плитки семейства `families_v1.json` id=drug; знаменатель
 всех МО окна; МНН и пары DDI разбираются из `title_ru`/`detail_ru`/`evidence`
 (формат скорера `left + right`, `surface / inn`). Матрица пар только при
-≥ 10 различных сочетаний.
+не меньше 10 различных сочетаний.
+
+F5 принцип данных: плитки id=lab; лаборатория в окне по `patient_key` +
+`fact_mo_lab` (−14/+1 день); `n_cases` = DISTINCT mis_id на плитку; кольцо
+режет unused только среди has. L5 смотрит с 2025-12 при тех же фасетах.
 
 ---
 
@@ -435,12 +458,12 @@ Playwright: `require(…/Protocol/node_modules/playwright)` CJS, токен из
 
 ## 11. Ошибки, найденные при сборке карты, и план исправлений
 
-Это не «сделать молча в текущем PR». Отдельные PR, не складывать в F5.
+Это не «сделать молча в текущем PR». Отдельные PR, не складывать в F6.
 
-### P0 - релиз 14 принят
+### P0 - релиз 15 принят
 
-F4 в проде (`9927e256`, `2026-09-27-112708Z-meds-dash-f4-stale`). Дальше F5,
-не воскрешать удалённые ветки #318/#319/#321.
+F5 в проде (`5bee2668`, `2026-09-27-121936Z-labs-dash-f5-e2e`). Дальше F6,
+не воскрешать удалённые ветки #318/#319/#321/#323.
 
 ### P1 - долги Bugbot со старых волн (не F3)
 
@@ -485,17 +508,17 @@ F4 в проде (`9927e256`, `2026-09-27-112708Z-meds-dash-f4-stale`). Даль
 
 ### Порядок починки
 
-1. Релиз 14 принят (`9927e256`).
-2. F5 Анализы (не долги). Долги P1 - параллельным PR, не в F5.
-3. F6 (там overflow) → F7 → G → K.
+1. Релиз 15 принят (`5bee2668`).
+2. F6 Поиск МИС + Очередь (там overflow). Долги P1 - параллельным PR, не в F6.
+3. F7 → G → K.
 4. H1/I фоном с недели 2; H2/H3 только после разметки.
 
 ---
 
 ## 12. Следующая безопасная команда
 
-Проверить, что runner не в середине дня. Следующий код - F5 Анализы, не повторный
-деплой `9927e256` (он уже в проде):
+Проверить, что runner не в середине дня. Следующий код - F6 Поиск МИС + Очередь, не
+повторный деплой `5bee2668` (он уже в проде):
 
 ```bash
 gcloud compute ssh protocol-app --zone=europe-central2-a --command='
