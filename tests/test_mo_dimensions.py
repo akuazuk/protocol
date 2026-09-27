@@ -123,8 +123,10 @@ def test_phase5_frontend_uses_real_echarts_and_selected_doctor_action_flow() -> 
     script = (ROOT / "frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
     # D6: legacy specialty/diagnoses/safety/cabinet pages removed from DOM.
     for marker in (
-        "doctor-scatter-chart",
+        "doctor-scatter",
         "doctor-zone-chart",
+        "doctor-heatmap",
+        "doctor-trend",
         "access-log-content",
         "quality-kpis",
     ):
@@ -134,11 +136,12 @@ def test_phase5_frontend_uses_real_echarts_and_selected_doctor_action_flow() -> 
         "icd-treemap-chart",
         "safety-severity-chart",
         "doctor-cabinet-records",
+        "doctor-scatter-chart",
     ):
         assert gone not in html
-    assert 'type:"scatter"' in script
-    assert "brushSelected" in script
-    assert "open-selected-doctors" in script
+    assert 'type: "scatter"' in script or 'type:"scatter"' in script
+    assert "/doctors-dashboard?" in script
+    assert "renderDoctorHeatmap" in script
     assert "REMOVED_PAGES" in script
 
 

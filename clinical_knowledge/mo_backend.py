@@ -2240,6 +2240,247 @@ def _build_cases_summary_uncached(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+DOCTOR_DASH_RANK_N = 20
+_DOCTOR_DASH_HEAT_ROWS = 12
+_DOCTOR_DASH_LIST = 80
+_DOCTOR_ZONE_KEYS: tuple[str, ...] = ("zone1", "zone2a", "zone2b")
+_DOCTOR_ZONE_LABELS: dict[str, str] = {
+    "zone1": "Оформление",
+    "zone2a": "Диагноз",
+    "zone2b": "План",
+}
+
+
+def _pct_or_none(num: int, den: int) -> float | None:
+    if den <= 0:
+        return None
+    return round(100.0 * num / den, 1)
+
+
+def build_doctors_dashboard(params: dict[str, Any]) -> dict[str, Any]:
+    """Врачи D1-D5 одним ответом: рейтинг, матрица зон, scatter, тренд и профиль."""
+    params = _apply_request_period(params)
+    params = _apply_score_eligible_default(params)
+    params = _attach_queue_band_visit_filter(params)
+    if _backend_source() != "warehouse":
+        return {
+            "ok": False,
+            "available": False,
+            "reason": "Разрез врачей строится только из склада МО.",
+            "source": _backend_source(),
+        }
+    return _cached_result("doctors_dashboard", params, 90.0, lambda: _build_doctors_dashboard_uncached(params))
+
+
+def _build_doctors_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    from .mo_finding_labels_ru import finding_label_ru
+
+    where, values = _warehouse_where(params)
+    label_expr = "COALESCE(NULLIF(TRIM(d.doctor_fio), ''), NULLIF(TRIM(c.doctor_key), ''), 'без врача')"
+    spec_expr = "COALESCE(NULLIF(TRIM(COALESCE(d.specialty, c.specialty)), ''), 'без специальности')"
+    joins = _dim_joins_sql(*where, label_expr, spec_expr)
+    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+    from_sql = f"FROM fact_mo_case c {joins} {where_sql}"
+    ranking: list[dict[str, Any]] = []
+    with closing(_read_connection()) as conn:
+        rows = conn.execute(
+            f"""SELECT c.doctor_key AS key, {label_expr} AS label, {spec_expr} AS specialty,
+                       COUNT(*) AS n,
+                       SUM(CASE WHEN c.zone1_band IS NOT NULL THEN 1 ELSE 0 END) AS zone1_n,
+                       SUM(CASE WHEN c.zone1_band='bad' THEN 1 ELSE 0 END) AS zone1_bad,
+                       SUM(CASE WHEN c.zone2a_band IS NOT NULL THEN 1 ELSE 0 END) AS zone2a_n,
+                       SUM(CASE WHEN c.zone2a_band='bad' THEN 1 ELSE 0 END) AS zone2a_bad,
+                       SUM(CASE WHEN c.zone2b_band IS NOT NULL THEN 1 ELSE 0 END) AS zone2b_n,
+                       SUM(CASE WHEN c.zone2b_band='bad' THEN 1 ELSE 0 END) AS zone2b_bad
+                {from_sql}
+                GROUP BY c.doctor_key
+                ORDER BY n DESC
+                LIMIT {_DOCTOR_DASH_LIST}""",
+            values,
+        ).fetchall()
+        for row in rows:
+            n = int(row["n"] or 0)
+            item = {
+                "key": str(row["key"] or ""),
+                "label": str(row["label"] or ""),
+                "specialty": str(row["specialty"] or ""),
+                "n": n,
+                "enough": n >= DOCTOR_DASH_RANK_N,
+                "zone1_bad": int(row["zone1_bad"] or 0),
+                "zone1_n": int(row["zone1_n"] or 0),
+                "zone1_bad_pct": _pct_or_none(int(row["zone1_bad"] or 0), int(row["zone1_n"] or 0)),
+                "zone2a_bad": int(row["zone2a_bad"] or 0),
+                "zone2a_n": int(row["zone2a_n"] or 0),
+                "zone2a_bad_pct": _pct_or_none(int(row["zone2a_bad"] or 0), int(row["zone2a_n"] or 0)),
+                "zone2b_bad": int(row["zone2b_bad"] or 0),
+                "zone2b_n": int(row["zone2b_n"] or 0),
+                "zone2b_bad_pct": _pct_or_none(int(row["zone2b_bad"] or 0), int(row["zone2b_n"] or 0)),
+            }
+            ranking.append(item)
+        wanted = [str(v) for v in _values(params.get("doctors")) if str(v).strip()]
+        selected = None
+        if wanted:
+            selected = next((item for item in ranking if item["label"] in wanted or item["key"] in wanted), None)
+        if selected is None:
+            selected = next((item for item in ranking if item["enough"]), ranking[0] if ranking else None)
+        profile: dict[str, Any] | None = None
+        if selected:
+            profile = _doctor_profile_block(conn, params, selected, finding_label_ru)
+    heat_rows = ranking[:_DOCTOR_DASH_HEAT_ROWS]
+    heatmap = {
+        "zones": [{"id": key, "label": _DOCTOR_ZONE_LABELS[key]} for key in _DOCTOR_ZONE_KEYS],
+        "rows": [
+            {
+                "key": item["key"],
+                "label": item["label"],
+                "n": item["n"],
+                "cells": [
+                    {
+                        "zone": key,
+                        "n": item[f"{key}_n"],
+                        "bad": item[f"{key}_bad"],
+                        "bad_pct": item[f"{key}_bad_pct"],
+                        "suppressed": item["n"] < SUPPRESSION_N,
+                    }
+                    for key in _DOCTOR_ZONE_KEYS
+                ],
+            }
+            for item in heat_rows
+        ],
+        "suppression_n": SUPPRESSION_N,
+    }
+    scatter = [
+        {
+            "key": item["key"],
+            "label": item["label"],
+            "specialty": item["specialty"],
+            "n": item["n"],
+            "bad_pct": item["zone1_bad_pct"],
+            "enough": item["enough"],
+        }
+        for item in ranking
+        if item["zone1_bad_pct"] is not None
+    ]
+    return {
+        "ok": True,
+        "available": bool(ranking),
+        "reason": None if ranking else "Нет врачей в выборке.",
+        "rank_n": DOCTOR_DASH_RANK_N,
+        "ranking": ranking,
+        "heatmap": heatmap,
+        "scatter": scatter,
+        "selected": profile,
+        "source": "warehouse",
+    }
+
+
+def _doctor_profile_block(
+    conn: sqlite3.Connection,
+    params: dict[str, Any],
+    selected: dict[str, Any],
+    finding_label_ru,
+) -> dict[str, Any]:
+    """D4-D5: тренд выбранного врача, медиана специальности, топ причин, главы МКБ."""
+    where, values = _warehouse_where(params)
+    joins = _dim_joins_sql(*where, "d.doctor_fio")
+    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+    and_sql = (where_sql + " AND ") if where else " WHERE "
+    week_expr = "strftime('%Y-W%W', c.visit_date)"
+    doctor_key = selected["key"]
+    specialty = selected["specialty"]
+    extra = list(values) + [doctor_key]
+    trend: list[dict[str, Any]] = []
+    for row in conn.execute(
+        f"""SELECT {week_expr} AS week,
+                   COUNT(*) AS n,
+                   ROUND(AVG(c.zone1_pct), 1) AS zone1_avg,
+                   ROUND(AVG(c.zone2a_pct), 1) AS zone2a_avg,
+                   ROUND(AVG(c.zone2b_pct), 1) AS zone2b_avg
+            FROM fact_mo_case c {joins} {and_sql}c.doctor_key = ?
+            GROUP BY week ORDER BY week""",
+        extra,
+    ):
+        trend.append(
+            {
+                "week": str(row["week"] or ""),
+                "n": int(row["n"] or 0),
+                "zone1_avg": row["zone1_avg"],
+                "zone2a_avg": row["zone2a_avg"],
+                "zone2b_avg": row["zone2b_avg"],
+            }
+        )
+    spec_median: list[dict[str, Any]] = []
+    spec_values = list(values) + [specialty]
+    spec_expr = "COALESCE(NULLIF(TRIM(COALESCE(d.specialty, c.specialty)), ''), 'без специальности')"
+    for row in conn.execute(
+        f"""SELECT {week_expr} AS week,
+                   ROUND(AVG(c.zone1_pct), 1) AS zone1_avg,
+                   ROUND(AVG(c.zone2a_pct), 1) AS zone2a_avg,
+                   ROUND(AVG(c.zone2b_pct), 1) AS zone2b_avg
+            FROM fact_mo_case c {joins} {and_sql}{spec_expr} = ?
+            GROUP BY week ORDER BY week""",
+        spec_values,
+    ):
+        spec_median.append(
+            {
+                "week": str(row["week"] or ""),
+                "zone1_avg": row["zone1_avg"],
+                "zone2a_avg": row["zone2a_avg"],
+                "zone2b_avg": row["zone2b_avg"],
+            }
+        )
+    findings: list[dict[str, Any]] = []
+    for row in conn.execute(
+        f"""SELECT f.finding_code AS code, MAX(f.title_ru) AS title, MAX(f.severity) AS severity,
+                   COUNT(DISTINCT c.mis_id) AS n_cases
+            FROM fact_mo_case c {joins}
+            JOIN fact_mo_finding f ON f.mis_id = c.mis_id
+            {and_sql}c.doctor_key = ? AND COALESCE(f.passed, 0) = 0
+            GROUP BY f.finding_code ORDER BY n_cases DESC, code LIMIT 5""",
+        extra,
+    ):
+        code = str(row["code"] or "")
+        findings.append(
+            {
+                "code": code,
+                "label": finding_label_ru(code, row["title"]),
+                "severity": str(row["severity"] or ""),
+                "n_cases": int(row["n_cases"] or 0),
+            }
+        )
+    chapters: list[dict[str, Any]] = []
+    for row in conn.execute(
+        f"""SELECT COALESCE(NULLIF(TRIM(c.icd_chapter), ''), 'без главы') AS chapter, COUNT(*) AS n
+            FROM fact_mo_case c {joins} {and_sql}c.doctor_key = ?
+            GROUP BY chapter ORDER BY n DESC LIMIT 8""",
+        extra,
+    ):
+        chapters.append({"value": str(row["chapter"] or ""), "n": int(row["n"] or 0)})
+    radar = [
+        {
+            "id": key,
+            "label": _DOCTOR_ZONE_LABELS[key],
+            "bad_pct": selected.get(f"{key}_bad_pct"),
+            "ok_pct": None
+            if selected.get(f"{key}_bad_pct") is None
+            else round(100.0 - float(selected[f"{key}_bad_pct"]), 1),
+        }
+        for key in _DOCTOR_ZONE_KEYS
+    ]
+    return {
+        "key": selected["key"],
+        "label": selected["label"],
+        "specialty": selected["specialty"],
+        "n": selected["n"],
+        "enough": selected["enough"],
+        "radar": radar,
+        "findings_top": findings,
+        "chapters": chapters,
+        "trend": trend,
+        "specialty_median": spec_median,
+    }
+
+
 def _search_plan_payload(
     params: dict[str, Any], python_rows: list[dict[str, Any]] | None
 ) -> dict[str, Any] | None:
