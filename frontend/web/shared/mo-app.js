@@ -1455,6 +1455,12 @@
       q.set("page", state.page);
       if (state.openCaseId) q.set("open", state.openCaseId);
       else q.delete("open");
+      try {
+        var live = new URLSearchParams(window.location.search || "");
+        ["step", "proof", "lens", "lab_date"].forEach(function (key) {
+          if (live.get(key)) q.set(key, live.get(key));
+        });
+      } catch (error) {}
       var path;
       if (isExpertMode()) {
         path = state.page === "reports" ? "/methodist/expert/reports" : "/methodist/expert/yesterday";
@@ -7704,7 +7710,12 @@
       if (status) status.textContent = data.context || "паспорт найден";
       if (data.latest_visit_id) {
         if (MO.steps && MO.steps.setStep) MO.steps.setStep(1);
-        openCase(data.latest_visit_id);
+        await openCase(data.latest_visit_id);
+        if (MO.steps && MO.steps.setStep) MO.steps.setStep(1);
+        var host = $("case-stepper-host");
+        if (host && MO.steps && MO.steps.mount && state.caseDetail) {
+          MO.steps.mount(host, state.caseDetail, data.latest_visit_id, { decisionDock: $("case-decision-dock") });
+        }
       }
     }
     function bindMisSearchPage() {

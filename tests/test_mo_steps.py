@@ -34,3 +34,4 @@ def test_patient_page_opens_step_one() -> None:
     assert 'id="patient-resolve-form"' in HTML
     assert "resolvePatientPassport" in APP
     assert "MO.steps.setStep(1)" in APP
+    assert '["step", "proof", "lens", "lab_date"]' in APP
