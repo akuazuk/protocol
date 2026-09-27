@@ -2374,6 +2374,361 @@ def _build_doctors_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+_MED_PAIR_MIN = 10
+_MED_DRUG_TOP = 20
+_MED_SPEC_ROWS = 12
+_MED_META_SCAN = 8000
+_MED_TILE_ORDER = ("interactions", "duplicates", "dose_label", "offprotocol")
+_MED_TILE_TONES = {
+    "any": "moss",
+    "interactions": "rose",
+    "duplicates": "clay",
+    "dose_label": "heather",
+    "offprotocol": "lake",
+}
+_DRUG_PAIR_SPLIT = re.compile(r"\s+\+\s+")
+_DRUG_LIST_SPLIT = re.compile(r"\s*,\s*|\s+и\s+")
+_DDI_TITLE_TAIL = re.compile(r"взаимодействие[^:]*:\s*(.+)$", re.I | re.S)
+_DRUG_INN_TAIL = re.compile(r"/\s*([A-Za-zА-Яа-яЁё-]{3,40})\s*$")
+_DRUG_STOP = frozenset(
+    {
+        "фрагмент плана",
+        "взаимодействие",
+        "одновременно",
+        "major",
+        "moderate",
+        "топический путь",
+        "понижено",
+        "нпвп",
+    }
+)
+
+
+def build_medications_dashboard(params: dict[str, Any]) -> dict[str, Any]:
+    """Лекарства M1-M5 одним ответом: типы, специальности, топ МНН, тренд, пары DDI."""
+    params = _apply_request_period(params)
+    params = _apply_score_eligible_default(params)
+    params = _attach_queue_band_visit_filter(params)
+    if _backend_source() != "warehouse":
+        return {
+            "ok": False,
+            "available": False,
+            "reason": "Разрез лекарств строится только из склада МО.",
+            "source": _backend_source(),
+        }
+    return _cached_result(
+        "medications_dashboard", params, 90.0, lambda: _build_medications_dashboard_uncached(params)
+    )
+
+
+def _med_tile_catalog() -> list[dict[str, Any]]:
+    from .mo_finding_families import family_by_id
+
+    family = family_by_id("drug") or {}
+    tiles: list[dict[str, Any]] = []
+    for tile in family.get("tiles") or []:
+        if not isinstance(tile, Mapping):
+            continue
+        tile_id = str(tile.get("id") or "").strip()
+        if not tile_id:
+            continue
+        codes = [str(c).strip() for c in (tile.get("codes") or []) if str(c).strip()]
+        tiles.append(
+            {
+                "id": tile_id,
+                "label": str(tile.get("title_ru") or tile_id),
+                "codes": codes,
+                "tone": _MED_TILE_TONES.get(tile_id, "slate"),
+            }
+        )
+    return tiles
+
+
+def _canonicalize_drug_label(raw: str) -> str:
+    text = str(raw or "").strip().strip("()[]«»\"'")
+    slash = _DRUG_INN_TAIL.search(text)
+    if slash:
+        text = slash.group(1)
+    text = text.replace("ё", "е").strip(" .;:")
+    if len(text) < 3 or len(text) > 48:
+        return ""
+    low = text.lower()
+    if low in _DRUG_STOP or low.startswith("фрагмент"):
+        return ""
+    return low
+
+
+def _drugs_from_finding_text(*parts: str) -> list[str]:
+    blob = " ".join(str(p).strip() for p in parts if str(p or "").strip())
+    if not blob:
+        return []
+    blob = blob.split(". Фрагмент")[0]
+    match = _DDI_TITLE_TAIL.search(blob)
+    candidate = match.group(1) if match else blob
+    if " + " in candidate:
+        found = [_canonicalize_drug_label(part) for part in _DRUG_PAIR_SPLIT.split(candidate)]
+        return [item for item in found if item]
+    if "," in candidate or " и " in candidate.lower():
+        found = [_canonicalize_drug_label(part) for part in _DRUG_LIST_SPLIT.split(candidate)]
+        return [item for item in found if item][:6]
+    one = _canonicalize_drug_label(candidate)
+    return [one] if one else []
+
+
+def _med_code_tile_map(tiles: list[dict[str, Any]]) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for tile in tiles:
+        if tile["id"] == "any":
+            continue
+        for code in tile["codes"]:
+            out[code] = tile["id"]
+    return out
+
+
+def _build_medications_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    from .mo_finding_families import codes_for_family
+
+    tiles = _med_tile_catalog()
+    tile_by_id = {t["id"]: t for t in tiles}
+    code_to_tile = _med_code_tile_map(tiles)
+    drug_codes = set(codes_for_family("drug"))
+    wanted = {str(v) for v in _values(params.get("finding_codes")) if str(v)}
+    if wanted:
+        drug_codes = drug_codes & wanted
+    empty = {
+        "ok": True,
+        "available": False,
+        "reason": "Нет лекарственных сигналов в выборке.",
+        "total_cases": 0,
+        "tiles": [],
+        "types": [],
+        "specialty": {"rows": [], "tiles": []},
+        "drugs": [],
+        "trend": [],
+        "pairs": {"available": False, "min_pairs": _MED_PAIR_MIN, "items": [], "nodes": [], "links": []},
+        "source": "warehouse",
+    }
+    if not drug_codes:
+        empty["reason"] = "В фильтре нет кодов семейства лекарств."
+        return empty
+    where, values = _warehouse_where(params)
+    spec_expr = "COALESCE(NULLIF(TRIM(COALESCE(d.specialty, c.specialty)), ''), 'без специальности')"
+    joins = _dim_joins_sql(*where, spec_expr)
+    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+    and_sql = (where_sql + " AND ") if where else " WHERE "
+    code_clause, code_values = _in_clause("f.finding_code", sorted(drug_codes))
+    week_expr = "strftime('%Y-W%W', c.visit_date)"
+    with closing(_read_connection()) as conn:
+        total_cases = int(
+            conn.execute(f"SELECT COUNT(*) FROM fact_mo_case c {joins} {where_sql}", values).fetchone()[0] or 0
+        )
+        empty["total_cases"] = total_cases
+        code_rows = conn.execute(
+            f"""SELECT f.finding_code AS code, COUNT(*) AS n, COUNT(DISTINCT f.mis_id) AS n_cases
+                FROM fact_mo_finding f
+                JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                {joins} {and_sql}{code_clause} AND COALESCE(f.passed, 0) = 0
+                GROUP BY f.finding_code""",
+            list(values) + code_values,
+        ).fetchall()
+        if not code_rows:
+            return empty
+        by_code: dict[str, dict[str, int]] = {}
+        for row in code_rows:
+            by_code[str(row["code"])] = {
+                "n": int(row["n"] or 0),
+                "n_cases": int(row["n_cases"] or 0),
+            }
+        tile_stats: dict[str, dict[str, int]] = {
+            tile_id: {"n": 0, "n_cases": 0} for tile_id in _MED_TILE_ORDER
+        }
+        any_cases = 0
+        any_n = 0
+        for code, stats in by_code.items():
+            any_n += stats["n"]
+            tile_id = code_to_tile.get(code)
+            if tile_id in tile_stats:
+                tile_stats[tile_id]["n"] += stats["n"]
+                tile_stats[tile_id]["n_cases"] += stats["n_cases"]
+        any_cases = int(
+            conn.execute(
+                f"""SELECT COUNT(DISTINCT f.mis_id)
+                    FROM fact_mo_finding f
+                    JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                    {joins} {and_sql}{code_clause} AND COALESCE(f.passed, 0) = 0""",
+                list(values) + code_values,
+            ).fetchone()[0]
+            or 0
+        )
+        types: list[dict[str, Any]] = []
+        kpi_tiles: list[dict[str, Any]] = []
+        any_tile = tile_by_id.get("any") or {"id": "any", "label": "С замечанием по ЛС", "codes": [], "tone": "moss"}
+        kpi_tiles.append(
+            {
+                "id": "any",
+                "label": any_tile["label"],
+                "n": any_n,
+                "n_cases": any_cases,
+                "pct": _pct_or_none(any_cases, total_cases),
+                "tone": any_tile.get("tone") or "moss",
+                "codes": sorted(drug_codes),
+            }
+        )
+        for tile_id in _MED_TILE_ORDER:
+            tile = tile_by_id.get(tile_id) or {"id": tile_id, "label": tile_id, "codes": [], "tone": "slate"}
+            stats = tile_stats[tile_id]
+            item = {
+                "id": tile_id,
+                "label": tile["label"],
+                "n": stats["n"],
+                "n_cases": stats["n_cases"],
+                "pct": _pct_or_none(stats["n_cases"], total_cases),
+                "tone": tile.get("tone") or "slate",
+                "codes": list(tile.get("codes") or []),
+                "precision_note": "точность появится после разметки",
+            }
+            types.append(item)
+            kpi_tiles.append({k: item[k] for k in ("id", "label", "n", "n_cases", "pct", "tone", "codes")})
+        spec_case_rows = conn.execute(
+            f"""SELECT {spec_expr} AS specialty_label, COUNT(*) AS n
+                FROM fact_mo_case c {joins} {where_sql}
+                GROUP BY specialty_label ORDER BY n DESC LIMIT {_MED_SPEC_ROWS}""",
+            values,
+        ).fetchall()
+        spec_signal_rows = conn.execute(
+            f"""SELECT {spec_expr} AS specialty_label, f.finding_code AS code,
+                       COUNT(*) AS n, COUNT(DISTINCT f.mis_id) AS n_cases
+                FROM fact_mo_finding f
+                JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                {joins} {and_sql}{code_clause} AND COALESCE(f.passed, 0) = 0
+                GROUP BY specialty_label, f.finding_code""",
+            list(values) + code_values,
+        ).fetchall()
+        spec_signals: dict[str, dict[str, int]] = {}
+        for row in spec_signal_rows:
+            spec = str(row["specialty_label"] or "без специальности")
+            tile_id = code_to_tile.get(str(row["code"] or ""))
+            if not tile_id:
+                continue
+            bucket = spec_signals.setdefault(spec, {key: 0 for key in _MED_TILE_ORDER})
+            bucket[tile_id] += int(row["n"] or 0)
+        spec_rows: list[dict[str, Any]] = []
+        for row in spec_case_rows:
+            spec = str(row["specialty_label"] or "без специальности")
+            n_cases = int(row["n"] or 0)
+            counts = spec_signals.get(spec, {key: 0 for key in _MED_TILE_ORDER})
+            per_100 = {
+                key: (round(counts[key] * 100.0 / n_cases, 1) if n_cases else 0.0) for key in _MED_TILE_ORDER
+            }
+            spec_rows.append(
+                {
+                    "specialty": spec,
+                    "n_cases": n_cases,
+                    "n": dict(counts),
+                    "per_100": per_100,
+                }
+            )
+        trend_rows = conn.execute(
+            f"""SELECT {week_expr} AS week, f.finding_code AS code, COUNT(*) AS n
+                FROM fact_mo_finding f
+                JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                {joins} {and_sql}{code_clause} AND COALESCE(f.passed, 0) = 0
+                GROUP BY week, f.finding_code
+                ORDER BY week""",
+            list(values) + code_values,
+        ).fetchall()
+        trend_map: dict[str, dict[str, int]] = {}
+        for row in trend_rows:
+            week = str(row["week"] or "")
+            bucket = trend_map.setdefault(week, {key: 0 for key in _MED_TILE_ORDER} | {"n": 0})
+            tile_id = code_to_tile.get(str(row["code"] or ""))
+            n = int(row["n"] or 0)
+            bucket["n"] += n
+            if tile_id in bucket:
+                bucket[tile_id] += n
+        trend = [{"week": week, **trend_map[week]} for week in sorted(trend_map)]
+        meta_rows = conn.execute(
+            f"""SELECT f.finding_code AS code, f.mis_id AS mis_id,
+                       COALESCE(f.title_ru, '') AS title_ru,
+                       COALESCE(f.detail_ru, '') AS detail_ru,
+                       COALESCE(f.evidence, '') AS evidence
+                FROM fact_mo_finding f
+                JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                {joins} {and_sql}{code_clause} AND COALESCE(f.passed, 0) = 0
+                LIMIT {_MED_META_SCAN}""",
+            list(values) + code_values,
+        ).fetchall()
+    drug_cases: dict[str, set[str]] = {}
+    drug_n: Counter[str] = Counter()
+    pair_cases: dict[tuple[str, str], set[str]] = {}
+    pair_n: Counter[tuple[str, str]] = Counter()
+    for row in meta_rows:
+        drugs = _drugs_from_finding_text(row["title_ru"], row["detail_ru"], str(row["evidence"] or "")[:180])
+        mis_id = str(row["mis_id"] or "")
+        for name in drugs:
+            drug_n[name] += 1
+            drug_cases.setdefault(name, set()).add(mis_id)
+        if str(row["code"] or "") == "C_ddi" and len(drugs) >= 2:
+            left, right = sorted(drugs[:2])
+            if left != right:
+                key = (left, right)
+                pair_n[key] += 1
+                pair_cases.setdefault(key, set()).add(mis_id)
+    drugs = [
+        {
+            "inn": name,
+            "n": drug_n[name],
+            "n_cases": len(drug_cases[name]),
+        }
+        for name, _ in drug_n.most_common(_MED_DRUG_TOP)
+    ]
+    pair_items = [
+        {
+            "a": a,
+            "b": b,
+            "n": pair_n[(a, b)],
+            "n_cases": len(pair_cases[(a, b)]),
+        }
+        for a, b in sorted(pair_n, key=lambda key: (-pair_n[key], key[0], key[1]))
+    ]
+    pair_available = len(pair_items) >= _MED_PAIR_MIN
+    nodes: list[dict[str, Any]] = []
+    links: list[dict[str, Any]] = []
+    if pair_available:
+        node_n: Counter[str] = Counter()
+        for item in pair_items:
+            node_n[item["a"]] += item["n"]
+            node_n[item["b"]] += item["n"]
+        nodes = [{"id": name, "label": name, "n": node_n[name]} for name, _ in node_n.most_common(24)]
+        allowed = {n["id"] for n in nodes}
+        links = [
+            {"source": item["a"], "target": item["b"], "value": item["n"]}
+            for item in pair_items
+            if item["a"] in allowed and item["b"] in allowed
+        ]
+    type_tiles = [{"id": t["id"], "label": t["label"]} for t in types]
+    return {
+        "ok": True,
+        "available": True,
+        "reason": None,
+        "total_cases": total_cases,
+        "tiles": kpi_tiles,
+        "types": types,
+        "specialty": {"rows": spec_rows, "tiles": type_tiles},
+        "drugs": drugs,
+        "trend": trend,
+        "pairs": {
+            "available": pair_available,
+            "min_pairs": _MED_PAIR_MIN,
+            "reason": None if pair_available else f"Матрица пар нужна от {_MED_PAIR_MIN} различных сочетаний.",
+            "items": pair_items,
+            "nodes": nodes,
+            "links": links,
+        },
+        "source": "warehouse",
+    }
+
+
 def _doctor_profile_block(
     conn: sqlite3.Connection,
     params: dict[str, Any],

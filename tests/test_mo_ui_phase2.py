@@ -94,6 +94,22 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_medications_page_has_f4_hosts() -> None:
+    assert 'id="medications-types"' in HTML
+    assert 'id="medications-drugs"' in HTML
+    assert 'id="medications-specialty-chart"' in HTML
+    assert 'id="medications-trend"' in HTML
+    assert 'id="medications-pairs"' in HTML
+    assert "loadMedicationsDashboard" in APP
+    assert "/medications-dashboard?" in APP
+    assert "renderMedTypes" in APP
+    assert ".medications-grid" in UI
+    assert 'loadFamilyDashboard("drug")' in APP
+    meds = APP.split("async function loadMedicationsDashboard")[1].split("async function ")[0]
+    assert "Дашборд лекарств временно недоступен." in meds
+    assert meds.index("overviewEmpty($(id)") < meds.index('await loadFamilyDashboard("drug")')
+
+
 def test_doctors_page_has_f3_hosts() -> None:
     assert 'id="doctor-heatmap"' in HTML
     assert 'id="doctor-scatter"' in HTML
