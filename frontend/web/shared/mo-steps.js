@@ -14,9 +14,9 @@
   function enabled() {
     try {
       var params = new URLSearchParams(window.location.search || "");
-      if (params.get("steps") === "0") return false;
+      return params.get("steps") === "1";
     } catch (error) {}
-    return true;
+    return false;
   }
 
   function currentStep() {

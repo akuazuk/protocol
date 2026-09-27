@@ -4367,10 +4367,19 @@
     }
     function renderCaseWorkspaceTabs() {
       return '<div class="case-workspace-tabs" role="tablist" aria-label="Раздел случая">' +
-        '<button class="button secondary compact is-active" id="case-tab-document" type="button" role="tab" ' +
-        'aria-selected="true" aria-controls="case-clinical-pane" data-case-tab="document">Документ</button>' +
-        '<button class="button secondary compact" id="case-tab-review" type="button" role="tab" ' +
-        'aria-selected="false" aria-controls="case-review-column" data-case-tab="review">Проверка</button></div>';
+        '<button class="button secondary compact" id="case-tab-document" type="button" role="tab" ' +
+        'aria-selected="false" aria-controls="case-clinical-pane" data-case-tab="document">Документ</button>' +
+        '<button class="button secondary compact is-active" id="case-tab-review" type="button" role="tab" ' +
+        'aria-selected="true" aria-controls="case-review-column" data-case-tab="review">Проверка</button></div>';
+    }
+    function renderPassportStrip(data) {
+      var summary = (data && data.passport_summary) || {};
+      var text = String(summary.context || "").replace(/\s+/g, " ").trim();
+      if (!text && summary.ok === false) {
+        text = "Паспорт клиента недоступен - оценка случая ниже не зависит от него.";
+      }
+      if (!text) return "";
+      return '<p class="case-passport-strip card-sub" id="case-passport-strip">' + esc(text) + "</p>";
     }
     function renderHistoryAndLabs(history, lab, historyAssessment) {
       return '<section class="detail-block history-labs-section"><h3>История и анализы</h3>' +
@@ -4542,10 +4551,10 @@
         $("drawer-body").innerHTML =
           renderCaseWorkspaceTabs() +
           '<div class="case-workspace-grid case-workspace-grid--zones">' +
-          '<div class="case-workspace-clinical case-workspace-pane is-active-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
+          '<div class="case-workspace-clinical case-workspace-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
           renderClinicalDocument(sourceDocument, findings) +
           '</div>' +
-          '<div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
+          '<div class="case-workspace-decision case-workspace-pane is-active-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div id="case-stepper-host"></div>' +
           '<div id="protocol-suggest-host" class="protocol-suggest-host" hidden></div>' +
           '<div id="case-decision-dock">' + decisionHtml + '</div>' +
@@ -4555,11 +4564,12 @@
         $("drawer-body").innerHTML =
           renderCaseWorkspaceTabs() +
           '<div class="case-workspace-grid case-workspace-grid--zones">' +
-          '<div class="case-workspace-clinical case-workspace-pane is-active-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
+          '<div class="case-workspace-clinical case-workspace-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
           renderClinicalDocument(sourceDocument, findings) +
           '</div>' +
-          '<div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
+          '<div class="case-workspace-decision case-workspace-pane is-active-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
+          renderPassportStrip(data) +
           renderZonesHero(zones) +
           '<div id="protocol-suggest-host" class="protocol-suggest-host"><p class="card-sub">Протокол: подбираем…</p></div>' +
           renderAssessmentStatusStrip(assessment) +
@@ -4579,10 +4589,11 @@
       } else {
         $("drawer-body").innerHTML =
           renderCaseWorkspaceTabs() +
-          '<div class="case-workspace-grid"><div class="case-workspace-clinical case-workspace-pane is-active-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
+          '<div class="case-workspace-grid"><div class="case-workspace-clinical case-workspace-pane" data-case-pane="document" id="case-clinical-pane" role="tabpanel">' +
           renderClinicalDocument(sourceDocument, findings) +
-          '</div><div class="case-workspace-decision case-workspace-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
+          '</div><div class="case-workspace-decision case-workspace-pane is-active-pane" data-case-pane="review" id="case-review-column" role="tabpanel">' +
           '<div class="case-workspace-decision-scroll" id="case-review-pane">' +
+          renderPassportStrip(data) +
           renderFindingsCompact(findings, crm, llmJudge, assessment) +
           '<details open class="detail-block mo-secondary-details" id="case-more-details"><summary>Подробнее: история, протокол, №55</summary>' +
           renderPatientHistory(data.patient_history) +
@@ -4597,6 +4608,7 @@
           '</div>' + decisionHtml + '</div></div>';
       }
       bindCaseWorkspaceInteractions();
+      activateCaseWorkspaceTab("review");
       updateDrawerNav();
       if (useZonesUi) prefillDecisionFromBrief(data.review_brief || {});
       setDecisionBaseline();
@@ -4633,7 +4645,7 @@
       if (!body) return;
       body.querySelectorAll("[data-case-tab]").forEach(function (button) {
         button.addEventListener("click", function () {
-          activateCaseWorkspaceTab(button.getAttribute("data-case-tab") || "document");
+          activateCaseWorkspaceTab(button.getAttribute("data-case-tab") || "review");
         });
       });
     }

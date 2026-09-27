@@ -1,4 +1,4 @@
-"""P4: шаги разбора вместо главного скролла #case-review-pane."""
+"""Шаги разбора - opt-in (?steps=1); по умолчанию #case-review-pane."""
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -18,11 +18,29 @@ def test_steps_module_has_host_and_five_panels() -> None:
     assert "case-review-pane" not in STEPS
 
 
+def test_steps_default_off_opt_in() -> None:
+    block = STEPS.split("function enabled()")[1].split("function currentStep")[0]
+    assert 'params.get("steps") === "1"' in block
+    assert "return false;" in block
+
+
 def test_app_uses_stepper_when_enabled() -> None:
     assert "MO.steps.enabled()" in APP
     assert "case-stepper-host" in APP
     assert "case-decision-dock" in APP
     assert 'id="case-review-pane"' in APP
+
+
+def test_review_tab_and_zones_hero_are_default() -> None:
+    assert 'data-case-tab="review">Проверка</button>' in APP
+    assert 'id="case-tab-review"' in APP
+    assert 'aria-selected="true" aria-controls="case-review-column"' in APP
+    assert 'activateCaseWorkspaceTab("review")' in APP
+    assert "renderZonesHero(zones)" in APP
+    assert "renderCaseWhy(" in APP
+    assert "renderFindingsCompact(" in APP
+    assert "renderPassportStrip(data)" in APP
+    assert 'id="case-passport-strip"' in APP
 
 
 def test_html_loads_steps_before_app() -> None:
