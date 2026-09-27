@@ -14,6 +14,7 @@ from clinical_knowledge.mo_patient_passport import (
     json_has_phi,
     passport_summary_for_case,
     rebuild_passports,
+    resolve_patient_query,
 )
 
 
@@ -155,3 +156,18 @@ def test_labs_only_on_requested_date(tmp_path: Path) -> None:
 def test_bad_key_rejected() -> None:
     assert build_patient_passport("not-a-hash")["error"] == "bad_patient_key"
     assert build_patient_passport("123")["error"] == "bad_patient_key"
+
+
+def test_resolve_by_visit_id_omits_query_and_phi(tmp_path: Path) -> None:
+    warehouse, _lab, pk = _setup(tmp_path)
+    payload = resolve_patient_query("v-2026", warehouse=warehouse)
+    assert payload["ok"] is True
+    assert payload["patient_key"] == pk
+    assert payload["latest_visit_id"] == "v-2026"
+    assert "2 визитов" in payload["context"]
+    dumped = json_dumps_public(payload)
+    assert json_has_phi(payload) is False
+    assert "p-api-1" not in dumped
+    assert "patient_id" not in dumped
+    assert resolve_patient_query("", warehouse=warehouse)["error"] == "empty_query"
+    assert resolve_patient_query("missing-visit", warehouse=warehouse)["error"] == "passport_not_found"

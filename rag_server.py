@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-165225Z-case-steps-p5"
+BUILD_VERSION = "2026-09-27-170911Z-patient-page-p6"
 
 
 def _app_version() -> str:
@@ -12772,6 +12772,25 @@ def api_methodist_mo_case_detail(
     return result
 
 
+@app.get("/api/methodist/mo/patients/resolve")
+def api_methodist_mo_patient_resolve(
+    request: "Request",
+    response: "Response",
+    q: str = Query("", max_length=80),
+) -> dict:
+    """Резолв visit_id / ключа в patient_key. Запрос и PHI в ответ не кладём."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_patient_passport import resolve_patient_query
+
+    response.headers["Cache-Control"] = "private, no-store"
+    payload = resolve_patient_query(q)
+    if not payload.get("ok"):
+        err = str(payload.get("error") or "passport_not_found")
+        status = 400 if err in {"empty_query", "bad_patient_key"} else 404
+        raise HTTPException(status_code=status, detail=err)
+    return payload
+
+
 @app.get("/api/methodist/mo/patients/{patient_key}/passport")
 def api_methodist_mo_patient_passport(
     patient_key: str,
@@ -15446,6 +15465,7 @@ if has_frontend_file("index.html"):
     @app.get("/methodist/mo/queue", include_in_schema=False)
     @app.get("/methodist/mo/overview", include_in_schema=False)
     @app.get("/methodist/mo/mis", include_in_schema=False)
+    @app.get("/methodist/mo/patient", include_in_schema=False)
     def _serve_methodist_mo() -> FileResponse:
         """Канонический CRM/BI workspace массового анализа МО."""
         p = frontend_file("mis-kz-quality.html")

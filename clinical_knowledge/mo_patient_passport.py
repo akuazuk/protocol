@@ -946,6 +946,51 @@ def lookup_patient_key(
     return ""
 
 
+def resolve_patient_query(
+    query: str,
+    *,
+    warehouse: Path | None = None,
+) -> dict[str, Any]:
+    """Найти patient_key по визиту, mis_id или самому ключу. Запрос в ответ не кладём."""
+    raw = _norm(query)
+    if not raw:
+        return {"ok": False, "error": "empty_query"}
+    if len(raw) > 80:
+        return {"ok": False, "error": "empty_query"}
+    path = warehouse or default_warehouse_path()
+    if path is None or not Path(path).is_file():
+        return {"ok": False, "error": "warehouse_unavailable"}
+    path = Path(path)
+    key = raw.lower() if is_patient_key(raw.lower()) else lookup_patient_key(path, raw)
+    if not key and raw.isdigit():
+        from clinical_knowledge.mo_daily import patient_key_for
+
+        candidate = _norm(patient_key_for(raw)).lower()
+        if is_patient_key(candidate):
+            with sqlite3.connect(str(path)) as db:
+                if _load_coverage(db, candidate) or _load_visits(db, candidate):
+                    key = candidate
+    if not key:
+        return {"ok": False, "error": "passport_not_found"}
+    with sqlite3.connect(str(path)) as db:
+        visits = _load_visits(db, key)
+        coverage = _load_coverage(db, key) or {
+            "n_visits": len(visits),
+            "n_specialties": len({item.get("specialty") for item in visits if item.get("specialty")}),
+            "n_lab_dates": 0,
+        }
+    latest = visits[0] if visits else {}
+    return strip_phi(
+        {
+            "ok": True,
+            "patient_key": key,
+            "latest_visit_id": _norm(latest.get("visit_id")) or None,
+            "coverage": coverage,
+            "context": _context_line(coverage),
+        }
+    )
+
+
 def build_patient_passport(
     patient_key: str,
     *,
