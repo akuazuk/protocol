@@ -837,7 +837,7 @@ SSOT порогов - только решением владельца; пере
   колонок, без P-уровней в строках, без hidden-хостов; Playwright на mock API: колонки,
   серверный chrome (`overall_grade`, `q`, `crm_statuses` в запросе), пресеты колонок,
   панель фильтров внутри контента на 1280x720. Все `tests/test_mo_*.py` зелёные.
-- Приёмка на проде (релиз 9, `53791c4c`, 2026-09-27 05:33-09:00 UTC): `/api/version`
+- Приёмка на проде (релиз 9, `53791c4c`, 2026-09-27 05:33-06:00 UTC): `/api/version`
   = `2026-09-27-045511Z-mo-redesign-j-filters`, `/health/live` ok. API за 01-25.09
   (`total` 10 527, холодный 3,0 с): каждый чип UI меняет `total` - `overall_grade=
   critical|important|poor` 3987, `poor` 3846, `critical` 0 (в данных нет), `kp_status=
