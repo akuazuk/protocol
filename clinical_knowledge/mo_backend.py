@@ -3181,6 +3181,146 @@ def _build_labs_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+_QUEUE_CRM_TILES = (
+    ("new", "Новые", "moss"),
+    ("assigned", "Назначены", "lake"),
+    ("in_review", "На разборе", "clay"),
+    ("confirmed_issue", "Подтверждено", "rose"),
+    ("needs_more_data", "Нужны данные", "heather"),
+    ("sent_to_doctor", "Врачу", "slate"),
+)
+_QUEUE_AGE_BUCKETS = (
+    ("0-1", "0-1 день", 0, 1),
+    ("2-3", "2-3 дня", 2, 3),
+    ("4-7", "4-7 дней", 4, 7),
+    (">7", "больше 7 дней", 8, None),
+)
+
+
+def build_mis_dashboard(params: dict[str, Any]) -> dict[str, Any]:
+    """Поиск МИС: кольцо, месяцы с января, специальности, очередь догрузки."""
+    params = _apply_request_period(params)
+    return _cached_result("mis_dashboard", params, 30.0, lambda: _build_mis_dashboard_uncached(params))
+
+
+def _build_mis_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    from .mo_mis_catalog import dashboard_payload
+
+    return dashboard_payload(
+        date_from=str(params.get("date_from") or "")[:10],
+        date_to=str(params.get("date_to") or "")[:10],
+    )
+
+
+def build_queue_dashboard(params: dict[str, Any]) -> dict[str, Any]:
+    """Очередь: плитки CRM, возраст задачи, ответственные. Тот же WHERE, что /cases?queue_only=1."""
+    params = _apply_request_period(params)
+    params = _apply_score_eligible_default(params)
+    params = _attach_queue_band_visit_filter(params)
+    queued = dict(params)
+    queued["queue_only"] = "1"
+    if _backend_source() != "warehouse":
+        return {
+            "ok": False,
+            "available": False,
+            "reason": "Очередь строится только из склада МО.",
+            "source": _backend_source(),
+            "tiles": [],
+            "ages": [],
+            "owners": [],
+        }
+    return _cached_result(
+        "queue_dashboard", queued, 60.0, lambda: _build_queue_dashboard_uncached(queued)
+    )
+
+
+def _queue_age_bucket(age_days: int) -> str:
+    if age_days <= 1:
+        return "0-1"
+    if age_days <= 3:
+        return "2-3"
+    if age_days <= 7:
+        return "4-7"
+    return ">7"
+
+
+def _build_queue_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    empty = {
+        "ok": True,
+        "available": False,
+        "reason": "В очереди нет случаев.",
+        "total": 0,
+        "tiles": [
+            {"id": key, "label": label, "n": 0, "tone": tone} for key, label, tone in _QUEUE_CRM_TILES
+        ],
+        "ages": [
+            {"id": key, "label": label, "n": 0, "lo": lo, "hi": hi}
+            for key, label, lo, hi in _QUEUE_AGE_BUCKETS
+        ],
+        "owners": [],
+        "source": "warehouse",
+    }
+    where, values = _warehouse_where(params)
+    sql_where = " AND ".join(where) if where else "1=1"
+    conn = _read_connection()
+    try:
+        crm_join = (
+            "LEFT JOIN crm_case_state s ON s.case_id = "
+            "CAST(CASE WHEN c.visit_id IS NULL OR c.visit_id = '' THEN c.mis_id ELSE c.visit_id END AS TEXT)"
+            if _warehouse_has_table(str(_db_path()), "crm_case_state")
+            else ""
+        )
+        status_expr = "COALESCE(s.status, 'new')" if crm_join else "'new'"
+        owner_expr = (
+            "COALESCE(NULLIF(s.assignee, ''), 'не назначен')" if crm_join else "'не назначен'"
+        )
+        rows = conn.execute(
+            f"""
+            SELECT {status_expr} AS crm_status,
+                   {owner_expr} AS owner,
+                   CAST(julianday('now') - julianday(c.visit_date) AS INTEGER) AS age_days
+            FROM fact_mo_case c
+            LEFT JOIN dim_doctor d ON d.doctor_key = c.doctor_key
+            {crm_join}
+            WHERE {sql_where}
+            """,
+            values,
+        ).fetchall()
+    finally:
+        conn.close()
+    if not rows:
+        return empty
+    status_n: dict[str, int] = {}
+    age_n = {key: 0 for key, _label, _lo, _hi in _QUEUE_AGE_BUCKETS}
+    owner_n: dict[str, int] = {}
+    for row in rows:
+        status = str(row["crm_status"] or "new")
+        status_n[status] = status_n.get(status, 0) + 1
+        age_n[_queue_age_bucket(int(row["age_days"] or 0))] += 1
+        owner = str(row["owner"] or "не назначен")
+        owner_n[owner] = owner_n.get(owner, 0) + 1
+    owners = [
+        {"label": label, "n": n}
+        for label, n in sorted(owner_n.items(), key=lambda item: (-item[1], item[0]))[:12]
+    ]
+    return {
+        "ok": True,
+        "available": True,
+        "reason": None,
+        "total": len(rows),
+        "tiles": [
+            {"id": key, "label": label, "n": status_n.get(key, 0), "tone": tone}
+            for key, label, tone in _QUEUE_CRM_TILES
+        ],
+        "ages": [
+            {"id": key, "label": label, "n": age_n.get(key, 0), "lo": lo, "hi": hi}
+            for key, label, lo, hi in _QUEUE_AGE_BUCKETS
+        ],
+        "owners": owners,
+        "source": "warehouse",
+    }
+
+
 def _doctor_profile_block(
     conn: sqlite3.Connection,
     params: dict[str, Any],

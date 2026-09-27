@@ -6,6 +6,7 @@ from pathlib import Path
 
 from clinical_knowledge.mo_mis_catalog import (
     coverage_payload,
+    dashboard_payload,
     enqueue_ingest_job,
     process_next_ingest_job,
     search_labs,
@@ -166,3 +167,46 @@ def test_coverage_payload_empty(tmp_path: Path) -> None:
     assert out["ok"] is True
     assert out["found"] == 0
     assert "не KPI" in out["label_ru"]
+
+
+def test_mis_dashboard_months_specialty_and_ingest(tmp_path: Path) -> None:
+    warehouse = _warehouse(tmp_path)
+    _cases(warehouse, [("10001", "2026-01-15", "отит"), ("10002", "2026-09-10", "грипп")])
+    conn = sqlite3.connect(warehouse)
+    upsert_catalog_rows(
+        conn,
+        [
+            {
+                "visit_id": "10003",
+                "visit_date": "2026-03-08",
+                "specialization": "лор",
+                "dx_short": "гайморит",
+                "patient_id": "1",
+            },
+            {
+                "visit_id": "10004",
+                "visit_date": "2026-09-12",
+                "specialization": "терапевт",
+                "dx_short": "орви",
+                "patient_id": "2",
+            },
+        ],
+    )
+    conn.close()
+    enqueue_ingest_job(visit_id="10003", actor="tester", warehouse=warehouse)
+    dash = dashboard_payload(date_from="2026-09-01", date_to="2026-09-30", warehouse=warehouse)
+    assert dash["ok"] is True
+    assert dash["available"] is True
+    months = {row["month"]: row for row in dash["months"]}
+    assert list(months)[0] == "2026-01"
+    assert months["2026-01"]["in_analytics"] == 1
+    assert months["2026-03"]["found"] == 1
+    assert months["2026-03"]["not_scored"] == 1
+    assert months["2026-09"]["found"] >= 2
+    labels = {row["label"] for row in dash["specialties"]}
+    assert "лор" in labels or "терапевт" in labels
+    assert dash["ingest"]
+    assert dash["ingest"][0]["visit_id"] == "10003"
+    assert dash["ingest"][0]["progress"] == 10
+    tiles = {row["id"]: row["n"] for row in dash["tiles"]}
+    assert tiles["queued"] == 1
