@@ -1765,6 +1765,18 @@ kbd {
 .mo-chart-host--band { --chart-height: 320px; }
 .mo-chart-host--heat { --chart-height: 320px; }
 .mo-chart-host--spark { --chart-height: 140px; }
+.doctors-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.doctors-grid > .card { grid-column: span 6; }
+.doctors-grid > .span-7 { grid-column: span 7; }
+.doctors-grid > .span-5 { grid-column: span 5; }
+@media (max-width: 1100px) {
+  .doctors-grid > .card, .doctors-grid > .span-7, .doctors-grid > .span-5 { grid-column: 1 / -1; }
+}
 .cases-summary-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.2fr);

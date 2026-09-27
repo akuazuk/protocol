@@ -94,6 +94,19 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_doctors_page_has_f3_hosts() -> None:
+    assert 'id="doctor-heatmap"' in HTML
+    assert 'id="doctor-scatter"' in HTML
+    assert 'id="doctor-trend"' in HTML
+    assert 'id="doctor-profile-radar"' in HTML
+    assert "renderDoctorHeatmap" in APP
+    assert "/doctors-dashboard?" in APP
+    assert "renderDoctorHeatmap(null)" in APP
+    assert "x.enough = !!(x.enough_data && !x.suppressed)" in APP
+    assert ".doctors-grid" in UI
+    assert "Подробнее: дельта к ожидаемой" not in HTML
+
+
 def test_find_mo_has_cases_summary_hosts() -> None:
     assert 'id="cases-summary"' in HTML
     assert 'id="cases-summary-grades"' in HTML

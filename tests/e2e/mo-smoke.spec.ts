@@ -42,6 +42,23 @@ async function mockMo(page: Page, failFamily = false) {
         weeks: [{ week: '2026-W31', date_from: '2026-08-01', date_to: '2026-08-02', n: 12 }]
       };
     }
+    if (p.endsWith('/doctors-dashboard')) {
+      data = {
+        ok: true, available: true, rank_n: 20,
+        ranking: [{ key: 'a', label: 'Врач А', specialty: 'Терапия', n: 40, enough: true, zone1_bad_pct: 20, zone2a_bad_pct: 10, zone2b_bad_pct: 30 }],
+        heatmap: { zones: [{ id: 'zone1', label: 'Оформление' }, { id: 'zone2a', label: 'Диагноз' }, { id: 'zone2b', label: 'План' }],
+          rows: [{ key: 'a', label: 'Врач А', n: 40, cells: [
+            { zone: 'zone1', n: 40, bad: 8, bad_pct: 20, suppressed: false },
+            { zone: 'zone2a', n: 40, bad: 4, bad_pct: 10, suppressed: false },
+            { zone: 'zone2b', n: 40, bad: 12, bad_pct: 30, suppressed: false }
+          ] }] },
+        scatter: [{ key: 'a', label: 'Врач А', n: 40, bad_pct: 20, enough: true }],
+        selected: { key: 'a', label: 'Врач А', specialty: 'Терапия', n: 40, enough: true,
+          radar: [{ id: 'zone1', label: 'Оформление', ok_pct: 80, bad_pct: 20 }],
+          findings_top: [], chapters: [], trend: [{ week: '2026-W31', n: 10, zone1_avg: 70, zone2a_avg: 80, zone2b_avg: 60 }],
+          specialty_median: [{ week: '2026-W31', zone1_avg: 75, zone2a_avg: 82, zone2b_avg: 58 }] }
+      };
+    }
     if (p.endsWith('/score-dashboard') || p.endsWith('/overview-dashboard')) {
       // F1: Обзор берёт один /overview-dashboard; /score-dashboard остаётся fallback для старого образа.
       const bands = { ok: { n: 70 }, weak: { n: 20 }, bad: { n: 10 }, na: { n: 0 } };

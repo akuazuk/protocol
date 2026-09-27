@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-093608Z-mo-f2-accept-docs"
+BUILD_VERSION = "2026-09-27-095052Z-mo-redesign-f3-doctors"
 
 
 def _app_version() -> str:
@@ -13157,6 +13157,31 @@ def api_methodist_mo_overview_dashboard(
     response.headers["Cache-Control"] = "private, no-store"
     try:
         return build_overview_dashboard(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/doctors-dashboard")
+def api_methodist_mo_doctors_dashboard(
+    request: "Request",
+    response: "Response",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+) -> dict:
+    """Врачи D1-D5 одним ответом (волна F3): рейтинг, матрица зон, scatter, тренд, профиль."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_doctors_dashboard
+
+    response.headers["Cache-Control"] = "private, no-store"
+    try:
+        return build_doctors_dashboard(_mo_params(**locals()))
     except (ValueError, RuntimeError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 

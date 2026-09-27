@@ -283,13 +283,12 @@
               </table>
             </div>
           </div>
-          <details open class="mo-secondary-details">
-            <summary>Подробнее: дельта к ожидаемой (старый scatter)</summary>
-            <div class="grid">
-              <article class="card span-9"><h2>Объём и дельта к ожидаемой</h2><div id="doctor-scatter-chart"></div></article>
-              <article class="card span-3"><h2>Выбранные врачи</h2><div id="doctor-selection-flow" class="empty">Выделите точки рамкой.</div></article>
-            </div>
-          </details>
+          <div class="doctors-grid">
+            <article class="card"><h2>Матрица зон</h2><p class="card-sub">Доля «плохо» по оформлению, диагнозу и плану. Клик открывает случаи врача.</p><div id="doctor-heatmap" class="mo-chart-host mo-chart-host--heat"></div></article>
+            <article class="card"><h2>Объём и качество</h2><p class="card-sub">Ось X - число случаев, ось Y - доля плохого оформления. Серые точки - меньше 20 случаев.</p><div id="doctor-scatter" class="mo-chart-host"></div></article>
+            <article class="card span-7"><h2>Динамика врача</h2><p class="card-sub" id="doctor-trend-sub">Линии трёх зон выбранного врача и медиана специальности</p><div id="doctor-trend" class="mo-chart-host mo-chart-host--band"></div></article>
+            <article class="card span-5"><h2>Профиль врача</h2><p class="card-sub" id="doctor-profile-sub">Радар зон, топ причин и главы МКБ</p><div id="doctor-profile-radar" class="mo-chart-host mo-chart-host--spark"></div><div id="doctor-profile-findings" class="mini-bars"></div></article>
+          </div>
         </section>
         <section class="page" id="page-medications" data-page="medications" hidden aria-labelledby="title-medications">
           <div class="page-head"><div><h1 id="title-medications">Проверка назначений</h1><p>Назначения в МО: взаимодействия, дубли групп, доза и инструкция. Не путать с вкладкой «Инструкции препаратов».</p></div><span class="draft-badge">черновик, не в общей оценке</span></div>
