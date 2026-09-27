@@ -642,7 +642,11 @@ def merge_patient_history_into_findings(
 ) -> list[dict[str, Any]]:
     base = [dict(f) for f in (findings or []) if isinstance(f, Mapping)]
     if not patient_history_enabled():
-        return base
+        try:
+            from clinical_knowledge.mo_passport_signals import merge_passport_signals_into_findings
+        except Exception:  # noqa: BLE001
+            return base
+        return merge_passport_signals_into_findings(base, case, warehouse=warehouse)
     if force:
         base = [f for f in base if str(f.get("code") or "") != FINDING_CODE]
         if isinstance(case, dict):
@@ -652,7 +656,11 @@ def merge_patient_history_into_findings(
         # уже есть finding - но бандл в case всё равно нужен UI
         if isinstance(case, dict) and not case.get("_patient_history"):
             attach_bundle_to_case(case, warehouse=warehouse, force=True)
-        return base
+        try:
+            from clinical_knowledge.mo_passport_signals import merge_passport_signals_into_findings
+        except Exception:  # noqa: BLE001
+            return base
+        return merge_passport_signals_into_findings(base, case, warehouse=warehouse)
     if force:
         attach_bundle_to_case(case, warehouse=warehouse, force=True)
         code = str(case.get("diagnosis_code") or case.get("mkb_code_main") or "").strip().upper()
@@ -664,7 +672,11 @@ def merge_patient_history_into_findings(
             base.append({**item, "shadow": False})
     else:
         base.extend(extra)
-    return base
+    try:
+        from clinical_knowledge.mo_passport_signals import merge_passport_signals_into_findings
+    except Exception:  # noqa: BLE001
+        return base
+    return merge_passport_signals_into_findings(base, case, warehouse=warehouse)
 
 
 def name_match_threshold_delta(summary: Mapping[str, Any] | None) -> float:
