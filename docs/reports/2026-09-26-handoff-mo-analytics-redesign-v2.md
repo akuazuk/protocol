@@ -1,12 +1,12 @@
-# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C, D в проде; приёмка D пройдена
+# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C, D в проде; D закрыта, дальше J
 
-Дата: 2026-09-26 (ночь UTC)
+Дата: 2026-09-27 (утро UTC)
 План: `docs/plans/2026-09-26-mo-analytics-redesign-v2.md` (active; журнал релизов - §6b,
 метрики «было / стало / цель» - §7).
 Прод: GCE `https://protocol.kravira.by`, контейнер `protocol-web`, образ
-`protocol-gcp-app:bc7a596af624`, `/api/version` = `2026-09-26-202914Z-mo-search-perf3`,
-`git_commit` = `bc7a596a` (релиз 7). Render не прод и не откат. Предыдущий образ для
-отката - `protocol-gcp-app:1ec1b39d2e1f` (релиз 6).
+`protocol-gcp-app:51a031b152e0`, `/api/version` = `2026-09-26-210555Z-mo-search-dim-labels`,
+`git_commit` = `51a031b1` (релиз 8). Render не прод и не откат. Предыдущий образ для
+отката - `protocol-gcp-app:bc7a596af624` (релиз 7).
 
 Директива владельца: «Все подтверждаю работай автономно и все реализуй по плану». Режим:
 одна волна = один PR (Bugbot по diff до merge) = merge после зелёного CI = релиз
@@ -31,7 +31,7 @@
 | D perf: FTS5 вместо LIKE (fix отката) | #306 | `2ca743fb` | релиз 5 19:03 UTC, приёмка частично (p95 4,35 с) |
 | D perf 2: чип врача, один GROUP BY, один MATCH на синонимы, подфраза ОРВИ, прогрев индекса | #307 | `1ec1b39d` | релиз 6 20:02 UTC, 5/5 порогов, p95 2,28 с |
 | D perf 3: название МКБ в FTS (схема v2), обратный индекс стемм, коды через `dim_diagnosis`, JOIN по надобности, `warm_caches` | #308 | `bc7a596a` | релиз 7 21:01 UTC, **приёмка §D пройдена**: p50 154 мс, p95 487 мс |
-| D: названия для пустых `dim_diagnosis` из справочника | #309 | - | PR открыт, Bugbot чист, CI; ветка `cursor/mo-search-dim-labels-pc1` |
+| D: названия для пустых `dim_diagnosis` из справочника | #309 | `51a031b1` | релиз 8 04:06 UTC 27.09 (попытка 1 в 21:37 - авто-откат: публичный `/api/version` не ответил за 15 с под скорингом backfill) |
 
 Приёмка релизов (все `PUBLIC_OK`, `/health/live` ok):
 
@@ -115,8 +115,9 @@ dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/p
 
 - Финальный `recompute` истории пациентов после всех месяцев; п. 5 волны C (лаборатория
   с 2025-12) - в G/F5.
-- Релиз 8 (#309, названия `dim_diagnosis`) и его проверка: `dim_fingerprint` ≠ `…:0`,
-  «гипертензивная болезнь» даёт чип «фраза» > 0, повтор `/tmp/search_accept.py` на VM
+- Волна D закрыта (релиз 8: `dim_fingerprint 2443:95566`, 79 кодов без названия -
+  нестандартные `A05.05`…, «гипертензивная болезнь» 120 по фразе, p95 381 мс).
+  Скрипт приёмки: `/tmp/search_accept.py` на VM
   (`export METHODIST_TOKEN=…; python3 /tmp/search_accept.py --base http://127.0.0.1:8000`).
 - «СД 2»: 3 из 10 строк выборки эвристика скрипта не объясняет (она не видит
   `diagnosis_text`); движок даёт ранг 2 по целому слову «СД» - проверить методисту вручную.
@@ -133,11 +134,32 @@ dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/p
 gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo tail -5 /var/data/medical_exams/logs/gce-mo-backfill.log; sudo cat /var/data/medical_exams/state/mo_backfill_range.json | tail -20'
 ```
 
-2. Дождаться зелёного CI по #309, `gh pr merge 309 --squash --delete-branch`, затем релиз 8
-   из нового detached worktree на `origin/main` (`.env` симлинк), между днями backfill
-   (после `DONE ok=` в логе). После `PUBLIC_OK` - проверка из «Не сделано»; если p95 > 1 с
-   или ложные срабатывания - откат на `bc7a596af624` по runbook §5.
-3. Дальше по плану: волна J (контракт фильтров, удаление legacy), затем F1-F7.
+2. Волна J по плану (контракт фильтров, удаление legacy-колонок/P-уровней/«Только
+   критичные», фасеты видимы, мёртвый код) - один PR от свежего `origin/main`, Bugbot,
+   merge, релиз 9 между днями backfill (см. «Как деплоить при живом backfill»), затем F1-F7.
+3. Перед любым деплоем проверить `date -u`: не 01:00-04:30 UTC. Релиз 8 попал в окно
+   (04:01) из-за сна Mac между командами; ночной конвейер уже завершился (02:15), вреда нет.
+
+## Как деплоить при живом backfill
+
+Попытка 1 релиза 8 откатилась автоматически: контейнер стартовал одновременно со
+скорингом backfill (2 воркера `docker exec` внутри того же контейнера на 2 vCPU) и
+прогревом (заливка названий + пересборка FTS 7 с) - публичный `/api/version` не ответил за
+15 с, скрипт счёл версию неверной. Порядок, который сработал:
+
+```bash
+# 1. мягкий стоп после текущего дня (флаг runner снимает сам)
+gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo -u pavel touch /var/data/medical_exams/state/mo_backfill_stop'
+# 2. дождаться "stop flag present - exiting" в логе и отсутствия процесса
+#    (pgrep -f "bash /opt/protocol/deploy/gcp-app/mo_backfill_range.sh"; просто "mo_backfill_range" ловит сам ssh)
+# 3. deploy_to_gce.sh
+# 4. перезапуск runner (resume-safe: дни с маркером state/mo_backfill_done_<день> пропускаются)
+gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo -u pavel bash -c "cd /opt/protocol && nohup bash /opt/protocol/deploy/gcp-app/mo_backfill_range.sh 2026-01-01 2026-06-30 >> /var/data/medical_exams/logs/gce-mo-backfill.log 2>&1 &"'
+```
+
+Шаг 4 держит ssh-сессию открытой (nohup наследует stdout) - запускать в фоне/с таймаутом.
+Runner перезапущен 04:08 UTC 27.09, спит до 04:45, затем 06-03 -> 01-01; день
+`2026-06-22` в состоянии `score_failed` (без маркера) - runner его повторит.
 
 ## Базовые цифры утреннего аудита (PR #295, прод `8000354f`) - для сравнения
 
