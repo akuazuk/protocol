@@ -1,12 +1,14 @@
-# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C, D в проде; D закрыта, дальше J
+# Handoff: МО Аналитика, редизайн v2 - волны A, T, E, B, C, D, J в проде; J закрыта релизом 9, фикс фасетов - релиз 10, дальше F1
 
-Дата: 2026-09-27 (утро UTC)
+Дата: 2026-09-27 (~09:00 UTC)
 План: `docs/plans/2026-09-26-mo-analytics-redesign-v2.md` (active; журнал релизов - §6b,
 метрики «было / стало / цель» - §7).
 Прод: GCE `https://protocol.kravira.by`, контейнер `protocol-web`, образ
-`protocol-gcp-app:51a031b152e0`, `/api/version` = `2026-09-26-210555Z-mo-search-dim-labels`,
-`git_commit` = `51a031b1` (релиз 8). Render не прод и не откат. Предыдущий образ для
-отката - `protocol-gcp-app:bc7a596af624` (релиз 7).
+`protocol-gcp-app:53791c4cde9e`, `/api/version` = `2026-09-27-045511Z-mo-redesign-j-filters`,
+`git_commit` = `53791c4c` (релиз 9, 05:33 UTC 27.09). Render не прод и не откат. Предыдущий
+образ для отката - `protocol-gcp-app:51a031b152e0` (релиз 8). Если этот handoff читается
+после merge PR `cursor/mo-redesign-j-facets-deeplink-pc1` - сверить `/api/version` с
+`BUILD_VERSION` в `rag_server.py`: релиз 10 мог уже уехать (см. §6b плана).
 
 Директива владельца: «Все подтверждаю работай автономно и все реализуй по плану». Режим:
 одна волна = один PR (Bugbot по diff до merge) = merge после зелёного CI = релиз
@@ -32,6 +34,9 @@
 | D perf 2: чип врача, один GROUP BY, один MATCH на синонимы, подфраза ОРВИ, прогрев индекса | #307 | `1ec1b39d` | релиз 6 20:02 UTC, 5/5 порогов, p95 2,28 с |
 | D perf 3: название МКБ в FTS (схема v2), обратный индекс стемм, коды через `dim_diagnosis`, JOIN по надобности, `warm_caches` | #308 | `bc7a596a` | релиз 7 21:01 UTC, **приёмка §D пройдена**: p50 154 мс, p95 487 мс |
 | D: названия для пустых `dim_diagnosis` из справочника | #309 | `51a031b1` | релиз 8 04:06 UTC 27.09 (попытка 1 в 21:37 - авто-откат: публичный `/api/version` не ответил за 15 с под скорингом backfill) |
+| D close-out (план, handoff) | #310 | `e6303c72` | docs |
+| J контракт фильтров, legacy-колонки, CRM-статус в SQL, hidden-хосты | #311 | `53791c4c` | релиз 9 05:33 UTC 27.09, **приёмка §J пройдена** (см. Статус J в плане) |
+| J фасеты при deep-link (`ensureFacets`), приёмка J, план/handoff | `cursor/mo-redesign-j-facets-deeplink-pc1` | - | релиз 10 после merge |
 
 Приёмка релизов (все `PUBLIC_OK`, `/health/live` ok):
 
@@ -78,6 +83,17 @@ dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/p
   121 519 строк = фактов, `fact_mo_case_search_meta`: `schema_version 2`,
   `dim_fingerprint 2441:0`. Отпечаток `…:0` = у всех кодов `dim_diagnosis` пустое
   название - исправление в #309 (2362 из 2441 кодов получат название из справочника).
+- 53791c4c (релиз 9, J): API за 01-25.09 - каждый чип UI меняет `total` (10 527 базово;
+  `overall_grade=critical|important|poor` 3987, `kp_status=unmatched` 6598,
+  `history_tier=first_contact` 6709, `queue_only` 6627, `q=гипертония` 257);
+  `crm_statuses=in_review` за 07-09.2026 - 11 строк, facets `[new 40 496, in_review 11]`;
+  `critical` 0 - в данных нет. DOM-аудит: `closedDetails 0`, `navHidden 0`, `rawBr 0`,
+  ошибок JS 0; заголовки 15 / 18 / «Оценка» первой в таблице дня; `#queue-critical-only`
+  нет; hidden-хостов нет; панель «Фильтры» внутри контента на 1280 и 1024. Результат
+  `/tmp/mo_wave/dom_audit_53791c4c.json` (сравнение: `--compare dom_audit_306e29ec.json
+  dom_audit_53791c4c.json`). Скрипты приёмки: `/tmp/j_accept.py` на VM,
+  `/tmp/mo_wave/j_dom_check.mjs`, `j_panel_check.mjs` на Mac (запуск из worktree с
+  симлинком `node_modules`, токен из env).
 - Для замеров на копии склада без риска для прода: `cp mo_analytics.sqlite /tmp/mo_exp.sqlite`
   внутри контейнера + `PYTHONPATH=/tmp/newcode:/app MO_ANALYTICS_DB=/tmp/mo_exp.sqlite`
   (в `/tmp/newcode` - новый `clinical_knowledge`, `data` симлинком на `/app/data`).
@@ -123,7 +139,17 @@ dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/p
   `diagnosis_text`); движок даёт ранг 2 по целому слову «СД» - проверить методисту вручную.
 - Шаг 8 волны D (эмбеддинги «похожие») - после F. Ревью словаря `dx_aliases_ru.json`
   врачом - долг H1.
-- Волны J, F1-F7, G, K, H1/I, H2/H3 - не начаты.
+- Волна J закрыта релизом 9 (детали и цифры приёмки - Статус J в плане). Долги J -> H2:
+  «две "критично"» (плитка P0/P1 против чипа grade), чипы `worst_severity` и кольцо
+  приоритетов с P-кодами внутри, `sort_by=priority` в селекте.
+- Найдено при приёмке J на проде: меню фасетов (врачи, филиалы, специальности, статус
+  разбора) пусты при deep-link `?page=documents` / `?page=queue` - `/cases` не отдаёт
+  `facets`, `/facets` запрашивал только «Обзор» (дефект с `cbeb805c`). Фикс -
+  `ensureFacets()` в `loadPage` и `beginFilterDraft`, PR `cursor/mo-redesign-j-facets-deeplink-pc1`.
+  Приёмка релиза 10 на проде: `?page=documents` -> открыть «Фильтры» -> «Статус разбора
+  методиста» и «Врачи» с опциями (скрипт `/tmp/mo_wave/j_panel_check.mjs` на Mac).
+- `icd_chapter` пуст у 23% случаев сентября (2472 из ~10,5 тыс.) - в аудит данных I.
+- Волны F1-F7, G, K, H1/I, H2/H3 - не начаты.
 - Скриншоты прода с ФИО врачей в git не кладутся.
 
 ## Следующий безопасный шаг
@@ -134,9 +160,10 @@ dim-таблицам. FTS5 есть в контейнере (3.46) и в `/opt/p
 gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo tail -5 /var/data/medical_exams/logs/gce-mo-backfill.log; sudo cat /var/data/medical_exams/state/mo_backfill_range.json | tail -20'
 ```
 
-2. Волна J по плану (контракт фильтров, удаление legacy-колонок/P-уровней/«Только
-   критичные», фасеты видимы, мёртвый код) - один PR от свежего `origin/main`, Bugbot,
-   merge, релиз 9 между днями backfill (см. «Как деплоить при живом backfill»), затем F1-F7.
+2. Если PR `cursor/mo-redesign-j-facets-deeplink-pc1` ещё не в `origin/main` - merge после
+   зелёного CI и релиз 10 (мягкий стоп runner, см. ниже), приёмка: меню фасетов при
+   `?page=documents`. Затем волна F1 (Обзор O1-O8) по плану §5/§6 - один PR от свежего
+   `origin/main`, Bugbot, merge, релиз между днями backfill.
 3. Перед любым деплоем проверить `date -u`: не 01:00-04:30 UTC. Релиз 8 попал в окно
    (04:01) из-за сна Mac между командами; ночной конвейер уже завершился (02:15), вреда нет.
 
@@ -158,8 +185,16 @@ gcloud compute ssh protocol-app --zone=europe-central2-a --command='sudo -u pave
 ```
 
 Шаг 4 держит ssh-сессию открытой (nohup наследует stdout) - запускать в фоне/с таймаутом.
-Runner перезапущен 04:08 UTC 27.09, спит до 04:45, затем 06-03 -> 01-01; день
-`2026-06-22` в состоянии `score_failed` (без маркера) - runner его повторит.
+Runner перезапущен 04:08 UTC 27.09, остановлен мягко 05:22 (после 06-02) для релиза 9 и
+перезапущен 05:34 (продолжает с 06-01 -> 01-01); день `2026-06-22` в состоянии
+`score_failed` (без маркера) - runner его повторит. Длинные ssh-циклы ожидания (> ~15 мин)
+рвутся с exit 255 - опрашивать короткими отдельными ssh.
+
+Грабли этой сессии, чтобы не повторять: `pytest … | tail && git commit` глотает код
+выхода pytest (в #311 ушёл коммит с красным тестом, починен следующим) - проверять
+`${PIPESTATUS[0]}` или не использовать пайп; `scripts/normalize_ui_dashes.py` игнорирует
+пути и переписывает весь репозиторий - лишние файлы возвращать `git checkout --`;
+`gh pr create --body "$(cat <<EOF…)"` дописывает vendor-атрибуцию - только `--body-file`.
 
 ## Базовые цифры утреннего аудита (PR #295, прод `8000354f`) - для сравнения
 
