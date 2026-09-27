@@ -26,7 +26,7 @@ def _rich_clinical() -> dict:
         "clinical_diagnosis": "Острый тонзиллит J03.9",
         "exam_recommendations": "ОАК, мазок из зева",
         "treatment_recommendations": "Полоскание, контроль через 5 дней, явка к терапевту",
-        "exam_data": "ОАК от 01.08: лейкоциты 9.1",
+        "exam_data": "ОАК от 01.08: лейкоциты 9.1, нейтрофилы 62%, СОЭ 12 мм/ч",
     }
 
 
@@ -327,3 +327,116 @@ def test_safety_ignores_p2_ddi():
         [{"code": "C_ddi", "severity": "P1", "title_ru": "Major: a + b"}]
     )
     assert safety_p1["band"] == "important"
+
+
+def test_one_soft_half_does_not_make_zone1_weak() -> None:
+    """H3-prep: один мягкий 0.5 (нет маркеров риска) не роняет оформление."""
+    clinical = _rich_clinical()
+    clinical["anamnesis_doctor"] = (
+        "Болеет третий день. Температура до 37.5. Ранее ангины ежегодно. "
+        "Общий фон без уточнения привычек в этом блоке текста. "
+        "Жалобы нарастали постепенно, к врачу обратился после выходных, "
+        "домашний режим соблюдал, самочувствие днём лучше чем утром."
+    )
+    zones = compute_mo_zone_scores(
+        {
+            "clinical": clinical,
+            "meta": {
+                "visit_date": "2026-08-02",
+                "visit_time": "10:30",
+                "diagnosis_code": "J03.9",
+            },
+            "document_kind": "clinical_visit",
+        }
+    )
+    by_id = {c["id"]: c for c in zones["criteria"]}
+    assert by_id["risk_factors"]["score"] == 0.5
+    assert zones["zone1_pct"] is not None and zones["zone1_pct"] >= 75
+    assert zones["zone1_band"] == "ok"
+
+
+def test_two_soft_halves_keep_zone1_weak() -> None:
+    clinical = _rich_clinical()
+    clinical["anamnesis_doctor"] = (
+        "Болеет третий день. Температура до 37.5. Ранее ангины ежегодно. "
+        "Общий фон без уточнения привычек в этом блоке текста. "
+        "Жалобы нарастали постепенно, к врачу обратился после выходных, "
+        "домашний режим соблюдал, самочувствие днём лучше чем утром."
+    )
+    clinical["exam_data"] = "ОАК"
+    zones = compute_mo_zone_scores(
+        {
+            "clinical": clinical,
+            "meta": {
+                "visit_date": "2026-08-02",
+                "visit_time": "10:30",
+                "diagnosis_code": "J03.9",
+            },
+            "document_kind": "clinical_visit",
+        }
+    )
+    by_id = {c["id"]: c for c in zones["criteria"]}
+    assert by_id["risk_factors"]["score"] == 0.5
+    assert by_id["exam_data"]["score"] == 0.5
+    assert zones["zone1_band"] == "weak"
+
+
+def test_hard_empty_complaints_still_zone1_bad() -> None:
+    clinical = _rich_clinical()
+    clinical["complaints"] = ""
+    zones = compute_mo_zone_scores(
+        {
+            "clinical": clinical,
+            "meta": {
+                "visit_date": "2026-08-02",
+                "visit_time": "10:30",
+                "diagnosis_code": "J03.9",
+            },
+            "document_kind": "clinical_visit",
+        }
+    )
+    assert zones["zone1_band"] == "bad"
+
+
+def test_reg55_finding_does_not_change_zone1_or_safety() -> None:
+    zones = compute_mo_zone_scores(
+        {
+            "clinical": _rich_clinical(),
+            "meta": {
+                "visit_date": "2026-08-02",
+                "visit_time": "10:30",
+                "diagnosis_code": "J03.9",
+            },
+            "findings": [
+                {
+                    "code": "D_reg55_gap",
+                    "severity": "P1",
+                    "title_ru": "Невыполненный критерий №55",
+                }
+            ],
+            "document_kind": "clinical_visit",
+        }
+    )
+    assert zones["safety"]["band"] == "none"
+    assert zones["safety_band"] == "none"
+    assert zones["zone1_band"] in {"ok", "weak"}
+
+
+def test_warehouse_columns_include_safety_band() -> None:
+    zones = compute_mo_zone_scores(
+        {
+            "clinical": _rich_clinical(),
+            "meta": {"visit_date": "2026-08-02", "visit_time": "10:15", "diagnosis_code": "J03.9"},
+            "findings": [
+                {
+                    "code": "C_red_flag_unrouted",
+                    "severity": "P0",
+                    "title_ru": "Красный флаг без маршрутизации",
+                }
+            ],
+            "document_kind": "clinical_visit",
+        }
+    )
+    flat = warehouse_zone_columns(zones)
+    assert flat["safety_band"] == "critical"
+    assert zones["safety_band"] == "critical"
