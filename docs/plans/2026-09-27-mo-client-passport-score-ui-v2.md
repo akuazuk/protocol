@@ -303,9 +303,10 @@ H3-prep (другие файлы, можно раньше): мягкие/жёс�
 
 ### P3. API
 
-Статус: **в этой ветке**. `/patients/{key}/passport`, `/cases/{id}/passport`,
-лаб по `?date=`. В `/cases/{id}` - только `passport_summary`, не индекс визитов.
-Результат: контракт-тест, в JSON нет `patient_id` и ФИО; кэш процесса 60 с.
+Статус: **в проде** (`9a382efc`, #331, version
+`2026-09-27-161031Z-passport-api-p3`). `/patients/{key}/passport`,
+`/cases/{id}/passport`, лаб по `?date=`. В `/cases/{id}` - только
+`passport_summary`. Сентябрь не сдвинулся.
 
 ### P4. Шаги 1-3 вместо скролла
 

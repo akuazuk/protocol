@@ -2069,3 +2069,23 @@ tr.reg55-row--measures > td { background: rgba(194, 120, 3, 0.05); }
 /* Статусная строка разбора: фразы разделены точкой, не слеплены. */
 .assessment-status-strip { display: flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; }
 .assessment-status-strip .strip-sep { color: var(--muted); }
+
+.case-stepper { display: flex; flex-direction: column; gap: 12px; min-height: 0; }
+.case-stepper__crumbs { display: flex; flex-wrap: wrap; align-items: center; gap: 6px; }
+.case-stepper__crumb {
+  border: 1px solid var(--line, #d5e0dc);
+  background: var(--surface, #fff);
+  border-radius: 999px;
+  padding: 4px 10px;
+  font: inherit;
+}
+.case-stepper__crumb.is-current { background: var(--accent, #1f6b57); color: #fff; border-color: transparent; }
+.case-stepper__slot { min-height: 220px; }
+.case-stepper__tiles, .case-stepper__list { display: grid; gap: 8px; padding-left: 0; list-style: none; }
+.case-stepper__tile, .case-stepper__row {
+  display: block; width: 100%; text-align: left;
+  border: 1px solid var(--line, #d5e0dc); border-radius: 8px; padding: 8px 10px;
+  background: var(--surface, #fff); font: inherit;
+}
+.case-stepper__chips, .case-stepper__lenses, .case-stepper__lab-days { display: flex; flex-wrap: wrap; gap: 8px; }
+.case-stepper__chip { border-radius: 999px; padding: 2px 8px; background: var(--chip, #eef4f1); }

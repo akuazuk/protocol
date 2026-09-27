@@ -19,7 +19,7 @@ APP = (SHARED / "mo-app.js").read_text(encoding="utf-8")
 
 def test_markup_shell_is_small_and_has_no_inline_executable_assets() -> None:
     assert len(HTML.splitlines()) < 480
-    for asset in ("mo-tokens.css", "mo-ui.css", "mo-api.js", "mo-charts.js", "mo-app.js"):
+    for asset in ("mo-tokens.css", "mo-ui.css", "mo-api.js", "mo-charts.js", "mo-steps.js", "mo-app.js"):
         assert f'/{asset}' in HTML
     assert "<style" not in HTML
     assert not re.search(r"<script(?![^>]+src=)", HTML)
@@ -30,7 +30,7 @@ def test_ordered_namespace_and_legacy_api_fallback_are_explicit() -> None:
     assert "window.MO = window.MO || {}" in API
     assert "window.MO = window.MO || {}" in CHARTS
     assert "window.MO = window.MO || {}" in APP
-    assert HTML.index("/mo-api.js") < HTML.index("/mo-charts.js") < HTML.index("/mo-app.js")
+    assert HTML.index("/mo-api.js") < HTML.index("/mo-charts.js") < HTML.index("/mo-steps.js") < HTML.index("/mo-app.js")
     assert '"/api/methodist/mo"' in API
     assert '"/api/methodist/mis-kz-quality"' in API
     assert "response.status === 404" in API
