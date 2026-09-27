@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-085103Z-mo-f1-accept-docs"
+BUILD_VERSION = "2026-09-27-091249Z-mo-redesign-f2-summary"
 
 
 def _app_version() -> str:
@@ -11895,6 +11895,63 @@ def api_methodist_mo_cases(
     try:
         return build_cases(params)
     except ValueError as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/cases/summary")
+def api_methodist_mo_cases_summary(
+    request: "Request",
+    response: "Response",
+    period: str = Query("", max_length=16),
+    month: str = Query("", max_length=7),
+    date_from: str = Query(""),
+    date_to: str = Query(""),
+    periods: str = Query("", max_length=500),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    kz_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+    finding_codes: str = Query("", max_length=2000),
+    finding_family: str = Query("", max_length=16),
+    mkb_chapters: str = Query("", max_length=1000),
+    crm_statuses: str = Query("", max_length=500),
+    assignees: str = Query("", max_length=2000),
+    exclude_specializations: str = Query("", max_length=2000),
+    exclude_filials: str = Query("", max_length=2000),
+    exclude_document_kinds: str = Query("", max_length=500),
+    q: str = Query("", max_length=200),
+    search_off: str = Query("", max_length=64, pattern=r"^[a-z_,|]*$"),
+    visit_id: str = Query("", max_length=64),
+    patient_id: str = Query("", max_length=64),
+    queue_only: bool = Query(False),
+    queue_band: str = Query("", max_length=16),
+    score_eligible_only: str = Query("1", max_length=16),
+    zone: str = Query("", max_length=32),
+    zone_band: str = Query("", max_length=16),
+    attention_only: bool = Query(False),
+    shadow_attention_only: bool = Query(False),
+    kp_status: str = Query("", max_length=32),
+    history_tier: str = Query("", max_length=64),
+    reg55_point: str = Query("", max_length=500),
+    reg55_band: str = Query("", max_length=200),
+    reg55_pack: str = Query("", max_length=500),
+    min_severity: str = Query("", max_length=8),
+    worst_severity: str = Query("", max_length=8),
+    overall_grade: str = Query("", max_length=64),
+    icd_visit_status: str = Query("", max_length=64),
+    icd: str = Query("", max_length=32),
+    methodology: str = Query("", max_length=16),
+) -> dict:
+    """Сводка выборки Найти МО (волна F2): оценки, специальности, недели. Тот же WHERE, что /cases."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_cases_summary
+
+    response.headers["Cache-Control"] = "private, no-store"
+    try:
+        return build_cases_summary(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 
 

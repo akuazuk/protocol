@@ -27,6 +27,21 @@ async function mockMo(page: Page, failFamily = false) {
     }
     if (p.endsWith('/daily-report')) data = { ok: true, date: '2026-08-02', data_through: '2026-08-02', attention: { n_evaluated: 100 }, actions: [], data_completeness: {} };
     if (p.endsWith('/month-report')) data = { ok: true, available: false, reason: 'Нет синтетических данных месяца', facets: {} };
+    if (p.endsWith('/cases/summary')) {
+      data = {
+        ok: true, available: true, n: 12,
+        grades: {
+          totals: { good: 5, fair: 4, poor: 3, important: 0, critical: 0, na: 0 },
+          buckets: [
+            { id: 'good', label: 'Хорошо', n: 5 },
+            { id: 'fair', label: 'С замечанием', n: 4 },
+            { id: 'poor', label: 'Слабо', n: 3 }
+          ]
+        },
+        specialties: [{ value: 'Терапевт', n: 7 }, { value: 'Кардиолог', n: 5 }],
+        weeks: [{ week: '2026-W31', date_from: '2026-08-01', date_to: '2026-08-02', n: 12 }]
+      };
+    }
     if (p.endsWith('/score-dashboard') || p.endsWith('/overview-dashboard')) {
       // F1: Обзор берёт один /overview-dashboard; /score-dashboard остаётся fallback для старого образа.
       const bands = { ok: { n: 70 }, weak: { n: 20 }, bad: { n: 10 }, na: { n: 0 } };
@@ -77,6 +92,18 @@ test('МО: ECharts показывает числа API и период пере
   }));
   expect(values).toEqual(Array.from({ length: 3 }, () => [70, 20, 10]));
   expect(state.requests.find(url => url.pathname.endsWith('/overview-dashboard'))?.searchParams.get('period')).toBe('month');
+  expect(state.problems).toEqual([]);
+});
+
+test('МО: Найти МО показывает сводку выборки', async ({ page }) => {
+  const state = await mockMo(page);
+  await page.goto('/methodist/mo?page=documents');
+  await expect(page.locator('#page-documents')).toBeVisible();
+  await expect(page.locator('#cases-summary')).toBeVisible();
+  await expect(page.locator('#cases-summary-grades .cases-summary-bar')).toHaveCount(3);
+  await expect(page.locator('#cases-summary-specialties .cases-summary-bar')).toHaveCount(2);
+  await expect(page.locator('#cases-summary-weeks canvas')).toHaveCount(1);
+  expect(state.requests.some(url => url.pathname.endsWith('/cases/summary'))).toBe(true);
   expect(state.problems).toEqual([]);
 });
 

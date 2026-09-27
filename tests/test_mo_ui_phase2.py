@@ -94,6 +94,17 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_find_mo_has_cases_summary_hosts() -> None:
+    assert 'id="cases-summary"' in HTML
+    assert 'id="cases-summary-grades"' in HTML
+    assert 'id="cases-summary-specialties"' in HTML
+    assert 'id="cases-summary-weeks"' in HTML
+    assert "renderCasesSummary" in APP
+    assert "/cases/summary?" in APP
+    assert ".cases-summary-grid" in UI
+    assert ".mo-chart-host--spark" in UI
+
+
 def test_today_score_rings_and_dynamics_wired_to_period() -> None:
     assert 'id="yesterday-score-rings"' in HTML
     assert 'id="yesterday-score-dynamics"' in HTML
