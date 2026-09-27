@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-112708Z-meds-dash-f4-stale"
+BUILD_VERSION = "2026-09-27-115228Z-release14-f4-docs"
 
 
 def _app_version() -> str:

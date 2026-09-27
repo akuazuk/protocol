@@ -1,6 +1,6 @@
 # Карта проекта: МО Аналитика, редизайн v2
 
-Дата: 2026-09-27 (~11:00 UTC).
+Дата: 2026-09-27 (~11:55 UTC).
 Для следующего агента: читать этот файл вместо повторного обхода всего репозитория.
 Канон плана: `docs/plans/2026-09-26-mo-analytics-redesign-v2.md`.
 Журнал релизов: там же, §6b. Метрики: §7.
@@ -13,8 +13,8 @@
 
 ## 0. Очередь: что закончено, что нет
 
-**План целиком не закончен.** Закрыты волны A, T, E, B, C, D, J, F1, F2, F3 (в проде,
-релизы 1-13, SHA `a7279024`). F4-F7, G, K, H1/I, H2/H3 не начаты.
+**План целиком не закончен.** Закрыты волны A, T, E, B, C, D, J, F1, F2, F3, F4 (в проде,
+релизы 1-14, SHA `9927e256`). F5-F7, G, K, H1/I, H2/H3 не начаты.
 
 | Волна | Смысл | Где сейчас |
 |--|--|--|
@@ -28,7 +28,7 @@
 | F1 | Обзор O1-O8 одним `/overview-dashboard` | прод, релиз 11 `9174949f` |
 | F2 | сводка «Найти МО» `/cases/summary` | прод, релиз 12 `c52b9038` |
 | F3 | Врачи D1-D5 `/doctors-dashboard` | прод, релиз 13 `a7279024` |
-| F4 | Лекарства M1-M5 | не начато |
+| F4 | Лекарства M1-M5 `/medications-dashboard` | прод, релиз 14 `9927e256` |
 | F5 | Анализы L1-L5 | не начато |
 | F6 | Поиск МИС + Очередь | не начато (долг: overflow широких таблиц) |
 | F7 | Отчёты / Протоколы МЗ / Rceth | не начато |
@@ -38,11 +38,11 @@
 | H2/H3 | шкала, две «критично», перекалибровка | не начато |
 
 Прод на момент этой карты: `https://protocol.kravira.by`
-`/api/version` = `2026-09-27-105039Z-kpi-natural-colors`,
-`git_commit` = `a7279024` (релиз 13). Образ `protocol-gcp-app:a7279024893c`.
-Откат: `protocol-gcp-app:c52b90389f08` (релиз 12).
+`/api/version` = `2026-09-27-112708Z-meds-dash-f4-stale`,
+`git_commit` = `9927e256` (релиз 14). Образ `protocol-gcp-app:9927e256fed0`.
+Откат: `protocol-gcp-app:a7279024893c` (релиз 13).
 
-Открытый продуктовый PR после merge #319: нет. Зомби: #261 (план workspace),
+Открытый продуктовый PR после merge #321: нет. Зомби: #261 (план workspace),
 #113 (calibration, HARD overlap только `BUILD_VERSION`), #186 (статья РЗ),
 Dependabot #194-#203, #248. Их не мержить попутно с редизайном.
 
@@ -181,7 +181,8 @@ summary 60 с, doctors 90 с. Ключ включает штамп склада 
 | GET | `/cases` | B, J, D | страница случаев, тот же WHERE |
 | GET | `/cases/summary` | F2 | grades / specialties top-8 / weeks / search_plan, кэш 60 с |
 | GET | `/overview-dashboard` | F1 | O1-O8 одним ответом, кэш 120 с |
-| GET | `/doctors-dashboard` | F3 | D1-D5, кэш 90 с; **есть на main, нет на проде** |
+| GET | `/doctors-dashboard` | F3 | D1-D5, кэш 90 с |
+| GET | `/medications-dashboard` | F4 | M1-M5, кэш 90 с; finding_family=drug в drill |
 | GET | `/score-dashboard` | старше F1 | fallback Обзора, если overview 404 |
 | GET | `/facets` | B, J | врачи / филиалы / специальности / crm_statuses |
 | GET | `/dimensions/doctors` | старше F3 | fallback страницы Врачи |
@@ -189,11 +190,11 @@ summary 60 с, doctors 90 с. Ключ включает штамп склада 
 | GET | `/freshness` | B | свежесть склада |
 | GET | `/meta` | C | `ytd`, granularities |
 | GET | `/timeseries` | C | точки по grain |
-| GET | `/drugs-labs-kpis` | старше F | семьи drug/lab; F4/F5 перепишут в дашборд |
+| GET | `/drugs-labs-kpis` | старше F | семьи drug/lab; F4 уже не читает страницу Лекарства, F5 ещё читает Анализы |
 | GET | `/health/live`, `/api/version` | всегда | smoke релиза |
 
-Маршрут `/cases/summary` и `/doctors-dashboard` зарегистрированы **до**
-`/cases/{case_id}`, иначе FastAPI съест `summary` как id.
+Маршруты `/cases/summary`, `/doctors-dashboard`, `/medications-dashboard`
+зарегистрированы **до** `/cases/{case_id}`, иначе FastAPI съест сегмент как id.
 
 Период: `_apply_request_period` + `_apply_score_eligible_default`.
 Пресеты: yesterday / 7d / month / ytd / custom. Grain авто: день ≤62 сут.,
@@ -240,19 +241,14 @@ n~98 856 (na 58 499 - янв-июнь без оценки).
 месяц 2,87 с холод / 9-16 мс тепло. Overflow 105@1280 / 307@1024 - широкая
 таблица, не сводка (долг F6).
 
-### Врачи (`#page-doctors`, F3 на main)
+### Врачи (`#page-doctors`, F3)
 
-На проде ещё старый scatter в `<details>`. После деплоя `70adb73d`:
 `.doctors-grid` с `#doctor-heatmap`, `#doctor-scatter`, `#doctor-trend`,
-`#doctor-profile-radar`, `#doctor-profile-findings`, плюс старые
-`#doctor-zone-chart` и таблица. Один запрос `/doctors-dashboard`.
-Ранг: GROUP BY `c.doctor_key`, `enough` = n≥20. Выбранный врач: первый из
-фильтра `doctors`, иначе первый enough. `specialty_median` считается в Python
-(`statistics.median`), не AVG (фикс Bugbot). Fallback `/dimensions/doctors`
-очищает графики (`renderDoctor*(null)`), иначе остаются чужие серии.
-`enough` на fallback: `enough_data && !suppressed`.
-
-Тесты: `tests/test_mo_doctors_dashboard_f3.py`. HTML ≤480 строк.
+`#doctor-profile-radar`, `#doctor-profile-findings`, плюс `#doctor-zone-chart`
+и таблица. Один запрос `/doctors-dashboard`. Ранг: GROUP BY `c.doctor_key`,
+`enough` = n≥20. Выбранный врач: первый из фильтра `doctors`, иначе первый
+enough. `specialty_median` - `statistics.median`, не AVG. Fallback
+`/dimensions/doctors` чистит графики. Тесты: `tests/test_mo_doctors_dashboard_f3.py`.
 
 ### Очередь (`#page-queue`)
 
@@ -260,10 +256,26 @@ n~98 856 (na 58 499 - янв-июнь без оценки).
 `queue_only=1`. Кнопки «Только критические» нет - чип оценки «Критично».
 F6 ещё не дала свои диаграммы.
 
-### Лекарства / Анализы
+### Лекарства (`#page-medications`, F4)
 
-Пока KPI-плитки `/drugs-labs-kpis` и таблицы findings. Дашборды M1-M5 / L1-L5
-- волны F4 / F5.
+`.medications-grid` + 5 KPI из `tiles`. Один запрос `/medications-dashboard`.
+Знаменатель - все МО окна (не только с drug-findings). Коды семейства
+`data/mo_finding_families/families_v1.json` (`drug`).
+
+- M1 бар типов: interactions / duplicates / dose_label / offprotocol (`n` сигналов,
+  `precision_note` «после разметки»)
+- M2 stacked bar сигналов на 100 МО, топ-12 специальностей
+- M3 топ-20 МНН: парсер `title_ru` / `detail_ru` / начало `evidence`
+  (`X + Y`, `surface / inn`, список через запятую)
+- M4 линии по неделям тех же типов
+- M5 граф пар C_ddi, только если различных пар ≥ 10; иначе empty с причиной
+
+Клик: `findingFamily=drug` + `finding_codes` плитки / специальности / `C_ddi`.
+При ошибке API хосты чистятся, затем fallback `loadFamilyDashboard("drug")`
+в hidden-контейнеры. Тесты: `tests/test_mo_medications_dashboard_f4.py`.
+HTML 468 строк (<480).
+
+Анализы пока на `/drugs-labs-kpis` (волна F5).
 
 ### Поиск МИС, Отчёты, Протоколы МЗ, Rceth, Справка
 
@@ -338,15 +350,20 @@ PR #298.
 `ensureFacets()` после любой страницы кроме Обзора (#312). Приёмка: 20 чипов
 меняют `total`. PR #311 + #312, релизы 9-10.
 
-### F1 / F2 / F3 - дашборды по одному PR на экран
+### F1 / F2 / F3 / F4 - дашборды по одному PR на экран
 
-Паттерн: один GET, один WHERE, один кэш, клик → Найти МО, пустое состояние
-с причиной, structure-тест + контрактный pytest + e2e мок. Bugbot по diff
-до merge, находки чинятся тестом. Не пушить в ветку после зелёного CI.
+Паттерн: один GET, один WHERE (`_warehouse_where` + score_eligible), один кэш
+90-120 с, клик → Найти МО, пустое состояние с причиной, structure-тест +
+контрактный pytest. Bugbot по diff до merge, находки чинятся тестом.
+Не пушить в ветку после зелёного CI. Маршрут - до `{case_id}`.
 
-F3 Bugbot (починен `047ae5b4` до merge): 1) fallback оставлял старые графики -
-`renderDoctor*(null)`; 2) `specialty_median` был AVG - стал `statistics.median`;
-3) поле `enough` vs `enough_data` - на fallback `enough = enough_data && !suppressed`.
+F3 Bugbot: stale charts / AVG / `enough`. F4 Bugbot: stale charts на ошибке
+API - `overviewEmpty` по хостам до `loadFamilyDashboard("drug")`.
+
+F4 принцип данных: плитки семейства `families_v1.json` id=drug; знаменатель
+всех МО окна; МНН и пары DDI разбираются из `title_ru`/`detail_ru`/`evidence`
+(формат скорера `left + right`, `surface / inn`). Матрица пар только при
+≥ 10 различных сочетаний.
 
 ---
 
@@ -418,12 +435,12 @@ Playwright: `require(…/Protocol/node_modules/playwright)` CJS, токен из
 
 ## 11. Ошибки, найденные при сборке карты, и план исправлений
 
-Это не «сделать молча в текущем PR». Отдельные PR после деплоя F3+цветов.
+Это не «сделать молча в текущем PR». Отдельные PR, не складывать в F5.
 
-### P0 - релиз 13 принят
+### P0 - релиз 14 принят
 
-F3 + цвета KPI в проде (`a7279024`, `2026-09-27-105039Z-kpi-natural-colors`).
-CI #318 и #319 не ломались. Дальше F4, не воскрешать удалённые ветки.
+F4 в проде (`9927e256`, `2026-09-27-112708Z-meds-dash-f4-stale`). Дальше F5,
+не воскрешать удалённые ветки #318/#319/#321.
 
 ### P1 - долги Bugbot со старых волн (не F3)
 
@@ -468,17 +485,17 @@ CI #318 и #319 не ломались. Дальше F4, не воскрешат�
 
 ### Порядок починки
 
-1. Релиз 13 принят (`a7279024`).
-2. F4 Лекарства (не долги). Долги P1 - параллельным PR, не в F4.
-4. F5 → F6 (там overflow) → F7 → G → K.
-5. H1/I фоном с недели 2; H2/H3 только после разметки.
+1. Релиз 14 принят (`9927e256`).
+2. F5 Анализы (не долги). Долги P1 - параллельным PR, не в F5.
+3. F6 (там overflow) → F7 → G → K.
+4. H1/I фоном с недели 2; H2/H3 только после разметки.
 
 ---
 
 ## 12. Следующая безопасная команда
 
-Проверить, что runner не в середине дня. Следующий код - F4, не повторный деплой
-`a7279024` (он уже в проде):
+Проверить, что runner не в середине дня. Следующий код - F5 Анализы, не повторный
+деплой `9927e256` (он уже в проде):
 
 ```bash
 gcloud compute ssh protocol-app --zone=europe-central2-a --command='
