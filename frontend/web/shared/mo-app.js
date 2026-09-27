@@ -5615,13 +5615,14 @@
     }
     async function loadMedicationsDashboard() {
       var host = $("medications-kpis");
+      var chartHosts = ["medications-types", "medications-drugs", "medications-specialty-chart", "medications-trend", "medications-pairs"];
       try {
         var response = await request("/medications-dashboard?" + query().toString());
         if (!response.ok) throw new Error("Не удалось загрузить дашборд лекарств.");
         var dash = await response.json();
         if (!dash || !dash.ok || !dash.available) {
           renderMedKpis(dash);
-          ["medications-types", "medications-drugs", "medications-specialty-chart", "medications-trend", "medications-pairs"].forEach(function (id) {
+          chartHosts.forEach(function (id) {
             overviewEmpty($(id), (dash && dash.reason) || "Нет лекарственных сигналов.");
           });
           return;
@@ -5634,6 +5635,9 @@
         renderMedPairs(dash);
       } catch (error) {
         if (isAbortedRequest(error)) throw error;
+        chartHosts.forEach(function (id) {
+          overviewEmpty($(id), "Дашборд лекарств временно недоступен.");
+        });
         await loadFamilyDashboard("drug");
         if (host) {
           renderWidgetError(

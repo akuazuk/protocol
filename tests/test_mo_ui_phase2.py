@@ -105,6 +105,9 @@ def test_medications_page_has_f4_hosts() -> None:
     assert "renderMedTypes" in APP
     assert ".medications-grid" in UI
     assert 'loadFamilyDashboard("drug")' in APP
+    meds = APP.split("async function loadMedicationsDashboard")[1].split("async function ")[0]
+    assert "Дашборд лекарств временно недоступен." in meds
+    assert meds.index("overviewEmpty($(id)") < meds.index('await loadFamilyDashboard("drug")')
 
 
 def test_doctors_page_has_f3_hosts() -> None:
