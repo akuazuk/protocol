@@ -5826,12 +5826,16 @@
     }
     async function loadLabsDashboard() {
       var host = $("labs-kpis");
+      var fallback = $("labs-fallback");
+      var cov = $("labs-coverage");
       var chartHosts = ["labs-window", "labs-unused-tests", "labs-abnormal-specialty", "labs-trend", "labs-coverage-months"];
+      if (fallback) fallback.hidden = true;
       try {
         var response = await request("/labs-dashboard?" + query().toString());
         if (!response.ok) throw new Error("Не удалось загрузить дашборд анализов.");
         var dash = await response.json();
         if (!dash || !dash.ok || !dash.available) {
+          if (cov) cov.textContent = (dash && dash.reason) || "Нет лабораторных данных.";
           renderLabKpis(dash);
           chartHosts.forEach(function (id) {
             overviewEmpty($(id), (dash && dash.reason) || "Нет лабораторных данных.");
@@ -5846,9 +5850,11 @@
         renderLabCoverageMonths(dash);
       } catch (error) {
         if (isAbortedRequest(error)) throw error;
+        if (cov) cov.textContent = "Дашборд анализов временно недоступен.";
         chartHosts.forEach(function (id) {
           overviewEmpty($(id), "Дашборд анализов временно недоступен.");
         });
+        if (fallback) fallback.hidden = false;
         await loadFamilyDashboard("lab");
         if (host) {
           renderWidgetError(

@@ -108,6 +108,9 @@ def test_labs_page_has_f5_hosts() -> None:
     labs = APP.split("async function loadLabsDashboard")[1].split("async function ")[0]
     assert "Дашборд анализов временно недоступен." in labs
     assert labs.index("overviewEmpty($(id)") < labs.index('await loadFamilyDashboard("lab")')
+    assert labs.index('fallback.hidden = false') < labs.index('await loadFamilyDashboard("lab")')
+    assert 'cov.textContent = (dash && dash.reason)' in labs
+    assert 'id="labs-fallback"' in HTML
 
 
 def test_medications_page_has_f4_hosts() -> None:

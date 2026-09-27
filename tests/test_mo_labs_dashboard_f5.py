@@ -33,6 +33,17 @@ def _seed_labs(path: Path, lab_path: Path) -> None:
                     "ОАК, глюкоза",
                 )
             )
+            extra.append(
+                (
+                    f"m08{index}",
+                    "B_lab_unused_in_plan",
+                    "P1",
+                    0,
+                    "Готовый анализ не учтён в плане",
+                    "Есть результаты: ОАК, но в плане лечения или контроля они не отражены.",
+                    "ОАК",
+                )
+            )
         for index in range(0, 40, 5):
             extra.append(
                 (
@@ -126,7 +137,13 @@ def test_blocks_present_and_window_splits(warehouse: Path) -> None:
     assert out["window"]["available"] is True
     assert out["window"]["has"] == 20
     assert out["window"]["none"] == 20
-    assert out["window"]["unused"] >= 1
+    assert out["window"]["unused"] == 5
+    assert out["window"]["accounted"] == 15
+    assert out["window"]["has"] == out["window"]["accounted"] + out["window"]["unused"]
+    assert out["window"]["accounted"] + out["window"]["unused"] + out["window"]["none"] == 40
+    unused_tile = next(t for t in out["tiles"] if t["id"] == "unused")
+    assert unused_tile["n_cases"] == 10
+    assert unused_tile["n"] == 20
     assert {t["id"] for t in out["tiles"]} >= {"has", "unused", "abnormal"}
     labels = [t["label"] for t in out["unused_tests"]]
     assert "ОАК" in labels

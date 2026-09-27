@@ -2910,6 +2910,7 @@ def _build_labs_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
         lab_path = default_lab_path()
         has_n = None
         unused_n = 0
+        unused_in_window = 0
         tile_stats = {tile_id: {"n": 0, "n_cases": 0} for tile_id in _LAB_TILE_ORDER}
         spec_rows_raw: list[Any] = []
         spec_abn: dict[str, int] = {}
@@ -2943,12 +2944,23 @@ def _build_labs_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
             by_code: dict[str, dict[str, int]] = {}
             for row in code_rows:
                 by_code[str(row["code"])] = {"n": int(row["n"] or 0), "n_cases": int(row["n_cases"] or 0)}
-            tile_stats: dict[str, dict[str, int]] = {tile_id: {"n": 0, "n_cases": 0} for tile_id in _LAB_TILE_ORDER}
-            for code, stats in by_code.items():
-                tile_id = code_to_tile.get(code)
-                if tile_id in tile_stats:
-                    tile_stats[tile_id]["n"] += stats["n"]
-                    tile_stats[tile_id]["n_cases"] += stats["n_cases"]
+            tile_stats = {tile_id: {"n": 0, "n_cases": 0} for tile_id in _LAB_TILE_ORDER}
+            for tile_id in _LAB_TILE_ORDER:
+                tile_codes = [c for c in (tile_by_id.get(tile_id, {}).get("codes") or []) if c in lab_codes]
+                if not tile_codes:
+                    continue
+                tile_clause, tile_values = _in_clause("f.finding_code", tile_codes)
+                tile_row = conn.execute(
+                    f"""SELECT COUNT(*) AS n, COUNT(DISTINCT f.mis_id) AS n_cases
+                        FROM fact_mo_finding f
+                        JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                        {joins} {and_sql}{tile_clause} AND COALESCE(f.passed, 0) = 0""",
+                    list(values) + tile_values,
+                ).fetchone()
+                tile_stats[tile_id] = {
+                    "n": int(tile_row["n"] or 0),
+                    "n_cases": int(tile_row["n_cases"] or 0),
+                }
             unused_codes = [
                 code
                 for tile in tiles
@@ -2956,7 +2968,8 @@ def _build_labs_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
                 for code in tile["codes"]
                 if code in lab_codes
             ]
-            unused_n = 0
+            unused_n = int((tile_stats.get("unused") or {}).get("n_cases") or 0)
+            unused_in_window = 0
             if unused_codes:
                 unused_clause, unused_values = _in_clause("f.finding_code", unused_codes)
                 unused_n = int(
@@ -2969,6 +2982,18 @@ def _build_labs_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
                     ).fetchone()[0]
                     or 0
                 )
+                if attached:
+                    unused_in_window = int(
+                        conn.execute(
+                            f"""SELECT COUNT(DISTINCT f.mis_id)
+                                FROM fact_mo_finding f
+                                JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                                {joins} {and_sql}{unused_clause} AND COALESCE(f.passed, 0) = 0
+                                  AND {lab_window}""",
+                            list(values) + unused_values + window_args,
+                        ).fetchone()[0]
+                        or 0
+                    )
             spec_rows_raw = conn.execute(
                 f"""SELECT {spec_expr} AS specialty_label, COUNT(*) AS n
                     FROM fact_mo_case c {joins} {where_sql}
@@ -3050,12 +3075,13 @@ def _build_labs_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
                 with suppress(sqlite3.Error):
                     conn.execute("DETACH DATABASE labdb")
     none_n = (total_cases - has_n) if has_n is not None else None
-    accounted = max(0, (has_n or 0) - unused_n) if has_n is not None else None
+    ring_unused = unused_in_window if has_n is not None else unused_n
+    accounted = max(0, (has_n or 0) - ring_unused) if has_n is not None else None
     window = {
         "available": has_n is not None,
         "has": has_n or 0,
         "none": none_n or 0,
-        "unused": unused_n,
+        "unused": ring_unused,
         "accounted": accounted or 0,
         "reason": None if has_n is not None else "Склад лаборатории недоступен.",
     }
