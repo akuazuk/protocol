@@ -94,6 +94,22 @@ def test_reports_page_has_interactive_cards_and_kpi_strip() -> None:
     assert 'daily-report?date=' in APP
 
 
+def test_labs_page_has_f5_hosts() -> None:
+    assert 'id="labs-window"' in HTML
+    assert 'id="labs-unused-tests"' in HTML
+    assert 'id="labs-abnormal-specialty"' in HTML
+    assert 'id="labs-trend"' in HTML
+    assert 'id="labs-coverage-months"' in HTML
+    assert "loadLabsDashboard" in APP
+    assert "/labs-dashboard?" in APP
+    assert "renderLabWindow" in APP
+    assert ".labs-grid" in UI
+    assert 'loadFamilyDashboard("lab")' in APP
+    labs = APP.split("async function loadLabsDashboard")[1].split("async function ")[0]
+    assert "Дашборд анализов временно недоступен." in labs
+    assert labs.index("overviewEmpty($(id)") < labs.index('await loadFamilyDashboard("lab")')
+
+
 def test_medications_page_has_f4_hosts() -> None:
     assert 'id="medications-types"' in HTML
     assert 'id="medications-drugs"' in HTML

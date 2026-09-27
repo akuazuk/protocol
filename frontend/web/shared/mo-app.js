@@ -5649,6 +5649,217 @@
         }
       }
     }
+    function labTileColor(id) {
+      if (id === "unused") return cssToken("--num-rose", "#a85a62");
+      if (id === "present_not_in_mo") return cssToken("--num-clay", "#a87438");
+      if (id === "abnormal") return cssToken("--num-heather", "#7a5e7d");
+      if (id === "exams_gap") return cssToken("--num-lake", "#3a6d8c");
+      if (id === "none") return cssToken("--num-slate", "#4a635c");
+      return cssToken("--num-moss", "#2d7a64");
+    }
+    function drillLabFamily(label, extra) {
+      applyDrill(Object.assign({
+        label: label,
+        findingFamily: "lab",
+        page: "documents"
+      }, extra || {}));
+    }
+    function renderLabKpis(dash) {
+      var host = $("labs-kpis");
+      if (!host) return;
+      var tiles = (dash && dash.tiles) || [];
+      if (!tiles.length) {
+        host.innerHTML = '<p class="empty">' + esc((dash && dash.reason) || "Нет лабораторных сигналов.") + "</p>";
+        return;
+      }
+      host.innerHTML = tiles.map(function (tile) {
+        var pct = tile.pct == null ? "нет доли" : (String(tile.pct).replace(".", ",") + "% МО");
+        return kpi(tile.label, tile.n_cases, pct + " · " + (tile.n || 0) + " сигналов", null, tile.tone || "slate");
+      }).join("");
+    }
+    function renderLabWindow(dash) {
+      var host = $("labs-window");
+      var cov = $("labs-coverage");
+      if (!host) return;
+      var win = (dash && dash.window) || {};
+      if (cov) {
+        cov.textContent = win.available
+          ? ("Есть " + (win.has || 0) + " · не учтена " + (win.unused || 0) + " · нет " + (win.none || 0) + ".")
+          : (win.reason || "Склад лаборатории недоступен.");
+      }
+      if (!win.available) {
+        overviewEmpty(host, win.reason || "Склад лаборатории недоступен.");
+        return;
+      }
+      var slices = [
+        { id: "has", name: "есть", value: win.accounted || 0 },
+        { id: "unused", name: "не учтена", value: win.unused || 0 },
+        { id: "none", name: "нет", value: win.none || 0 }
+      ];
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "item" },
+        series: [{
+          type: "pie",
+          radius: ["46%", "72%"],
+          label: { formatter: "{b}\n{c}" },
+          data: slices.map(function (s) {
+            return { name: s.name, value: s.value, itemStyle: { color: labTileColor(s.id) } };
+          })
+        }]
+      }, { label: "Лаборатория в окне визита", description: "Есть в окне и учтена, есть но не учтена, нет в окне." });
+      if (chart) chart.on("click", function (params) {
+        var item = slices[params.dataIndex];
+        if (!item) return;
+        if (item.id === "unused") drillLabFamily("Анализы не учтены", { findingCode: "B_lab_unused_in_dx|B_lab_unused_in_plan" });
+        else drillLabFamily("Анализы");
+      });
+    }
+    function renderLabUnusedTests(dash) {
+      var host = $("labs-unused-tests");
+      if (!host) return;
+      var items = (dash && dash.unused_tests) || [];
+      if (!items.length) {
+        overviewEmpty(host, "В текстах unused нет распознанных панелей.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        grid: { left: 140, right: 18, top: 8, bottom: 24 },
+        xAxis: { type: "value", name: "сигналы" },
+        yAxis: { type: "category", data: items.map(function (d) { return d.label; }).reverse() },
+        series: [{
+          type: "bar",
+          barMaxWidth: 16,
+          itemStyle: { color: cssToken("--num-rose", "#a85a62") },
+          data: items.map(function (d) { return d.n; }).reverse()
+        }]
+      }, { label: "Топ неучтённых тестов", description: "Панели из title и detail лабораторных unused-сигналов." });
+      if (chart) chart.on("click", function () {
+        drillLabFamily("Анализы не учтены", { findingCode: "B_lab_unused_in_dx|B_lab_unused_in_plan|B_lab_present_not_in_mo" });
+      });
+    }
+    function renderLabAbnormalSpecialty(dash) {
+      var host = $("labs-abnormal-specialty");
+      if (!host) return;
+      var rows = (dash && dash.abnormal_specialty) || [];
+      if (!rows.length) {
+        overviewEmpty(host, "Нет специальностей в выборке.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        grid: { left: 160, right: 18, top: 12, bottom: 28 },
+        xAxis: { type: "value", name: "% МО" },
+        yAxis: { type: "category", data: rows.map(function (r) { return r.specialty; }).reverse() },
+        series: [{
+          type: "bar",
+          barMaxWidth: 22,
+          itemStyle: { color: cssToken("--num-heather", "#7a5e7d") },
+          data: rows.map(function (r) { return r.pct || 0; }).reverse()
+        }]
+      }, { label: "Отклонения не отражены", description: "Доля МО специальности с сигналом отклонения." });
+      if (chart) chart.on("click", function (params) {
+        var item = rows[rows.length - 1 - params.dataIndex];
+        if (!item) return;
+        drillLabFamily(item.specialty, { findingCode: "B_lab_abnormal_ignored", selected: { specialties: [item.specialty] } });
+      });
+    }
+    function renderLabTrend(dash) {
+      var host = $("labs-trend");
+      if (!host) return;
+      var rows = (dash && dash.trend) || [];
+      var tiles = (dash && dash.trend_tiles) || [];
+      if (!rows.length) {
+        overviewEmpty(host, "Нет недельного тренда.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        legend: { top: 4, data: tiles.map(function (t) { return t.label; }) },
+        grid: { left: 42, right: 18, top: 42, bottom: 28 },
+        xAxis: { type: "category", data: rows.map(function (r) { return bucketLabel(r.week, "week"); }) },
+        yAxis: { type: "value", name: "сигналы" },
+        series: tiles.map(function (tile) {
+          return {
+            name: tile.label,
+            type: "line",
+            smooth: true,
+            showSymbol: rows.length <= 10,
+            itemStyle: { color: labTileColor(tile.id) },
+            lineStyle: { width: 2.2, color: labTileColor(tile.id) },
+            data: rows.map(function (r) { return r[tile.id] || 0; })
+          };
+        })
+      }, { label: "Тренд лабораторных сигналов", description: "По неделям выбранного окна." });
+      if (chart) chart.on("click", function (params) {
+        var row = rows[params.dataIndex];
+        if (!row) return;
+        openBucketCases(row.week, "week", {}, { findingFamily: "lab" }, "Анализы " + row.week);
+      });
+    }
+    function renderLabCoverageMonths(dash) {
+      var host = $("labs-coverage-months");
+      if (!host) return;
+      var block = (dash && dash.coverage_months) || {};
+      var items = block.items || [];
+      if (!block.available || !items.length) {
+        overviewEmpty(host, block.reason || "Склад лаборатории недоступен.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        grid: { left: 42, right: 12, top: 12, bottom: 48 },
+        xAxis: { type: "category", data: items.map(function (r) { return r.month; }), axisLabel: { rotate: 45 } },
+        yAxis: { type: "value", name: "% МО", max: 100 },
+        series: [{
+          type: "bar",
+          barMaxWidth: 16,
+          itemStyle: { color: cssToken("--num-moss", "#2d7a64") },
+          data: items.map(function (r) { return r.pct || 0; })
+        }]
+      }, { label: "Покрытие mo_lab по месяцам", description: "Доля МО с лабораторией в окне с декабря 2025." });
+      if (chart) chart.on("click", function (params) {
+        var row = items[params.dataIndex];
+        if (!row) return;
+        openBucketCases(row.month, "month", {}, {}, "Покрытие " + row.month);
+      });
+    }
+    async function loadLabsDashboard() {
+      var host = $("labs-kpis");
+      var chartHosts = ["labs-window", "labs-unused-tests", "labs-abnormal-specialty", "labs-trend", "labs-coverage-months"];
+      try {
+        var response = await request("/labs-dashboard?" + query().toString());
+        if (!response.ok) throw new Error("Не удалось загрузить дашборд анализов.");
+        var dash = await response.json();
+        if (!dash || !dash.ok || !dash.available) {
+          renderLabKpis(dash);
+          chartHosts.forEach(function (id) {
+            overviewEmpty($(id), (dash && dash.reason) || "Нет лабораторных данных.");
+          });
+          return;
+        }
+        renderLabKpis(dash);
+        renderLabWindow(dash);
+        renderLabUnusedTests(dash);
+        renderLabAbnormalSpecialty(dash);
+        renderLabTrend(dash);
+        renderLabCoverageMonths(dash);
+      } catch (error) {
+        if (isAbortedRequest(error)) throw error;
+        chartHosts.forEach(function (id) {
+          overviewEmpty($(id), "Дашборд анализов временно недоступен.");
+        });
+        await loadFamilyDashboard("lab");
+        if (host) {
+          renderWidgetError(
+            host,
+            "labs-dashboard",
+            "Дашборд анализов временно недоступен. Показана табличная сводка.",
+            function () { return loadLabsDashboard(); }
+          );
+        }
+      }
+    }
     function renderFamilyScores(data) {
       var scores = data.family_scores || (data.dual_scores && data.dual_scores.family_scores) || {};
       var note = scores.note_ru || "черновик, не в общей оценке";
@@ -7223,7 +7434,7 @@
         else if (page === "documents") await loadCases(false);
         else if (page === "doctors") await loadDoctorsDimension();
         else if (page === "medications") await loadMedicationsDashboard();
-        else if (page === "labs") await loadFamilyDashboard("lab");
+        else if (page === "labs") await loadLabsDashboard();
         else if (page === "mis") await loadMisSearch();
         else if (page === "reports") {
           await loadReports();
