@@ -53,3 +53,13 @@ def test_patient_page_opens_step_one() -> None:
     assert "resolvePatientPassport" in APP
     assert "MO.steps.setStep(1)" in APP
     assert '["step", "proof", "lens", "lab_date"]' in APP
+    assert "шаг 1" not in HTML
+
+
+def test_stepper_jargon_is_plain_and_decision_stays() -> None:
+    assert 'label: "Срез"' in STEPS
+    assert 'label: "Основание"' in STEPS
+    assert "Линза" not in STEPS
+    assert "Доказательство" not in STEPS
+    assert "dock.hidden = false;" in STEPS
+    assert "dock.hidden = step !== 5" not in STEPS
