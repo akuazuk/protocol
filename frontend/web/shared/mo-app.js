@@ -5426,6 +5426,225 @@
         );
       }
     }
+    function medTileColor(id) {
+      if (id === "interactions") return cssToken("--num-rose", "#a85a62");
+      if (id === "duplicates") return cssToken("--num-clay", "#a87438");
+      if (id === "dose_label") return cssToken("--num-heather", "#7a5e7d");
+      if (id === "offprotocol") return cssToken("--num-lake", "#3a6d8c");
+      return cssToken("--num-moss", "#2d7a64");
+    }
+    function drillMedFamily(label, extra) {
+      applyDrill(Object.assign({
+        label: label,
+        findingFamily: "drug",
+        page: "documents"
+      }, extra || {}));
+    }
+    function renderMedKpis(dash) {
+      var host = $("medications-kpis");
+      if (!host) return;
+      var tiles = (dash && dash.tiles) || [];
+      if (!tiles.length) {
+        host.innerHTML = '<p class="empty">' + esc((dash && dash.reason) || "Нет лекарственных сигналов.") + "</p>";
+        return;
+      }
+      host.innerHTML = tiles.map(function (tile) {
+        var pct = tile.pct == null ? "нет доли" : (String(tile.pct).replace(".", ",") + "% МО");
+        return kpi(tile.label, tile.n_cases, pct + " · " + (tile.n || 0) + " сигналов", null, tile.tone || "slate");
+      }).join("");
+    }
+    function renderMedTypes(dash) {
+      var host = $("medications-types");
+      var list = $("medications-codes");
+      var types = (dash && dash.types) || [];
+      if (!host) return;
+      if (!types.length) {
+        overviewEmpty(host, (dash && dash.reason) || "Нет сигналов по типам.");
+        if (list) list.innerHTML = "";
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis", axisPointer: { type: "shadow" } },
+        grid: { left: 160, right: 24, top: 12, bottom: 24 },
+        xAxis: { type: "value", name: "сигналы" },
+        yAxis: { type: "category", data: types.map(function (t) { return t.label; }).reverse() },
+        series: [{
+          type: "bar",
+          barMaxWidth: 22,
+          data: types.map(function (t) {
+            return { value: t.n, itemStyle: { color: medTileColor(t.id) } };
+          }).reverse()
+        }]
+      }, { label: "Сигналы лекарств по типам", description: "Число сигналов. Подпись точности появится после разметки." });
+      if (chart) chart.on("click", function (params) {
+        var item = types[types.length - 1 - params.dataIndex];
+        if (!item) return;
+        drillMedFamily(item.label, { findingCode: (item.codes || []).join("|") });
+      });
+      if (list) {
+        list.innerHTML = types.map(function (t) {
+          return '<button type="button" class="cases-summary-bar" data-med-codes="' + esc((t.codes || []).join("|")) + '">' +
+            '<span class="cases-summary-bar__label">' + esc(t.label) + "</span>" +
+            '<span class="cases-summary-bar__n">' + (t.n || 0) + "</span></button>";
+        }).join("");
+        list.querySelectorAll("[data-med-codes]").forEach(function (btn) {
+          btn.addEventListener("click", function () {
+            drillMedFamily(btn.textContent || "Лекарства", { findingCode: btn.getAttribute("data-med-codes") || "" });
+          });
+        });
+      }
+    }
+    function renderMedSpecialty(dash) {
+      var host = $("medications-specialty-chart");
+      if (!host) return;
+      var block = (dash && dash.specialty) || {};
+      var rows = block.rows || [];
+      var tiles = block.tiles || [];
+      if (!rows.length) {
+        overviewEmpty(host, "Нет специальностей в выборке.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        legend: { top: 4, data: tiles.map(function (t) { return t.label; }) },
+        grid: { left: 160, right: 18, top: 42, bottom: 28 },
+        xAxis: { type: "value", name: "на 100 МО" },
+        yAxis: { type: "category", data: rows.map(function (r) { return r.specialty; }).reverse() },
+        series: tiles.map(function (tile) {
+          return {
+            name: tile.label,
+            type: "bar",
+            stack: "meds",
+            barMaxWidth: 22,
+            itemStyle: { color: medTileColor(tile.id) },
+            data: rows.map(function (r) { return (r.per_100 || {})[tile.id] || 0; }).reverse()
+          };
+        })
+      }, { label: "Сигналы лекарств на 100 МО", description: "Сложенные столбцы по типу сигнала и специальности." });
+      if (chart) chart.on("click", function (params) {
+        var item = rows[rows.length - 1 - params.dataIndex];
+        if (!item) return;
+        drillMedFamily(item.specialty, { selected: { specialties: [item.specialty] } });
+      });
+    }
+    function renderMedDrugs(dash) {
+      var host = $("medications-drugs");
+      if (!host) return;
+      var items = (dash && dash.drugs) || [];
+      if (!items.length) {
+        overviewEmpty(host, "В текстах сигналов нет распознанных препаратов.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        grid: { left: 140, right: 18, top: 8, bottom: 24 },
+        xAxis: { type: "value", name: "сигналы" },
+        yAxis: { type: "category", data: items.map(function (d) { return d.inn; }).reverse() },
+        series: [{
+          type: "bar",
+          barMaxWidth: 16,
+          itemStyle: { color: cssToken("--num-moss", "#2d7a64") },
+          data: items.map(function (d) { return d.n; }).reverse()
+        }]
+      }, { label: "Топ препаратов в сигналах", description: "МНН из title и evidence лекарственных findings." });
+      if (chart) chart.on("click", function () {
+        drillMedFamily("Лекарства");
+      });
+    }
+    function renderMedTrend(dash) {
+      var host = $("medications-trend");
+      if (!host) return;
+      var rows = (dash && dash.trend) || [];
+      var tiles = ((dash && dash.specialty) || {}).tiles || [];
+      if (!rows.length) {
+        overviewEmpty(host, "Нет недельного тренда.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: { trigger: "axis" },
+        legend: { top: 4, data: tiles.map(function (t) { return t.label; }) },
+        grid: { left: 42, right: 18, top: 42, bottom: 28 },
+        xAxis: { type: "category", data: rows.map(function (r) { return bucketLabel(r.week, "week"); }) },
+        yAxis: { type: "value", name: "сигналы" },
+        series: tiles.map(function (tile) {
+          return {
+            name: tile.label,
+            type: "line",
+            smooth: true,
+            showSymbol: rows.length <= 10,
+            itemStyle: { color: medTileColor(tile.id) },
+            lineStyle: { width: 2.2, color: medTileColor(tile.id) },
+            data: rows.map(function (r) { return r[tile.id] || 0; })
+          };
+        })
+      }, { label: "Тренд лекарственных сигналов", description: "По неделям выбранного окна." });
+      if (chart) chart.on("click", function (params) {
+        var row = rows[params.dataIndex];
+        if (!row) return;
+        openBucketCases(row.week, "week", {}, { findingFamily: "drug" }, "Лекарства " + row.week);
+      });
+    }
+    function renderMedPairs(dash) {
+      var host = $("medications-pairs");
+      if (!host) return;
+      var pairs = (dash && dash.pairs) || {};
+      if (!pairs.available || !(pairs.links || []).length) {
+        overviewEmpty(host, pairs.reason || "Мало различных пар взаимодействий.");
+        return;
+      }
+      var chart = MO.moChart(host, {
+        tooltip: {},
+        series: [{
+          type: "graph",
+          layout: "circular",
+          roam: false,
+          data: (pairs.nodes || []).map(function (n) {
+            return { name: n.label, value: n.n, symbolSize: Math.max(10, Math.min(28, 8 + n.n)) };
+          }),
+          links: (pairs.links || []).map(function (l) {
+            return { source: l.source, target: l.target, value: l.value };
+          }),
+          lineStyle: { color: cssToken("--num-rose", "#a85a62"), opacity: 0.45, curveness: 0.25 },
+          itemStyle: { color: cssToken("--num-rose", "#a85a62") },
+          label: { show: (pairs.nodes || []).length <= 12, fontSize: 10 }
+        }]
+      }, { label: "Пары взаимодействий", description: "Узлы - препараты, рёбра - число сигналов C_ddi." });
+      if (chart) chart.on("click", function () {
+        drillMedFamily("Взаимодействия", { findingCode: "C_ddi" });
+      });
+    }
+    async function loadMedicationsDashboard() {
+      var host = $("medications-kpis");
+      try {
+        var response = await request("/medications-dashboard?" + query().toString());
+        if (!response.ok) throw new Error("Не удалось загрузить дашборд лекарств.");
+        var dash = await response.json();
+        if (!dash || !dash.ok || !dash.available) {
+          renderMedKpis(dash);
+          ["medications-types", "medications-drugs", "medications-specialty-chart", "medications-trend", "medications-pairs"].forEach(function (id) {
+            overviewEmpty($(id), (dash && dash.reason) || "Нет лекарственных сигналов.");
+          });
+          return;
+        }
+        renderMedKpis(dash);
+        renderMedTypes(dash);
+        renderMedSpecialty(dash);
+        renderMedDrugs(dash);
+        renderMedTrend(dash);
+        renderMedPairs(dash);
+      } catch (error) {
+        if (isAbortedRequest(error)) throw error;
+        await loadFamilyDashboard("drug");
+        if (host) {
+          renderWidgetError(
+            host,
+            "medications-dashboard",
+            "Дашборд лекарств временно недоступен. Показана табличная сводка.",
+            function () { return loadMedicationsDashboard(); }
+          );
+        }
+      }
+    }
     function renderFamilyScores(data) {
       var scores = data.family_scores || (data.dual_scores && data.dual_scores.family_scores) || {};
       var note = scores.note_ru || "черновик, не в общей оценке";
@@ -6999,7 +7218,7 @@
         else if (page === "queue") await loadCases(true);
         else if (page === "documents") await loadCases(false);
         else if (page === "doctors") await loadDoctorsDimension();
-        else if (page === "medications") await loadFamilyDashboard("drug");
+        else if (page === "medications") await loadMedicationsDashboard();
         else if (page === "labs") await loadFamilyDashboard("lab");
         else if (page === "mis") await loadMisSearch();
         else if (page === "reports") {

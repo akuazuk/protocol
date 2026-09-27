@@ -43,6 +43,7 @@ def test_pages_and_strips_exist() -> None:
 def test_app_wires_family_dashboards() -> None:
     assert 'medications: "Лекарства"' in APP
     assert 'labs: "Анализы"' in APP
+    assert "loadMedicationsDashboard" in APP
     assert 'loadFamilyDashboard("drug")' in APP
     assert 'loadFamilyDashboard("lab")' in APP
     assert "navigateFamilyCode" in APP

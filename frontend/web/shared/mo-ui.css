@@ -1798,6 +1798,19 @@ kbd {
 @media (max-width: 1100px) {
   .doctors-grid > .card, .doctors-grid > .span-7, .doctors-grid > .span-5 { grid-column: 1 / -1; }
 }
+.medications-grid {
+  display: grid;
+  grid-template-columns: repeat(12, minmax(0, 1fr));
+  gap: 16px;
+  margin-top: 16px;
+}
+.medications-grid > .card { grid-column: span 6; }
+.medications-grid > .span-7 { grid-column: span 7; }
+.medications-grid > .span-5 { grid-column: span 5; }
+.medications-grid > .span-12 { grid-column: 1 / -1; }
+@media (max-width: 1100px) {
+  .medications-grid > .card, .medications-grid > .span-7, .medications-grid > .span-5 { grid-column: 1 / -1; }
+}
 .cases-summary-grid {
   display: grid;
   grid-template-columns: minmax(0, 1.1fr) minmax(0, 1fr) minmax(0, 1.2fr);
