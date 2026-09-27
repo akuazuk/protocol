@@ -708,8 +708,18 @@
         generated: raw.generated_at || raw.data_freshness || raw.data_through || ""
       };
     }
-    function kpi(label, value, meta, delta) {
-      return '<article class="kpi"><div class="kpi-label">' + esc(label) + '</div><div class="kpi-value">' +
+    function kpiNature(label) {
+      var t = String(label || "").toLowerCase();
+      if (/критич|ошибк|пропуск|без кода|нужен разбор|спор|исключ/.test(t)) return "rose";
+      if (/важно|замечан|разрыв|расхожден|прогноз/.test(t)) return "clay";
+      if (/оценен|актуаль|соответств|покрытие|хорошо|свежест/.test(t)) return "moss";
+      if (/диагноз|мкб|врач|распозна/.test(t)) return "lake";
+      if (/план|пост|сверк|инструкц|роль|эксперт/.test(t)) return "heather";
+      return "slate";
+    }
+    function kpi(label, value, meta, delta, tone) {
+      tone = tone || kpiNature(label);
+      return '<article class="kpi kpi--' + esc(tone) + '"><div class="kpi-label">' + esc(label) + '</div><div class="kpi-value">' +
         esc(value == null ? "Нет данных" : value) + '</div><div class="kpi-meta">' +
         (delta ? '<span class="delta' + (String(delta).charAt(0) === "-" ? " down" : "") + '">' + esc(delta) + '</span> · ' : "") +
         esc(meta || "по выбранному периоду") + "</div></article>";
@@ -3017,16 +3027,16 @@
         return;
       }
       var max = items.reduce(function (m, item) { return Math.max(m, item.n || 0); }, 0) || 1;
-      el.innerHTML = items.map(function (item) {
+      el.innerHTML = items.map(function (item, index) {
         var label = item.label || item.value || item.id || "";
         var n = item.n || 0;
         var pct = Math.round(100 * n / max);
-        var color = colorFn ? colorFn(item) : cssToken("--accent", "#2f6f63");
+        var color = colorFn ? colorFn(item, index) : cssToken("--num-slate", "#4a635c");
         return '<button type="button" class="cases-summary-bar" data-id="' + esc(item.id || item.value || "") + '">' +
           '<span class="cases-summary-bar__label">' + esc(label) + "</span>" +
           '<span class="cases-summary-bar__track"><span class="cases-summary-bar__fill" style="width:' + pct +
           "%;background:" + color + '"></span></span>' +
-          '<span class="cases-summary-bar__n">' + n + "</span></button>";
+          '<span class="cases-summary-bar__n" style="color:' + color + '">' + n + "</span></button>";
       }).join("");
       el.querySelectorAll("button").forEach(function (button, index) {
         button.addEventListener("click", function () { onClick(items[index]); });
@@ -3092,6 +3102,9 @@
       }, function (item) { return gradeColor(item.id); });
       renderCasesSummaryBars($("cases-summary-specialties"), data.specialties || [], function (item) {
         applyDrill({ label: item.value, selected: { specialties: [item.value] }, page: "documents" });
+      }, function (item, index) {
+        var keys = ["--num-moss", "--num-lake", "--num-clay", "--num-heather", "--num-slate", "--num-rose"];
+        return cssToken(keys[index % keys.length], "#4a635c");
       });
       renderCasesSummaryWeeks(data.weeks || []);
       if (data.search_plan) renderSearchPlan(data.search_plan, data.n || 0);
@@ -5222,7 +5235,9 @@
       var drug = strips.drug || {};
       var lab = strips.lab || {};
       function tile(family, title, row) {
-        return '<button type="button" class="family-strip-tile" data-family-go="' + esc(family) + '">' +
+        var pctN = Number(row.pct);
+        var tone = pctN >= 20 ? "rose" : pctN >= 8 ? "clay" : "moss";
+        return '<button type="button" class="family-strip-tile kpi--' + tone + '" data-family-go="' + esc(family) + '">' +
           '<div class="kpi-label">' + esc(title) + ' · черновик</div>' +
           '<div class="kpi-value">' + esc(familyPct(row.pct)) + '</div>' +
           '<div class="kpi-meta">' + esc(neutralSignalTitle(row.top_title_ru || (row.top_code ? "Есть технический сигнал" : "сигналов нет"))) +
@@ -5329,7 +5344,9 @@
         var meta = tile.denominator === "cases_with_lab"
           ? "среди МО с лабораторией"
           : "доля МО периода";
-        return '<button type="button" class="kpi kpi--clickable" data-family-tile="' + esc(tile.id || "") + '">' +
+        var pctN = Number(tile.pct);
+        var tileTone = pctN >= 20 ? "rose" : pctN >= 8 ? "clay" : "moss";
+        return '<button type="button" class="kpi kpi--clickable kpi--' + tileTone + '" data-family-tile="' + esc(tile.id || "") + '">' +
           '<div class="kpi-label">' + esc(neutralSignalTitle(tile.title_ru || "Сигнал алгоритма")) + "</div>" +
           '<div class="kpi-value">' + esc(familyPct(tile.pct)) + "</div>" +
           '<div class="kpi-meta">n=' + esc(tile.cases || 0) + "/" + esc(tile.denominator_n || 0) +
