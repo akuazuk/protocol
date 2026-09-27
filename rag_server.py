@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-09-27-115228Z-release14-f4-docs"
+BUILD_VERSION = "2026-09-27-121936Z-labs-dash-f5-e2e"
 
 
 def _app_version() -> str:
@@ -13209,6 +13209,33 @@ def api_methodist_mo_medications_dashboard(
     response.headers["Cache-Control"] = "private, no-store"
     try:
         return build_medications_dashboard(_mo_params(**locals()))
+    except (ValueError, RuntimeError) as exc:
+        raise HTTPException(status_code=422, detail=str(exc)) from exc
+
+
+@app.get("/api/methodist/mo/labs-dashboard")
+def api_methodist_mo_labs_dashboard(
+    request: "Request",
+    response: "Response",
+    period: str = Query("month"),
+    month: str = Query("", max_length=7),
+    date_from: str = Query("", max_length=10),
+    date_to: str = Query("", max_length=10),
+    specializations: str = Query("", max_length=2000),
+    filials: str = Query("", max_length=2000),
+    doctors: str = Query("", max_length=5000),
+    document_kinds: str = Query("", max_length=500),
+    statuses: str = Query("", max_length=500),
+    finding_codes: str = Query("", max_length=2000),
+    finding_family: str = Query("", max_length=16),
+) -> dict:
+    """Анализы L1-L5 одним ответом (волна F5): окно, тесты, отклонения, тренд, покрытие."""
+    _require_methodist_auth(request)
+    from clinical_knowledge.mo_backend import build_labs_dashboard
+
+    response.headers["Cache-Control"] = "private, no-store"
+    try:
+        return build_labs_dashboard(_mo_params(**locals()))
     except (ValueError, RuntimeError) as exc:
         raise HTTPException(status_code=422, detail=str(exc)) from exc
 

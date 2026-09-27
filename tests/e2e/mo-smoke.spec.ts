@@ -17,6 +17,21 @@ async function mockMo(page: Page, failFamily = false) {
     const p = url.pathname;
     let data: unknown = { ok: true, items: [], rows: [], facets: {}, data_through: '2026-08-02' };
     if (p.endsWith('/capabilities')) data = { ok: true, pages: Object.fromEntries(pages.map(p => [p, true])), actions: {} };
+    if (p.endsWith('/labs-dashboard')) {
+      if (failFamily) return route.fulfill({ status: 503, json: { detail: 'synthetic unavailable' } });
+      data = {
+        ok: true, available: true, total_cases: 100,
+        tiles: [
+          { id: 'unused', label: 'Анализы не учтены', n: 10, n_cases: 10, pct: 10, tone: 'rose', codes: ['B_lab_unused_in_dx'] }
+        ],
+        window: { available: true, has: 40, none: 60, unused: 10, accounted: 30 },
+        unused_tests: [{ label: 'ОАК', n: 5, n_cases: 4 }],
+        abnormal_specialty: [{ specialty: 'Терапия', n_cases: 50, n: 5, pct: 10 }],
+        trend: [{ week: '2026-W31', n: 3, unused: 2, abnormal: 1, present_not_in_mo: 0, exams_gap: 0, ordered: 0 }],
+        trend_tiles: [{ id: 'unused', label: 'Анализы не учтены' }],
+        coverage_months: { available: true, from: '2025-12-01', items: [{ month: '2026-08', n: 100, has: 40, pct: 40 }] }
+      };
+    }
     if (p.endsWith('/drugs-labs-kpis')) {
       if (failFamily) return route.fulfill({ status: 503, json: { detail: 'synthetic unavailable' } });
       const family = (id: string) => ({ id, cases: 10, pct: 10,
@@ -128,8 +143,8 @@ test('МО: семейство, процент и drill сохраняют ср�
   const state = await mockMo(page);
   await page.setViewportSize({ width: 390, height: 844 });
   await page.goto('/methodist/mo?page=labs&period=month');
-  await expect(page.locator('#labs-kpis .kpi-value')).toHaveText('10%');
-  await expect(page.locator('#labs-coverage')).toContainText('всех 100 МО периода');
+  await expect(page.locator('#labs-kpis .kpi-value')).toHaveText('10');
+  await expect(page.locator('#labs-coverage')).toContainText('не учтена 10');
   await page.locator('#labs-kpis button').click();
   await expect(page).toHaveURL(/page=documents/);
   await expect.poll(() => state.requests.filter(url => url.pathname.endsWith('/cases')).at(-1)?.searchParams.get('finding_family')).toBe('lab');
@@ -157,25 +172,27 @@ test('МО: задержанный ответ старого среза не п�
       await route.fulfill({ json: { ok: true, pages: { labs: true }, actions: {} } });
       return;
     }
-    if (!path.endsWith('/drugs-labs-kpis')) {
+    if (!path.endsWith('/labs-dashboard')) {
       await route.fulfill({ json: { ok: true, items: [], rows: [], facets: {} } });
       return;
     }
     familyCalls += 1;
     const call = familyCalls;
     if (call === 1) await page.waitForTimeout(700);
-    const pct = call === 1 ? 11 : 77;
-    const family = (id: string) => ({
-      id, cases: pct, pct,
-      tiles: [{ id: 'any', title_ru: 'МО с замечаниями', cases: pct, pct, denominator: 'total_cases', denominator_n: 100 }],
-      by_code: [], by_specialty: [], by_doctor: []
-    });
+    const nCases = call === 1 ? 11 : 77;
     try {
       await route.fulfill({
         json: {
           ok: true,
-          families: { lab: family('lab'), drug: family('drug') },
-          denominators: { total_cases: 100, lab_coverage_available: false }
+          available: true,
+          total_cases: 100,
+          tiles: [{ id: 'unused', label: 'Анализы не учтены', n: nCases, n_cases: nCases, pct: nCases, tone: 'rose', codes: [] }],
+          window: { available: true, has: 40, none: 60, unused: nCases, accounted: 30 },
+          unused_tests: [],
+          abnormal_specialty: [],
+          trend: [],
+          trend_tiles: [],
+          coverage_months: { available: false, items: [] }
         }
       });
     } catch {
@@ -189,9 +206,9 @@ test('МО: задержанный ответ старого среза не п�
     select.value = 'month';
     select.dispatchEvent(new Event('change', { bubbles: true }));
   });
-  await expect(page.locator('#labs-kpis .kpi-value')).toHaveText('77%');
+  await expect(page.locator('#labs-kpis .kpi-value')).toHaveText('77');
   await page.waitForTimeout(900);
-  await expect(page.locator('#labs-kpis .kpi-value')).toHaveText('77%');
+  await expect(page.locator('#labs-kpis .kpi-value')).toHaveText('77');
   await expect(page.locator('#global-error')).toBeHidden();
   expect(familyCalls).toBe(2);
   expect(problems).toEqual([]);

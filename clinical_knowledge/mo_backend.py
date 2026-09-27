@@ -2729,6 +2729,458 @@ def _build_medications_dashboard_uncached(params: dict[str, Any]) -> dict[str, A
     }
 
 
+_LAB_COVERAGE_START = "2025-12-01"
+_LAB_TEST_TOP = 15
+_LAB_SPEC_ROWS = 12
+_LAB_META_SCAN = 8000
+_LAB_TILE_ORDER = ("unused", "present_not_in_mo", "abnormal", "exams_gap", "ordered")
+_LAB_UNUSED_TILES = frozenset({"unused", "present_not_in_mo"})
+_LAB_TILE_TONES = {
+    "has": "moss",
+    "none": "slate",
+    "unused": "rose",
+    "present_not_in_mo": "clay",
+    "abnormal": "heather",
+    "exams_gap": "lake",
+    "ordered": "slate",
+}
+_LAB_RESULT_PREFIX = re.compile(
+    r"(?:есть результаты|на складе есть|вне референса):\s*(.+)$",
+    re.I | re.S,
+)
+
+
+def build_labs_dashboard(params: dict[str, Any]) -> dict[str, Any]:
+    """Анализы L1-L5 одним ответом: окно лаборатории, неучтённые тесты, отклонения, тренд, покрытие."""
+    params = _apply_request_period(params)
+    params = _apply_score_eligible_default(params)
+    params = _attach_queue_band_visit_filter(params)
+    if _backend_source() != "warehouse":
+        return {
+            "ok": False,
+            "available": False,
+            "reason": "Разрез анализов строится только из склада МО.",
+            "source": _backend_source(),
+        }
+    return _cached_result(
+        "labs_dashboard", params, 90.0, lambda: _build_labs_dashboard_uncached(params)
+    )
+
+
+def _lab_tile_catalog() -> list[dict[str, Any]]:
+    from .mo_finding_families import family_by_id
+
+    family = family_by_id("lab") or {}
+    tiles: list[dict[str, Any]] = []
+    for tile in family.get("tiles") or []:
+        if not isinstance(tile, Mapping):
+            continue
+        tile_id = str(tile.get("id") or "").strip()
+        if not tile_id:
+            continue
+        codes = [str(c).strip() for c in (tile.get("codes") or []) if str(c).strip()]
+        tiles.append(
+            {
+                "id": tile_id,
+                "label": str(tile.get("title_ru") or tile_id),
+                "codes": codes,
+                "tone": _LAB_TILE_TONES.get(tile_id, "slate"),
+            }
+        )
+    return tiles
+
+
+def _lab_code_tile_map(tiles: list[dict[str, Any]]) -> dict[str, str]:
+    out: dict[str, str] = {}
+    for tile in tiles:
+        for code in tile["codes"]:
+            out[code] = tile["id"]
+    return out
+
+
+def _labs_from_finding_text(*parts: str) -> list[str]:
+    blob = " ".join(str(p).strip() for p in parts if str(p or "").strip())
+    if not blob:
+        return []
+    found: list[str] = []
+    seen: set[str] = set()
+    try:
+        from .lab_canons import lab_panels, text_hits_panel
+
+        for panel in lab_panels():
+            label = str(panel.get("label") or "").strip()
+            key = label.lower()
+            if not label or key in seen:
+                continue
+            if text_hits_panel(blob, panel):
+                seen.add(key)
+                found.append(label)
+    except Exception:  # noqa: BLE001
+        found = []
+    if found:
+        return found[:8]
+    match = _LAB_RESULT_PREFIX.search(blob)
+    if not match:
+        return []
+    tail = re.split(r",\s*но\s+", match.group(1), maxsplit=1)[0]
+    tail = tail.split(".")[0]
+    for raw in re.split(r"\s*,\s*", tail):
+        label = raw.split("=")[0].strip(" .;:()")
+        key = label.lower()
+        if len(label) < 2 or len(label) > 40 or key in seen:
+            continue
+        seen.add(key)
+        found.append(label)
+    return found[:8]
+
+
+def _lab_month_keys(date_to: str) -> list[str]:
+    start = date.fromisoformat(_LAB_COVERAGE_START)
+    try:
+        end = date.fromisoformat(str(date_to or "")[:10])
+    except ValueError:
+        end = date.today()
+    if end < start:
+        end = start
+    months: list[str] = []
+    cursor = date(start.year, start.month, 1)
+    last = date(end.year, end.month, 1)
+    while cursor <= last:
+        months.append(cursor.isoformat()[:7])
+        if cursor.month == 12:
+            cursor = date(cursor.year + 1, 1, 1)
+        else:
+            cursor = date(cursor.year, cursor.month + 1, 1)
+    return months
+
+
+def _build_labs_dashboard_uncached(params: dict[str, Any]) -> dict[str, Any]:
+    from .mo_finding_families import codes_for_family
+    from .mo_lab_bundle import default_lab_path, lookahead_days, lookback_days
+
+    tiles = _lab_tile_catalog()
+    tile_by_id = {t["id"]: t for t in tiles}
+    code_to_tile = _lab_code_tile_map(tiles)
+    lab_codes = set(codes_for_family("lab"))
+    wanted = {str(v) for v in _values(params.get("finding_codes")) if str(v)}
+    if wanted:
+        lab_codes = lab_codes & wanted
+    empty = {
+        "ok": True,
+        "available": False,
+        "reason": "Нет оценённых МО в выборке.",
+        "total_cases": 0,
+        "tiles": [],
+        "window": {"available": False, "has": 0, "none": 0, "unused": 0, "accounted": 0},
+        "unused_tests": [],
+        "abnormal_specialty": [],
+        "trend": [],
+        "coverage_months": {"available": False, "items": [], "from": _LAB_COVERAGE_START},
+        "source": "warehouse",
+    }
+    where, values = _warehouse_where(params)
+    spec_expr = "COALESCE(NULLIF(TRIM(COALESCE(d.specialty, c.specialty)), ''), 'без специальности')"
+    joins = _dim_joins_sql(*where, spec_expr)
+    where_sql = (" WHERE " + " AND ".join(where)) if where else ""
+    and_sql = (where_sql + " AND ") if where else " WHERE "
+    code_clause, code_values = _in_clause("f.finding_code", sorted(lab_codes)) if lab_codes else ("1=0", [])
+    week_expr = "strftime('%Y-W%W', c.visit_date)"
+    date_to = str(params.get("date_to") or "")[:10] or date.today().isoformat()
+    cov_params = {**params, "period": "custom", "date_from": _LAB_COVERAGE_START, "date_to": max(date_to, _LAB_COVERAGE_START)}
+    cov_where, cov_values = _warehouse_where(cov_params)
+    cov_joins = _dim_joins_sql(*cov_where, spec_expr)
+    cov_sql = (" WHERE " + " AND ".join(cov_where)) if cov_where else ""
+    month_keys = _lab_month_keys(cov_params["date_to"])
+    lookback = int(lookback_days())
+    lookahead = int(lookahead_days())
+    lab_window = (
+        "c.patient_key IS NOT NULL AND TRIM(c.patient_key) != '' AND EXISTS ("
+        "SELECT 1 FROM labdb.fact_mo_lab l WHERE l.patient_key = c.patient_key "
+        "AND l.test_date BETWEEN date(c.visit_date, ?) AND date(c.visit_date, ?))"
+    )
+    window_args = [f"-{lookback} days", f"+{lookahead} day"]
+    with closing(_read_connection()) as conn:
+        total_cases = int(
+            conn.execute(f"SELECT COUNT(*) FROM fact_mo_case c {joins} {where_sql}", values).fetchone()[0] or 0
+        )
+        empty["total_cases"] = total_cases
+        if total_cases == 0:
+            return empty
+        attached = False
+        lab_path = default_lab_path()
+        has_n = None
+        unused_n = 0
+        unused_in_window = 0
+        tile_stats = {tile_id: {"n": 0, "n_cases": 0} for tile_id in _LAB_TILE_ORDER}
+        spec_rows_raw: list[Any] = []
+        spec_abn: dict[str, int] = {}
+        trend_rows: list[Any] = []
+        meta_rows: list[Any] = []
+        cov_items: list[dict[str, Any]] = []
+        cov_available = False
+        try:
+            if lab_path:
+                conn.execute("ATTACH DATABASE ? AS labdb", (f"file:{lab_path}?mode=ro",))
+                attached = True
+            has_n = None
+            if attached:
+                has_n = int(
+                    conn.execute(
+                        f"SELECT COUNT(*) FROM fact_mo_case c {joins} {and_sql}{lab_window}",
+                        list(values) + window_args,
+                    ).fetchone()[0]
+                    or 0
+                )
+            code_rows = []
+            if lab_codes:
+                code_rows = conn.execute(
+                    f"""SELECT f.finding_code AS code, COUNT(*) AS n, COUNT(DISTINCT f.mis_id) AS n_cases
+                        FROM fact_mo_finding f
+                        JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                        {joins} {and_sql}{code_clause} AND COALESCE(f.passed, 0) = 0
+                        GROUP BY f.finding_code""",
+                    list(values) + code_values,
+                ).fetchall()
+            by_code: dict[str, dict[str, int]] = {}
+            for row in code_rows:
+                by_code[str(row["code"])] = {"n": int(row["n"] or 0), "n_cases": int(row["n_cases"] or 0)}
+            tile_stats = {tile_id: {"n": 0, "n_cases": 0} for tile_id in _LAB_TILE_ORDER}
+            for tile_id in _LAB_TILE_ORDER:
+                tile_codes = [c for c in (tile_by_id.get(tile_id, {}).get("codes") or []) if c in lab_codes]
+                if not tile_codes:
+                    continue
+                tile_clause, tile_values = _in_clause("f.finding_code", tile_codes)
+                tile_row = conn.execute(
+                    f"""SELECT COUNT(*) AS n, COUNT(DISTINCT f.mis_id) AS n_cases
+                        FROM fact_mo_finding f
+                        JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                        {joins} {and_sql}{tile_clause} AND COALESCE(f.passed, 0) = 0""",
+                    list(values) + tile_values,
+                ).fetchone()
+                tile_stats[tile_id] = {
+                    "n": int(tile_row["n"] or 0),
+                    "n_cases": int(tile_row["n_cases"] or 0),
+                }
+            unused_codes = [
+                code
+                for tile in tiles
+                if tile["id"] in _LAB_UNUSED_TILES
+                for code in tile["codes"]
+                if code in lab_codes
+            ]
+            unused_n = int((tile_stats.get("unused") or {}).get("n_cases") or 0)
+            unused_in_window = 0
+            if unused_codes:
+                unused_clause, unused_values = _in_clause("f.finding_code", unused_codes)
+                unused_n = int(
+                    conn.execute(
+                        f"""SELECT COUNT(DISTINCT f.mis_id)
+                            FROM fact_mo_finding f
+                            JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                            {joins} {and_sql}{unused_clause} AND COALESCE(f.passed, 0) = 0""",
+                        list(values) + unused_values,
+                    ).fetchone()[0]
+                    or 0
+                )
+                if attached:
+                    unused_in_window = int(
+                        conn.execute(
+                            f"""SELECT COUNT(DISTINCT f.mis_id)
+                                FROM fact_mo_finding f
+                                JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                                {joins} {and_sql}{unused_clause} AND COALESCE(f.passed, 0) = 0
+                                  AND {lab_window}""",
+                            list(values) + unused_values + window_args,
+                        ).fetchone()[0]
+                        or 0
+                    )
+            spec_rows_raw = conn.execute(
+                f"""SELECT {spec_expr} AS specialty_label, COUNT(*) AS n
+                    FROM fact_mo_case c {joins} {where_sql}
+                    GROUP BY specialty_label ORDER BY n DESC LIMIT {_LAB_SPEC_ROWS}""",
+                values,
+            ).fetchall()
+            abnormal_codes = list(tile_by_id.get("abnormal", {}).get("codes") or ["B_lab_abnormal_ignored"])
+            abnormal_clause, abnormal_values = _in_clause("f.finding_code", [c for c in abnormal_codes if c in lab_codes] or ["__none__"])
+            spec_abn = {
+                str(row["specialty_label"] or "без специальности"): int(row["n_cases"] or 0)
+                for row in conn.execute(
+                    f"""SELECT {spec_expr} AS specialty_label, COUNT(DISTINCT f.mis_id) AS n_cases
+                        FROM fact_mo_finding f
+                        JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                        {joins} {and_sql}{abnormal_clause} AND COALESCE(f.passed, 0) = 0
+                        GROUP BY specialty_label""",
+                    list(values) + abnormal_values,
+                ).fetchall()
+            }
+            trend_rows = []
+            if lab_codes:
+                trend_rows = conn.execute(
+                    f"""SELECT {week_expr} AS week, f.finding_code AS code, COUNT(*) AS n
+                        FROM fact_mo_finding f
+                        JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                        {joins} {and_sql}{code_clause} AND COALESCE(f.passed, 0) = 0
+                        GROUP BY week, f.finding_code ORDER BY week""",
+                    list(values) + code_values,
+                ).fetchall()
+            meta_rows = []
+            unused_scan = [c for c in unused_codes]
+            if unused_scan:
+                scan_clause, scan_values = _in_clause("f.finding_code", unused_scan)
+                meta_rows = conn.execute(
+                    f"""SELECT f.mis_id AS mis_id, COALESCE(f.title_ru, '') AS title_ru,
+                               COALESCE(f.detail_ru, '') AS detail_ru, COALESCE(f.evidence, '') AS evidence
+                        FROM fact_mo_finding f
+                        JOIN fact_mo_case c ON c.mis_id = f.mis_id
+                        {joins} {and_sql}{scan_clause} AND COALESCE(f.passed, 0) = 0
+                        LIMIT {_LAB_META_SCAN}""",
+                    list(values) + scan_values,
+                ).fetchall()
+            cov_items: list[dict[str, Any]] = []
+            cov_available = False
+            if attached:
+                month_totals = {
+                    str(row["month"] or ""): int(row["n"] or 0)
+                    for row in conn.execute(
+                        f"""SELECT strftime('%Y-%m', c.visit_date) AS month, COUNT(*) AS n
+                            FROM fact_mo_case c {cov_joins} {cov_sql}
+                            GROUP BY month""",
+                        cov_values,
+                    ).fetchall()
+                }
+                month_has = {
+                    str(row["month"] or ""): int(row["n"] or 0)
+                    for row in conn.execute(
+                        f"""SELECT strftime('%Y-%m', c.visit_date) AS month, COUNT(*) AS n
+                            FROM fact_mo_case c {cov_joins} {cov_sql}
+                            {" AND " if cov_sql else " WHERE "}{lab_window}
+                            GROUP BY month""",
+                        list(cov_values) + window_args,
+                    ).fetchall()
+                }
+                for month in month_keys:
+                    n = month_totals.get(month, 0)
+                    has = month_has.get(month, 0)
+                    cov_items.append(
+                        {
+                            "month": month,
+                            "n": n,
+                            "has": has,
+                            "pct": _pct_or_none(has, n),
+                        }
+                    )
+                cov_available = True
+        finally:
+            if attached:
+                with suppress(sqlite3.Error):
+                    conn.execute("DETACH DATABASE labdb")
+    none_n = (total_cases - has_n) if has_n is not None else None
+    ring_unused = unused_in_window if has_n is not None else unused_n
+    accounted = max(0, (has_n or 0) - ring_unused) if has_n is not None else None
+    window = {
+        "available": has_n is not None,
+        "has": has_n or 0,
+        "none": none_n or 0,
+        "unused": ring_unused,
+        "accounted": accounted or 0,
+        "reason": None if has_n is not None else "Склад лаборатории недоступен.",
+    }
+    type_tiles = []
+    kpi_tiles: list[dict[str, Any]] = []
+    if has_n is not None:
+        kpi_tiles.append(
+            {
+                "id": "has",
+                "label": "Есть лаборатория в окне",
+                "n": has_n,
+                "n_cases": has_n,
+                "pct": _pct_or_none(has_n, total_cases),
+                "tone": "moss",
+                "codes": [],
+            }
+        )
+    for tile_id in _LAB_TILE_ORDER:
+        tile = tile_by_id.get(tile_id) or {"id": tile_id, "label": tile_id, "codes": [], "tone": "slate"}
+        stats = tile_stats.get(tile_id) or {"n": 0, "n_cases": 0}
+        item = {
+            "id": tile_id,
+            "label": tile["label"],
+            "n": stats["n"],
+            "n_cases": stats["n_cases"],
+            "pct": _pct_or_none(stats["n_cases"], total_cases),
+            "tone": tile.get("tone") or "slate",
+            "codes": list(tile.get("codes") or []),
+            "precision_note": "точность появится после разметки",
+        }
+        type_tiles.append({"id": tile_id, "label": tile["label"]})
+        kpi_tiles.append({k: item[k] for k in ("id", "label", "n", "n_cases", "pct", "tone", "codes")})
+    test_cases: dict[str, set[str]] = {}
+    test_n: Counter[str] = Counter()
+    for row in meta_rows:
+        names = _labs_from_finding_text(row["title_ru"], row["detail_ru"], str(row["evidence"] or "")[:180])
+        mis_id = str(row["mis_id"] or "")
+        for name in names:
+            test_n[name] += 1
+            test_cases.setdefault(name, set()).add(mis_id)
+    unused_tests = [
+        {"label": name, "n": test_n[name], "n_cases": len(test_cases[name])}
+        for name, _ in test_n.most_common(_LAB_TEST_TOP)
+    ]
+    abnormal_specialty = []
+    for row in spec_rows_raw:
+        spec = str(row["specialty_label"] or "без специальности")
+        n_cases = int(row["n"] or 0)
+        n_abn = spec_abn.get(spec, 0)
+        abnormal_specialty.append(
+            {
+                "specialty": spec,
+                "n_cases": n_cases,
+                "n": n_abn,
+                "pct": _pct_or_none(n_abn, n_cases),
+            }
+        )
+    trend_map: dict[str, dict[str, int]] = {}
+    for row in trend_rows:
+        week = str(row["week"] or "")
+        bucket = trend_map.setdefault(week, {key: 0 for key in _LAB_TILE_ORDER} | {"n": 0})
+        tile_id = code_to_tile.get(str(row["code"] or ""))
+        n = int(row["n"] or 0)
+        bucket["n"] += n
+        if tile_id in bucket:
+            bucket[tile_id] += n
+    trend = [{"week": week, **trend_map[week]} for week in sorted(trend_map)]
+    return {
+        "ok": True,
+        "available": True,
+        "reason": None,
+        "total_cases": total_cases,
+        "tiles": kpi_tiles,
+        "types": [
+            {
+                **tile_by_id.get(tile_id, {"id": tile_id, "label": tile_id, "codes": []}),
+                "n": (tile_stats.get(tile_id) or {}).get("n", 0),
+                "n_cases": (tile_stats.get(tile_id) or {}).get("n_cases", 0),
+                "pct": _pct_or_none((tile_stats.get(tile_id) or {}).get("n_cases", 0), total_cases),
+                "tone": _LAB_TILE_TONES.get(tile_id, "slate"),
+                "precision_note": "точность появится после разметки",
+            }
+            for tile_id in _LAB_TILE_ORDER
+        ],
+        "window": window,
+        "unused_tests": unused_tests,
+        "abnormal_specialty": abnormal_specialty,
+        "trend": trend,
+        "trend_tiles": type_tiles,
+        "coverage_months": {
+            "available": cov_available,
+            "from": _LAB_COVERAGE_START,
+            "reason": None if cov_available else "Склад лаборатории недоступен.",
+            "items": cov_items,
+        },
+        "source": "warehouse",
+    }
+
+
 def _doctor_profile_block(
     conn: sqlite3.Connection,
     params: dict[str, Any],
