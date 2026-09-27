@@ -104,7 +104,8 @@ def _discover_range(cur) -> tuple[str, str]:
         """
         SELECT MIN(date), MAX(date)
           FROM mis_protocol
-         WHERE patient_id IS NOT NULL AND CAST(patient_id AS CHAR) <> ''
+         WHERE date >= '2000-01-01' AND date < '2100-01-01'
+           AND patient_id IS NOT NULL AND CAST(patient_id AS CHAR) <> ''
         """
     )
     lo, hi = cur.fetchone()
@@ -271,6 +272,21 @@ def main() -> int:
         for start, end in chunks:
             cards = _fetch_protocol_month(cur, start.isoformat(), end.isoformat())
             protocol_rows += len(cards)
+            if not cards:
+                print(
+                    json.dumps(
+                        {
+                            "phase": "month",
+                            "from": start.isoformat(),
+                            "to": end.isoformat(),
+                            "rows": 0,
+                            "skipped": "empty",
+                        },
+                        ensure_ascii=False,
+                    ),
+                    flush=True,
+                )
+                continue
             if not args.skip_mis_data:
                 extra = _fetch_mis_data_month(cur, start.isoformat(), end.isoformat())
                 for card in cards:
