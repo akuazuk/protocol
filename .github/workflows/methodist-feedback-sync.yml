@@ -9,9 +9,9 @@ jobs:
   sync:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: "3.11"
 
@@ -33,7 +33,7 @@ jobs:
             python3 scripts/analyze_priority_cases.py --out ml/reports/priority_triage_ci.md
           fi
 
-      - uses: actions/upload-artifact@v4
+      - uses: actions/upload-artifact@v7
         with:
           name: methodist-feedback-${{ github.run_id }}
           path: |
