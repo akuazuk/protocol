@@ -8,6 +8,8 @@
 - branch: `cursor/second-computer-agent-brief-agent1-pc1`
 - worktree: `/private/tmp/protocol-task-second-computer-agent-brief-pc1`
 - base: `origin/main` `e2d87891` (#338)
+- HEAD инструкции: `2ac9e41b`
+- PR: https://github.com/akuazuk/protocol/pull/339
 - инструкция: `docs/deploy/second-computer-agent.md`
 
 ## Сделано
@@ -18,7 +20,7 @@
 
 ## Не сделано
 
-- Merge этого PR и deploy. Документ не меняет runtime. Пока PR не влит, новый clone `main` инструкцию не увидит.
+- Merge PR #339 и deploy. Документ не меняет runtime. Пока #339 не влит, новый clone `main` инструкцию не увидит.
 - Открытые PR не влиты сознательно. См. раздел 8 инструкции: #261 и #186 `DIRTY`, #113 клинический и `DIRTY`, Dependabot на Python 3.14 и зависимости с красной гигиеной или тестами.
 - Каталог `/Users/pavelkuzauka/Cursor_Folders/Protocol` не синхронизирован: локальный `main` отстаёт, в нём старый индекс планов и незакоммиченные файлы, которые на `origin/main` уже есть. `pull` / `reset` / `clean` там не делать.
 
