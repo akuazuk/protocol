@@ -16,13 +16,20 @@
 
 - Полная инструкция старта на новом компьютере: clone, worktree, запреты, снимок открытых PR, почему Docker на прод-VM не заменяет второй компьютер.
 - Ссылки из `AGENTS.md`, `docs/deploy/multi-agent-workflow-v3.md`, `docs/deploy/two-computers-daily-checklist.md`, `.cursor/rules/next-chat-handoff.mdc`.
-- `BUILD_VERSION`: `2026-09-30-175542Z-second-pc-agent` (только эта строка в `rag_server.py`).
+- `BUILD_VERSION` инструкции: `2026-09-30-175542Z-second-pc-agent`. Уборка PR: `2026-09-30-183156Z-agent-pr-cleanup`.
 
 ## Не сделано
 
-- Deploy. Документ не меняет runtime. Инструкция уже в `origin/main` (`9e497c5e`).
-- Открытые PR не влиты сознательно. См. раздел 8 инструкции: #261 и #186 `DIRTY`, #113 клинический и `DIRTY`, Dependabot на Python 3.14 и зависимости с красной гигиеной или тестами.
-- Каталог `/Users/pavelkuzauka/Cursor_Folders/Protocol` не синхронизирован: локальный `main` отстаёт, в нём старый индекс планов и незакоммиченные файлы, которые на `origin/main` уже есть. `pull` / `reset` / `clean` там не делать.
+- Deploy. `protocol.kravira.by` версию `2026-09-30-183156Z-agent-pr-cleanup` ещё не показывает.
+- Каталог `/Users/pavelkuzauka/Cursor_Folders/Protocol` не синхронизирован и рабочим местом не является. `pull` / `reset` / `clean` там не делать.
+- Dependabot pip и Actions оставлены открытыми: #198, #199, #200, #201, #203, #248. Пакетом не мержить.
+
+## Закрыто 2026-09-30, ветки сохранены
+
+- #194-#197 Python 3.14 в Dockerfile. Повтор мажора для образа `python` выключен в `.github/dependabot.yml`.
+- #261 `cursor/mo-workspace-plan-pc1`
+- #186 `cursor/rz-quality-article-layout-agent1-pc1`
+- #113 `cursor/mo-calibration-confirmatory-proxy-c9a-pc1`
 
 ## Тесты
 
@@ -41,9 +48,7 @@ git clone https://github.com/akuazuk/protocol.git
 # прочитать docs/deploy/second-computer-agent.md
 ```
 
-## Не трогать параллельно, пока открыты чужие PR
+## Не трогать параллельно
 
-- `docs/plans/README.md` (#261, #186, #113)
-- `rag_server.py` кроме строки `BUILD_VERSION` (#186, #113)
-- `deploy/gcp-llm/run_on_gce.sh`, `eval/mo_score_calibration/` (#113)
-- Dockerfile в `deploy/*` (#194-#197)
+- Открытые Dependabot PR #198, #199, #200, #201, #203, #248: не мержить пакетом и не решать их версии внутри другой задачи.
+- Закрытые ветки #261, #186, #113 не дописывать. Новая работа по той теме - новая ветка от `origin/main`.
