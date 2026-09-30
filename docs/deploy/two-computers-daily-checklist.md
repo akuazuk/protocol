@@ -2,6 +2,8 @@
 
 Канонические правила: `AGENTS.md` и
 `docs/deploy/multi-agent-workflow-v3.md`.
+Новый компьютер или новый агент: сначала
+`docs/deploy/second-computer-agent.md`.
 
 ## 1. Preflight - до любой правки
 
