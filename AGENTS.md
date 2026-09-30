@@ -47,9 +47,10 @@ gh pr list --repo akuazuk/protocol --state open
 Затем прочитать:
 
 1. этот `AGENTS.md`;
-2. актуальный план из `docs/plans/README.md`;
-3. последний релевантный handoff из `docs/reports/`;
-4. `docs/deploy/two-computers-daily-checklist.md` перед Git/release-операциями.
+2. `docs/deploy/second-computer-agent.md`, если компьютер или агент новый;
+3. актуальный план из `docs/plans/README.md`;
+4. последний релевантный handoff из `docs/reports/`;
+5. `docs/deploy/two-computers-daily-checklist.md` перед Git и release.
 
 Если checkout грязный, отстаёт или расходится с `origin/main`, его не чинят pull/rebase/reset
 во время задачи. Создают новый clean worktree от `origin/main`.
