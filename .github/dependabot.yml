@@ -90,3 +90,9 @@ updates:
       - docker
     commit-message:
       prefix: "docker"
+    # Образ и requirements-rag.lock собраны под Python 3.11.
+    # Мажор 3.14 (PR #194-#197) закрыт: образ перестаёт совпадать с lock.
+    ignore:
+      - dependency-name: "python"
+        update-types:
+          - "version-update:semver-major"
