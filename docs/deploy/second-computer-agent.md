@@ -233,14 +233,14 @@ python3 -c "import json; d=json.load(open(\"/var/data/rceth/_sync/status.json\")
 
 ## 8. Что закрыто 2026-09-30 и что ещё открыто
 
-Перед работой всё равно выполнить `python3 scripts/ops/pr_dashboard.py`. Закрытие PR не удаляет ветку: коммиты остаются на `origin`, пока ветку не сотрут.
+Перед работой всё равно выполнить `python3 scripts/ops/pr_dashboard.py`. Закрытие нашего PR ветку не удаляет. Ветки Dependabot GitHub снимает сам.
 
 | PR | Ветка сохранена | Почему закрыто |
 |---|---|---|
 | #261 | `cursor/mo-workspace-plan-pc1` | план рабочего стола МО. PR был DIRTY и держал `docs/plans/README.md` |
 | #186 | `cursor/rz-quality-article-layout-agent1-pc1` | статья РЗ. DIRTY, красный `lint-and-test`, задет `rag_server.py` |
 | #113 | `cursor/mo-calibration-confirmatory-proxy-c9a-pc1` | калибровка оценок, 31 файл, с 2026-08-09. В main не переносилась |
-| #194 #195 #196 #197 | ветки Dependabot | Python 3.14 в Dockerfile. Образ остаётся 3.11, см. ignore в `dependabot.yml` |
+| #194 #195 #196 #197 | ветки Dependabot GitHub снял при закрытии | Python 3.14 в Dockerfile. Образ остаётся 3.11. Повтор мажора выключен в `dependabot.yml` |
 
 Продолжение любой из этих тем - новая ветка от свежего `origin/main`. В закрытую ветку не дописывать.
 
