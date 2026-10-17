@@ -2928,7 +2928,9 @@
         '</td><td>' + zoneBandChip(item.zone1Band) + '</td><td>' + zoneBandChip(item.zone2aBand) +
         '</td><td>' + zoneBandChip(item.zone2bBand, item.zone2bKp) +
         '</td><td>' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
-        '</td><td>' + reg55BandPill(band, item.reg55) + '</td></tr>';
+        '</td><td>' + reg55BandPill(band, item.reg55) +
+        '</td><td class="row-actions"><button class="button secondary compact row-open" type="button" data-open-case="' +
+        esc(item.id) + '">Открыть</button></td></tr>';
     }
     function historyPresenceChip(row) {
       var raw = row && (row.raw || row) || {};
@@ -2979,6 +2981,13 @@
         '</td><td class="row-actions"><button class="button secondary compact" type="button" data-open-pdf="' + esc(pdfUrl) + '" data-open-name="mo-' + esc(item.id) + '.pdf">МО в PDF</button></td></tr>';
     }
     function bindCaseRows(container) {
+      container.querySelectorAll("[data-open-case]").forEach(function (button) {
+        button.addEventListener("click", function (event) {
+          event.preventDefault();
+          event.stopPropagation();
+          openCase(button.getAttribute("data-open-case"), button);
+        });
+      });
       container.querySelectorAll("[data-case]").forEach(function (row) {
         function open(event) {
           if (event.type === "keydown" && event.key !== "Enter" && event.key !== " ") return;
@@ -3002,17 +3011,31 @@
     function casesTableBody(queue) {
       return queue ? $("queue-rows") : $("document-rows");
     }
+    function ensureTableLoadBar(wrap) {
+      var bar = wrap.querySelector(":scope > .table-loadbar");
+      if (bar) return bar;
+      bar = document.createElement("div");
+      bar.className = "table-loadbar";
+      bar.hidden = true;
+      bar.setAttribute("role", "progressbar");
+      bar.setAttribute("aria-label", "Список обновляется");
+      wrap.insertBefore(bar, wrap.firstChild);
+      return bar;
+    }
     function setCasesLoading(queue, on) {
       var body = casesTableBody(queue);
       if (!body) return;
       var wrap = body.closest(".table-wrap");
+      var hasRows = !!body.querySelector("tr[data-case]");
       if (wrap) {
-        wrap.classList.toggle("is-loading", !!on);
+        var bar = ensureTableLoadBar(wrap);
+        bar.hidden = !on;
+        wrap.classList.toggle("is-refreshing", !!(on && hasRows));
+        wrap.classList.toggle("is-loading", !!(on && !hasRows));
         if (on) wrap.setAttribute("aria-busy", "true");
         else wrap.removeAttribute("aria-busy");
       }
-      if (!on) return;
-      if (body.querySelector("tr[data-case]")) return;
+      if (!on || hasRows) return;
       var table = body.closest("table");
       var cols = table ? table.querySelectorAll("thead tr:first-child th").length : (queue ? 14 : 12);
       var html = "";
@@ -3141,7 +3164,6 @@
       state.caseNavPage = state.pageNo;
       state.caseNavPageSize = Number(data.page_size || rows.length || 50);
       var body = casesTableBody(queue);
-      setCasesLoading(queue, false);
       clearWidgetError(casesTableCard(queue ? $("page-queue") : $("page-documents")), queue ? "queue-cases" : "document-cases");
       var emptyState = data.empty_state || {};
       var searchRaw = String(state.search || "").trim();
@@ -3154,6 +3176,32 @@
       if (!rows.length && !queue && state.overallGrade) {
         emptyTitle = "Оценок «" + overallGradeLabelRu(state.overallGrade) + "» в этом окне нет.";
         emptyHint = "Это оценка всей записи. Замечания «критично» и «важно» - плитки «Критично в очереди» и «Важно в очереди» на Обзоре.";
+      }
+      body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
+        '<tr><td colspan="' + (queue ? 18 : 16) + '" class="empty"><b>' +
+        esc(emptyTitle) + "</b><div>" +
+        esc(emptyHint) + "</div></td></tr>";
+      bindCaseRows(body);
+      setCasesLoading(queue, false);
+      bindSortableHeaders(body.closest("table"));
+      applyColumnVisibility(queue ? "queue" : "documents");
+      syncBulkBar();
+      body.querySelectorAll("input[data-case-select]").forEach(function (input) {
+        input.addEventListener("change", syncBulkBar);
+      });
+      if (!queue) {
+        var pageSize = Number(data.page_size || (isSingleDayPeriod() ? 100 : 50));
+        var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / pageSize));
+        $("pager").innerHTML = '<span>Страница ' + state.pageNo + " из " + pages + " · всего " + esc(total) +
+          '</span><button class="button secondary" id="previous-page"' + (state.pageNo <= 1 ? " disabled" : "") +
+          '>Предыдущая</button><button class="button secondary" id="next-page"' +
+          (state.pageNo >= pages ? " disabled" : "") + '>Следующая</button>';
+        $("previous-page").addEventListener("click", function () {
+          if (state.pageNo > 1) { state.pageNo -= 1; loadCases(false); }
+        });
+        $("next-page").addEventListener("click", function () {
+          if (state.pageNo < pages) { state.pageNo += 1; loadCases(false); }
+        });
       }
       var pageHost = queue ? $("page-queue") : $("page-documents");
       var banner = pageHost ? pageHost.querySelector(".day-table-banner") : null;
@@ -3184,31 +3232,6 @@
           if (isAbortedRequest(summaryError)) throw summaryError;
           renderCasesSummary(null);
         }
-      }
-      body.innerHTML = rows.length ? rows.map(queue ? queueRow : documentRow).join("") :
-        '<tr><td colspan="' + (queue ? 18 : 15) + '" class="empty"><b>' +
-        esc(emptyTitle) + "</b><div>" +
-        esc(emptyHint) + "</div></td></tr>";
-      bindCaseRows(body);
-      bindSortableHeaders(body.closest("table"));
-      applyColumnVisibility(queue ? "queue" : "documents");
-      syncBulkBar();
-      body.querySelectorAll("input[data-case-select]").forEach(function (input) {
-        input.addEventListener("change", syncBulkBar);
-      });
-      if (!queue) {
-        var pageSize = Number(data.page_size || (isSingleDayPeriod() ? 100 : 50));
-        var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / pageSize));
-        $("pager").innerHTML = '<span>Страница ' + state.pageNo + " из " + pages + " · всего " + esc(total) +
-          '</span><button class="button secondary" id="previous-page"' + (state.pageNo <= 1 ? " disabled" : "") +
-          '>Предыдущая</button><button class="button secondary" id="next-page"' +
-          (state.pageNo >= pages ? " disabled" : "") + '>Следующая</button>';
-        $("previous-page").addEventListener("click", function () {
-          if (state.pageNo > 1) { state.pageNo -= 1; loadCases(false); }
-        });
-        $("next-page").addEventListener("click", function () {
-          if (state.pageNo < pages) { state.pageNo += 1; loadCases(false); }
-        });
       }
       if (data.facets) buildFacets(state.data.summary || normalizeSummary({}), data.facets);
     }

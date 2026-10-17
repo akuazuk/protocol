@@ -28,4 +28,8 @@ def test_query_always_sends_date_window() -> None:
     assert "Диагноз не найден" in APP
     assert "chip-reset-all" not in APP
     assert "function syncCustomDates" in APP
+    assert "function ensureTableLoadBar" in APP
+    assert "is-refreshing" in APP
+    assert 'data-open-case="' in APP
+    assert 'class="row-actions"><span class="sr-only">Открыть</span>' in HTML
     assert "applyPeriodPreset(button.getAttribute" in APP

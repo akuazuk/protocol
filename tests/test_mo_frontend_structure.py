@@ -195,8 +195,8 @@ def test_case_lists_have_no_legacy_columns_and_no_p_levels() -> None:
     assert "Оценка" in queue and "Разбор" in queue
     assert day[0] == "Оценка"
     # Число ячеек строки = число колонок шапки; пустое состояние повторяет ту же ширину.
-    assert "(queue ? 18 : 15)" in JS
-    assert len(documents) == 15
+    assert "(queue ? 18 : 16)" in JS
+    assert len(documents) == 16
     assert len(queue) == 18
     assert '"МКБ", "История", "КП", "Оценка"' in JS
     assert '"Ответственный", "Срок", "Разбор", "МО"' in JS
@@ -271,7 +271,9 @@ def test_facet_checkbox_publishes_without_waiting_outer_apply() -> None:
 
 def test_cases_table_keeps_rows_while_reloading() -> None:
     assert "function setCasesLoading(queue, on)" in JS
-    assert "if (body.querySelector(\"tr[data-case]\")) return;" in JS
+    assert 'var hasRows = !!body.querySelector("tr[data-case]");' in JS
+    assert "if (!on || hasRows) return;" in JS
+    assert "is-refreshing" in JS
     assert "setCasesLoading(queue, true)" in JS
     assert "beginPageRequestScope()" in JS
     assert "is-skeleton-row" in JS
