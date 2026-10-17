@@ -191,6 +191,8 @@ def test_today_score_rings_and_dynamics_wired_to_period() -> None:
     assert 'id="yesterday-analytics-window"' in HTML
     assert ".score-rings" in UI
     assert "renderScoreRings" in APP
+    assert "скачок к прошлому окну, проверьте, не менялась ли методика" in APP
+    assert 'meta.key === "zone1" && delta != null && Math.abs(Number(delta)) > 10' in APP
     assert "renderScoreDynamics" in APP
     assert "analyticsWindowLabel" in APP
     assert "/score-dashboard?" in APP
