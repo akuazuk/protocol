@@ -39,9 +39,10 @@ def test_primary_nav_is_flat_without_more_menu() -> None:
 def test_overview_grain_and_titles() -> None:
     assert 'id="title-yesterday">Обзор<' in HTML
     assert 'id="title-documents">Найти МО<' in HTML
-    assert 'data-overview-grain="yesterday"' in HTML
-    assert 'data-overview-grain="7d"' in HTML
-    assert 'data-overview-grain="month"' in HTML
+    # Период задаётся один раз в шапке. На Обзоре второго ряда «День / Неделя / Месяц» нет.
+    assert 'data-quick-period="yesterday"' in HTML
+    assert 'data-quick-period="month"' in HTML
+    assert 'data-overview-grain="' not in HTML
     assert 'yesterday: "Обзор"' in APP
     assert 'documents: "Найти МО"' in APP
     assert "function applyOverviewGrain" in APP

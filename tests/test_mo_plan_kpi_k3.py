@@ -11,8 +11,10 @@ def test_plan_kpi_uses_uncompared_caption_when_na_dominates() -> None:
     assert 'tile("План плохо", a.zone2b_bad, planKpiMeta(a, (opts.zones || {}).zone2b)' in APP
 
 
-def test_plan_ring_center_shows_na_share_when_na_dominates() -> None:
-    # Центр кольца - короткая доля «без КП», длинная фраза уходит в подпись под кольцом.
-    assert 'centerSub = "без КП"' in APP
-    assert 'ringSub = "план не сравнивался с КП: " + naN + " из " + zoneN' in APP
+def test_plan_ring_center_stays_good_share() -> None:
+    # Крупная цифра - доля «хорошо» среди сравнённых. Доля без КП только в подписи.
+    assert 'centerSub = "без КП"' not in APP
+    assert 'var centerSub = assessedN > 0 ? "хорошо" : "не оценено";' in APP
+    assert 'ringSub += " · без сравнения с КП: " + naN + " из " + zoneN;' in APP
+    assert 'ringSub += " · плохо среди сравнённых: " + badN;' in APP
     assert "meta.key === \"zone2b\"" in APP
