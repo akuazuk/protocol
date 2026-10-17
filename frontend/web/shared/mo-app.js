@@ -543,8 +543,16 @@
     function syncPeriodStrip() {
       document.querySelectorAll("[data-quick-period]").forEach(function (btn) {
         var period = btn.getAttribute("data-quick-period") || "";
-        btn.setAttribute("aria-pressed", period && period === state.period ? "true" : "false");
+        var on = !!(period && period === state.period);
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
+        if (on && period !== "custom") btn.title = periodAbsoluteRange() || "";
+        else btn.removeAttribute("title");
       });
+    }
+    function syncCustomDates(period) {
+      var custom = (period || state.period) === "custom";
+      if ($("date-from-wrap")) $("date-from-wrap").hidden = !custom;
+      if ($("date-to-wrap")) $("date-to-wrap").hidden = !custom;
     }
     function applyPeriodPreset(period, opts) {
       opts = opts || {};
@@ -573,8 +581,7 @@
       if ($("period")) $("period").value = state.period;
       if ($("date-from")) $("date-from").value = state.dateFrom || "";
       if ($("date-to")) $("date-to").value = state.dateTo || "";
-      if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
-      if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
+      syncCustomDates();
       syncPeriodStrip();
       syncOverviewGrain();
       if (opts.silent) return;
@@ -1047,6 +1054,7 @@
       // сохраняем набранный текст поиска по фильтру.
       var previousSearch = details.querySelector('.filter-menu input[type="search"]');
       var previousTerm = previousSearch ? previousSearch.value : "";
+      var immediate = key === "branches" || key === "specialties" || key === "doctors";
       details.classList.toggle("has-applied", selected.length > 0);
       details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
       details.querySelector(".filter-menu").innerHTML =
@@ -1057,14 +1065,15 @@
             esc(item.label) + '</span><span class="filter-count">' + esc(item.count == null ? "" : item.count) + "</span></label>";
         }).join("") + '</div><div class="filter-menu-actions"><span class="filter-selection">Без изменений</span>' +
         '<button class="button secondary compact" type="button" data-filter-clear>Очистить</button>' +
-        '<button class="button compact" type="button" data-filter-apply>Применить</button></div>';
+        (immediate ? "" : '<button class="button compact" type="button" data-filter-apply>Применить</button>') +
+        "</div>";
       var search = details.querySelector('input[type="search"]');
       var selection = details.querySelector(".filter-selection");
       var apply = details.querySelector("[data-filter-apply]");
       function renderDraftState() {
         var changed = JSON.stringify(draft) !== JSON.stringify(selected);
         selection.textContent = changed ? "Будет выбрано: " + draft.length : "Без изменений";
-        apply.disabled = !changed;
+        if (apply) apply.disabled = !changed;
         details.classList.toggle("has-pending", changed);
       }
       function applySearchTerm() {
@@ -1115,7 +1124,7 @@
         });
         publishFacet([], false);
       });
-      apply.addEventListener("click", function () {
+      if (apply) apply.addEventListener("click", function () {
         publishFacet(draft, true);
       });
       details.ontoggle = function () {
@@ -1162,8 +1171,7 @@
       $("date-to").value = state.dateTo;
       $("case-search").value = state.search;
       if ($("overall-grade-filter")) $("overall-grade-filter").value = state.overallGrade;
-      $("date-from-wrap").hidden = false;
-      $("date-to-wrap").hidden = false;
+      syncCustomDates();
       document.querySelectorAll(".filter-pop").forEach(renderFilter);
     }
     function renderAnalysisRail() {
@@ -1227,8 +1235,7 @@
         if (options.period) {
           state.period = options.period;
           $("period").value = state.period;
-          if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
-          if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
+          syncCustomDates();
         }
         if (options.dateFrom !== undefined) { state.dateFrom = options.dateFrom; $("date-from").value = state.dateFrom; }
         if (options.dateTo !== undefined) { state.dateTo = options.dateTo; $("date-to").value = state.dateTo; }
@@ -1283,7 +1290,6 @@
           esc(state.compare === "weekday" ? "тот же день недели" : "предыдущий период") +
           '</span>');
       }
-      html.push('<span class="chip chip-locked" title="В таблице не показываются процедуры, диагностика и профосмотры">Только клинические приёмы</span>');
       if (state.search) {
         html.push('<span class="chip chip-search">Поиск: ' + esc(state.search) +
           '<button type="button" data-clear-search aria-label="Очистить поиск">×</button></span>');
@@ -1362,12 +1368,7 @@
         html.push('<span class="chip">Худший уровень: ' + esc(sevChip) +
           '<button type="button" data-clear-worst-severity aria-label="Сбросить фильтр приоритета">×</button></span>');
       }
-      html.push('<button type="button" class="chip chip-reset" id="chip-reset-all">Сбросить всё</button>');
       $("filter-chips").innerHTML = html.join("");
-      var resetAll = $("chip-reset-all");
-      if (resetAll && $("reset-filters")) {
-        resetAll.addEventListener("click", function () { $("reset-filters").click(); });
-      }
       $("filter-chips").querySelectorAll("[data-remove]").forEach(function (button) {
         button.addEventListener("click", function () {
           var key = button.getAttribute("data-remove"), value = button.getAttribute("data-value");
@@ -1536,11 +1537,10 @@
       if ($("case-search")) $("case-search").value = state.search;
       if ($("sort-by")) $("sort-by").value = state.sortBy;
       if ($("sort-dir")) $("sort-dir").value = state.sortDir;
-      if ($("date-from-wrap")) $("date-from-wrap").hidden = false;
-      if ($("date-to-wrap")) $("date-to-wrap").hidden = false;
       ensurePeriodDates();
       if ($("date-from")) $("date-from").value = state.dateFrom;
       if ($("date-to")) $("date-to").value = state.dateTo;
+      syncCustomDates();
       syncGradeStrip();
       syncQueueOnlyButton();
       syncOverviewGrain();
@@ -8175,8 +8175,7 @@
       $("compare").value = source.compare;
       $("date-from").value = source.dateFrom || "";
       $("date-to").value = source.dateTo || "";
-      $("date-from-wrap").hidden = false;
-      $("date-to-wrap").hidden = false;
+      syncCustomDates(source.period);
       if ($("overall-grade-filter")) {
         $("overall-grade-filter").value = source.overallGrade || "";
       }
@@ -8265,6 +8264,7 @@
           if ($("date-to")) $("date-to").value = state.dateTo;
         }
         state.filterDraft = null;
+        syncCustomDates();
         syncPeriodStrip();
         filtersChanged();
       });
@@ -8277,6 +8277,7 @@
           if ($("date-from")) $("date-from").value = state.dateFrom;
         }
         state.filterDraft = null;
+        syncCustomDates();
         syncPeriodStrip();
         filtersChanged();
       });

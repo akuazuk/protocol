@@ -9,7 +9,8 @@ APP = (ROOT / "frontend" / "web" / "shared" / "mo-app.js").read_text(encoding="u
 def test_header_exposes_calendar_without_apply_buttons() -> None:
     assert 'id="period-strip"' in HTML
     assert 'id="date-from-wrap"' in HTML
-    assert 'hidden><span>С даты</span>' not in HTML
+    assert 'data-quick-period="custom"' in HTML
+    assert 'id="date-from-wrap" hidden' in HTML
     assert 'id="filters-apply"' not in HTML
     assert 'id="filters-cancel"' not in HTML
     assert 'id="reset-filters"' in HTML
@@ -25,5 +26,6 @@ def test_query_always_sends_date_window() -> None:
     assert "Среди строк на экране" not in APP
     assert "Поиск по всей выборке" in APP
     assert "Диагноз не найден" in APP
-    assert "chip-reset-all" in APP
+    assert "chip-reset-all" not in APP
+    assert "function syncCustomDates" in APP
     assert "applyPeriodPreset(button.getAttribute" in APP

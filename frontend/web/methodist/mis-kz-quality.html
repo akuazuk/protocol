@@ -53,9 +53,10 @@
               <button class="button secondary compact" type="button" data-quick-period="7d">7 дней</button>
               <button class="button secondary compact" type="button" data-quick-period="month" aria-pressed="true">Месяц</button>
               <button class="button secondary compact" type="button" data-quick-period="ytd">С начала года</button>
+              <button class="button secondary compact" type="button" data-quick-period="custom">Произвольный</button>
             </div>
-            <label class="filter" id="date-from-wrap"><span>С даты</span><input class="control" id="date-from" type="date"></label>
-            <label class="filter" id="date-to-wrap"><span>По дату</span><input class="control" id="date-to" type="date"></label>
+            <label class="filter" id="date-from-wrap" hidden><span>С даты</span><input class="control" id="date-from" type="date"></label>
+            <label class="filter" id="date-to-wrap" hidden><span>По дату</span><input class="control" id="date-to" type="date"></label>
             <label class="filter sr-only period-select-legacy" aria-hidden="true"><span>Период</span>
               <select class="control" id="period" tabindex="-1">
                 <option value="yesterday">Вчера</option>
@@ -98,7 +99,6 @@
                   <details class="filter-pop" data-filter="branches"><summary>Филиалы <b>Все</b></summary><div class="filter-menu"></div></details>
                   <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
                   <details class="filter-pop" data-filter="doctors"><summary>Врачи <b>Все</b></summary><div class="filter-menu"></div></details>
-                  <details class="filter-pop" data-filter="document_types"><summary>Тип документа <b>Клинический приём</b></summary><div class="filter-menu"></div></details>
                   <details class="filter-pop" data-filter="statuses"><summary>Статус разбора методиста <b>Все</b></summary><div class="filter-menu"></div></details>
                   <label class="filter"><span>Оценка МО</span>
                     <select class="control" id="overall-grade-filter">
@@ -117,7 +117,7 @@
                   </label>
                 </div>
                 <div class="toolbar-panel-actions">
-                  <span class="panel-help">В таблице только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология не показываются и не оцениваются. Дата выбирается в календаре сверху.</span>
+                  <span class="panel-help">В таблице только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология не показываются и не оцениваются. Свой диапазон - кнопка «Произвольный».</span>
                 </div>
               </div>
             </details>
