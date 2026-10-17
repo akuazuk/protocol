@@ -81,6 +81,24 @@ button, a, select, input { outline-offset: 3px; }
   color: var(--accent-dark);
   font-weight: 800;
 }
+.queue-crm {
+  margin: 4px 0 16px;
+  padding: 0 16px;
+  border: 1px solid var(--line);
+  border-radius: 14px;
+  background: color-mix(in srgb, var(--surface-2) 70%, #fff);
+}
+.queue-crm > summary {
+  display: flex;
+  align-items: center;
+  min-height: 48px;
+  cursor: pointer;
+  font-weight: 750;
+  list-style: none;
+}
+.queue-crm > summary::-webkit-details-marker { display: none; }
+.queue-crm[open] { padding-bottom: 14px; }
+.queue-crm .card-sub { margin-top: 0; }
 .sidebar-foot { margin-top: 22px; padding: 14px 10px 0; border-top: 1px solid rgba(255,255,255,.12); display: grid; gap: 8px; }
 .sidebar-foot a,
 .sidebar-foot .sidebar-help {

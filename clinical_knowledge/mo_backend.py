@@ -1701,12 +1701,17 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
             if not _needs_review(rec):
                 continue
         want_queue_band = str(params.get("queue_band") or "").strip().lower()
+        allowed_bands = (
+            {"critical", "important"}
+            if want_queue_band == "action"
+            else ({want_queue_band} if want_queue_band in {"critical", "important"} else set())
+        )
         visit_allow = params.get("_queue_band_visits")
         if isinstance(visit_allow, (set, frozenset, list, tuple)):
             vid = str(rec.get("visit_id") or rec.get("case_id") or "")
             if vid not in set(visit_allow):
                 continue
-        elif want_queue_band in {"critical", "important"}:
+        elif allowed_bands:
             from .mo_action_queue_select import pick_primary_queue_finding, signal_band_for_finding
 
             finding_rows = [
@@ -1716,7 +1721,7 @@ def _filter_records(records: Iterable[dict[str, Any]], params: dict[str, Any]) -
                 finding_rows = [{"finding_code": code} for code in record_findings]
             primary = pick_primary_queue_finding(finding_rows)
             band = signal_band_for_finding(primary) if primary else None
-            if band != want_queue_band:
+            if band not in allowed_bands:
                 continue
         zone = str(params.get("zone") or "").strip().lower()
         zone_band = str(params.get("zone_band") or "").strip().lower()
@@ -3893,7 +3898,12 @@ def _queue_band_counts(
 def _attach_queue_band_visit_filter(params: dict[str, Any]) -> dict[str, Any]:
     """Подставить visit_id KPI-очереди, чтобы список совпал с queue_critical."""
     want = str(params.get("queue_band") or "").strip().lower()
-    if want not in {"critical", "important"}:
+    allowed = (
+        {"critical", "important"}
+        if want == "action"
+        else ({want} if want in {"critical", "important"} else set())
+    )
+    if not allowed:
         return params
     if _backend_source() != "warehouse":
         return params
@@ -3907,7 +3917,7 @@ def _attach_queue_band_visit_filter(params: dict[str, Any]) -> dict[str, Any]:
     except Exception:  # noqa: BLE001
         return params
     out = dict(params)
-    out["_queue_band_visits"] = {vid for vid, band in bands.items() if band == want}
+    out["_queue_band_visits"] = {vid for vid, band in bands.items() if band in allowed}
     return out
 
 
