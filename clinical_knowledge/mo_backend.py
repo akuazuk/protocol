@@ -1996,7 +1996,8 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     # при первом запросе создаёт пустой sqlite и иначе второй вызов читает 0 строк.
     if _cases_sql_pageable(params):
         try:
-            paged_records = _records(params, limit=page_size, offset=start)
+            # Список не читает JSON-снимки оценки: карточка случая грузит их отдельно.
+            paged_records = _records(params, limit=page_size, offset=start, light=True)
         except TypeError:
             all_records = _records(params)
         else:

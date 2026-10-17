@@ -801,6 +801,40 @@ tbody tr.table-row-hidden { display: none; }
   opacity: 0.62;
   pointer-events: none;
 }
+.table-loadbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  height: 2px;
+  overflow: hidden;
+  background: color-mix(in srgb, var(--accent) 16%, transparent);
+}
+.table-loadbar[hidden] { display: none; }
+.table-loadbar::after {
+  content: "";
+  display: block;
+  height: 100%;
+  width: 32%;
+  background: var(--accent);
+  animation: mo-load-slide 0.9s ease-in-out infinite;
+}
+@keyframes mo-load-slide {
+  from { transform: translateX(-130%); }
+  to { transform: translateX(340%); }
+}
+.table-wrap.is-refreshing {
+  box-shadow: inset 0 2px 0 color-mix(in srgb, var(--accent) 28%, transparent);
+}
+#page-documents td.row-actions,
+#page-documents th.row-actions {
+  width: 1%;
+  text-align: right;
+  white-space: nowrap;
+}
+#page-documents .row-open {
+  min-height: 28px;
+  padding: 3px 12px;
+}
 .is-skeleton-row td { padding: 8px 12px; }
 .is-skeleton-row .skeleton { min-height: 28px; }
 .drawer-body.is-loading { opacity: 0.7; }

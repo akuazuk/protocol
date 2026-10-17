@@ -144,6 +144,24 @@ def test_sql_sort_by_score_nulls_last_and_direction(warehouse: Path) -> None:
     assert names == sorted(names)
 
 
+def test_sql_page_reads_rows_without_evaluation_snapshot(warehouse: Path, monkeypatch) -> None:
+    seen: dict[str, object] = {}
+    original = mo_backend._records
+
+    def wrapped(params, limit=None, offset=0, light=False):
+        seen["light"] = light
+        seen["limit"] = limit
+        return original(params, limit=limit, offset=offset, light=light)
+
+    monkeypatch.setattr(mo_backend, "_records", wrapped)
+    result = mo_backend.build_cases({**PERIOD, "page": 1, "page_size": 10})
+    assert seen["light"] is True
+    assert seen["limit"] == 10
+    assert result["total"] == 40
+    assert result["rows"]
+    assert "evaluation_snapshot_json" not in result["rows"][0]
+
+
 def test_sql_paging_keeps_total_and_pages_disjoint(warehouse: Path) -> None:
     first = mo_backend.build_cases({**PERIOD, "sort_by": "overall", "page": 1, "page_size": 15})
     second = mo_backend.build_cases({**PERIOD, "sort_by": "overall", "page": 2, "page_size": 15})
