@@ -7858,7 +7858,7 @@ def build_mo_capabilities(role: str = "methodist") -> dict[str, Any]:
             "export_clinical": normalized_role in {"methodist", "lead", "admin"},
             "manage_saved_views": normalized_role in {"methodist", "lead", "admin"},
             "manage_scoring_config": normalized_role in {"methodist", "lead", "admin"},
-            "recompute_scores": normalized_role in {"lead", "admin", "methodist"},
+            "recompute_scores": normalized_role == "admin",
             "review_pack": can_work_cases,
             "drugs_labs_kpis": can_view_population and not is_expert,
         },

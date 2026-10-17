@@ -230,6 +230,10 @@ def test_settings_page_is_help_with_zones_without_v3v4_or_ai_costs() -> None:
     assert "/llm-costs" not in APP
     assert 'settings: "Справка"' in APP
     assert ".sidebar-help" in UI
+    assert "function scoringCanRecomputeNow" in APP
+    assert 'class="admin-recompute mo-secondary-details"' in APP
+    assert "Пересчитать витрину за выбранный период? Это действие администратора." in APP
+    assert "Пересчёт склада запускает только администратор." in (ROOT / "rag_server.py").read_text(encoding="utf-8")
 
 
 def test_page_references_no_external_url_or_cdn_and_has_no_long_dash() -> None:
