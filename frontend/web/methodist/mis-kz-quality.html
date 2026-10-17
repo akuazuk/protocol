@@ -72,7 +72,8 @@
             <button class="button" id="case-search-submit" type="submit">Найти</button>
             <button class="button secondary" id="case-search-clear" type="button" hidden>Очистить</button>
           </form>
-          <div class="grade-strip" id="grade-strip" role="radiogroup" aria-label="Оценка МО">
+          <div class="grade-strip" id="grade-strip" role="radiogroup" aria-label="Оценка записи">
+            <span class="grade-strip-label">Оценка записи</span>
             <button class="button secondary compact" type="button" data-overall-grade="" aria-pressed="true">Все</button>
             <button class="button secondary compact" type="button" data-overall-grade="good">Хорошо</button>
             <button class="button secondary compact" type="button" data-overall-grade="fair">С замечанием</button>
@@ -179,7 +180,7 @@
         </section>
 
         <section class="page" id="page-yesterday" data-page="yesterday" aria-labelledby="title-yesterday">
-          <div class="page-head"><div><h1 id="title-yesterday">Обзор</h1><p id="yesterday-date">Рабочий экран: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p><div class="grain-strip" role="group" aria-label="Зерно периода"><button class="button secondary" type="button" data-overview-grain="yesterday">День</button><button class="button secondary" type="button" data-overview-grain="7d">Неделя</button><button class="button secondary" type="button" data-overview-grain="month" aria-pressed="true">Месяц</button><button class="button secondary" type="button" data-overview-grain="ytd">С начала года</button></div></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
+          <div class="page-head"><div><h1 id="title-yesterday">Обзор</h1><p id="yesterday-date">Рабочий экран: куда смотреть сейчас.</p><p class="card-sub" id="yesterday-analytics-window"></p></div><span class="freshness" id="yesterday-freshness">Ежедневный отчёт</span></div>
           <div class="kpis score-kpi-strip" id="yesterday-score-kpis"><div class="skeleton"></div></div>
           <div class="attention-strip" id="yesterday-attention"><div class="skeleton"></div></div>
           <div class="family-strip" id="yesterday-family-strip"></div>
@@ -216,13 +217,13 @@
               <p class="card-sub">Сколько случаев затронуто каждым замечанием. Клик открывает Найти МО с этим замечанием.</p>
               <div id="yesterday-findings-top" class="mo-chart-host"></div>
             </article>
-            <article class="card span-12"><h2>Таблица дня</h2><p class="card-sub">Сначала риск и случаи, где история может сменить вердикт. Клик открывает разбор</p><div class="table-wrap sticky-first table-wrap--dense"><table class="table-dense"><thead><tr><th>Оценка</th><th>Визит</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
-            <article class="card span-12"><h2>Полнота данных за день</h2><p class="card-sub">Получено, ожидалось и оценено. Всё видно сразу, без раскрывашек.</p><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
+            <article class="card span-12"><h2>Случаи окна</h2><p class="card-sub">Сначала риск и случаи, где история может сменить вердикт. Это окно из шапки, не отдельный календарный день. Клик открывает разбор</p><div class="table-wrap sticky-first table-wrap--dense"><table class="table-dense"><thead><tr><th>Оценка</th><th>Визит</th><th>Дата</th><th>Врач / специальность</th><th>Филиал</th><th>Диагноз</th><th>Причина</th><th>МО</th></tr></thead><tbody id="yesterday-action-rows"></tbody></table></div></article>
+            <article class="card span-12"><h2>Полнота данных окна</h2><p class="card-sub">Получено, ожидалось и оценено. Всё видно сразу, без раскрывашек.</p><div class="daily-split"><div id="yesterday-completeness"></div><div id="yesterday-funnel"></div></div><div class="table-wrap compact-table"><table><thead><tr><th>Тип документа</th><th>Получено</th><th>Допущено</th><th>Оценено</th><th>Исключено</th></tr></thead><tbody id="yesterday-kind-rows"></tbody></table></div></article>
           </div>
         </section>
 
         <section class="page" id="page-queue" data-page="queue" hidden aria-labelledby="title-queue">
-          <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Статусы CRM, возраст задачи и ответственные. Таблица 40 px, колонки не обрезаются.</p></div></div>
+          <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Случаи с замечанием «критично» или «важно». Это не оценка всей записи.</p></div></div>
           <div class="kpis" id="queue-kpis"></div>
           <div class="queue-grid"><article class="card span-5"><h2>Возраст задачи</h2><p class="card-sub">Дни с даты визита. Клик открывает Найти МО.</p><div id="queue-ages" class="mo-chart-host"></div></article><article class="card span-7"><h2>Ответственные</h2><p class="card-sub">Назначенные методисты. Клик открывает их очередь.</p><div id="queue-owners" class="mo-chart-host"></div></article></div>
           <div class="section-actions"><span id="queue-bulk-bar" hidden data-selected-n="0"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button></span><button class="button secondary" id="queue-shadow-attention-only" type="button" title="Не официальная оценка">Автоматические сигналы: требуют проверки</button><button class="button secondary" id="queue-columns-button" type="button" aria-pressed="false">Колонки</button><button class="button secondary" id="queue-open-pdf-selected" type="button">PDF выбранных</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
@@ -342,10 +343,10 @@
             <button class="button secondary" data-action="export">Экспорт данных</button>
             <button class="button secondary" id="print-report">Печать / PDF</button>
             <button class="button secondary" id="open-briefing-html">Брифинг HTML</button>
-            <button class="button secondary" data-go="yesterday">Открыть вчера</button>
+            <button class="button secondary" data-go="yesterday">Открыть обзор</button>
           </div>
           <div class="kpis" id="report-kpis"></div>
-          <div class="card"><h2>Готовые ежедневные отчёты</h2><p class="card-sub">Клик открывает отчёт за выбранный день на экране «Вчера»</p><div class="report-grid" id="report-list"></div></div>
+          <div class="card"><h2>Готовые ежедневные отчёты</h2><p class="card-sub">Клик открывает этот день на экране «Обзор». «С критичным замечанием» - число записей с замечанием P0, не оценка «Критично».</p><div class="report-grid" id="report-list"></div></div>
           <details open class="card mo-secondary-details"><summary>Подробнее: журнал доступа и качество данных</summary>
             <div class="grid">
               <article class="card span-6"><h2>Журнал доступа</h2><p class="card-sub">Только администратор</p><div id="access-log-content"></div></article>

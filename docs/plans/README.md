@@ -1,5 +1,6 @@
 | Файл | Тема | Статус |
 |------|------|--------|
+| [2026-10-17-mo-analytics-trust-v1.md](2026-10-17-mo-analytics-trust-v1.md) | МО Аналитика: одно слово - одно число, шапка, очередь, лекарства, служба, справка. Шаг 1 в коде | active |
 | [2026-09-27-mo-client-passport-score-ui-v2.md](2026-09-27-mo-client-passport-score-ui-v2.md) | Паспорт 205 тыс. из МИС (индекс), оценка дыр 2026, разбор пятью шагами; цифры было/станет по шкале и UI | active |
 | [2026-09-27-mo-case-review-restore-v1.md](2026-09-27-mo-case-review-restore-v1.md) | Вернуть столбец «Проверка» (зоны / Почему так / Что не так) как способ найти плохие МО; шаги только `?steps=1` | active |
 | [2026-09-27-mo-patient-passport-v1.md](2026-09-27-mo-patient-passport-v1.md) | Паспорт клиента, каркас (преемник - client-passport-score-ui-v2) | archived |

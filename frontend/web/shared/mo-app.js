@@ -930,7 +930,9 @@
     }
     function appliedFilterCount() {
       return Object.keys(state.selected).reduce(function (total, key) {
-        return total + (state.selected[key] || []).length;
+        var values = state.selected[key] || [];
+        if (key === "document_types" && values.length === 1 && values[0] === "clinical_visit") return total;
+        return total + values.length;
       }, 0);
     }
     function updateFilterSummary(hasDraft) {
@@ -1622,10 +1624,11 @@
             return sum + Number(fromBand != null ? fromBand : z2b[band] || 0);
           }, 0);
         }
-        if (n > 0 && na / n >= 0.5) {
-          return "план не сравнивался с КП: " + na + " из " + n;
+        var badBit = attn.zone2b_bad_pct != null ? (attn.zone2b_bad_pct + "% плохо") : "";
+        if (n > 0 && na > 0) {
+          return (badBit ? badBit + " · " : "") + "план не сравнивался с КП: " + na + " из " + n;
         }
-        return attn.zone2b_bad_pct != null ? attn.zone2b_bad_pct + "%" : "";
+        return badBit;
       }
       host.innerHTML =
         tile("Критично в очереди", a.queue_critical != null ? a.queue_critical : "-", "открыть очередь", "queue:critical", "critical") +
@@ -1919,15 +1922,13 @@
         var okN = Number((bands.ok || {}).n || 0);
         var center = assessedN > 0 ? (Math.round(okN / assessedN * 100) + "%") : "-";
         var centerSub = assessedN > 0 ? "хорошо" : "не оценено";
-        var ringSub = "Оценено: n=" + assessedN + "/" + zoneN +
+        var ringSub = "Доля «хорошо» среди оценённых: n=" + assessedN + "/" + zoneN +
           (assessedN > 0 ? " · чаще всего: " + (zoneLabels[dominant.band] || "-").toLowerCase() : "");
         if (meta.key === "zone2b") {
           var naN = Number((bands.na || {}).n || 0);
-          if (zoneN > 0 && naN / zoneN >= 0.5) {
-            center = Math.round(naN / zoneN * 100) + "%";
-            centerSub = "без КП";
-            ringSub = "план не сравнивался с КП: " + naN + " из " + zoneN;
-          }
+          var badN = Number((bands.bad || {}).n || 0);
+          if (naN > 0) ringSub += " · без сравнения с КП: " + naN + " из " + zoneN;
+          if (badN > 0) ringSub += " · плохо среди сравнённых: " + badN;
         }
         var delta = block.delta_ok_pct;
         if (delta != null && block.prev_ok_pct != null) {
@@ -3151,6 +3152,10 @@
       if (!rows.length && searchRaw && !looksLikeIcd(searchRaw) && !/^\d{4,}$/.test(searchRaw)) {
         emptyTitle = emptyState.title || "Диагноз не найден";
         emptyHint = emptyState.hint || "Поиск смотрит клинический диагноз склада, врача, код МКБ и visit_id. Уточните подстроку или выберите подсказку.";
+      }
+      if (!rows.length && !queue && state.overallGrade) {
+        emptyTitle = "Оценок «" + overallGradeLabelRu(state.overallGrade) + "» в этом окне нет.";
+        emptyHint = "Это оценка всей записи. Замечания «критично» и «важно» - плитки «Критично в очереди» и «Важно в очереди» на Обзоре.";
       }
       var pageHost = queue ? $("page-queue") : $("page-documents");
       var banner = pageHost ? pageHost.querySelector(".day-table-banner") : null;
@@ -6564,7 +6569,7 @@
           var minDate = capabilities.reports_min_date;
           if (minDate && $("title-reports")) {
             var sub = $("page-reports") && $("page-reports").querySelector(".page-head p");
-            if (sub) sub.textContent = "Ежедневные отчёты с " + minDate + ". Клик открывает день на экране «Вчера».";
+            if (sub) sub.textContent = "Ежедневные отчёты с " + minDate + ". Клик открывает день на экране «Обзор».";
           }
           if ($("expert-user-label")) {
             $("expert-user-label").textContent = state.expertDisplayName || capabilities.role || "Эксперт";
@@ -6615,7 +6620,7 @@
         if (item.source_rows != null) meta.push("записей " + item.source_rows);
         if (item.evaluated != null) meta.push("оценено " + item.evaluated);
         if (item.avg_score != null) meta.push("средняя " + Math.round(Number(item.avg_score)) + "%");
-        if (item.critical != null) meta.push("крит. " + item.critical);
+        if (item.critical != null) meta.push("с критичным замечанием " + item.critical);
         if (item.needs_attention != null) meta.push("внимание " + item.needs_attention);
         if (item.empty_reason) meta.push(item.empty_reason);
         return '<button class="report-card" type="button" data-report-date="' + esc(day) + '">' +
