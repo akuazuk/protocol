@@ -6737,6 +6737,10 @@
       var actions = (state.data.capabilities && state.data.capabilities.actions) || {};
       return actions.manage_scoring_config !== false;
     }
+    function scoringCanRecomputeNow() {
+      var caps = state.data.capabilities || {};
+      return caps.role === "admin" && (caps.actions || {}).recompute_scores !== false;
+    }
     function stopScoringStrictnessPoll() {
       if (scoringStrictnessPollTimer) {
         window.clearInterval(scoringStrictnessPollTimer);
@@ -6825,13 +6829,19 @@
         (canEdit
           ? '<div class="section-actions" style="margin-top:8px">' +
             '<button class="button" type="button" id="score-save">Сохранить</button>' +
-            '<button class="button secondary" type="button" id="score-recompute-range">Пересчитать период</button>' +
-            '<button class="button secondary" type="button" id="score-recompute-all">Пересчитать всё</button>' +
-            '<button class="button secondary" type="button" id="score-deep-rescore-range">Deep-пересчёт периода</button>' +
             '<button class="button secondary" type="button" id="score-next-load-days">На след. загрузку (новые дни)</button>' +
             '<button class="button secondary" type="button" id="score-next-load-range">На след. загрузку (период)</button>' +
             '<button class="button secondary" type="button" id="score-next-load-all">На след. загрузку (вся история)</button>' +
             "</div>" +
+            (scoringCanRecomputeNow()
+              ? '<details class="admin-recompute mo-secondary-details"><summary>Пересчёт склада</summary>' +
+                '<p class="card-sub">Действие администратора. Кнопка спрашивает подтверждение и не запускает пересчёт сама.</p>' +
+                '<div class="section-actions">' +
+                '<button class="button secondary" type="button" id="score-recompute-range">Пересчитать период</button>' +
+                '<button class="button secondary" type="button" id="score-recompute-all">Пересчитать всё</button>' +
+                '<button class="button secondary" type="button" id="score-deep-rescore-range">Deep-пересчёт периода</button>' +
+                "</div></details>"
+              : "") +
             '<div class="grid" style="margin-top:8px">' +
             '<label class="filter span-4"><span>Период с</span><input class="control" id="score-date-from" type="date"></label>' +
             '<label class="filter span-4"><span>по</span><input class="control" id="score-date-to" type="date"></label>' +
@@ -6935,6 +6945,7 @@
       }
       if ($("score-recompute-range")) {
         $("score-recompute-range").addEventListener("click", function () {
+          if (!window.confirm("Пересчитать витрину за выбранный период? Это действие администратора.")) return;
           runRecompute({
             apply_mode: "now",
             mode: "warehouse_zones",

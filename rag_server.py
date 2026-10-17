@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-10-17-172556Z-mo-service-nav"
+BUILD_VERSION = "2026-10-17-174841Z-mo-admin-recompute"
 
 
 def _app_version() -> str:
@@ -13631,6 +13631,9 @@ def api_methodist_mo_recompute(request: "Request", body: dict[str, Any]) -> dict
     _require_methodist_auth(request)
     if _mo_role(request) not in {"methodist", "lead", "admin"}:
         raise HTTPException(status_code=403, detail="Недостаточно прав для пересчёта витрины.")
+    apply_mode_peek = str((body or {}).get("apply_mode") or "now").strip().lower()
+    if apply_mode_peek not in {"next_load", "on_next_load", "auto"} and _mo_role(request) != "admin":
+        raise HTTPException(status_code=403, detail="Пересчёт склада запускает только администратор.")
     from clinical_knowledge.mo_scoring_profile import (
         save_scoring_profile,
         scoring_config_public,
