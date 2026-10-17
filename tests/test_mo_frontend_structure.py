@@ -359,8 +359,10 @@ def test_mo_dashboard_javascript_has_valid_syntax() -> None:
 
 
 def test_cases_controls_are_wired_without_internal_status_prompt() -> None:
-    assert '$("next-page").addEventListener("click"' in JS
-    assert '$("previous-page").addEventListener("click"' in JS
+    assert '$(nextId).addEventListener("click"' in JS
+    assert '$(prevId).addEventListener("click"' in JS
+    assert 'id="queue-pager"' in HTML
+    assert '"queue-previous-page"' in JS
     assert '$("columns-button").addEventListener("click"' in JS
     assert 'id="bulk-status-value"' in HTML
     assert 'prompt("Статус:' not in SOURCE

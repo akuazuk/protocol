@@ -3205,18 +3205,21 @@
       body.querySelectorAll("input[data-case-select]").forEach(function (input) {
         input.addEventListener("change", syncBulkBar);
       });
-      if (!queue) {
-        var pageSize = Number(data.page_size || (isSingleDayPeriod() ? 100 : 50));
-        var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / pageSize));
-        $("pager").innerHTML = '<span>Страница ' + state.pageNo + " из " + pages + " · всего " + esc(total) +
-          '</span><button class="button secondary" id="previous-page"' + (state.pageNo <= 1 ? " disabled" : "") +
-          '>Предыдущая</button><button class="button secondary" id="next-page"' +
+      var pageSize = Number(data.page_size || (isSingleDayPeriod() ? 100 : 50));
+      var total = Number(data.total || rows.length), pages = Math.max(1, Math.ceil(total / pageSize));
+      var pager = $(queue ? "queue-pager" : "pager");
+      if (pager) {
+        var prevId = queue ? "queue-previous-page" : "previous-page";
+        var nextId = queue ? "queue-next-page" : "next-page";
+        pager.innerHTML = '<span>Страница ' + state.pageNo + " из " + pages + " · всего " + esc(total) +
+          '</span><button class="button secondary" id="' + prevId + '"' + (state.pageNo <= 1 ? " disabled" : "") +
+          '>Предыдущая</button><button class="button secondary" id="' + nextId + '"' +
           (state.pageNo >= pages ? " disabled" : "") + '>Следующая</button>';
-        $("previous-page").addEventListener("click", function () {
-          if (state.pageNo > 1) { state.pageNo -= 1; loadCases(false); }
+        $(prevId).addEventListener("click", function () {
+          if (state.pageNo > 1) { state.pageNo -= 1; loadCases(!!queue); }
         });
-        $("next-page").addEventListener("click", function () {
-          if (state.pageNo < pages) { state.pageNo += 1; loadCases(false); }
+        $(nextId).addEventListener("click", function () {
+          if (state.pageNo < pages) { state.pageNo += 1; loadCases(!!queue); }
         });
       }
       var pageHost = queue ? $("page-queue") : $("page-documents");
