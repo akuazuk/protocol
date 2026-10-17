@@ -68,3 +68,7 @@ def test_family_dashboard_unused_uses_lab_denominator() -> None:
     assert ddi["cases"] == 1
     assert "C_ddi" in tile_codes("drug", "interactions")
     assert dash["strips"]["lab"]["pct"] == 25.0
+    assert dash["strips"]["drug"]["top_cases"] == 1
+    assert dash["strips"]["drug"]["top_pct"] == 10.0
+    assert dash["strips"]["lab"]["top_cases"] == 1
+    assert dash["strips"]["lab"]["top_pct"] == 10.0

@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-10-17-163121Z-mo-queue-pager"
+BUILD_VERSION = "2026-10-17-170818Z-mo-meds-strip"
 
 
 def _app_version() -> str:

@@ -554,6 +554,10 @@ select[multiple].control { min-height: 72px; }
   gap: 12px;
   margin-bottom: 16px;
 }
+.kpis--lead { grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); }
+.kpis--signal { grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); }
+.kpis--signal .kpi { background: color-mix(in srgb, var(--surface-2) 55%, var(--surface)); }
+.medications-signal-note { margin: -4px 0 10px; }
 .kpi, .card {
   border: 1px solid color-mix(in srgb, var(--line) 90%, transparent);
   border-radius: var(--radius);
