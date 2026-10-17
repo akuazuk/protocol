@@ -4,6 +4,7 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parents[1]
 HTML = (ROOT / "frontend" / "web" / "methodist" / "mis-kz-quality.html").read_text(encoding="utf-8")
 APP = (ROOT / "frontend" / "web" / "shared" / "mo-app.js").read_text(encoding="utf-8")
+CSS = (ROOT / "frontend" / "web" / "shared" / "mo-ui.css").read_text(encoding="utf-8")
 
 
 def test_header_exposes_calendar_without_apply_buttons() -> None:
@@ -32,4 +33,8 @@ def test_query_always_sends_date_window() -> None:
     assert "is-refreshing" in APP
     assert 'data-open-case="' in APP
     assert 'class="row-actions"><span class="sr-only">Открыть</span>' in HTML
+    pin = CSS.split("#page-documents td.row-actions", 1)[1][:500]
+    assert "display: table-cell" in pin
+    assert "right: 0" in pin
+    assert "min-width: 7.5rem" in pin
     assert "applyPeriodPreset(button.getAttribute" in APP
