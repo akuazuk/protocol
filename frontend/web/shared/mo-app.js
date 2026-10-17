@@ -1948,6 +1948,9 @@
         if (delta != null && block.prev_ok_pct != null) {
           ringSub += " · прошлый период: " + block.prev_ok_pct + "%";
         }
+        if (meta.key === "zone1" && delta != null && Math.abs(Number(delta)) > 10) {
+          ringSub += " · скачок к прошлому окну, проверьте, не менялась ли методика";
+        }
         renderScoreRing(card, meta.title, center, segments, function (band) {
           openZoneBandCases(meta.key, band);
         }, ringSub, centerSub, centerSub === "хорошо" ? delta : null, compact);
