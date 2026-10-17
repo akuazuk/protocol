@@ -299,6 +299,38 @@ def test_doctor_chip_searches_ids_only_for_digit_queries() -> None:
     assert "CAST(c.visit_id AS TEXT) LIKE ?" in digits
 
 
+def test_doctor_full_name_matches_title_case_fio() -> None:
+    """SQLite LIKE не понижает кириллицу. ФИО в складе - с заглавной у каждого слова."""
+    fio = "Петров Иван Сергеевич"
+    hyphen = "Иванова-Петрова Анна"
+    con = sqlite3.connect(":memory:")
+    con.execute("CREATE TABLE dim_doctor (doctor_key TEXT, doctor_fio TEXT)")
+    con.execute("CREATE TABLE fact_mo_case (doctor_key TEXT, visit_id TEXT, mis_id TEXT)")
+    con.executemany(
+        "INSERT INTO dim_doctor VALUES (?, ?)",
+        [("a", fio), ("b", hyphen)],
+    )
+    con.executemany(
+        "INSERT INTO fact_mo_case VALUES (?, ?, ?)",
+        [("a", "1", "1"), ("b", "2", "2")],
+    )
+
+    def hits(query: str) -> set[str]:
+        clause, values = ms.sql_parts(ms.expand_query(query))[ms.CHIP_DOCTOR]
+        return {
+            row[0]
+            for row in con.execute(
+                f"SELECT c.mis_id FROM fact_mo_case c WHERE {clause}",
+                values,
+            )
+        }
+
+    assert hits(fio) == {"1"}
+    assert hits(fio.lower()) == {"1"}
+    assert hits("Петров Иван") == {"1"}
+    assert hits(hyphen.lower()) == {"2"}
+
+
 def test_synonyms_use_single_match_without_dim_subquery() -> None:
     clause, values = ms.sql_parts(ms.expand_query("гипертония"))[ms.CHIP_SYNONYMS]
     assert clause.count("MATCH ?") == 1 and "dim_diagnosis" not in clause, "название МКБ - в индексе, не в подзапросе"

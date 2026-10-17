@@ -763,12 +763,20 @@ def _like_contains(value: str) -> str:
     return f"%{escaped}%"
 
 
+def _title_words(low: str) -> str:
+    """Заглавная у каждого слова и у каждой части через дефис: так ФИО лежит в dim_doctor."""
+    def cap(piece: str) -> str:
+        return piece[:1].upper() + piece[1:] if piece else piece
+
+    return " ".join("-".join(cap(part) for part in word.split("-")) for word in low.split(" "))
+
+
 def _case_variants(value: str) -> list[str]:
     """LOWER() в SQLite не трогает кириллицу, поэтому регистр закрываем вариантами:
-    `гипертон` / `Гипертон` / `ГИПЕРТОН` - строчный, с заглавной, капсом."""
+    строчный, первая буква, каждое слово с заглавной, капс."""
     low = value.lower()
     out = [low]
-    for variant in (low[:1].upper() + low[1:], low.upper()):
+    for variant in (low[:1].upper() + low[1:], _title_words(low), low.upper()):
         if variant not in out:
             out.append(variant)
     return out
