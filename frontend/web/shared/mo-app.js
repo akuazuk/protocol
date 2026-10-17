@@ -5312,15 +5312,21 @@
       var drug = strips.drug || {};
       var lab = strips.lab || {};
       function tile(family, title, row) {
-        var pctN = Number(row.pct);
+        var matched = row.top_pct != null && row.top_title_ru;
+        var pct = matched ? row.top_pct : row.pct;
+        var cases = matched ? row.top_cases : row.cases;
+        var pctN = Number(pct);
         var tone = pctN >= 20 ? "rose" : pctN >= 8 ? "clay" : "moss";
+        var example = matched
+          ? neutralSignalTitle(row.top_title_ru)
+          : (row.cases ? "все сигналы этой группы" : "сигналов нет");
         return '<button type="button" class="family-strip-tile kpi--' + tone + '" data-family-go="' + esc(family) + '">' +
           '<div class="kpi-label">' + esc(title) + ' · черновик</div>' +
-          '<div class="kpi-value">' + esc(familyPct(row.pct)) + '</div>' +
-          '<div class="kpi-meta">' + esc(neutralSignalTitle(row.top_title_ru || (row.top_code ? "Есть технический сигнал" : "сигналов нет"))) +
-          (row.cases != null ? " · n=" + esc(row.cases) : "") + "</div></button>";
+          '<div class="kpi-value">' + esc(familyPct(pct)) + '</div>' +
+          '<div class="kpi-meta">' + esc(example) +
+          (cases != null ? " · n=" + esc(cases) : "") + "</div></button>";
       }
-      host.innerHTML = tile("drug", "Проверка назначений", drug) + tile("lab", "Анализы", lab);
+      host.innerHTML = tile("drug", "Лекарства", drug) + tile("lab", "Анализы", lab);
       host.querySelectorAll("[data-family-go]").forEach(function (btn) {
         btn.addEventListener("click", function () {
           var fam = btn.getAttribute("data-family-go") || "drug";
@@ -5521,14 +5527,32 @@
       var host = $("medications-kpis");
       if (!host) return;
       var tiles = (dash && dash.tiles) || [];
+      var signalHost = $("medications-kpis-signal");
+      var note = document.querySelector(".medications-signal-note");
+      function paint(list) {
+        return list.map(function (tile) {
+          var pct = tile.pct == null ? "нет доли" : (String(tile.pct).replace(".", ",") + "% МО");
+          return kpi(tile.label, tile.n_cases, pct + " · " + (tile.n || 0) + " сигналов", null, tile.tone || "slate");
+        }).join("");
+      }
       if (!tiles.length) {
         host.innerHTML = '<p class="empty">' + esc((dash && dash.reason) || "Нет лекарственных сигналов.") + "</p>";
+        if (signalHost) signalHost.innerHTML = "";
+        if (note) note.hidden = true;
         return;
       }
-      host.innerHTML = tiles.map(function (tile) {
-        var pct = tile.pct == null ? "нет доли" : (String(tile.pct).replace(".", ",") + "% МО");
-        return kpi(tile.label, tile.n_cases, pct + " · " + (tile.n || 0) + " сигналов", null, tile.tone || "slate");
-      }).join("");
+      var byId = {};
+      tiles.forEach(function (tile) { if (tile && tile.id) byId[tile.id] = tile; });
+      var lead = ["interactions", "duplicates"].map(function (id) { return byId[id]; }).filter(Boolean);
+      var signal = ["dose_label", "offprotocol", "any"].map(function (id) { return byId[id]; }).filter(Boolean);
+      tiles.forEach(function (tile) {
+        if (!tile || !tile.id) return;
+        if (lead.indexOf(tile) >= 0 || signal.indexOf(tile) >= 0) return;
+        signal.push(tile);
+      });
+      host.innerHTML = paint(lead.length ? lead : tiles);
+      if (signalHost) signalHost.innerHTML = paint(signal);
+      if (note) note.hidden = !signal.length;
     }
     function renderMedTypes(dash) {
       var host = $("medications-types");
@@ -5969,7 +5993,7 @@
           '</div><div class="kpi-meta">' + esc(completeness) +
           '</div><div class="kpi-meta">' + esc(note) + "</div></div>";
       }
-      return '<div class="family-score-row">' + chip("Проверка назначений", scores.drug_score, scores.drug) +
+      return '<div class="family-score-row">' + chip("Лекарства", scores.drug_score, scores.drug) +
         chip("Анализы", scores.lab_score, scores.lab) + "</div>";
     }
     function renderYesterdayActions(data) {

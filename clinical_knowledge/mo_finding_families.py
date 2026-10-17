@@ -421,6 +421,8 @@ def family_dashboard_from_rows(
                 "cases": (families_out.get("drug") or {}).get("cases"),
                 "top_code": (top_drug[0]["code"] if top_drug else None),
                 "top_title_ru": (top_drug[0]["title_ru"] if top_drug else None),
+                "top_pct": (top_drug[0]["pct"] if top_drug else None),
+                "top_cases": (top_drug[0]["cases"] if top_drug else None),
             },
             "lab": {
                 "pct": unused_among_lab
@@ -429,6 +431,8 @@ def family_dashboard_from_rows(
                 "cases": unused_n if lab_coverage_available else (families_out.get("lab") or {}).get("cases"),
                 "top_code": (top_lab[0]["code"] if top_lab else None),
                 "top_title_ru": (top_lab[0]["title_ru"] if top_lab else None),
+                "top_pct": (top_lab[0]["pct"] if top_lab else None),
+                "top_cases": (top_lab[0]["cases"] if top_lab else None),
                 "denominator": "cases_with_lab" if lab_coverage_available else "total_cases",
             },
         },

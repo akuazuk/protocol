@@ -30,6 +30,9 @@ def test_pages_and_strips_exist() -> None:
     assert 'id="page-medications"' in HTML
     assert 'id="page-labs"' in HTML
     assert 'id="medications-kpis"' in HTML
+    assert 'id="title-medications">Лекарства' in HTML
+    assert 'id="medications-kpis-signal"' in HTML
+    assert "Сигнал, не дефект" in HTML
     assert 'id="labs-kpis"' in HTML
     assert 'id="labs-coverage"' in HTML
     assert "черновик, не в общей оценке" in HTML
@@ -42,6 +45,9 @@ def test_pages_and_strips_exist() -> None:
 
 def test_app_wires_family_dashboards() -> None:
     assert 'medications: "Лекарства"' in APP
+    assert 'tile("drug", "Лекарства"' in APP
+    assert '["interactions", "duplicates"]' in APP
+    assert "row.top_pct" in APP
     assert 'labs: "Анализы"' in APP
     assert "loadMedicationsDashboard" in APP
     assert "loadLabsDashboard" in APP
