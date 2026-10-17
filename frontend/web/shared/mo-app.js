@@ -1050,8 +1050,6 @@
         : state.selected;
       var selected = (selectedSource[key] || []).slice();
       var draft = selected.slice();
-      // Перерисовка может прийти асинхронно (ensureFacets) при открытом меню -
-      // сохраняем набранный текст поиска по фильтру.
       var previousSearch = details.querySelector('.filter-menu input[type="search"]');
       var previousTerm = previousSearch ? previousSearch.value : "";
       var immediate = key === "branches" || key === "specialties" || key === "doctors";
