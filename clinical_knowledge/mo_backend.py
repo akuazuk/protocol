@@ -1421,15 +1421,22 @@ def _warehouse_records(
             scorer_version=scorer_version,
             schema_version=schema_version,
         )
-        assessment = (
-            {
+        if light:
+            revision_raw = item.get("document_revision")
+            revision = (
+                int(revision_raw)
+                if isinstance(revision_raw, (int, float)) and not isinstance(revision_raw, bool)
+                else None
+            )
+            assessment = {
                 "evaluation_run_id": str(item.get("evaluation_run_id") or "") or None,
-                "document_revision": None,
+                "document_revision": revision,
+                "value": float(score) if isinstance(score, (int, float)) and not isinstance(score, bool) else None,
+                "status": str(item.get("assessment_status") or "") or None,
                 "light": True,
             }
-            if light
-            else _assessment_contract_from_row(item)
-        )
+        else:
+            assessment = _assessment_contract_from_row(item)
         output.append(
             {
                 "case_id": str(item.get("visit_id") or item["mis_id"]),
