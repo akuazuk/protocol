@@ -7073,6 +7073,27 @@
       }
       await loadScoringStrictness();
     }
+    function syncAgeDays(day) {
+      var text = String(day || "");
+      if (!/^\d{4}-\d{2}-\d{2}$/.test(text)) return null;
+      var today = minskDateKey(0);
+      var from = Date.parse(text + "T00:00:00Z");
+      var to = Date.parse(today + "T00:00:00Z");
+      if (!Number.isFinite(from) || !Number.isFinite(to)) return null;
+      return Math.round((to - from) / 86400000);
+    }
+    function paintSyncFreshness(id, day, fallback) {
+      var el = $(id);
+      if (!el) return;
+      var age = syncAgeDays(day);
+      if (age != null && age > 7) {
+        el.classList.add("stale");
+        el.textContent = "Сверка старше 7 дней: " + day;
+        return;
+      }
+      el.classList.remove("stale");
+      el.textContent = day ? ("сверка " + day) : (fallback || "нет сверки");
+    }
     async function loadKpSync() {
       var kpis = $("kp-sync-kpis");
       var periodKpis = $("kp-sync-period-kpis");
@@ -7088,11 +7109,7 @@
       var tone = status === "success" || status === "missing" ? "good" : "review";
       var posts = data.post_periods || {};
       var syncP = data.sync_periods || {};
-      if ($("kp-sync-freshness")) {
-        $("kp-sync-freshness").textContent = data.sync_day
-          ? ("сверка " + data.sync_day)
-          : (data.crawled_utc || "нет сверки");
-      }
+      paintSyncFreshness("kp-sync-freshness", data.sync_day, data.crawled_utc || "нет сверки");
       kpis.innerHTML =
         kpi("На сайте", data.site_count, "уникальных файлов") +
         kpi("В корпусе", data.catalog_n || data.local_count, "карточек каталога") +
@@ -7188,7 +7205,11 @@
       if (live.done != null || live.total != null) parts.push(done + "/" + total);
       if (live.message) parts.push(String(live.message));
       if (live.current_reg_id && running) parts.push(String(live.current_reg_id));
-      if (live.errors) parts.push("ошибок " + live.errors);
+      var humanN = Number((data.latest && data.latest.needs_human) || 0);
+      if (Number(live.errors) > 0) parts.push("ошибок " + live.errors);
+      else if (humanN > 0 || /needs_human/.test(String(live.message || ""))) {
+        parts.push("ошибок прогона 0. «Нужно человеку» - не ошибка скачивания");
+      }
       if (live.updated_at) parts.push("обновлено " + live.updated_at);
       text.textContent = parts.join(" · ") || (data.status || "idle");
       return running;
@@ -7213,16 +7234,22 @@
       var latest = data.latest || {};
       var history = data.history || [];
       var running = renderRcethSyncLive(data);
-      if ($("rceth-sync-freshness")) {
-        $("rceth-sync-freshness").textContent = latest.sync_day
-          ? ("сверка " + latest.sync_day)
-          : (data.status === "unavailable" ? "нет данных" : (data.status || "idle"));
+      paintSyncFreshness(
+        "rceth-sync-freshness",
+        latest.sync_day,
+        data.status === "unavailable" ? "нет данных" : (data.status || "idle")
+      );
+      var human = latest.needs_human;
+      var errorMeta = latest.no_pdf != null ? ("без PDF: " + latest.no_pdf) : "";
+      if (human) {
+        errorMeta = (errorMeta ? errorMeta + " · " : "") +
+          "нужно человеку: " + human + ". Ноль ошибок прогона этого не закрывает";
       }
       kpis.innerHTML =
         kpi("В манифесте", latest.manifest_count, "действующих записей") +
         kpi("С инструкцией", latest.with_s_pdf, "есть ссылка на _s.pdf") +
         kpi("Скачано", latest.downloaded, "PDF на volume") +
-        kpi("Ошибки", latest.failed || 0, (latest.no_pdf != null ? ("без PDF: " + latest.no_pdf) : ""));
+        kpi("Ошибки", latest.failed || 0, errorMeta);
       var hist = $("rceth-sync-history-table");
       if (hist) {
         if (!history.length) {

@@ -267,6 +267,7 @@ def public_rceth_sync_payload(
             "downloaded": latest.get("downloaded"),
             "failed": latest.get("failed"),
             "no_pdf": latest.get("no_pdf"),
+            "needs_human": latest.get("needs_human"),
             "parse_ok": latest.get("parse_ok"),
             "written_at": latest.get("written_at"),
         }
@@ -283,6 +284,7 @@ def public_rceth_sync_payload(
                 "downloaded": row.get("downloaded"),
                 "failed": row.get("failed") or 0,
                 "no_pdf": row.get("no_pdf"),
+                "needs_human": row.get("needs_human"),
                 "parse_ok": row.get("parse_ok"),
             }
         )
