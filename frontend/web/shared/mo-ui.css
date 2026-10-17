@@ -827,9 +827,28 @@ tbody tr.table-row-hidden { display: none; }
 }
 #page-documents td.row-actions,
 #page-documents th.row-actions {
+  display: table-cell;
+  position: sticky;
+  right: 0;
+  z-index: 4;
   width: 1%;
+  min-width: 7.5rem;
+  padding-right: 12px;
   text-align: right;
   white-space: nowrap;
+  background: var(--surface-solid);
+  box-shadow: -8px 0 12px -10px rgba(15, 23, 42, 0.22);
+}
+#page-documents th.row-actions {
+  z-index: 5;
+  background: color-mix(in srgb, var(--zone-1) 6%, var(--surface-2));
+}
+#document-rows tr:nth-child(even) td.row-actions {
+  background: color-mix(in srgb, var(--surface-2) 58%, #fff);
+}
+#page-documents tbody tr:hover td.row-actions,
+#page-documents tbody tr:focus-within td.row-actions {
+  background: color-mix(in srgb, var(--accent-soft) 80%, white);
 }
 #page-documents .row-open {
   min-height: 28px;
