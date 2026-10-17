@@ -74,6 +74,8 @@ def test_filter_records_queue_band_critical_not_overall_grade() -> None:
     assert [row["case_id"] for row in kept] == ["c"]
     kept_imp = _filter_records([critical, important], {"queue_band": "important"})
     assert [row["case_id"] for row in kept_imp] == ["i"]
+    kept_action = _filter_records([critical, important], {"queue_band": "action"})
+    assert [row["case_id"] for row in kept_action] == ["c", "i"]
     by_visits = _filter_records(
         [critical, important],
         {"queue_band": "critical", "_queue_band_visits": {"c"}},

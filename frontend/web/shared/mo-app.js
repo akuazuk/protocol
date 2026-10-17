@@ -994,6 +994,17 @@
       showToast(next ? ("Оценка: " + overallGradeLabelRu(next)) : "Оценка сброшена");
       filtersChanged();
     }
+    function ensureQueueDefault() {
+      if (state.page !== "queue" || state.queueBand) return;
+      state.queueBand = "action";
+      state.queueOnly = true;
+    }
+    function syncQueueBandStrip() {
+      document.querySelectorAll("#queue-band-strip [data-queue-band]").forEach(function (btn) {
+        var on = (btn.getAttribute("data-queue-band") || "") === state.queueBand;
+        btn.setAttribute("aria-pressed", on ? "true" : "false");
+      });
+    }
     function syncQueueOnlyButton() {
       var btn = $("documents-queue-only");
       if (!btn) return;
@@ -1022,8 +1033,9 @@
       if ($("overall-grade-filter")) $("overall-grade-filter").value = "";
       syncGradeStrip();
       syncQueueOnlyButton();
+      syncQueueBandStrip();
       if (opts.silent) return;
-      var labels = { critical: "Критично", important: "Важно" };
+      var labels = { critical: "Критично", important: "Важно", action: "Критично и важно" };
       showToast(state.queueBand ? ("Очередь: " + (labels[state.queueBand] || state.queueBand)) : "Полоса очереди снята");
       if (opts.page) switchPage(opts.page);
       else filtersChanged();
@@ -1334,8 +1346,8 @@
         html.push('<span class="chip">Оценка: ' + esc(gradeLabel) +
           '<button type="button" data-clear-overall-grade aria-label="Удалить фильтр оценки">×</button></span>');
       }
-      if (state.queueBand) {
-        var queueBandLabel = ({ critical: "критично", important: "важно" })[state.queueBand] || state.queueBand;
+      if (state.queueBand && !(state.page === "queue" && state.queueBand === "action")) {
+        var queueBandLabel = ({ critical: "критично", important: "важно", action: "критично и важно" })[state.queueBand] || state.queueBand;
         html.push('<span class="chip">Очередь: ' + esc(queueBandLabel) +
           '<button type="button" data-clear-queue-band aria-label="Снять полосу очереди">×</button></span>');
       }
@@ -1422,7 +1434,9 @@
       });
       var clearQueueBand = $("filter-chips").querySelector("[data-clear-queue-band]");
       if (clearQueueBand) clearQueueBand.addEventListener("click", function () {
-        state.queueBand = "";
+        state.queueBand = state.page === "queue" ? "action" : "";
+        if (state.page === "queue") state.queueOnly = true;
+        syncQueueBandStrip();
         filtersChanged();
       });
       var clearAttention = $("filter-chips").querySelector("[data-clear-attention]");
@@ -1539,8 +1553,10 @@
       if ($("date-from")) $("date-from").value = state.dateFrom;
       if ($("date-to")) $("date-to").value = state.dateTo;
       syncCustomDates();
+      ensureQueueDefault();
       syncGradeStrip();
       syncQueueOnlyButton();
+      syncQueueBandStrip();
       syncOverviewGrain();
       syncPeriodStrip();
       updateFilterSummary();
@@ -7790,7 +7806,12 @@
       try {
         if (page === "overview") await loadOverview();
         else if (page === "yesterday") await loadYesterday();
-        else if (page === "queue") { await loadQueueDashboard(); await loadCases(true); }
+        else if (page === "queue") {
+          ensureQueueDefault();
+          syncQueueBandStrip();
+          await loadCases(true);
+          if ($("queue-crm") && $("queue-crm").open) await loadQueueDashboard();
+        }
         else if (page === "documents") await loadCases(false);
         else if (page === "doctors") await loadDoctorsDimension();
         else if (page === "medications") await loadMedicationsDashboard();
@@ -8323,6 +8344,19 @@
           setOverallGrade(btn.getAttribute("data-overall-grade") || "");
         });
       }
+      var queueCrm = $("queue-crm");
+      if (queueCrm) {
+        queueCrm.addEventListener("toggle", function () {
+          if (queueCrm.open && state.page === "queue") loadQueueDashboard();
+        });
+      }
+      document.querySelectorAll("#queue-band-strip [data-queue-band]").forEach(function (btn) {
+        btn.addEventListener("click", function () {
+          applyQueueBand(btn.getAttribute("data-queue-band") || "action", { silent: true });
+          if (state.page !== "queue") switchPage("queue");
+          else filtersChanged();
+        });
+      });
       var queueOnlyBtn = $("documents-queue-only");
       if (queueOnlyBtn) {
         syncQueueOnlyButton();
@@ -8384,8 +8418,9 @@
         state.zoneFilter = "";
         state.zoneBandFilter = "";
         state.overallGrade = "";
-        state.queueOnly = false;
-        state.queueBand = "";
+        state.queueOnly = state.page === "queue";
+        state.queueBand = state.page === "queue" ? "action" : "";
+        syncQueueBandStrip();
         var gradeSel = $("overall-grade-filter");
         if (gradeSel) gradeSel.value = "";
         syncGradeStrip();

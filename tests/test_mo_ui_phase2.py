@@ -100,6 +100,10 @@ def test_mis_queue_pages_have_f6_hosts() -> None:
     assert 'id="mis-ingest-queue"' in HTML
     assert 'id="mis-kpis"' in HTML
     assert 'id="queue-kpis"' in HTML
+    assert 'id="queue-crm"' in HTML
+    assert 'data-queue-band="action"' in HTML
+    assert "не статусы назначения" in HTML
+    assert "function ensureQueueDefault" in APP
     assert 'id="queue-ages"' in HTML
     assert 'id="queue-owners"' in HTML
     assert "loadMisDashboard" in APP
