@@ -324,9 +324,52 @@ def test_safety_ignores_p2_ddi():
     assert safety["codes"] == []
 
     safety_p1 = _safety_from_findings(
-        [{"code": "C_ddi", "severity": "P1", "title_ru": "Major: a + b"}]
+        [{"code": "C_ddi", "severity": "P1", "title_ru": "Major: Альфацин + Бетапрол"}]
     )
-    assert safety_p1["band"] == "important"
+    assert safety_p1["band"] == "critical"
+
+
+def test_critical_band_is_red_flag_major_and_high_alert_only():
+    from clinical_knowledge.mo_overall_grade import compute_mo_overall_grade
+    from clinical_knowledge.mo_zone_scores import _safety_from_findings
+
+    major = _safety_from_findings(
+        [{"code": "C_ddi", "severity": "P1", "title_ru": "Major: Альфацин + Бетапрол"}]
+    )
+    assert major["band"] == "critical"
+    topical = _safety_from_findings(
+        [{
+            "code": "C_ddi",
+            "severity": "P1",
+            "title_ru": "Major, топический путь: Альфацин + Бетапрол",
+            "topical_ddi": True,
+        }]
+    )
+    assert topical["band"] == "important"
+    topical_p2 = _safety_from_findings(
+        [{
+            "code": "C_ddi",
+            "severity": "P2",
+            "title_ru": "Major, топический путь - понижено: a + b",
+        }]
+    )
+    assert topical_p2["band"] == "none"
+    high = _safety_from_findings(
+        [{"code": "C_high_alert_no_dose", "severity": "P1", "title_ru": "Гепарин учебный без дозы"}]
+    )
+    assert high["band"] == "critical"
+    nsaid = _safety_from_findings(
+        [{"code": "C_nsaid_dup", "severity": "P1", "title_ru": "Два НПВП: Альфацин и Бетапрол"}]
+    )
+    assert nsaid["band"] == "important"
+    reg55 = _safety_from_findings(
+        [{"code": "D_reg55_p0", "severity": "P0", "title_ru": "№55 не выполнен"}]
+    )
+    assert reg55["band"] == "none"
+    empty_dx = compute_mo_overall_grade(
+        {"zone1_band": "ok", "zone2a_band": "bad", "zone2b_band": "ok", "safety_band": "none"}
+    )
+    assert empty_dx["grade"] == "important"
 
 
 def test_one_soft_half_does_not_make_zone1_weak() -> None:

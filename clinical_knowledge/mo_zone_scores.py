@@ -16,7 +16,8 @@ from typing import Any, Mapping, Sequence
 
 import yaml
 
-from clinical_knowledge.mo_action_queue_select import QUEUE_INCLUDE_CODES
+from clinical_knowledge.medication_safety import finding_suggests_topical_ddi
+from clinical_knowledge.mo_action_queue_select import QUEUE_INCLUDE_CODES, ddi_is_major
 from clinical_knowledge.mo_overall_grade import compute_mo_overall_grade
 from clinical_knowledge.mo_rubric_mz import evaluate_mo_rubric_mz, load_rubric_config
 
@@ -268,7 +269,17 @@ def _safety_from_findings(findings: Sequence[Mapping[str, Any]] | None) -> dict[
             continue
         codes.append(code)
         title = str(finding.get("title_ru") or finding.get("detail_ru") or "").lower()
-        if sev == "P0" or "критич" in title or code in {"C_red_flag", "C_red_flag_unrouted"}:
+        # «Критично» записи: красный флаг, Major не топический, high-alert без дозы.
+        # Дубль НПВП, неясность и топический Major остаются не выше «Важно».
+        topical_major = code == "C_ddi" and finding_suggests_topical_ddi(finding)
+        if code == "C_nsaid_dup" or topical_major:
+            important = True
+        elif (
+            code in {"C_red_flag", "C_red_flag_unrouted", "C_high_alert_no_dose"}
+            or (code == "C_ddi" and ddi_is_major(finding))
+            or sev == "P0"
+            or "критич" in title
+        ):
             critical = True
         else:
             important = True
