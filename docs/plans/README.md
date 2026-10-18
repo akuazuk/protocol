@@ -2,6 +2,7 @@
 |------|------|--------|
 | [2026-10-17-mo-analytics-trust-v1.md](2026-10-17-mo-analytics-trust-v1.md) | МО Аналитика: одно слово - одно число, шапка, очередь, лекарства, служба, справка | completed (прод 2026-10-17-180512Z-mo-zone-jump) |
 | [2026-10-17-mo-find-search-v1.md](2026-10-17-mo-find-search-v1.md) | Найти МО: полное ФИО врача не находится из-за регистра кириллицы в LIKE | active |
+| [2026-10-18-mo-accuracy-ux-program-v1.md](2026-10-18-mo-accuracy-ux-program-v1.md) | МО: точность списка, разбор случая, экраны, контракт фильтров, сигналы Важно/Критично, внешняя вёрстка | active |
 | [2026-09-27-mo-client-passport-score-ui-v2.md](2026-09-27-mo-client-passport-score-ui-v2.md) | Паспорт 205 тыс. из МИС (индекс), оценка дыр 2026, разбор пятью шагами; цифры было/станет по шкале и UI | active |
 | [2026-09-27-mo-case-review-restore-v1.md](2026-09-27-mo-case-review-restore-v1.md) | Вернуть столбец «Проверка» (зоны / Почему так / Что не так) как способ найти плохие МО; шаги только `?steps=1` | active |
 | [2026-09-27-mo-patient-passport-v1.md](2026-09-27-mo-patient-passport-v1.md) | Паспорт клиента, каркас (преемник - client-passport-score-ui-v2) | archived |
