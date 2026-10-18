@@ -1,0 +1,205 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex">
+  <title>Стенд вёрстки МО | фикстура</title>
+  <link rel="stylesheet" href="/mo-tokens.css">
+  <link rel="stylesheet" href="/mo-ui.css">
+  <link rel="stylesheet" href="../shared/mo-tokens.css">
+  <link rel="stylesheet" href="../shared/mo-ui.css">
+</head>
+<body>
+  <a class="skip-link" href="#main">К содержанию</a>
+  <div class="app" id="dashboard">
+    <aside class="sidebar" aria-label="Стенд вёрстки">
+      <div class="brand">
+        <span class="brand-copy">Стенд вёрстки<small>учебные визиты, не клиника</small></span>
+      </div>
+      <nav>
+        <ul class="nav-list">
+          <li><a class="nav-button" href="#screen-documents">Найти МО</a></li>
+          <li><a class="nav-button" href="#screen-queue">Очередь</a></li>
+          <li><a class="nav-button" href="#screen-doctors">Врачи</a></li>
+          <li><a class="nav-button" href="#screen-meds">Лекарства</a></li>
+          <li><a class="nav-button" href="#screen-report">Отчёт дня</a></li>
+          <li><a class="nav-button" href="#screen-help">Справка</a></li>
+        </ul>
+      </nav>
+    </aside>
+    <div class="workspace">
+      <header class="context-bar" aria-label="Учебные фильтры">
+        <div class="context-top">
+          <div class="period-strip" role="group" aria-label="Период">
+            <div class="period-presets">
+              <button class="button secondary compact" type="button">Вчера</button>
+              <button class="button secondary compact" type="button" aria-pressed="true">Месяц</button>
+            </div>
+            <p class="card-sub">Месяц · 1-17 октября 2026</p>
+          </div>
+          <form class="case-search-form" role="search" action="#screen-documents">
+            <label class="filter search-field"><span>Врач, диагноз, код МКБ или номер визита</span>
+              <input class="control" type="search" value="fx-major" aria-label="Врач, диагноз, код МКБ или номер визита">
+            </label>
+            <button class="button" type="submit">Найти</button>
+          </form>
+          <div class="grade-strip" role="radiogroup" aria-label="Оценка записи">
+            <span class="grade-strip-label">Оценка записи</span>
+            <button class="button secondary compact" type="button" data-overall-grade="">Все <span>5</span></button>
+            <button class="button secondary compact" type="button" data-overall-grade="important">Важно <span>4</span></button>
+            <button class="button secondary compact" type="button" data-overall-grade="critical" aria-pressed="true">Критично <span>1</span></button>
+          </div>
+        </div>
+      </header>
+      <main id="main">
+        <section id="screen-documents" class="card" aria-label="Найти МО">
+          <h2>Найти МО</h2>
+          <p class="card-sub" id="empty-critical-note">Пустой набор: ноль на чипе «Критично» значит, что таких оценок в наборе нет. Фильтр при этом не сломан.</p>
+          <div id="page-documents">
+            <div class="table-wrap table-wrap--scroll">
+              <table class="table-dense">
+                <thead>
+                  <tr>
+                    <th>Визит</th>
+                    <th>Дата</th>
+                    <th>Врач</th>
+                    <th>Диагноз</th>
+                    <th>Оценка</th>
+                    <th>Причина</th>
+                    <th>Открыть</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr id="fx-major">
+                    <td>fx-major</td>
+                    <td class="when-cell">2026-10-02</td>
+                    <td class="who-cell">Врач Фикстуры</td>
+                    <td>Учебный диагноз</td>
+                    <td class="grade-cell"><span class="status overall-grade-chip overall-grade--important">Важно</span></td>
+                    <td class="reason-cell">Major: Препарат А + Препарат Б</td>
+                    <td class="row-actions"><a href="#case-fx-major">Открыть</a></td>
+                  </tr>
+                  <tr id="fx-nsaid">
+                    <td>fx-nsaid</td>
+                    <td class="when-cell">2026-10-03</td>
+                    <td class="who-cell">Врач Фикстуры</td>
+                    <td>Учебный диагноз</td>
+                    <td class="grade-cell"><span class="status overall-grade-chip overall-grade--important">Важно</span></td>
+                    <td class="reason-cell">Одновременно два НПВП</td>
+                    <td class="row-actions"><a href="#case-fx-nsaid">Открыть</a></td>
+                  </tr>
+                  <tr id="fx-empty-dx">
+                    <td>fx-empty-dx</td>
+                    <td class="when-cell">2026-10-04</td>
+                    <td class="who-cell">Врач Фикстуры</td>
+                    <td>Диагноз не заполнен</td>
+                    <td class="grade-cell"><span class="status overall-grade-chip overall-grade--important">Важно</span></td>
+                    <td class="reason-cell">Диагноз пустой, код МКБ не указан</td>
+                    <td class="row-actions"><a href="#case-fx-empty-dx">Открыть</a></td>
+                  </tr>
+                  <tr id="fx-stale">
+                    <td>fx-stale</td>
+                    <td class="when-cell">2026-10-05</td>
+                    <td class="who-cell">Врач Фикстуры</td>
+                    <td>Учебный диагноз</td>
+                    <td class="grade-cell"><span class="status overall-grade-chip overall-grade--important">Важно</span></td>
+                    <td class="reason-cell">Оценка старше замечания: живого сигнала P0/P1 нет</td>
+                    <td class="row-actions"><a href="#case-fx-stale">Открыть</a></td>
+                  </tr>
+                  <tr id="fx-critical">
+                    <td>fx-critical</td>
+                    <td class="when-cell">2026-10-06</td>
+                    <td class="who-cell">Врач Фикстуры</td>
+                    <td>Учебный диагноз</td>
+                    <td class="grade-cell"><span class="status overall-grade-chip overall-grade--critical">Критично</span></td>
+                    <td class="reason-cell">Красный флаг: учебный сигнал Альфа</td>
+                    <td class="row-actions"><a href="#case-fx-critical">Открыть</a></td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <section id="screen-cases" class="card" aria-label="Карточки">
+          <article id="case-fx-major" class="card">
+            <h2>fx-major</h2>
+            <p class="overall-grade-why" id="case-fx-major-lead">Major: Препарат А + Препарат Б</p>
+            <p class="case-stepper__quote">Текст осмотра фикстуры</p>
+            <p><span class="status overall-grade-chip overall-grade--important">Важно</span> <span class="chip">Major</span></p>
+          </article>
+          <article id="case-fx-stale" class="card">
+            <h2>fx-stale</h2>
+            <p class="overall-grade-why">Оценка старше замечания: живого сигнала P0/P1 нет</p>
+            <p class="case-stepper__quote">Текст осмотра фикстуры</p>
+            <p>Замечаний на карточке нет. Оценка старше замечания, поэтому строка не выглядит здоровой.</p>
+          </article>
+          <article id="case-fx-nsaid" class="card">
+            <h2>fx-nsaid</h2>
+            <p class="overall-grade-why">Одновременно два НПВП</p>
+            <p class="case-stepper__quote">Текст осмотра фикстуры</p>
+          </article>
+          <article id="case-fx-empty-dx" class="card">
+            <h2>fx-empty-dx</h2>
+            <p class="overall-grade-why">Диагноз пустой, код МКБ не указан</p>
+            <p class="case-stepper__quote">Текст осмотра фикстуры</p>
+          </article>
+          <article id="case-fx-critical" class="card">
+            <h2>fx-critical</h2>
+            <p class="overall-grade-why">Красный флаг: учебный сигнал Альфа</p>
+            <p class="case-stepper__quote">Текст осмотра фикстуры</p>
+            <p><span class="status overall-grade-chip overall-grade--critical">Критично</span></p>
+          </article>
+        </section>
+
+        <section id="screen-queue" class="card" aria-label="Очередь">
+          <h2>Очередь</h2>
+          <p>Это тяжесть замечания. Оценка записи в колонке может быть другой.</p>
+          <h3>Очередь с нулём критичных</h3>
+          <p id="queue-empty">Критичных замечаний в этой очереди нет. Ноль здесь - пустая очередь, не сломанный фильтр.</p>
+          <h3>Очередь с одним критичным</h3>
+          <p id="queue-one">fx-critical · Критично · Красный флаг: учебный сигнал Альфа</p>
+        </section>
+
+        <section id="screen-doctors" class="card" aria-label="Врачи">
+          <h2>Врачи</h2>
+          <p>Клик по врачу откроет: Слабо, важно и критично, без фильтра зоны.</p>
+          <div role="group" aria-label="Оценки врача">
+            <button class="button secondary compact" type="button" aria-pressed="true">Слабо, важно и критично</button>
+            <button class="button secondary compact" type="button">Хорошо</button>
+            <button class="button secondary compact" type="button">Все оценки</button>
+          </div>
+          <figure>
+            <figcaption>Зона: диагноз. Это график зоны, не переключатель оценки.</figcaption>
+            <div class="zone-card" aria-hidden="true"><div class="zone-card-label">Диагноз</div></div>
+          </figure>
+        </section>
+
+        <section id="screen-meds" class="card" aria-label="Лекарства">
+          <h2>Лекарства</h2>
+          <h3>В общей оценке</h3>
+          <p id="meds-scored">Препарат А + Препарат Б · Major</p>
+          <h3>Не в общей оценке</h3>
+          <p id="meds-outside"><span class="chip">не в общей оценке</span> Препарат В, справочная строка без взаимодействия.</p>
+        </section>
+
+        <section id="screen-report" class="card" aria-label="Отчёт дня">
+          <h2>Отчёт дня</h2>
+          <p>P0 в отчёте дня - это приоритет замечания, не оценка записи.</p>
+        </section>
+
+        <section id="screen-help" class="card" aria-label="Справка">
+          <h2>Справка</h2>
+          <ol>
+            <li>Критично на чипе - оценка всей записи.</li>
+            <li>Критично на бейдже замечания - тяжесть одного сигнала.</li>
+            <li>Критично в очереди - срез разбора, он может не совпасть с чипом.</li>
+          </ol>
+        </section>
+      </main>
+    </div>
+  </div>
+  <script src="./mo-layout-fixture.js"></script>
+</body>
+</html>

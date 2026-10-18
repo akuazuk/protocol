@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-10-18-113119Z-mo-critical-band"
+BUILD_VERSION = "2026-10-18-121443Z-mo-layout-fixture"
 
 
 def _app_version() -> str:
@@ -15490,6 +15490,29 @@ if has_frontend_file("index.html"):
             path=str(p),
             media_type="text/html; charset=utf-8",
             headers={"Cache-Control": "no-cache, must-revalidate"},
+        )
+
+    @app.get("/methodist/mo-layout-fixture.html", include_in_schema=False)
+    def _serve_mo_layout_fixture() -> FileResponse:
+        """Учебный стенд вёрстки. Склад и живые визиты не читает."""
+        p = frontend_file("methodist/mo-layout-fixture.html")
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Стенд вёрстки не найден")
+        return FileResponse(
+            path=str(p),
+            media_type="text/html; charset=utf-8",
+            headers={"Cache-Control": "no-store"},
+        )
+
+    @app.get("/methodist/mo-layout-fixture.js", include_in_schema=False)
+    def _serve_mo_layout_fixture_js() -> FileResponse:
+        p = frontend_file("methodist/mo-layout-fixture.js")
+        if not p.is_file():
+            raise HTTPException(status_code=404, detail="Стенд вёрстки не найден")
+        return FileResponse(
+            path=str(p),
+            media_type="text/javascript; charset=utf-8",
+            headers={"Cache-Control": "no-store"},
         )
 
     @app.get("/methodist/calibration", include_in_schema=False)
