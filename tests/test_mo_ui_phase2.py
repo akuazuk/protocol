@@ -234,7 +234,7 @@ def test_settings_page_is_help_with_zones_without_v3v4_or_ai_costs() -> None:
     assert ".sidebar-help" in UI
     assert "function scoringCanRecomputeNow" in APP
     assert 'class="admin-recompute mo-secondary-details"' in APP
-    assert "Пересчитать витрину за выбранный период? Это действие администратора." in APP
+    assert "Это действие администратора." in APP
     assert "Пересчёт склада запускает только администратор." in (ROOT / "rag_server.py").read_text(encoding="utf-8")
 
 

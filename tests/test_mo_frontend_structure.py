@@ -126,7 +126,7 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "case-workspace-clinical" in JS
     assert "case-workspace-decision" in JS
     assert 'id="drawer-summary"' in JS
-    assert "maxlength=\"12000\"" in JS or "maxlength=\\\"12000\\\"" in JS or "maxlength=\"12000\"" in SOURCE
+    assert "maxlength=\"4000\"" in JS or "maxlength=\\\"4000\\\"" in JS or "maxlength=\"4000\"" in SOURCE
     assert "drawer-score-c" not in JS
     assert "Полнота %" not in JS
     assert "protocol-suggest" in JS
@@ -140,7 +140,7 @@ def test_case_workspace_has_dual_scroll_and_large_summary() -> None:
     assert "case-workspace-grid--zones" in CSS or "case-workspace-grid--zones" in SOURCE
     assert "protocol-suggest-top" in JS
     assert 'id="drawer-pdf"' in HTML
-    assert 'details open class="methodist-decision-panel methodist-decision-panel--dock"' in JS  # раскрыто по умолчанию (v2, волна A)
+    assert 'details class="methodist-decision-panel methodist-decision-panel--dock"' in JS  # свёрнуто, пока нет решения
     assert "decision-dock-summary" in JS
     assert 'methodist-decision-panel--dock[open]' in CSS or "decision-dock-summary" in CSS
     assert "data-sort-key" in HTML
@@ -252,21 +252,23 @@ def test_facets_are_fetched_for_non_overview_pages_and_on_panel_open() -> None:
         assert f'"{param}"' in key_fn
     # поздний ответ /facets перерисовывает меню - набранный поиск по фильтру сохраняется,
     # а отметки берутся из filterDraft/selected (publishFacet пишет туда сразу)
-    render = JS[JS.find("function renderFilter(details)") :][:2600]
+    render = JS[JS.find("function renderFilter(details)") :][:4500]
     assert "var previousTerm = previousSearch ? previousSearch.value : \"\";" in render
     assert "if (previousTerm) {" in render
     assert "state.filterDraft.selected" in render
     # поздний ответ /facets перерисовывает меню - набранный поиск по фильтру сохраняется,
     # а отметки берутся из filterDraft/selected (publishFacet пишет туда сразу)
-    render = JS[JS.find("function renderFilter(details)") :][:2600]
+    render = JS[JS.find("function renderFilter(details)") :][:4500]
     assert "var previousTerm = previousSearch ? previousSearch.value : \"\";" in render
     assert "if (previousTerm) {" in render
     assert "state.filterDraft.selected" in render
 
 
-def test_facet_checkbox_publishes_without_waiting_outer_apply() -> None:
+def test_facet_checkbox_waits_for_show() -> None:
     assert "function publishFacet(next, closeMenu)" in JS
-    assert "publishFacet(draft, false)" in JS
+    assert "data-filter-apply>Показать" in JS
+    assert "publishFacet(draft, true)" in JS
+    assert "publishFacet(draft, false)" not in JS
 
 
 def test_cases_table_keeps_rows_while_reloading() -> None:
@@ -283,7 +285,7 @@ def test_cases_table_keeps_rows_while_reloading() -> None:
     assert "function paintCaseChrome(item)" in JS
     assert "case-inspector-pending" in JS
     assert "caseDetailLoading" in JS
-    idx = JS.find("label: \"Показать критические случаи\"")
+    idx = JS.find("label: \"Очередь: только критичное замечание\"")
     assert idx >= 0
     chunk = JS[idx : idx + 280]
     assert 'applyQueueBand("critical"' in chunk

@@ -53,7 +53,7 @@
               <button class="button secondary compact" type="button" data-quick-period="7d">7 дней</button>
               <button class="button secondary compact" type="button" data-quick-period="month" aria-pressed="true">Месяц</button>
               <button class="button secondary compact" type="button" data-quick-period="ytd">С начала года</button>
-              <button class="button secondary compact" type="button" data-quick-period="custom">Произвольный</button>
+              <button class="button secondary compact" type="button" data-quick-period="custom">Даты</button>
             </div>
             <label class="filter" id="date-from-wrap" hidden><span>С даты</span><input class="control" id="date-from" type="date"></label>
             <label class="filter" id="date-to-wrap" hidden><span>По дату</span><input class="control" id="date-to" type="date"></label>
@@ -66,10 +66,10 @@
                 <option value="custom">Произвольный</option>
               </select>
             </label>
-            <button class="button secondary compact" id="reset-filters" type="button">Сбросить всё</button>
+            <button class="button secondary compact" id="reset-filters" type="button">Сбросить фильтры</button><span class="period-keep" id="period-keep">Период останется</span>
           </div>
           <form class="case-search-form" id="case-search-form" role="search">
-            <label class="filter search-field"><span>Поиск по выборке случаев</span><input class="control" id="case-search" type="search" placeholder="Врач, диагноз, МКБ, visit_id" autocomplete="off" aria-controls="search-suggestions" aria-expanded="false"><span class="suggestions" id="search-suggestions" role="listbox" hidden></span></label>
+            <label class="filter search-field"><span>Врач, диагноз, код МКБ или номер визита</span><input class="control" id="case-search" type="search" placeholder="Врач, диагноз, код МКБ или номер визита" autocomplete="off" aria-controls="search-suggestions" aria-expanded="false"><span class="suggestions" id="search-suggestions" role="listbox" hidden></span></label>
             <button class="button" id="case-search-submit" type="submit">Найти</button>
             <button class="button secondary" id="case-search-clear" type="button" hidden>Очистить</button>
           </form>
@@ -85,7 +85,7 @@
           </div>
           <div class="context-top-actions">
             <details class="toolbar-section" id="filters-panel">
-              <summary><span>Фильтры</span><b id="filter-total">Без дополнительных фильтров</b></summary>
+              <summary><span>Уточнить</span><b id="filter-total">Без дополнительных фильтров</b></summary>
               <div class="toolbar-panel">
                 <div class="context-main context-main--filters">
                   <label class="filter"><span>Сравнение</span>
@@ -100,39 +100,26 @@
                   <details class="filter-pop" data-filter="specialties"><summary>Специальности <b>Все</b></summary><div class="filter-menu"></div></details>
                   <details class="filter-pop" data-filter="doctors"><summary>Врачи <b>Все</b></summary><div class="filter-menu"></div></details>
                   <details class="filter-pop" data-filter="statuses"><summary>Статус разбора методиста <b>Все</b></summary><div class="filter-menu"></div></details>
-                  <label class="filter"><span>Оценка МО</span>
-                    <select class="control" id="overall-grade-filter">
-                      <option value="">Все</option>
-                      <option value="critical">Критично</option>
-                      <option value="important">Важно</option>
-                      <option value="poor">Слабо</option>
-                      <option value="fair">С замечанием</option>
-                      <option value="good">Хорошо</option>
-                      <option value="na">Нет оценки</option>
-                    </select>
-                  </label>
-                  <label class="filter filter-toggle" title="В таблице только clinical_visit; остальные типы не показываются и не оцениваются">
-                    <input type="checkbox" id="score-eligible-only" checked disabled>
-                    <span>Только клинические приёмы</span>
-                  </label>
+                  <p class="card-sub context-fact" id="clinical-only-fact">В списке только клинические приёмы. Консультации, диагностика и профосмотр сюда не входят.</p>
+                  <input type="checkbox" id="score-eligible-only" checked disabled hidden>
                 </div>
                 <div class="toolbar-panel-actions">
-                  <span class="panel-help">В таблице только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология не показываются и не оцениваются. Свой диапазон - кнопка «Произвольный».</span>
+                  <span class="panel-help">В таблице только клинические приёмы. Консультации, диагностика и профосмотр сюда не входят. Свой диапазон - кнопка «Даты».</span>
                 </div>
               </div>
             </details>
             <details class="toolbar-section toolbar-section--views" id="views-panel">
-              <summary><span>Представления</span><b>Текущий срез и действия</b></summary>
+              <summary><span>Срезы</span><b>Текущий срез и действия</b></summary>
               <div class="toolbar-panel toolbar-panel--views">
                 <label class="filter"><span>Сохранённое представление</span><select class="control" id="saved-view"><option value="">Текущий срез</option></select></label>
                 <div class="zone-presets" id="zone-view-presets" aria-label="Быстрые срезы по разделам">
-                  <button class="button secondary compact" type="button" data-zone-preset="dx">Внимание: диагноз</button>
-                  <button class="button secondary compact" type="button" data-zone-preset="plan">Внимание: план по КП</button>
-                  <button class="button secondary compact" type="button" data-zone-preset="docs">Оформление слабо</button>
-                  <button class="button secondary compact" type="button" data-zone-preset="first-plan">Первый контакт + слабый план</button>
+                  <button class="button secondary compact" type="button" data-zone-preset="dx">Диагноз: плохо</button>
+                  <button class="button secondary compact" type="button" data-zone-preset="plan">План плохо, протокол подобран</button>
+                  <button class="button secondary compact" type="button" data-zone-preset="docs">Оформление: плохо</button>
+                  <button class="button secondary compact" type="button" data-zone-preset="first-plan">Первый контакт, план плохо</button>
                 </div>
                 <div class="toolbar-panel-actions">
-                  <button class="button" id="save-view" type="button">Сохранить срез</button>
+                  <input class="control" id="saved-view-name" type="text" maxlength="80" placeholder="Название среза"><button class="button" id="save-view" type="button">Сохранить срез</button>
                   <button class="button secondary" id="share-view" type="button">Скопировать ссылку</button>
                 </div>
               </div>
@@ -224,9 +211,9 @@
 
         <section class="page" id="page-queue" data-page="queue" hidden aria-labelledby="title-queue">
           <div class="page-head"><div><h1 id="title-queue">Очередь разбора</h1><p>Случаи с замечанием «критично» или «важно». Это не оценка всей записи и не статусы назначения.</p></div></div>
-          <div class="section-actions grain-strip" id="queue-band-strip" role="group" aria-label="Какие замечания в списке"><button class="button secondary compact" type="button" data-queue-band="action" aria-pressed="true">Критично и важно</button><button class="button secondary compact" type="button" data-queue-band="critical">Только критично</button><button class="button secondary compact" type="button" data-queue-band="important">Только важно</button></div>
+          <div class="section-actions grain-strip" id="queue-band-strip" role="group" aria-label="Какие замечания в списке"><button class="button secondary compact" type="button" data-queue-band="action" aria-pressed="true">Критично и важно</button><button class="button secondary compact" type="button" data-queue-band="critical">Только критично</button><button class="button secondary compact" type="button" data-queue-band="important">Только важно</button></div><p class="card-sub" id="queue-band-note">Это тяжесть замечания. Оценка записи в колонке может быть другой.</p>
           <div class="section-actions"><button class="button secondary" id="queue-shadow-attention-only" type="button" title="Не официальная оценка">Автоматические сигналы: требуют проверки</button><button class="button secondary" id="queue-columns-button" type="button" aria-pressed="false">Колонки</button><button class="button secondary" id="queue-open-pdf-selected" type="button">PDF выбранных</button><button class="button secondary" data-action="export">Экспорт среза</button></div>
-          <details class="queue-crm" id="queue-crm"><summary>Статусы назначения</summary><p class="card-sub">Назначить ответственного, подтвердить или закрыть. Список выше от этих статусов не зависит.</p><div class="kpis" id="queue-kpis"></div><div class="queue-grid"><article class="card span-5"><h2>Возраст задачи</h2><p class="card-sub">Дни с даты визита. Клик открывает Найти МО.</p><div id="queue-ages" class="mo-chart-host"></div></article><article class="card span-7"><h2>Ответственные</h2><p class="card-sub">Назначенные методисты. Клик открывает их очередь.</p><div id="queue-owners" class="mo-chart-host"></div></article></div><div class="section-actions"><span id="queue-bulk-bar" hidden data-selected-n="0"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button></span></div></details>
+          <details class="queue-crm" id="queue-crm"><summary>Статусы назначения</summary><p class="card-sub">Назначить ответственного, подтвердить или закрыть. Список выше от этих статусов не зависит.</p><div class="kpis" id="queue-kpis"></div><div class="queue-grid"><article class="card span-5"><h2>Возраст задачи</h2><p class="card-sub">Дни с даты визита. Клик открывает Найти МО.</p><div id="queue-ages" class="mo-chart-host"></div></article><article class="card span-7"><h2>Ответственные</h2><p class="card-sub">Назначенные методисты. Клик открывает их очередь.</p><div id="queue-owners" class="mo-chart-host"></div></article></div><div class="section-actions"><span id="queue-bulk-bar" hidden data-selected-n="0"><input class="control" id="bulk-assignee" type="text" maxlength="120" placeholder="Ответственный"><button class="button" id="bulk-assign">Назначить ответственного</button><label class="filter"><span>Новый статус</span><select class="control" id="bulk-status-value"><option value="in_review">На разборе</option><option value="confirmed_issue">Замечание подтверждено</option><option value="false_positive">Отклонено</option><option value="needs_more_data">Нужны данные</option><option value="sent_to_doctor">Передано врачу</option><option value="resolved">Решено</option><option value="closed">Закрыто</option></select></label><button class="button secondary" id="bulk-status">Применить статус</button></span></div></details>
           <div class="card"><div class="table-wrap sticky-first table-wrap--dense table-wrap--scroll"><table><caption class="sr-only">Очередь случаев для разбора методистом</caption><thead><tr><th scope="col"><span class="sr-only">Выбрать</span></th><th scope="col" class="sortable-th" data-sort-key="overall_grade">Оценка</th><th scope="col">Раздел</th><th scope="col" class="sortable-th" data-sort-key="visit_id">Визит</th><th scope="col" class="sortable-th" data-sort-key="patient_id">Пациент</th><th scope="col" class="sortable-th" data-sort-key="date">Дата</th><th scope="col" class="sortable-th" data-sort-key="filial">Филиал</th><th scope="col" class="sortable-th" data-sort-key="doctor">Врач / специальность</th><th scope="col">Диагноз</th><th scope="col" class="sortable-th" data-sort-key="zone1">Оформление</th><th scope="col" class="sortable-th" data-sort-key="zone2a">Диагноз (зона)</th><th scope="col" class="sortable-th" data-sort-key="zone2b">План</th><th scope="col" class="sortable-th" data-sort-key="reg55">№55 / градация</th><th scope="col">Причина</th><th scope="col">Ответственный</th><th scope="col">Срок</th><th scope="col">Разбор</th><th scope="col">МО</th></tr></thead><tbody id="queue-rows"></tbody></table></div><div class="section-actions" id="queue-pager"></div></div>
         </section>
 
@@ -242,7 +229,7 @@
               <div><h3>По неделям</h3><div id="cases-summary-weeks" class="mo-chart-host mo-chart-host--spark"></div></div>
             </div>
           </article>
-          <div class="card"><div class="table-wrap sticky-first table-wrap--scroll"><table><caption class="sr-only">Все медицинские документы выбранного среза</caption><thead><tr><th scope="col" class="sortable-th" data-sort-key="visit_id">Визит</th><th scope="col" class="sortable-th" data-sort-key="patient_id">Пациент</th><th scope="col" class="sortable-th" data-sort-key="date">Дата</th><th scope="col" class="sortable-th" data-sort-key="doctor">Врач / специальность</th><th scope="col" class="sortable-th" data-sort-key="filial">Филиал</th><th scope="col">Диагноз</th><th scope="col">МКБ</th><th scope="col">История</th><th scope="col">КП</th><th scope="col" class="sortable-th" data-sort-key="overall_grade">Оценка</th><th scope="col" class="sortable-th" data-sort-key="zone1">Оформление</th><th scope="col" class="sortable-th" data-sort-key="zone2a">Диагноз (зона)</th><th scope="col" class="sortable-th" data-sort-key="zone2b">План</th><th scope="col">Причина</th><th scope="col" class="sortable-th" data-sort-key="reg55">№55 / градация</th><th scope="col" class="row-actions"><span class="sr-only">Открыть</span></th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
+          <div class="card"><div class="table-wrap sticky-first table-wrap--scroll"><table><caption class="sr-only">Все медицинские документы выбранного среза</caption><thead><tr><th scope="col" class="sortable-th" data-sort-key="visit_id">Визит</th><th scope="col" class="sortable-th" data-sort-key="patient_id">Пациент</th><th scope="col" class="sortable-th" data-sort-key="date">Дата</th><th scope="col" class="sortable-th" data-sort-key="doctor">Врач / специальность</th><th scope="col" class="sortable-th" data-sort-key="filial">Филиал</th><th scope="col">Диагноз</th><th scope="col">МКБ</th><th scope="col">История</th><th scope="col">КП</th><th scope="col" class="sortable-th" data-sort-key="overall_grade">Оценка</th><th scope="col">Причина</th><th scope="col" class="sortable-th" data-sort-key="zone1">Оформление</th><th scope="col" class="sortable-th" data-sort-key="zone2a">Диагноз (зона)</th><th scope="col" class="sortable-th" data-sort-key="zone2b">План</th><th scope="col" class="sortable-th" data-sort-key="reg55">№55 / градация</th><th scope="col" class="row-actions"><span class="sr-only">Открыть</span></th></tr></thead><tbody id="document-rows"></tbody></table></div><div class="section-actions" id="pager"></div></div>
         </section>
 
         <section class="page" id="page-doctors" data-page="doctors" hidden aria-labelledby="title-doctors">
@@ -258,10 +245,11 @@
             <button class="button secondary compact" type="button" data-doctor-zone="zone2b">План по протоколу</button>
           </div>
           <div class="section-actions grain-strip" id="doctor-grade-filter" role="group" aria-label="Какие случаи открывать">
-            <button class="button secondary compact" type="button" data-doctor-grade="poor">Плохие</button>
-            <button class="button secondary compact" type="button" data-doctor-grade="good">Хорошие</button>
-            <button class="button secondary compact" type="button" data-doctor-grade="all" aria-pressed="true">Все</button>
+            <button class="button secondary compact" type="button" data-doctor-grade="poor" aria-pressed="true">Слабо, важно и критично</button>
+            <button class="button secondary compact" type="button" data-doctor-grade="good">Хорошо</button>
+            <button class="button secondary compact" type="button" data-doctor-grade="all">Все оценки</button>
           </div>
+          <p class="card-sub" id="doctor-open-sentence">Клик по врачу откроет: Слабо, важно и критично, без фильтра зоны.</p>
           <div class="card">
             <h2>Доля плохого по разделу</h2>
             <p class="card-sub">Горизонтальные полосы: процент случаев с оценкой «плохо» в выбранном разделе</p>
@@ -308,7 +296,7 @@
         </section>
         <section class="page" id="page-patient" data-page="patient" hidden aria-labelledby="title-patient">
           <div class="page-head"><div><h1 id="title-patient">Пациент</h1><p>Визит или ключ паспорта. Сервер находит карту. ФИО и id клиента не показываются.</p></div></div>
-          <form class="mis-search-form" id="patient-resolve-form" role="search"><label class="filter search-field"><span>Визит или ключ паспорта</span><input class="control" id="patient-resolve" type="search" placeholder="visit_id" autocomplete="off"></label><button class="button" type="submit">Открыть паспорт</button></form>
+          <form class="mis-search-form" id="patient-resolve-form" role="search"><label class="filter search-field"><span>Номер визита или ключ паспорта</span><input class="control" id="patient-resolve" type="search" placeholder="Например номер визита" autocomplete="off"></label><button class="button" type="submit">Открыть паспорт</button></form>
           <p class="card-sub" id="patient-resolve-status">Откроет карту пациента по визиту или ключу. ФИО не показываются.</p>
         </section>
         <section class="page" id="page-mis" data-page="mis" hidden aria-labelledby="title-mis">
@@ -319,7 +307,7 @@
             <article class="card span-8"><h2>По месяцам с января</h2><p class="card-sub">Оценено, в каталоге, не разобрано.</p><div id="mis-months" class="mo-chart-host"></div></article>
             <article class="card span-6"><h2>Специальности каталога</h2><p class="card-sub">Сколько визитов и сколько уже в аналитике.</p><div id="mis-specialty" class="mo-chart-host"></div></article>
             <article class="card span-6"><h2>Очередь догрузки</h2><p class="card-sub" id="mis-ingest-empty">«Проанализировать» ставит визит сюда. Разбирает воркер GCE.</p><div id="mis-ingest-queue"></div></article>
-            <article class="card span-12"><h2>Запрос</h2><form class="mis-search-form" id="mis-search-form" role="search"><div class="mis-tabs" role="tablist" aria-label="Раздел поиска МИС"><button class="button secondary compact" type="button" data-mis-tab="visits" aria-pressed="true">Визиты</button><button class="button secondary compact" type="button" data-mis-tab="labs">Анализы</button></div><label class="filter search-field"><span>Визит, врач, короткий диагноз или название теста</span><input class="control" id="mis-search" type="search" placeholder="visit_id или название теста" autocomplete="off"></label><button class="button" id="mis-search-submit" type="submit">Искать в МИС</button></form></article>
+            <article class="card span-12"><h2>Запрос</h2><form class="mis-search-form" id="mis-search-form" role="search"><div class="mis-tabs" role="tablist" aria-label="Раздел поиска МИС"><button class="button secondary compact" type="button" data-mis-tab="visits" aria-pressed="true">Визиты</button><button class="button secondary compact" type="button" data-mis-tab="labs">Анализы</button></div><label class="filter search-field"><span id="mis-search-label">Номер визита, врач или короткий диагноз</span><input class="control" id="mis-search" type="search" placeholder="Номер визита, врач или короткий диагноз" autocomplete="off"></label><button class="button" id="mis-search-submit" type="submit">Искать в каталоге</button></form></article>
           </div>
           <div class="card" id="mis-visits-card"><h2>Визиты</h2><p class="card-sub" id="mis-visits-empty">Введите visit_id или выберите даты календаря.</p><div class="table-wrap table-wrap--scroll"><table><caption class="sr-only">Визиты каталога МИС</caption><thead><tr><th>Визит</th><th>Дата</th><th>Врач</th><th>Специальность</th><th>Филиал</th><th>Диагноз</th><th>Статус</th><th>Действие</th></tr></thead><tbody id="mis-visit-rows"></tbody></table></div></div>
           <div class="card" id="mis-labs-card" hidden><h2>Анализы</h2><p class="card-sub" id="mis-labs-empty">Поиск по названию теста в складе лаборатории.</p><div id="mis-lab-timeline" class="lab-timeline"></div><div class="table-wrap table-wrap--scroll"><table><caption class="sr-only">Анализы каталога МИС</caption><thead><tr><th>Показатель</th><th>Панель</th><th>Строк</th><th>Последняя дата</th><th>Значение</th></tr></thead><tbody id="mis-lab-rows"></tbody></table></div></div>
@@ -429,15 +417,20 @@
   <section class="auth" id="auth" hidden aria-labelledby="auth-title">
     <h1 id="auth-title">Вход в МО Аналитику</h1>
     <p>Раздел доступен методистам. Войдите по логину и паролю или используйте токен из кабинета методиста.</p>
+    <form class="auth-form" id="auth-login-form">
+    <h2>Логин и пароль</h2>
     <label for="account-login-input">Логин</label>
     <input id="account-login-input" type="text" autocomplete="username">
     <label for="account-password-input">Пароль</label>
     <input id="account-password-input" type="password" autocomplete="current-password">
-    <button class="button" id="account-login-submit">Войти по логину</button>
-    <p class="methodist-tier-hint" style="margin:1rem 0 0.5rem">или токен методиста</p>
-    <label for="token-input">Токен методиста</label>
+    <button class="button" id="account-login-submit" type="button">Войти</button>
+    </form>
+    <form class="auth-form" id="auth-token-form">
+    <h2>Уже есть токен</h2>
+    <label for="token-input">Токен</label>
     <input id="token-input" type="password" autocomplete="off">
-    <button class="button" id="token-submit">Войти</button>
+    <button class="button" id="token-submit" type="button">Войти по токену</button>
+    </form>
     <p id="auth-error" role="alert"></p>
   </section>
 
@@ -462,7 +455,7 @@
   <section class="command-palette" id="command-palette" role="dialog" aria-modal="true" aria-labelledby="command-title" hidden>
     <h2 id="command-title">Быстрые команды</h2>
     <label class="sr-only" for="command-search">Найти команду</label>
-    <input class="control" id="command-search" type="search" placeholder="Экран, период или представление" autocomplete="off">
+    <input class="control" id="command-search" type="search" placeholder="Экран, период или срез" autocomplete="off">
     <div id="command-results" role="listbox" aria-label="Доступные команды"></div>
   </section>
   <div class="toast-region" id="toast-region" role="status" aria-live="polite" aria-atomic="true"></div>

@@ -75,7 +75,7 @@ def test_python_filter_uses_diagnosis_text() -> None:
 
 
 def test_ui_typeahead_and_placeholder() -> None:
-    assert 'placeholder="Врач, диагноз, МКБ, visit_id"' in HTML
+    assert 'placeholder="Врач, диагноз, код МКБ или номер визита"' in HTML
     # Автодополнение с волны D идёт через /search/suggest (сокращения, синонимы, опечатки).
     assert '"/search/suggest?"' in APP
     assert "/dx-suggest?" not in APP
