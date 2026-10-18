@@ -2182,3 +2182,16 @@ tr.reg55-row--measures > td { background: rgba(194, 120, 3, 0.05); }
   background: var(--chip, #eef4f1);
 }
 #case-decision-dock[hidden] { display: none !important; }
+#page-documents td.reason-cell { min-width: 18rem; max-width: 28rem; }
+.case-why-meta small { font-size: 11px; letter-spacing: 0.01em; }
+@media (max-width: 390px) {
+  #page-documents .table-wrap--scroll { overflow: visible; }
+  #page-documents table thead { display: none; }
+  #page-documents table tr { display: block; padding: 8px 0; border-bottom: 1px solid var(--line, #d5e0dc); }
+  #page-documents table td { display: none; border: 0; padding: 2px 0; }
+  #page-documents table td.grade-cell,
+  #page-documents table td.reason-cell,
+  #page-documents table td.who-cell,
+  #page-documents table td.when-cell,
+  #page-documents table td.row-actions { display: block; min-width: 0; max-width: none; }
+}

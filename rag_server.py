@@ -8543,7 +8543,7 @@ def _icd_ru_entries_count() -> int:
 
 
 # Версия сборки: меняйте при значимых изменениях, чтобы по сайту/ответам видеть, новый ли код развёрнут.
-BUILD_VERSION = "2026-10-17-190237Z-mo-fio-search"
+BUILD_VERSION = "2026-10-18-083742Z-mo-plan-index"
 
 
 def _app_version() -> str:
@@ -12637,7 +12637,14 @@ def api_methodist_mo_case_detail(
                         "score_eligible": True,
                     }
                 )
-                result["zones"] = zones_api_payload(zones)
+                result["zones"] = zones_api_payload(
+                    zones,
+                    findings=(
+                        result.get("findings")
+                        if isinstance(result.get("findings"), list)
+                        else []
+                    ),
+                )
                 # Дублируем плоские поля на record для таблиц (UI flag ещё выключен).
                 if isinstance(result.get("record"), dict):
                     result["record"]["zone1_band"] = zones.get("zone1_band")
@@ -13026,7 +13033,12 @@ def api_methodist_mo_protocol_suggest(
                     "document_kind": record.get("document_kind"),
                     "score_eligible": True,
                 }
-            )
+            ),
+            findings=(
+                detail.get("findings")
+                if isinstance(detail.get("findings"), list)
+                else []
+            ),
         )
         suggest["zones"] = zones
         from clinical_knowledge.medication_normative_cards import (

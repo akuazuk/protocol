@@ -2,6 +2,16 @@
 |------|------|--------|
 | [2026-10-17-mo-analytics-trust-v1.md](2026-10-17-mo-analytics-trust-v1.md) | МО Аналитика: одно слово - одно число, шапка, очередь, лекарства, служба, справка | completed (прод 2026-10-17-180512Z-mo-zone-jump) |
 | [2026-10-17-mo-find-search-v1.md](2026-10-17-mo-find-search-v1.md) | Найти МО: полное ФИО врача не находится из-за регистра кириллицы в LIKE | active |
+| [2026-10-18-mo-accuracy-ux-program-v1.md](2026-10-18-mo-accuracy-ux-program-v1.md) | МО: точность списка, разбор случая, экраны, контракт фильтров, сигналы Важно/Критично, внешняя вёрстка | active |
+| [2026-10-18-mo-list-truth-v1.md](2026-10-18-mo-list-truth-v1.md) | Найти МО: колонка причины называет замечание | active |
+| [2026-10-18-mo-case-review-clarity-v1.md](2026-10-18-mo-case-review-clarity-v1.md) | Разбор случая: сначала заголовок замечания | active |
+| [2026-10-18-mo-grade-signals-v1.md](2026-10-18-mo-grade-signals-v1.md) | Какие сигналы остаются Важно, какие кандидаты в Критично | active |
+| [2026-10-18-mo-screen-layout-v1.md](2026-10-18-mo-screen-layout-v1.md) | Каждый экран меню МО: следующий честный клик | active |
+| [2026-10-18-mo-filter-contract-v1.md](2026-10-18-mo-filter-contract-v1.md) | Контракт фильтров и кликов по графику против SQL | active |
+| [2026-10-18-mo-composio-audit-loop-v1.md](2026-10-18-mo-composio-audit-loop-v1.md) | Внешняя вёрстка на синтетической фикстуре | active |
+| [2026-10-18-mo-control-inventory-v1.md](2026-10-18-mo-control-inventory-v1.md) | Перечень контролов, плиток и кликов МО | active |
+| [2026-10-18-mo-forms-v1.md](2026-10-18-mo-forms-v1.md) | Формы МО: поля, подписи, что видит человек после | active |
+| [2026-10-18-mo-layout-color-v1.md](2026-10-18-mo-layout-color-v1.md) | Четыре полосы шапки и цвет каждой оценки | active |
 | [2026-09-27-mo-client-passport-score-ui-v2.md](2026-09-27-mo-client-passport-score-ui-v2.md) | Паспорт 205 тыс. из МИС (индекс), оценка дыр 2026, разбор пятью шагами; цифры было/станет по шкале и UI | active |
 | [2026-09-27-mo-case-review-restore-v1.md](2026-09-27-mo-case-review-restore-v1.md) | Вернуть столбец «Проверка» (зоны / Почему так / Что не так) как способ найти плохие МО; шаги только `?steps=1` | active |
 | [2026-09-27-mo-patient-passport-v1.md](2026-09-27-mo-patient-passport-v1.md) | Паспорт клиента, каркас (преемник - client-passport-score-ui-v2) | archived |

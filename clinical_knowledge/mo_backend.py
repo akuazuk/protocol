@@ -1992,6 +1992,83 @@ def build_dx_suggestions(params: dict[str, Any]) -> dict[str, Any]:
     return {"ok": True, "items": items}
 
 
+def _load_open_safety_findings(mis_ids: list[str]) -> dict[str, list[dict[str, Any]]]:
+    """Открытые C_ P0/P1 для страницы списка. evidence нужен только ранжированию."""
+    ids = [str(item) for item in mis_ids if str(item or "").strip()]
+    if not ids:
+        return {}
+    path = str(_db_path())
+    if not _warehouse_has_table(path, "fact_mo_finding"):
+        return {}
+    has_shadow = _warehouse_has_column(path, "fact_mo_finding", "is_shadow")
+    has_title = _warehouse_has_column(path, "fact_mo_finding", "title_ru")
+    has_detail = _warehouse_has_column(path, "fact_mo_finding", "detail_ru")
+    has_passed = _warehouse_has_column(path, "fact_mo_finding", "passed")
+    has_evidence = _warehouse_has_column(path, "fact_mo_finding", "evidence")
+    shadow_sql = "COALESCE(f.is_shadow, 0)" if has_shadow else "0"
+    title_sql = "COALESCE(f.title_ru, '')" if has_title else "''"
+    detail_sql = "COALESCE(f.detail_ru, '')" if has_detail else "''"
+    evidence_sql = "COALESCE(f.evidence, '')" if has_evidence else "''"
+    passed_sql = "AND COALESCE(f.passed, 0) = 0" if has_passed else ""
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    with closing(_read_connection()) as conn:
+        for offset in range(0, len(ids), 200):
+            batch = ids[offset : offset + 200]
+            marks = ",".join("?" for _ in batch)
+            rows = conn.execute(
+                f"""
+                SELECT f.mis_id AS mis_id, f.finding_code AS finding_code,
+                       f.severity AS severity,
+                       {title_sql} AS title_ru,
+                       {detail_sql} AS detail_ru,
+                       {evidence_sql} AS evidence,
+                       {shadow_sql} AS is_shadow
+                FROM fact_mo_finding f
+                WHERE f.mis_id IN ({marks})
+                  {passed_sql}
+                  AND f.severity IN ('P0', 'P1')
+                  AND f.finding_code LIKE 'C_%'
+                """,
+                batch,
+            ).fetchall()
+            for row in rows:
+                grouped.setdefault(str(row["mis_id"]), []).append(
+                    {
+                        "finding_code": row["finding_code"],
+                        "severity": row["severity"],
+                        "title_ru": row["title_ru"],
+                        "detail_ru": row["detail_ru"],
+                        "evidence": row["evidence"],
+                        "is_shadow": row["is_shadow"],
+                        "passed": 0,
+                    }
+                )
+    return grouped
+
+
+def _attach_page_primary_titles(page_rows: list[dict[str, Any]]) -> None:
+    """Заголовок замечания только у строк текущей страницы."""
+    from .mo_primary_signal_title import apply_primary_signal_titles
+
+    safety_ids = [
+        str(row.get("mis_id") or "")
+        for row in page_rows
+        if str(row.get("attention_primary") or "") == "safety" and row.get("mis_id")
+    ]
+    grouped: dict[str, list[dict[str, Any]]] = {}
+    queried = False
+    if safety_ids and _backend_source() == "warehouse":
+        try:
+            grouped = _load_open_safety_findings(safety_ids)
+            queried = True
+        except sqlite3.Error:
+            _LOG.warning(
+                "Заголовок замечания для списка не прочитан, строка останется с прежней причиной",
+                exc_info=True,
+            )
+    apply_primary_signal_titles(page_rows, grouped, safety_queried=queried)
+
+
 def build_cases(params: dict[str, Any]) -> dict[str, Any]:
     params = _apply_request_period(params)
     params = _apply_score_eligible_default(params)
@@ -2099,6 +2176,7 @@ def build_cases(params: dict[str, Any]) -> dict[str, Any]:
         if _search_relevance_order(params):
             filtered.sort(key=lambda r: int(r.get("_q_rank") or 7))
     page_rows = filtered if pre_total is not None else filtered[start : start + page_size]
+    _attach_page_primary_titles(page_rows)
     rows = []
     for rec in page_rows:
         crm = states.get(rec["case_id"]) or {"status": "new", "tags": [], "finding_decisions": {}}

@@ -557,10 +557,25 @@ def compute_mo_zone_scores(case_ctx: Mapping[str, Any] | None = None) -> dict[st
     return payload
 
 
-def zones_api_payload(zones: Mapping[str, Any]) -> dict[str, Any]:
-    """Публичный блок для case detail / overview."""
+def zones_api_payload(
+    zones: Mapping[str, Any],
+    findings: Sequence[Mapping[str, Any]] | None = None,
+) -> dict[str, Any]:
+    """Публичный блок для case detail / overview.
+
+    findings задают заголовок «Почему так». Без списка замечаний заголовок
+    риска не объявляется устаревшим: неизвестное не подменяется фразой.
+    """
     if not isinstance(zones, Mapping) or not zones.get("ok"):
         return {"ok": False, "engine": ENGINE}
+    from clinical_knowledge.mo_primary_signal_title import primary_signal_title
+
+    attention_primary = str(zones.get("attention_primary") or "none")
+    signal = primary_signal_title(
+        attention_primary=attention_primary,
+        attention_reason_ru=str(zones.get("attention_reason_ru") or ""),
+        findings=findings,
+    )
     return {
         "ok": True,
         "engine": zones.get("engine") or ENGINE,
@@ -568,8 +583,14 @@ def zones_api_payload(zones: Mapping[str, Any]) -> dict[str, Any]:
         "zone2a": zones.get("zone2a"),
         "zone2b": zones.get("zone2b"),
         "safety": zones.get("safety") or {"band": "none", "codes": []},
-        "attention_primary": zones.get("attention_primary") or "none",
+        "attention_primary": attention_primary,
         "attention_reason_ru": zones.get("attention_reason_ru") or "",
+        "primary_finding_title_ru": signal.get("title_ru") or "",
+        "primary_finding_title_full_ru": signal.get("title_full_ru") or "",
+        "primary_finding_code": signal.get("code") or "",
+        "primary_finding_layer_ru": signal.get("layer_ru") or "",
+        "primary_finding_severity_label_ru": signal.get("severity_label_ru") or "",
+        "primary_finding_stale": bool(signal.get("stale")),
         "overall_grade": zones.get("overall_grade") or compute_mo_overall_grade(zones),
         "criteria": zones.get("criteria") or [],
         "rubric_pct": zones.get("rubric_pct"),

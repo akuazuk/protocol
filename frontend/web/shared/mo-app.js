@@ -964,8 +964,13 @@
       var strip = $("grade-strip");
       if (!strip) return;
       var current = String(state.overallGrade || "");
+      var gradeHints = {
+        important: "Клинически важный дефект или важный риск. В строке написано главное замечание. Очередь «важно» - другой список."
+      };
       strip.querySelectorAll("[data-overall-grade]").forEach(function (btn) {
-        btn.setAttribute("aria-pressed", (btn.getAttribute("data-overall-grade") || "") === current ? "true" : "false");
+        var grade = btn.getAttribute("data-overall-grade") || "";
+        btn.setAttribute("aria-pressed", grade === current ? "true" : "false");
+        if (gradeHints[grade]) btn.title = gradeHints[grade];
       });
       var sel = $("overall-grade-filter");
       if (sel) sel.value = current;
@@ -2637,6 +2642,8 @@
         zone2bBand: row.zone2b_band || "", zone2bKp: row.zone2b_kp_status || "",
         attentionPrimary: row.attention_primary || "",
         attentionReason: row.attention_reason_ru || "",
+        primaryFindingTitle: row.primary_finding_title_ru || "",
+        primaryFindingTitleFull: row.primary_finding_title_full_ru || row.primary_finding_title_ru || "",
         overallGrade: row.overall_grade || null };
     }
     function reg55BandLabelRu(code) {
@@ -2935,18 +2942,19 @@
         '<p class="card-sub">' + esc(usage) + "</p></details></div>";
     }
     function documentRow(item) {
-      var reason = item.attentionReason || "";
+      var reason = item.primaryFindingTitle || item.attentionReason || "";
+      var reasonFull = item.primaryFindingTitleFull || reason;
       var band = item.reg55Band || (item.raw && item.raw.reg55_band) || "";
       return '<tr tabindex="0" class="' + reg55RowClass(band).trim() + '" data-case="' + esc(item.id) + '"><td class="id-cell">' + esc(item.visitId || item.id || "-") +
-        '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td>' + esc(item.date) + '</td><td><b>' + esc(item.doctor) +
+        '</td><td class="id-cell">' + esc(item.patientId || "-") + '</td><td class="when-cell">' + esc(item.date) + '</td><td class="who-cell"><b>' + esc(item.doctor) +
         '</b><br><small>' + esc(item.specialty) + '</small></td><td>' + esc(item.branch) + '</td><td>' + esc(item.diagnosis) +
         '</td><td>' + (icdVisitChip(item.raw || item) || '<span class="status muted">нет данных</span>') +
         '</td><td>' + historyPresenceChip(item.raw || item) +
         '</td><td>' + kpPresenceChip(item.zone2bKp) +
-        '</td><td>' + overallGradeChip(item.overallGrade) +
+        '</td><td class="grade-cell">' + overallGradeChip(item.overallGrade) +
         '</td><td>' + zoneBandChip(item.zone1Band) + '</td><td>' + zoneBandChip(item.zone2aBand) +
         '</td><td>' + zoneBandChip(item.zone2bBand, item.zone2bKp) +
-        '</td><td>' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
+        '</td><td class="reason-cell" title="' + esc(reasonFull || reason) + '">' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
         '</td><td>' + reg55BandPill(band, item.reg55) +
         '</td><td class="row-actions"><button class="button secondary compact row-open" type="button" data-open-case="' +
         esc(item.id) + '">Открыть</button></td></tr>';
@@ -3235,7 +3243,7 @@
           if (card) pageHost.insertBefore(banner, card);
         }
         banner.hidden = false;
-        var scopeNote = "Показаны только клинические приёмы. Процедуры, профосмотры, диагностика и стоматология в таблицу не входят и не оцениваются.";
+        var scopeNote = "Клинические приёмы. Консультации, диагностика и профосмотр здесь не показаны.";
         if (isSingleDayPeriod()) {
           banner.innerHTML = "<b>Таблица за " + esc(state.dateFrom) + "</b> · всего " +
             esc(data.total || rows.length) + " записей. " + esc(scopeNote) +
@@ -3865,6 +3873,21 @@
         '<span class="strip-sep" aria-hidden="true">·</span><span>' + esc(coverageLine) + "</span>" +
         '<span class="strip-sep" aria-hidden="true">·</span><span>' + esc(protocolLine) + "</span></div>";
     }
+    function caseWhyLead(zones) {
+      zones = zones || {};
+      var title = String(zones.primary_finding_title_ru || "").replace(/\s+/g, " ").trim();
+      var layer = String(zones.primary_finding_layer_ru || "").trim();
+      var severity = String(zones.primary_finding_severity_label_ru || "").trim();
+      var code = String(zones.primary_finding_code || "").trim();
+      var bits = [];
+      if (layer) bits.push(esc(layer));
+      if (severity) bits.push(esc(severity));
+      if (code) bits.push("<small>" + esc(code) + "</small>");
+      return { title: title, meta: bits.join(" · ") };
+    }
+    function isGenericGradeReason(text) {
+      return /сигнал риска|риск \(безопасность\)/.test(String(text || ""));
+    }
     function renderCaseWhy(zones, assessment, reg55) {
       zones = zones || {};
       assessment = assessment || {};
@@ -3875,8 +3898,10 @@
         if (!text || lines.indexOf(text) >= 0 || lines.length >= 4) return;
         lines.push(text);
       }
+      var lead = caseWhyLead(zones);
+      if (lead.title) add(lead.title);
       var grade = zones.overall_grade || {};
-      add(grade.reason_ru);
+      if (!lead.title || !isGenericGradeReason(grade.reason_ru)) add(grade.reason_ru);
       var regBand = String(reg55.reg55_band || "");
       if (regBand === "noncompliant" || regBand === "compliant_measures") {
         var weak = ((reg55.criteria) || []).filter(function (item) {
@@ -3915,6 +3940,7 @@
       return '<section class="case-why" id="case-why">' +
         "<h3>Почему так</h3>" +
         '<p class="card-sub">Из официальных зон склада, не из черновика модели.</p>' +
+        (lead.meta ? '<p class="card-sub case-why-meta">' + lead.meta + "</p>" : "") +
         "<ul>" + lines.map(function (line) {
           return "<li>" + esc(line) + "</li>";
         }).join("") + "</ul></section>";
