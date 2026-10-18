@@ -15,8 +15,8 @@ def test_header_exposes_calendar_without_apply_buttons() -> None:
     assert 'id="filters-apply"' not in HTML
     assert 'id="filters-cancel"' not in HTML
     assert 'id="reset-filters"' in HTML
-    assert "Сбросить всё" in HTML
-    assert 'placeholder="Врач, диагноз, МКБ, visit_id"' in HTML
+    assert "Сбросить фильтры" in HTML
+    assert 'placeholder="Врач, диагноз, код МКБ или номер визита"' in HTML
 
 
 def test_query_always_sends_date_window() -> None:

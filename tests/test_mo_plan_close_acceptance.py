@@ -149,7 +149,7 @@ def test_ux_leftovers_are_named_by_task() -> None:
     app = (root / "frontend/web/shared/mo-app.js").read_text(encoding="utf-8")
     for html in (methodist, expert):
         assert "Автоматические сигналы: требуют проверки" in html
-        assert "Поиск по выборке случаев" in html
+        assert "Врач, диагноз, код МКБ или номер визита" in html
         assert 'id="queue-bulk-bar"' in html
         assert "Shadow: плохо" not in html
     nav = methodist.split('id="app-nav"')[1].split("</ul>")[0]

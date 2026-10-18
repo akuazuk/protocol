@@ -30,7 +30,7 @@ def test_queue_band_drill_stays_but_only_critical_button_is_gone() -> None:
     assert "state.overallGrade = \"\";" in APP
     # Волна J: кнопки «Только критические» нет, полоса очереди ставится только с KPI.
     assert "queue-critical-only" not in APP
-    assert 'applyQueueBand("critical", { page: "queue" })' in APP
+    assert 'applyQueueBand("critical", { page: "queue", keepGrade: true })' in APP
 
 
 def test_family_clicks_set_finding_codes() -> None:

@@ -5,7 +5,7 @@
     var VIEWS_KEY = "protocol_mo_saved_views";
     var THEME_KEY = "protocol_mo_theme";
     var DENSITY_KEY = "protocol_mo_density";
-    var COLUMNS_KEY = "protocol_mo_columns_v2";
+    var COLUMNS_KEY = "protocol_mo_columns_v3";
     var API_ROOT = MO.api.API_ROOT;
     var LEGACY_ROOT = MO.api.LEGACY_ROOT;
     var rawRequest = MO.api.request;
@@ -73,7 +73,7 @@
       queueOnly: false,
       queueBand: "",
       doctorZoneMetric: "zone1",
-      doctorGradeFilter: "all",
+      doctorGradeFilter: "poor",
       misTab: "visits",
       misQuery: "",
       caseNavIds: [], caseNavRows: {}, caseNavTotal: 0, caseNavPage: 1, caseNavPageSize: 50,
@@ -540,10 +540,26 @@
       if (yesterday.slice(0, 7) === month && yesterday < to) to = yesterday;
       return { from: from, to: to };
     }
+    function formatRuDayRange(from, to) {
+      var months = ["января", "февраля", "марта", "апреля", "мая", "июня", "июля", "августа", "сентября", "октября", "ноября", "декабря"];
+      function one(iso) {
+        if (!iso || iso.length < 10) return null;
+        return { d: Number(iso.slice(8, 10)), m: months[Number(iso.slice(5, 7)) - 1] || "", y: iso.slice(0, 4) };
+      }
+      var a = one(from), b = one(to);
+      if (!a || !b) return "";
+      if (from === to) return a.d + " " + a.m + " " + a.y;
+      if (a.m === b.m && a.y === b.y) return a.d + "-" + b.d + " " + a.m + " " + a.y;
+      return a.d + " " + a.m + " " + a.y + " - " + b.d + " " + b.m + " " + b.y;
+    }
     function syncPeriodStrip() {
+      var range = formatRuDayRange(state.dateFrom, state.dateTo);
       document.querySelectorAll("[data-quick-period]").forEach(function (btn) {
         var period = btn.getAttribute("data-quick-period") || "";
         var on = !!(period && period === state.period);
+        if (!btn.getAttribute("data-period-label")) btn.setAttribute("data-period-label", btn.textContent.trim());
+        var base = btn.getAttribute("data-period-label");
+        btn.textContent = on && period !== "custom" && range ? (base + " · " + range) : base;
         btn.setAttribute("aria-pressed", on ? "true" : "false");
         if (on && period !== "custom") btn.title = periodAbsoluteRange() || "";
         else btn.removeAttribute("title");
@@ -989,6 +1005,38 @@
       if (value === BAD_GRADES) return "плохо (критично, важно, слабо)";
       return parts.map(function (part) { return OVERALL_GRADE_LABELS[part] || part; }).join(", ");
     }
+    function paintGradeChipCounts(buckets) {
+      var map = {};
+      var sum = 0;
+      (buckets || []).forEach(function (item) {
+        var key = String(item.id || "");
+        var n = Number(item.n);
+        if (!key || !isFinite(n)) return;
+        map[key] = n;
+        sum += n;
+      });
+      var strip = $("grade-strip");
+      if (!strip || !sum) return;
+      strip.querySelectorAll("[data-overall-grade]").forEach(function (btn) {
+        var key = btn.getAttribute("data-overall-grade") || "";
+        if (!btn.getAttribute("data-grade-label")) {
+          btn.setAttribute("data-grade-label", btn.textContent.replace(/\s+\d[\d\s]*$/, "").trim());
+        }
+        var base = btn.getAttribute("data-grade-label");
+        var n = key ? map[key] : sum;
+        btn.textContent = base + (n == null ? "" : (" " + n));
+      });
+    }
+    function refreshGradeChipCounts() {
+      var q = query();
+      ["overall_grade", "page", "page_size", "sort_by", "sort_dir"].forEach(function (key) { q.delete(key); });
+      request("/cases/summary?" + q.toString()).then(function (response) {
+        if (!response || !response.ok) return null;
+        return response.json();
+      }).then(function (data) {
+        if (data && data.grades) paintGradeChipCounts(data.grades.buckets);
+      }).catch(function () {});
+    }
     function setOverallGrade(grade, opts) {
       opts = opts || {};
       var next = String(grade || "");
@@ -1031,12 +1079,13 @@
       state.queueBand = String(band || "");
       state.filterDraft = null;
       state.selected.statuses = [];
-      state.overallGrade = "";
+      if (!opts.keepGrade) {
+        state.overallGrade = "";
+        syncGradeStrip();
+      }
       state.attentionOnly = false;
       state.findingCode = "";
       if (state.queueBand) state.queueOnly = true;
-      if ($("overall-grade-filter")) $("overall-grade-filter").value = "";
-      syncGradeStrip();
       syncQueueOnlyButton();
       syncQueueBandStrip();
       if (opts.silent) return;
@@ -1069,33 +1118,37 @@
       var draft = selected.slice();
       var previousSearch = details.querySelector('.filter-menu input[type="search"]');
       var previousTerm = previousSearch ? previousSearch.value : "";
-      var immediate = key === "branches" || key === "specialties" || key === "doctors";
+      var immediate = false;
       details.classList.toggle("has-applied", selected.length > 0);
-      details.querySelector("summary b").textContent = selected.length ? selected.length : "Все";
+      details.querySelector("summary b").textContent = selected.length ? ("Отмечено: " + selected.length) : "Все";
       details.querySelector(".filter-menu").innerHTML =
-        '<input class="control" type="search" placeholder="Найти" aria-label="Поиск по фильтру">' +
+        '<input class="control" type="search" placeholder="Найти в списке" aria-label="Поиск по фильтру">' +
         '<div class="filter-options">' + list.map(function (item) {
           return '<label class="filter-option" data-label="' + esc(item.label.toLowerCase()) + '"><input type="checkbox" value="' +
             esc(item.value) + '"' + (selected.indexOf(item.value) >= 0 ? " checked" : "") + '><span>' +
             esc(item.label) + '</span><span class="filter-count">' + esc(item.count == null ? "" : item.count) + "</span></label>";
-        }).join("") + '</div><div class="filter-menu-actions"><span class="filter-selection">Без изменений</span>' +
+        }).join("") + '</div><p class="empty filter-empty" hidden>В окне такого имени нет</p><div class="filter-menu-actions"><span class="filter-selection">Отмечено: ' + selected.length + '</span>' +
         '<button class="button secondary compact" type="button" data-filter-clear>Очистить</button>' +
-        (immediate ? "" : '<button class="button compact" type="button" data-filter-apply>Применить</button>') +
+        '<button class="button compact" type="button" data-filter-apply>Показать</button>' +
         "</div>";
       var search = details.querySelector('input[type="search"]');
       var selection = details.querySelector(".filter-selection");
       var apply = details.querySelector("[data-filter-apply]");
       function renderDraftState() {
-        var changed = JSON.stringify(draft) !== JSON.stringify(selected);
-        selection.textContent = changed ? "Будет выбрано: " + draft.length : "Без изменений";
-        if (apply) apply.disabled = !changed;
-        details.classList.toggle("has-pending", changed);
+        selection.textContent = "Отмечено: " + draft.length;
+        if (apply) apply.disabled = false;
+        details.classList.toggle("has-pending", JSON.stringify(draft) !== JSON.stringify(selected));
       }
       function applySearchTerm() {
         var term = search.value.trim().toLowerCase();
+        var visible = 0;
         details.querySelectorAll(".filter-option").forEach(function (option) {
-          option.hidden = option.getAttribute("data-label").indexOf(term) < 0;
+          var hide = term && option.getAttribute("data-label").indexOf(term) < 0;
+          option.hidden = hide;
+          if (!hide) visible += 1;
         });
+        var empty = details.querySelector(".filter-empty");
+        if (empty) empty.hidden = !term || visible > 0;
       }
       search.addEventListener("input", applySearchTerm);
       if (previousTerm) {
@@ -1118,7 +1171,7 @@
           state.filterDraft.selected[key] = draft.slice();
         }
         details.querySelector("summary b").textContent =
-          key === "document_types" ? "Клинический приём" : (draft.length || "Все");
+          key === "document_types" ? "Клинический приём" : (draft.length ? ("Отмечено: " + draft.length) : "Все");
         details.classList.remove("has-pending");
         if (closeMenu) details.open = false;
         showToast(draft.length ? "Фильтр применён: " + FILTER_LABELS[key] : "Фильтр очищен: " + FILTER_LABELS[key]);
@@ -1130,14 +1183,14 @@
           if (input.checked && index < 0) draft.push(input.value);
           if (!input.checked && index >= 0) draft.splice(index, 1);
           renderDraftState();
-          publishFacet(draft, false);
         });
       });
       details.querySelector("[data-filter-clear]").addEventListener("click", function () {
         details.querySelectorAll('input[type="checkbox"]').forEach(function (input) {
           input.checked = false;
         });
-        publishFacet([], false);
+        draft = [];
+        renderDraftState();
       });
       if (apply) apply.addEventListener("click", function () {
         publishFacet(draft, true);
@@ -2100,15 +2153,14 @@
       }).join("");
     }
     function gradeColor(grade) {
-      var good = cssToken("--good", "#0f7a68"), warn = cssToken("--warn", "#c47830"), bad = cssToken("--bad", "#c0455a");
       return ({
-        good: good,
-        fair: mixHex(good, warn, 0.55),
-        poor: warn,
-        important: bad,
-        critical: mixHex(bad, "#4a1020", 0.7),
-        na: cssToken("--muted", "#7a8494")
-      })[grade] || cssToken("--muted", "#7a8494");
+        good: cssToken("--good", "#0f7a68"),
+        fair: cssToken("--sev-p3", "#5b6f8f"),
+        poor: cssToken("--sev-p2", "#8a7a3a"),
+        important: cssToken("--sev-p1", "#c47830"),
+        critical: cssToken("--bad", "#c0455a"),
+        na: cssToken("--neutral", "#56706a")
+      })[grade] || cssToken("--neutral", "#56706a");
     }
     function pad2(n) { return String(n).padStart(2, "0"); }
     function isoDate(d) { return d.getFullYear() + "-" + pad2(d.getMonth() + 1) + "-" + pad2(d.getDate()); }
@@ -2952,9 +3004,9 @@
         '</td><td>' + historyPresenceChip(item.raw || item) +
         '</td><td>' + kpPresenceChip(item.zone2bKp) +
         '</td><td class="grade-cell">' + overallGradeChip(item.overallGrade) +
+        '</td><td class="reason-cell" title="' + esc(reasonFull || reason) + '">' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
         '</td><td>' + zoneBandChip(item.zone1Band) + '</td><td>' + zoneBandChip(item.zone2aBand) +
         '</td><td>' + zoneBandChip(item.zone2bBand, item.zone2bKp) +
-        '</td><td class="reason-cell" title="' + esc(reasonFull || reason) + '">' + esc(reason || layerLabelRu(item.attentionPrimary) || "-") +
         '</td><td>' + reg55BandPill(band, item.reg55) +
         '</td><td class="row-actions"><button class="button secondary compact row-open" type="button" data-open-case="' +
         esc(item.id) + '">Открыть</button></td></tr>';
@@ -3316,10 +3368,16 @@
     }
     async function openCase(id, trigger) {
       if (!id) return;
-      if (state.openCaseId && String(id) !== state.openCaseId) {
-        if (!confirmDiscardDecision()) return;
-        state.decisionDirty = false;
+      if (state.openCaseId && String(id) !== state.openCaseId && state.decisionDirty) {
+        askYesNo("Решение не сохранено. Уйти?", "Уйти без сохранения", "Остаться").then(function (leave) {
+          if (!leave) return;
+          state.decisionDirty = false;
+          state.decisionSaved = false;
+          openCase(id, trigger);
+        });
+        return;
       }
+      state.decisionSaved = false;
       var alreadyInspecting = !!state.openCaseId;
       var urlHasOpen = !!caseIdFromLocation();
       state.openCaseId = String(id);
@@ -3514,7 +3572,12 @@
         '<p class="card-sub">Черновик модели · не меняет итоговый балл витрины · ' + esc(footerMeta) + '</p></div>';
     }
     function verdictLabelRu(value) {
-      return ({ unreviewed: "не проверено", agree: "согласен", partial: "частично", disagree: "не согласен" })[value] || value || "-";
+      return ({
+        unreviewed: "Не смотрел",
+        agree: "Согласен с автоматической оценкой",
+        partial: "Оценка завышена",
+        disagree: "Оценка занижена или не про этот случай"
+      })[value] || value || "-";
     }
     function protocolViewerUrl(item) {
       if (!item) return "";
@@ -3732,10 +3795,10 @@
     }
     function verdictSelect(id, current) {
       var options = [
-        ["unreviewed", "Не проверено"],
-        ["agree", "Ок"],
-        ["partial", "Замечание"],
-        ["disagree", "Не применимо"]
+        ["unreviewed", "Не смотрел"],
+        ["agree", "Согласен с автоматической оценкой"],
+        ["partial", "Оценка завышена"],
+        ["disagree", "Оценка занижена или не про этот случай"]
       ];
       return '<select class="control" id="' + id + '">' + options.map(function (option) {
         return '<option value="' + option[0] + '"' + (option[0] === (current || "unreviewed") ? " selected" : "") + ">" +
@@ -4574,26 +4637,26 @@
       var pdfPath = "/api/methodist/mo/cases/" + encodeURIComponent(item.id) + "/pdf";
       var pdfName = "mo-" + encodeURIComponent(item.id) + ".pdf";
       var decisionHtml =
-        '<details open class="methodist-decision-panel methodist-decision-panel--dock">' +
-        '<summary class="decision-dock-summary">Решение методиста <span id="drawer-decision-status" class="status muted">Сохранено</span></summary>' +
+        '<details class="methodist-decision-panel methodist-decision-panel--dock">' +
+        '<summary class="decision-dock-summary">Решение методиста <span id="drawer-decision-status" class="status muted">Решения ещё нет</span></summary>' +
         '<div class="decision-dock-body">' +
         '<div class="verdict-row">' +
         '<label class="filter"><span>Оформление</span>' + verdictSelect("drawer-verdict-c", "unreviewed") + '</label>' +
         '<label class="filter"><span>Диагноз</span>' + verdictSelect("drawer-verdict-d", "unreviewed") + '</label>' +
         '<label class="filter"><span>План по протоколу</span>' + verdictSelect("drawer-verdict-r", "unreviewed") + '</label>' +
         '</div>' +
-        '<label class="filter decision-summary-field"><span>Комментарий врачу</span><textarea class="control" id="drawer-summary" rows="3" maxlength="12000" placeholder="Коротко: что не так и что исправить"></textarea></label>' +
+        '<label class="filter decision-summary-field"><span>Комментарий</span><textarea class="control" id="drawer-summary" rows="3" maxlength="4000" placeholder="Коротко: что не так и что исправить. Врачу само не уходит."></textarea></label>' +
         '<label class="filter"><span>Статус разбора</span><select class="control" id="drawer-status">' + statusOptions + '</select></label>' +
-        '<input type="hidden" id="drawer-assignee" value="' + esc(crm.assignee || "") + '">' +
-        '<input type="hidden" id="drawer-due" value="' + esc(crm.due_date || "") + '">' +
+        '<label class="filter"><span>Ответственный</span><input class="control" id="drawer-assignee" type="text" maxlength="120" value="' + esc(crm.assignee || "") + '" placeholder="Кто разбирает"></label>' +
+        '<label class="filter"><span>Срок</span><input class="control" id="drawer-due" type="date" value="' + esc((crm.due_date || "").slice(0, 10)) + '"></label>' +
+        '<p class="card-sub" id="drawer-due-note" hidden>Срок уже прошёл</p>' +
         '<input type="hidden" id="drawer-tags" value="' + esc((crm.tags || []).join(", ")) + '">' +
-        '<details open class="mo-secondary-details decision-more"><summary>Дополнительно</summary>' +
-        '<label class="filter"><span><input type="checkbox" id="drawer-training-use"> Можно использовать для обучения</span></label>' +
+        '<details class="mo-secondary-details decision-more"><summary>Дополнительно</summary>' +
+        '<label class="filter"><span><input type="checkbox" id="drawer-training-use"> Обезличенный образец для обучения. Врачу не уходит.</span></label>' +
         '</details>' +
         '<div class="decision-actions">' +
-        '<button class="button" id="drawer-save" type="button">Сохранить</button>' +
-        '<button class="button secondary" type="button" data-open-pdf="' + esc(pdfPath) + '" data-open-name="' + esc(pdfName) + '">МО в PDF</button>' +
-        '</div></div></details>';
+        '<button class="button" id="drawer-save" type="button">Сохранить решение</button>' +
+        '</div><p class="card-sub" id="drawer-decision-note"></p></div></details>';
       var drawerPdf = $("drawer-pdf");
       if (drawerPdf) {
         drawerPdf.hidden = false;
@@ -4753,8 +4816,15 @@
       var panel = $("drawer-body") && $("drawer-body").querySelector(".methodist-decision-panel");
       if (panel) panel.classList.remove("is-unsaved");
       if ($("drawer-decision-status")) {
-        $("drawer-decision-status").textContent = "Сохранено";
+        $("drawer-decision-status").textContent = state.decisionSaved
+          ? "Сохранено. Оценка записи не изменилась."
+          : "Решения ещё нет";
         $("drawer-decision-status").className = "status muted";
+      }
+      var due = $("drawer-due");
+      var dueNote = $("drawer-due-note");
+      if (due && dueNote) {
+        dueNote.hidden = !(due.value && due.value < new Date().toISOString().slice(0, 10));
       }
     }
     function markDecisionDirty() {
@@ -4764,13 +4834,28 @@
       var panel = $("drawer-body") && $("drawer-body").querySelector(".methodist-decision-panel");
       if (panel) panel.classList.toggle("is-unsaved", dirty);
       if ($("drawer-decision-status")) {
-        $("drawer-decision-status").textContent = dirty ? "Черновик" : "Сохранено";
+        $("drawer-decision-status").textContent = dirty
+          ? "Есть несохранённое"
+          : (state.decisionSaved ? "Сохранено. Оценка записи не изменилась." : "Решения ещё нет");
         $("drawer-decision-status").className = "status " + (dirty ? "review" : "muted");
       }
     }
+    function askYesNo(message, yesLabel, noLabel) {
+      return new Promise(function (resolve) {
+        var host = document.createElement("div");
+        host.className = "leave-dialog";
+        host.setAttribute("role", "dialog");
+        host.innerHTML = "<p>" + esc(message) + "</p>" +
+          '<button class="button secondary" type="button" data-no>' + esc(noLabel || "Остаться") + "</button>" +
+          '<button class="button" type="button" data-yes>' + esc(yesLabel || "Уйти без сохранения") + "</button>";
+        document.body.appendChild(host);
+        host.querySelector("[data-no]").addEventListener("click", function () { host.remove(); resolve(false); });
+        host.querySelector("[data-yes]").addEventListener("click", function () { host.remove(); resolve(true); });
+      });
+    }
     function confirmDiscardDecision() {
-      if (!state.decisionDirty) return true;
-      return window.confirm("Есть несохранённые изменения. Закрыть разбор без сохранения?");
+      if (!state.decisionDirty) return Promise.resolve(true);
+      return askYesNo("Решение не сохранено. Уйти?", "Уйти без сохранения", "Остаться");
     }
     function bindDecisionDirtyTracking(body) {
       if (!body) return;
@@ -5107,7 +5192,8 @@
         });
         var summaryText = ($("drawer-summary") && $("drawer-summary").value) || "";
         if (summaryText.trim().length && summaryText.trim().length < 80) {
-          if (!window.confirm("Развёрнутый разбор короткий (меньше 80 символов). Сохранить всё равно?")) return;
+          var keepShort = await askYesNo("Развёрнутый разбор короткий (меньше 80 символов). Сохранить всё равно?", "Сохранить", "Вернуться");
+          if (!keepShort) return;
         }
         var trainingUse = Boolean($("drawer-training-use") && $("drawer-training-use").checked);
         var findingValues = Object.keys(findingDecisions).map(function (key) { return findingDecisions[key]; });
@@ -5115,9 +5201,8 @@
           return !value || value === "unreviewed";
         });
         if (trainingUse && allFindingsUnreviewed) {
-          if (!window.confirm(
-            "Для обучения отмечены все замечания как «не просмотрено». Сохранить с флагом обучения всё равно?"
-          )) return;
+          var keepTrain = await askYesNo("Для обучения отмечены все замечания как «не просмотрено». Сохранить с флагом обучения всё равно?", "Сохранить", "Вернуться");
+          if (!keepTrain) return;
         }
         var decision = {
           status: $("drawer-status").value,
@@ -5169,11 +5254,19 @@
           state.decisionSaveToken = "";
           throw new Error("Решение уже изменилось. Черновик остался в форме и не перезаписан. Откройте историю разборов, сравните чужое решение и сохраните заново после обновления случая.");
         }
-        if (!response.ok) throw new Error("Не удалось сохранить пакет разбора.");
-        $("announcer").textContent = "Пакет разбора сохранён";
+        if (!response.ok) throw new Error("Не сохранилось");
+        state.decisionSaved = true;
         state.decisionDirty = false;
-        closeDrawer(true); loadPage(state.page);
-      } catch (e) { showError(e.message); }
+        setDecisionBaseline();
+        if ($("drawer-decision-note")) $("drawer-decision-note").textContent = "Сохранено. Оценка записи не изменилась.";
+        $("announcer").textContent = "Сохранено. Оценка записи не изменилась.";
+      } catch (e) {
+        if ($("drawer-decision-status")) {
+          $("drawer-decision-status").textContent = "Не сохранилось";
+          $("drawer-decision-status").className = "status bad";
+        }
+        showError(e.message || "Не сохранилось");
+      }
     }
     function selectedCaseIds() {
       return Array.from(document.querySelectorAll('#queue-rows input[data-case-select]:checked')).map(function (input) {
@@ -5197,8 +5290,15 @@
       } catch (e) { showError(e.message); }
     }
     function closeDrawer(force, fromHistory) {
-      if (force !== true && !confirmDiscardDecision()) {
-        if (fromHistory && state.openCaseId) syncUrl(true);
+      if (force !== true && state.decisionDirty) {
+        askYesNo("Решение не сохранено. Уйти?", "Уйти без сохранения", "Остаться").then(function (leave) {
+          if (!leave) {
+            if (fromHistory && state.openCaseId) syncUrl(true);
+            return;
+          }
+          state.decisionDirty = false;
+          closeDrawer(true, fromHistory);
+        });
         return false;
       }
       caseDetailEpoch += 1;
@@ -6567,7 +6667,18 @@
       }).join("") || '<div class="empty">Шаблонных пар не найдено.</div>';
       $("doctor-cabinet-records").querySelectorAll("[data-dispute-case]").forEach(function (button) {
         button.addEventListener("click",async function () {
-          var reason=prompt("Причина оспаривания для методиста"); if (!reason) return;
+          var box = button.parentElement.querySelector(".dispute-reason");
+          if (!box) {
+            box = document.createElement("textarea");
+            box.className = "control dispute-reason";
+            box.maxLength = 500;
+            box.placeholder = "Причина оспаривания для методиста";
+            button.insertAdjacentElement("afterend", box);
+            box.focus();
+            return;
+          }
+          var reason = String(box.value || "").trim();
+          if (!reason) { box.focus(); return; }
           var result=await request("/doctor-cabinet/disputes?doctor_key="+encodeURIComponent(state.cabinetDoctorKey),
             "/doctor-cabinet/disputes",{ method:"POST",headers:{ "Content-Type":"application/json" },
               body:JSON.stringify({ case_id:button.getAttribute("data-dispute-case"),
@@ -6830,21 +6941,21 @@
         : "";
       host.innerHTML =
         '<div class="settings-stack scoring-strictness-form">' +
-        '<p class="card-sub">Меняет полосы зон и пороги внимания. Пересчёт витрины обновляет зоны без повторного LLM; deep-пересчёт переписывает findings.</p>' +
-        '<label class="filter"><span>Пресет жёсткости</span>' +
+        '<p class="card-sub">Порог - потолок балла, не новое имя оценки. Уже посчитанные визиты сами не пересчитываются.</p>' +
+        '<label class="filter"><span>Набор порогов</span>' +
         '<select class="control" id="score-preset"' + disabled + ">" +
-        '<option value="soft">Мягкая</option>' +
-        '<option value="standard">Стандарт</option>' +
-        '<option value="strict">Жёсткая</option>' +
-        '<option value="custom">Своя</option>' +
+        '<option value="soft">Мягкие пороги</option>' +
+        '<option value="standard">Обычные пороги</option>' +
+        '<option value="strict">Жёсткие пороги</option>' +
+        '<option value="custom">Свои числа</option>' +
         "</select></label>" +
         '<div class="grid">' +
         '<label class="filter span-3"><span>Зона «плохо» ниже, %</span><input class="control" id="score-bad-below" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         '<label class="filter span-3"><span>Зона «в норме» от, %</span><input class="control" id="score-ok-at" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
-        '<label class="filter span-3"><span>Статус «хорошо» от</span><input class="control" id="score-good" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
-        '<label class="filter span-3"><span>Статус «приемлемо» от</span><input class="control" id="score-acc" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
-        '<label class="filter span-3"><span>Потолок при «Критично»</span><input class="control" id="score-p0" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
-        '<label class="filter span-3"><span>Потолок при «Важно»</span><input class="control" id="score-p1" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок «хорошо» от</span><input class="control" id="score-good" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок «с замечанием» от</span><input class="control" id="score-acc" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок балла при критичном замечании</span><input class="control" id="score-p0" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
+        '<label class="filter span-3"><span>Потолок балла при важном замечании</span><input class="control" id="score-p1" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         '<label class="filter span-3"><span>В очередь при балле ниже</span><input class="control" id="score-attention" type="number" min="0" max="100" step="1"' + disabled + "></label>" +
         "</div>" +
         '<p class="card-sub">Потолки ограничивают итоговый балл, если замечание уже выставлено. Не меняют правила, какое замечание считать Важно или Критично (это не таксономия).</p>' +
@@ -6857,7 +6968,7 @@
         notesHtml +
         (canEdit
           ? '<div class="section-actions" style="margin-top:8px">' +
-            '<button class="button" type="button" id="score-save">Сохранить</button>' +
+            '<button class="button" type="button" id="score-save">Сохранить пороги</button>' +
             '<button class="button secondary" type="button" id="score-next-load-days">На след. загрузку (новые дни)</button>' +
             '<button class="button secondary" type="button" id="score-next-load-range">На след. загрузку (период)</button>' +
             '<button class="button secondary" type="button" id="score-next-load-all">На след. загрузку (вся история)</button>' +
@@ -6940,7 +7051,7 @@
             if (!response.ok) throw new Error("Не удалось сохранить профиль");
             var data = await response.json();
             renderScoringStrictness(data);
-            setStatus("Профиль сохранён. Запустите пересчёт периода или отложите на следующую загрузку.");
+            setStatus("Сохранено. Уже посчитанные визиты не пересчитаны.");
           } catch (error) {
             setStatus(error.message || String(error), true);
           }
@@ -6973,30 +7084,40 @@
         }
       }
       if ($("score-recompute-range")) {
-        $("score-recompute-range").addEventListener("click", function () {
-          if (!window.confirm("Пересчитать витрину за выбранный период? Это действие администратора.")) return;
+        $("score-recompute-range").addEventListener("click", async function () {
+          var from = $("score-date-from") ? $("score-date-from").value : "";
+          var to = $("score-date-to") ? $("score-date-to").value : "";
+          var span = "";
+          var a = Date.parse(from), b = Date.parse(to);
+          if (a && b && b >= a) span = " Это " + (Math.round((b - a) / 86400000) + 1) + " дн.";
+          var ok = await askYesNo("Пересчитать витрину " + from + " - " + to + "?" + span + " Это действие администратора.", "Пересчитать", "Не пересчитывать");
+          if (!ok) return;
           runRecompute({
             apply_mode: "now",
             mode: "warehouse_zones",
-            date_from: $("score-date-from").value,
-            date_to: $("score-date-to").value
+            date_from: from,
+            date_to: to
           });
         });
       }
       if ($("score-recompute-all")) {
-        $("score-recompute-all").addEventListener("click", function () {
-          if (!window.confirm("Пересчитать всю доступную витрину? Это может занять время.")) return;
+        $("score-recompute-all").addEventListener("click", async function () {
+          var ok = await askYesNo("Пересчитать всю доступную витрину? Это действие администратора и может занять время.", "Пересчитать", "Не пересчитывать");
+          if (!ok) return;
           runRecompute({ apply_mode: "now", mode: "warehouse_zones", whole_range: true });
         });
       }
       if ($("score-deep-rescore-range")) {
-        $("score-deep-rescore-range").addEventListener("click", function () {
-          if (!window.confirm("Deep-пересчёт периода перепишет findings и может обновить overall в cases. Продолжить?")) return;
+        $("score-deep-rescore-range").addEventListener("click", async function () {
+          var from = $("score-date-from") ? $("score-date-from").value : "";
+          var to = $("score-date-to") ? $("score-date-to").value : "";
+          var ok = await askYesNo("Deep-пересчёт " + from + " - " + to + " перепишет замечания. Это действие администратора.", "Пересчитать", "Не пересчитывать");
+          if (!ok) return;
           runRecompute({
             apply_mode: "now",
             mode: "deep_rescore",
-            date_from: $("score-date-from").value,
-            date_to: $("score-date-to").value
+            date_from: from,
+            date_to: to
           });
         });
       }
@@ -7016,8 +7137,9 @@
         });
       }
       if ($("score-next-load-all")) {
-        $("score-next-load-all").addEventListener("click", function () {
-          if (!window.confirm("На следующей загрузке пересчитать всю историю витрины?")) return;
+        $("score-next-load-all").addEventListener("click", async function () {
+          var ok = await askYesNo("На следующей загрузке пересчитать всю историю витрины?", "Отложить пересчёт", "Не надо");
+          if (!ok) return;
           runRecompute({ apply_mode: "next_load", mode: "warehouse_zones", whole_range: true });
         });
       }
@@ -7516,6 +7638,10 @@
       });
       if ($("mis-visits-card")) $("mis-visits-card").hidden = tab !== "visits";
       if ($("mis-labs-card")) $("mis-labs-card").hidden = tab !== "labs";
+      var label = $("mis-search-label");
+      var field = $("mis-search");
+      if (label) label.textContent = tab === "labs" ? "Название теста" : "Номер визита, врач или короткий диагноз";
+      if (field) field.placeholder = label ? label.textContent : "";
     }
     function queueTileColor(tone) {
       var map = {
@@ -7843,15 +7969,26 @@
       var input = $("patient-resolve");
       var status = $("patient-resolve-status");
       var q = input && input.value ? String(input.value).trim() : "";
-      if (status) status.textContent = "Ищу паспорт…";
+      if (!q) {
+        if (status) status.textContent = "Введите номер";
+        return;
+      }
+      if (/[A-Za-zА-Яа-яЁё]/.test(q) && !/\d/.test(q)) {
+        if (status) status.textContent = "Нужен номер визита или ключ, не фамилия";
+        return;
+      }
+      var submit = $("patient-resolve-form") && $("patient-resolve-form").querySelector("button");
+      if (submit) { submit.disabled = true; submit.textContent = "Ищем"; }
+      if (status) status.textContent = "Ищем";
+      try {
       var response = await request("/patients/resolve?q=" + encodeURIComponent(q), "");
       var data = {};
       try { data = await response.json(); } catch (error) { data = {}; }
       if (!response.ok || !data.ok) {
         var err = data.error || (data.detail && String(data.detail)) || "";
         if (status) {
-          status.textContent = err === "passport_not_found" ? "Паспорт не найден." :
-            (err === "empty_query" ? "Введите визит или ключ." : "Не удалось открыть.");
+          status.textContent = err === "passport_not_found" ? "Такого визита в аналитике нет." :
+            (err === "empty_query" ? "Введите номер" : "Не удалось открыть.");
         }
         return;
       }
@@ -7865,6 +8002,9 @@
           MO.steps.mount(host, state.caseDetail, data.latest_visit_id, { decisionDock: $("case-decision-dock") });
         }
       }
+      } finally {
+        if (submit) { submit.disabled = false; submit.textContent = "Открыть паспорт"; }
+      }
     }
     function bindMisSearchPage() {
       var form = $("mis-search-form");
@@ -7872,7 +8012,15 @@
       form.setAttribute("data-bound", "1");
       form.addEventListener("submit", function (event) {
         event.preventDefault();
-        state.misQuery = ($("mis-search") && $("mis-search").value || "").trim();
+        var q = ($("mis-search") && $("mis-search").value || "").trim();
+        if (!q) {
+          var empty = $("mis-visits-empty");
+          var text = state.misTab === "labs" ? "Введите название теста" : "Введите запрос или выберите месяц на графике";
+          if (state.misTab === "labs" && $("mis-labs-empty")) $("mis-labs-empty").textContent = text;
+          else if (empty) empty.textContent = text;
+          return;
+        }
+        state.misQuery = q;
         loadMisSearch();
       });
       document.querySelectorAll("[data-mis-tab]").forEach(function (btn) {
@@ -7921,6 +8069,7 @@
         else if (page === "rceth-sync") await loadRcethSync();
         else if (page === "settings") await loadSettingsPage();
         else await ensureSummary();
+        refreshGradeChipCounts();
         // Обзор строит фасеты из своего /facets; остальным страницам подгружаем
         // их отдельно, чтобы меню фильтров были заполнены и при deep-link.
         if (page !== "overview") ensureFacets().catch(function () {});
@@ -7951,8 +8100,13 @@
       }).join("") : '<p class="empty">Сохранённых представлений пока нет.</p>';
     }
     async function saveView() {
-      var name = prompt("Название представления");
-      if (!name) return;
+      var nameInput = $("saved-view-name");
+      var name = nameInput ? String(nameInput.value || "").trim() : "";
+      if (!name) {
+        if (nameInput) nameInput.focus();
+        showError("Введите название среза");
+        return;
+      }
       var filters = {};
       query().forEach(function (value, key) { filters[key] = value; });
       try {
@@ -8013,12 +8167,12 @@
         return { label: "Перейти: " + PAGE_TITLES[page], action: function () { switchPage(page); } };
       });
       items.push(
-        { label: "Период: вчера", action: function () { state.period = "yesterday"; $("period").value = state.period; filtersChanged(); } },
-        { label: "Период: последние 7 дней", action: function () { state.period = "7d"; $("period").value = state.period; filtersChanged(); } },
-        { label: "Период: текущий месяц", action: function () { state.period = "month"; $("period").value = state.period; filtersChanged(); } },
+        { label: "Период: вчера", action: function () { applyPeriodPreset("yesterday"); } },
+        { label: "Период: последние 7 дней", action: function () { applyPeriodPreset("7d"); } },
+        { label: "Период: текущий месяц", action: function () { applyPeriodPreset("month"); } },
         { label: "Период: с начала года", action: function () { applyPeriodPreset("ytd"); } },
-        { label: "Показать критические случаи", action: function () {
-          applyQueueBand("critical", { page: "queue" });
+        { label: "Очередь: только критичное замечание", action: function () {
+          applyQueueBand("critical", { page: "queue", keepGrade: true });
         } }
       );
       savedViews().forEach(function (view, index) {
@@ -8066,8 +8220,8 @@
     var COLUMN_MAP = {
       documents: [
         "Визит", "Пациент", "Дата", "Врач / специальность", "Филиал", "Диагноз",
-        "МКБ", "История", "КП", "Оценка", "Оформление", "Диагноз (зона)", "План",
-        "Причина", "№55 / градация"
+        "МКБ", "История", "КП", "Оценка", "Причина", "Оформление", "Диагноз (зона)", "План",
+        "№55 / градация"
       ],
       queue: [
         "Выбор", "Оценка", "Раздел", "Визит", "Пациент", "Дата", "Филиал",
@@ -8077,8 +8231,8 @@
     };
     var COLUMN_PRESETS = {
       work: {
-        documents: [true, false, true, true, false, true, true, true, true, true, false, false, false, true, false],
-        queue: [true, true, false, true, false, true, false, true, true, false, false, false, false, true, false, false, true, false]
+        documents: [true, false, true, true, false, true, false, false, false, true, true, false, false, false, false],
+        queue: [true, true, true, false, false, true, false, true, false, false, false, false, false, true, false, false, false, true]
       },
       review: {
         documents: [true, false, true, true, true, true, true, true, true, true, true, true, true, true, true],
@@ -8144,8 +8298,8 @@
         }
         host.innerHTML = '<h3>' + (key === "queue" ? "Очередь" : "Найти МО") + '</h3>' +
           '<div class="column-presets" role="group" aria-label="Наборы колонок">' +
-          presetButton("work", "Работа", presetSummary("work")) +
-          presetButton("review", "Проверка", presetSummary("review")) +
+          presetButton("work", "Короткий", presetSummary("work")) +
+          presetButton("review", "Полный", presetSummary("review")) +
           '</div>' +
           '<p class="inline-note">Работа: ' + esc(presetSummary("work")) + '.</p>' +
           '<p class="inline-note">Проверка: ' + esc(presetSummary("review")) + '.</p>' +
@@ -8160,9 +8314,16 @@
         input.addEventListener("change", function () {
           var key = input.getAttribute("data-col-key");
           var idx = Number(input.getAttribute("data-col-index"));
+          var label = (COLUMN_MAP[key] || [])[idx] || "";
+          if (key === "documents" && (label === "Оценка" || label === "Причина") && !input.checked) {
+            input.checked = true;
+            showToast("Без оценки и причины список не читается");
+            return;
+          }
           state.columnVisible[key][idx] = !!input.checked;
           saveColumnState();
           applyColumnVisibility(key);
+          showToast("Колонки только на этом компьютере");
           $("columns-manager").querySelectorAll('[data-col-preset="' + key + '"]').forEach(function (button) {
             button.setAttribute("aria-pressed", button.getAttribute("data-preset") === columnPresetActive(key) ? "true" : "false");
           });
@@ -8178,14 +8339,20 @@
           saveColumnState();
           applyColumnVisibility(key);
           renderColumnsManager();
-          showToast(preset === "review" ? "Колонки: проверка" : "Колонки: работа");
+          showToast("Колонки только на этом компьютере");
         });
       });
     }
     async function openSelectedQueuePdfs() {
       var ids = selectedCases();
-      if (!ids.length) { showToast("Выберите случаи в очереди"); return; }
-      if (ids.length > 12 && !confirm("Открыть " + ids.length + " PDF?")) return;
+      if (!ids.length) {
+        showToast("Сначала отметьте строки");
+        return;
+      }
+      if (ids.length > 12) {
+        var ok = await askYesNo("Открыть " + ids.length + " PDF?", "Открыть", "Не открывать");
+        if (!ok) return;
+      }
       for (var i = 0; i < ids.length; i++) {
         var caseId = ids[i];
         try {
@@ -8257,7 +8424,31 @@
     var SEARCH_SUGGEST_KINDS = {
       alias: "сокращение", synonym: "синоним", dx: "диагноз", word: "термин", typo: "возможно, вы имели в виду"
     };
+    function searchReadoutText(value, rowCount) {
+      var q = String(value || "").trim();
+      if (!q) return "";
+      if (/^patient_id:/i.test(q)) return "Ищем ключ пациента";
+      if (/^\d{4,}$/.test(q)) return "Ищем номер визита";
+      if (/^[A-Za-zА-Яа-яЁё]\d{2}(\.\d+)?$/.test(q)) return "Ищем код МКБ";
+      if (rowCount === 0 && !/\d/.test(q)) return "Врач не найден. Фамилии пациента в аналитике нет.";
+      return "Ищем врача или диагноз";
+    }
+    function paintSearchReadout(rowCount) {
+      var form = $("case-search-form");
+      if (!form) return;
+      var host = $("search-readout");
+      if (!host) {
+        host = document.createElement("p");
+        host.id = "search-readout";
+        host.className = "card-sub search-readout";
+        form.insertAdjacentElement("afterend", host);
+      }
+      var text = searchReadoutText($("case-search") && $("case-search").value, rowCount);
+      host.hidden = !text;
+      host.textContent = text;
+    }
     function renderSearchPlan(plan, rowCount) {
+      paintSearchReadout(rowCount);
       var form = $("case-search-form");
       if (!form) return;
       var host = $("search-plan");
@@ -8470,6 +8661,18 @@
       $("case-search-form").addEventListener("submit", function (event) {
         event.preventDefault();
         var nextSearch = $("case-search").value.trim();
+        if (!nextSearch) {
+          $("case-search").classList.add("is-invalid");
+          paintSearchReadout();
+          var host = $("search-readout");
+          if (host) {
+            host.hidden = false;
+            host.textContent = "Введите врача, диагноз, код или номер";
+          }
+          $("case-search").focus();
+          return;
+        }
+        $("case-search").classList.remove("is-invalid");
         if (nextSearch !== state.search) state.searchOff = [];
         state.search = nextSearch;
         $("search-suggestions").hidden = true;
@@ -8526,12 +8729,10 @@
         $("case-search").value = "";
         $("sort-by").value = "date";
         $("sort-dir").value = "desc";
-        applyPeriodPreset("month", { silent: true });
-        applyScoreEligibleOnly(true, true);
         document.querySelectorAll(".filter-pop").forEach(renderFilter);
         if ($("filters-panel")) $("filters-panel").open = false;
         filtersChanged();
-        showToast("Фильтры сброшены: месяц и только клинические приёмы");
+        showToast("Фильтры сброшены. Период останется");
       });
       document.querySelectorAll("[data-zone-preset]").forEach(function (btn) {
         btn.addEventListener("click", function () {
@@ -8555,8 +8756,12 @@
             doctorGrade.querySelectorAll("[data-doctor-grade]").forEach(function (item) {
               item.setAttribute("aria-pressed", item.getAttribute("data-doctor-grade") === state.doctorGradeFilter ? "true" : "false");
             });
-            showToast(state.doctorGradeFilter === "good" ? "Открытие: хорошие МО врача" :
-              (state.doctorGradeFilter === "poor" ? "Открытие: плохие МО врача" : "Открытие: все МО врача"));
+            var sentence = $("doctor-open-sentence");
+            var openLabel = state.doctorGradeFilter === "good"
+              ? "Хорошо"
+              : (state.doctorGradeFilter === "poor" ? "Слабо, важно и критично" : "Все оценки");
+            if (sentence) sentence.textContent = "Клик по врачу откроет: " + openLabel + ", без фильтра зоны.";
+            showToast("Клик по врачу откроет: " + openLabel);
           });
         });
       }
@@ -8582,8 +8787,14 @@
         filtersChanged();
       });
       $("bulk-assign").addEventListener("click", function () {
-        var assignee = prompt("Ответственный");
-        if (assignee) bulkChange({ status: "assigned", assignee: assignee });
+        var field = $("bulk-assignee");
+        var assignee = field ? String(field.value || "").trim() : "";
+        if (!assignee) {
+          if (field) field.focus();
+          showError("Введите ответственного");
+          return;
+        }
+        bulkChange({ status: "assigned", assignee: assignee });
       });
       $("bulk-status").addEventListener("click", function () {
         bulkChange({ status: $("bulk-status-value").value });
@@ -8673,6 +8884,7 @@
       $("case-search").addEventListener("input", function () {
         var value = this.value;
         updateFilterSummary();
+        paintSearchReadout();
         window.clearTimeout(searchTimer);
         searchTimer = window.setTimeout(function () { renderSearchSuggestions(value); }, 250);
       });
@@ -8750,23 +8962,24 @@
       if ($("token-submit")) {
         $("token-submit").addEventListener("click", function () {
           var value = $("token-input").value.trim();
-          if (!value) { $("auth-error").textContent = "Введите токен."; return; }
+          if (!value) { $("auth-error").textContent = "Вставьте токен"; return; }
           if (MO.api.clearAppSessionToken) MO.api.clearAppSessionToken();
           if (MO.api.setToken) MO.api.setToken(value);
           else {
             try { localStorage.setItem(TOKEN_KEY, value); sessionStorage.setItem(TOKEN_KEY, value); } catch (e) {}
           }
-          setAuth(false); loadCapabilities(); loadPage(state.page);
+          state.overallGrade = "";
+          applyPeriodPreset("month", { silent: true });
+          syncGradeStrip();
+          setAuth(false); loadCapabilities(); switchPage("yesterday", false);
         });
       }
       if ($("account-login-submit")) {
         $("account-login-submit").addEventListener("click", async function () {
           var login = ($("account-login-input") && $("account-login-input").value || "").trim();
           var password = ($("account-password-input") && $("account-password-input").value || "").trim();
-          if (!login || !password) {
-            $("auth-error").textContent = "Введите логин и пароль.";
-            return;
-          }
+          if (!login) { $("auth-error").textContent = "Введите логин"; return; }
+          if (!password) { $("auth-error").textContent = "Введите пароль"; return; }
           $("auth-error").textContent = "";
           try {
             var response = await fetch("/api/methodist/account/login", {
@@ -8776,15 +8989,18 @@
             });
             var data = await response.json().catch(function () { return {}; });
             if (!response.ok) {
-              $("auth-error").textContent = data.detail || "Неверный логин или пароль.";
+              $("auth-error").textContent = "Неверный логин или пароль.";
               return;
             }
             if (MO.api.clearToken) MO.api.clearToken();
             if (MO.api.setAppSessionToken) MO.api.setAppSessionToken(data.session_token || "");
             if ($("account-password-input")) $("account-password-input").value = "";
+            state.overallGrade = "";
+            applyPeriodPreset("month", { silent: true });
+            syncGradeStrip();
             setAuth(false);
             await loadCapabilities();
-            switchPage(state.page || "yesterday", false);
+            switchPage("yesterday", false);
           } catch (error) {
             $("auth-error").textContent = "Не удалось войти. Проверьте сеть и повторите.";
           }

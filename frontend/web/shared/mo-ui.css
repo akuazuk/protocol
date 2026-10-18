@@ -146,14 +146,34 @@ button, a, select, input { outline-offset: 3px; }
   display: flex; align-items: end; gap: 10px; flex-wrap: wrap;
 }
 .context-top {
-  /* Панели «Фильтры» / «Представления» позиционируются от всего блока периода,
-     а не от своей кнопки: иначе на 1280px панель уезжала под сайдбар. */
   position: relative;
-  display: grid;
-  grid-template-columns: minmax(360px, 1fr);
-  gap: 10px;
-  align-items: end;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  align-items: stretch;
 }
+.context-top > .period-strip,
+.context-top > .case-search-form,
+.context-top > .grade-strip,
+.context-top > .context-top-actions {
+  padding-bottom: 8px;
+  border-bottom: 1px solid color-mix(in srgb, var(--line) 80%, transparent);
+}
+.context-top > .context-top-actions { border-bottom: 0; padding-bottom: 0; }
+.period-keep { color: var(--muted, #5c675f); font-size: 12px; align-self: center; }
+.context-fact { margin: 0; }
+.search-readout { margin: 0; }
+.case-search.is-invalid { outline: 2px solid var(--bad); }
+.leave-dialog {
+  position: fixed; z-index: 80; left: 50%; top: 40%;
+  transform: translate(-50%, -50%);
+  max-width: 28rem; padding: 16px;
+  background: var(--surface-solid); color: var(--ink, #102820);
+  border: 1px solid var(--line); border-radius: 12px;
+  box-shadow: 0 16px 40px rgba(16, 40, 34, .18);
+}
+.leave-dialog p { margin: 0 0 12px; }
+.leave-dialog .button { min-height: 44px; margin-right: 8px; }
 .period-strip {
   display: flex;
   flex-wrap: wrap;
@@ -189,10 +209,8 @@ button, a, select, input { outline-offset: 3px; }
    (context-top в одну колонку). До 1120 px сетка двухколоночная и полоса
    получает ~280 px: там нужен перенос, иначе селекты сжимаются до 47 px. */
 @media (min-width: 1121px) and (max-width: 1280px) {
-  .period-strip { flex-wrap: nowrap; }
-  .period-strip .filter { flex: 0 1 132px; }
-  .period-strip .filter .control { font-size: 12px; padding-inline: 6px; }
-  .period-strip .button.compact { padding-inline: 8px; }
+  .period-strip { flex-wrap: wrap; }
+  .period-strip .button.compact { min-height: 44px; }
 }
 .chip.chip-reset {
   cursor: pointer;
@@ -217,10 +235,34 @@ button, a, select, input { outline-offset: 3px; }
   color: var(--muted, #5c675f);
   margin-right: 4px;
 }
-.grade-strip .button[aria-pressed="true"] {
-  background: var(--accent-soft);
-  color: var(--accent-dark);
-  font-weight: 800;
+.grade-strip .button { min-height: 44px; }
+.grade-strip .button[data-overall-grade="good"] { color: var(--good); }
+.grade-strip .button[data-overall-grade="fair"] { color: var(--sev-p3); }
+.grade-strip .button[data-overall-grade="poor"] { color: var(--sev-p2); }
+.grade-strip .button[data-overall-grade="important"] { color: var(--sev-p1); }
+.grade-strip .button[data-overall-grade="critical"] { color: var(--bad); }
+.grade-strip .button[data-overall-grade="na"] { color: var(--neutral); }
+.grade-strip .button[aria-pressed="true"] { font-weight: 800; }
+.grade-strip .button[aria-pressed="true"][data-overall-grade=""] {
+  background: var(--surface-2, #e7eeea); color: inherit;
+}
+.grade-strip .button[aria-pressed="true"][data-overall-grade="good"] {
+  background: color-mix(in srgb, var(--good) 28%, var(--surface-solid)); color: var(--good);
+}
+.grade-strip .button[aria-pressed="true"][data-overall-grade="fair"] {
+  background: color-mix(in srgb, var(--sev-p3) 28%, var(--surface-solid)); color: var(--sev-p3);
+}
+.grade-strip .button[aria-pressed="true"][data-overall-grade="poor"] {
+  background: color-mix(in srgb, var(--sev-p2) 32%, var(--surface-solid)); color: var(--sev-p2);
+}
+.grade-strip .button[aria-pressed="true"][data-overall-grade="important"] {
+  background: color-mix(in srgb, var(--sev-p1) 32%, var(--surface-solid)); color: var(--sev-p1);
+}
+.grade-strip .button[aria-pressed="true"][data-overall-grade="critical"] {
+  background: var(--bad); color: #fff;
+}
+.grade-strip .button[aria-pressed="true"][data-overall-grade="na"] {
+  background: color-mix(in srgb, var(--neutral) 22%, var(--surface-solid)); color: var(--neutral);
 }
 .context-top-actions {
   display: flex;
@@ -1662,11 +1704,12 @@ kbd {
 .overall-grade-hero { display: flex; flex-wrap: wrap; align-items: center; gap: 8px; margin: 0 0 10px; }
 .overall-grade-why { color: var(--muted); font-size: 0.9rem; }
 .overall-grade-chip { font-weight: 650; }
-.overall-grade--critical { background: color-mix(in srgb, var(--bad) 16%, var(--surface-solid)); }
-.overall-grade--important { background: color-mix(in srgb, var(--warn) 16%, var(--surface-solid)); }
-.overall-grade--poor { background: color-mix(in srgb, var(--warn) 10%, var(--surface-solid)); }
-.overall-grade--fair { background: color-mix(in srgb, var(--neutral) 12%, var(--surface-solid)); }
-.overall-grade--good { background: color-mix(in srgb, var(--good) 14%, var(--surface-solid)); }
+.overall-grade--critical { background: var(--bad); color: #fff; }
+.overall-grade--important { background: color-mix(in srgb, var(--sev-p1) 22%, var(--surface-solid)); color: var(--sev-p1); }
+.overall-grade--poor { background: color-mix(in srgb, var(--sev-p2) 24%, var(--surface-solid)); color: var(--sev-p2); }
+.overall-grade--fair { background: color-mix(in srgb, var(--sev-p3) 20%, var(--surface-solid)); color: var(--sev-p3); }
+.overall-grade--good { background: color-mix(in srgb, var(--good) 18%, var(--surface-solid)); color: var(--good); }
+.overall-grade--na { background: transparent; color: var(--neutral); border: 1px solid var(--neutral); }
 .zones-hero-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 8px; }
 .zone-card {
   border: 1px solid var(--line);
