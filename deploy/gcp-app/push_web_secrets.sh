@@ -165,8 +165,14 @@ upsert_secret() {
   local secret_id="$1"
   local file="$2"
   if gcloud secrets describe "$secret_id" --project="$PROJECT" >/dev/null 2>&1; then
-    gcloud secrets versions add "$secret_id" --data-file="$file" --project="$PROJECT" >/dev/null
-    echo "SM_VERSION_ADDED secret=$secret_id"
+    new_hash=$(shasum -a 256 "$file" | awk 'NR==1 {print $1}')
+    current_hash=$(gcloud secrets versions access latest --secret="$secret_id" --project="$PROJECT" 2>/dev/null | shasum -a 256 | awk 'NR==1 {print $1}')
+    if [[ -n "$current_hash" && "$new_hash" == "$current_hash" ]]; then
+      echo "SM_UNCHANGED secret=$secret_id"
+    else
+      gcloud secrets versions add "$secret_id" --data-file="$file" --project="$PROJECT" >/dev/null
+      echo "SM_VERSION_ADDED secret=$secret_id"
+    fi
   else
     gcloud secrets create "$secret_id" --data-file="$file" \
       --project="$PROJECT" --replication-policy=automatic >/dev/null
