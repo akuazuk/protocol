@@ -96,8 +96,14 @@ PY
 
 # Secret Manager: create or add version
 if gcloud secrets describe "$MIS_SM_SECRET" --project="$PROJECT" >/dev/null 2>&1; then
-  gcloud secrets versions add "$MIS_SM_SECRET" --data-file=/tmp/protocol-sm-mis-pw --project="$PROJECT" >/dev/null
-  echo "SM_VERSION_ADDED secret=$MIS_SM_SECRET"
+  new_hash=$(shasum -a 256 /tmp/protocol-sm-mis-pw | awk 'NR==1 {print $1}')
+  current_hash=$(gcloud secrets versions access latest --secret="$MIS_SM_SECRET" --project="$PROJECT" 2>/dev/null | shasum -a 256 | awk 'NR==1 {print $1}')
+  if [[ -n "$current_hash" && "$new_hash" == "$current_hash" ]]; then
+    echo "SM_UNCHANGED secret=$MIS_SM_SECRET"
+  else
+    gcloud secrets versions add "$MIS_SM_SECRET" --data-file=/tmp/protocol-sm-mis-pw --project="$PROJECT" >/dev/null
+    echo "SM_VERSION_ADDED secret=$MIS_SM_SECRET"
+  fi
 else
   gcloud secrets create "$MIS_SM_SECRET" --data-file=/tmp/protocol-sm-mis-pw \
     --project="$PROJECT" --replication-policy=automatic >/dev/null
